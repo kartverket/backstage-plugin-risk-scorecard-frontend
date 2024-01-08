@@ -10,9 +10,8 @@ export const ExampleComponent = () => {
   const {  value: data, loading } = useAsync(async (): Promise<String> => fetch("http://localhost:8080/api/helloworld").then((response) => response.text()));
 
   const identityApi = useApi(identityApiRef);
-  const { value: user } = useAsync(async (): Promise<ProfileInfo> => identityApi.getProfileInfo());
+  const { value: profile } = useAsync(async (): Promise<ProfileInfo> => identityApi.getProfileInfo());
 
-  const username = user?.displayName
   if (loading) return <Progress />;
   return (
     <Page themeId="tool">
@@ -26,7 +25,7 @@ export const ExampleComponent = () => {
         </ContentHeader>
         <Grid container spacing={3} direction="column">
           <Grid item>
-            <InfoCard><Typography>Heisann, {username ?? ""}!</Typography></InfoCard>
+            <InfoCard><Typography>Heisann, {profile?.displayName ?? ""}!</Typography></InfoCard>
           </Grid>
           <Grid item>
             <InfoCard title="Message from backend">
