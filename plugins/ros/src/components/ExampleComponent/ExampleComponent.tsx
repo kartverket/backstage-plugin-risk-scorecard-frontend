@@ -24,7 +24,7 @@ export const ExampleComponent = () => {
 
   useEffect(() => {
     if (token) {
-      fetch(`http://localhost:8080/api/github/${token}`)
+      fetch(`http://localhost:8080/api/ros/${token}`)
         .then((response) => response.json())
         .then((data) => setRoses(data));
     }
