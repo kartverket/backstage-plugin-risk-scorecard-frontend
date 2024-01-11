@@ -57,7 +57,7 @@ export const ExampleComponent = () => {
                   fullWidth
                   defaultValue={JSON.stringify(roses, null, 2)}
                   variant="filled"
-                  onChange={e => setRoses(e.target.value)}
+                  onChange={e => setRoses(JSON.parse(e.target.value))}
                 /> :
                 (
                   <Box margin="4rem">
