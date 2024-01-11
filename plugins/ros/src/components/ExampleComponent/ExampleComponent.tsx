@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Box, CircularProgress, Grid, TextField, Typography } from "@material-ui/core";
+import React, { useState } from "react";
+import { Box, Button, CircularProgress, Grid, TextField, Typography } from "@material-ui/core";
 import { Content, ContentHeader, Header, HeaderLabel, InfoCard, Page, SupportButton } from "@backstage/core-components";
 import { fetchApiRef, githubAuthApiRef, ProfileInfo, useApi } from "@backstage/core-plugin-api";
 import useAsync from "react-use/lib/useAsync";
@@ -18,6 +18,11 @@ export const ExampleComponent = () => {
     [token]
   );
 
+  const postROS = () => useAsync(() => fetch(`http://localhost:8080/api/ros/${token}`, {
+    method: "POST",
+    body: JSON.stringify(roses)
+  }));
+
   const [roses, setRoses] = useState<string>();
 
   return (
@@ -33,6 +38,8 @@ export const ExampleComponent = () => {
         <Grid container spacing={3} direction="column">
           <Grid item>
             <InfoCard><Typography>Heisann, {profile?.displayName ?? ""}!</Typography></InfoCard>
+          </Grid>
+          <Grid item>
             <Box
               display="flex"
               justifyContent="center"
@@ -54,6 +61,9 @@ export const ExampleComponent = () => {
                 )
               }
             </Box>
+          </Grid>
+          <Grid item>
+            <Button variant={"contained"} onClick={postROS}>Send skjema</Button>
           </Grid>
         </Grid>
       </Content>
