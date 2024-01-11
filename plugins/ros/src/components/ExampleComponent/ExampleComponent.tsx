@@ -10,27 +10,28 @@ export const ExampleComponent = () => {
   const { value: token } = useAsync(async (): Promise<string> => githubApi.getAccessToken("repo"));
   const { value: profile } = useAsync(async (): Promise<ProfileInfo | undefined> => githubApi.getProfile());
 
+  const [roses, setRoses] = useState<string>();
+
   const { fetch } = useApi(fetchApiRef);
   useAsync(
-    () => fetch(`http://localhost:8080/api/ros/${token}`)
-        .then((response) => response.json())
-        .then((json) => setRoses(json)),
+    async () => {
+      if (token) {
+        fetch(`http://localhost:8080/api/ros/${token}`)
+          .then((response) => response.json())
+          .then((json) => setRoses(json))
+      }
+    },
     [token]
   );
 
-  const postROS = () => useAsync(() => fetch(`http://localhost:8080/api/ros/${token}`, {
+  const postROS = () => fetch(`http://localhost:8080/api/ros/${token}`, {
     method: "POST",
-    body: JSON.stringify(roses)
-  }));
-
-  const [roses, setRoses] = useState<string>();
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ "ros": JSON.stringify(roses)})
+  });
 
   return (
     <Page themeId="tool">
-      <Header title="Welcome to ros!" subtitle="Optional subtitle">
-        <HeaderLabel label="Owner" value="Team X" />
-        <HeaderLabel label="Lifecycle" value="Alpha" />
-      </Header>
       <Content>
         <ContentHeader title="Risiko- og sikkerhetsanalyse">
           <SupportButton>Kul plugin ass!</SupportButton>
@@ -63,7 +64,7 @@ export const ExampleComponent = () => {
             </Box>
           </Grid>
           <Grid item>
-            <Button variant={"contained"} onClick={postROS}>Send skjema</Button>
+            <Button variant={"contained"} onClick={() => postROS()}>Send skjema</Button>
           </Grid>
         </Grid>
       </Content>
