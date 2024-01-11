@@ -32,6 +32,10 @@ export const ExampleComponent = () => {
 
   return (
     <Page themeId="tool">
+      <Header title="Welcome to ros!" subtitle="Optional subtitle">
+        <HeaderLabel label="Owner" value="Team X" />
+        <HeaderLabel label="Lifecycle" value="Alpha" />
+      </Header>
       <Content>
         <ContentHeader title="Risiko- og sikkerhetsanalyse">
           <SupportButton>Kul plugin ass!</SupportButton>
