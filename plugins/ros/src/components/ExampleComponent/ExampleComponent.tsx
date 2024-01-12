@@ -11,6 +11,7 @@ export const ExampleComponent = () => {
   const { value: profile } = useAsync(async (): Promise<ProfileInfo | undefined> => githubApi.getProfile());
 
   const [roses, setRoses] = useState<string>();
+  const [response, setResponse] = useState<string>();
 
   const { fetch } = useApi(fetchApiRef);
   useAsync(
@@ -18,7 +19,7 @@ export const ExampleComponent = () => {
       if (token) {
         fetch(`http://localhost:8080/api/ros/${token}`)
           .then((response) => response.json())
-          .then((json) => setRoses(json))
+          .then((json) => setRoses(json));
       }
     },
     [token]
@@ -28,6 +29,12 @@ export const ExampleComponent = () => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ "ros": JSON.stringify(roses)})
+  }).then((response) => {
+    if (response.ok) {
+      setResponse("Ny ROS ble lagret!");
+    } else {
+      response.text().then((text) => setResponse(text));
+    }
   });
 
   return (
@@ -68,7 +75,10 @@ export const ExampleComponent = () => {
             </Box>
           </Grid>
           <Grid item>
-            <Button variant={"contained"} onClick={() => postROS()}>Send skjema</Button>
+            <Box display="flex" alignItems="center" gridGap="2rem">
+              <Button variant="contained" onClick={() => postROS()}>Send skjema</Button>
+              <Typography>{response}</Typography>
+            </Box>
           </Grid>
         </Grid>
       </Content>
