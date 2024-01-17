@@ -13,7 +13,7 @@ export const RosPage = rosPlugin.provide(
   createRoutableExtension({
     name: 'RosPage',
     component: () =>
-      import('./components/ExampleComponent').then(m => m.ExampleComponent),
+      import('./components/ExampleComponent').then(m => m.ROS),
     mountPoint: rootRouteRef,
   }),
 );

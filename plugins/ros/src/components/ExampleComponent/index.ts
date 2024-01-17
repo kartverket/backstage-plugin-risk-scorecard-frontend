@@ -1,1 +1,1 @@
-export { ExampleComponent } from './ExampleComponent';
+export { ROS } from './ROS';

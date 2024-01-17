@@ -4,7 +4,7 @@ import { Content, ContentHeader, Header, HeaderLabel, InfoCard, Page, SupportBut
 import { fetchApiRef, githubAuthApiRef, ProfileInfo, useApi } from "@backstage/core-plugin-api";
 import useAsync from "react-use/lib/useAsync";
 
-export const ExampleComponent = () => {
+export const ROS = () => {
 
   const githubApi = useApi(githubAuthApiRef);
   const { value: token } = useAsync(async (): Promise<string> => githubApi.getAccessToken("repo"));
@@ -18,7 +18,7 @@ export const ExampleComponent = () => {
     async () => {
       if (token) {
         fetch(`http://localhost:8080/api/ros/${token}`)
-          .then((response) => response.json())
+          .then((r) => r.json())
           .then((json) => setRoses(json));
       }
     },
@@ -29,11 +29,11 @@ export const ExampleComponent = () => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ "ros": JSON.stringify(roses)})
-  }).then((response) => {
-    if (response.ok) {
+  }).then((r) => {
+    if (r.ok) {
       setResponse("Ny ROS ble lagret!");
     } else {
-      response.text().then((text) => setResponse(text));
+      r.text().then((text) => setResponse(text));
     }
   });
 
