@@ -21,7 +21,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import { ROS } from '../interface/interfaces';
+import { ROS, TableData } from '../interface/interfaces';
 import { mapToTableData } from '../utils/utilityfunctions';
 import { columns } from '../utils/columns';
 
@@ -36,6 +36,7 @@ export const ROSPlugin = () => {
 
   const [roses, setRoses] = useState<ROS>();
   const [response, setResponse] = useState<string>();
+  const [tableData, setTableData] = useState<TableData[]>([]);
 
   const { fetch } = useApi(fetchApiRef);
 
@@ -46,7 +47,7 @@ export const ROSPlugin = () => {
         .then(json => json as ROS)
         .then(ros => {
           setRoses(ros);
-          mapToTableData(ros);
+          setTableData(mapToTableData(ros));
         });
     }
   }, [token]);
@@ -77,10 +78,10 @@ export const ROSPlugin = () => {
         </Grid>
 
         <Grid item>
-          {roses ? (
+          {tableData.length > 0 ? (
             <Table
               options={{ paging: false }}
-              data={mapToTableData(roses)}
+              data={tableData}
               columns={columns}
               title="Backstage Table"
             />
