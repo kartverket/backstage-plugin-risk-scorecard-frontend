@@ -25,8 +25,9 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
+import { ROS } from "../interface/interfaces";
 
-export const ExampleComponent = () => {
+export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
   const { value: token } = useAsync(
     async (): Promise<string> => githubApi.getAccessToken('repo'),
@@ -35,11 +36,8 @@ export const ExampleComponent = () => {
     async (): Promise<ProfileInfo | undefined> => githubApi.getProfile(),
   );
 
-  const [roses, setRoses] = useState<string>();
+  const [roses, setRoses] = useState<ROS>();
   const [response, setResponse] = useState<string>();
-
-  const [rawResponse, setRawResponse] = useState<RawResponse>();
-  const [mappedRos, setMappedRos] = useState<TableData[]>([]);
 
   const { fetch } = useApi(fetchApiRef);
 
@@ -47,7 +45,7 @@ export const ExampleComponent = () => {
     if (token) {
       fetch(`http://localhost:8080/api/ros/${token}`)
         .then(res => res.json())
-        .then(json => setRoses(json));
+        .then(json => setRoses(json as ROS));
     }
   }, [token]);
 
@@ -63,8 +61,11 @@ export const ExampleComponent = () => {
         res.text().then(text => setResponse(text));
       }
     });
+/*
+  const [rawResponse, setRawResponse] = useState<ROS>();
+  const [mappedRos, setMappedRos] = useState<any[]>([]);
 
-  const mapResponseToTableData = (data: RawResponse) => {
+  const mapResponseToTableData = (data: ROS) => {
     const tableData: TableData[] = [];
     data.scenarier.forEach(scenario => {
       const scenarioKey = Object.keys(scenario)[0];
@@ -92,27 +93,6 @@ export const ExampleComponent = () => {
     }, setMappedRos(tableData));
   };
 
-  useAsync(async () => {
-    if (token) {
-      fetch(`http://localhost:8080/api/ros/${token}`)
-        .then(res => res.json())
-        .then(json => {
-          setRawResponse(json);
-          mapResponseToTableData(json);
-        })
-        .catch(error => {
-          // Handle errors here
-          console.error('Error fetching data:', error);
-        });
-    }
-  }, [token]);
-
-  interface RawResponse {
-    versjon: string;
-    verdivurderinger: any[];
-    scenarier: any[];
-  }
-
   interface TableData {
     description: string;
     threat: string;
@@ -120,12 +100,7 @@ export const ExampleComponent = () => {
     consequence: number;
     probability: number;
   }
-
-  interface Risk {
-    probability: number;
-    consequence: number;
-  }
-
+*/
   const columns: TableColumn[] = [
     {
       title: 'Beskrivelse',
@@ -156,11 +131,6 @@ export const ExampleComponent = () => {
   ];
 
   return (
-    <Page themeId="tool">
-      <Header title="Welcome to ros!" subtitle="Optional subtitle">
-        <HeaderLabel label="Owner" value="Team X" />
-        <HeaderLabel label="Lifecycle" value="Alpha" />
-      </Header>
       <Content>
         <ContentHeader title="Risiko- og sikkerhetsanalyse">
           <SupportButton>Kul plugin ass!</SupportButton>
@@ -171,6 +141,7 @@ export const ExampleComponent = () => {
               <Typography>Heisann, {profile?.displayName ?? ''}!</Typography>
             </InfoCard>
           </Grid>
+          {/*
           <Grid item>
             {mappedRos.length > 0 ? (
               <Table
@@ -185,6 +156,7 @@ export const ExampleComponent = () => {
               </Box>
             )}
           </Grid>
+          */}
           <Grid item>
             <Box display="flex" justifyContent="center">
               {roses ? (
@@ -193,7 +165,7 @@ export const ExampleComponent = () => {
                   hiddenLabel
                   multiline
                   fullWidth
-                  defaultValue={JSON.stringify(roses, null, 2)}
+                  defaultValue={JSON.stringify(roses.scenarier, null, 2)}
                   variant="filled"
                   onChange={e => setRoses(JSON.parse(e.target.value))}
                 />
@@ -214,6 +186,5 @@ export const ExampleComponent = () => {
           </Grid>
         </Grid>
       </Content>
-    </Page>
   );
 };
