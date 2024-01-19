@@ -100,7 +100,7 @@ export const ROSPlugin = () => {
                 hiddenLabel
                 multiline
                 fullWidth
-                defaultValue={JSON.stringify(roses.scenarier, null, 2)}
+                defaultValue={JSON.stringify(roses, null, 2)}
                 variant="filled"
                 onChange={e => setRoses(JSON.parse(e.target.value))}
               />
