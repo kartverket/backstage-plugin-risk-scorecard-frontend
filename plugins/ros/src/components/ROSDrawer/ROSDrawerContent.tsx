@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, createStyles, IconButton, makeStyles, TextField, Theme, Typography } from "@material-ui/core";
+import { Box, Button, IconButton, makeStyles, TextField, Theme, Typography } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 import { Select } from "@backstage/core-components";
 
@@ -8,11 +8,12 @@ interface ROSDrawerContentProps {
 }
 
 export const DrawerContent = ({ toggleDrawer }: ROSDrawerContentProps) => {
-  const classes = useDrawerContentStyles();
+
+  const { header, content, icon, buttons } = useDrawerContentStyles();
 
   return (
     <>
-      <div className={classes.header}>
+      <Box className={header}>
         <Typography variant="h4">Nytt risikoscenario</Typography>
         <IconButton
           key="dismiss"
@@ -20,10 +21,10 @@ export const DrawerContent = ({ toggleDrawer }: ROSDrawerContentProps) => {
           onClick={() => toggleDrawer(false)}
           color="inherit"
         >
-          <Close className={classes.icon} />
+          <Close className={icon} />
         </IconButton>
-      </div>
-      <div className={classes.content}>
+      </Box>
+      <Box className={content}>
         <>
           <Typography variant="subtitle1">Beskrivelse</Typography>
           <TextField
@@ -69,8 +70,8 @@ export const DrawerContent = ({ toggleDrawer }: ROSDrawerContentProps) => {
           onChange={() => {
           }}
         />
-      </div>
-      <div className={classes.buttons}>
+      </Box>
+      <Box className={buttons}>
         <Button
           variant="contained"
           color="primary"
@@ -85,13 +86,12 @@ export const DrawerContent = ({ toggleDrawer }: ROSDrawerContentProps) => {
         >
           Avbryt
         </Button>
-      </div>
+      </Box>
     </>
   );
 };
 
-const useDrawerContentStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useDrawerContentStyles = makeStyles((theme: Theme) => ({
     header: {
       display: "flex",
       flexDirection: "row",
