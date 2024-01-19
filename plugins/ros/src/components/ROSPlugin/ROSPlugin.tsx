@@ -3,7 +3,7 @@ import { Box, Button, CircularProgress, Grid, TextField, Typography } from "@mat
 import { Content, ContentHeader, InfoCard, SupportButton } from "@backstage/core-components";
 import { fetchApiRef, githubAuthApiRef, ProfileInfo, useApi } from "@backstage/core-plugin-api";
 import useAsync from "react-use/lib/useAsync";
-import { ROS } from "../interface/interfaces";
+import { ROS, Scenario } from "../interface/interfaces";
 import { ROSDrawer } from "../ROSDrawer/ROSDrawer";
 
 export const ROSPlugin = () => {
@@ -17,10 +17,23 @@ export const ROSPlugin = () => {
   const [roses, setRoses] = useState<ROS>();
   const [response, setResponse] = useState<string>();
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
+  const [nyttScenario, setNyttScenario] = useState<Scenario>({
+    ID: "",
+    url: "",
+    beskrivelse: "",
+    trusselaktører: [],
+    sårbarheter: [],
+    risiko: {
+      oppsummering: "",
+      sannsynlighet: 0,
+      konsekvens: 0
+    },
+    tiltak: [],
+  });
 
   useAsync(async () => {
     if (token) {
-      fetch(`http://localhost:8080/api/ros/${token}`)
+      fetch(`https://kv-ros-backend-245zlcbrnq-lz.a.run.app/api/ros/${token}`)
         .then(res => res.json())
         .then(json => json as ROS)
         .then(ros => setRoses(ros));
@@ -28,7 +41,7 @@ export const ROSPlugin = () => {
   }, [token]);
 
   const postROS = () =>
-    fetch(`http://localhost:8080/api/ros/${token}`, {
+    fetch(`https://kv-ros-backend-245zlcbrnq-lz.a.run.app/api/ros/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ros: JSON.stringify(roses) })
@@ -86,7 +99,7 @@ export const ROSPlugin = () => {
           </Box>
         </Grid>
       </Grid>
-      <ROSDrawer isOpen={drawerIsOpen} setIsOpen={setDrawerIsOpen} />
+      <ROSDrawer isOpen={drawerIsOpen} setIsOpen={setDrawerIsOpen} nyttScenario={nyttScenario} setNyttScenario={setNyttScenario}/>
     </Content>
   );
 };

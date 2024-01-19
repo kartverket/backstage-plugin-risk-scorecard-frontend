@@ -1,13 +1,16 @@
 import React from "react";
-import { createStyles, Drawer, makeStyles, Theme } from "@material-ui/core";
+import { Drawer, makeStyles, Theme } from "@material-ui/core";
 import { DrawerContent } from "./ROSDrawerContent";
+import { Scenario } from "../interface/interfaces";
 
 interface ROSInputProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  nyttScenario: Scenario;
+  setNyttScenario: (nyttScenario: Scenario) => void;
 }
 
-export const ROSDrawer = ({ isOpen, setIsOpen }: ROSInputProps) => {
+export const ROSDrawer = ({ isOpen, setIsOpen, nyttScenario, setNyttScenario }: ROSInputProps) => {
 
   const classes = useDrawerStyles();
 
@@ -21,13 +24,12 @@ export const ROSDrawer = ({ isOpen, setIsOpen }: ROSInputProps) => {
       open={isOpen}
       onClose={() => setIsOpen(false)}
     >
-      <DrawerContent toggleDrawer={setIsOpen} />
+      <DrawerContent toggleDrawer={setIsOpen} nyttScenario={nyttScenario} setNyttScenario={setNyttScenario}/>
     </Drawer>
   );
 }
 
-const useDrawerStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useDrawerStyles = makeStyles((theme: Theme) => ({
     paper: {
       width: "50%",
       justifyContent: "space-between",

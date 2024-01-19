@@ -5,7 +5,7 @@ export interface ROS {
   scenarier: Scenario[];
 }
 
-interface Scenario {
+export interface Scenario {
   ID: string;
   url: string;
   beskrivelse: string;
