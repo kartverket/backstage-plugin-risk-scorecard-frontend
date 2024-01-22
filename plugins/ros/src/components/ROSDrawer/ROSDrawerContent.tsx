@@ -18,7 +18,7 @@ export const DrawerContent =
      nyttScenario,
      setNyttScenario,
      lagreNyttScenario,
-     slettNyttScenario
+      slettNyttScenario
    }: ROSDrawerContentProps) => {
 
     const { header, content, icon, buttons, beskrivelseLabel } = useDrawerContentStyles();
@@ -94,7 +94,7 @@ export const DrawerContent =
           <Button
             variant="contained"
             color="primary"
-            onClick={lagreNyttScenario}
+            onClick={() => lagreNyttScenario()}
           >
             Lagre
           </Button>

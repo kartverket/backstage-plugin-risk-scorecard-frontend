@@ -23,12 +23,11 @@ export const ROSPlugin = () => {
   });
   const [response, setResponse] = useState<string>();
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
-  const [nyttScenario, setNyttScenario] = useState<Scenario>(tomtScenario());
   const [tableData, setTableData] = useState<TableData[]>([]);
 
   useAsync(async () => {
     if (token) {
-      fetch(`https://kv-ros-backend-245zlcbrnq-lz.a.run.app/api/ros/${token}`)
+      fetch(`http://localhost:8080/api/ros/${token}`)
         .then(res => res.json())
         .then(json => json as ROS)
         .then(ros => setRoses(ros));
@@ -40,7 +39,7 @@ export const ROSPlugin = () => {
   }, [roses]);
 
   const postROS = () =>
-    fetch(`https://kv-ros-backend-245zlcbrnq-lz.a.run.app/api/ros/${token}`, {
+    fetch(`http://localhost:8080/api/ros/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ros: JSON.stringify(roses) })
@@ -52,15 +51,14 @@ export const ROSPlugin = () => {
       }
     });
 
-  const lagreNyttScenario = () => {
+  const lagreNyttScenario = (scenario: Scenario) => {
     setRoses({
       ...roses,
-      scenarier: roses.scenarier.concat(nyttScenario)
+      scenarier: roses.scenarier.concat(scenario)
     });
-    slettNyttScenario();
   };
 
-  const slettNyttScenario = () => setNyttScenario(tomtScenario());
+
 
   return (
     <Content>
@@ -109,25 +107,9 @@ export const ROSPlugin = () => {
       <ROSDrawer
         isOpen={drawerIsOpen}
         setIsOpen={setDrawerIsOpen}
-        nyttScenario={nyttScenario}
-        setNyttScenario={setNyttScenario}
         lagreNyttScenario={lagreNyttScenario}
-        slettNyttScenario={slettNyttScenario}
       />
 
     </Content>
   );
 };
-
-const tomtScenario = (): Scenario => ({
-  ID: "",
-  beskrivelse: "",
-  trusselaktører: [],
-  sårbarheter: [],
-  risiko: {
-    oppsummering: "",
-    sannsynlighet: 0,
-    konsekvens: 0
-  },
-  tiltak: []
-})

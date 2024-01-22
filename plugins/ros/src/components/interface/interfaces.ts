@@ -8,6 +8,7 @@ export interface ROS {
 export interface Scenario {
   ID: string;
   url?: string;
+  sistEndret: string;
   beskrivelse: string;
   trusselaktører: string[];
   sårbarheter: string[];

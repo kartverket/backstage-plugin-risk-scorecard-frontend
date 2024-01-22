@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Drawer, makeStyles, Theme } from "@material-ui/core";
 import { DrawerContent } from "./ROSDrawerContent";
 import { Scenario } from "../interface/interfaces";
@@ -6,23 +6,23 @@ import { Scenario } from "../interface/interfaces";
 interface ROSInputProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  nyttScenario: Scenario;
-  setNyttScenario: (nyttScenario: Scenario) => void;
-  lagreNyttScenario: () => void;
-  slettNyttScenario: () => void;
+  lagreNyttScenario: (scenario: Scenario) => void;
 }
 
 export const ROSDrawer =
   ({
      isOpen,
      setIsOpen,
-     nyttScenario,
-     setNyttScenario,
      lagreNyttScenario,
-     slettNyttScenario
    }: ROSInputProps) => {
 
     const classes = useDrawerStyles();
+
+    const [nyttScenario, setNyttScenario] = useState<Scenario>(tomtScenario());
+    const lagreScenario = () => {
+      lagreNyttScenario(nyttScenario);
+      setNyttScenario(tomtScenario())
+    }
 
     return (
       <Drawer
@@ -39,8 +39,8 @@ export const ROSDrawer =
           toggleDrawer={setIsOpen}
           nyttScenario={nyttScenario}
           setNyttScenario={setNyttScenario}
-          lagreNyttScenario={lagreNyttScenario}
-          slettNyttScenario={slettNyttScenario}
+          lagreNyttScenario={lagreScenario}
+          slettNyttScenario={() => setNyttScenario(tomtScenario())}
         />
 
       </Drawer>
@@ -55,3 +55,17 @@ const useDrawerStyles = makeStyles((theme: Theme) => ({
     }
   })
 );
+
+export const tomtScenario = (): Scenario => ({
+  ID: "",
+  beskrivelse: "",
+  sistEndret: new Date().toISOString().split('T')[0],
+  trusselaktører: [],
+  sårbarheter: [],
+  risiko: {
+    oppsummering: "",
+    sannsynlighet: 0,
+    konsekvens: 0
+  },
+  tiltak: []
+});
