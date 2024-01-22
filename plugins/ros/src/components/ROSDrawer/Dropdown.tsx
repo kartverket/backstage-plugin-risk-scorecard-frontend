@@ -10,6 +10,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Select from "@material-ui/core/Select";
 import React, { ChangeEvent } from "react";
 import { useInputStyles } from "./ROSDrawerContent";
+import { MenuProps } from "@material-ui/core/Menu";
 
 export const Dropdown = ({ label, options, selected, handleChange }: {
   label: string
@@ -90,7 +91,7 @@ export const MultiDropdown = ({ label, options, selected, handleChange }: {
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 
-const MenuProps = {
+const MenuProps: Partial<MenuProps> = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
