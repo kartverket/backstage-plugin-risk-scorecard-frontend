@@ -8,30 +8,48 @@ interface ROSInputProps {
   setIsOpen: (open: boolean) => void;
   nyttScenario: Scenario;
   setNyttScenario: (nyttScenario: Scenario) => void;
+  lagreNyttScenario: () => void;
+  slettNyttScenario: () => void;
 }
 
-export const ROSDrawer = ({ isOpen, setIsOpen, nyttScenario, setNyttScenario }: ROSInputProps) => {
+export const ROSDrawer =
+  ({
+     isOpen,
+     setIsOpen,
+     nyttScenario,
+     setNyttScenario,
+     lagreNyttScenario,
+     slettNyttScenario
+   }: ROSInputProps) => {
 
-  const classes = useDrawerStyles();
+    const classes = useDrawerStyles();
 
-  return (
-    <Drawer
-      classes={{
-        paper: classes.paper
-      }}
-      variant="persistent"
-      anchor="right"
-      open={isOpen}
-      onClose={() => setIsOpen(false)}
-    >
-      <DrawerContent toggleDrawer={setIsOpen} nyttScenario={nyttScenario} setNyttScenario={setNyttScenario}/>
-    </Drawer>
-  );
-}
+    return (
+      <Drawer
+        classes={{
+          paper: classes.paper
+        }}
+        variant="persistent"
+        anchor="right"
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+      >
+
+        <DrawerContent
+          toggleDrawer={setIsOpen}
+          nyttScenario={nyttScenario}
+          setNyttScenario={setNyttScenario}
+          lagreNyttScenario={lagreNyttScenario}
+          slettNyttScenario={slettNyttScenario}
+        />
+
+      </Drawer>
+    );
+  };
 
 const useDrawerStyles = makeStyles((theme: Theme) => ({
     paper: {
-      width: "50%",
+      width: "40%",
       justifyContent: "space-between",
       padding: theme.spacing(8)
     }

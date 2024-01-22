@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Box, Button, CircularProgress, Grid, TextField, Typography } from "@material-ui/core";
-import { Content, ContentHeader, InfoCard, SupportButton } from "@backstage/core-components";
-import { fetchApiRef, githubAuthApiRef, ProfileInfo, useApi } from "@backstage/core-plugin-api";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
+import { Content, ContentHeader, SupportButton, Table } from "@backstage/core-components";
+import { fetchApiRef, githubAuthApiRef, useApi } from "@backstage/core-plugin-api";
 import useAsync from "react-use/lib/useAsync";
-import { ROS, Scenario } from "../interface/interfaces";
+import { ROS, Scenario, TableData } from "../interface/interfaces";
 import { ROSDrawer } from "../ROSDrawer/ROSDrawer";
+import { mapToTableData } from "../utils/utilityfunctions";
+import { columns } from "../utils/columns";
 
 export const ROSPlugin = () => {
 
@@ -12,24 +14,17 @@ export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
 
   const { value: token } = useAsync(async (): Promise<string> => githubApi.getAccessToken("repo"));
-  const { value: profile } = useAsync(async (): Promise<ProfileInfo | undefined> => githubApi.getProfile());
 
-  const [roses, setRoses] = useState<ROS>();
+  const [roses, setRoses] = useState<ROS>({
+    versjon: "1.0",
+    skjema_versjon: "1.0",
+    ID: "1",
+    scenarier: []
+  });
   const [response, setResponse] = useState<string>();
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
-  const [nyttScenario, setNyttScenario] = useState<Scenario>({
-    ID: "",
-    url: "",
-    beskrivelse: "",
-    trusselaktører: [],
-    sårbarheter: [],
-    risiko: {
-      oppsummering: "",
-      sannsynlighet: 0,
-      konsekvens: 0
-    },
-    tiltak: [],
-  });
+  const [nyttScenario, setNyttScenario] = useState<Scenario>(tomtScenario());
+  const [tableData, setTableData] = useState<TableData[]>([]);
 
   useAsync(async () => {
     if (token) {
@@ -39,6 +34,10 @@ export const ROSPlugin = () => {
         .then(ros => setRoses(ros));
     }
   }, [token]);
+
+  useAsync(async () => {
+    setTableData(mapToTableData(roses));
+  }, [roses]);
 
   const postROS = () =>
     fetch(`https://kv-ros-backend-245zlcbrnq-lz.a.run.app/api/ros/${token}`, {
@@ -53,53 +52,82 @@ export const ROSPlugin = () => {
       }
     });
 
+  const lagreNyttScenario = () => {
+    setRoses({
+      ...roses,
+      scenarier: roses.scenarier.concat(nyttScenario)
+    });
+    slettNyttScenario();
+  };
+
+  const slettNyttScenario = () => setNyttScenario(tomtScenario());
+
   return (
     <Content>
-      <ContentHeader title="Risiko- og sikkerhetsanalyse">
+      <ContentHeader title="Risiko- og sårbarhetsanalyse">
         <SupportButton>Kul plugin ass!</SupportButton>
       </ContentHeader>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setDrawerIsOpen(true)}
-      >
-        Lag ny ROS
-      </Button>
+
       <Grid container spacing={3} direction="column">
+
         <Grid item>
-          <InfoCard>
-            <Typography>Heisann, {profile?.displayName ?? ""}!</Typography>
-          </InfoCard>
+          <Table
+            options={{ paging: false }}
+            data={tableData}
+            columns={columns}
+            isLoading={!roses}
+            title="Risikoscenarioer"
+          />
         </Grid>
+
         <Grid item>
-          <Box display="flex" justifyContent="center">
-            {roses ? (
-              <TextField
-                id="filled-multiline-static"
-                hiddenLabel
-                multiline
-                fullWidth
-                defaultValue={JSON.stringify(roses, null, 2)}
-                variant="filled"
-                onChange={e => setRoses(JSON.parse(e.target.value))}
-              />
-            ) : (
-              <Box margin="4rem">
-                <CircularProgress />
+          <Grid container direction="row">
+
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setDrawerIsOpen(true)}
+              >
+                Legg til nytt risikoscenario
+              </Button>
+            </Grid>
+
+            <Grid item>
+              <Box display="flex" alignItems="center" gridGap="2rem">
+                <Button variant="contained" onClick={() => postROS()}>
+                  Send risiko- og sårbarhetsanalyse
+                </Button>
+                <Typography>{response}</Typography>
               </Box>
-            )}
-          </Box>
-        </Grid>
-        <Grid item>
-          <Box display="flex" alignItems="center" gridGap="2rem">
-            <Button variant="contained" onClick={() => postROS()}>
-              Send skjema
-            </Button>
-            <Typography>{response}</Typography>
-          </Box>
+            </Grid>
+
+          </Grid>
         </Grid>
       </Grid>
-      <ROSDrawer isOpen={drawerIsOpen} setIsOpen={setDrawerIsOpen} nyttScenario={nyttScenario} setNyttScenario={setNyttScenario}/>
+
+      <ROSDrawer
+        isOpen={drawerIsOpen}
+        setIsOpen={setDrawerIsOpen}
+        nyttScenario={nyttScenario}
+        setNyttScenario={setNyttScenario}
+        lagreNyttScenario={lagreNyttScenario}
+        slettNyttScenario={slettNyttScenario}
+      />
+
     </Content>
   );
 };
+
+const tomtScenario = (): Scenario => ({
+  ID: "",
+  beskrivelse: "",
+  trusselaktører: [],
+  sårbarheter: [],
+  risiko: {
+    oppsummering: "",
+    sannsynlighet: 0,
+    konsekvens: 0
+  },
+  tiltak: []
+})
