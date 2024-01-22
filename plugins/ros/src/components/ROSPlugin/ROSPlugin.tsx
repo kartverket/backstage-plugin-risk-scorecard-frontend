@@ -15,15 +15,10 @@ export const ROSPlugin = () => {
 
   const { value: token } = useAsync(async (): Promise<string> => githubApi.getAccessToken("repo"));
 
-  const [roses, setRoses] = useState<ROS>({
-    versjon: "1.0",
-    skjema_versjon: "1.0",
-    ID: "1",
-    scenarier: []
-  });
-  const [response, setResponse] = useState<string>();
+  const [roses, setRoses] = useState<ROS>();
+  const [response, setResponse] = useState<string>("");
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
-  const [tableData, setTableData] = useState<TableData[]>([]);
+  const [tableData, setTableData] = useState<TableData[]>();
 
   useAsync(async () => {
     if (token) {
@@ -35,7 +30,9 @@ export const ROSPlugin = () => {
   }, [token]);
 
   useAsync(async () => {
-    setTableData(mapToTableData(roses));
+    if (roses) {
+      setTableData(mapToTableData(roses));
+    }
   }, [roses]);
 
   const postROS = () =>
@@ -52,13 +49,13 @@ export const ROSPlugin = () => {
     });
 
   const lagreNyttScenario = (scenario: Scenario) => {
-    setRoses({
-      ...roses,
-      scenarier: roses.scenarier.concat(scenario)
-    });
+    if (roses) {
+      setRoses({
+        ...roses,
+        scenarier: roses.scenarier.concat(scenario)
+      });
+    }
   };
-
-
 
   return (
     <Content>
@@ -71,9 +68,9 @@ export const ROSPlugin = () => {
         <Grid item>
           <Table
             options={{ paging: false }}
-            data={tableData}
+            data={tableData ?? []}
             columns={columns}
-            isLoading={!roses}
+            isLoading={!tableData}
             title="Risikoscenarioer"
           />
         </Grid>

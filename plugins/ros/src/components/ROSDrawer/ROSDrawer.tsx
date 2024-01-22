@@ -50,14 +50,13 @@ export const ROSDrawer =
 const useDrawerStyles = makeStyles((theme: Theme) => ({
     paper: {
       width: "40%",
-      justifyContent: "space-between",
       padding: theme.spacing(8)
     }
   })
 );
 
 export const tomtScenario = (): Scenario => ({
-  ID: "",
+  ID: 0,
   beskrivelse: "",
   sistEndret: new Date().toISOString().split('T')[0],
   trusselaktører: [],

@@ -1,8 +1,9 @@
 import React from "react";
-import { Box, Button, FormControl, IconButton, makeStyles, TextField, Theme, Typography } from "@material-ui/core";
+import { Box, Button, IconButton, makeStyles, Theme, Typography } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
-import { Select } from "@backstage/core-components";
 import { Scenario } from "../interface/interfaces";
+import { Dropdown, MultiDropdown } from "./Dropdown";
+import { Textfield } from "./Textfield";
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;
@@ -18,10 +19,41 @@ export const DrawerContent =
      nyttScenario,
      setNyttScenario,
      lagreNyttScenario,
-      slettNyttScenario
+     slettNyttScenario
    }: ROSDrawerContentProps) => {
 
-    const { header, content, icon, buttons, beskrivelseLabel } = useDrawerContentStyles();
+    const {
+      header,
+      content,
+      icon,
+      buttons
+    } = useDrawerContentStyles();
+
+    const setBeskrivelse = (event: React.ChangeEvent<{ value: unknown }>) => {
+      setNyttScenario({ ...nyttScenario, beskrivelse: event.target.value as string });
+    };
+
+    const setTrusselaktører = (event: React.ChangeEvent<{ value: unknown }>) => {
+      setNyttScenario({ ...nyttScenario, trusselaktører: event.target.value as string[] });
+    };
+
+    const setSårbarheter = (event: React.ChangeEvent<{ value: unknown }>) => {
+      setNyttScenario({ ...nyttScenario, sårbarheter: event.target.value as string[] });
+    };
+
+    const setSannsynlighet = (event: React.ChangeEvent<{ value: unknown }>) => {
+      setNyttScenario({
+        ...nyttScenario,
+        risiko: { ...nyttScenario.risiko, sannsynlighet: event.target.value as number }
+      });
+    };
+
+    const setKonsekvens = (event: React.ChangeEvent<{ value: unknown }>) => {
+      setNyttScenario({
+        ...nyttScenario,
+        risiko: { ...nyttScenario.risiko, konsekvens: event.target.value as number }
+      });
+    };
 
     return (
       <>
@@ -37,59 +69,42 @@ export const DrawerContent =
           </IconButton>
         </Box>
 
-        <FormControl className={content}>
-          <Box>
-            <Typography className={beskrivelseLabel} variant="subtitle2">Beskrivelse</Typography>
-            <TextField
-              required
-              id="filled-multiline-static"
-              value={nyttScenario.beskrivelse}
-              multiline
-              fullWidth
-              minRows={4}
-              maxRows={4}
-              variant="filled"
-              onChange={event => setNyttScenario({ ...nyttScenario, beskrivelse: event.target.value })}
-            />
-          </Box>
-          <Select
-            placeholder="-- Velg --"
-            label="Trusselaktører"
-            items={trusselaktører}
-            selected={nyttScenario.trusselaktører}
-            multiple
-            onChange={event => setNyttScenario({ ...nyttScenario, trusselaktører: event as string[] })}
+        <Box className={content}>
+          <Textfield
+            label="Beskrivelse"
+            value={nyttScenario.beskrivelse}
+            handleChange={setBeskrivelse}
           />
-          <Select
-            placeholder="-- Velg --"
-            label="Sårbarheter"
-            items={sårbarheter}
-            selected={nyttScenario.sårbarheter}
-            multiple
-            onChange={event => setNyttScenario({ ...nyttScenario, sårbarheter: event as string[] })}
-          />
-          <Select
-            placeholder="-- Velg --"
-            label="Sannsynlighet"
-            items={nivåer}
-            selected={nyttScenario.risiko.sannsynlighet}
-            onChange={event => setNyttScenario({
-              ...nyttScenario,
-              risiko: { ...nyttScenario.risiko, sannsynlighet: event as number }
-            })}
-          />
-          <Select
-            placeholder="-- Velg --"
-            label="Konsekvens"
-            items={nivåer}
-            selected={nyttScenario.risiko.konsekvens}
-            onChange={event => setNyttScenario({
-              ...nyttScenario,
-              risiko: { ...nyttScenario.risiko, konsekvens: event as number }
-            })}
-          />
-        </FormControl>
 
+          <MultiDropdown
+            label="Trusselaktører"
+            selected={nyttScenario.trusselaktører}
+            options={trusselaktører}
+            handleChange={setTrusselaktører}
+          />
+
+          <MultiDropdown
+            label="Sårbarheter"
+            selected={nyttScenario.sårbarheter}
+            options={sårbarheter}
+            handleChange={setSårbarheter}
+          />
+
+          <Dropdown
+            label="Sannsynlighet"
+            selected={nyttScenario.risiko.sannsynlighet}
+            options={nivåer}
+            handleChange={setSannsynlighet}
+          />
+
+          <Dropdown
+            label="Konsekvens"
+            selected={nyttScenario.risiko.konsekvens}
+            options={nivåer}
+            handleChange={setKonsekvens}
+          />
+
+        </Box>
         <Box className={buttons}>
           <Button
             variant="contained"
@@ -125,11 +140,8 @@ const useDrawerContentStyles = makeStyles((theme: Theme) => ({
     content: {
       display: "flex",
       flexDirection: "column",
-      justifyContent: "space-between",
-      minHeight: "70%"
-    },
-    beskrivelseLabel: {
-      marginBottom: theme.spacing(1)
+      paddingTop: theme.spacing(4),
+      paddingBottom: theme.spacing(4)
     },
     buttons: {
       display: "flex",
@@ -140,34 +152,38 @@ const useDrawerContentStyles = makeStyles((theme: Theme) => ({
   })
 );
 
+export const useInputStyles = makeStyles((theme: Theme) => ({
+    inputBox: {
+      paddingTop: theme.spacing(2),
+    },
+    formLabel: {
+      marginBottom: theme.spacing(1)
+    }
+  })
+);
+
 // TODO: Hent data fra json schema
 
 const trusselaktører = [
-  { label: "Datasnok", value: "Datasnok" },
-  { label: "Hacktivist", value: "Hacktivist" },
-  { label: "Uheldig ansatt", value: "Uheldig ansatt" },
-  { label: "Innside-aktør", value: "Innside-aktør" },
-  { label: "Organiserte kriminelle", value: "Organiserte kriminelle" },
-  { label: "Terroristorganisasjon", value: "Terroristorganisasjon" },
-  { label: "Nasjon/stat", value: "Nasjon/stat" }
+  "Datasnok",
+  "Hacktivist",
+  "Uheldig ansatt",
+  "Innside-aktør",
+  "Organiserte kriminelle",
+  "Terroristorganisasjon",
+  "Nasjon/stat"
 ];
 
 const sårbarheter = [
-  { label: "Kompromittert adminbruker", value: "Kompromittert adminbruker" },
-  { label: "Sårbarhet i avhengighet", value: "Sårbarhet i avhengighet" },
-  { label: "Lekket hemmelighet", value: "Lekket hemmelighet" },
-  { label: "Feilkonfigurering", value: "Feilkonfigurering" },
-  { label: "Klussing med input", value: "Klussing med input" },
-  { label: "Benekte brukerhandling", value: "Benekte brukerhandling" },
-  { label: "Informasjonslekkasje", value: "Informasjonslekkasje" },
-  { label: "Tjenestenekt", value: "Tjenestenekt" },
-  { label: "Rettighetseskalering", value: "Rettighetseskalering" }
+  "Kompromittert adminbruker",
+  "Sårbarhet i avhengighet",
+  "Lekket hemmelighet",
+  "Feilkonfigurering",
+  "Klussing med input",
+  "Benekte brukerhandling",
+  "Informasjonslekkasje",
+  "Tjenestenekt",
+  "Rettighetseskalering"
 ];
 
-const nivåer = [
-  { label: "1", value: 1 },
-  { label: "2", value: 2 },
-  { label: "3", value: 3 },
-  { label: "4", value: 4 },
-  { label: "5", value: 5 }
-];
+const nivåer = [1, 2, 3, 4, 5];
