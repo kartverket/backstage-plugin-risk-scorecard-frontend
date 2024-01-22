@@ -67,9 +67,9 @@ export const MultiDropdown = ({ label, options, selected, handleChange }: {
         onChange={handleChange}
         input={<OutlinedInput />}
         MenuProps={MenuProps}
-        renderValue={(selected: string[]) => (
+        renderValue={(selected: any) => (
           <Box style={{ display: "flex", flexWrap: "wrap", gridGap: 0.5 }}>
-            {selected.map((value) => (
+            {selected.map((value: string) => (
               <Chip key={value} label={value} />
             ))}
           </Box>
