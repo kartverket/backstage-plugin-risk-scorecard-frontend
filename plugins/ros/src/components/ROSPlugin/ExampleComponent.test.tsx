@@ -1,5 +1,5 @@
 import React from 'react';
-import { ROS } from './ROS';
+import { ROSPlugin } from './ROSPlugin';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
@@ -21,7 +21,7 @@ describe('ExampleComponent', () => {
   });
 
   it('should render', async () => {
-    await renderInTestApp(<ROS />);
+    await renderInTestApp(<ROSPlugin />);
     expect(screen.getByText('Welcome to ros!')).toBeInTheDocument();
   });
 });
