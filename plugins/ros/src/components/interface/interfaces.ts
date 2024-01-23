@@ -1,13 +1,13 @@
 export interface ROS {
   versjon: string;
-  skjema_versjon: string;
-  ID: string;
+  skjemaVersjon: string;
   scenarier: Scenario[];
 }
 
 export interface Scenario {
-  ID: string;
-  url: string;
+  ID: number;
+  url?: string;
+  sistEndret: string;
   beskrivelse: string;
   trusselaktører: string[];
   sårbarheter: string[];
