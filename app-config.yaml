@@ -110,5 +110,5 @@ catalog:
           branch: 'main'
           repository: './kv-ros-*'
         schedule:
-          frequency: { minutes: 30 }
+          frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
