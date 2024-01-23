@@ -4,11 +4,9 @@ description: |
   An example of a Backstage application.
 metadata:
   name: kv-ros-backstage
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  annotations:
+     github.com/project-slug: bekk/kv-ros-backstage
 spec:
   type: website
-  owner: kv-ros
+  owner: kv-platform-team
   lifecycle: experimental
