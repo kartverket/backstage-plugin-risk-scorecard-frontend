@@ -3,12 +3,12 @@ import { Box, Button, Grid, Typography } from '@material-ui/core';
 import {
   Content,
   ContentHeader,
-  Select,
   SupportButton,
   Table,
 } from '@backstage/core-components';
 import {
   configApiRef,
+  fetchApiRef,
   githubAuthApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
@@ -17,9 +17,11 @@ import { ROS, Scenario, TableData } from '../interface/interfaces';
 import { ROSDrawer } from '../ROSDrawer/ROSDrawer';
 import { mapToTableData } from '../utils/utilityfunctions';
 import { columns } from '../utils/columns';
+import { Dropdown } from '../ROSDrawer/Dropdown';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
+  const { fetch } = useApi(fetchApiRef);
 
   const { value: token } = useAsync(
     async (): Promise<string> => githubApi.getAccessToken('repo'),
@@ -28,21 +30,12 @@ export const ROSPlugin = () => {
   const config = useApi(configApiRef);
   const baseUrl = config.getString('app.backendUrl');
 
-  const [roses, setRoses] = useState<ROS>();
-  const [response, setResponse] = useState<string>('');
+  const [ros, setRos] = useState<ROS>();
+  const [saveROSResponse, setSaveROSResponse] = useState<string>('');
   const [tableData, setTableData] = useState<TableData[]>();
   const [idItems, setIdItems] = useState<{ label: string; value: string }[]>();
   const [selected, setSelected] = useState<string>();
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
-
-  useAsync(async () => {
-    if (token) {
-      fetch(`${baseUrl}/api/ros/${token}`)
-        .then(res => res.json())
-        .then(json => json as ROS)
-        .then(ros => setRoses(ros));
-    }
-  }, [token]);
 
   useAsync(async () => {
     if (token) {
@@ -64,8 +57,9 @@ export const ROSPlugin = () => {
       fetch(`${baseUrl}/api/ros/single/${selected}/${token}`)
         .then(res => res.json())
         .then(json => json as ROS)
-        .then(ros => {
-          setTableData(mapToTableData(ros));
+        .then(fetchedRos => {
+          setTableData(mapToTableData(fetchedRos));
+          setRos(fetchedRos);
         });
     }
   }, [selected, token]);
@@ -74,20 +68,20 @@ export const ROSPlugin = () => {
     fetch(`${baseUrl}/api/ros/${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ros: JSON.stringify(roses) }),
+      body: JSON.stringify({ ros: JSON.stringify(ros) }),
     }).then(res => {
       if (res.ok) {
-        setResponse('Ny ROS ble lagret!');
+        setSaveROSResponse('Ny ROS ble lagret!');
       } else {
-        res.text().then(text => setResponse(text));
+        res.text().then(text => setSaveROSResponse(text));
       }
     });
 
   const lagreNyttScenario = (scenario: Scenario) => {
-    if (roses) {
-      setRoses({
-        ...roses,
-        scenarier: roses.scenarier.concat(scenario),
+    if (ros) {
+      setRos({
+        ...ros,
+        scenarier: ros.scenarier.concat(scenario),
       });
     }
   };
@@ -100,13 +94,11 @@ export const ROSPlugin = () => {
 
       <Grid container spacing={3} direction="column">
         <Grid item>
-          <Select
-            onChange={e => {
-              setSelected(e.toString());
-            }}
-            placeholder="Nytt scenario"
-            label="Scenarier"
-            items={idItems ?? []}
+          <Dropdown
+            label="ROS-analyser"
+            options={idItems?.map(i => i.value) ?? []}
+            selectedValues={selected ? [selected] : []}
+            handleChange={e => setSelected(e.target.value as string)}
           />
         </Grid>
 
@@ -116,7 +108,7 @@ export const ROSPlugin = () => {
             data={tableData ?? []}
             columns={columns}
             isLoading={!tableData}
-            title="Risikoscenarioer"
+            title="Scenarioer"
           />
         </Grid>
 
@@ -124,20 +116,25 @@ export const ROSPlugin = () => {
           <Grid container direction="row">
             <Grid item>
               <Button
+                style={{ textTransform: 'none' }}
                 variant="contained"
                 color="primary"
                 onClick={() => setDrawerIsOpen(true)}
               >
-                Legg til nytt risikoscenario
+                Legg til nytt scenario
               </Button>
             </Grid>
 
             <Grid item>
               <Box display="flex" alignItems="center" gridGap="2rem">
-                <Button variant="contained" onClick={() => postROS()}>
+                <Button
+                  style={{ textTransform: 'none' }}
+                  variant="contained"
+                  onClick={() => postROS()}
+                >
                   Send risiko- og sårbarhetsanalyse
                 </Button>
-                <Typography>{response}</Typography>
+                <Typography>{saveROSResponse}</Typography>
               </Box>
             </Grid>
           </Grid>
