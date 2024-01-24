@@ -1,6 +1,9 @@
 name: Build and push image to GCP
 
-on: push #TODO change to on: push main after testing
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   docker_build_push_gcp:
