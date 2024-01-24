@@ -1,7 +1,7 @@
 app:
   # Should be the same as backend.baseUrl when using the `app-backend` plugin.
   baseUrl: http://localhost:7007
-  backendUrl: ${GCP_URL}
+  backendUrl: https://kv-ros-backend-245zlcbrnq-lz.a.run.app
 
 backend:
   # Note that the baseUrl should be the URL that the browser and other clients
