@@ -7,7 +7,11 @@ import {
   SupportButton,
   Table,
 } from '@backstage/core-components';
-import { githubAuthApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  configApiRef,
+  githubAuthApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
 import { ROS, Scenario, TableData } from '../interface/interfaces';
 import { ROSDrawer } from '../ROSDrawer/ROSDrawer';
@@ -20,6 +24,10 @@ export const ROSPlugin = () => {
   const { value: token } = useAsync(
     async (): Promise<string> => githubApi.getAccessToken('repo'),
   );
+
+  const config = useApi(configApiRef);
+  const baseUrl = config.getString('app.backendUrl');
+
   const [roses, setRoses] = useState<ROS>();
   const [response, setResponse] = useState<string>('');
   const [tableData, setTableData] = useState<TableData[]>();
@@ -29,7 +37,7 @@ export const ROSPlugin = () => {
 
   useAsync(async () => {
     if (token) {
-      fetch(`http://localhost:8080/api/ros/${token}`)
+      fetch(`${baseUrl}/api/ros/${token}`)
         .then(res => res.json())
         .then(json => json as ROS)
         .then(ros => setRoses(ros));
@@ -38,7 +46,7 @@ export const ROSPlugin = () => {
 
   useAsync(async () => {
     if (token) {
-      fetch(`http://localhost:8080/api/ros/ids/${token}`)
+      fetch(`${baseUrl}/api/ros/ids/${token}`)
         .then(res => res.json())
         .then(json => json as string[])
         .then(ids => {
@@ -53,7 +61,7 @@ export const ROSPlugin = () => {
 
   useAsync(async () => {
     if (selected && token) {
-      fetch(`http://localhost:8080/api/ros/single/${selected}/${token}`)
+      fetch(`${baseUrl}/api/ros/single/${selected}/${token}`)
         .then(res => res.json())
         .then(json => json as ROS)
         .then(ros => {
@@ -63,7 +71,7 @@ export const ROSPlugin = () => {
   }, [selected, token]);
 
   const postROS = () =>
-    fetch(`http://localhost:8080/api/ros/${token}`, {
+    fetch(`${baseUrl}/api/ros/${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ros: JSON.stringify(roses) }),
