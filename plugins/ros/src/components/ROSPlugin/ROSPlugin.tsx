@@ -7,6 +7,7 @@ import {
   Table,
 } from '@backstage/core-components';
 import {
+  configApiRef,
   fetchApiRef,
   githubAuthApiRef,
   useApi,
@@ -26,6 +27,9 @@ export const ROSPlugin = () => {
     async (): Promise<string> => githubApi.getAccessToken('repo'),
   );
 
+  const config = useApi(configApiRef);
+  const baseUrl = config.getString('app.backendUrl');
+
   const [ros, setRos] = useState<ROS>();
   const [saveROSResponse, setSaveROSResponse] = useState<string>('');
   const [tableData, setTableData] = useState<TableData[]>();
@@ -35,7 +39,7 @@ export const ROSPlugin = () => {
 
   useAsync(async () => {
     if (token) {
-      fetch(`http://localhost:8080/api/ros/ids/${token}`)
+      fetch(`${baseUrl}/api/ros/ids/${token}`)
         .then(res => res.json())
         .then(json => json as string[])
         .then(ids => {
@@ -50,7 +54,7 @@ export const ROSPlugin = () => {
 
   useAsync(async () => {
     if (selected && token) {
-      fetch(`http://localhost:8080/api/ros/single/${selected}/${token}`)
+      fetch(`${baseUrl}/api/ros/single/${selected}/${token}`)
         .then(res => res.json())
         .then(json => json as ROS)
         .then(fetchedRos => {
@@ -61,7 +65,7 @@ export const ROSPlugin = () => {
   }, [selected, token]);
 
   const postROS = () =>
-    fetch(`http://localhost:8080/api/ros/${token}`, {
+    fetch(`${baseUrl}/api/ros/${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ros: JSON.stringify(ros) }),
