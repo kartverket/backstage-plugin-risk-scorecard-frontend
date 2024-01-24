@@ -1,22 +1,32 @@
-import React, { useState } from "react";
-import { Box, Button, Grid, Typography } from "@material-ui/core";
-import { Content, ContentHeader, SupportButton, Table } from "@backstage/core-components";
-import { fetchApiRef, githubAuthApiRef, useApi } from "@backstage/core-plugin-api";
-import useAsync from "react-use/lib/useAsync";
-import { ROS, Scenario, TableData } from "../interface/interfaces";
-import { ROSDrawer } from "../ROSDrawer/ROSDrawer";
-import { mapToTableData } from "../utils/utilityfunctions";
-import { columns } from "../utils/columns";
+import React, { useState } from 'react';
+import { Box, Button, Grid, Typography } from '@material-ui/core';
+import {
+  Content,
+  ContentHeader,
+  SupportButton,
+  Table,
+} from '@backstage/core-components';
+import {
+  fetchApiRef,
+  githubAuthApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
+import useAsync from 'react-use/lib/useAsync';
+import { ROS, Scenario, TableData } from '../interface/interfaces';
+import { ROSDrawer } from '../ROSDrawer/ROSDrawer';
+import { mapToTableData } from '../utils/utilityfunctions';
+import { columns } from '../utils/columns';
 
 export const ROSPlugin = () => {
-
   const { fetch } = useApi(fetchApiRef);
   const githubApi = useApi(githubAuthApiRef);
 
-  const { value: token } = useAsync(async (): Promise<string> => githubApi.getAccessToken("repo"));
+  const { value: token } = useAsync(
+    async (): Promise<string> => githubApi.getAccessToken('repo'),
+  );
 
   const [roses, setRoses] = useState<ROS>();
-  const [response, setResponse] = useState<string>("");
+  const [response, setResponse] = useState<string>('');
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const [tableData, setTableData] = useState<TableData[]>();
 
@@ -37,12 +47,12 @@ export const ROSPlugin = () => {
 
   const postROS = () =>
     fetch(`http://localhost:8080/api/ros/${token}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ros: JSON.stringify(roses) })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ros: JSON.stringify(roses) }),
     }).then(res => {
       if (res.ok) {
-        setResponse("Ny ROS ble lagret!");
+        setResponse('Ny ROS ble lagret!');
       } else {
         res.text().then(text => setResponse(text));
       }
@@ -52,7 +62,7 @@ export const ROSPlugin = () => {
     if (roses) {
       setRoses({
         ...roses,
-        scenarier: roses.scenarier.concat(scenario)
+        scenarier: roses.scenarier.concat(scenario),
       });
     }
   };
@@ -64,7 +74,6 @@ export const ROSPlugin = () => {
       </ContentHeader>
 
       <Grid container spacing={3} direction="column">
-
         <Grid item>
           <Table
             options={{ paging: false }}
@@ -77,7 +86,6 @@ export const ROSPlugin = () => {
 
         <Grid item>
           <Grid container direction="row">
-
             <Grid item>
               <Button
                 variant="contained"
@@ -96,7 +104,6 @@ export const ROSPlugin = () => {
                 <Typography>{response}</Typography>
               </Box>
             </Grid>
-
           </Grid>
         </Grid>
       </Grid>
@@ -106,7 +113,6 @@ export const ROSPlugin = () => {
         setIsOpen={setDrawerIsOpen}
         lagreNyttScenario={lagreNyttScenario}
       />
-
     </Content>
   );
 };
