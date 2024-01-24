@@ -3,14 +3,11 @@ import { Box, Button, Grid, Typography } from '@material-ui/core';
 import {
   Content,
   ContentHeader,
+  Select,
   SupportButton,
   Table,
 } from '@backstage/core-components';
-import {
-  fetchApiRef,
-  githubAuthApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
+import { githubAuthApiRef, useApi } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
 import { ROS, Scenario, TableData } from '../interface/interfaces';
 import { ROSDrawer } from '../ROSDrawer/ROSDrawer';
@@ -18,17 +15,17 @@ import { mapToTableData } from '../utils/utilityfunctions';
 import { columns } from '../utils/columns';
 
 export const ROSPlugin = () => {
-  const { fetch } = useApi(fetchApiRef);
   const githubApi = useApi(githubAuthApiRef);
 
   const { value: token } = useAsync(
     async (): Promise<string> => githubApi.getAccessToken('repo'),
   );
-
   const [roses, setRoses] = useState<ROS>();
   const [response, setResponse] = useState<string>('');
-  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const [tableData, setTableData] = useState<TableData[]>();
+  const [idItems, setIdItems] = useState<{ label: string; value: string }[]>();
+  const [selected, setSelected] = useState<string>();
+  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
 
   useAsync(async () => {
     if (token) {
@@ -40,10 +37,30 @@ export const ROSPlugin = () => {
   }, [token]);
 
   useAsync(async () => {
-    if (roses) {
-      setTableData(mapToTableData(roses));
+    if (token) {
+      fetch(`http://localhost:8080/api/ros/ids/${token}`)
+        .then(res => res.json())
+        .then(json => json as string[])
+        .then(ids => {
+          const newIdItems = ids.map(id => ({
+            label: id,
+            value: id,
+          }));
+          setIdItems(newIdItems);
+        });
     }
-  }, [roses]);
+  }, [token]);
+
+  useAsync(async () => {
+    if (selected && token) {
+      fetch(`http://localhost:8080/api/ros/single/${selected}/${token}`)
+        .then(res => res.json())
+        .then(json => json as ROS)
+        .then(ros => {
+          setTableData(mapToTableData(ros));
+        });
+    }
+  }, [selected, token]);
 
   const postROS = () =>
     fetch(`http://localhost:8080/api/ros/${token}`, {
@@ -74,6 +91,17 @@ export const ROSPlugin = () => {
       </ContentHeader>
 
       <Grid container spacing={3} direction="column">
+        <Grid item>
+          <Select
+            onChange={e => {
+              setSelected(e.toString());
+            }}
+            placeholder="Nytt scenario"
+            label="Scenarier"
+            items={idItems ?? []}
+          />
+        </Grid>
+
         <Grid item>
           <Table
             options={{ paging: false }}
