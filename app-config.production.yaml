@@ -40,7 +40,7 @@ catalog:
         catalogPath: '/catalog-info.yaml'
         filters:
           branch: 'main'
-          repository: './kv-ros-*'
+          repository: '^kv-ros-.*$'
         schedule:
           frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
