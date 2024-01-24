@@ -18,25 +18,25 @@ import {
   EntityHasSystemsCard,
   EntityLayout,
   EntityLinksCard,
-  EntitySwitch,
   EntityOrphanWarning,
   EntityProcessingErrorsPanel,
+  EntityRelationWarning,
+  EntitySwitch,
+  hasCatalogProcessingErrors,
+  hasRelationWarnings,
   isComponentType,
   isKind,
-  hasCatalogProcessingErrors,
   isOrphan,
-  hasRelationWarnings,
-  EntityRelationWarning,
 } from '@backstage/plugin-catalog';
 import {
-  isGithubActionsAvailable,
   EntityGithubActionsContent,
+  isGithubActionsAvailable,
 } from '@backstage/plugin-github-actions';
 import {
-  EntityUserProfileCard,
   EntityGroupProfileCard,
   EntityMembersListCard,
   EntityOwnershipCard,
+  EntityUserProfileCard,
 } from '@backstage/plugin-org';
 import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
 import { EmptyState } from '@backstage/core-components';
@@ -57,7 +57,7 @@ import {
 
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
-import { ROSPlugin } from '@internal/plugin-ros/src/components/ROSPlugin/ROSPlugin';
+import { ROSPlugin } from '@internal/plugin-ros/src/components/ROSPlugin';
 
 const techdocsContent = (
   <EntityTechdocsContent>

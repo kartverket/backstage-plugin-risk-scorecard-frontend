@@ -1,6 +1,6 @@
-import { FormControl, FormLabel, TextField } from "@material-ui/core";
-import React, { ChangeEvent } from "react";
-import { useInputFieldStyles } from "./DrawerStyle";
+import { FormControl, FormLabel, TextField } from '@material-ui/core';
+import React, { ChangeEvent } from 'react';
+import { useInputFieldStyles } from './DrawerStyle';
 
 interface TextFieldProps {
   label: string;
@@ -8,13 +8,7 @@ interface TextFieldProps {
   handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
 }
 
-export const Textfield = (
-  {
-    label,
-    value,
-    handleChange
-  }: TextFieldProps) => {
-
+export const Textfield = ({ label, value, handleChange }: TextFieldProps) => {
   const { formLabel, inputBox } = useInputFieldStyles();
 
   return (

@@ -9,8 +9,8 @@ export interface Scenario {
   url?: string;
   sistEndret: string;
   beskrivelse: string;
-  trusselaktører: string[];
-  sårbarheter: string[];
+  trusselaktorer: string[];
+  sarbarheter: string[];
   risiko: Risiko;
   tiltak: Tiltak[];
 }
@@ -34,7 +34,7 @@ export interface TableData {
   id: number;
   beskrivelse: string;
   trussel: string;
-  sårbarhet: string;
+  sarbarhet: string;
   konsekvens: number;
   sannsynlighet: number;
 }

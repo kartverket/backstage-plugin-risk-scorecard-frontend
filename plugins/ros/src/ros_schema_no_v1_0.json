@@ -128,11 +128,7 @@
       "type": "object"
     }
   },
-  "required": [
-    "skjemaVersjon",
-    "versjon",
-    "scenarier"
-  ],
+  "required": ["skjemaVersjon", "versjon", "scenarier"],
   "additionalProperties": false,
   "$defs": {
     "risiko": {
@@ -152,10 +148,7 @@
           "minimum": 0
         }
       },
-      "required": [
-        "sannsynlighet",
-        "konsekvens"
-      ],
+      "required": ["sannsynlighet", "konsekvens"],
       "additionalProperties": false
     },
     "url": {

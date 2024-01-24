@@ -54,5 +54,8 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "eslint-config-prettier": "^9.1.0"
   }
 }

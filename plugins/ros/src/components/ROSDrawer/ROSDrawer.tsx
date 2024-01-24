@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Drawer } from "@material-ui/core";
-import { DrawerContent } from "./ROSDrawerContent";
-import { Scenario } from "../interface/interfaces";
-import { tomtScenario, useDrawerStyles } from "./DrawerStyle";
+import React, { useState } from 'react';
+import { Drawer } from '@material-ui/core';
+import { DrawerContent } from './ROSDrawerContent';
+import { Scenario } from '../interface/interfaces';
+import { tomtScenario, useDrawerStyles } from './DrawerStyle';
 
 interface ROSInputProps {
   isOpen: boolean;
@@ -10,21 +10,20 @@ interface ROSInputProps {
   lagreNyttScenario: (scenario: Scenario) => void;
 }
 
-export const ROSDrawer = (
-  {
-    isOpen,
-    setIsOpen,
-    lagreNyttScenario
-  }: ROSInputProps
-) => {
-
+export const ROSDrawer = ({
+  isOpen,
+  setIsOpen,
+  lagreNyttScenario,
+}: ROSInputProps) => {
   const classes = useDrawerStyles();
 
   const [nyttScenario, setNyttScenario] = useState<Scenario>(tomtScenario());
 
+  const slettScenario = () => setNyttScenario(tomtScenario());
+
   const lagreScenario = () => {
     lagreNyttScenario(nyttScenario);
-    setNyttScenario(tomtScenario());
+    slettScenario();
   };
 
   return (
@@ -34,7 +33,7 @@ export const ROSDrawer = (
       anchor="right"
       open={isOpen}
       onClose={() => {
-        setNyttScenario(tomtScenario());
+        slettScenario();
         setIsOpen(false);
       }}
     >
@@ -43,7 +42,7 @@ export const ROSDrawer = (
         nyttScenario={nyttScenario}
         setNyttScenario={setNyttScenario}
         lagreNyttScenario={lagreScenario}
-        slettNyttScenario={() => setNyttScenario(tomtScenario())}
+        slettNyttScenario={slettScenario}
       />
     </Drawer>
   );
