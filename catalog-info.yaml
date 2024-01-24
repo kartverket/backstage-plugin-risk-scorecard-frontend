@@ -1,13 +1,12 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
+description: |
+  An example of a Backstage application.
 metadata:
   name: kv-ros-backstage
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  annotations:
+     github.com/project-slug: bekk/kv-ros-backstage
 spec:
   type: website
-  owner: john@example.com
+  owner: rosene
   lifecycle: experimental
