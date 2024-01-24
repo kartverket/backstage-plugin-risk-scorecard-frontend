@@ -18,7 +18,7 @@ export default async function createPlugin(
         orgUrl: 'https://github.com/bekk',
         logger: env.logger,
         schedule: env.scheduler.createScheduledTaskRunner({
-            frequency: {minutes: 60},
+            frequency: {minutes: 1440},
             timeout: {minutes: 15},
         }),
         userTransformer: async (user: GithubUser, ctx) => {
