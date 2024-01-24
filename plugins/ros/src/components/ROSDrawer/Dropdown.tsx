@@ -9,103 +9,64 @@ import MenuItem from "@material-ui/core/MenuItem";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Select from "@material-ui/core/Select";
 import React, { ChangeEvent } from "react";
-import { useInputStyles } from "./ROSDrawerContent";
-import { MenuProps } from "@material-ui/core/Menu";
+import { menuProps, useInputFieldStyles } from "./DrawerStyle";
 
-export const Dropdown = ({ label, options, selected, handleChange }: {
-  label: string
-  options: number[]
-  selected: number
-  handleChange: (event: ChangeEvent<{ value: unknown }>) => void
-}) => {
+interface DropdownProps {
+  label: string;
+  options: string[];
+  selected: string[];
+  handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
+  multiple?: boolean;
+}
 
-  const { formLabel, inputBox } = useInputStyles();
+export const Dropdown = (
+  {
+    label,
+    options,
+    selected,
+    handleChange,
+    multiple = false
+  }: DropdownProps
+) => {
 
-  return (
-    <FormControl
-      className={inputBox}
-    >
-      <FormLabel
-        className={formLabel}
-      >{label}</FormLabel>
-      <Select
-        value={selected}
-        onChange={handleChange}
-        input={<OutlinedInput />}
-        MenuProps={MenuProps}
-      >
-        {options.map((name) => (
-          <MenuItem key={name} value={name}>
-            <ListItemText primary={name} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>);
-};
+  const { formLabel, inputBox } = useInputFieldStyles();
 
-export const MultiDropdown = ({ label, options, selected, handleChange }: {
-  label: string
-  options: string[]
-  selected: string[]
-  handleChange: (event: ChangeEvent<{ value: unknown }>) => void
-}) => {
-
-  const { formLabel, inputBox } = useInputStyles();
-
-  return (
-    <FormControl
-      className={inputBox}
-    >
-      <FormLabel
-        className={formLabel}
-      >
-        {label}
-      </FormLabel>
-      <Select
-        multiple
-        value={selected}
-        onChange={handleChange}
-        input={<OutlinedInput />}
-        MenuProps={MenuProps}
-        renderValue={(selected: any) => (
-          <Box style={{ display: "flex", flexWrap: "wrap", gridGap: 0.5 }}>
-            {selected.map((value: string) => (
-              <Chip key={value} label={value} />
-            ))}
-          </Box>
-        )}
-      >
-        {options.map((name) => (
-          <MenuItem key={name} value={name}>
-            <ListItemIcon>
-              <Checkbox checked={selected.indexOf(name) > -1} />
-            </ListItemIcon>
-            <ListItemText primary={name} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>);
-};
-
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-
-const MenuProps: Partial<MenuProps> = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
+  const renderValue = (selected: any) => {
+    if (multiple) {
+      return (
+        <Box sx={{ display: "flex", flexWrap: "wrap", gridGap: 0.5 }}>
+          {selected.map((value: string) => (
+            <Chip key={value} label={value} />
+          ))}
+        </Box>
+      );
+    } else {
+      return selected;
     }
-  },
-  getContentAnchorEl: null,
-  anchorOrigin: {
-    vertical: "bottom",
-    horizontal: "center"
-  },
-  transformOrigin: {
-    vertical: "top",
-    horizontal: "center"
-  },
-  variant: "menu"
+  };
+
+  return (
+    <FormControl className={inputBox}>
+      <FormLabel className={formLabel}>{label}</FormLabel>
+      <Select
+        multiple={multiple}
+        value={selected}
+        onChange={handleChange}
+        input={<OutlinedInput />}
+        MenuProps={menuProps}
+        renderValue={renderValue}
+      >
+        {options.map((name) => (
+          <MenuItem key={name} value={name}>
+            {
+              multiple ?
+                <ListItemIcon>
+                  <Checkbox checked={selected.indexOf(name) > -1} />
+                </ListItemIcon> : null
+            }
+            <ListItemText primary={name} />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>);
 };

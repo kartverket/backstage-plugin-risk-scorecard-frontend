@@ -1,24 +1,25 @@
 import { FormControl, FormLabel, TextField } from "@material-ui/core";
 import React, { ChangeEvent } from "react";
-import { useInputStyles } from "./ROSDrawerContent";
+import { useInputFieldStyles } from "./DrawerStyle";
 
-export const Textfield = ({ label, value, handleChange }: {
-  label: string
-  value: string
-  handleChange: (event: ChangeEvent<{ value: unknown }>) => void
-}) => {
+interface TextFieldProps {
+  label: string;
+  value: string;
+  handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
+}
 
-  const { formLabel, inputBox } = useInputStyles();
+export const Textfield = (
+  {
+    label,
+    value,
+    handleChange
+  }: TextFieldProps) => {
+
+  const { formLabel, inputBox } = useInputFieldStyles();
 
   return (
-    <FormControl
-      className={inputBox}
-    >
-      <FormLabel
-        className={formLabel}
-      >
-        {label}
-      </FormLabel>
+    <FormControl className={inputBox}>
+      <FormLabel className={formLabel}>{label}</FormLabel>
       <TextField
         required
         id="filled-multiline-static"

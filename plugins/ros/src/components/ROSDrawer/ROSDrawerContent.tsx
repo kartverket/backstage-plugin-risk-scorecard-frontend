@@ -1,9 +1,12 @@
-import React from "react";
-import { Box, Button, IconButton, makeStyles, Theme, Typography } from "@material-ui/core";
+import React, { ChangeEvent } from "react";
+import { Box, Button, IconButton, Typography } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 import { Scenario } from "../interface/interfaces";
-import { Dropdown, MultiDropdown } from "./Dropdown";
+import { Dropdown } from "./Dropdown";
 import { Textfield } from "./Textfield";
+import schema from "../../ros_schema_no_v1_0.json";
+import { tomtScenario } from "./DrawerStyle";
+import { useDrawerContentStyles } from "./DrawerStyle";
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;
@@ -13,177 +16,118 @@ interface ROSDrawerContentProps {
   slettNyttScenario: () => void;
 }
 
-export const DrawerContent =
-  ({
-     toggleDrawer,
-     nyttScenario,
-     setNyttScenario,
-     lagreNyttScenario,
-     slettNyttScenario
-   }: ROSDrawerContentProps) => {
+export const DrawerContent = (
+  {
+    toggleDrawer,
+    nyttScenario,
+    setNyttScenario,
+    lagreNyttScenario,
+    slettNyttScenario
+  }: ROSDrawerContentProps
+) => {
 
-    const {
-      header,
-      content,
-      icon,
-      buttons
-    } = useDrawerContentStyles();
+  const nivåer = ["1", "2", "3", "4", "5"];
+  const trusselaktørerOptions = schema.properties.scenarier.items.properties.trusselaktører.items.enum;
+  const sårbarheterOptions = schema.properties.scenarier.items.properties.trusselaktører.items.enum;
+  // sconst requiredFields = schema.properties.scenarier.items.required;
 
-    const setBeskrivelse = (event: React.ChangeEvent<{ value: unknown }>) => {
-      setNyttScenario({ ...nyttScenario, beskrivelse: event.target.value as string });
-    };
+  const { header, content, icon, buttons } = useDrawerContentStyles();
 
-    const setTrusselaktører = (event: React.ChangeEvent<{ value: unknown }>) => {
-      setNyttScenario({ ...nyttScenario, trusselaktører: event.target.value as string[] });
-    };
+  const setBeskrivelse = (event: ChangeEvent<{ value: unknown }>) =>
+    setNyttScenario({ ...nyttScenario, beskrivelse: event.target.value as string });
 
-    const setSårbarheter = (event: React.ChangeEvent<{ value: unknown }>) => {
-      setNyttScenario({ ...nyttScenario, sårbarheter: event.target.value as string[] });
-    };
+  const setTrusselaktører = (event: ChangeEvent<{ value: unknown }>) =>
+    setNyttScenario({ ...nyttScenario, trusselaktører: event.target.value as string[] });
 
-    const setSannsynlighet = (event: React.ChangeEvent<{ value: unknown }>) => {
-      setNyttScenario({
-        ...nyttScenario,
-        risiko: { ...nyttScenario.risiko, sannsynlighet: event.target.value as number }
-      });
-    };
+  const setSårbarheter = (event: ChangeEvent<{ value: unknown }>) =>
+    setNyttScenario({ ...nyttScenario, sårbarheter: event.target.value as string[] });
 
-    const setKonsekvens = (event: React.ChangeEvent<{ value: unknown }>) => {
-      setNyttScenario({
-        ...nyttScenario,
-        risiko: { ...nyttScenario.risiko, konsekvens: event.target.value as number }
-      });
-    };
+  const setSannsynlighet = (event: ChangeEvent<{ value: unknown }>) =>
+    setNyttScenario({
+      ...nyttScenario,
+      risiko: { ...nyttScenario.risiko, sannsynlighet: event.target.value as number }
+    });
 
-    return (
-      <>
-        <Box className={header}>
-          <Typography variant="h4">Nytt risikoscenario</Typography>
-          <IconButton
-            key="dismiss"
-            title="Close the drawer"
-            onClick={() => toggleDrawer(false)}
-            color="inherit"
-          >
-            <Close className={icon} />
-          </IconButton>
-        </Box>
+  const setKonsekvens = (event: ChangeEvent<{ value: unknown }>) =>
+    setNyttScenario({
+      ...nyttScenario,
+      risiko: { ...nyttScenario.risiko, konsekvens: event.target.value as number }
+    });
 
-        <Box className={content}>
-          <Textfield
-            label="Beskrivelse"
-            value={nyttScenario.beskrivelse}
-            handleChange={setBeskrivelse}
-          />
+  return (
+    <>
+      <Box className={header}>
+        <Typography variant="h4">Nytt risikoscenario</Typography>
+        <IconButton
+          key="dismiss"
+          title="Close the drawer"
+          onClick={() => {
+            setNyttScenario(tomtScenario());
+            toggleDrawer(false);
+          }}
+          color="inherit"
+        >
+          <Close className={icon} />
+        </IconButton>
+      </Box>
 
-          <MultiDropdown
-            label="Trusselaktører"
-            selected={nyttScenario.trusselaktører}
-            options={trusselaktører}
-            handleChange={setTrusselaktører}
-          />
+      <Box className={content}>
+        <Textfield
+          label="Beskrivelse"
+          value={nyttScenario.beskrivelse}
+          handleChange={setBeskrivelse}
+        />
 
-          <MultiDropdown
-            label="Sårbarheter"
-            selected={nyttScenario.sårbarheter}
-            options={sårbarheter}
-            handleChange={setSårbarheter}
-          />
+        <Dropdown
+          label="Trusselaktører"
+          selected={nyttScenario.trusselaktører}
+          options={trusselaktørerOptions}
+          handleChange={setTrusselaktører}
+          multiple
+        />
 
-          <Dropdown
-            label="Sannsynlighet"
-            selected={nyttScenario.risiko.sannsynlighet}
-            options={nivåer}
-            handleChange={setSannsynlighet}
-          />
+        <Dropdown
+          label="Sårbarheter"
+          selected={nyttScenario.sårbarheter}
+          options={sårbarheterOptions}
+          handleChange={setSårbarheter}
+          multiple
+        />
 
-          <Dropdown
-            label="Konsekvens"
-            selected={nyttScenario.risiko.konsekvens}
-            options={nivåer}
-            handleChange={setKonsekvens}
-          />
+        <Dropdown
+          label="Sannsynlighet"
+          selected={[nyttScenario.risiko.sannsynlighet.toString()]}
+          options={nivåer}
+          handleChange={setSannsynlighet}
+        />
 
-        </Box>
-        <Box className={buttons}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => lagreNyttScenario()}
-          >
-            Lagre
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              slettNyttScenario();
-              toggleDrawer(false);
-            }}
-          >
-            Avbryt
-          </Button>
-        </Box>
-      </>
-    );
-  };
+        <Dropdown
+          label="Konsekvens"
+          selected={[nyttScenario.risiko.konsekvens.toString()]}
+          options={nivåer}
+          handleChange={setKonsekvens}
+        />
 
-const useDrawerContentStyles = makeStyles((theme: Theme) => ({
-    header: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between"
-    },
-    icon: {
-      fontSize: 20
-    },
-    content: {
-      display: "flex",
-      flexDirection: "column",
-      paddingTop: theme.spacing(4),
-      paddingBottom: theme.spacing(4)
-    },
-    buttons: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      gap: theme.spacing(2)
-    }
-  })
-);
-
-export const useInputStyles = makeStyles((theme: Theme) => ({
-    inputBox: {
-      paddingTop: theme.spacing(2),
-    },
-    formLabel: {
-      marginBottom: theme.spacing(1)
-    }
-  })
-);
-
-// TODO: Hent data fra json schema
-
-const trusselaktører = [
-  "Datasnok",
-  "Hacktivist",
-  "Uheldig ansatt",
-  "Innside-aktør",
-  "Organiserte kriminelle",
-  "Terroristorganisasjon",
-  "Nasjon/stat"
-];
-
-const sårbarheter = [
-  "Kompromittert adminbruker",
-  "Sårbarhet i avhengighet",
-  "Lekket hemmelighet",
-  "Feilkonfigurering",
-  "Klussing med input",
-  "Benekte brukerhandling",
-  "Informasjonslekkasje",
-  "Tjenestenekt",
-  "Rettighetseskalering"
-];
-
-const nivåer = [1, 2, 3, 4, 5];
+      </Box>
+      <Box className={buttons}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => lagreNyttScenario()}
+        >
+          Lagre
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => {
+            slettNyttScenario();
+            toggleDrawer(false);
+          }}
+        >
+          Avbryt
+        </Button>
+      </Box>
+    </>
+  );
+};
