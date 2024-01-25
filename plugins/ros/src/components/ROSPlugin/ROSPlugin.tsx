@@ -58,7 +58,7 @@ export const ROSPlugin = () => {
         owner: slug[0],
       });
     }
-  }, [currentEntity.loading]);
+  }, [currentEntity.entity, currentEntity.loading]);
 
   const config = useApi(configApiRef);
   const baseUrl = config.getString('app.backendUrl');
