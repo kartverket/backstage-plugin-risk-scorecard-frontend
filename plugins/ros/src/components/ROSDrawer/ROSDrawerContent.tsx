@@ -23,10 +23,10 @@ export const DrawerContent = ({
   lagreNyttScenario,
   slettNyttScenario,
 }: ROSDrawerContentProps) => {
-  const nivaer = ['1', '2', '3', '4', '5'];
-  const trusselaktorerOptions =
+  const nivåer = ['1', '2', '3', '4', '5'];
+  const trusselaktørerOptions =
     schema.properties.scenarier.items.properties.trusselaktører.items.enum;
-  const sarbarheterOptions =
+  const sårbarheterOptions =
     schema.properties.scenarier.items.properties.sårbarheter.items.enum;
   // sconst requiredFields = schema.properties.scenarier.items.required;
 
@@ -38,16 +38,16 @@ export const DrawerContent = ({
       beskrivelse: event.target.value as string,
     });
 
-  const setTrusselaktorer = (event: ChangeEvent<{ value: unknown }>) =>
+  const setTrusselaktører = (event: ChangeEvent<{ value: unknown }>) =>
     setNyttScenario({
       ...nyttScenario,
-      trusselaktorer: event.target.value as string[],
+      trusselaktører: event.target.value as string[],
     });
 
-  const setSarbarheter = (event: ChangeEvent<{ value: unknown }>) =>
+  const setSårbarheter = (event: ChangeEvent<{ value: unknown }>) =>
     setNyttScenario({
       ...nyttScenario,
-      sarbarheter: event.target.value as string[],
+      sårbarheter: event.target.value as string[],
     });
 
   const setSannsynlighet = (event: ChangeEvent<{ value: unknown }>) =>
@@ -55,7 +55,7 @@ export const DrawerContent = ({
       ...nyttScenario,
       risiko: {
         ...nyttScenario.risiko,
-        sannsynlighet: event.target.value as number,
+        sannsynlighet: Number(event.target.value),
       },
     });
 
@@ -64,7 +64,7 @@ export const DrawerContent = ({
       ...nyttScenario,
       risiko: {
         ...nyttScenario.risiko,
-        konsekvens: event.target.value as number,
+        konsekvens: Number(event.target.value),
       },
     });
 
@@ -94,31 +94,31 @@ export const DrawerContent = ({
 
         <Dropdown
           label="Trusselaktører"
-          selectedValues={nyttScenario.trusselaktorer}
-          options={trusselaktorerOptions}
-          handleChange={setTrusselaktorer}
+          selectedValues={nyttScenario.trusselaktører}
+          options={trusselaktørerOptions}
+          handleChange={setTrusselaktører}
           multiple
         />
 
         <Dropdown
           label="Sårbarheter"
-          selectedValues={nyttScenario.sarbarheter}
-          options={sarbarheterOptions}
-          handleChange={setSarbarheter}
+          selectedValues={nyttScenario.sårbarheter}
+          options={sårbarheterOptions}
+          handleChange={setSårbarheter}
           multiple
         />
 
         <Dropdown
           label="Sannsynlighet"
           selectedValues={[nyttScenario.risiko.sannsynlighet.toString()]}
-          options={nivaer}
+          options={nivåer}
           handleChange={setSannsynlighet}
         />
 
         <Dropdown
           label="Konsekvens"
           selectedValues={[nyttScenario.risiko.konsekvens.toString()]}
-          options={nivaer}
+          options={nivåer}
           handleChange={setKonsekvens}
         />
       </Box>
