@@ -63,8 +63,8 @@ export const tomtScenario = (): Scenario => ({
   ID: 0,
   beskrivelse: '',
   sistEndret: new Date().toISOString().split('T')[0],
-  trusselaktorer: [],
-  sarbarheter: [],
+  trusselaktører: [],
+  sårbarheter: [],
   risiko: {
     oppsummering: '',
     sannsynlighet: 0,
