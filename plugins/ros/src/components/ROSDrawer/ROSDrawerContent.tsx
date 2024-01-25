@@ -1,48 +1,12 @@
-import React from 'react';
-import {
-  Box,
-  Button,
-  IconButton,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import React, { ChangeEvent } from 'react';
+import { Box, Button, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
 import { Scenario } from '../interface/interfaces';
-import { Dropdown, MultiDropdown } from './Dropdown';
+import { Dropdown } from './Dropdown';
 import { Textfield } from './Textfield';
-
-const useDrawerContentStyles = makeStyles((theme: Theme) => ({
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  icon: {
-    fontSize: 20,
-  },
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  buttons: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing(2),
-  },
-}));
-
-export const useInputStyles = makeStyles((theme: Theme) => ({
-  inputBox: {
-    paddingTop: theme.spacing(2),
-  },
-  formLabel: {
-    marginBottom: theme.spacing(1),
-  },
-}));
+import schema from '../../ros_schema_no_v1_0.json';
+import { tomtScenario } from './DrawerStyle';
+import { useDrawerContentStyles } from './DrawerStyle';
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;
@@ -52,32 +16,6 @@ interface ROSDrawerContentProps {
   slettNyttScenario: () => void;
 }
 
-// TODO: Hent data fra json schema
-
-const trusselaktorer = [
-  'Datasnok',
-  'Hacktivist',
-  'Uheldig ansatt',
-  'Innside-aktør',
-  'Organiserte kriminelle',
-  'Terroristorganisasjon',
-  'Nasjon/stat',
-];
-
-const sarbarheter = [
-  'Kompromittert adminbruker',
-  'Sårbarhet i avhengighet',
-  'Lekket hemmelighet',
-  'Feilkonfigurering',
-  'Klussing med input',
-  'Benekte brukerhandling',
-  'Informasjonslekkasje',
-  'Tjenestenekt',
-  'Rettighetseskalering',
-];
-
-const nivaer = [1, 2, 3, 4, 5];
-
 export const DrawerContent = ({
   toggleDrawer,
   nyttScenario,
@@ -85,30 +23,34 @@ export const DrawerContent = ({
   lagreNyttScenario,
   slettNyttScenario,
 }: ROSDrawerContentProps) => {
+  const nivaer = ['1', '2', '3', '4', '5'];
+  const trusselaktorerOptions =
+    schema.properties.scenarier.items.properties.trusselaktører.items.enum;
+  const sarbarheterOptions =
+    schema.properties.scenarier.items.properties.sårbarheter.items.enum;
+  // sconst requiredFields = schema.properties.scenarier.items.required;
+
   const { header, content, icon, buttons } = useDrawerContentStyles();
 
-  const setBeskrivelse = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const setBeskrivelse = (event: ChangeEvent<{ value: unknown }>) =>
     setNyttScenario({
       ...nyttScenario,
       beskrivelse: event.target.value as string,
     });
-  };
 
-  const setTrusselaktorer = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const setTrusselaktorer = (event: ChangeEvent<{ value: unknown }>) =>
     setNyttScenario({
       ...nyttScenario,
       trusselaktorer: event.target.value as string[],
     });
-  };
 
-  const setSarbarheter = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const setSarbarheter = (event: ChangeEvent<{ value: unknown }>) =>
     setNyttScenario({
       ...nyttScenario,
       sarbarheter: event.target.value as string[],
     });
-  };
 
-  const setSannsynlighet = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const setSannsynlighet = (event: ChangeEvent<{ value: unknown }>) =>
     setNyttScenario({
       ...nyttScenario,
       risiko: {
@@ -116,9 +58,8 @@ export const DrawerContent = ({
         sannsynlighet: event.target.value as number,
       },
     });
-  };
 
-  const setKonsekvens = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const setKonsekvens = (event: ChangeEvent<{ value: unknown }>) =>
     setNyttScenario({
       ...nyttScenario,
       risiko: {
@@ -126,7 +67,6 @@ export const DrawerContent = ({
         konsekvens: event.target.value as number,
       },
     });
-  };
 
   return (
     <>
@@ -135,7 +75,10 @@ export const DrawerContent = ({
         <IconButton
           key="dismiss"
           title="Close the drawer"
-          onClick={() => toggleDrawer(false)}
+          onClick={() => {
+            setNyttScenario(tomtScenario());
+            toggleDrawer(false);
+          }}
           color="inherit"
         >
           <Close className={icon} />
@@ -149,36 +92,39 @@ export const DrawerContent = ({
           handleChange={setBeskrivelse}
         />
 
-        <MultiDropdown
+        <Dropdown
           label="Trusselaktører"
-          selected={nyttScenario.trusselaktorer}
-          options={trusselaktorer}
+          selectedValues={nyttScenario.trusselaktorer}
+          options={trusselaktorerOptions}
           handleChange={setTrusselaktorer}
+          multiple
         />
 
-        <MultiDropdown
+        <Dropdown
           label="Sårbarheter"
-          selected={nyttScenario.sarbarheter}
-          options={sarbarheter}
+          selectedValues={nyttScenario.sarbarheter}
+          options={sarbarheterOptions}
           handleChange={setSarbarheter}
+          multiple
         />
 
         <Dropdown
           label="Sannsynlighet"
-          selected={nyttScenario.risiko.sannsynlighet}
+          selectedValues={[nyttScenario.risiko.sannsynlighet.toString()]}
           options={nivaer}
           handleChange={setSannsynlighet}
         />
 
         <Dropdown
           label="Konsekvens"
-          selected={nyttScenario.risiko.konsekvens}
+          selectedValues={[nyttScenario.risiko.konsekvens.toString()]}
           options={nivaer}
           handleChange={setKonsekvens}
         />
       </Box>
       <Box className={buttons}>
         <Button
+          style={{ textTransform: 'none' }}
           variant="contained"
           color="primary"
           onClick={() => lagreNyttScenario()}
@@ -186,6 +132,7 @@ export const DrawerContent = ({
           Lagre
         </Button>
         <Button
+          style={{ textTransform: 'none' }}
           variant="outlined"
           color="primary"
           onClick={() => {

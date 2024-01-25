@@ -9,96 +9,56 @@ import MenuItem from '@material-ui/core/MenuItem';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
 import React, { ChangeEvent } from 'react';
-import { useInputStyles } from './ROSDrawerContent';
-import { MenuProps } from '@material-ui/core/Menu';
+import { menuProps, useInputFieldStyles } from './DrawerStyle';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-
-const menuProps: Partial<MenuProps> = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-  getContentAnchorEl: null,
-  anchorOrigin: {
-    vertical: 'bottom',
-    horizontal: 'center',
-  },
-  transformOrigin: {
-    vertical: 'top',
-    horizontal: 'center',
-  },
-  variant: 'menu',
-};
+interface DropdownProps {
+  label: string;
+  options: string[];
+  selectedValues: string[];
+  handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
+  multiple?: boolean;
+}
 
 export const Dropdown = ({
   label,
   options,
-  selected,
+  selectedValues,
   handleChange,
-}: {
-  label: string;
-  options: number[];
-  selected: number;
-  handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
-}) => {
-  const { formLabel, inputBox } = useInputStyles();
-  return (
-    <FormControl className={inputBox}>
-      <FormLabel className={formLabel}>{label}</FormLabel>
-      <Select
-        value={selected}
-        onChange={handleChange}
-        input={<OutlinedInput />}
-        MenuProps={menuProps}
-      >
-        {options.map(name => (
-          <MenuItem key={name} value={name}>
-            <ListItemText primary={name} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-};
+  multiple = false,
+}: DropdownProps) => {
+  const { formLabel, inputBox } = useInputFieldStyles();
 
-export const MultiDropdown = ({
-  label,
-  options,
-  selected,
-  handleChange,
-}: {
-  label: string;
-  options: string[];
-  selected: string[];
-  handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
-}) => {
-  const { formLabel, inputBox } = useInputStyles();
+  const renderValue = (selected: any) => {
+    if (multiple) {
+      return (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gridGap: 0.5 }}>
+          {selected.map((value: string) => (
+            <Chip key={value} label={value} />
+          ))}
+        </Box>
+      );
+    }
+    return selected;
+  };
+
   return (
     <FormControl className={inputBox}>
       <FormLabel className={formLabel}>{label}</FormLabel>
       <Select
-        multiple
-        value={selected}
+        multiple={multiple}
+        value={selectedValues}
         onChange={handleChange}
         input={<OutlinedInput />}
         MenuProps={menuProps}
-        renderValue={(selectedOption: any) => (
-          <Box style={{ display: 'flex', flexWrap: 'wrap', gridGap: 0.5 }}>
-            {selectedOption.map((value: string) => (
-              <Chip key={value} label={value} />
-            ))}
-          </Box>
-        )}
+        renderValue={renderValue}
       >
         {options.map(name => (
           <MenuItem key={name} value={name}>
-            <ListItemIcon>
-              <Checkbox checked={selected.indexOf(name) > -1} />
-            </ListItemIcon>
+            {multiple ? (
+              <ListItemIcon>
+                <Checkbox checked={selectedValues.indexOf(name) > -1} />
+              </ListItemIcon>
+            ) : null}
             <ListItemText primary={name} />
           </MenuItem>
         ))}

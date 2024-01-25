@@ -38,18 +38,24 @@ export default async function createPlugin(
       github: providers.github.create({
         signIn: {
           resolver: async (info, ctx) => {
-            const { result: { fullProfile : { username} } } = info;
+            const {
+              result: {
+                fullProfile: { username },
+              },
+            } = info;
 
-            if(!username) throw new Error(`Fant ikke bruker: ${username}`)
-            const { entity } = await ctx.findCatalogUser({entityRef: { name: username }})
+            if (!username) throw new Error(`Fant ikke bruker: ${username}`);
+            const { entity } = await ctx.findCatalogUser({
+              entityRef: { name: username },
+            });
 
             return ctx.signInWithCatalogUser({
               entityRef: {
                 kind: entity.kind,
-                name: entity.metadata.name
-              }
-            })
-          }
+                name: entity.metadata.name,
+              },
+            });
+          },
         },
       }),
     },

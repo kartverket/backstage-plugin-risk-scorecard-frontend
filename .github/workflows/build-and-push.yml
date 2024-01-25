@@ -23,13 +23,13 @@ jobs:
 
       # To optionally display info about current gcloud environment
       - name: 'Set up Cloud SDK'
-        uses: "google-github-actions/setup-gcloud@v1"
+        uses: 'google-github-actions/setup-gcloud@v1'
 
-      - name: "Use gcloud CLI"
-        run: "gcloud info"
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
 
       # Auth Docker to access the artifact registry
-      - name: "Docker auth"
+      - name: 'Docker auth'
         run: |-
           gcloud auth configure-docker europe-north1-docker.pkg.dev --quiet
 
@@ -46,4 +46,3 @@ jobs:
           push: true
           tags: |
             europe-north1-docker.pkg.dev/spire-ros-5lmr/kv-ros/backstage:latest
-

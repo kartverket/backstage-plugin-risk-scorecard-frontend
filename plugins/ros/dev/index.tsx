@@ -7,6 +7,6 @@ createDevApp()
   .addPage({
     element: <RosPage />,
     title: 'Root Page',
-    path: '/ros'
+    path: '/ros',
   })
   .render();
