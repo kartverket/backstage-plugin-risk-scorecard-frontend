@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 import {
   Content,
@@ -15,9 +15,20 @@ import {
 import useAsync from 'react-use/lib/useAsync';
 import { ROS, Scenario, TableData } from '../interface/interfaces';
 import { ROSDrawer } from '../ROSDrawer/ROSDrawer';
-import { mapToTableData } from '../utils/utilityfunctions';
 import { columns } from '../utils/columns';
 import { Dropdown } from '../ROSDrawer/Dropdown';
+import { useAsyncEntity } from '@backstage/plugin-catalog-react';
+import { mapToTableData } from '../utils/utilityfunctions';
+
+interface GithubRepositoryInformation {
+  name: string;
+  owner: string;
+}
+
+interface RosId {
+  label: string;
+  value: string;
+}
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -27,25 +38,50 @@ export const ROSPlugin = () => {
     async (): Promise<string> => githubApi.getAccessToken('repo'),
   );
 
+  const currentEntity = useAsyncEntity();
+  const [repoInformation, setRepoInformation] =
+    useState<GithubRepositoryInformation | null>(null);
+
+  useEffect(() => {
+    if (!currentEntity.loading && currentEntity.entity !== undefined) {
+      const slug =
+        currentEntity.entity.metadata.annotations !== undefined
+          ? currentEntity.entity.metadata.annotations[
+              'github.com/project-slug'
+            ].split('/')
+          : null;
+
+      if (slug === null) return;
+
+      setRepoInformation({
+        name: slug[1],
+        owner: slug[0],
+      });
+    }
+  }, [currentEntity.entity, currentEntity.loading]);
+
   const config = useApi(configApiRef);
   const baseUrl = config.getString('app.backendUrl');
 
   const [ros, setRos] = useState<ROS>();
   const [saveROSResponse, setSaveROSResponse] = useState<string>('');
   const [tableData, setTableData] = useState<TableData[]>();
-  const [idItems, setIdItems] = useState<{ label: string; value: string }[]>();
+  const [idItems, setIdItems] = useState<RosId[]>();
   const [selected, setSelected] = useState<string>();
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
 
   useAsync(async () => {
-    if (token) {
-      fetch(`${baseUrl}/api/ros/ids`, {
-        headers: { 'Github-Access-Token': token },
-      })
+    if (token && repoInformation) {
+      fetch(
+        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/ids`,
+        {
+          headers: { 'Github-Access-Token': token },
+        },
+      )
         .then(res => res.json())
         .then(json => json as string[])
         .then(ids => {
-          const newIdItems = ids.map(id => ({
+          const newIdItems: RosId[] = ids.map(id => ({
             label: id,
             value: id,
           }));
@@ -55,10 +91,13 @@ export const ROSPlugin = () => {
   }, [token]);
 
   useAsync(async () => {
-    if (selected && token) {
-      fetch(`${baseUrl}/api/ros/${selected}`, {
-        headers: { 'Github-Access-Token': token },
-      })
+    if (selected && token && repoInformation) {
+      fetch(
+        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selected}`,
+        {
+          headers: { 'Github-Access-Token': token },
+        },
+      )
         .then(res => res.json())
         .then(json => json as ROS)
         .then(fetchedRos => {
@@ -68,8 +107,8 @@ export const ROSPlugin = () => {
     }
   }, [selected, token]);
 
-  const postROS = () =>
-    fetch(`${baseUrl}/api/ros`, {
+  const postROS = (repoOwner: String, repoName: String) =>
+    fetch(`${baseUrl}/api/ros/${repoOwner}/${repoName}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -137,7 +176,11 @@ export const ROSPlugin = () => {
                 <Button
                   style={{ textTransform: 'none' }}
                   variant="contained"
-                  onClick={() => postROS()}
+                  onClick={() =>
+                    repoInformation !== null
+                      ? postROS(repoInformation?.owner, repoInformation?.name)
+                      : ''
+                  }
                 >
                   Send risiko- og sårbarhetsanalyse
                 </Button>
