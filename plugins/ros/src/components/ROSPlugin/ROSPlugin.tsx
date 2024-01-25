@@ -39,7 +39,9 @@ export const ROSPlugin = () => {
 
   useAsync(async () => {
     if (token) {
-      fetch(`${baseUrl}/api/ros/ids/${token}`)
+      fetch(`${baseUrl}/api/ros/ids`, {
+        headers: { 'Github-Access-Token': token },
+      })
         .then(res => res.json())
         .then(json => json as string[])
         .then(ids => {
@@ -54,7 +56,9 @@ export const ROSPlugin = () => {
 
   useAsync(async () => {
     if (selected && token) {
-      fetch(`${baseUrl}/api/ros/single/${selected}/${token}`)
+      fetch(`${baseUrl}/api/ros/${selected}`, {
+        headers: { 'Github-Access-Token': token },
+      })
         .then(res => res.json())
         .then(json => json as ROS)
         .then(fetchedRos => {
@@ -65,9 +69,12 @@ export const ROSPlugin = () => {
   }, [selected, token]);
 
   const postROS = () =>
-    fetch(`${baseUrl}/api/ros/${token}`, {
+    fetch(`${baseUrl}/api/ros`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Github-Access-Token': token!!,
+      },
       body: JSON.stringify({ ros: JSON.stringify(ros) }),
     }).then(res => {
       if (res.ok) {
