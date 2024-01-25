@@ -11,8 +11,8 @@ export function mapToTableData(data: ROS): TableData[] {
 
     const tableRow: TableData = {
       beskrivelse: scenario.beskrivelse,
-      trussel: scenario.trusselaktorer ? scenario.trusselaktorer[0] : '',
-      sarbarhet: scenario.sarbarheter ? scenario.sarbarheter[0] : '',
+      trussel: scenario.trusselaktører ? scenario.trusselaktører[0] : '',
+      sårbarhet: scenario.sårbarheter ? scenario.sårbarheter[0] : '',
       konsekvens: risk.konsekvens,
       sannsynlighet: risk.sannsynlighet,
       id: id,
