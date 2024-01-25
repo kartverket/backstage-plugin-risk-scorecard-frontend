@@ -176,6 +176,10 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
+
+    <EntityLayout.Route path="/ros" title="ROS">
+      <ROSPlugin />
+    </EntityLayout.Route>
   </EntityLayout>
 );
 
