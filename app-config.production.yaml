@@ -4,7 +4,17 @@ app:
 
 backend:
   baseUrl: http://localhost:7007
-  listen: ':7007'
+  listen:
+    port: 7007
+  csp:
+    connect-src: [ "'self'", 'http:', 'https:' ]
+  cors:
+    origin: [ 'https://kv-ros-backstage-245zlcbrnq-lz.a.run.app/' ]
+    methods: [ GET, HEAD, PATCH, POST, PUT, DELETE ]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
 
 catalog:
   locations: [ ]
