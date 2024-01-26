@@ -30,13 +30,13 @@ export default async function createPlugin(
       return entity;
     },
   });
+  builder.addEntityProvider(githubOrgProvider);
 
   const githubEntityProvider = GithubEntityProvider.fromConfig(env.config, {
     logger: env.logger,
     scheduler: env.scheduler,
   });
 
-  builder.addEntityProvider(githubOrgProvider);
   builder.addEntityProvider(githubEntityProvider);
 
   const { processingEngine, router } = await builder.build();
