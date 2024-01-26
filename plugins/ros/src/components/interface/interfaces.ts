@@ -38,3 +38,8 @@ export interface TableData {
   konsekvens: number;
   sannsynlighet: number;
 }
+
+export interface GithubRepositoryInformation {
+  name: string;
+  owner: string;
+}

@@ -1,6 +1,5 @@
 import { MenuProps } from '@material-ui/core/Menu';
 import { makeStyles, Theme } from '@material-ui/core';
-import { Scenario } from '../interface/interfaces';
 
 export const menuProps: Partial<MenuProps> = {
   PaperProps: {
@@ -58,17 +57,3 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(1),
   },
 }));
-
-export const tomtScenario = (): Scenario => ({
-  ID: 0,
-  beskrivelse: '',
-  sistEndret: new Date().toISOString().split('T')[0],
-  trusselaktører: [],
-  sårbarheter: [],
-  risiko: {
-    oppsummering: '',
-    sannsynlighet: 0,
-    konsekvens: 0,
-  },
-  tiltak: [],
-});
