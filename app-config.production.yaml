@@ -1,9 +1,9 @@
 app:
-  baseUrl: http://localhost:7007
+  baseUrl: https://kv-ros-backstage-245zlcbrnq-lz.a.run.app
   backendUrl: https://kv-ros-backend-245zlcbrnq-lz.a.run.app
 
 backend:
-  baseUrl: http://localhost:7007
+  baseUrl: https://kv-ros-backstage-245zlcbrnq-lz.a.run.app
   listen:
     port: 7007
   csp:
