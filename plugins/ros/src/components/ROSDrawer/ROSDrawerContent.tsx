@@ -3,9 +3,8 @@ import { Box, Button, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
 import { Scenario } from '../interface/interfaces';
 import { Dropdown } from './Dropdown';
-import { Textfield } from './Textfield';
+import { TextField } from './Textfield';
 import schema from '../../ros_schema_no_v1_0.json';
-import { tomtScenario } from './DrawerStyle';
 import { useDrawerContentStyles } from './DrawerStyle';
 
 interface ROSDrawerContentProps {
@@ -76,7 +75,7 @@ export const DrawerContent = ({
           key="dismiss"
           title="Close the drawer"
           onClick={() => {
-            setNyttScenario(tomtScenario());
+            slettNyttScenario();
             toggleDrawer(false);
           }}
           color="inherit"
@@ -86,7 +85,7 @@ export const DrawerContent = ({
       </Box>
 
       <Box className={content}>
-        <Textfield
+        <TextField
           label="Beskrivelse"
           value={nyttScenario.beskrivelse}
           handleChange={setBeskrivelse}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Drawer } from '@material-ui/core';
 import { DrawerContent } from './ROSDrawerContent';
 import { Scenario } from '../interface/interfaces';
-import { tomtScenario, useDrawerStyles } from './DrawerStyle';
+import { useDrawerStyles } from './DrawerStyle';
 
 interface ROSInputProps {
   isOpen: boolean;
@@ -47,3 +47,17 @@ export const ROSDrawer = ({
     </Drawer>
   );
 };
+
+export const tomtScenario = (): Scenario => ({
+  ID: 0,
+  beskrivelse: '',
+  sistEndret: new Date().toISOString().split('T')[0],
+  trusselaktører: [],
+  sårbarheter: [],
+  risiko: {
+    oppsummering: '',
+    sannsynlighet: 0,
+    konsekvens: 0,
+  },
+  tiltak: [],
+});

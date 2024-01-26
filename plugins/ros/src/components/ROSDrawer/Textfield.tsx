@@ -1,4 +1,8 @@
-import { FormControl, FormLabel, TextField } from '@material-ui/core';
+import {
+  FormControl,
+  FormLabel,
+  TextField as MUITextField,
+} from '@material-ui/core';
 import React, { ChangeEvent } from 'react';
 import { useInputFieldStyles } from './DrawerStyle';
 
@@ -8,13 +12,13 @@ interface TextFieldProps {
   handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
 }
 
-export const Textfield = ({ label, value, handleChange }: TextFieldProps) => {
+export const TextField = ({ label, value, handleChange }: TextFieldProps) => {
   const { formLabel, inputBox } = useInputFieldStyles();
 
   return (
     <FormControl className={inputBox}>
       <FormLabel className={formLabel}>{label}</FormLabel>
-      <TextField
+      <MUITextField
         required
         id="filled-multiline-static"
         value={value}
