@@ -46,7 +46,7 @@ export const ROSPlugin = () => {
       fetch(
         `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`,
         {
-          method: 'POST',
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Github-Access-Token': token,
