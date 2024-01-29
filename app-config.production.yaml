@@ -17,12 +17,14 @@ backend:
     connection: ':memory:'
 
 catalog:
+  rules:
+    - allow: [ Component, Group, User, Resource, Location, Template, System ]
   locations: [ ]
   providers:
     github:
       providerId:
         organization: 'bekk'
-        catalogPath: '/catalog-info.yaml'
+        catalogPath: '.security/catalog-info.yaml'
         filters:
           branch: 'main'
           repository: '^kv-ros-.*$'
