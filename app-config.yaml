@@ -1,13 +1,13 @@
 app:
   title: Rosenes Backstage App
-  baseUrl: http://localhost:3000
-  backendUrl: http://localhost:8080
+  baseUrl: https://kv-ros-backstage-245zlcbrnq-lz.a.run.app
+  backendUrl: https://kv-ros-backend-245zlcbrnq-lz.a.run.app
 
 organization:
   name: Rosene
 
 backend:
-  baseUrl: http://localhost:7007
+  baseUrl: https://kv-ros-backstage-245zlcbrnq-lz.a.run.app
   listen:
     port: 7007
   csp:
