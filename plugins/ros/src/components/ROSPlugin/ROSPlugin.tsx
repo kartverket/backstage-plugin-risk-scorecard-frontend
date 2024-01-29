@@ -46,7 +46,7 @@ export const ROSPlugin = () => {
   const postROS = () => {
     if (repoInformation && token) {
       fetch(
-        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}`,
+        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`,
         {
           method: 'POST',
           headers: {
@@ -57,7 +57,7 @@ export const ROSPlugin = () => {
         },
       ).then(res => {
         if (res.ok) {
-          setSaveROSResponse('Ny ROS ble lagret!');
+          setSaveROSResponse('ROS ble oppdatert!');
         } else {
           res.text().then(text => setSaveROSResponse(text));
         }
