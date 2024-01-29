@@ -1,13 +1,13 @@
 app:
   title: Rosenes Backstage App
-  baseUrl: https://kv-ros-backstage-245zlcbrnq-lz.a.run.app
-  backendUrl: https://kv-ros-backend-245zlcbrnq-lz.a.run.app
+  baseUrl: http://localhost:3000
+  backendUrl: http://localhost:8080
 
 organization:
   name: Rosene
 
 backend:
-  baseUrl: https://kv-ros-backstage-245zlcbrnq-lz.a.run.app
+  baseUrl: http://localhost:7007
   listen:
     port: 7007
   csp:
@@ -54,4 +54,14 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [ User, Group ]
-  c
+  providers:
+    github:
+      providerId:
+        organization: 'bekk'
+        catalogPath: '.security/catalog-info.yaml'
+        filters:
+          branch: 'main'
+          repository: '^kv-ros-.*$'
+        schedule:
+          frequency: { minutes: 1440 }
+          timeout: { minutes: 3 }
