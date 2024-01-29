@@ -50,18 +50,32 @@ export const useFetchRosIds = (
 
   useEffect(() => {
     if (token && repoInformation) {
-      fetch(
-        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/ids`,
-        {
-          headers: { 'Github-Access-Token': token },
-        },
-      )
-        .then(res => res.json())
-        .then(json => json as string[])
-        .then(ids => {
-          setRosIds(ids);
-          setSelectedId(ids[0]);
-        });
+      try {
+        fetch(
+          `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/ids`,
+          {
+            headers: { 'Github-Access-Token': token },
+          },
+        )
+          .then(res => {
+            if (!res.ok) {
+              throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            return res.json();
+          })
+          .then(json => json as string[])
+          .then(ids => {
+            setRosIds(ids);
+            setSelectedId(ids[0]);
+          })
+          .catch(error => {
+            // Handle the error here, you can log it or show a user-friendly message
+            console.error('Error fetching ROS IDs:', error);
+          });
+      } catch (error) {
+        // Handle any synchronous errors that might occur outside the promise chain
+        console.error('Unexpected error:', error);
+      }
     }
   }, [token]);
 

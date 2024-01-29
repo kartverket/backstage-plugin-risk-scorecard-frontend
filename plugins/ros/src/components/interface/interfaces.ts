@@ -1,6 +1,8 @@
 export interface ROS {
   versjon: string;
   skjemaVersjon: string;
+  tittel: string;
+  omfang: string;
   scenarier: Scenario[];
 }
 
