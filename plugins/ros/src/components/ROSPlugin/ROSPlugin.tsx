@@ -4,7 +4,6 @@ import {
   Content,
   ContentHeader,
   SupportButton,
-  Table,
 } from '@backstage/core-components';
 import {
   fetchApiRef,
@@ -14,16 +13,15 @@ import {
 import useAsync from 'react-use/lib/useAsync';
 import { Scenario } from '../interface/interfaces';
 import { ROSDrawer } from '../ROSDrawer/ROSDrawer';
-import { columns } from '../utils/columns';
 import { Dropdown } from '../ROSDrawer/Dropdown';
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
-import { mapToTableData } from '../utils/utilityfunctions';
 import {
   useBaseUrl,
   useFetchRos,
   useFetchRosIds,
   useGithubRepositoryInformation,
 } from '../utils/hooks';
+import { ScenarioTable } from '../Table/ScenarioTable';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -74,6 +72,16 @@ export const ROSPlugin = () => {
     }
   };
 
+  const slettScenario = (index: number) => {
+    if (ros) {
+      setRos({
+        ...ros,
+        // scenarier: ros.scenarier.filter(scenario => scenario.id !== id),
+        scenarier: ros.scenarier.filter((_, i) => i !== index),
+      });
+    }
+  };
+
   return (
     <Content>
       <ContentHeader title="Risiko- og sårbarhetsanalyse">
@@ -90,17 +98,15 @@ export const ROSPlugin = () => {
           />
         </Grid>
 
-        <Grid item>
-          {ros && (
-            <Table
-              options={{ paging: false }}
-              data={ros ? mapToTableData(ros) : []}
-              columns={columns}
-              isLoading={!ros}
-              title="Scenarioer"
+        {ros && (
+          <Grid item>
+            <ScenarioTable
+              ros={ros}
+              deleteRow={slettScenario}
+              editRow={id => console.log(`Endret ${id}`)}
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
 
         <Grid item>
           <Grid container direction="row">
