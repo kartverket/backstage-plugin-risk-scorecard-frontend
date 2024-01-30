@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import {
   Content,
   ContentHeader,
@@ -12,7 +13,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import { Scenario } from '../interface/interfaces';
+import { ROS, Scenario } from '../interface/interfaces';
 import { ROSDrawer } from '../ROSDrawer/ROSDrawer';
 import { columns } from '../utils/columns';
 import { Dropdown } from '../ROSDrawer/Dropdown';
@@ -24,6 +25,7 @@ import {
   useFetchRosIds,
   useGithubRepositoryInformation,
 } from '../utils/hooks';
+import { ROSDialog } from '../ROSDialog/ROSDialog';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -33,6 +35,8 @@ export const ROSPlugin = () => {
   const { value: token } = useAsync(() => githubApi.getAccessToken('repo'));
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
+  const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
+
   const [saveROSResponse, setSaveROSResponse] = useState<string>('');
 
   const currentEntity = useAsyncEntity();
@@ -74,6 +78,10 @@ export const ROSPlugin = () => {
     }
   };
 
+  const createNewROS = (newRos: ROS) => {
+    setRos(newRos);
+  };
+
   return (
     <Content>
       <ContentHeader title="Risiko- og sårbarhetsanalyse">
@@ -81,17 +89,42 @@ export const ROSPlugin = () => {
       </ContentHeader>
 
       <Grid container spacing={3} direction="column">
-        <Grid item>
-          <Dropdown
-            label="ROS-analyser"
-            options={rosIds ?? []}
-            selectedValues={selectedId ? [selectedId] : []}
-            handleChange={e => setSelectedId(e.target.value as string)}
-          />
-        </Grid>
+        {selectedId && (
+          <Grid item>
+            <Dropdown
+              label="ROS-analyser"
+              options={rosIds ?? []}
+              selectedValues={selectedId ? [selectedId] : []}
+              handleChange={e => setSelectedId(e.target.value as string)}
+            />
+          </Grid>
+        )}
 
         <Grid item>
-          {ros && (
+          <Button
+            startIcon={<AddIcon />}
+            variant="text"
+            color="primary"
+            onClick={() => setDialogIsOpen(true)}
+          >
+            Opprett ny analyse
+          </Button>
+        </Grid>
+
+        {/* TODO: Håndetering av tidligere skjemaer */}
+        {ros && ros.tittel && ros.omfang && (
+          <>
+            <Grid item>
+              <Typography variant="subtitle2"> Tittel: {ros.tittel}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="subtitle2">Omfang: {ros.omfang}</Typography>
+            </Grid>
+          </>
+        )}
+
+        {ros && selectedId && (
+          <Grid item>
             <Table
               options={{ paging: false }}
               data={ros ? mapToTableData(ros) : []}
@@ -99,8 +132,8 @@ export const ROSPlugin = () => {
               isLoading={!ros}
               title="Scenarioer"
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
 
         <Grid item>
           <Grid container direction="row">
@@ -130,6 +163,12 @@ export const ROSPlugin = () => {
           </Grid>
         </Grid>
       </Grid>
+
+      <ROSDialog
+        isOpen={dialogIsOpen}
+        onClose={() => setDialogIsOpen(false)}
+        createNewROS={createNewROS}
+      />
 
       <ROSDrawer
         isOpen={drawerIsOpen}

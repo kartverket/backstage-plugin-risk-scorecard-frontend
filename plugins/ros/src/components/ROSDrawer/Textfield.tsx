@@ -9,10 +9,16 @@ import { useInputFieldStyles } from './DrawerStyle';
 interface TextFieldProps {
   label: string;
   value: string;
+  minRows?: number;
   handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
 }
 
-export const TextField = ({ label, value, handleChange }: TextFieldProps) => {
+export const TextField = ({
+  label,
+  value,
+  minRows,
+  handleChange,
+}: TextFieldProps) => {
   const { formLabel, inputBox } = useInputFieldStyles();
 
   return (
@@ -24,7 +30,7 @@ export const TextField = ({ label, value, handleChange }: TextFieldProps) => {
         value={value}
         multiline
         fullWidth
-        minRows={4}
+        minRows={minRows ? minRows : 4}
         maxRows={4}
         variant="filled"
         onChange={handleChange}
