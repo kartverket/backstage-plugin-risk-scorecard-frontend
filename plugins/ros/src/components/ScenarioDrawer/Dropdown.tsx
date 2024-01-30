@@ -9,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
 import React, { ChangeEvent } from 'react';
-import { menuProps, useInputFieldStyles } from './DrawerStyle';
+import { menuProps, useInputFieldStyles } from './ScenarioDrawerStyle';
 
 interface DropdownProps {
   label: string;

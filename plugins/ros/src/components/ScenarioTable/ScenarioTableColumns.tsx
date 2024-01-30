@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { Box } from '@material-ui/core';
 import { TableColumn } from '@backstage/core-components';
 import { DeleteButton, EditButton } from './ScenarioTableButtons';
+import { TableData } from '../interface/interfaces';
 
 export const getColumns = (
   deleteRow: (id: number) => void,
@@ -34,8 +35,7 @@ export const getColumns = (
       type: 'numeric',
     },
     {
-      // TODO: Change any to Scenario and id (index) to scenario ID
-      render: (row: any): ReactNode => (
+      render: (row: TableData): ReactNode => (
         <Box style={{ display: 'flex', gap: 0.2 }}>
           <EditButton onClick={() => editRow(row.id)} />
           <DeleteButton onClick={() => deleteRow(row.id)} />

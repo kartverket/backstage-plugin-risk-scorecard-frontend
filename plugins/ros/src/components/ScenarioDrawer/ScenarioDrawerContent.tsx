@@ -5,22 +5,22 @@ import { Scenario } from '../interface/interfaces';
 import { Dropdown } from './Dropdown';
 import { TextField } from './Textfield';
 import schema from '../../ros_schema_no_v1_0.json';
-import { useDrawerContentStyles } from './DrawerStyle';
+import { useDrawerContentStyles } from './ScenarioDrawerStyle';
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;
-  nyttScenario: Scenario;
-  setNyttScenario: (nyttScenario: Scenario) => void;
-  lagreNyttScenario: () => void;
-  slettNyttScenario: () => void;
+  scenario: Scenario;
+  setScenario: (nyttScenario: Scenario) => void;
+  saveScenario: () => void;
+  clearScenario: () => void;
 }
 
-export const DrawerContent = ({
+export const ScenarioDrawerContent = ({
   toggleDrawer,
-  nyttScenario,
-  setNyttScenario,
-  lagreNyttScenario,
-  slettNyttScenario,
+  scenario,
+  setScenario,
+  saveScenario,
+  clearScenario,
 }: ROSDrawerContentProps) => {
   const nivåer = ['1', '2', '3', '4', '5'];
   const trusselaktørerOptions =
@@ -32,37 +32,37 @@ export const DrawerContent = ({
   const { header, content, icon, buttons } = useDrawerContentStyles();
 
   const setBeskrivelse = (event: ChangeEvent<{ value: unknown }>) =>
-    setNyttScenario({
-      ...nyttScenario,
+    setScenario({
+      ...scenario,
       beskrivelse: event.target.value as string,
     });
 
   const setTrusselaktører = (event: ChangeEvent<{ value: unknown }>) =>
-    setNyttScenario({
-      ...nyttScenario,
+    setScenario({
+      ...scenario,
       trusselaktører: event.target.value as string[],
     });
 
   const setSårbarheter = (event: ChangeEvent<{ value: unknown }>) =>
-    setNyttScenario({
-      ...nyttScenario,
+    setScenario({
+      ...scenario,
       sårbarheter: event.target.value as string[],
     });
 
   const setSannsynlighet = (event: ChangeEvent<{ value: unknown }>) =>
-    setNyttScenario({
-      ...nyttScenario,
+    setScenario({
+      ...scenario,
       risiko: {
-        ...nyttScenario.risiko,
+        ...scenario.risiko,
         sannsynlighet: Number(event.target.value),
       },
     });
 
   const setKonsekvens = (event: ChangeEvent<{ value: unknown }>) =>
-    setNyttScenario({
-      ...nyttScenario,
+    setScenario({
+      ...scenario,
       risiko: {
-        ...nyttScenario.risiko,
+        ...scenario.risiko,
         konsekvens: Number(event.target.value),
       },
     });
@@ -75,7 +75,7 @@ export const DrawerContent = ({
           key="dismiss"
           title="Close the drawer"
           onClick={() => {
-            slettNyttScenario();
+            clearScenario();
             toggleDrawer(false);
           }}
           color="inherit"
@@ -87,13 +87,13 @@ export const DrawerContent = ({
       <Box className={content}>
         <TextField
           label="Beskrivelse"
-          value={nyttScenario.beskrivelse}
+          value={scenario.beskrivelse}
           handleChange={setBeskrivelse}
         />
 
         <Dropdown
           label="Trusselaktører"
-          selectedValues={nyttScenario.trusselaktører}
+          selectedValues={scenario.trusselaktører}
           options={trusselaktørerOptions}
           handleChange={setTrusselaktører}
           multiple
@@ -101,7 +101,7 @@ export const DrawerContent = ({
 
         <Dropdown
           label="Sårbarheter"
-          selectedValues={nyttScenario.sårbarheter}
+          selectedValues={scenario.sårbarheter}
           options={sårbarheterOptions}
           handleChange={setSårbarheter}
           multiple
@@ -109,14 +109,14 @@ export const DrawerContent = ({
 
         <Dropdown
           label="Sannsynlighet"
-          selectedValues={[nyttScenario.risiko.sannsynlighet.toString()]}
+          selectedValues={[scenario.risiko.sannsynlighet.toString()]}
           options={nivåer}
           handleChange={setSannsynlighet}
         />
 
         <Dropdown
           label="Konsekvens"
-          selectedValues={[nyttScenario.risiko.konsekvens.toString()]}
+          selectedValues={[scenario.risiko.konsekvens.toString()]}
           options={nivåer}
           handleChange={setKonsekvens}
         />
@@ -126,7 +126,7 @@ export const DrawerContent = ({
           style={{ textTransform: 'none' }}
           variant="contained"
           color="primary"
-          onClick={() => lagreNyttScenario()}
+          onClick={() => saveScenario()}
         >
           Lagre
         </Button>
@@ -135,7 +135,7 @@ export const DrawerContent = ({
           variant="outlined"
           color="primary"
           onClick={() => {
-            slettNyttScenario();
+            clearScenario();
             toggleDrawer(false);
           }}
         >

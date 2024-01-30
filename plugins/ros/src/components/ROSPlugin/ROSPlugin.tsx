@@ -12,43 +12,39 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import { ROS, Scenario } from '../interface/interfaces';
-import { ROSDrawer } from '../ROSDrawer/ROSDrawer';
-import { Dropdown } from '../ROSDrawer/Dropdown';
-import { useAsyncEntity } from '@backstage/plugin-catalog-react';
+import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import {
   useBaseUrl,
+  useDisplaySubmitResponse,
   useFetchRos,
   useFetchRosIds,
   useGithubRepositoryInformation,
+  useScenarioDrawer,
 } from '../utils/hooks';
-import { ScenarioTable } from '../Table/ScenarioTable';
+import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
+import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
   const { fetch } = useApi(fetchApiRef);
 
   const baseUrl = useBaseUrl();
+  const repoInfo = useGithubRepositoryInformation();
   const { value: token } = useAsync(() => githubApi.getAccessToken('repo'));
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
 
-  const [saveROSResponse, setSaveROSResponse] = useState<string>('');
+  const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
-  const currentEntity = useAsyncEntity();
-  const repoInformation = useGithubRepositoryInformation(currentEntity);
-  const [rosIds, selectedId, setSelectedId] = useFetchRosIds(
-    token,
-    repoInformation,
-  );
-  const [ros, setRos] = useFetchRos(selectedId, token, repoInformation);
+  const [rosIds, selectedId, setSelectedId] = useFetchRosIds(token, repoInfo);
+  const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
 
-  const postROS = () => {
-    if (repoInformation && token) {
+  const submitROS = () => {
+    if (repoInfo && token) {
       fetch(
-        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`,
+        `${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}/${selectedId}`,
         {
           method: 'PUT',
           headers: {
@@ -58,37 +54,15 @@ export const ROSPlugin = () => {
           body: JSON.stringify({ ros: JSON.stringify(ros) }),
         },
       ).then(res => {
-        if (res.ok) {
-          setSaveROSResponse('ROS ble oppdatert!');
-        } else {
-          res.text().then(text => setSaveROSResponse(text));
-        }
+        res.ok
+          ? displaySubmitResponse('ROS ble oppdatert!')
+          : res.text().then(text => displaySubmitResponse(text));
       });
     }
   };
 
-  const lagreNyttScenario = (scenario: Scenario) => {
-    if (ros) {
-      setRos({
-        ...ros,
-        scenarier: ros.scenarier.concat(scenario),
-      });
-    }
-  };
-
-  const createNewROS = (newRos: ROS) => {
-    setRos(newRos);
-  };
-
-  const slettScenario = (index: number) => {
-    if (ros) {
-      setRos({
-        ...ros,
-        // scenarier: ros.scenarier.filter(scenario => scenario.id !== id),
-        scenarier: ros.scenarier.filter((_, i) => i !== index),
-      });
-    }
-  };
+  const [scenario, setScenario, saveScenario, deleteScenario, editScenario] =
+    useScenarioDrawer(ros, setRos, setDrawerIsOpen);
 
   return (
     <Content>
@@ -135,8 +109,8 @@ export const ROSPlugin = () => {
           <Grid item>
             <ScenarioTable
               ros={ros}
-              deleteRow={slettScenario}
-              editRow={id => console.log(`Endret ${id}`)}
+              deleteRow={deleteScenario}
+              editRow={editScenario}
             />
           </Grid>
         )}
@@ -159,11 +133,11 @@ export const ROSPlugin = () => {
                 <Button
                   style={{ textTransform: 'none' }}
                   variant="contained"
-                  onClick={postROS}
+                  onClick={submitROS}
                 >
-                  Send risiko- og sårbarhetsanalyse
+                  Lagre risiko- og sårbarhetsanalyse
                 </Button>
-                <Typography>{saveROSResponse}</Typography>
+                <Typography>{submitResponse}</Typography>
               </Box>
             </Grid>
           </Grid>
@@ -173,13 +147,15 @@ export const ROSPlugin = () => {
       <ROSDialog
         isOpen={dialogIsOpen}
         onClose={() => setDialogIsOpen(false)}
-        createNewROS={createNewROS}
+        setRos={setRos}
       />
 
-      <ROSDrawer
+      <ScenarioDrawer
         isOpen={drawerIsOpen}
         setIsOpen={setDrawerIsOpen}
-        lagreNyttScenario={lagreNyttScenario}
+        scenario={scenario}
+        setScenario={setScenario}
+        saveScenario={saveScenario}
       />
     </Content>
   );
