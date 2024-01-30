@@ -58,7 +58,7 @@ catalog:
     github:
       providerId:
         organization: 'bekk'
-        catalogPath: 'catalog-info.yaml'
+        catalogPath: '.security/catalog-info.yaml'
         filters:
           branch: 'main'
           repository: '^kv-ros-.*$'
