@@ -4,7 +4,7 @@ import {
   TextField as MUITextField,
 } from '@material-ui/core';
 import React, { ChangeEvent } from 'react';
-import { useInputFieldStyles } from './DrawerStyle';
+import { useInputFieldStyles } from './ScenarioDrawerStyle';
 
 interface TextFieldProps {
   label: string;
@@ -16,7 +16,7 @@ interface TextFieldProps {
 export const TextField = ({
   label,
   value,
-  minRows,
+  minRows = 4,
   handleChange,
 }: TextFieldProps) => {
   const { formLabel, inputBox } = useInputFieldStyles();
@@ -30,7 +30,7 @@ export const TextField = ({
         value={value}
         multiline
         fullWidth
-        minRows={minRows ? minRows : 4}
+        minRows={minRows}
         maxRows={4}
         variant="filled"
         onChange={handleChange}

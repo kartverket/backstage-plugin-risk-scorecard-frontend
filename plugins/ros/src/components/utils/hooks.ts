@@ -1,17 +1,16 @@
-import { EntityLoadingStatus } from '@backstage/plugin-catalog-react';
+import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
-import { GithubRepositoryInformation, ROS } from '../interface/interfaces';
+import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
+import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
 
 export const useBaseUrl = () => {
   return useApi(configApiRef).getString('app.backendUrl');
 };
 
-export const useGithubRepositoryInformation = (
-  currentEntity: EntityLoadingStatus,
-): GithubRepositoryInformation | null => {
-  const [repoInformation, setRepoInformation] =
-    useState<GithubRepositoryInformation | null>(null);
+export const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
+  const currentEntity = useAsyncEntity();
+  const [repoInfo, setRepoInfo] = useState<GithubRepoInfo | null>(null);
 
   useEffect(() => {
     if (!currentEntity.loading && currentEntity.entity !== undefined) {
@@ -24,19 +23,19 @@ export const useGithubRepositoryInformation = (
 
       if (slug === null) return;
 
-      setRepoInformation({
+      setRepoInfo({
         name: slug[1],
         owner: slug[0],
       });
     }
   }, [currentEntity.entity, currentEntity.loading]);
 
-  return repoInformation;
+  return repoInfo;
 };
 
 export const useFetchRosIds = (
   token: string | undefined,
-  repoInformation: GithubRepositoryInformation | null,
+  repoInformation: GithubRepoInfo | null,
 ): [
   string[] | null,
   string | null,
@@ -85,7 +84,7 @@ export const useFetchRosIds = (
 export const useFetchRos = (
   selectedId: string | null,
   token: string | undefined,
-  repoInformation: GithubRepositoryInformation | null,
+  repoInformation: GithubRepoInfo | null,
 ): [ROS | undefined, Dispatch<SetStateAction<ROS | undefined>>] => {
   const { fetch } = useApi(fetchApiRef);
   const baseUrl = useBaseUrl();
@@ -107,4 +106,64 @@ export const useFetchRos = (
   }, [selectedId, token]);
 
   return [ros, setRos];
+};
+
+export const useDisplaySubmitResponse = (): [
+  string,
+  (text: string) => void,
+] => {
+  const [submitResponse, setSubmitResponse] = useState<string>('');
+
+  const displaySubmitResponse = (text: string) => {
+    setSubmitResponse(text);
+    setTimeout(() => {
+      setSubmitResponse('');
+    }, 3000);
+  };
+
+  return [submitResponse, displaySubmitResponse];
+};
+
+export const useScenarioDrawer = (
+  ros: ROS | undefined,
+  setRos: (ros: ROS) => void,
+  setDrawerIsOpen: (open: boolean) => void,
+): [
+  Scenario,
+  (scenario: Scenario) => void,
+  () => void,
+  (index: number) => void,
+  (index: number) => void,
+] => {
+  const [scenario, setScenario] = useState(emptyScenario());
+
+  const saveScenario = () => {
+    if (ros) {
+      setRos({
+        ...ros,
+        scenarier: ros.scenarier.some(s => s.ID === scenario.ID)
+          ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
+          : ros.scenarier.concat(scenario),
+      });
+      setDrawerIsOpen(false);
+    }
+  };
+
+  const deleteScenario = (index: number) => {
+    if (ros) {
+      setRos({
+        ...ros,
+        scenarier: ros.scenarier.filter((_, i) => i !== index),
+      });
+    }
+  };
+
+  const editScenario = (index: number) => {
+    if (ros) {
+      setScenario(ros.scenarier.at(index)!!);
+      setDrawerIsOpen(true);
+    }
+  };
+
+  return [scenario, setScenario, saveScenario, deleteScenario, editScenario];
 };

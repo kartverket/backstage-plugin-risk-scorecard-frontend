@@ -41,7 +41,7 @@ export interface TableData {
   sannsynlighet: number;
 }
 
-export interface GithubRepositoryInformation {
+export interface GithubRepoInfo {
   name: string;
   owner: string;
 }

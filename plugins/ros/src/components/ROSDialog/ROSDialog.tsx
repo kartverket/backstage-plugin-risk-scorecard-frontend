@@ -6,14 +6,14 @@ import {
   Button,
   Box,
 } from '@material-ui/core';
-import { TextField } from '../ROSDrawer/Textfield';
+import { TextField } from '../ScenarioDrawer/Textfield';
 import { ROS } from '../interface/interfaces';
 import { useDialogStyles } from './DialogStyle';
 
 interface ROSDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  createNewROS: (ros: ROS) => void;
+  setRos: (ros: ROS) => void;
 }
 
 interface NewROSOptions {
@@ -23,7 +23,7 @@ interface NewROSOptions {
 export const ROSDialog = ({
   isOpen,
   onClose,
-  createNewROS,
+  setRos,
   ...props
 }: ROSDialogProps) => {
   const emptyROS = (withVersions: NewROSOptions): ROS => ({
@@ -43,7 +43,7 @@ export const ROSDialog = ({
   };
 
   const handleCreate = () => {
-    createNewROS(newROS);
+    setRos(newROS);
     onClose();
     clearROS();
   };
