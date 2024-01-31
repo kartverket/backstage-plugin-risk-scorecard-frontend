@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
 import {
   Content,
   ContentHeader,
@@ -25,6 +24,7 @@ import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -55,10 +55,11 @@ export const ROSPlugin = () => {
           body: JSON.stringify({ ros: JSON.stringify(ros) }),
         },
       ).then(res => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        res.ok
-          ? displaySubmitResponse('ROS ble oppdatert!')
-          : res.text().then(text => displaySubmitResponse(text));
+        if (res.ok) {
+          displaySubmitResponse('ROS ble oppdatert!');
+        } else {
+          res.text().then(text => displaySubmitResponse(text));
+        }
       });
     }
   };
@@ -73,10 +74,11 @@ export const ROSPlugin = () => {
         },
         body: JSON.stringify({ ros: JSON.stringify(newRos) }),
       }).then(res => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        res.ok
-          ? displaySubmitResponse('ROS ble opprettet!')
-          : res.text().then(text => displaySubmitResponse(text));
+        if (res.ok) {
+          displaySubmitResponse('ROS ble opprettet!');
+        } else {
+          res.text().then(text => displaySubmitResponse(text));
+        }
       });
     }
   };
@@ -104,7 +106,7 @@ export const ROSPlugin = () => {
 
         <Grid item>
           <Button
-            startIcon={<AddIcon />}
+            startIcon={<AddCircleOutlineIcon />}
             variant="text"
             color="primary"
             onClick={() => setDialogIsOpen(true)}

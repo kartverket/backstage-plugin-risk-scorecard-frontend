@@ -2,7 +2,7 @@ import React from 'react';
 import { Drawer } from '@material-ui/core';
 import { ScenarioDrawerContent } from './ScenarioDrawerContent';
 import { Scenario } from '../interface/interfaces';
-import { useDrawerStyles } from './ScenarioDrawerStyle';
+import { useScenarioDrawerStyles } from './ScenarioDrawerStyle';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
@@ -19,7 +19,7 @@ export const ScenarioDrawer = ({
   setScenario,
   saveScenario,
 }: ScenarioDrawerProps) => {
-  const classes = useDrawerStyles();
+  const classes = useScenarioDrawerStyles();
 
   const clearScenario = () => setScenario(emptyScenario());
 
