@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import {
   Content,
@@ -42,7 +42,7 @@ export const ROSPlugin = () => {
   const [rosIds, selectedId, setSelectedId] = useFetchRosIds(token, repoInfo);
   const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
 
-  const putROS = () => {
+  const putROS = (ros: ROS) => {
     if (repoInfo && token) {
       fetch(
         `${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}/${selectedId}`,
@@ -82,7 +82,7 @@ export const ROSPlugin = () => {
   };
 
   const [scenario, setScenario, saveScenario, deleteScenario, editScenario] =
-    useScenarioDrawer(ros, setRos, setDrawerIsOpen);
+    useScenarioDrawer(ros, setRos, setDrawerIsOpen, putROS);
 
   return (
     <Content>
@@ -149,16 +149,7 @@ export const ROSPlugin = () => {
             </Grid>
 
             <Grid item>
-              <Box display="flex" alignItems="center" gridGap="2rem">
-                <Button
-                  style={{ textTransform: 'none' }}
-                  variant="contained"
-                  onClick={putROS}
-                >
-                  Lagre risiko- og sårbarhetsanalyse
-                </Button>
-                <Typography>{submitResponse}</Typography>
-              </Box>
+              <Typography>{submitResponse}</Typography>
             </Grid>
           </Grid>
         </Grid>

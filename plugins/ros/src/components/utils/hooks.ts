@@ -128,6 +128,7 @@ export const useScenarioDrawer = (
   ros: ROS | undefined,
   setRos: (ros: ROS) => void,
   setDrawerIsOpen: (open: boolean) => void,
+  putROS: (ros: ROS) => void,
 ): [
   Scenario,
   (scenario: Scenario) => void,
@@ -139,22 +140,20 @@ export const useScenarioDrawer = (
 
   const saveScenario = () => {
     if (ros) {
-      setRos({
-        ...ros,
-        scenarier: ros.scenarier.some(s => s.ID === scenario.ID)
-          ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
-          : ros.scenarier.concat(scenario),
-      });
+      const updatedScenarios = ros.scenarier.some(s => s.ID === scenario.ID)
+        ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
+        : ros.scenarier.concat(scenario);
+      setRos({ ...ros, scenarier: updatedScenarios });
+      putROS({ ...ros, scenarier: updatedScenarios });
       setDrawerIsOpen(false);
     }
   };
 
   const deleteScenario = (index: number) => {
     if (ros) {
-      setRos({
-        ...ros,
-        scenarier: ros.scenarier.filter((_, i) => i !== index),
-      });
+      const updatedScenarios = ros.scenarier.filter((_, i) => i !== index);
+      setRos({ ...ros, scenarier: updatedScenarios });
+      putROS({ ...ros, scenarier: updatedScenarios });
     }
   };
 
