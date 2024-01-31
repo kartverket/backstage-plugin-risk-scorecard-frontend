@@ -55,8 +55,27 @@ export const ROSPlugin = () => {
           body: JSON.stringify({ ros: JSON.stringify(ros) }),
         },
       ).then(res => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         res.ok
           ? displaySubmitResponse('ROS ble oppdatert!')
+          : res.text().then(text => displaySubmitResponse(text));
+      });
+    }
+  };
+
+  const postROS = (newRos: ROS) => {
+    if (repoInfo && token) {
+      fetch(`${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Github-Access-Token': token,
+        },
+        body: JSON.stringify({ ros: JSON.stringify(newRos) }),
+      }).then(res => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        res.ok
+          ? displaySubmitResponse('ROS ble opprettet!')
           : res.text().then(text => displaySubmitResponse(text));
       });
     }
@@ -140,6 +159,7 @@ export const ROSPlugin = () => {
         isOpen={dialogIsOpen}
         onClose={() => setDialogIsOpen(false)}
         setRos={setRos}
+        saveRos={postROS}
       />
 
       <ScenarioDrawer
