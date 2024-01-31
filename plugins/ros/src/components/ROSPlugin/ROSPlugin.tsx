@@ -24,6 +24,7 @@ import {
 import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
+import { ROS } from '../interface/interfaces';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -41,7 +42,7 @@ export const ROSPlugin = () => {
   const [rosIds, selectedId, setSelectedId] = useFetchRosIds(token, repoInfo);
   const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
 
-  const submitROS = () => {
+  const putROS = () => {
     if (repoInfo && token) {
       fetch(
         `${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}/${selectedId}`,
@@ -54,8 +55,27 @@ export const ROSPlugin = () => {
           body: JSON.stringify({ ros: JSON.stringify(ros) }),
         },
       ).then(res => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         res.ok
           ? displaySubmitResponse('ROS ble oppdatert!')
+          : res.text().then(text => displaySubmitResponse(text));
+      });
+    }
+  };
+
+  const postROS = (newRos: ROS) => {
+    if (repoInfo && token) {
+      fetch(`${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Github-Access-Token': token,
+        },
+        body: JSON.stringify({ ros: JSON.stringify(newRos) }),
+      }).then(res => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        res.ok
+          ? displaySubmitResponse('ROS ble opprettet!')
           : res.text().then(text => displaySubmitResponse(text));
       });
     }
@@ -133,7 +153,7 @@ export const ROSPlugin = () => {
                 <Button
                   style={{ textTransform: 'none' }}
                   variant="contained"
-                  onClick={submitROS}
+                  onClick={putROS}
                 >
                   Lagre risiko- og sårbarhetsanalyse
                 </Button>
@@ -148,6 +168,7 @@ export const ROSPlugin = () => {
         isOpen={dialogIsOpen}
         onClose={() => setDialogIsOpen(false)}
         setRos={setRos}
+        saveRos={postROS}
       />
 
       <ScenarioDrawer
