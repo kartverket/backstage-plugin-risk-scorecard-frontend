@@ -14,6 +14,7 @@ interface ROSDialogProps {
   isOpen: boolean;
   onClose: () => void;
   setRos: (ros: ROS) => void;
+  saveRos: (newRos: ROS) => void;
 }
 
 interface NewROSOptions {
@@ -24,6 +25,7 @@ export const ROSDialog = ({
   isOpen,
   onClose,
   setRos,
+  saveRos,
   ...props
 }: ROSDialogProps) => {
   const emptyROS = (withVersions: NewROSOptions): ROS => ({
@@ -44,6 +46,7 @@ export const ROSDialog = ({
 
   const handleCreate = () => {
     setRos(newROS);
+    saveRos(newROS);
     onClose();
     clearROS();
   };
@@ -75,7 +78,7 @@ export const ROSDialog = ({
       <DialogTitle>Ny analyse</DialogTitle>
       <DialogContent>
         <Box className={classes.content}>
-          {/* TODO: felt validering */}
+          {/* TODO: feltvalidering */}
           <TextField
             label="Tittel"
             value={newROS.tittel}
