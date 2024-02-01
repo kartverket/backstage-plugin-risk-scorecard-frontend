@@ -39,7 +39,10 @@ export const ROSPlugin = () => {
 
   const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
-  const [rosIds, selectedId, setSelectedId] = useFetchRosIds(token, repoInfo);
+  const [rosIds, selectedId, setSelectedId, rosIdsWithStatus] = useFetchRosIds(
+    token,
+    repoInfo,
+  );
   const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
 
   const putROS = (ros: ROS) => {
@@ -101,6 +104,11 @@ export const ROSPlugin = () => {
               selectedValues={selectedId ? [selectedId] : []}
               handleChange={e => setSelectedId(e.target.value as string)}
             />
+            {rosIdsWithStatus
+              ? `(${
+                  rosIdsWithStatus.filter(x => x.id === selectedId)[0].status
+                })`
+              : ''}
           </Grid>
         )}
 

@@ -3,7 +3,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
-import { ROSContentResultDTO, RosIdentifierResponseDTO } from './types';
+import {
+  ROSContentResultDTO,
+  RosIdentifier,
+  RosIdentifierResponseDTO,
+} from './types';
 
 export const useBaseUrl = () => {
   return useApi(configApiRef).getString('app.backendUrl');
@@ -43,11 +47,15 @@ export const useFetchRosIds = (
   (
     value: ((prevState: string | null) => string | null) | string | null,
   ) => void,
+  RosIdentifier[] | null,
 ] => {
   const { fetch } = useApi(fetchApiRef);
   const baseUrl = useBaseUrl();
 
   const [rosIds, setRosIds] = useState<string[] | null>(null);
+  const [rosIdsWithStatus, setRosIdsWithStatus] = useState<
+    RosIdentifier[] | null
+  >(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -67,7 +75,12 @@ export const useFetchRosIds = (
           })
           .then(json => json as RosIdentifierResponseDTO)
           .then(rosIdentifiersResponseDTO => {
-            setRosIds(rosIdentifiersResponseDTO.rosIds.map(x => x.id));
+            setRosIds(
+              rosIdentifiersResponseDTO.rosIds.map(
+                rosIdentifier => rosIdentifier.id,
+              ),
+            );
+            setRosIdsWithStatus(rosIdentifiersResponseDTO.rosIds);
             setSelectedId(rosIdentifiersResponseDTO.rosIds[0].id);
           })
           .catch(error => {
@@ -81,7 +94,7 @@ export const useFetchRosIds = (
     }
   }, [baseUrl, fetch, repoInformation, token]);
 
-  return [rosIds, selectedId, setSelectedId];
+  return [rosIds, selectedId, setSelectedId, rosIdsWithStatus];
 };
 
 export const useFetchRos = (
