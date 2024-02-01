@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
+import { ROSContentResultDTO, RosIdentifierResponseDTO } from './types';
 
 export const useBaseUrl = () => {
   return useApi(configApiRef).getString('app.backendUrl');
@@ -39,7 +40,9 @@ export const useFetchRosIds = (
 ): [
   string[] | null,
   string | null,
-  Dispatch<SetStateAction<string | null>>,
+  (
+    value: ((prevState: string | null) => string | null) | string | null,
+  ) => void,
 ] => {
   const { fetch } = useApi(fetchApiRef);
   const baseUrl = useBaseUrl();
@@ -62,10 +65,10 @@ export const useFetchRosIds = (
             }
             return res.json();
           })
-          .then(json => json as string[])
-          .then(ids => {
-            setRosIds(ids);
-            setSelectedId(ids[0]);
+          .then(json => json as RosIdentifierResponseDTO)
+          .then(rosIdentifiersResponseDTO => {
+            setRosIds(rosIdentifiersResponseDTO.rosIds.map(x => x.id));
+            setSelectedId(rosIdentifiersResponseDTO.rosIds[0].id);
           })
           .catch(error => {
             // Handle the error here, you can log it or show a user-friendly message
@@ -76,7 +79,7 @@ export const useFetchRosIds = (
         console.error('Unexpected error:', error);
       }
     }
-  }, [token]);
+  }, [baseUrl, fetch, repoInformation, token]);
 
   return [rosIds, selectedId, setSelectedId];
 };
@@ -100,10 +103,18 @@ export const useFetchRos = (
         },
       )
         .then(res => res.json())
-        .then(json => json as ROS)
-        .then(fetchedRos => setRos(fetchedRos));
+        .then(json => json as ROSContentResultDTO)
+        .then(fetchedRos => {
+          if (fetchedRos.rosContent !== null) {
+            const rosContent = JSON.parse(fetchedRos.rosContent) as ROS;
+            setRos(rosContent);
+          } else
+            console.log(
+              `Kunne ikke hente ros med status: ${fetchedRos.status}`,
+            );
+        });
     }
-  }, [selectedId, token]);
+  }, [baseUrl, fetch, repoInformation, selectedId, token]);
 
   return [ros, setRos];
 };
