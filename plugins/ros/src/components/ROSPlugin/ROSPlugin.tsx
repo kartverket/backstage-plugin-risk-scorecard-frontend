@@ -25,6 +25,7 @@ import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { DeleteConfirmation } from './DeleteConfirmation';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -83,8 +84,16 @@ export const ROSPlugin = () => {
     }
   };
 
-  const [scenario, setScenario, saveScenario, deleteScenario, editScenario] =
-    useScenarioDrawer(ros, setRos, setDrawerIsOpen, putROS);
+  const {
+    scenario,
+    setScenario,
+    saveScenario,
+    editScenario,
+    deleteConfirmationIsOpen,
+    openDeleteConfirmation,
+    closeDeleteConfirmation,
+    confirmDeletion,
+  } = useScenarioDrawer(ros, setRos, setDrawerIsOpen, putROS);
 
   return (
     <Content>
@@ -131,7 +140,7 @@ export const ROSPlugin = () => {
           <Grid item>
             <ScenarioTable
               ros={ros}
-              deleteRow={deleteScenario}
+              deleteRow={openDeleteConfirmation}
               editRow={editScenario}
             />
           </Grid>
@@ -170,6 +179,12 @@ export const ROSPlugin = () => {
         scenario={scenario}
         setScenario={setScenario}
         saveScenario={saveScenario}
+      />
+
+      <DeleteConfirmation
+        isOpen={deleteConfirmationIsOpen}
+        close={closeDeleteConfirmation}
+        confirmDeletion={confirmDeletion}
       />
     </Content>
   );
