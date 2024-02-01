@@ -9,14 +9,14 @@ import { useInputFieldStyles } from './ScenarioDrawerStyle';
 interface TextFieldProps {
   label: string;
   value: string;
-  minRows?: number;
+  minRows: number;
   handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
 }
 
 export const TextField = ({
   label,
   value,
-  minRows = 4,
+  minRows,
   handleChange,
 }: TextFieldProps) => {
   const { formLabel, inputBox } = useInputFieldStyles();
@@ -31,7 +31,6 @@ export const TextField = ({
         multiline
         fullWidth
         minRows={minRows}
-        maxRows={4}
         variant="filled"
         onChange={handleChange}
       />

@@ -90,6 +90,7 @@ export const ROSDialog = ({
           <TextField
             label="Omfang"
             value={newROS.omfang}
+            minRows={4}
             handleChange={setOmfang}
           />
         </Box>

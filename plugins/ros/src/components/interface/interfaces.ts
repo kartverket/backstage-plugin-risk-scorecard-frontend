@@ -27,9 +27,9 @@ export interface Tiltak {
   ID: number;
   beskrivelse: string;
   tiltakseier: string;
-  frist: Date;
+  frist: string;
   status: string;
-  restrisisko: Risiko;
+  restrisiko: Risiko;
 }
 
 export interface TableData {

@@ -19,14 +19,11 @@ export const menuProps: Partial<MenuProps> = {
   variant: 'menu',
 };
 
-export const useDrawerStyles = makeStyles((theme: Theme) => ({
+export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
   paper: {
-    width: '40%',
+    width: '50%',
     padding: theme.spacing(8),
   },
-}));
-
-export const useDrawerContentStyles = makeStyles((theme: Theme) => ({
   header: {
     display: 'flex',
     flexDirection: 'row',
@@ -38,6 +35,8 @@ export const useDrawerContentStyles = makeStyles((theme: Theme) => ({
   content: {
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: theme.spacing(4),
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
   },
@@ -52,6 +51,7 @@ export const useDrawerContentStyles = makeStyles((theme: Theme) => ({
 export const useInputFieldStyles = makeStyles((theme: Theme) => ({
   inputBox: {
     paddingTop: theme.spacing(2),
+    width: '100%',
   },
   formLabel: {
     marginBottom: theme.spacing(1),
