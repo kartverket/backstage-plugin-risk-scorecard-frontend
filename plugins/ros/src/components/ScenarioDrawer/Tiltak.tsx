@@ -62,7 +62,7 @@ export const Tiltak = ({ tiltak, updateTiltak, deleteTiltak }: TiltakProps) => {
       >
         <IconButton
           key="dismiss"
-          title="Close the drawer"
+          title="Slett tiltaket"
           onClick={() => deleteTiltak(tiltak)}
           color="inherit"
         >
