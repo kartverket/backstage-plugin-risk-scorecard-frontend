@@ -86,6 +86,27 @@ export const ROSPlugin = () => {
     }
   };
 
+  const publishROS = () => {
+    if (repoInfo && token) {
+      fetch(
+        `${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}/publish/${selectedId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Github-Access-Token': token,
+          },
+        },
+      ).then(res => {
+        if (res.ok) {
+          displaySubmitResponse('ROS ble opprettet!');
+        } else {
+          res.text().then(text => displaySubmitResponse(text));
+        }
+      });
+    }
+  };
+
   const [scenario, setScenario, saveScenario, deleteScenario, editScenario] =
     useScenarioDrawer(ros, setRos, setDrawerIsOpen, putROS);
 
@@ -156,6 +177,22 @@ export const ROSPlugin = () => {
               >
                 Legg til nytt scenario
               </Button>
+            </Grid>
+
+            <Grid item>
+              {rosIdsWithStatus &&
+                selectedId &&
+                rosIdsWithStatus.filter(x => x.id === selectedId)[0].status ===
+                  'Draft' && (
+                  <Button
+                    style={{ textTransform: 'none' }}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => (ros !== undefined ? publishROS() : '')}
+                  >
+                    Send til godkjenning (publisér)
+                  </Button>
+                )}
             </Grid>
 
             <Grid item>
