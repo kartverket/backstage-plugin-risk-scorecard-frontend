@@ -11,7 +11,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import { Dropdown } from '../ScenarioDrawer/Dropdown';
+import Chip from '@material-ui/core/Chip';
 import {
   useBaseUrl,
   useDisplaySubmitResponse,
@@ -102,16 +102,17 @@ export const ROSPlugin = () => {
       </ContentHeader>
 
       <Grid container spacing={3} direction="column">
-        {selectedId && (
-          <Grid item>
-            <Dropdown
-              label="ROS-analyser"
-              options={rosIds ?? []}
-              selectedValues={selectedId ? [selectedId] : []}
-              handleChange={e => setSelectedId(e.target.value as string)}
-            />
-          </Grid>
-        )}
+        <Grid item>
+          {rosIds &&
+            selectedId &&
+            rosIds.map(rosId => (
+              <Chip
+                label={rosId}
+                color={rosId === selectedId ? 'primary' : 'default'}
+                onClick={() => setSelectedId(rosId)}
+              />
+            ))}
+        </Grid>
 
         <Grid item>
           <Button
