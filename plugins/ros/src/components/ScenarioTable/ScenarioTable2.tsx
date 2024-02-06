@@ -4,11 +4,6 @@ import {
   Grid,
   IconButton,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
   Typography,
 } from '@material-ui/core';
 import { ROS, Scenario } from '../interface/interfaces';
@@ -16,8 +11,12 @@ import { DeleteButton, EditButton } from './ScenarioTableButtons';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { InfoCard } from '@backstage/core-components';
-import Box from '@material-ui/core/Box';
 import TableRow from '@mui/material/TableRow';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
 
 interface ScenarioTableProps {
   ros: ROS;
@@ -31,54 +30,59 @@ export const ScenarioTable = ({
   editRow,
 }: ScenarioTableProps) => {
   const Row = ({ scenario }: { scenario: Scenario }) => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
 
     return (
       <>
-        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-          <TableCell>
+        <TableRow>
+          <TableCell style={{ width: '5rem' }}>
             <IconButton
               aria-label="expand row"
-              size="small"
+              size="medium"
               onClick={() => setOpen(!open)}
             >
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
           </TableCell>
           <TableCell>{scenario.beskrivelse}</TableCell>
-          <TableCell align="center">{scenario.risiko.konsekvens}</TableCell>
-          <TableCell align="center">{scenario.risiko.sannsynlighet}</TableCell>
+          <TableCell>{scenario.risiko.konsekvens}</TableCell>
+          <TableCell>{scenario.risiko.sannsynlighet}</TableCell>
           <TableCell>
             <EditButton onClick={() => editRow(scenario.ID)} />
             <DeleteButton onClick={() => deleteRow(scenario.ID)} />
           </TableCell>
         </TableRow>
-        <TableRow>
+        <TableRow style={{ borderBottom: '1px solid white' }}>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Grid container style={{ padding: '1rem' }}>
                 <Grid item xs={6}>
-                  <Typography variant="h6">Trusselaktører</Typography>
-                  <Box>{scenario.trusselaktører.join(', ')}</Box>
+                  <Typography variant="subtitle1" gutterBottom>
+                    <b>Beskrivelse: </b>
+                    {scenario.beskrivelse}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    <b>Trusselaktører: </b>
+                    {scenario.trusselaktører.join(', ')}
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    <b>Sårbarheter: </b>
+                    {scenario.sårbarheter.join(', ')}
+                  </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant="h6">Tiltak</Typography>
-                  <TableContainer>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Beskrivelse</TableCell>
-                        <TableCell>Status</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {scenario.tiltak.map(tiltak => (
-                        <TableRow>
-                          <TableCell>{tiltak.beskrivelse}</TableCell>
-                          <TableCell>{tiltak.status}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </TableContainer>
+                  <Typography variant="subtitle1">
+                    <b>Tiltak:</b>
+                  </Typography>
+                  <ul>
+                    {scenario.tiltak.map(tiltak => (
+                      <li>
+                        <Typography variant="body1">
+                          {tiltak.beskrivelse}
+                        </Typography>
+                      </li>
+                    ))}
+                  </ul>
                 </Grid>
               </Grid>
             </Collapse>
@@ -90,25 +94,37 @@ export const ScenarioTable = ({
 
   return (
     <InfoCard>
-      <Typography variant="h3" style={{ paddingBottom: '1rem' }}>
+      <Typography variant="h3" gutterBottom>
         Scenarioer
       </Typography>
       <TableContainer component={Paper}>
-        <Table>
+        <Table
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          }}
+        >
           <TableHead>
             <TableRow
               style={{
-                borderBottom: '1px solid #ffffff',
-                borderTop: '1px solid #ffffff',
+                borderBottom: '1px solid white',
+                borderTop: '1px solid white',
               }}
             >
               <TableCell />
-              <TableCell style={{ fontWeight: 'bold' }}>Beskrivelse</TableCell>
-              <TableCell align="center" style={{ fontWeight: 'bold' }}>
-                Konsekvens
+              <TableCell
+                style={{ paddingTop: '0.1rem', paddingBottom: '0.1rem' }}
+              >
+                <Typography variant="h6">Beskrivelse</Typography>
               </TableCell>
-              <TableCell align="center" style={{ fontWeight: 'bold' }}>
-                Sannsynlighet
+              <TableCell
+                style={{ paddingTop: '0.1rem', paddingBottom: '0.1rem' }}
+              >
+                <Typography variant="h6">Konsekvens</Typography>
+              </TableCell>
+              <TableCell
+                style={{ paddingTop: '0.1rem', paddingBottom: '0.1rem' }}
+              >
+                <Typography variant="h6">Sannsynlighet</Typography>
               </TableCell>
               <TableCell />
             </TableRow>
