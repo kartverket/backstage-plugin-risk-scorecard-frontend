@@ -98,11 +98,7 @@ export const ScenarioTable = ({
         Scenarioer
       </Typography>
       <TableContainer component={Paper}>
-        <Table
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-          }}
-        >
+        <Table style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
           <TableHead>
             <TableRow
               style={{
