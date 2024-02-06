@@ -1,4 +1,10 @@
-import { Risiko, ROS, Scenario, TableData } from '../interface/interfaces';
+import {
+  GithubRepoInfo,
+  Risiko,
+  ROS,
+  Scenario,
+  TableData,
+} from '../interface/interfaces';
 
 export function mapToTableData(data: ROS): TableData[] {
   return data.scenarier.map((scenario: Scenario, id) => {
@@ -20,3 +26,19 @@ export function mapToTableData(data: ROS): TableData[] {
     return tableRow;
   });
 }
+
+export const uriToFetchRosIds = (
+  baseUrl: string,
+  repoInformation: GithubRepoInfo,
+) => `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/ids`;
+
+export const uriToFetchRos = (
+  baseUrl: string,
+  repoInformation: GithubRepoInfo,
+  selectedId: string,
+) =>
+  `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
+
+export const githubRequestHeaders = (token: string): HeadersInit => ({
+  'Github-Access-Token': token,
+});

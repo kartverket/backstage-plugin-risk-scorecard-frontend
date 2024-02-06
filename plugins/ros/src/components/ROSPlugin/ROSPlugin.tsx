@@ -25,6 +25,7 @@ import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { ROSProcessResultDTO } from '../utils/types';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -76,13 +77,19 @@ export const ROSPlugin = () => {
           'Github-Access-Token': token,
         },
         body: JSON.stringify({ ros: JSON.stringify(newRos) }),
-      }).then(res => {
-        if (res.ok) {
-          displaySubmitResponse('ROS ble opprettet!');
-        } else {
+      })
+        .then(res => {
+          if (res.ok) {
+            displaySubmitResponse('ROS ble opprettet!');
+            return res.json();
+          }
           res.text().then(text => displaySubmitResponse(text));
-        }
-      });
+          return null;
+        })
+        .then(json => json as ROSProcessResultDTO)
+        .then(processingResult => {
+          console.log(processingResult);
+        });
     }
   };
 
@@ -99,7 +106,7 @@ export const ROSPlugin = () => {
         },
       ).then(res => {
         if (res.ok) {
-          displaySubmitResponse('ROS ble opprettet!');
+          displaySubmitResponse('Det ble opprettet en PR for ROSen!');
         } else {
           res.text().then(text => displaySubmitResponse(text));
         }

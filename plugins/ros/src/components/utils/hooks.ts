@@ -8,6 +8,11 @@ import {
   RosIdentifier,
   RosIdentifierResponseDTO,
 } from './types';
+import {
+  githubRequestHeaders,
+  uriToFetchRos,
+  uriToFetchRosIds,
+} from './utilityfunctions';
 
 export const useBaseUrl = () => {
   return useApi(configApiRef).getString('app.backendUrl');
@@ -61,12 +66,9 @@ export const useFetchRosIds = (
   useEffect(() => {
     if (token && repoInformation) {
       try {
-        fetch(
-          `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/ids`,
-          {
-            headers: { 'Github-Access-Token': token },
-          },
-        )
+        fetch(uriToFetchRosIds(baseUrl, repoInformation), {
+          headers: githubRequestHeaders(token),
+        })
           .then(res => {
             if (!res.ok) {
               throw new Error(`HTTP error! Status: ${res.status}`);
@@ -109,12 +111,9 @@ export const useFetchRos = (
 
   useEffect(() => {
     if (selectedId && token && repoInformation) {
-      fetch(
-        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`,
-        {
-          headers: { 'Github-Access-Token': token },
-        },
-      )
+      fetch(uriToFetchRos(baseUrl, repoInformation, selectedId), {
+        headers: githubRequestHeaders(token),
+      })
         .then(res => res.json())
         .then(json => json as ROSContentResultDTO)
         .then(fetchedRos => {
