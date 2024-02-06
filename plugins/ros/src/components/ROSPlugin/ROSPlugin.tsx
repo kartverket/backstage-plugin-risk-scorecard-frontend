@@ -25,7 +25,14 @@ import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { ROSProcessResultDTO } from '../utils/types';
+import { postROS } from '../utils/rosFunctions';
+import { RosStatus } from '../utils/types';
+import {
+  githubPostRequestHeaders,
+  uriToPublishROS,
+  uriToPutROS,
+} from '../utils/utilityfunctions';
+import { RESTMethods } from 'msw';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -40,78 +47,71 @@ export const ROSPlugin = () => {
 
   const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
-  const [rosIds, selectedId, setSelectedId, rosIdsWithStatus] = useFetchRosIds(
-    token,
-    repoInfo,
-  );
+  const [
+    rosIds,
+    setRosIds,
+    selectedId,
+    setSelectedId,
+    rosIdsWithStatus,
+    setRosIdsWithStatus,
+  ] = useFetchRosIds(token, repoInfo);
   const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
 
-  const putROS = (ros: ROS) => {
+  const putROS = (updatedROS: ROS) => {
     if (repoInfo && token) {
-      fetch(
-        `${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}/${selectedId}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Github-Access-Token': token,
-          },
-          body: JSON.stringify({ ros: JSON.stringify(ros) }),
-        },
-      ).then(res => {
-        if (res.ok) {
-          displaySubmitResponse('ROS ble oppdatert!');
-        } else {
-          res.text().then(text => displaySubmitResponse(text));
-        }
+      fetch(uriToPutROS(baseUrl, repoInfo, token), {
+        method: RESTMethods.PUT,
+        headers: githubPostRequestHeaders(token),
+        body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
+      }).then(res => {
+        if (res.ok) displaySubmitResponse('ROS ble oppdatert!');
+        else res.text().then(text => displaySubmitResponse(text));
       });
-    }
-  };
-
-  const postROS = (newRos: ROS) => {
-    if (repoInfo && token) {
-      fetch(`${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Github-Access-Token': token,
-        },
-        body: JSON.stringify({ ros: JSON.stringify(newRos) }),
-      })
-        .then(res => {
-          if (res.ok) {
-            displaySubmitResponse('ROS ble opprettet!');
-            return res.json();
-          }
-          res.text().then(text => displaySubmitResponse(text));
-          return null;
-        })
-        .then(json => json as ROSProcessResultDTO)
-        .then(processingResult => {
-          console.log(processingResult);
-        });
     }
   };
 
   const publishROS = () => {
     if (repoInfo && token) {
-      fetch(
-        `${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}/publish/${selectedId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Github-Access-Token': token,
-          },
-        },
-      ).then(res => {
+      fetch(uriToPublishROS(baseUrl, repoInfo, token), {
+        method: RESTMethods.POST,
+        headers: githubPostRequestHeaders(token),
+      }).then(res => {
         if (res.ok) {
+          // TODO: update to senttoapproval
           displaySubmitResponse('Det ble opprettet en PR for ROSen!');
-        } else {
-          res.text().then(text => displaySubmitResponse(text));
-        }
+        } else res.text().then(text => displaySubmitResponse(text));
       });
     }
+  };
+
+  const createNewROS = (newRos: ROS) => {
+    postROS(
+      newRos,
+      baseUrl,
+      repoInfo,
+      token,
+      rosProcessingResult => {
+        if (!rosProcessingResult.rosId) return;
+        const updatedRosIds = rosIds
+          ? [...rosIds, rosProcessingResult.rosId]
+          : [rosProcessingResult.rosId];
+        const newRosIdWithDraftStatus = {
+          id: rosProcessingResult.rosId,
+          status: RosStatus.Draft,
+        };
+        const updatedRosIdsWithStatus = rosIdsWithStatus
+          ? [...rosIdsWithStatus, newRosIdWithDraftStatus]
+          : [newRosIdWithDraftStatus];
+
+        setRosIds(updatedRosIds);
+        setRosIdsWithStatus(updatedRosIdsWithStatus);
+        setSelectedId(rosProcessingResult.rosId);
+        // spinn og ikke kunne redigere før her
+      },
+      (error: string) => {
+        console.log(error);
+      },
+    );
   };
 
   const [scenario, setScenario, saveScenario, deleteScenario, editScenario] =
@@ -190,7 +190,7 @@ export const ROSPlugin = () => {
               {rosIdsWithStatus &&
                 selectedId &&
                 rosIdsWithStatus.filter(x => x.id === selectedId)[0].status ===
-                  'Draft' && (
+                  RosStatus.Draft && (
                   <Button
                     style={{ textTransform: 'none' }}
                     variant="contained"
@@ -213,7 +213,7 @@ export const ROSPlugin = () => {
         isOpen={dialogIsOpen}
         onClose={() => setDialogIsOpen(false)}
         setRos={setRos}
-        saveRos={postROS}
+        saveRos={createNewROS}
       />
 
       <ScenarioDrawer

@@ -1,10 +1,14 @@
 import { GithubRepoInfo, ROS } from '../interface/interfaces';
 import {
-  githubRequestHeaders,
+  githubGetRequestHeaders,
   uriToFetchRos,
   uriToFetchRosIds,
 } from './utilityfunctions';
-import { ROSContentResultDTO, RosIdentifierResponseDTO } from './types';
+import {
+  ROSContentResultDTO,
+  RosIdentifierResponseDTO,
+  ROSProcessResultDTO,
+} from './types';
 
 export const fetchROSIds = (
   baseUrl: string,
@@ -14,7 +18,7 @@ export const fetchROSIds = (
 ) => {
   if (accessToken && repoInformation) {
     fetch(uriToFetchRosIds(baseUrl, repoInformation), {
-      headers: githubRequestHeaders(accessToken),
+      headers: githubGetRequestHeaders(accessToken),
     })
       .then(res => {
         if (!res.ok) {
@@ -39,7 +43,7 @@ export const fetchROS = (
 ) => {
   if (selectedId && accessToken && repoInformation) {
     fetch(uriToFetchRos(baseUrl, repoInformation, selectedId), {
-      headers: githubRequestHeaders(accessToken),
+      headers: githubGetRequestHeaders(accessToken),
     })
       .then(res => res.json())
       .then(json => json as ROSContentResultDTO)
@@ -49,6 +53,37 @@ export const fetchROS = (
           onSuccess(rosContent);
         } else
           console.log(`Kunne ikke hente ros med status: ${fetchedRos.status}`);
+      });
+  }
+};
+
+export const postROS = (
+  newRos: ROS,
+  baseUrl: string,
+  repoInfo: GithubRepoInfo | null,
+  token: string | undefined,
+  onSuccess: (arg: ROSProcessResultDTO) => void,
+  onError: (error: string) => void,
+) => {
+  if (repoInfo && token) {
+    fetch(`${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Github-Access-Token': token,
+      },
+      body: JSON.stringify({ ros: JSON.stringify(newRos) }),
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        res.text().then(text => onError(text));
+        return null;
+      })
+      .then(json => json as ROSProcessResultDTO)
+      .then(processingResult => {
+        onSuccess(processingResult);
       });
   }
 };

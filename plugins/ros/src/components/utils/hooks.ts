@@ -1,6 +1,6 @@
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
 import { RosIdentifier, RosIdentifierResponseDTO } from './types';
@@ -40,13 +40,21 @@ export const useFetchRosIds = (
   repoInformation: GithubRepoInfo | null,
 ): [
   string[] | null,
+  (
+    value: ((prevState: string[] | null) => string[] | null) | string[] | null,
+  ) => void,
   string | null,
   (
     value: ((prevState: string | null) => string | null) | string | null,
   ) => void,
   RosIdentifier[] | null,
+  (
+    value:
+      | ((prevState: RosIdentifier[] | null) => RosIdentifier[] | null)
+      | RosIdentifier[]
+      | null,
+  ) => void,
 ] => {
-  const { fetch } = useApi(fetchApiRef);
   const baseUrl = useBaseUrl();
 
   const [rosIds, setRosIds] = useState<string[] | null>(null);
@@ -75,9 +83,16 @@ export const useFetchRosIds = (
       // Handle any synchronous errors that might occur outside the promise chain
       console.error('Unexpected error:', error);
     }
-  }, [baseUrl, fetch, repoInformation, token]);
+  }, [baseUrl, repoInformation, token]);
 
-  return [rosIds, selectedId, setSelectedId, rosIdsWithStatus];
+  return [
+    rosIds,
+    setRosIds,
+    selectedId,
+    setSelectedId,
+    rosIdsWithStatus,
+    setRosIdsWithStatus,
+  ];
 };
 
 export const useFetchRos = (
@@ -85,16 +100,14 @@ export const useFetchRos = (
   token: string | undefined,
   repoInformation: GithubRepoInfo | null,
 ): [ROS | undefined, Dispatch<SetStateAction<ROS | undefined>>] => {
-  const { fetch } = useApi(fetchApiRef);
   const baseUrl = useBaseUrl();
-
   const [ros, setRos] = useState<ROS>();
 
   useEffect(() => {
     fetchROS(baseUrl, token, selectedId, repoInformation, (fetchedROS: ROS) => {
       setRos(fetchedROS);
     });
-  }, [baseUrl, fetch, repoInformation, selectedId, token]);
+  }, [baseUrl, repoInformation, selectedId, token]);
 
   return [ros, setRos];
 };

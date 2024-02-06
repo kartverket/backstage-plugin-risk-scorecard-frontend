@@ -39,6 +39,25 @@ export const uriToFetchRos = (
 ) =>
   `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
 
-export const githubRequestHeaders = (token: string): HeadersInit => ({
-  'Github-Access-Token': token,
+export const uriToPutROS = (
+  baseUrl: string,
+  repoInformation: GithubRepoInfo,
+  selectedId: string,
+) =>
+  `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
+
+export const uriToPublishROS = (
+  baseUrl: string,
+  repoInformation: GithubRepoInfo,
+  selectedId: string,
+) =>
+  `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/publish/${selectedId}`;
+
+export const githubGetRequestHeaders = (accessToken: string): HeadersInit => ({
+  'Github-Access-Token': accessToken,
+});
+
+export const githubPostRequestHeaders = (accessToken: string): HeadersInit => ({
+  'Github-Access-Token': accessToken,
+  'Content-Type': 'application/json',
 });

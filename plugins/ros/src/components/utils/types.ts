@@ -5,8 +5,14 @@ export type RosIdentifierResponseDTO = {
 
 export type RosIdentifier = {
   id: string;
-  status: string;
+  status: RosStatus;
 };
+
+export enum RosStatus {
+  Draft,
+  Published,
+  SentForApproval,
+}
 
 export type ROSContentResultDTO = {
   status: string;
