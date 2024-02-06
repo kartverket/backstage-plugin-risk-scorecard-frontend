@@ -20,7 +20,7 @@ import {
   useGithubRepositoryInformation,
   useScenarioDrawer,
 } from '../utils/hooks';
-import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
+import { ScenarioTable } from '../ScenarioTable/ScenarioTable2';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
@@ -137,7 +137,7 @@ export const ROSPlugin = () => {
         )}
 
         {ros && (
-          <Grid item>
+          <Grid item style={{ width: '50%' }}>
             <ScenarioTable
               ros={ros}
               deleteRow={openDeleteConfirmation}
