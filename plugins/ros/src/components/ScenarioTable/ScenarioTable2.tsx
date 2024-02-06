@@ -8,11 +8,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from '@material-ui/core';
 import { ROS, Scenario } from '../interface/interfaces';
 import { DeleteButton, EditButton } from './ScenarioTableButtons';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import { InfoCard } from '@backstage/core-components';
 
 interface ScenarioTableProps {
   ros: ROS;
@@ -78,24 +80,27 @@ export const ScenarioTable = ({
   };
 
   return (
-    <TableContainer component={Paper} style={{ border: '1px solid #e0e0e0' }}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            {columns.map(column => (
-              <TableCell>{column}</TableCell>
+    <InfoCard>
+      <Typography variant="h2">Scenarioer</Typography>
+      <TableContainer component={Paper} style={{ border: '1px solid #ffffff' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              {columns.map(column => (
+                <TableCell>{column}</TableCell>
+              ))}
+              <TableCell />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {ros.scenarier.map(scenario => (
+              <Row scenario={scenario} />
             ))}
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {ros.scenarier.map(scenario => (
-            <Row scenario={scenario} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </InfoCard>
   );
 };
 
