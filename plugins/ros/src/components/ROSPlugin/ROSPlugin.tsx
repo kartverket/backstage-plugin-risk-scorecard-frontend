@@ -26,7 +26,7 @@ import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { DeleteConfirmation } from './DeleteConfirmation';
-import { RiskMatrix } from '../risikomatrise/RiskMatrix';
+import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -125,8 +125,6 @@ export const ROSPlugin = () => {
           </Button>
         </Grid>
 
-        <RiskMatrix />
-
         {/* TODO: Håndetering av tidligere skjemaer */}
         {ros && ros.tittel && ros.omfang && (
           <>
@@ -137,6 +135,12 @@ export const ROSPlugin = () => {
               <Typography variant="subtitle2">Omfang: {ros.omfang}</Typography>
             </Grid>
           </>
+        )}
+
+        {ros && (
+          <Grid item>
+            <RiskMatrix ros={ros} />
+          </Grid>
         )}
 
         {ros && (
