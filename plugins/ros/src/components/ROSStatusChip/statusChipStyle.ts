@@ -2,21 +2,40 @@ import { makeStyles } from '@material-ui/core';
 
 export const useStatusChipStyles = makeStyles(() => ({
   statusChip: {
-    borderRadius: '4px',
+    borderRadius: '7px',
+    maxHeight: '25px',
+  },
+
+  statusIcon: {
+    maxHeight: '10px',
   },
 
   rosPublished: {
-    borderColor: '#4caf50',
-    color: '#4caf50',
+    borderColor: '#88e763',
+    color: '#88e763',
   },
 
   rosSentForApproval: {
-    borderColor: '#d97f35',
-    color: '#d97f35',
+    borderColor: '#E7A563FF',
+    color: '#E7A563FF',
   },
 
   rosDraft: {
-    borderColor: '#e5B338FF',
-    color: '#E5B338FF',
+    borderColor: '#FBE36A',
+    color: '#FBE36A',
+  },
+}));
+
+export const useStatusTextStyles = makeStyles(() => ({
+  prStatus: {
+    fontSize: '12px',
+    wrap: 'wrap',
+  },
+  prIcon: {
+    fontSize: '12px',
+    margin: '0px',
+    padding: '0px',
+    marginRight: '2px',
+    marginLeft: '2px',
   },
 }));

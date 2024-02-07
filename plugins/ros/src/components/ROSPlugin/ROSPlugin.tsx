@@ -32,7 +32,7 @@ import {
   uriToPublishROS,
   uriToPutROS,
 } from '../utils/utilityfunctions';
-import { getROSStatus, StatusChip } from '../ROSStatusChip/StatusChip';
+import { ROSStatusComponent } from '../ROSStatus/ROSStatusComponent';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -71,19 +71,17 @@ export const ROSPlugin = () => {
   };
 
   const publishROS = () => {
-    if (repoInfo && token) {
-      fetch(uriToPublishROS(baseUrl, repoInfo, token), {
+    if (repoInfo && token && selectedId) {
+      fetch(uriToPublishROS(baseUrl, repoInfo, selectedId), {
         method: 'POST',
         headers: githubPostRequestHeaders(token),
       }).then(res => {
         if (res.ok) {
-          // TODO: update to senttoapproval
           displaySubmitResponse('Det ble opprettet en PR for ROSen!');
         } else res.text().then(text => displaySubmitResponse(text));
       });
     }
   };
-
   const createNewROS = (newRos: ROS) => {
     postROS(
       newRos,
@@ -125,7 +123,7 @@ export const ROSPlugin = () => {
 
       <Grid container spacing={3} direction="column">
         {selectedId && (
-          <Grid item>
+          <Grid item xs={12}>
             <Dropdown
               label="ROS-analyser"
               options={rosIds ?? []}
@@ -140,7 +138,7 @@ export const ROSPlugin = () => {
           </Grid>
         )}
 
-        <Grid item>
+        <Grid item xs={12}>
           <Button
             startIcon={<AddCircleOutlineIcon />}
             variant="text"
@@ -153,31 +151,37 @@ export const ROSPlugin = () => {
 
         {/* TODO: Håndetering av tidligere skjemaer */}
         {ros && ros.tittel && ros.omfang && (
-          <>
-            <Grid container spacing={2}>
-              <Grid item xs={8}>
-                <Typography variant="subtitle2">
-                  {' '}
-                  Tittel: {ros.tittel}
-                </Typography>
+          <Grid item xs={12}>
+            <Grid container spacing={0}>
+              <Grid item xs={10}>
+                <Grid container spacing={0}>
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle2">
+                      {' '}
+                      Tittel: {ros.tittel}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle2">
+                      Omfang: {ros.omfang}
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Grid>
               {rosIdsWithStatus && selectedId && (
-                <Grid item xs={4} style={{ textAlign: 'right' }}>
-                  <StatusChip
-                    selectedId={selectedId}
-                    rosIdsWithStatus={rosIdsWithStatus}
-                  />
-                </Grid>
+                <ROSStatusComponent
+                  currentROSId={selectedId}
+                  rosIdsWithStatus={rosIdsWithStatus}
+                  publishRosFn={publishROS}
+                />
               )}
             </Grid>
-            <Grid item>
-              <Typography variant="subtitle2">Omfang: {ros.omfang}</Typography>
-            </Grid>
-          </>
+          </Grid>
         )}
 
         {ros && (
-          <Grid item>
+          <Grid item xs={12}>
             <ScenarioTable
               ros={ros}
               deleteRow={deleteScenario}
@@ -186,7 +190,7 @@ export const ROSPlugin = () => {
           </Grid>
         )}
 
-        <Grid item>
+        <Grid item xs={12}>
           <Grid container direction="row">
             <Grid item>
               <Button
@@ -199,23 +203,7 @@ export const ROSPlugin = () => {
               </Button>
             </Grid>
 
-            <Grid item>
-              {rosIdsWithStatus &&
-                selectedId &&
-                getROSStatus(rosIdsWithStatus, selectedId) ===
-                  RosStatus.Draft && (
-                  <Button
-                    style={{ textTransform: 'none' }}
-                    variant="contained"
-                    color="primary"
-                    onClick={() => (ros !== undefined ? publishROS() : '')}
-                  >
-                    Send til godkjenning (publisér)
-                  </Button>
-                )}
-            </Grid>
-
-            <Grid item>
+            <Grid item xs={12}>
               <Typography>{submitResponse}</Typography>
             </Grid>
           </Grid>
