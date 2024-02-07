@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
 import {
   Content,
@@ -32,7 +32,10 @@ import {
   uriToPublishROS,
   uriToPutROS,
 } from '../utils/utilityfunctions';
-import { ROSStatusComponent } from '../ROSStatus/ROSStatusComponent';
+import {
+  ROSStatusAlertNotApprovedByRisikoeier,
+  ROSStatusComponent,
+} from '../ROSStatus/ROSStatusComponent';
 import { getROSStatus } from '../ROSStatusChip/StatusChip';
 
 export const ROSPlugin = () => {
@@ -45,7 +48,6 @@ export const ROSPlugin = () => {
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
-
   const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
   const [
@@ -56,7 +58,16 @@ export const ROSPlugin = () => {
     rosIdsWithStatus,
     setRosIdsWithStatus,
   ] = useFetchRosIds(token, repoInfo);
+
   const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
+
+  const [selectedRosStatus, setSelectedRosStatus] = useState<RosStatus | null>(
+    getROSStatus(rosIdsWithStatus, selectedId),
+  );
+
+  useEffect(() => {
+    setSelectedRosStatus(getROSStatus(rosIdsWithStatus, selectedId));
+  }, [rosIdsWithStatus, selectedId]);
 
   const putROS = (updatedROS: ROS) => {
     if (repoInfo && token) {
@@ -153,27 +164,36 @@ export const ROSPlugin = () => {
         {/* TODO: Håndetering av tidligere skjemaer */}
         {ros && ros.tittel && ros.omfang && (
           <Grid item xs={12}>
-            <Grid container spacing={0}>
-              <Grid item xs={10}>
-                <Grid container spacing={0}>
-                  <Grid item xs={12}>
+            <Grid container spacing={1}>
+              <Grid item xs={9}>
+                <Grid container spacing={1}>
+                  <Grid item xs={10}>
+                    <Grid item xs={12}>
+                      <ROSStatusAlertNotApprovedByRisikoeier
+                        currentROSId={selectedId}
+                        rosIdsWithStatus={rosIdsWithStatus}
+                        rosStatus={selectedRosStatus}
+                      ></ROSStatusAlertNotApprovedByRisikoeier>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={10}>
                     <Typography variant="subtitle2">
                       {' '}
                       Tittel: {ros.tittel}
                     </Typography>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={10}>
                     <Typography variant="subtitle2">
                       Omfang: {ros.omfang}
                     </Typography>
                   </Grid>
                 </Grid>
               </Grid>
-              {rosIdsWithStatus && selectedId && (
+              {rosIdsWithStatus && selectedId && selectedRosStatus && (
                 <ROSStatusComponent
                   currentROSId={selectedId}
-                  currentRosStatus={getROSStatus(rosIdsWithStatus, selectedId)}
+                  currentRosStatus={selectedRosStatus}
                   publishRosFn={publishROS}
                 />
               )}

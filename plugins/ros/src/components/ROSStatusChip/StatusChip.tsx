@@ -56,9 +56,10 @@ const getPRStatus = (
 };
 
 export const getROSStatus = (
-  rosIdsWithStatus: RosIdentifier[],
-  selectedId: string,
-) => {
+  rosIdsWithStatus: RosIdentifier[] | null,
+  selectedId: string | null,
+): RosStatus | null => {
+  if (!rosIdsWithStatus || !selectedId) return null;
   return rosIdsWithStatus.filter(x => x.id === selectedId)[0].status;
 };
 

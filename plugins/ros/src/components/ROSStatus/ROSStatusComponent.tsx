@@ -1,9 +1,11 @@
 import { Button, Grid } from '@material-ui/core';
 import { StatusChip } from '../ROSStatusChip/StatusChip';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import React from 'react';
-import { RosStatus } from '../utils/types';
+import React, { ReactComponentElement } from 'react';
+import { RosIdentifier, RosStatus } from '../utils/types';
 import { useButtonStyles } from '../ROSPlugin/rosPluginStyle';
+import { Alert, AlertTitle } from '@mui/material';
+import { useAlertStyles } from '../ROSStatusChip/statusChipStyle';
 
 interface ROSStatusProps {
   currentROSId: string;
@@ -31,7 +33,7 @@ export const ROSStatusComponent = ({
   const buttonStyles = useButtonStyles();
 
   return (
-    <Grid item xs={2}>
+    <Grid item xs={3}>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <StatusChip
@@ -67,5 +69,30 @@ export const ROSStatusComponent = ({
         </Grid>
       </Grid>
     </Grid>
+  );
+};
+
+interface ROSAlertProperties {
+  currentROSId: string | null;
+  rosIdsWithStatus: RosIdentifier[] | null;
+  rosStatus: RosStatus | null;
+}
+
+export const ROSStatusAlertNotApprovedByRisikoeier = ({
+  currentROSId,
+  rosIdsWithStatus,
+  rosStatus,
+}: ROSAlertProperties): ReactComponentElement<any> | null => {
+  const classes = useAlertStyles();
+  if (!rosIdsWithStatus || !currentROSId) return null;
+  else if (rosStatus !== RosStatus.Draft) return null;
+  return (
+    <Alert severity="warning" className={classes.noApprovalBanner}>
+      <AlertTitle>
+        ROS-analysen inneholder endringer som ikke er godkjent
+      </AlertTitle>
+      Nivået for restrisiko har endret seg som krever ny godkjenning fra
+      risikoeier.
+    </Alert>
   );
 };
