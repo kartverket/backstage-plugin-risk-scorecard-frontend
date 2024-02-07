@@ -143,11 +143,6 @@ export const ROSPlugin = () => {
               selectedValues={selectedId ? [selectedId] : []}
               handleChange={e => setSelectedId(e.target.value as string)}
             />
-            {rosIdsWithStatus
-              ? `(${
-                  rosIdsWithStatus.filter(x => x.id === selectedId)[0].status
-                })`
-              : ''}
           </Grid>
         )}
 

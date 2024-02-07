@@ -16,6 +16,71 @@ import { useAlertStyles } from '../ROSStatusChip/statusChipStyle';
 import { useDialogStyles } from '../ROSDialog/DialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
 
+interface ROSPublisDialogProps {
+  openDialog: boolean;
+  handleCancel: () => void;
+  handlePublish: () => void;
+}
+
+export const ROSPublishDialog = ({
+  openDialog,
+  handleCancel,
+  handlePublish,
+}: ROSPublisDialogProps): ReactComponentElement<any> => {
+  const classes = useDialogStyles();
+  const [userIsRisikoEierAndApproves, setUserIsRisikoEierAndApproves] =
+    useState<boolean>(false);
+
+  const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserIsRisikoEierAndApproves(event.target.checked);
+  };
+
+  return (
+    <Dialog open={openDialog}>
+      <DialogTitle>Godkjenn ROS</DialogTitle>
+      <DialogContent>
+        <Alert severity="info" icon={false}>
+          <Grid container>
+            <Grid item xs={1}>
+              <Checkbox
+                color="primary"
+                checked={userIsRisikoEierAndApproves}
+                onChange={handleCheckboxInput}
+              ></Checkbox>
+            </Grid>
+            <Grid item xs={8}>
+              Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne
+              risiko- og sårbarhetsanalysen.
+            </Grid>
+          </Grid>
+        </Alert>
+      </DialogContent>
+      <div
+        style={{
+          padding: '20px',
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+        }}
+      >
+        <Box className={classes.buttons}>
+          <Button variant="outlined" color="primary" onClick={handleCancel}>
+            Avbryt
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handlePublish}
+            disabled={!userIsRisikoEierAndApproves}
+          >
+            Bekreft
+          </Button>
+        </Box>
+      </div>
+    </Dialog>
+  );
+};
+
 interface ROSStatusProps {
   currentROSId: string;
   currentRosStatus: RosStatus;
@@ -118,70 +183,5 @@ export const ROSStatusAlertNotApprovedByRisikoeier = ({
       Nivået for restrisiko har endret seg som krever ny godkjenning fra
       risikoeier.
     </Alert>
-  );
-};
-
-interface ROSPublisDialogProps {
-  openDialog: boolean;
-  handleCancel: () => void;
-  handlePublish: () => void;
-}
-
-export const ROSPublishDialog = ({
-  openDialog,
-  handleCancel,
-  handlePublish,
-}: ROSPublisDialogProps): ReactComponentElement<any> => {
-  const classes = useDialogStyles();
-  const [userIsRisikoEierAndApproves, setUserIsRisikoEierAndApproves] =
-    useState<boolean>(false);
-
-  const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserIsRisikoEierAndApproves(event.target.checked);
-  };
-
-  return (
-    <Dialog open={openDialog}>
-      <DialogTitle>Godkjenn ROS</DialogTitle>
-      <DialogContent>
-        <Alert severity="info" icon={false}>
-          <Grid container>
-            <Grid item xs={1}>
-              <Checkbox
-                color="primary"
-                checked={userIsRisikoEierAndApproves}
-                onChange={handleCheckboxInput}
-              ></Checkbox>
-            </Grid>
-            <Grid item xs={8}>
-              Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne
-              risiko- og sårbarhetsanalysen.
-            </Grid>
-          </Grid>
-        </Alert>
-      </DialogContent>
-      <div
-        style={{
-          padding: '20px',
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-        }}
-      >
-        <Box className={classes.buttons}>
-          <Button variant="outlined" color="primary" onClick={handleCancel}>
-            Avbryt
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handlePublish}
-            disabled={!userIsRisikoEierAndApproves}
-          >
-            Bekreft
-          </Button>
-        </Box>
-      </div>
-    </Dialog>
   );
 };
