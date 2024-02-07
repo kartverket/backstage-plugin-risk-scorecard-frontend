@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  Typography,
 } from '@material-ui/core';
 import { StatusChip } from '../ROSStatusChip/StatusChip';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
@@ -104,7 +105,7 @@ export const ROSStatusComponent = ({
   currentRosStatus,
   publishRosFn,
 }: ROSStatusProps) => {
-  const buttonStyles = useButtonStyles();
+  const statusComponentClasses = useButtonStyles();
   const [publishROSDialogIsOpen, setPublishROSDialogIsOpen] =
     useState<boolean>(false);
 
@@ -114,7 +115,7 @@ export const ROSStatusComponent = ({
   };
 
   return (
-    <Grid item xs={3}>
+    <Grid item xs={4}>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <StatusChip
@@ -124,26 +125,25 @@ export const ROSStatusComponent = ({
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={1}>
-            <Grid item xs={8}>
+            <Grid item>
               <Button
-                style={{ textTransform: 'none' }}
                 color="primary"
                 variant="contained"
                 onClick={() =>
                   setPublishROSDialogIsOpen(!publishROSDialogIsOpen)
                 }
-                className={buttonStyles.godkjennButton}
+                className={statusComponentClasses.godkjennButton}
                 fullWidth
                 disabled={!rosNsApproval(currentRosStatus)}
               >
-                Godkjenn ROS
+                <Typography variant="button">Godkjenn ROS</Typography>
               </Button>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item className={statusComponentClasses.gridItem}>
               <Button
                 color="primary"
                 variant="outlined"
-                className={buttonStyles.settingsButton}
+                className={statusComponentClasses.settingsButton}
               >
                 <SettingsOutlinedIcon />
               </Button>
