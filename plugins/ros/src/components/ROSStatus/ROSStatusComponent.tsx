@@ -1,13 +1,13 @@
 import { Button, Grid } from '@material-ui/core';
-import { getROSStatus, StatusChip } from '../ROSStatusChip/StatusChip';
+import { StatusChip } from '../ROSStatusChip/StatusChip';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import React from 'react';
-import { RosIdentifier, RosStatus } from '../utils/types';
+import { RosStatus } from '../utils/types';
 import { useButtonStyles } from '../ROSPlugin/rosPluginStyle';
 
 interface ROSStatusProps {
   currentROSId: string;
-  rosIdsWithStatus: RosIdentifier[];
+  currentRosStatus: RosStatus;
   publishRosFn: () => void;
 }
 
@@ -25,7 +25,7 @@ const rosNsApproval = (status: RosStatus) => {
 
 export const ROSStatusComponent = ({
   currentROSId,
-  rosIdsWithStatus,
+  currentRosStatus,
   publishRosFn,
 }: ROSStatusProps) => {
   const buttonStyles = useButtonStyles();
@@ -36,7 +36,7 @@ export const ROSStatusComponent = ({
         <Grid item xs={12}>
           <StatusChip
             selectedId={currentROSId}
-            rosIdsWithStatus={rosIdsWithStatus}
+            currentRosStatus={currentRosStatus}
           />
         </Grid>
         <Grid item xs={12}>
@@ -49,11 +49,9 @@ export const ROSStatusComponent = ({
                 onClick={() => publishRosFn()}
                 className={buttonStyles.godkjennButton}
                 fullWidth
-                disabled={
-                  !rosNsApproval(getROSStatus(rosIdsWithStatus, currentROSId))
-                }
+                disabled={!rosNsApproval(currentRosStatus)}
               >
-                Godkjenn
+                Godkjenn ROS
               </Button>
             </Grid>
             <Grid item xs={3}>

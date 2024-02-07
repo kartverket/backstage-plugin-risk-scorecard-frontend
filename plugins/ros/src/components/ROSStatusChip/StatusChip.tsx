@@ -9,7 +9,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 
 interface ChipProps {
   selectedId: string;
-  rosIdsWithStatus: RosIdentifier[];
+  currentRosStatus: RosStatus;
 }
 
 const getChipColor = (status: RosStatus, classes: ClassNameMap): string => {
@@ -27,10 +27,10 @@ const getChipColor = (status: RosStatus, classes: ClassNameMap): string => {
 const getChipTextStatus = (status: RosStatus): string => {
   switch (status) {
     case RosStatus.Draft:
-      return 'Mangler godkjenning';
+      return 'Mangler godkjenning av risikoeier';
     case RosStatus.SentForApproval:
     case RosStatus.Published:
-      return 'Godkjent';
+      return 'Godkjent av risikoeier';
     default:
       return 'Kunne ikke hente status';
   }
@@ -62,17 +62,16 @@ export const getROSStatus = (
   return rosIdsWithStatus.filter(x => x.id === selectedId)[0].status;
 };
 
-export const StatusChip = ({ rosIdsWithStatus, selectedId }: ChipProps) => {
-  const status = getROSStatus(rosIdsWithStatus, selectedId);
+export const StatusChip = ({ currentRosStatus }: ChipProps) => {
   const chipClasses: ClassNameMap = useStatusChipStyles();
   const textClasses: ClassNameMap = useStatusTextStyles();
 
   const [chipColorClass, setChipColorClass] = useState<string | null>(null);
 
   useEffect(() => {
-    const chipColor = getChipColor(status, chipClasses);
+    const chipColor = getChipColor(currentRosStatus, chipClasses);
     setChipColorClass(chipColor);
-  }, [status, chipClasses]);
+  }, [currentRosStatus, chipClasses]);
 
   return (
     <Grid item>
@@ -82,13 +81,13 @@ export const StatusChip = ({ rosIdsWithStatus, selectedId }: ChipProps) => {
             color="primary"
             size="medium"
             variant="outlined"
-            label={getChipTextStatus(status)}
+            label={getChipTextStatus(currentRosStatus)}
             icon={<CircleIcon className={chipClasses.statusIcon} />}
             className={[chipColorClass, chipClasses.statusChip].join(' ')}
           />
         </Grid>
         <Grid item xs={12}>
-          {getPRStatus(status, textClasses)}
+          {getPRStatus(currentRosStatus, textClasses)}
         </Grid>
       </Grid>
     </Grid>

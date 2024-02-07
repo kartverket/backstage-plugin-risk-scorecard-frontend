@@ -33,6 +33,7 @@ import {
   uriToPutROS,
 } from '../utils/utilityfunctions';
 import { ROSStatusComponent } from '../ROSStatus/ROSStatusComponent';
+import { getROSStatus } from '../ROSStatusChip/StatusChip';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -172,7 +173,7 @@ export const ROSPlugin = () => {
               {rosIdsWithStatus && selectedId && (
                 <ROSStatusComponent
                   currentROSId={selectedId}
-                  rosIdsWithStatus={rosIdsWithStatus}
+                  currentRosStatus={getROSStatus(rosIdsWithStatus, selectedId)}
                   publishRosFn={publishROS}
                 />
               )}
