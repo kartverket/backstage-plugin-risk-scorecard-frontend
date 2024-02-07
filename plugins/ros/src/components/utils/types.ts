@@ -9,9 +9,9 @@ export type RosIdentifier = {
 };
 
 export enum RosStatus {
-  Draft,
-  Published,
-  SentForApproval,
+  Draft = 'Draft',
+  Published = 'Published',
+  SentForApproval = 'SentForApproval',
 }
 
 export type ROSContentResultDTO = {

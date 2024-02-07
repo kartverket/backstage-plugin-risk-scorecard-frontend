@@ -32,7 +32,7 @@ import {
   uriToPublishROS,
   uriToPutROS,
 } from '../utils/utilityfunctions';
-import { RESTMethods } from 'msw';
+import { getROSStatus, StatusChip } from '../ROSStatusChip/StatusChip';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -60,7 +60,7 @@ export const ROSPlugin = () => {
   const putROS = (updatedROS: ROS) => {
     if (repoInfo && token) {
       fetch(uriToPutROS(baseUrl, repoInfo, token), {
-        method: RESTMethods.PUT,
+        method: 'PUT',
         headers: githubPostRequestHeaders(token),
         body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
       }).then(res => {
@@ -73,7 +73,7 @@ export const ROSPlugin = () => {
   const publishROS = () => {
     if (repoInfo && token) {
       fetch(uriToPublishROS(baseUrl, repoInfo, token), {
-        method: RESTMethods.POST,
+        method: 'POST',
         headers: githubPostRequestHeaders(token),
       }).then(res => {
         if (res.ok) {
@@ -154,8 +154,21 @@ export const ROSPlugin = () => {
         {/* TODO: Håndetering av tidligere skjemaer */}
         {ros && ros.tittel && ros.omfang && (
           <>
-            <Grid item>
-              <Typography variant="subtitle2"> Tittel: {ros.tittel}</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={8}>
+                <Typography variant="subtitle2">
+                  {' '}
+                  Tittel: {ros.tittel}
+                </Typography>
+              </Grid>
+              {rosIdsWithStatus && selectedId && (
+                <Grid item xs={4} style={{ textAlign: 'right' }}>
+                  <StatusChip
+                    selectedId={selectedId}
+                    rosIdsWithStatus={rosIdsWithStatus}
+                  />
+                </Grid>
+              )}
             </Grid>
             <Grid item>
               <Typography variant="subtitle2">Omfang: {ros.omfang}</Typography>
@@ -189,7 +202,7 @@ export const ROSPlugin = () => {
             <Grid item>
               {rosIdsWithStatus &&
                 selectedId &&
-                rosIdsWithStatus.filter(x => x.id === selectedId)[0].status ===
+                getROSStatus(rosIdsWithStatus, selectedId) ===
                   RosStatus.Draft && (
                   <Button
                     style={{ textTransform: 'none' }}
