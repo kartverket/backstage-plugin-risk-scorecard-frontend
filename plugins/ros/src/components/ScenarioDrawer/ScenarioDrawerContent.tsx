@@ -2,11 +2,11 @@ import React, { ChangeEvent, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
-import { Scenario, Tiltak as ITiltak } from '../interface/interfaces';
+import { emptyTiltak, Risiko, Scenario, Tiltak } from '../interface/interfaces';
 import { Dropdown } from './Dropdown';
 import { TextField } from './Textfield';
 import schema from '../../ros_schema_no_v1_0.json';
-import { useScenarioDrawerStyles } from './ScenarioDrawerStyle';
+import { useScenarioDrawerStyles } from './style';
 import TabContext from '@material-ui/lab/TabContext';
 import { TabPanelTiltak } from './tabs/TabPanelTiltak';
 import { TabPanelSannsynlighet } from './tabs/TabPanelSannsynlighet';
@@ -76,17 +76,20 @@ export const ScenarioDrawerContent = ({
   const addTiltak = () =>
     setScenario({ ...scenario, tiltak: [...scenario.tiltak, emptyTiltak()] });
 
-  const updateTiltak = (tiltak: ITiltak) => {
+  const updateTiltak = (tiltak: Tiltak) => {
     const updatedTiltak = scenario.tiltak.some(t => t.ID === tiltak.ID)
       ? scenario.tiltak.map(t => (t.ID === tiltak.ID ? tiltak : t))
       : [...scenario.tiltak, tiltak];
     setScenario({ ...scenario, tiltak: updatedTiltak });
   };
 
-  const deleteTiltak = (tiltak: ITiltak) => {
+  const deleteTiltak = (tiltak: Tiltak) => {
     const updatedTiltak = scenario.tiltak.filter(t => t.ID !== tiltak.ID);
     setScenario({ ...scenario, tiltak: updatedTiltak });
   };
+
+  const updateRestrisiko = (restrisiko: Risiko) =>
+    setScenario({ ...scenario, restrisiko });
 
   const [tab, setTab] = useState('konsekvens');
 
@@ -157,6 +160,8 @@ export const ScenarioDrawerContent = ({
               updateTiltak={updateTiltak}
               deleteTiltak={deleteTiltak}
               addTiltak={addTiltak}
+              updateRestrisiko={updateRestrisiko}
+              options={options}
             />
           </TabContext>
         </Box>
@@ -187,16 +192,3 @@ export const ScenarioDrawerContent = ({
     </>
   );
 };
-
-const emptyTiltak = (): ITiltak => ({
-  ID: Math.floor(Math.random() * 100000),
-  beskrivelse: '',
-  tiltakseier: '',
-  frist: new Date().toISOString().split('T')[0],
-  status: 'Ikke startet',
-  restrisiko: {
-    oppsummering: '',
-    sannsynlighet: 1,
-    konsekvens: 1,
-  },
-});

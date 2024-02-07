@@ -1,8 +1,12 @@
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
-import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
-import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
+import {
+  emptyScenario,
+  GithubRepoInfo,
+  ROS,
+  Scenario,
+} from '../interface/interfaces';
 
 export const useBaseUrl = () => {
   return useApi(configApiRef).getString('app.backendUrl');

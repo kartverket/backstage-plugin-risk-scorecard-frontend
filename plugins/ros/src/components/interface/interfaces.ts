@@ -15,6 +15,7 @@ export interface Scenario {
   sårbarheter: string[];
   risiko: Risiko;
   tiltak: Tiltak[];
+  restrisiko: Risiko;
 }
 
 export interface Risiko {
@@ -29,7 +30,6 @@ export interface Tiltak {
   tiltakseier: string;
   frist: string;
   status: string;
-  restrisiko: Risiko;
 }
 
 export interface TableData {
@@ -45,3 +45,30 @@ export interface GithubRepoInfo {
   name: string;
   owner: string;
 }
+
+export const emptyScenario = (): Scenario => ({
+  ID: Math.floor(Math.random() * 100000),
+  beskrivelse: '',
+  sistEndret: new Date().toISOString().split('T')[0],
+  trusselaktører: [],
+  sårbarheter: [],
+  risiko: {
+    oppsummering: '',
+    sannsynlighet: 1,
+    konsekvens: 1,
+  },
+  tiltak: [],
+  restrisiko: {
+    oppsummering: '',
+    sannsynlighet: 1,
+    konsekvens: 1,
+  },
+});
+
+export const emptyTiltak = (): Tiltak => ({
+  ID: Math.floor(Math.random() * 100000),
+  beskrivelse: '',
+  tiltakseier: '',
+  frist: new Date().toISOString().split('T')[0],
+  status: 'Ikke startet',
+});
