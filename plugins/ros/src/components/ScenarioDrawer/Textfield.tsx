@@ -31,7 +31,7 @@ export const TextField = ({
         multiline
         fullWidth
         minRows={minRows}
-        variant="filled"
+        variant="outlined"
         onChange={handleChange}
       />
     </FormControl>
