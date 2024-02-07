@@ -1,11 +1,20 @@
-import { Button, Grid } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+} from '@material-ui/core';
 import { StatusChip } from '../ROSStatusChip/StatusChip';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import React, { ReactComponentElement } from 'react';
+import React, { ReactComponentElement, useState } from 'react';
 import { RosIdentifier, RosStatus } from '../utils/types';
 import { useButtonStyles } from '../ROSPlugin/rosPluginStyle';
 import { Alert, AlertTitle } from '@mui/material';
 import { useAlertStyles } from '../ROSStatusChip/statusChipStyle';
+import { useDialogStyles } from '../ROSDialog/DialogStyle';
+import Checkbox from '@material-ui/core/Checkbox';
 
 interface ROSStatusProps {
   currentROSId: string;
@@ -31,6 +40,13 @@ export const ROSStatusComponent = ({
   publishRosFn,
 }: ROSStatusProps) => {
   const buttonStyles = useButtonStyles();
+  const [publishROSDialogIsOpen, setPublishROSDialogIsOpen] =
+    useState<boolean>(false);
+
+  const handleApproveAndPublish = () => {
+    publishRosFn();
+    setPublishROSDialogIsOpen(false);
+  };
 
   return (
     <Grid item xs={3}>
@@ -48,7 +64,9 @@ export const ROSStatusComponent = ({
                 style={{ textTransform: 'none' }}
                 color="primary"
                 variant="contained"
-                onClick={() => publishRosFn()}
+                onClick={() =>
+                  setPublishROSDialogIsOpen(!publishROSDialogIsOpen)
+                }
                 className={buttonStyles.godkjennButton}
                 fullWidth
                 disabled={!rosNsApproval(currentRosStatus)}
@@ -68,6 +86,12 @@ export const ROSStatusComponent = ({
           </Grid>
         </Grid>
       </Grid>
+
+      <ROSPublishDialog
+        openDialog={publishROSDialogIsOpen}
+        handlePublish={handleApproveAndPublish}
+        handleCancel={() => setPublishROSDialogIsOpen(false)}
+      ></ROSPublishDialog>
     </Grid>
   );
 };
@@ -94,5 +118,70 @@ export const ROSStatusAlertNotApprovedByRisikoeier = ({
       Nivået for restrisiko har endret seg som krever ny godkjenning fra
       risikoeier.
     </Alert>
+  );
+};
+
+interface ROSPublisDialogProps {
+  openDialog: boolean;
+  handleCancel: () => void;
+  handlePublish: () => void;
+}
+
+export const ROSPublishDialog = ({
+  openDialog,
+  handleCancel,
+  handlePublish,
+}: ROSPublisDialogProps): ReactComponentElement<any> => {
+  const classes = useDialogStyles();
+  const [userIsRisikoEierAndApproves, setUserIsRisikoEierAndApproves] =
+    useState<boolean>(false);
+
+  const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserIsRisikoEierAndApproves(event.target.checked);
+  };
+
+  return (
+    <Dialog open={openDialog}>
+      <DialogTitle>Godkjenn ROS</DialogTitle>
+      <DialogContent>
+        <Alert severity="info" icon={false}>
+          <Grid container>
+            <Grid item xs={1}>
+              <Checkbox
+                color="primary"
+                checked={userIsRisikoEierAndApproves}
+                onChange={handleCheckboxInput}
+              ></Checkbox>
+            </Grid>
+            <Grid item xs={8}>
+              Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne
+              risiko- og sårbarhetsanalysen.
+            </Grid>
+          </Grid>
+        </Alert>
+      </DialogContent>
+      <div
+        style={{
+          padding: '20px',
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+        }}
+      >
+        <Box className={classes.buttons}>
+          <Button variant="outlined" color="primary" onClick={handleCancel}>
+            Avbryt
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handlePublish}
+            disabled={!userIsRisikoEierAndApproves}
+          >
+            Bekreft
+          </Button>
+        </Box>
+      </div>
+    </Dialog>
   );
 };

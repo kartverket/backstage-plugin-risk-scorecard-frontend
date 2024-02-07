@@ -47,7 +47,8 @@ export const ROSPlugin = () => {
   const { value: token } = useAsync(() => githubApi.getAccessToken('repo'));
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
-  const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
+  const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
+
   const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
   const [
@@ -155,7 +156,7 @@ export const ROSPlugin = () => {
             startIcon={<AddCircleOutlineIcon />}
             variant="text"
             color="primary"
-            onClick={() => setDialogIsOpen(true)}
+            onClick={() => setNewROSDialogIsOpen(true)}
           >
             Opprett ny analyse
           </Button>
@@ -232,8 +233,8 @@ export const ROSPlugin = () => {
       </Grid>
 
       <ROSDialog
-        isOpen={dialogIsOpen}
-        onClose={() => setDialogIsOpen(false)}
+        isOpen={newROSDialogIsOpen}
+        onClose={() => setNewROSDialogIsOpen(false)}
         setRos={setRos}
         saveRos={createNewROS}
       />
