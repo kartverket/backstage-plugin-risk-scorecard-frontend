@@ -37,6 +37,7 @@ import {
   ROSStatusComponent,
 } from '../ROSStatus/ROSStatusComponent';
 import { getROSStatus } from '../ROSStatusChip/StatusChip';
+import { DeleteConfirmation } from './DeleteConfirmation';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -125,8 +126,16 @@ export const ROSPlugin = () => {
     );
   };
 
-  const [scenario, setScenario, saveScenario, deleteScenario, editScenario] =
-    useScenarioDrawer(ros, setRos, setDrawerIsOpen, putROS);
+  const {
+    scenario,
+    setScenario,
+    saveScenario,
+    editScenario,
+    deleteConfirmationIsOpen,
+    openDeleteConfirmation,
+    closeDeleteConfirmation,
+    confirmDeletion,
+  } = useScenarioDrawer(ros, setRos, setDrawerIsOpen, putROS);
 
   return (
     <Content>
@@ -201,7 +210,7 @@ export const ROSPlugin = () => {
           <Grid item xs={12}>
             <ScenarioTable
               ros={ros}
-              deleteRow={deleteScenario}
+              deleteRow={openDeleteConfirmation}
               editRow={editScenario}
             />
           </Grid>
@@ -240,6 +249,12 @@ export const ROSPlugin = () => {
         scenario={scenario}
         setScenario={setScenario}
         saveScenario={saveScenario}
+      />
+
+      <DeleteConfirmation
+        isOpen={deleteConfirmationIsOpen}
+        close={closeDeleteConfirmation}
+        confirmDeletion={confirmDeletion}
       />
     </Content>
   );

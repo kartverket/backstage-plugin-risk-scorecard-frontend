@@ -133,14 +133,19 @@ export const useScenarioDrawer = (
   setRos: (ros: ROS) => void,
   setDrawerIsOpen: (open: boolean) => void,
   putROS: (ros: ROS) => void,
-): [
-  Scenario,
-  (scenario: Scenario) => void,
-  () => void,
-  (index: number) => void,
-  (index: number) => void,
-] => {
+): {
+  scenario: Scenario;
+  setScenario: (scenario: Scenario) => void;
+  saveScenario: () => void;
+  editScenario: (id: number) => void;
+  deleteConfirmationIsOpen: boolean;
+  openDeleteConfirmation: (id: number) => void;
+  closeDeleteConfirmation: () => void;
+  confirmDeletion: () => void;
+} => {
   const [scenario, setScenario] = useState(emptyScenario());
+  const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
+    useState(false);
 
   const saveScenario = () => {
     if (ros) {
@@ -153,20 +158,47 @@ export const useScenarioDrawer = (
     }
   };
 
-  const deleteScenario = (index: number) => {
+  const openDeleteConfirmation = (id: number) => {
     if (ros) {
-      const updatedScenarios = ros.scenarier.filter((_, i) => i !== index);
+      setScenario(ros.scenarier.find(s => s.ID === id)!!);
+      setDeleteConfirmationIsOpen(true);
+    }
+  };
+
+  const confirmDeletion = () => {
+    deleteScenario(scenario.ID);
+  };
+
+  const closeDeleteConfirmation = () => {
+    if (ros) {
+      setDeleteConfirmationIsOpen(false);
+      setScenario(emptyScenario());
+    }
+  };
+
+  const deleteScenario = (id: number) => {
+    if (ros) {
+      const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
       setRos({ ...ros, scenarier: updatedScenarios });
       putROS({ ...ros, scenarier: updatedScenarios });
     }
   };
 
-  const editScenario = (index: number) => {
+  const editScenario = (id: number) => {
     if (ros) {
-      setScenario(ros.scenarier.at(index)!!);
+      setScenario(ros.scenarier.find(s => s.ID === id)!!);
       setDrawerIsOpen(true);
     }
   };
 
-  return [scenario, setScenario, saveScenario, deleteScenario, editScenario];
+  return {
+    scenario,
+    setScenario,
+    saveScenario,
+    editScenario,
+    deleteConfirmationIsOpen,
+    openDeleteConfirmation,
+    closeDeleteConfirmation,
+    confirmDeletion,
+  };
 };
