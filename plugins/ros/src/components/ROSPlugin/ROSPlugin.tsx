@@ -20,7 +20,7 @@ import {
   useGithubRepositoryInformation,
   useScenarioDrawer,
 } from '../utils/hooks';
-import { ScenarioTable } from '../ScenarioTable/ScenarioTable2';
+import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
@@ -137,9 +137,10 @@ export const ROSPlugin = () => {
         )}
 
         {ros && (
-          <Grid item style={{ width: '50%' }}>
+          <Grid item xs={6}>
             <ScenarioTable
               ros={ros}
+              addScenario={() => setDrawerIsOpen(true)}
               deleteRow={openDeleteConfirmation}
               editRow={editScenario}
             />
@@ -147,22 +148,7 @@ export const ROSPlugin = () => {
         )}
 
         <Grid item>
-          <Grid container direction="row">
-            <Grid item>
-              <Button
-                style={{ textTransform: 'none' }}
-                variant="contained"
-                color="primary"
-                onClick={() => setDrawerIsOpen(true)}
-              >
-                Legg til nytt scenario
-              </Button>
-            </Grid>
-
-            <Grid item>
-              <Typography>{submitResponse}</Typography>
-            </Grid>
-          </Grid>
+          <Typography>{submitResponse}</Typography>
         </Grid>
       </Grid>
 
