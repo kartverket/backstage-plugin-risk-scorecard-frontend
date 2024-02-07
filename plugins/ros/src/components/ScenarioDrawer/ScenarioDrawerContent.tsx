@@ -1,13 +1,17 @@
-import React, { ChangeEvent } from 'react';
-import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
+import React, { ChangeEvent, useState } from 'react';
+import Box from '@mui/material/Box';
+import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
 import { Scenario, Tiltak as ITiltak } from '../interface/interfaces';
 import { Dropdown } from './Dropdown';
 import { TextField } from './Textfield';
 import schema from '../../ros_schema_no_v1_0.json';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { Tiltak } from './Tiltak';
 import { useScenarioDrawerStyles } from './ScenarioDrawerStyle';
+import TabContext from '@material-ui/lab/TabContext';
+import { TabPanelTiltak } from './tabs/TabPanelTiltak';
+import { TabPanelSannsynlighet } from './tabs/TabPanelSannsynlighet';
+import { TabPanelKonsekvens } from './tabs/TabPanelKonsekvens';
+import { Tabs } from './tabs/Tabs';
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;
@@ -24,7 +28,7 @@ export const ScenarioDrawerContent = ({
   saveScenario,
   clearScenario,
 }: ROSDrawerContentProps) => {
-  const nivåer = ['1', '2', '3', '4', '5'];
+  const options = ['1', '2', '3', '4', '5'];
   const trusselaktørerOptions =
     schema.properties.scenarier.items.properties.trusselaktører.items.enum;
   const sårbarheterOptions =
@@ -84,6 +88,8 @@ export const ScenarioDrawerContent = ({
     setScenario({ ...scenario, tiltak: updatedTiltak });
   };
 
+  const [tab, setTab] = useState('konsekvens');
+
   return (
     <>
       <Box className={header}>
@@ -131,42 +137,29 @@ export const ScenarioDrawerContent = ({
               multiple
             />
           </Grid>
-
-          <Grid item xs={6}>
-            <Dropdown
-              label="Sannsynlighet"
-              selectedValues={[scenario.risiko.sannsynlighet.toString()]}
-              options={nivåer}
-              handleChange={setSannsynlighet}
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <Dropdown
-              label="Konsekvens"
-              selectedValues={[scenario.risiko.konsekvens.toString()]}
-              options={nivåer}
-              handleChange={setKonsekvens}
-            />
-          </Grid>
         </Grid>
 
-        {scenario.tiltak.map(tiltak => (
-          <Tiltak
-            tiltak={tiltak}
-            updateTiltak={updateTiltak}
-            deleteTiltak={deleteTiltak}
-          />
-        ))}
-
-        <Button
-          startIcon={<AddCircleOutlineIcon />}
-          variant="text"
-          color="primary"
-          onClick={addTiltak}
-        >
-          Legg til tiltak
-        </Button>
+        <Box sx={{ width: '100%', typography: 'body1' }}>
+          <TabContext value={tab}>
+            <Tabs setTab={setTab} />
+            <TabPanelKonsekvens
+              scenario={scenario}
+              setKonsekvens={setKonsekvens}
+              options={options}
+            />
+            <TabPanelSannsynlighet
+              scenario={scenario}
+              setSannsynlighet={setSannsynlighet}
+              options={options}
+            />
+            <TabPanelTiltak
+              scenario={scenario}
+              updateTiltak={updateTiltak}
+              deleteTiltak={deleteTiltak}
+              addTiltak={addTiltak}
+            />
+          </TabContext>
+        </Box>
       </Box>
 
       <Box className={buttons}>
