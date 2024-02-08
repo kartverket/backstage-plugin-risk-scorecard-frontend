@@ -310,7 +310,7 @@ const groupPage = (
           <EntityOwnershipCard variant="gridItem" />
         </Grid>
         <Grid item xs={12} md={6}>
-          <EntityMembersListCard />
+          <EntityMembersListCard showAggregateMembersToggle />
         </Grid>
         <Grid item xs={12} md={6}>
           <EntityLinksCard />
