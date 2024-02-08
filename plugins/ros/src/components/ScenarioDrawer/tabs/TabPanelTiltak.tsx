@@ -12,6 +12,7 @@ import {
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { TextField } from '../Textfield';
 import { Dropdown } from '../Dropdown';
+import { useTabsTiltakStyles } from './style';
 
 interface TabPanelTiltakProps {
   scenario: Scenario;
@@ -30,17 +31,19 @@ export const TabPanelTiltak = ({
   updateRestrisiko,
   options,
 }: TabPanelTiltakProps) => {
+  const { dropdown, arrow } = useTabsTiltakStyles();
+
   const setRestKonsekvens = (event: ChangeEvent<{ value: unknown }>) => {
     updateRestrisiko({
       ...scenario.restrisiko,
-      konsekvens: event.target.value as number,
+      konsekvens: Number(event.target.value),
     });
   };
 
   const setRestSannsynlighet = (event: ChangeEvent<{ value: unknown }>) => {
     updateRestrisiko({
       ...scenario.restrisiko,
-      sannsynlighet: event.target.value as number,
+      sannsynlighet: Number(event.target.value),
     });
   };
 
@@ -72,24 +75,24 @@ export const TabPanelTiltak = ({
         <Grid item xs={4}>
           <Typography variant="h5">Etter planlagte tiltak</Typography>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={2} className={dropdown}>
           <TextField
             label="Konsekvens"
             value={scenario.risiko.konsekvens.toString()}
             disabled={true}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={2} className={dropdown}>
           <TextField
             label="Sannsynlighet"
             value={scenario.risiko.sannsynlighet.toString()}
             disabled={true}
           />
         </Grid>
-        <Grid item xs={1} style={arrows}>
+        <Grid item xs={1} className={arrow}>
           <KeyboardDoubleArrowRightIcon fontSize="large" />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={2} className={dropdown}>
           <Dropdown
             label={'Konsekvens'}
             options={options}
@@ -97,7 +100,7 @@ export const TabPanelTiltak = ({
             handleChange={setRestKonsekvens}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={2} className={dropdown}>
           <Dropdown
             label={'Sannsynlighet'}
             options={options}
@@ -108,12 +111,4 @@ export const TabPanelTiltak = ({
       </Grid>
     </TabPanel>
   );
-};
-
-const arrows = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  paddingTop: '3.5rem',
-  color: '#1DB954',
 };
