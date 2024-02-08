@@ -209,7 +209,7 @@ export const ROSPlugin = () => {
         )}
 
         {ros && (
-          <Grid item>
+          <Grid item xs={6}>
             <RiskMatrix ros={ros} />
           </Grid>
         )}
@@ -218,6 +218,7 @@ export const ROSPlugin = () => {
           <Grid item xs={12}>
             <ScenarioTable
               ros={ros}
+              addScenario={() => setDrawerIsOpen(true)}
               deleteRow={openDeleteConfirmation}
               editRow={editScenario}
             />
@@ -225,22 +226,7 @@ export const ROSPlugin = () => {
         )}
 
         <Grid item xs={12}>
-          <Grid container direction="row">
-            <Grid item>
-              <Button
-                style={{ textTransform: 'none' }}
-                variant="contained"
-                color="primary"
-                onClick={() => setDrawerIsOpen(true)}
-              >
-                Legg til nytt scenario
-              </Button>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography>{submitResponse}</Typography>
-            </Grid>
-          </Grid>
+          <Typography>{submitResponse}</Typography>
         </Grid>
       </Grid>
 
