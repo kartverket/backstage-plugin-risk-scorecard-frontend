@@ -4,7 +4,6 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
 import { RosIdentifier, RosIdentifierResponseDTO } from './types';
-import { fetchROS, fetchROSIds } from './rosFunctions';
 
 export const useBaseUrl = () => {
   return useApi(configApiRef).getString('app.backendUrl');

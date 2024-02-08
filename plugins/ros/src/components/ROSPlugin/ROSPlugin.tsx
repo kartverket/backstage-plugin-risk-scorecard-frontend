@@ -24,7 +24,6 @@ import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { postROS } from '../utils/rosFunctions';
 import { RosStatus } from '../utils/types';
 import {
   githubPostRequestHeaders,
