@@ -38,7 +38,7 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { RosPage } from '@internal/plugin-ros';
-import { githubAuthApiRef } from '@backstage/core-plugin-api';
+import { microsoftAuthApiRef } from '@backstage/core-plugin-api';
 
 const app = createApp({
   apis,
@@ -47,11 +47,17 @@ const app = createApp({
       <SignInPage
         {...props}
         auto
+        // provider={{
+        //   id: 'github-auth-provider',
+        //   title: 'GitHub',
+        //   message: 'Sign in using GitHub',
+        //   apiRef: githubAuthApiRef,
+        // }}
         provider={{
-          id: 'github-auth-provider',
-          title: 'GitHub',
-          message: 'Sign in using GitHub',
-          apiRef: githubAuthApiRef,
+          id: 'microsoft-auth-provider',
+          title: 'Bekkerino klarantino',
+          message: 'Logg inn med Bekk-konto',
+          apiRef: microsoftAuthApiRef,
         }}
       />
     ),

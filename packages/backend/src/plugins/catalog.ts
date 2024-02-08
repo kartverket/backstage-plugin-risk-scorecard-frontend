@@ -8,6 +8,7 @@ import {
   GithubOrgEntityProvider,
   GithubUser,
 } from '@backstage/plugin-catalog-backend-module-github';
+import { MicrosoftGraphOrgEntityProvider } from '@backstage/plugin-catalog-backend-module-msgraph';
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -27,10 +28,18 @@ export default async function createPlugin(
       if (entity && user.organizationVerifiedDomainEmails?.length) {
         entity.spec.profile!.email = user.organizationVerifiedDomainEmails[0];
       }
+      
       return entity;
     },
   });
   builder.addEntityProvider(githubOrgProvider);
+
+  builder.addEntityProvider(
+    MicrosoftGraphOrgEntityProvider.fromConfig(env.config, {
+      logger: env.logger,
+      scheduler: env.scheduler,
+    }),
+  );
 
   const githubEntityProvider = GithubEntityProvider.fromConfig(env.config, {
     logger: env.logger,

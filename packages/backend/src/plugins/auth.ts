@@ -1,7 +1,7 @@
 import {
   createRouter,
-  providers,
   defaultAuthProviderFactories,
+  providers,
 } from '@backstage/plugin-auth-backend';
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
@@ -47,6 +47,39 @@ export default async function createPlugin(
             if (!username) throw new Error(`Fant ikke bruker: ${username}`);
             const { entity } = await ctx.findCatalogUser({
               entityRef: { name: username },
+            });
+
+            return ctx.signInWithCatalogUser({
+              entityRef: {
+                kind: entity.kind,
+                name: entity.metadata.name,
+              },
+            });
+          },
+        },
+      }),
+      microsoft: providers.microsoft.create({
+        signIn: {
+          resolver: async (info, ctx) => {
+            console.log(JSON.stringify(info));
+            const {
+              result: {
+                fullProfile: { displayName, emails },
+              },
+            } = info;
+
+            const workEmails = emails?.filter(x => x.type === 'work');
+            const workEmail =
+              workEmails !== undefined && workEmails.length > 0
+                ? workEmails[0]
+                : null;
+
+            if (!workEmail) throw new Error(`Fant ikke bruker: ${displayName}`);
+
+            const { entity } = await ctx.findCatalogUser({
+              entityRef: {
+                name: workEmail.value.split('@')[0],
+              },
             });
 
             return ctx.signInWithCatalogUser({

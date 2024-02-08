@@ -2881,6 +2881,28 @@
     uuid "^8.0.0"
     winston "^3.2.1"
 
+"@backstage/plugin-catalog-backend-module-msgraph@^0.5.16":
+  version "0.5.16"
+  resolved "https://registry.yarnpkg.com/@backstage/plugin-catalog-backend-module-msgraph/-/plugin-catalog-backend-module-msgraph-0.5.16.tgz#115d86698de8a6ce86abb8b8c815896065a6e17b"
+  integrity sha512-uSRvV7mdEpLosyZOJqQN+f0+rhT0HZvsLZaZEsoxYaPa0+TDiQ2s9z7ErC1AVcZtn0K0ECjGfFO074zmS7qEtw==
+  dependencies:
+    "@azure/identity" "^4.0.0"
+    "@backstage/backend-common" "^0.20.1"
+    "@backstage/backend-plugin-api" "^0.6.9"
+    "@backstage/backend-tasks" "^0.5.14"
+    "@backstage/catalog-model" "^1.4.3"
+    "@backstage/config" "^1.1.1"
+    "@backstage/plugin-catalog-common" "^1.0.20"
+    "@backstage/plugin-catalog-node" "^1.6.1"
+    "@microsoft/microsoft-graph-types" "^2.6.0"
+    "@types/node-fetch" "^2.5.12"
+    lodash "^4.17.21"
+    node-fetch "^2.6.7"
+    p-limit "^3.0.2"
+    qs "^6.9.4"
+    uuid "^8.0.0"
+    winston "^3.2.1"
+
 "@backstage/plugin-catalog-backend-module-scaffolder-entity-model@^0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@backstage/plugin-catalog-backend-module-scaffolder-entity-model/-/plugin-catalog-backend-module-scaffolder-entity-model-0.1.5.tgz#9ac6beb3c67bc40f3acfcef269bc5eb370bb803b"
@@ -5338,6 +5360,11 @@
     "@babel/runtime" "^7.4.4"
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
+
+"@microsoft/microsoft-graph-types@^2.6.0":
+  version "2.40.0"
+  resolved "https://registry.yarnpkg.com/@microsoft/microsoft-graph-types/-/microsoft-graph-types-2.40.0.tgz#65f51600ab45ace97d7b1368c47f9e0f835fddca"
+  integrity sha512-1fcPVrB/NkbNcGNfCy+Cgnvwxt6/sbIEEFgZHFBJ670zYLegENYJF8qMo7x3LqBjWX2/Eneq5BVVRCLTmlJN+g==
 
 "@motionone/animation@^10.12.0":
   version "10.16.3"
@@ -8336,6 +8363,14 @@
     "@types/node" "*"
     form-data "^4.0.0"
 
+"@types/node-fetch@^2.5.12":
+  version "2.6.11"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.6.11.tgz#9b39b78665dae0e82a08f02f4967d62c66f95d24"
+  integrity sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==
+  dependencies:
+    "@types/node" "*"
+    form-data "^4.0.0"
+
 "@types/node-forge@^1.3.0":
   version "1.3.11"
   resolved "https://registry.yarnpkg.com/@types/node-forge/-/node-forge-1.3.11.tgz#0972ea538ddb0f4d9c2fa0ec5db5724773a604da"
@@ -8429,7 +8464,7 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.7.tgz#50ae4353eaaddc04044279812f52c8c65857dbcb"
   integrity sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==
 
-"@types/react-dom@*", "@types/react-dom@<18.0.0":
+"@types/react-dom@*", "@types/react-dom@<18.0.0", "@types/react-dom@^17":
   version "17.0.25"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.25.tgz#e0e5b3571e1069625b3a3da2b279379aa33a0cb5"
   integrity sha512-urx7A7UxkZQmThYA4So0NelOVjx3V4rNFVJwp0WZlbIK5eM4rNJDiN3R/E9ix0MBh6kAEojk/9YL+Te6D9zHNA==
