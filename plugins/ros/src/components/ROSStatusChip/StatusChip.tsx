@@ -75,22 +75,18 @@ export const StatusChip = ({ currentRosStatus }: ChipProps) => {
   }, [currentRosStatus, chipClasses]);
 
   return (
-    <Grid item>
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <Chip
-            color="primary"
-            size="medium"
-            variant="outlined"
-            label={getChipTextStatus(currentRosStatus)}
-            icon={<CircleIcon className={chipClasses.statusIcon} />}
-            className={[chipColorClass, chipClasses.statusChip].join(' ')}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          {getPRStatus(currentRosStatus, textClasses)}
-        </Grid>
+    <Grid container direction="column" spacing={0}>
+      <Grid item>
+        <Chip
+          color="primary"
+          size="medium"
+          variant="outlined"
+          label={getChipTextStatus(currentRosStatus)}
+          icon={<CircleIcon className={chipClasses.statusIcon} />}
+          className={[chipColorClass, chipClasses.statusChip].join(' ')}
+        />
       </Grid>
+      <Grid item>{getPRStatus(currentRosStatus, textClasses)}</Grid>
     </Grid>
   );
 };

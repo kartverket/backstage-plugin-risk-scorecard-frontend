@@ -21,7 +21,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
     useRiskMatrixStyles();
 
   return (
-    <Box sx={{ width: '50%' }}>
+    <Box>
       <InfoCard title="Risikomatrise">
         <Box className={grid}>
           <Box className={topRow}>

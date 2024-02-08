@@ -39,10 +39,6 @@ export const useFetchRosIds = (
   token: string | undefined,
   repoInformation: GithubRepoInfo | null,
 ): [
-  string[] | null,
-  (
-    value: ((prevState: string[] | null) => string[] | null) | string[] | null,
-  ) => void,
   string | null,
   (
     value: ((prevState: string | null) => string | null) | string | null,
@@ -57,7 +53,6 @@ export const useFetchRosIds = (
 ] => {
   const baseUrl = useBaseUrl();
 
-  const [rosIds, setRosIds] = useState<string[] | null>(null);
   const [rosIdsWithStatus, setRosIdsWithStatus] = useState<
     RosIdentifier[] | null
   >(null);
@@ -70,11 +65,6 @@ export const useFetchRosIds = (
         token,
         repoInformation,
         (rosIdentifiersResponseDTO: RosIdentifierResponseDTO) => {
-          setRosIds(
-            rosIdentifiersResponseDTO.rosIds.map(
-              rosIdentifier => rosIdentifier.id,
-            ),
-          );
           setRosIdsWithStatus(rosIdentifiersResponseDTO.rosIds);
           setSelectedId(rosIdentifiersResponseDTO.rosIds[0].id);
         },
@@ -85,14 +75,7 @@ export const useFetchRosIds = (
     }
   }, [baseUrl, repoInformation, token]);
 
-  return [
-    rosIds,
-    setRosIds,
-    selectedId,
-    setSelectedId,
-    rosIdsWithStatus,
-    setRosIdsWithStatus,
-  ];
+  return [selectedId, setSelectedId, rosIdsWithStatus, setRosIdsWithStatus];
 };
 
 export const useFetchRos = (

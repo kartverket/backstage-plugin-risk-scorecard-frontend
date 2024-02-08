@@ -115,40 +115,35 @@ export const ROSStatusComponent = ({
   };
 
   return (
-    <Grid item xs={4}>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <StatusChip
-            selectedId={currentROSId}
-            currentRosStatus={currentRosStatus}
-          />
+    <Grid item container xs direction="column" alignItems="flex-end">
+      <Grid item xs>
+        <StatusChip
+          selectedId={currentROSId}
+          currentRosStatus={currentRosStatus}
+        />
+      </Grid>
+
+      <Grid item container spacing={1} justifyContent="flex-end">
+        <Grid item>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setPublishROSDialogIsOpen(!publishROSDialogIsOpen)}
+            className={statusComponentClasses.godkjennButton}
+            fullWidth
+            disabled={!rosNsApproval(currentRosStatus)}
+          >
+            <Typography variant="button">Godkjenn ROS</Typography>
+          </Button>
         </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={1}>
-            <Grid item>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() =>
-                  setPublishROSDialogIsOpen(!publishROSDialogIsOpen)
-                }
-                className={statusComponentClasses.godkjennButton}
-                fullWidth
-                disabled={!rosNsApproval(currentRosStatus)}
-              >
-                <Typography variant="button">Godkjenn ROS</Typography>
-              </Button>
-            </Grid>
-            <Grid item className={statusComponentClasses.gridItem}>
-              <Button
-                color="primary"
-                variant="outlined"
-                className={statusComponentClasses.settingsButton}
-              >
-                <SettingsOutlinedIcon />
-              </Button>
-            </Grid>
-          </Grid>
+        <Grid item>
+          <Button
+            color="primary"
+            variant="outlined"
+            className={statusComponentClasses.settingsButton}
+          >
+            <SettingsOutlinedIcon />
+          </Button>
         </Grid>
       </Grid>
 
@@ -156,7 +151,7 @@ export const ROSStatusComponent = ({
         openDialog={publishROSDialogIsOpen}
         handlePublish={handleApproveAndPublish}
         handleCancel={() => setPublishROSDialogIsOpen(false)}
-      ></ROSPublishDialog>
+      />
     </Grid>
   );
 };
