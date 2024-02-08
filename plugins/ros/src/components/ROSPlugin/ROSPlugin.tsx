@@ -11,7 +11,6 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import {
   useBaseUrl,
   useDisplaySubmitResponse,
@@ -38,6 +37,7 @@ import {
 } from '../ROSStatus/ROSStatusComponent';
 import { getROSStatus } from '../ROSStatusChip/StatusChip';
 import { DeleteConfirmation } from './DeleteConfirmation';
+import { Dropdown } from '../ScenarioDrawer/Dropdown';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -144,13 +144,14 @@ export const ROSPlugin = () => {
       </ContentHeader>
 
       <Grid container spacing={3} direction="column">
-        {selectedId && (
-          <Grid item xs={12}>
+        {rosIds && selectedId && (
+          <Grid item xs={3}>
             <Dropdown
-              label="ROS-analyser"
-              options={rosIds ?? []}
-              selectedValues={selectedId ? [selectedId] : []}
+              label={'ROS-analyser'}
+              options={rosIds}
+              selectedValues={[selectedId]}
               handleChange={e => setSelectedId(e.target.value as string)}
+              variant="standard"
             />
           </Grid>
         )}
