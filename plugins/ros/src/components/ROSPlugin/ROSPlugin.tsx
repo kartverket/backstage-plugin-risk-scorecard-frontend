@@ -25,7 +25,11 @@ import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { postROS } from '../utils/rosFunctions';
-import { RosStatus } from '../utils/types';
+import {
+  ROSProcessingStatus,
+  ROSProcessResultDTO,
+  RosStatus,
+} from '../utils/types';
 import {
   githubPostRequestHeaders,
   uriToPublishROS,
@@ -39,6 +43,7 @@ import { getROSStatus } from '../ROSStatusChip/StatusChip';
 import { DeleteConfirmation } from './DeleteConfirmation';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
+import { Alert } from '@mui/material';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -79,8 +84,16 @@ export const ROSPlugin = () => {
         headers: githubPostRequestHeaders(token),
         body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
       }).then(res => {
-        if (res.ok) displaySubmitResponse('ROS ble oppdatert!');
-        else res.text().then(text => displaySubmitResponse(text));
+        res
+          .json()
+          .then(x => x as ROSProcessResultDTO)
+          .then(processingResult =>
+            displaySubmitResponse({
+              statusMessage: processingResult.statusMessage,
+              processingStatus: processingResult.status,
+            }),
+          );
+        return null;
       });
     }
   };
@@ -91,9 +104,16 @@ export const ROSPlugin = () => {
         method: 'POST',
         headers: githubPostRequestHeaders(token),
       }).then(res => {
-        if (res.ok) {
-          displaySubmitResponse('Det ble opprettet en PR for ROSen!');
-        } else res.text().then(text => displaySubmitResponse(text));
+        res
+          .json()
+          .then(x => x as ROSProcessResultDTO)
+          .then(processingResult =>
+            displaySubmitResponse({
+              statusMessage: processingResult.statusMessage,
+              processingStatus: processingResult.status,
+            }),
+          );
+        return null;
       });
     }
   };
@@ -119,10 +139,18 @@ export const ROSPlugin = () => {
         setRosIds(updatedRosIds);
         setRosIdsWithStatus(updatedRosIdsWithStatus);
         setSelectedId(rosProcessingResult.rosId);
+
+        displaySubmitResponse({
+          statusMessage: rosProcessingResult.statusMessage,
+          processingStatus: rosProcessingResult.status,
+        });
         // spinn og ikke kunne redigere før her
       },
       (error: string) => {
-        console.log(error);
+        displaySubmitResponse({
+          statusMessage: error.toString(),
+          processingStatus: ROSProcessingStatus.ErrorWhenUpdatingROS,
+        });
       },
     );
   };
@@ -226,7 +254,18 @@ export const ROSPlugin = () => {
         )}
 
         <Grid item xs={12}>
-          <Typography>{submitResponse}</Typography>
+          {submitResponse && (
+            <Alert
+              severity={
+                submitResponse.processingStatus ===
+                ROSProcessingStatus.UpdatedROS
+                  ? 'info'
+                  : 'warning'
+              }
+            >
+              <Typography>{submitResponse?.statusMessage}</Typography>
+            </Alert>
+          )}
         </Grid>
       </Grid>
 

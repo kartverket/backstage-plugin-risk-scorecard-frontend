@@ -3,7 +3,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
-import { RosIdentifier, RosIdentifierResponseDTO } from './types';
+import {
+  RosIdentifier,
+  RosIdentifierResponseDTO,
+  ROSProcessingStatus,
+} from './types';
 import { fetchROS, fetchROSIds } from './rosFunctions';
 
 export const useBaseUrl = () => {
@@ -112,17 +116,23 @@ export const useFetchRos = (
   return [ros, setRos];
 };
 
-export const useDisplaySubmitResponse = (): [
-  string,
-  (text: string) => void,
-] => {
-  const [submitResponse, setSubmitResponse] = useState<string>('');
+export interface SubmitResponseObject {
+  statusMessage: string;
+  processingStatus: ROSProcessingStatus;
+}
 
-  const displaySubmitResponse = (text: string) => {
-    setSubmitResponse(text);
+export const useDisplaySubmitResponse = (): [
+  SubmitResponseObject | null,
+  (submitStatus: SubmitResponseObject) => void,
+] => {
+  const [submitResponse, setSubmitResponse] =
+    useState<SubmitResponseObject | null>(null);
+
+  const displaySubmitResponse = (submitStatus: SubmitResponseObject) => {
+    setSubmitResponse(submitStatus);
     setTimeout(() => {
-      setSubmitResponse('');
-    }, 3000);
+      setSubmitResponse(null);
+    }, 10000);
   };
 
   return [submitResponse, displaySubmitResponse];
