@@ -31,7 +31,7 @@ export const TabPanelTiltak = ({
   updateRestrisiko,
   options,
 }: TabPanelTiltakProps) => {
-  const { dropdown, arrow } = useTabsTiltakStyles();
+  const { arrow } = useTabsTiltakStyles();
 
   const setRestKonsekvens = (event: ChangeEvent<{ value: unknown }>) => {
     updateRestrisiko({
@@ -75,14 +75,14 @@ export const TabPanelTiltak = ({
         <Grid item xs={4}>
           <Typography variant="h5">Etter planlagte tiltak</Typography>
         </Grid>
-        <Grid item xs={2} className={dropdown}>
+        <Grid item xs={2} style={{ paddingTop: 0 }}>
           <TextField
             label="Konsekvens"
             value={scenario.risiko.konsekvens.toString()}
             disabled={true}
           />
         </Grid>
-        <Grid item xs={2} className={dropdown}>
+        <Grid item xs={2} style={{ paddingTop: 0 }}>
           <TextField
             label="Sannsynlighet"
             value={scenario.risiko.sannsynlighet.toString()}
@@ -92,7 +92,7 @@ export const TabPanelTiltak = ({
         <Grid item xs={1} className={arrow}>
           <KeyboardDoubleArrowRightIcon fontSize="large" />
         </Grid>
-        <Grid item xs={2} className={dropdown}>
+        <Grid item xs={2} style={{ paddingTop: 0 }}>
           <Dropdown
             label={'Konsekvens'}
             options={options}
@@ -100,7 +100,7 @@ export const TabPanelTiltak = ({
             handleChange={setRestKonsekvens}
           />
         </Grid>
-        <Grid item xs={2} className={dropdown}>
+        <Grid item xs={2} style={{ paddingTop: 0 }}>
           <Dropdown
             label={'Sannsynlighet'}
             options={options}

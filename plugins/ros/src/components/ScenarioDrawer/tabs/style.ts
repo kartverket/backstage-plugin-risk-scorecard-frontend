@@ -9,7 +9,4 @@ export const useTabsTiltakStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(5),
     color: '#1DB954',
   },
-  dropdown: {
-    paddingTop: 0,
-  },
 }));
