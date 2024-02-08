@@ -11,7 +11,6 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import Chip from '@material-ui/core/Chip';
 import {
   useBaseUrl,
   useDisplaySubmitResponse,
@@ -26,6 +25,7 @@ import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { DeleteConfirmation } from './DeleteConfirmation';
+import { Dropdown } from '../ScenarioDrawer/Dropdown';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -102,16 +102,25 @@ export const ROSPlugin = () => {
       </ContentHeader>
 
       <Grid container spacing={3} direction="column">
-        <Grid item>
-          {rosIds &&
-            selectedId &&
-            rosIds.map(rosId => (
-              <Chip
-                label={rosId}
-                color={rosId === selectedId ? 'primary' : 'default'}
-                onClick={() => setSelectedId(rosId)}
-              />
-            ))}
+        <Grid item xs={3}>
+          {rosIds && selectedId && (
+            /*
+          rosIds.map(rosId => (
+            <Chip
+              label={rosId}
+              color={rosId === selectedId ? 'primary' : 'default'}
+              onClick={() => setSelectedId(rosId)}
+            />
+          ))}
+          */
+            <Dropdown
+              label={'ROS-analyser'}
+              options={rosIds}
+              selectedValues={[selectedId]}
+              handleChange={e => setSelectedId(e.target.value as string)}
+              variant="standard"
+            />
+          )}
         </Grid>
 
         <Grid item>
