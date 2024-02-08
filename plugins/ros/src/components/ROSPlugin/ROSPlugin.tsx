@@ -37,6 +37,7 @@ import {
 } from '../ROSStatus/ROSStatusComponent';
 import { getROSStatus } from '../ROSStatusChip/StatusChip';
 import { DeleteConfirmation } from './DeleteConfirmation';
+import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
 
 export const ROSPlugin = () => {
@@ -204,6 +205,12 @@ export const ROSPlugin = () => {
                 />
               )}
             </Grid>
+          </Grid>
+        )}
+
+        {ros && (
+          <Grid item>
+            <RiskMatrix ros={ros} />
           </Grid>
         )}
 
