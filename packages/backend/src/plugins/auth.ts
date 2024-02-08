@@ -61,7 +61,6 @@ export default async function createPlugin(
       microsoft: providers.microsoft.create({
         signIn: {
           resolver: async (info, ctx) => {
-            console.log(JSON.stringify(info));
             const {
               result: {
                 fullProfile: { displayName, emails },
@@ -75,12 +74,15 @@ export default async function createPlugin(
                 : null;
 
             if (!workEmail) throw new Error(`Fant ikke bruker: ${displayName}`);
+            console.log(workEmail.value.replace('@', '_'));
 
             const { entity } = await ctx.findCatalogUser({
               entityRef: {
-                name: workEmail.value.split('@')[0],
+                name: workEmail.value.replace('@', '_'),
               },
             });
+
+            console.log(entity);
 
             return ctx.signInWithCatalogUser({
               entityRef: {
