@@ -53,14 +53,8 @@ export const ROSPlugin = () => {
 
   const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
-  const [
-    rosIds,
-    setRosIds,
-    selectedId,
-    setSelectedId,
-    rosIdsWithStatus,
-    setRosIdsWithStatus,
-  ] = useFetchRosIds(token, repoInfo);
+  const [selectedId, setSelectedId, rosIdsWithStatus, setRosIdsWithStatus] =
+    useFetchRosIds(token, repoInfo);
 
   const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
 
@@ -105,9 +99,6 @@ export const ROSPlugin = () => {
       token,
       rosProcessingResult => {
         if (!rosProcessingResult.rosId) return;
-        const updatedRosIds = rosIds
-          ? [...rosIds, rosProcessingResult.rosId]
-          : [rosProcessingResult.rosId];
         const newRosIdWithDraftStatus = {
           id: rosProcessingResult.rosId,
           status: RosStatus.Draft,
@@ -116,7 +107,6 @@ export const ROSPlugin = () => {
           ? [...rosIdsWithStatus, newRosIdWithDraftStatus]
           : [newRosIdWithDraftStatus];
 
-        setRosIds(updatedRosIds);
         setRosIdsWithStatus(updatedRosIdsWithStatus);
         setSelectedId(rosProcessingResult.rosId);
         // spinn og ikke kunne redigere før her
@@ -143,13 +133,12 @@ export const ROSPlugin = () => {
       <ContentHeader title="Risiko- og sårbarhetsanalyse">
         <SupportButton>Kul plugin ass!</SupportButton>
       </ContentHeader>
-
       <Grid container spacing={3} direction="column">
-        {rosIds && selectedId && (
+        {rosIdsWithStatus && selectedId && (
           <Grid item xs={3}>
             <Dropdown
               label={'ROS-analyser'}
-              options={rosIds}
+              options={rosIdsWithStatus.map(r => r.id)}
               selectedValues={[selectedId]}
               handleChange={e => setSelectedId(e.target.value as string)}
               variant="standard"
@@ -168,61 +157,43 @@ export const ROSPlugin = () => {
           </Button>
         </Grid>
 
-        {/* TODO: Håndetering av tidligere skjemaer */}
-        {ros && ros.tittel && ros.omfang && (
-          <Grid item xs={12}>
-            <Grid container spacing={1}>
-              <Grid item xs={9}>
-                <Grid container spacing={1}>
-                  <Grid item xs={10}>
-                    <Grid item xs={12}>
-                      <ROSStatusAlertNotApprovedByRisikoeier
-                        currentROSId={selectedId}
-                        rosIdsWithStatus={rosIdsWithStatus}
-                        rosStatus={selectedRosStatus}
-                      ></ROSStatusAlertNotApprovedByRisikoeier>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={10}>
-                    <Typography variant="subtitle2">
-                      {' '}
-                      Tittel: {ros.tittel}
-                    </Typography>
-                  </Grid>
+        {rosIdsWithStatus && selectedId && selectedRosStatus && ros && (
+          <>
+            <Grid item container direction="row">
+              <Grid item container xs direction="column" spacing={0}>
+                <Grid item xs>
+                  <Typography variant="subtitle2">
+                    Tittel: {ros.tittel}
+                  </Typography>
+                </Grid>
 
-                  <Grid item xs={10}>
-                    <Typography variant="subtitle2">
-                      Omfang: {ros.omfang}
-                    </Typography>
-                  </Grid>
+                <Grid item xs>
+                  <Typography variant="subtitle2">
+                    Omfang: {ros.omfang}
+                  </Typography>
                 </Grid>
               </Grid>
-              {rosIdsWithStatus && selectedId && selectedRosStatus && (
-                <ROSStatusComponent
-                  currentROSId={selectedId}
-                  currentRosStatus={selectedRosStatus}
-                  publishRosFn={publishROS}
-                />
-              )}
+              <ROSStatusComponent
+                currentROSId={selectedId}
+                currentRosStatus={selectedRosStatus}
+                publishRosFn={publishROS}
+              />
             </Grid>
-          </Grid>
-        )}
 
-        {ros && (
-          <Grid item xs={6}>
-            <RiskMatrix ros={ros} />
-          </Grid>
-        )}
-
-        {ros && (
-          <Grid item xs={12}>
-            <ScenarioTable
-              ros={ros}
-              addScenario={() => setDrawerIsOpen(true)}
-              deleteRow={openDeleteConfirmation}
-              editRow={editScenario}
-            />
-          </Grid>
+            <Grid item container direction="row">
+              <Grid item xs>
+                <RiskMatrix ros={ros} />
+              </Grid>
+              <Grid item xs>
+                <ScenarioTable
+                  ros={ros}
+                  addScenario={() => setDrawerIsOpen(true)}
+                  deleteRow={openDeleteConfirmation}
+                  editRow={editScenario}
+                />
+              </Grid>
+            </Grid>
+          </>
         )}
 
         <Grid item xs={12}>
@@ -230,13 +201,14 @@ export const ROSPlugin = () => {
         </Grid>
       </Grid>
 
+      {/* --- Popups --- */}
+
       <ROSDialog
         isOpen={newROSDialogIsOpen}
         onClose={() => setNewROSDialogIsOpen(false)}
         setRos={setRos}
         saveRos={createNewROS}
       />
-
       <ScenarioDrawer
         isOpen={drawerIsOpen}
         setIsOpen={setDrawerIsOpen}
@@ -244,11 +216,15 @@ export const ROSPlugin = () => {
         setScenario={setScenario}
         saveScenario={saveScenario}
       />
-
       <DeleteConfirmation
         isOpen={deleteConfirmationIsOpen}
         close={closeDeleteConfirmation}
         confirmDeletion={confirmDeletion}
+      />
+      <ROSStatusAlertNotApprovedByRisikoeier
+        currentROSId={selectedId}
+        rosIdsWithStatus={rosIdsWithStatus}
+        rosStatus={selectedRosStatus}
       />
     </Content>
   );
