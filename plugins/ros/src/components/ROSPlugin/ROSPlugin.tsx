@@ -73,8 +73,8 @@ export const ROSPlugin = () => {
   }, [rosIdsWithStatus, selectedId]);
 
   const putROS = (updatedROS: ROS) => {
-    if (repoInfo && token) {
-      fetch(uriToPutROS(baseUrl, repoInfo, token), {
+    if (repoInfo && token && selectedId) {
+      fetch(uriToPutROS(baseUrl, repoInfo, selectedId), {
         method: 'PUT',
         headers: githubPostRequestHeaders(token),
         body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
