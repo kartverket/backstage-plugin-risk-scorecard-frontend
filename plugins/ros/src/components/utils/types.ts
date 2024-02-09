@@ -1,5 +1,5 @@
 export type RosIdentifierResponseDTO = {
-  status: String;
+  status: string;
   rosIds: RosIdentifier[];
 };
 

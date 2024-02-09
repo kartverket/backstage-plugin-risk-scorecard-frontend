@@ -1,63 +1,49 @@
 import { GithubRepoInfo, ROS } from '../interface/interfaces';
-import {
-  githubGetRequestHeaders,
-  githubPostRequestHeaders,
-  uriToFetchRos,
-  uriToFetchRosIds,
-  uriToPutROS,
-} from './utilityfunctions';
+import { githubPostRequestHeaders } from './utilityfunctions';
 import {
   ROSContentResultDTO,
+  RosIdentifier,
   RosIdentifierResponseDTO,
   ROSProcessResultDTO,
 } from './types';
-import { useGithubRepositoryInformation } from './hooks';
-import {
-  configApiRef,
-  fetchApiRef,
-  githubAuthApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
-import useAsync from 'react-use/lib/useAsync';
+import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 
-export const useFetch = () => {
-  const { fetch } = useApi(fetchApiRef);
-  const GHApi = useApi(githubAuthApiRef);
-  const baseUrl = useApi(configApiRef).getString('app.backendUrl');
-  const { value: accessToken } = useAsync(() => GHApi.getAccessToken('repo'));
-  const repoInformation = useGithubRepositoryInformation();
-
-  const fetch = (
-    method: 'GET' | 'POST' | 'PUT',
+export const useFetch = (
+  accessToken: string | undefined,
+  repoInformation: GithubRepoInfo | null,
+): {
+  fetchROSIds: (onSuccess: (arg: RosIdentifier[]) => void) => void;
+  fetchROS: (rosId: string, onSuccess: (arg: ROS) => void) => void;
+  postROS: (ros: ROS, onSuccess: (arg: ROSProcessResultDTO) => void) => void;
+  putROS: (
+    ros: ROS,
+    rosId: string,
     onSuccess: (arg: ROSProcessResultDTO) => void,
+  ) => void;
+  publishROS: (
+    rosId: string,
+    onSuccess: (arg: ROSProcessResultDTO) => void,
+  ) => void;
+} => {
+  const { fetch: fetchApi } = useApi(fetchApiRef);
+  const baseUrl = useApi(configApiRef).getString('app.backendUrl');
+  const rosUri = `${baseUrl}/api/ros/${repoInformation?.owner}/${repoInformation?.name}`;
+  const uriToFetchRosIds = () => `${rosUri}/ids`;
+  const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
+  const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;
+
+  const fetch = <T>(
+    uri: string,
+    method: 'GET' | 'POST' | 'PUT',
+    onSuccess: (arg: T) => void,
     onError: (error: string) => void,
-  ) => {};
-
-  const uriToFetchRos = (
-    baseUrl: string,
-    repoInformation: GithubRepoInfo,
-    selectedId: string,
-  ) =>
-    `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
-
-  const uriToPutROS = (
-    baseUrl: string,
-    repoInformation: GithubRepoInfo,
-    selectedId: string,
-  ) =>
-    `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
-
-  const uriToPublishROS = (
-    baseUrl: string,
-    repoInformation: GithubRepoInfo,
-    selectedId: string,
-  ) =>
-    `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/publish/${selectedId}`;
-
-  const fetchROSIds = (onSuccess: (arg: RosIdentifierResponseDTO) => void) => {
-    if (accessToken && repoInformation) {
-      fetch(uriToFetchRosIds(baseUrl, repoInformation), {
-        headers: githubGetRequestHeaders(accessToken),
+    body?: string,
+  ) => {
+    if (repoInformation && accessToken) {
+      fetchApi(uri, {
+        method: method,
+        headers: githubPostRequestHeaders(accessToken),
+        body: body,
       })
         .then(res => {
           if (!res.ok) {
@@ -65,76 +51,67 @@ export const useFetch = () => {
           }
           return res.json();
         })
-        .then(json => json as RosIdentifierResponseDTO)
-        .then(rosIdentifiersResponseDTO => onSuccess(rosIdentifiersResponseDTO))
-        .catch(error => console.error('Kunne ikke hente ROS-ider:', error));
+        .then(json => json as T)
+        .then(res => onSuccess(res))
+        .catch(error => onError(error));
     }
   };
 
-  const fetchROS = (
-    selectedId: string | null,
-    onSuccess: (arg: ROS) => void,
-  ) => {
-    if (selectedId && accessToken && repoInformation) {
-      fetch(uriToFetchRos(baseUrl, repoInformation, selectedId), {
-        headers: githubGetRequestHeaders(accessToken),
-      })
-        .then(res => res.json())
-        .then(json => json as ROSContentResultDTO)
-        .then(fetchedRos => {
-          if (fetchedRos.rosContent !== null) {
-            const rosContent = JSON.parse(fetchedRos.rosContent) as ROS;
-            onSuccess(rosContent);
-          } else
-            console.log(
-              `Kunne ikke hente ros med status: ${fetchedRos.status}`,
-            );
-        });
-    }
-  };
+  const fetchROSIds = (onSuccess: (arg: RosIdentifier[]) => void) =>
+    fetch<RosIdentifierResponseDTO>(
+      uriToFetchRosIds(),
+      'GET',
+      (arg: RosIdentifierResponseDTO) => onSuccess(arg.rosIds),
+      (error: string) => console.error('Kunne ikke hente ROS-ider:', error),
+    );
 
-  const postROS = (
-    newRos: ROS,
-    onSuccess: (arg: ROSProcessResultDTO) => void,
-    onError: (error: string) => void,
-  ) => {
-    if (repoInformation && accessToken) {
-      fetch(
-        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}`,
-        {
-          method: 'POST',
-          headers: githubPostRequestHeaders(accessToken),
-          body: JSON.stringify({ ros: JSON.stringify(newRos) }),
-        },
-      )
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          res.text().then(text => onError(text));
-          return null;
-        })
-        .then(json => json as ROSProcessResultDTO)
-        .then(processingResult => {
-          onSuccess(processingResult);
-        });
-    }
-  };
+  const fetchROS = (rosId: string, onSuccess: (arg: ROS) => void): void =>
+    fetch<ROSContentResultDTO>(
+      uriToFetchRos(rosId),
+      'GET',
+      (arg: ROSContentResultDTO) => {
+        switch (arg.rosContent) {
+          case null:
+            throw new Error(`Kunne ikke hente ros med status: ${arg.status}`);
+          default:
+            onSuccess(JSON.parse(arg.rosContent) as ROS);
+        }
+      },
+      (error: string) => console.error(error),
+    );
+
+  const postROS = (ros: ROS, onSuccess: (arg: ROSProcessResultDTO) => void) =>
+    fetch<ROSProcessResultDTO>(
+      rosUri,
+      'POST',
+      onSuccess,
+      (error: string) => console.error(error),
+      JSON.stringify({ ros: JSON.stringify(ros) }),
+    );
 
   const putROS = (
-    updatedROS: ROS,
+    ros: ROS,
     rosId: string,
     onSuccess: (arg: ROSProcessResultDTO) => void,
-    onError: (error: string) => void,
-  ) => {
-    if (repoInformation && accessToken && rosId) {
-      fetch(uriToPutROS(baseUrl, repoInformation, rosId), {
-        method: 'PUT',
-        headers: githubPostRequestHeaders(accessToken),
-        body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
-      }).then(res => onSuccess(res as ROSProcessResultDTO));
-    }
-  };
+  ) =>
+    fetch<ROSProcessResultDTO>(
+      uriToFetchRos(rosId),
+      'PUT',
+      onSuccess,
+      (error: string) => console.error(error),
+      JSON.stringify({ ros: JSON.stringify(ros) }),
+    );
 
-  return { fetchROSIds, fetchROS, postROS };
+  const publishROS = (
+    rosId: string,
+    onSuccess: (arg: ROSProcessResultDTO) => void,
+  ) =>
+    fetch<ROSProcessResultDTO>(
+      uriToPublishROS(rosId),
+      'POST',
+      onSuccess,
+      (error: string) => console.error(error),
+    );
+
+  return { fetchROSIds, fetchROS, postROS, putROS, publishROS };
 };

@@ -83,8 +83,7 @@ export const ROSPublishDialog = ({
 };
 
 interface ROSStatusProps {
-  currentROSId: string;
-  currentRosStatus: RosStatus;
+  selectedId: RosIdentifier;
   publishRosFn: () => void;
 }
 
@@ -101,8 +100,7 @@ const rosNsApproval = (status: RosStatus) => {
 };
 
 export const ROSStatusComponent = ({
-  currentROSId,
-  currentRosStatus,
+  selectedId,
   publishRosFn,
 }: ROSStatusProps) => {
   const statusComponentClasses = useButtonStyles();
@@ -117,10 +115,7 @@ export const ROSStatusComponent = ({
   return (
     <Grid item container xs direction="column" alignItems="flex-end">
       <Grid item xs>
-        <StatusChip
-          selectedId={currentROSId}
-          currentRosStatus={currentRosStatus}
-        />
+        <StatusChip currentRosStatus={selectedId.status} />
       </Grid>
 
       <Grid item container spacing={1} justifyContent="flex-end">
@@ -131,7 +126,7 @@ export const ROSStatusComponent = ({
             onClick={() => setPublishROSDialogIsOpen(!publishROSDialogIsOpen)}
             className={statusComponentClasses.godkjennButton}
             fullWidth
-            disabled={!rosNsApproval(currentRosStatus)}
+            disabled={!rosNsApproval(selectedId.status)}
           >
             <Typography variant="button">Godkjenn ROS</Typography>
           </Button>
@@ -157,19 +152,17 @@ export const ROSStatusComponent = ({
 };
 
 interface ROSAlertProperties {
-  currentROSId: string | null;
-  rosIdsWithStatus: RosIdentifier[] | null;
-  rosStatus: RosStatus | null;
+  currentROSId: RosIdentifier | null;
+  ROSIds: RosIdentifier[] | null;
 }
 
 export const ROSStatusAlertNotApprovedByRisikoeier = ({
   currentROSId,
-  rosIdsWithStatus,
-  rosStatus,
+  ROSIds,
 }: ROSAlertProperties): ReactComponentElement<any> | null => {
   const classes = useAlertStyles();
-  if (!rosIdsWithStatus || !currentROSId) return null;
-  else if (rosStatus !== RosStatus.Draft) return null;
+  if (!ROSIds || !currentROSId) return null;
+  else if (currentROSId.status !== RosStatus.Draft) return null;
   return (
     <Alert severity="warning" className={classes.noApprovalBanner}>
       <AlertTitle>
