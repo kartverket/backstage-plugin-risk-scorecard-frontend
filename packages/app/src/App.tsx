@@ -47,16 +47,10 @@ const app = createApp({
       <SignInPage
         {...props}
         auto
-        // provider={{
-        //   id: 'github-auth-provider',
-        //   title: 'GitHub',
-        //   message: 'Sign in using GitHub',
-        //   apiRef: githubAuthApiRef,
-        // }}
         provider={{
           id: 'microsoft-auth-provider',
-          title: 'Bekkerino klarantino',
-          message: 'Logg inn med Bekk-konto',
+          title: 'Bekk-login',
+          message: 'Logg inn med din Bekk-konto',
           apiRef: microsoftAuthApiRef,
         }}
       />
