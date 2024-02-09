@@ -1,32 +1,60 @@
 import { GithubRepoInfo, ROS } from '../interface/interfaces';
 import {
   githubGetRequestHeaders,
+  githubPostRequestHeaders,
   uriToFetchRos,
   uriToFetchRosIds,
+  uriToPutROS,
 } from './utilityfunctions';
 import {
   ROSContentResultDTO,
   RosIdentifierResponseDTO,
   ROSProcessResultDTO,
 } from './types';
-import { useBaseUrl } from './hooks';
+import { useGithubRepositoryInformation } from './hooks';
 import {
+  configApiRef,
   fetchApiRef,
   githubAuthApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
 
-const useFetch = () => {
+export const useFetch = () => {
   const { fetch } = useApi(fetchApiRef);
   const GHApi = useApi(githubAuthApiRef);
-  const baseUrl = useBaseUrl();
+  const baseUrl = useApi(configApiRef).getString('app.backendUrl');
   const { value: accessToken } = useAsync(() => GHApi.getAccessToken('repo'));
+  const repoInformation = useGithubRepositoryInformation();
 
-  const fetchROSIds = (
-    repoInformation: GithubRepoInfo | null,
-    onSuccess: (arg: RosIdentifierResponseDTO) => void,
-  ) => {
+  const fetch = (
+    method: 'GET' | 'POST' | 'PUT',
+    onSuccess: (arg: ROSProcessResultDTO) => void,
+    onError: (error: string) => void,
+  ) => {};
+
+  const uriToFetchRos = (
+    baseUrl: string,
+    repoInformation: GithubRepoInfo,
+    selectedId: string,
+  ) =>
+    `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
+
+  const uriToPutROS = (
+    baseUrl: string,
+    repoInformation: GithubRepoInfo,
+    selectedId: string,
+  ) =>
+    `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
+
+  const uriToPublishROS = (
+    baseUrl: string,
+    repoInformation: GithubRepoInfo,
+    selectedId: string,
+  ) =>
+    `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/publish/${selectedId}`;
+
+  const fetchROSIds = (onSuccess: (arg: RosIdentifierResponseDTO) => void) => {
     if (accessToken && repoInformation) {
       fetch(uriToFetchRosIds(baseUrl, repoInformation), {
         headers: githubGetRequestHeaders(accessToken),
@@ -45,7 +73,6 @@ const useFetch = () => {
 
   const fetchROS = (
     selectedId: string | null,
-    repoInformation: GithubRepoInfo | null,
     onSuccess: (arg: ROS) => void,
   ) => {
     if (selectedId && accessToken && repoInformation) {
@@ -68,19 +95,18 @@ const useFetch = () => {
 
   const postROS = (
     newRos: ROS,
-    repoInfo: GithubRepoInfo | null,
     onSuccess: (arg: ROSProcessResultDTO) => void,
     onError: (error: string) => void,
   ) => {
-    if (repoInfo && accessToken) {
-      fetch(`${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Github-Access-Token': accessToken,
+    if (repoInformation && accessToken) {
+      fetch(
+        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}`,
+        {
+          method: 'POST',
+          headers: githubPostRequestHeaders(accessToken),
+          body: JSON.stringify({ ros: JSON.stringify(newRos) }),
         },
-        body: JSON.stringify({ ros: JSON.stringify(newRos) }),
-      })
+      )
         .then(res => {
           if (res.ok) {
             return res.json();
@@ -92,6 +118,21 @@ const useFetch = () => {
         .then(processingResult => {
           onSuccess(processingResult);
         });
+    }
+  };
+
+  const putROS = (
+    updatedROS: ROS,
+    rosId: string,
+    onSuccess: (arg: ROSProcessResultDTO) => void,
+    onError: (error: string) => void,
+  ) => {
+    if (repoInformation && accessToken && rosId) {
+      fetch(uriToPutROS(baseUrl, repoInformation, rosId), {
+        method: 'PUT',
+        headers: githubPostRequestHeaders(accessToken),
+        body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
+      }).then(res => onSuccess(res as ROSProcessResultDTO));
     }
   };
 

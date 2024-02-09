@@ -4,6 +4,7 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
 import { RosIdentifier, RosIdentifierResponseDTO } from './types';
+import { useFetch } from './rosFunctions';
 
 export const useBaseUrl = () => {
   return useApi(configApiRef).getString('app.backendUrl');
@@ -34,10 +35,7 @@ export const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   return repoInfo;
 };
 
-export const useFetchRosIds = (
-  token: string | undefined,
-  repoInformation: GithubRepoInfo | null,
-): [
+export const useFetchRosIds = (): [
   string | null,
   (
     value: ((prevState: string | null) => string | null) | string | null,
@@ -50,46 +48,38 @@ export const useFetchRosIds = (
       | null,
   ) => void,
 ] => {
-  const baseUrl = useBaseUrl();
-
   const [rosIdsWithStatus, setRosIdsWithStatus] = useState<
     RosIdentifier[] | null
   >(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  const { fetchROSIds } = useFetch();
+
   useEffect(() => {
     try {
-      fetchROSIds(
-        baseUrl,
-        token,
-        repoInformation,
-        (rosIdentifiersResponseDTO: RosIdentifierResponseDTO) => {
-          setRosIdsWithStatus(rosIdentifiersResponseDTO.rosIds);
-          setSelectedId(rosIdentifiersResponseDTO.rosIds[0].id);
-        },
-      );
+      fetchROSIds((rosIdentifiersResponseDTO: RosIdentifierResponseDTO) => {
+        setRosIdsWithStatus(rosIdentifiersResponseDTO.rosIds);
+        setSelectedId(rosIdentifiersResponseDTO.rosIds[0].id);
+      });
     } catch (error) {
       // Handle any synchronous errors that might occur outside the promise chain
       console.error('Unexpected error:', error);
     }
-  }, [baseUrl, repoInformation, token]);
+  }, []);
 
   return [selectedId, setSelectedId, rosIdsWithStatus, setRosIdsWithStatus];
 };
 
 export const useFetchRos = (
   selectedId: string | null,
-  token: string | undefined,
-  repoInformation: GithubRepoInfo | null,
 ): [ROS | undefined, Dispatch<SetStateAction<ROS | undefined>>] => {
-  const baseUrl = useBaseUrl();
   const [ros, setRos] = useState<ROS>();
 
+  const { fetchROS } = useFetch();
+
   useEffect(() => {
-    fetchROS(baseUrl, token, selectedId, repoInformation, (fetchedROS: ROS) => {
-      setRos(fetchedROS);
-    });
-  }, [baseUrl, repoInformation, selectedId, token]);
+    fetchROS(selectedId, (fetchedROS: ROS) => setRos(fetchedROS));
+  }, [selectedId]);
 
   return [ros, setRos];
 };

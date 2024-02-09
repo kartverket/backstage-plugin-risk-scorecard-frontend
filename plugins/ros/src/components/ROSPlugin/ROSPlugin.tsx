@@ -16,7 +16,6 @@ import {
   useDisplaySubmitResponse,
   useFetchRos,
   useFetchRosIds,
-  useGithubRepositoryInformation,
   useScenarioDrawer,
 } from '../utils/hooks';
 import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
@@ -25,11 +24,7 @@ import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { RosStatus } from '../utils/types';
-import {
-  githubPostRequestHeaders,
-  uriToPublishROS,
-  uriToPutROS,
-} from '../utils/utilityfunctions';
+import { githubPostRequestHeaders } from '../utils/utilityfunctions';
 import {
   ROSStatusAlertNotApprovedByRisikoeier,
   ROSStatusComponent,
@@ -38,13 +33,13 @@ import { getROSStatus } from '../ROSStatusChip/StatusChip';
 import { DeleteConfirmation } from './DeleteConfirmation';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
+import { useFetch } from '../utils/rosFunctions';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
   const { fetch } = useApi(fetchApiRef);
 
   const baseUrl = useBaseUrl();
-  const repoInfo = useGithubRepositoryInformation();
   const { value: token } = useAsync(() => githubApi.getAccessToken('repo'));
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -53,9 +48,9 @@ export const ROSPlugin = () => {
   const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
   const [selectedId, setSelectedId, rosIdsWithStatus, setRosIdsWithStatus] =
-    useFetchRosIds(token, repoInfo);
+    useFetchRosIds();
 
-  const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
+  const [ros, setRos] = useFetchRos(selectedId);
 
   const [selectedRosStatus, setSelectedRosStatus] = useState<RosStatus | null>(
     getROSStatus(rosIdsWithStatus, selectedId),
@@ -65,18 +60,7 @@ export const ROSPlugin = () => {
     setSelectedRosStatus(getROSStatus(rosIdsWithStatus, selectedId));
   }, [rosIdsWithStatus, selectedId]);
 
-  const putROS = (updatedROS: ROS) => {
-    if (repoInfo && token && selectedId) {
-      fetch(uriToPutROS(baseUrl, repoInfo, selectedId), {
-        method: 'PUT',
-        headers: githubPostRequestHeaders(token),
-        body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
-      }).then(res => {
-        if (res.ok) displaySubmitResponse('ROS ble oppdatert!');
-        else res.text().then(text => displaySubmitResponse(text));
-      });
-    }
-  };
+  const { fetchROSIds, fetchROS, postROS } = useFetch();
 
   const publishROS = () => {
     if (repoInfo && token && selectedId) {
@@ -90,12 +74,10 @@ export const ROSPlugin = () => {
       });
     }
   };
+
   const createNewROS = (newRos: ROS) => {
     postROS(
       newRos,
-      baseUrl,
-      repoInfo,
-      token,
       rosProcessingResult => {
         if (!rosProcessingResult.rosId) return;
         const newRosIdWithDraftStatus = {
@@ -125,7 +107,7 @@ export const ROSPlugin = () => {
     openDeleteConfirmation,
     closeDeleteConfirmation,
     confirmDeletion,
-  } = useScenarioDrawer(ros, setRos, setDrawerIsOpen, putROS);
+  } = useScenarioDrawer(ros, setRos, setDrawerIsOpen);
 
   return (
     <Content>

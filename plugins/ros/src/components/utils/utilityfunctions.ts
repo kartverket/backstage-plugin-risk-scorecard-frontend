@@ -1,10 +1,4 @@
-import {
-  GithubRepoInfo,
-  Risiko,
-  ROS,
-  Scenario,
-  TableData,
-} from '../interface/interfaces';
+import { GithubRepoInfo, ROS, TableData } from '../interface/interfaces';
 
 export const mapToTableData = (data: ROS): TableData[] =>
   data.scenarier.map(scenario => ({
@@ -20,27 +14,6 @@ export const uriToFetchRosIds = (
   baseUrl: string,
   repoInformation: GithubRepoInfo,
 ) => `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/ids`;
-
-export const uriToFetchRos = (
-  baseUrl: string,
-  repoInformation: GithubRepoInfo,
-  selectedId: string,
-) =>
-  `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
-
-export const uriToPutROS = (
-  baseUrl: string,
-  repoInformation: GithubRepoInfo,
-  selectedId: string,
-) =>
-  `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
-
-export const uriToPublishROS = (
-  baseUrl: string,
-  repoInformation: GithubRepoInfo,
-  selectedId: string,
-) =>
-  `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/publish/${selectedId}`;
 
 export const githubGetRequestHeaders = (accessToken: string): HeadersInit => ({
   'Github-Access-Token': accessToken,
