@@ -39,6 +39,7 @@ auth:
       development:
         clientId: ${GITHUB_CLIENT_ID}
         clientSecret: ${GITHUB_CLIENT_SECRET}
+
     microsoft:
       development:
         clientId: ${AZURE_CLIENT_ID}
@@ -47,6 +48,16 @@ auth:
         domainHint: ${AZURE_TENANT_ID}
         additionalScopes:
           - Mail.Send
+
+    microsoftOrgGraph:
+      development:
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: ${AZURE_TENANT_ID}
+        domainHint: ${AZURE_TENANT_ID}
+        additionalScopes:
+          - Mail.Send
+
 
 scaffolder: { }
 

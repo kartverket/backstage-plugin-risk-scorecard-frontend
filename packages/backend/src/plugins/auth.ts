@@ -74,15 +74,12 @@ export default async function createPlugin(
                 : null;
 
             if (!workEmail) throw new Error(`Fant ikke bruker: ${displayName}`);
-            console.log(workEmail.value.replace('@', '_'));
 
             const { entity } = await ctx.findCatalogUser({
               entityRef: {
                 name: workEmail.value.replace('@', '_'),
               },
             });
-
-            console.log(entity);
 
             return ctx.signInWithCatalogUser({
               entityRef: {

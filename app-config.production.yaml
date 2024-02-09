@@ -16,6 +16,15 @@ backend:
     client: better-sqlite3
     connection: ':memory:'
 
+
+techdocs:
+  builder: 'local' # Alternatives - 'external'
+  generator:
+    runIn: 'docker' # Alternatives - 'local'
+  publisher:
+    type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
+
+
 catalog:
   rules:
     - allow: [ Component, Group, User, Resource, Location, Template, System ]
@@ -31,3 +40,17 @@ catalog:
         schedule:
           frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
+
+    microsoftGraphOrg:
+      default:
+        tenantId: ${AZURE_TENANT_ID}
+        user:
+          filter: accountEnabled eq true and userType eq 'member'
+        group:
+          filter: >
+            securityEnabled eq false
+            and mailEnabled eq true
+            and groupTypes/any(c:c+eq+'Unified')
+        schedule:
+          frequency: PT1H
+          timeout: PT50M
