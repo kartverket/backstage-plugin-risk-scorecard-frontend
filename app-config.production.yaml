@@ -41,9 +41,24 @@ catalog:
           frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
 
+    githubOrg:
+      providerId:
+        organization: 'bekk'
+        catalogPath: '.security/catalog-info.yaml'
+        filters:
+          branch: 'main'
+          repository: '^kv-ros-.*$'
+        schedule:
+          frequency: { minutes: 1440 }
+          timeout: { minutes: 3 }
+
     microsoftGraphOrg:
       default:
         tenantId: ${AZURE_TENANT_ID}
+        domainHint: ${AZURE_TENANT_ID}
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+
         user:
           filter: accountEnabled eq true and userType eq 'member'
         group:
