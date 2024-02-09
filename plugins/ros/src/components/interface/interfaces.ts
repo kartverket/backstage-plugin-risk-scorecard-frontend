@@ -1,3 +1,13 @@
+export interface ROSWrapper {
+  content: ROS;
+  id: string;
+}
+
+export interface ROSTitleAndId {
+  tittel: string;
+  id: string;
+}
+
 export interface ROS {
   versjon: string;
   skjemaVersjon: string;

@@ -1,7 +1,13 @@
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
-import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
+import {
+  GithubRepoInfo,
+  ROS,
+  ROSTitleAndId,
+  ROSWrapper,
+  Scenario,
+} from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
 
 export const useBaseUrl = () => {
@@ -68,17 +74,90 @@ export const useFetchRosIds = (
             setSelectedId(ids[0]);
           })
           .catch(error => {
-            // Handle the error here, you can log it or show a user-friendly message
             console.error('Error fetching ROS IDs:', error);
           });
       } catch (error) {
-        // Handle any synchronous errors that might occur outside the promise chain
         console.error('Unexpected error:', error);
       }
     }
   }, [token]);
 
   return [rosIds, selectedId, setSelectedId];
+};
+
+export const useFetchRoses = (
+  token: string | undefined,
+  repoInformation: GithubRepoInfo | null,
+): [
+  ROS | null,
+  Dispatch<SetStateAction<ROS | null>>,
+  ROSTitleAndId[] | null,
+  ROSTitleAndId | null,
+  (title: string) => void,
+] => {
+  const { fetch } = useApi(fetchApiRef);
+  const baseUrl = useBaseUrl();
+
+  const [roses, setRoses] = useState<ROS[] | null>(null);
+  const [selectedROS, setSelectedROS] = useState<ROS | null>(null);
+  const [titlesAndIds, setTitlesAndIds] = useState<ROSTitleAndId[] | null>(
+    null,
+  );
+  const [selectedTitleAndId, setSelectedTitleAndId] =
+    useState<ROSTitleAndId | null>(null);
+
+  useEffect(() => {
+    if (token && repoInformation) {
+      fetch(
+        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}`,
+        {
+          headers: { 'Github-Access-Token': token },
+        },
+      )
+        .then(res => res.json())
+        .then((response): ROSWrapper[] => {
+          const fetchedRoses: ROSWrapper[] = response.map((item: any) => ({
+            id: item.name,
+            content: JSON.parse(item.content) as ROS,
+          }));
+
+          setRoses(fetchedRoses.map((ros: ROSWrapper) => ros.content as ROS));
+
+          setTitlesAndIds(
+            fetchedRoses.map((ros: ROSWrapper) => ({
+              tittel: ros.content.tittel,
+              id: ros.id,
+            })),
+          );
+
+          setSelectedTitleAndId({
+            tittel: fetchedRoses[0].content.tittel,
+            id: fetchedRoses[0].id,
+          });
+
+          setSelectedROS(
+            fetchedRoses.length > 0 ? (fetchedRoses[0].content as ROS) : null,
+          );
+          return fetchedRoses;
+        });
+    }
+  }, [token]);
+
+  const selectROSByTitle = (title: string) => {
+    const pickedRos = roses?.find(ros => ros.tittel === title) || null;
+    const pickedTitleAndId =
+      titlesAndIds?.find(t => t.tittel === title) || null;
+    setSelectedROS(pickedRos);
+    setSelectedTitleAndId(pickedTitleAndId);
+  };
+
+  return [
+    selectedROS,
+    setSelectedROS,
+    titlesAndIds,
+    selectedTitleAndId,
+    selectROSByTitle,
+  ];
 };
 
 export const useFetchRos = (
@@ -104,7 +183,6 @@ export const useFetchRos = (
         .then(fetchedRos => setRos(fetchedRos));
     }
   }, [selectedId, token]);
-
   return [ros, setRos];
 };
 
@@ -125,7 +203,7 @@ export const useDisplaySubmitResponse = (): [
 };
 
 export const useScenarioDrawer = (
-  ros: ROS | undefined,
+  ros: ROS | null,
   setRos: (ros: ROS) => void,
   setDrawerIsOpen: (open: boolean) => void,
   putROS: (ros: ROS) => void,

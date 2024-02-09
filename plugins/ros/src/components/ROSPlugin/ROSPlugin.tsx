@@ -16,8 +16,7 @@ import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import {
   useBaseUrl,
   useDisplaySubmitResponse,
-  useFetchRos,
-  useFetchRosIds,
+  useFetchRoses,
   useGithubRepositoryInformation,
   useScenarioDrawer,
 } from '../utils/hooks';
@@ -39,20 +38,25 @@ export const ROSPlugin = () => {
 
   const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
-  const [rosIds, selectedId, setSelectedId] = useFetchRosIds(token, repoInfo);
-  const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
+  const [
+    selectedROS,
+    setSelectedROS,
+    titlesAndIds,
+    selectedTitleAndId,
+    selectROSByTitle,
+  ] = useFetchRoses(token, repoInfo);
 
-  const putROS = (ros: ROS) => {
-    if (repoInfo && token) {
+  const putROS = (editedRos: ROS) => {
+    if (repoInfo && token && selectedTitleAndId) {
       fetch(
-        `${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}/${selectedId}`,
+        `${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}/${selectedTitleAndId.id}`,
         {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Github-Access-Token': token,
           },
-          body: JSON.stringify({ ros: JSON.stringify(ros) }),
+          body: JSON.stringify({ ros: JSON.stringify(editedRos) }),
         },
       ).then(res => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -82,7 +86,7 @@ export const ROSPlugin = () => {
   };
 
   const [scenario, setScenario, saveScenario, deleteScenario, editScenario] =
-    useScenarioDrawer(ros, setRos, setDrawerIsOpen, putROS);
+    useScenarioDrawer(selectedROS, setSelectedROS, setDrawerIsOpen, putROS);
 
   return (
     <Content>
@@ -91,13 +95,15 @@ export const ROSPlugin = () => {
       </ContentHeader>
 
       <Grid container spacing={3} direction="column">
-        {selectedId && (
+        {titlesAndIds && (
           <Grid item>
             <Dropdown
               label="ROS-analyser"
-              options={rosIds ?? []}
-              selectedValues={selectedId ? [selectedId] : []}
-              handleChange={e => setSelectedId(e.target.value as string)}
+              options={titlesAndIds.map(ros => ros.tittel) ?? []}
+              selectedValues={
+                selectedTitleAndId?.tittel ? [selectedTitleAndId.tittel] : []
+              }
+              handleChange={e => selectROSByTitle(e.target.value as string)}
             />
           </Grid>
         )}
@@ -113,22 +119,25 @@ export const ROSPlugin = () => {
           </Button>
         </Grid>
 
-        {/* TODO: Håndetering av tidligere skjemaer */}
-        {ros && ros.tittel && ros.omfang && (
+        {selectedROS && selectedTitleAndId && selectedROS.omfang && (
           <>
             <Grid item>
-              <Typography variant="subtitle2"> Tittel: {ros.tittel}</Typography>
+              <Typography variant="subtitle2">
+                ROS-ID: {selectedTitleAndId.id}
+              </Typography>
             </Grid>
             <Grid item>
-              <Typography variant="subtitle2">Omfang: {ros.omfang}</Typography>
+              <Typography variant="subtitle2">
+                Omfang: {selectedROS.omfang}
+              </Typography>
             </Grid>
           </>
         )}
 
-        {ros && (
+        {selectedROS && (
           <Grid item>
             <ScenarioTable
-              ros={ros}
+              ros={selectedROS}
               deleteRow={deleteScenario}
               editRow={editScenario}
             />
@@ -158,7 +167,7 @@ export const ROSPlugin = () => {
       <ROSDialog
         isOpen={dialogIsOpen}
         onClose={() => setDialogIsOpen(false)}
-        setRos={setRos}
+        setRos={setSelectedROS}
         saveRos={postROS}
       />
 
