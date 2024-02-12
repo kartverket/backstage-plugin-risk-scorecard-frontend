@@ -1,11 +1,14 @@
+import { RosStatus } from '../utils/types';
+
 export interface ROSWrapper {
   content: ROS;
   id: string;
 }
 
-export interface ROSTitleAndId {
+export interface ROSTitleAndIdAndStatus {
   tittel: string;
   id: string;
+  status: RosStatus;
 }
 
 export interface ROS {
@@ -37,9 +40,9 @@ export interface Tiltak {
   ID: number;
   beskrivelse: string;
   tiltakseier: string;
-  frist: Date;
+  frist: string;
   status: string;
-  restrisisko: Risiko;
+  restrisiko: Risiko;
 }
 
 export interface TableData {

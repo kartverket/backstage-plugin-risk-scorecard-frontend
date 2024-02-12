@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
 import {
   Content,
   ContentHeader,
@@ -12,7 +11,6 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/lib/useAsync';
-import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import {
   useBaseUrl,
   useDisplaySubmitResponse,
@@ -24,6 +22,21 @@ import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import { ROS } from '../interface/interfaces';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { postROS } from '../utils/rosFunctions';
+import { RosStatus } from '../utils/types';
+import {
+  githubPostRequestHeaders,
+  uriToPublishROS,
+  uriToPutROS,
+} from '../utils/utilityfunctions';
+import {
+  ROSStatusAlertNotApprovedByRisikoeier,
+  ROSStatusComponent,
+} from '../ROSStatus/ROSStatusComponent';
+import { DeleteConfirmation } from './DeleteConfirmation';
+import { RiskMatrix } from '../riskMatrix/RiskMatrix';
+import { Dropdown } from '../ScenarioDrawer/Dropdown';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
@@ -34,7 +47,7 @@ export const ROSPlugin = () => {
   const { value: token } = useAsync(() => githubApi.getAccessToken('repo'));
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
-  const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
+  const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
 
   const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
@@ -42,61 +55,82 @@ export const ROSPlugin = () => {
     selectedROS,
     setSelectedROS,
     titlesAndIds,
+    setTitlesAndIds,
     selectedTitleAndId,
     selectROSByTitle,
   ] = useFetchRoses(token, repoInfo);
 
-  const putROS = (editedRos: ROS) => {
+  const putROS = (updatedROS: ROS) => {
     if (repoInfo && token && selectedTitleAndId) {
-      fetch(
-        `${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}/${selectedTitleAndId.id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Github-Access-Token': token,
-          },
-          body: JSON.stringify({ ros: JSON.stringify(editedRos) }),
-        },
-      ).then(res => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        res.ok
-          ? displaySubmitResponse('ROS ble oppdatert!')
-          : res.text().then(text => displaySubmitResponse(text));
-      });
-    }
-  };
-
-  const postROS = (newRos: ROS) => {
-    if (repoInfo && token) {
-      fetch(`${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Github-Access-Token': token,
-        },
-        body: JSON.stringify({ ros: JSON.stringify(newRos) }),
+      fetch(uriToPutROS(baseUrl, repoInfo, selectedTitleAndId.id), {
+        method: 'PUT',
+        headers: githubPostRequestHeaders(token),
+        body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
       }).then(res => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        res.ok
-          ? displaySubmitResponse('ROS ble opprettet!')
-          : res.text().then(text => displaySubmitResponse(text));
+        if (res.ok) displaySubmitResponse('ROS ble oppdatert!');
+        else res.text().then(text => displaySubmitResponse(text));
       });
     }
   };
 
-  const [scenario, setScenario, saveScenario, deleteScenario, editScenario] =
-    useScenarioDrawer(selectedROS, setSelectedROS, setDrawerIsOpen, putROS);
+  const publishROS = () => {
+    if (repoInfo && token && selectedTitleAndId) {
+      fetch(uriToPublishROS(baseUrl, repoInfo, selectedTitleAndId.id), {
+        method: 'POST',
+        headers: githubPostRequestHeaders(token),
+      }).then(res => {
+        if (res.ok) {
+          displaySubmitResponse('Det ble opprettet en PR for ROSen!');
+        } else res.text().then(text => displaySubmitResponse(text));
+      });
+    }
+  };
+  const createNewROS = (newRos: ROS) => {
+    postROS(
+      newRos,
+      baseUrl,
+      repoInfo,
+      token,
+      rosProcessingResult => {
+        if (!rosProcessingResult.rosId) return;
+        const newRosIdWithDraftStatus = {
+          id: rosProcessingResult.rosId,
+          tittel: rosProcessingResult.tittel,
+          status: RosStatus.Draft,
+        };
+        const updatedRosIdsWithStatus = titlesAndIds
+          ? [...titlesAndIds, newRosIdWithDraftStatus]
+          : [newRosIdWithDraftStatus];
+
+        setTitlesAndIds(updatedRosIdsWithStatus);
+        setSelectedROS(newRos);
+        // spinn og ikke kunne redigere før her
+      },
+      (error: string) => {
+        console.log(error);
+      },
+    );
+  };
+
+  const {
+    scenario,
+    setScenario,
+    saveScenario,
+    editScenario,
+    deleteConfirmationIsOpen,
+    openDeleteConfirmation,
+    closeDeleteConfirmation,
+    confirmDeletion,
+  } = useScenarioDrawer(selectedROS, setSelectedROS, setDrawerIsOpen, putROS);
 
   return (
     <Content>
       <ContentHeader title="Risiko- og sårbarhetsanalyse">
         <SupportButton>Kul plugin ass!</SupportButton>
       </ContentHeader>
-
       <Grid container spacing={3} direction="column">
         {titlesAndIds && (
-          <Grid item>
+          <Grid item xs={3}>
             <Dropdown
               label="ROS-analyser"
               options={titlesAndIds.map(ros => ros.tittel) ?? []}
@@ -104,73 +138,74 @@ export const ROSPlugin = () => {
                 selectedTitleAndId?.tittel ? [selectedTitleAndId.tittel] : []
               }
               handleChange={e => selectROSByTitle(e.target.value as string)}
+              variant="standard"
             />
           </Grid>
         )}
 
-        <Grid item>
+        <Grid item xs={12}>
           <Button
-            startIcon={<AddIcon />}
+            startIcon={<AddCircleOutlineIcon />}
             variant="text"
             color="primary"
-            onClick={() => setDialogIsOpen(true)}
+            onClick={() => setNewROSDialogIsOpen(true)}
           >
             Opprett ny analyse
           </Button>
         </Grid>
 
-        {selectedROS && selectedTitleAndId && selectedROS.omfang && (
+        {selectedTitleAndId && selectedROS && selectedROS.omfang && (
           <>
-            <Grid item>
-              <Typography variant="subtitle2">
-                ROS-ID: {selectedTitleAndId.id}
-              </Typography>
+            <Grid item container direction="row">
+              <Grid item container xs direction="column" spacing={0}>
+                <Grid item xs>
+                  <Typography variant="subtitle2">
+                    ROS-ID: {selectedTitleAndId.id}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs>
+                  <Typography variant="subtitle2">
+                    Omfang: {selectedROS.omfang}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <ROSStatusComponent
+                currentROSId={selectedTitleAndId.id}
+                currentRosStatus={selectedTitleAndId.status}
+                publishRosFn={publishROS}
+              />
             </Grid>
-            <Grid item>
-              <Typography variant="subtitle2">
-                Omfang: {selectedROS.omfang}
-              </Typography>
+
+            <Grid item container direction="row">
+              <Grid item xs>
+                <RiskMatrix ros={selectedROS} />
+              </Grid>
+              <Grid item xs>
+                <ScenarioTable
+                  ros={selectedROS}
+                  addScenario={() => setDrawerIsOpen(true)}
+                  deleteRow={openDeleteConfirmation}
+                  editRow={editScenario}
+                />
+              </Grid>
             </Grid>
           </>
         )}
 
-        {selectedROS && (
-          <Grid item>
-            <ScenarioTable
-              ros={selectedROS}
-              deleteRow={deleteScenario}
-              editRow={editScenario}
-            />
-          </Grid>
-        )}
-
-        <Grid item>
-          <Grid container direction="row">
-            <Grid item>
-              <Button
-                style={{ textTransform: 'none' }}
-                variant="contained"
-                color="primary"
-                onClick={() => setDrawerIsOpen(true)}
-              >
-                Legg til nytt scenario
-              </Button>
-            </Grid>
-
-            <Grid item>
-              <Typography>{submitResponse}</Typography>
-            </Grid>
-          </Grid>
+        <Grid item xs={12}>
+          <Typography>{submitResponse}</Typography>
         </Grid>
       </Grid>
 
-      <ROSDialog
-        isOpen={dialogIsOpen}
-        onClose={() => setDialogIsOpen(false)}
-        setRos={setSelectedROS}
-        saveRos={postROS}
-      />
+      {/* --- Popups --- */}
 
+      <ROSDialog
+        isOpen={newROSDialogIsOpen}
+        onClose={() => setNewROSDialogIsOpen(false)}
+        setRos={setSelectedROS}
+        saveRos={createNewROS}
+      />
       <ScenarioDrawer
         isOpen={drawerIsOpen}
         setIsOpen={setDrawerIsOpen}
@@ -178,6 +213,18 @@ export const ROSPlugin = () => {
         setScenario={setScenario}
         saveScenario={saveScenario}
       />
+      <DeleteConfirmation
+        isOpen={deleteConfirmationIsOpen}
+        close={closeDeleteConfirmation}
+        confirmDeletion={confirmDeletion}
+      />
+      {selectedTitleAndId && titlesAndIds && (
+        <ROSStatusAlertNotApprovedByRisikoeier
+          currentROSId={selectedTitleAndId.id}
+          rosIdsWithStatus={titlesAndIds}
+          rosStatus={selectedTitleAndId.status}
+        />
+      )}
     </Content>
   );
 };

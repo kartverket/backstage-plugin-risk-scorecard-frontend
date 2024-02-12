@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useState } from 'react';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
   Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
 import { ROS } from '../interface/interfaces';
@@ -90,6 +90,7 @@ export const ROSDialog = ({
           <TextField
             label="Omfang"
             value={newROS.omfang}
+            minRows={4}
             handleChange={setOmfang}
           />
         </Box>
