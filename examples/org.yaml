@@ -5,7 +5,15 @@ kind: User
 metadata:
   name: guest
 spec:
-  memberOf: [guests, kv-platform-team]
+  memberOf: [ guests, kv-platform-team ]
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-user
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: maren.sofie.ringsby
+spec:
+  memberOf: [ guests, kv-platform-team ]
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-group
 apiVersion: backstage.io/v1alpha1
@@ -14,7 +22,7 @@ metadata:
   name: guests
 spec:
   type: team
-  children: []
+  children: [ ]
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-group
 apiVersion: backstage.io/v1alpha1
@@ -23,4 +31,17 @@ metadata:
   name: kv-platform-team
 spec:
   type: team
-  children: []
+  children: [ ]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: kv-rosene
+spec:
+  type: team
+  profile:
+    displayName: Rosene
+  parent: backstage
+  children: [ ]
+  members: [ maren.sofie.ringsby_bekk.no, magnus.tonnessen_bekk.no, ole.furseth_bekk.no, brage.fosso_bekk.no, emil.sall_bekk.no ]
+---
