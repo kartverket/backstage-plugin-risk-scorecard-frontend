@@ -1,10 +1,4 @@
-import {
-  GithubRepoInfo,
-  Risiko,
-  ROS,
-  Scenario,
-  TableData,
-} from '../interface/interfaces';
+import { GithubRepoInfo, ROS, TableData } from '../interface/interfaces';
 
 export const mapToTableData = (data: ROS): TableData[] =>
   data.scenarier.map(scenario => ({

@@ -15,14 +15,22 @@ export enum RosStatus {
 }
 
 export type ROSContentResultDTO = {
-  status: string;
+  status: ROSProcessingStatus;
   rosContent: string | null;
   rosId: string;
 };
 
 export type ROSProcessResultDTO = {
-  status: string;
+  status: ROSProcessingStatus;
   statusMessage: string;
   rosContent: string | null;
   rosId: string | null;
 };
+
+export enum ROSProcessingStatus {
+  ROSNotValid = 'ROSNotValid',
+  EncrptionFailed = 'EncrptionFailed',
+  CouldNotCreateBranch = 'CouldNotCreateBranch',
+  UpdatedROS = 'UpdatedROS',
+  ErrorWhenUpdatingROS = 'ErrorWhenUpdatingROS',
+}
