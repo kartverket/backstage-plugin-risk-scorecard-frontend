@@ -5,7 +5,7 @@ import { PluginEnvironment } from '../types';
 import {
   defaultUserTransformer,
   GithubEntityProvider,
-  GithubOrgEntityProvider,
+  GithubMultiOrgEntityProvider,
   GithubUser,
 } from '@backstage/plugin-catalog-backend-module-github';
 
@@ -14,22 +14,26 @@ export default async function createPlugin(
 ): Promise<Router> {
   const builder = await CatalogBuilder.create(env);
   builder.addProcessor(new ScaffolderEntitiesProcessor());
-  const githubOrgProvider = GithubOrgEntityProvider.fromConfig(env.config, {
-    id: 'production',
-    orgUrl: 'https://github.com/bekk',
-    logger: env.logger,
-    schedule: env.scheduler.createScheduledTaskRunner({
-      frequency: { minutes: 1440 },
-      timeout: { minutes: 15 },
-    }),
-    userTransformer: async (user: GithubUser, ctx) => {
-      const entity = await defaultUserTransformer(user, ctx);
-      if (entity && user.organizationVerifiedDomainEmails?.length) {
-        entity.spec.profile!.email = user.organizationVerifiedDomainEmails[0];
-      }
-      return entity;
+  const githubOrgProvider = GithubMultiOrgEntityProvider.fromConfig(
+    env.config,
+    {
+      id: 'production',
+      orgs: ['spire-test'],
+      githubUrl: 'https://github.com',
+      logger: env.logger,
+      schedule: env.scheduler.createScheduledTaskRunner({
+        frequency: { minutes: 1440 },
+        timeout: { minutes: 15 },
+      }),
+      userTransformer: async (user: GithubUser, ctx) => {
+        const entity = await defaultUserTransformer(user, ctx);
+        if (entity && user.organizationVerifiedDomainEmails?.length) {
+          entity.spec.profile!.email = user.organizationVerifiedDomainEmails[0];
+        }
+        return entity;
+      },
     },
-  });
+  );
   builder.addEntityProvider(githubOrgProvider);
 
   const githubEntityProvider = GithubEntityProvider.fromConfig(env.config, {

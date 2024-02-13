@@ -55,13 +55,23 @@ catalog:
       rules:
         - allow: [ User, Group ]
   providers:
-    github:
-      providerId:
+    githubOrg:
+      - providerId:
         organization: 'bekk'
         catalogPath: '.security/catalog-info.yaml'
         filters:
           branch: 'main'
           repository: '^kv-ros-.*$'
+        schedule:
+          frequency: { minutes: 1440 }
+          timeout: { minutes: 3 }
+
+      - providerId:
+        organization: 'spire-test'
+        catalogPath: '.security/catalog-info.yaml'
+        filters:
+          branch: 'main'
+          repository: '*'
         schedule:
           frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
