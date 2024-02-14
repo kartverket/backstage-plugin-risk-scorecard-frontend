@@ -3,6 +3,7 @@ import { RosStatus } from '../utils/types';
 export interface ROSWrapper {
   content: ROS;
   id: string;
+  status: RosStatus;
 }
 
 export interface ROSTitleAndIdAndStatus {

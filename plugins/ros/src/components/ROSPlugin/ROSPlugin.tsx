@@ -160,7 +160,7 @@ export const ROSPlugin = () => {
               <Grid item container xs direction="column" spacing={0}>
                 <Grid item xs>
                   <Typography variant="subtitle2">
-                    ROS-ID: {selectedTitleAndId.id}
+                    ID: {selectedTitleAndId.id}
                   </Typography>
                 </Grid>
 

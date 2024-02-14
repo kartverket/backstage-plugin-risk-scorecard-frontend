@@ -9,7 +9,7 @@ import {
   Scenario,
 } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
-import { RosIdentifier, RosIdentifierResponseDTO, RosStatus } from './types';
+import { RosIdentifier, RosIdentifierResponseDTO } from './types';
 import { fetchROS, fetchROSIds } from './rosFunctions';
 
 export const useBaseUrl = () => {
@@ -109,7 +109,7 @@ export const useFetchRoses = (
   useEffect(() => {
     if (token && repoInformation) {
       fetch(
-        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}`,
+        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/all`,
         {
           headers: { 'Github-Access-Token': token },
         },
@@ -117,8 +117,9 @@ export const useFetchRoses = (
         .then(res => res.json())
         .then((response): ROSWrapper[] => {
           const fetchedRoses: ROSWrapper[] = response.map((item: any) => ({
-            id: item.name,
-            content: JSON.parse(item.content) as ROS,
+            id: item.rosId,
+            content: JSON.parse(item.rosContent) as ROS,
+            status: item.rosStatus,
           }));
 
           setRoses(fetchedRoses.map((ros: ROSWrapper) => ros.content as ROS));
@@ -127,14 +128,14 @@ export const useFetchRoses = (
             fetchedRoses.map((ros: ROSWrapper) => ({
               tittel: ros.content.tittel,
               id: ros.id,
-              status: RosStatus.Draft,
+              status: ros.status,
             })),
           );
 
           setSelectedTitleAndId({
             tittel: fetchedRoses[0].content.tittel,
             id: fetchedRoses[0].id,
-            status: RosStatus.Draft,
+            status: fetchedRoses[0].status,
           });
 
           setSelectedROS(
