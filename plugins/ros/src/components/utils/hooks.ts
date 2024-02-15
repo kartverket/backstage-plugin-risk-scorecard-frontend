@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { githubAuthApiRef, useApi } from '@backstage/core-plugin-api';
 import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
-import { RosIdentifier, ROSProcessingStatus } from './types';
+import { RosIdentifier } from './types';
 import { useFetch } from './rosFunctions';
 import useAsync from 'react-use/lib/useAsync';
 
@@ -30,28 +30,6 @@ export const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   }, [currentEntity.entity, currentEntity.loading]);
 
   return repoInfo;
-};
-
-export interface SubmitResponseObject {
-  statusMessage: string;
-  processingStatus: ROSProcessingStatus;
-}
-
-export const useDisplaySubmitResponse = (): [
-  SubmitResponseObject | null,
-  (submitStatus: SubmitResponseObject) => void,
-] => {
-  const [submitResponse, setSubmitResponse] =
-    useState<SubmitResponseObject | null>(null);
-
-  const displaySubmitResponse = (submitStatus: SubmitResponseObject) => {
-    setSubmitResponse(submitStatus);
-    setTimeout(() => {
-      setSubmitResponse(null);
-    }, 10000);
-  };
-
-  return [submitResponse, displaySubmitResponse];
 };
 
 export const useScenarioDrawer = (
@@ -131,10 +109,8 @@ export const useROSPlugin = () => {
   const { value: accessToken } = useAsync(() => GHApi.getAccessToken('repo'));
   const repoInformation = useGithubRepositoryInformation();
 
-  const { fetchROSIds, fetchROS, postROS, putROS, publishROS } = useFetch(
-    accessToken,
-    repoInformation,
-  );
+  const { fetchROSIds, fetchROS, postROS, putROS, publishROS, response } =
+    useFetch(accessToken, repoInformation);
 
   const useFetchRos = (
     selectedId: RosIdentifier | null,
@@ -180,5 +156,6 @@ export const useROSPlugin = () => {
     postROS,
     putROS,
     publishROS,
+    response,
   };
 };

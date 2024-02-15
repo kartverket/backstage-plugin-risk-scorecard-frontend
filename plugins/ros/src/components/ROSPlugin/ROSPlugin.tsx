@@ -5,11 +5,7 @@ import {
   ContentHeader,
   SupportButton,
 } from '@backstage/core-components';
-import {
-  useDisplaySubmitResponse,
-  useROSPlugin,
-  useScenarioDrawer,
-} from '../utils/hooks';
+import { useROSPlugin, useScenarioDrawer } from '../utils/hooks';
 import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
@@ -29,75 +25,33 @@ export const ROSPlugin = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
 
-  const { useFetchRos, useFetchRosIds, postROS, putROS, publishROS } =
+  const { useFetchRos, useFetchRosIds, postROS, putROS, publishROS, response } =
     useROSPlugin();
-
-  const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
   const [selectedId, setSelectedId, rosIds, setRosIds] = useFetchRosIds();
   const [ros, setRos] = useFetchRos(selectedId);
 
   const createNewROS = (ros: ROS) =>
-    postROS(
-      ros,
-      res => {
-        if (!res.rosId) return;
-        const newROSId = {
-          id: res.rosId,
-          status: RosStatus.Draft,
-        };
-        setRosIds(rosIds ? [...rosIds, newROSId] : [newROSId]);
-        setSelectedId(newROSId);
-        displaySubmitResponse({
-          statusMessage: res.statusMessage,
-          processingStatus: res.status,
-        });
-      },
-      error => {
-        displaySubmitResponse({
-          statusMessage: error,
-          processingStatus: ROSProcessingStatus.ErrorWhenUpdatingROS,
-        });
-      },
-    );
+    postROS(ros, res => {
+      if (!res.rosId) return;
+      const newROSId = {
+        id: res.rosId,
+        status: RosStatus.Draft,
+      };
+      setRosIds(rosIds ? [...rosIds, newROSId] : [newROSId]);
+      setSelectedId(newROSId);
+    });
 
   const updateROS = (ros: ROS) => {
     if (selectedId) {
       setRos(ros);
-      putROS(
-        ros,
-        selectedId.id,
-        res =>
-          displaySubmitResponse({
-            statusMessage: res.statusMessage,
-            processingStatus: res.status,
-          }),
-        error => {
-          displaySubmitResponse({
-            statusMessage: error,
-            processingStatus: ROSProcessingStatus.ErrorWhenUpdatingROS,
-          });
-        },
-      );
+      putROS(ros, selectedId.id);
     }
   };
 
-  const onApprove = () => {
+  const approveROS = () => {
     if (selectedId) {
-      publishROS(
-        selectedId.id,
-        res =>
-          displaySubmitResponse({
-            statusMessage: res.statusMessage,
-            processingStatus: res.status,
-          }),
-        error => {
-          displaySubmitResponse({
-            statusMessage: error,
-            processingStatus: ROSProcessingStatus.ErrorWhenUpdatingROS,
-          });
-        },
-      );
+      publishROS(selectedId.id);
     }
   };
 
@@ -161,7 +115,7 @@ export const ROSPlugin = () => {
               </Grid>
               <ROSStatusComponent
                 selectedId={selectedId}
-                publishRosFn={onApprove}
+                publishRosFn={approveROS}
               />
             </Grid>
 
@@ -182,16 +136,15 @@ export const ROSPlugin = () => {
         )}
 
         <Grid item xs={12}>
-          {submitResponse && (
+          {response && (
             <Alert
               severity={
-                submitResponse.processingStatus ===
-                ROSProcessingStatus.UpdatedROS
+                response.status === ROSProcessingStatus.UpdatedROS
                   ? 'info'
                   : 'warning'
               }
             >
-              <Typography>{submitResponse?.statusMessage}</Typography>
+              <Typography>{response?.statusMessage}</Typography>
             </Alert>
           )}
         </Grid>

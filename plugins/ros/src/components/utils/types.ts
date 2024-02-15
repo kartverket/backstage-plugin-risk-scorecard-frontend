@@ -32,5 +32,7 @@ export enum ROSProcessingStatus {
   EncrptionFailed = 'EncrptionFailed',
   CouldNotCreateBranch = 'CouldNotCreateBranch',
   UpdatedROS = 'UpdatedROS',
+  ErrorWhenCreatingROS = 'ErrorWhenCreatingROS',
   ErrorWhenUpdatingROS = 'ErrorWhenUpdatingROS',
+  ErrorWhenPublishingROS = 'ErrorWhenPublishingROS',
 }
