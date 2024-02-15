@@ -160,11 +160,12 @@ export const ROSStatusAlertNotApprovedByRisikoeier = ({
   currentROSId,
   ROSIds,
 }: ROSAlertProperties): ReactComponentElement<any> | null => {
-  const classes = useAlertStyles();
-  if (!ROSIds || !currentROSId) return null;
-  else if (currentROSId.status !== RosStatus.Draft) return null;
+  const { noApprovalBanner } = useAlertStyles();
+  if (!ROSIds || !currentROSId || currentROSId.status !== RosStatus.Draft) {
+    return null;
+  }
   return (
-    <Alert severity="warning" className={classes.noApprovalBanner}>
+    <Alert severity="warning" className={noApprovalBanner}>
       <AlertTitle>
         ROS-analysen inneholder endringer som ikke er godkjent
       </AlertTitle>

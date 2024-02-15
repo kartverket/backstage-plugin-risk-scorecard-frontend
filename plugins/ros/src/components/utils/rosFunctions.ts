@@ -26,8 +26,8 @@ export const useFetch = (
   ) => void;
 } => {
   const { fetch: fetchApi } = useApi(fetchApiRef);
-  const baseUrl = useApi(configApiRef).getString('app.backendUrl');
-  const rosUri = `${baseUrl}/api/ros/${repoInformation?.owner}/${repoInformation?.name}`;
+  const baseUri = useApi(configApiRef).getString('app.backendUrl');
+  const rosUri = `${baseUri}/api/ros/${repoInformation?.owner}/${repoInformation?.name}`;
   const uriToFetchRosIds = () => `${rosUri}/ids`;
   const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
   const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;

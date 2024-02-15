@@ -22,7 +22,7 @@ import { DeleteConfirmation } from './DeleteConfirmation';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import { ROS } from '../interface/interfaces';
-import { RosIdentifier, RosStatus } from '../utils/types';
+import { RosStatus } from '../utils/types';
 
 export const ROSPlugin = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -35,14 +35,6 @@ export const ROSPlugin = () => {
 
   const [selectedId, setSelectedId, rosIds, setRosIds] = useFetchRosIds();
   const [ros, setRos] = useFetchRos(selectedId);
-  /*
-    const [selectedRosStatus, setSelectedRosStatus] = useState<RosStatus | null>(
-      getROSStatus(rosIdsWithStatus, selectedId),
-    );
-    useEffect(() => {
-      setSelectedRosStatus(getROSStatus(rosIdsWithStatus, selectedId));
-    }, [rosIdsWithStatus, selectedId]);
-  */
 
   const createNewROS = (ros: ROS) =>
     postROS(ros, res => {
@@ -67,7 +59,7 @@ export const ROSPlugin = () => {
   const onApprove = () => {
     if (selectedId) {
       publishROS(selectedId.id, () =>
-        displaySubmitResponse('Det ble opprettet en PR for ROSen!'),
+        displaySubmitResponse("Det ble opprettet en PR for ROS'en!"),
       );
     }
   };
@@ -81,7 +73,7 @@ export const ROSPlugin = () => {
     openDeleteConfirmation,
     closeDeleteConfirmation,
     confirmDeletion,
-  } = useScenarioDrawer(ros, setDrawerIsOpen, onScenarioChange);
+  } = useScenarioDrawer(ros, setDrawerIsOpen, updateROS);
 
   return (
     <Content>
@@ -180,7 +172,6 @@ export const ROSPlugin = () => {
       <ROSStatusAlertNotApprovedByRisikoeier
         currentROSId={selectedId}
         ROSIds={rosIds}
-        rosStatus={selectedId?.status}
       />
     </Content>
   );

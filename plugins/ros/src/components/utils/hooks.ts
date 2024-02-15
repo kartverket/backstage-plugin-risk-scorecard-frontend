@@ -139,7 +139,7 @@ export const useROSPlugin = () => {
       if (selectedId) {
         fetchROS(selectedId.id, (fetchedROS: ROS) => setRos(fetchedROS));
       }
-    }, [selectedId]);
+    }, [selectedId, accessToken, repoInformation]);
 
     return [ros, setRos];
   };
@@ -163,7 +163,7 @@ export const useROSPlugin = () => {
         // Handle any synchronous errors that might occur outside the promise chain
         console.error('Unexpected error:', error);
       }
-    }, []);
+    }, [accessToken, repoInformation]);
 
     return [selectedId, setSelectedId, rosIds, setRosIds];
   };
