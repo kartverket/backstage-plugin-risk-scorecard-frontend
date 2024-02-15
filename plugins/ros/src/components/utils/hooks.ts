@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { githubAuthApiRef, useApi } from '@backstage/core-plugin-api';
 import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
-import { RosIdentifier } from './types';
+import { RosIdentifier, ROSProcessingStatus } from './types';
 import { useFetch } from './rosFunctions';
 import useAsync from 'react-use/lib/useAsync';
 
@@ -32,17 +32,23 @@ export const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   return repoInfo;
 };
 
-export const useDisplaySubmitResponse = (): [
-  string,
-  (text: string) => void,
-] => {
-  const [submitResponse, setSubmitResponse] = useState<string>('');
+export interface SubmitResponseObject {
+  statusMessage: string;
+  processingStatus: ROSProcessingStatus;
+}
 
-  const displaySubmitResponse = (text: string) => {
-    setSubmitResponse(text);
+export const useDisplaySubmitResponse = (): [
+  SubmitResponseObject | null,
+  (submitStatus: SubmitResponseObject) => void,
+] => {
+  const [submitResponse, setSubmitResponse] =
+    useState<SubmitResponseObject | null>(null);
+
+  const displaySubmitResponse = (submitStatus: SubmitResponseObject) => {
+    setSubmitResponse(submitStatus);
     setTimeout(() => {
-      setSubmitResponse('');
-    }, 3000);
+      setSubmitResponse(null);
+    }, 10000);
   };
 
   return [submitResponse, displaySubmitResponse];

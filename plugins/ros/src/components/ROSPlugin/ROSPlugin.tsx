@@ -22,7 +22,8 @@ import { DeleteConfirmation } from './DeleteConfirmation';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import { ROS } from '../interface/interfaces';
-import { RosStatus } from '../utils/types';
+import { ROSProcessingStatus, RosStatus } from '../utils/types';
+import { Alert } from '@mui/material';
 
 export const ROSPlugin = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -37,29 +38,65 @@ export const ROSPlugin = () => {
   const [ros, setRos] = useFetchRos(selectedId);
 
   const createNewROS = (ros: ROS) =>
-    postROS(ros, res => {
-      const newROSId = {
-        id: res.rosId!!,
-        status: RosStatus.Draft,
-      };
-      setRosIds(rosIds ? [...rosIds, newROSId] : [newROSId]);
-      setSelectedId(newROSId);
-      displaySubmitResponse('ROS ble opprettet!');
-    });
+    postROS(
+      ros,
+      res => {
+        if (!res.rosId) return;
+        const newROSId = {
+          id: res.rosId,
+          status: RosStatus.Draft,
+        };
+        setRosIds(rosIds ? [...rosIds, newROSId] : [newROSId]);
+        setSelectedId(newROSId);
+        displaySubmitResponse({
+          statusMessage: res.statusMessage,
+          processingStatus: res.status,
+        });
+      },
+      error => {
+        displaySubmitResponse({
+          statusMessage: error,
+          processingStatus: ROSProcessingStatus.ErrorWhenUpdatingROS,
+        });
+      },
+    );
 
   const updateROS = (ros: ROS) => {
     if (selectedId) {
       setRos(ros);
-      putROS(ros, selectedId.id, (_: any) =>
-        displaySubmitResponse('ROS ble oppdatert!'),
+      putROS(
+        ros,
+        selectedId.id,
+        res =>
+          displaySubmitResponse({
+            statusMessage: res.statusMessage,
+            processingStatus: res.status,
+          }),
+        error => {
+          displaySubmitResponse({
+            statusMessage: error,
+            processingStatus: ROSProcessingStatus.ErrorWhenUpdatingROS,
+          });
+        },
       );
     }
   };
 
   const onApprove = () => {
     if (selectedId) {
-      publishROS(selectedId.id, () =>
-        displaySubmitResponse("Det ble opprettet en PR for ROS'en!"),
+      publishROS(
+        selectedId.id,
+        res =>
+          displaySubmitResponse({
+            statusMessage: res.statusMessage,
+            processingStatus: res.status,
+          }),
+        error => {
+          displaySubmitResponse({
+            statusMessage: error,
+            processingStatus: ROSProcessingStatus.ErrorWhenUpdatingROS,
+          });
+        },
       );
     }
   };
@@ -145,7 +182,18 @@ export const ROSPlugin = () => {
         )}
 
         <Grid item xs={12}>
-          <Typography>{submitResponse}</Typography>
+          {submitResponse && (
+            <Alert
+              severity={
+                submitResponse.processingStatus ===
+                ROSProcessingStatus.UpdatedROS
+                  ? 'info'
+                  : 'warning'
+              }
+            >
+              <Typography>{submitResponse?.statusMessage}</Typography>
+            </Alert>
+          )}
         </Grid>
       </Grid>
 
