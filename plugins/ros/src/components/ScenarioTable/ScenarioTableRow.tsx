@@ -9,8 +9,8 @@ import { DeleteButton, EditButton } from './ScenarioTableButtons';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
-  editRow: (id: number) => void;
-  deleteRow: (id: number) => void;
+  editRow: (id: string) => void;
+  deleteRow: (id: string) => void;
 }
 
 export const ScenarioTableRow = ({

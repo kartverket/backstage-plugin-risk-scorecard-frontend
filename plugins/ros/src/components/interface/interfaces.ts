@@ -33,7 +33,7 @@ export interface Tiltak {
 }
 
 export interface TableData {
-  id: number;
+  id: string;
   beskrivelse: string;
   trussel: string;
   sårbarhet: string;

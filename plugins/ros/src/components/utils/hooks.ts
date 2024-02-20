@@ -130,9 +130,9 @@ export const useScenarioDrawer = (
   scenario: Scenario;
   setScenario: (scenario: Scenario) => void;
   saveScenario: () => void;
-  editScenario: (id: number) => void;
+  editScenario: (id: string) => void;
   deleteConfirmationIsOpen: boolean;
-  openDeleteConfirmation: (id: number) => void;
+  openDeleteConfirmation: (id: string) => void;
   closeDeleteConfirmation: () => void;
   confirmDeletion: () => void;
 } => {
@@ -151,7 +151,7 @@ export const useScenarioDrawer = (
     }
   };
 
-  const openDeleteConfirmation = (id: number) => {
+  const openDeleteConfirmation = (id: string) => {
     if (ros) {
       setScenario(ros.scenarier.find(s => s.ID === id)!!);
       setDeleteConfirmationIsOpen(true);
@@ -169,7 +169,7 @@ export const useScenarioDrawer = (
     }
   };
 
-  const deleteScenario = (id: number) => {
+  const deleteScenario = (id: string) => {
     if (ros) {
       const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
       setRos({ ...ros, scenarier: updatedScenarios });
@@ -177,7 +177,7 @@ export const useScenarioDrawer = (
     }
   };
 
-  const editScenario = (id: number) => {
+  const editScenario = (id: string) => {
     if (ros) {
       setScenario(ros.scenarier.find(s => s.ID === id)!!);
       setDrawerIsOpen(true);

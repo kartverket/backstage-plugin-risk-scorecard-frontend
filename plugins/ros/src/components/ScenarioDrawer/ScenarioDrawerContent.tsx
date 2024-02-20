@@ -12,6 +12,7 @@ import { TabPanelTiltak } from './tabs/TabPanelTiltak';
 import { TabPanelSannsynlighet } from './tabs/TabPanelSannsynlighet';
 import { TabPanelKonsekvens } from './tabs/TabPanelKonsekvens';
 import { Tabs } from './tabs/Tabs';
+import { generateRandomId } from '../utils/utilityfunctions';
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;
@@ -189,14 +190,9 @@ export const ScenarioDrawerContent = ({
 };
 
 const emptyTiltak = (): ITiltak => ({
-  ID: Math.floor(Math.random() * 100000),
+  ID: generateRandomId(),
   beskrivelse: '',
   tiltakseier: '',
   frist: new Date().toISOString().split('T')[0],
   status: 'Ikke startet',
-  restrisiko: {
-    oppsummering: '',
-    sannsynlighet: 1,
-    konsekvens: 1,
-  },
 });

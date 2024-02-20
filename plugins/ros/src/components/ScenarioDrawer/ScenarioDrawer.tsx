@@ -3,6 +3,7 @@ import { Drawer } from '@material-ui/core';
 import { ScenarioDrawerContent } from './ScenarioDrawerContent';
 import { Scenario } from '../interface/interfaces';
 import { useScenarioDrawerStyles } from './ScenarioDrawerStyle';
+import { generateRandomId } from '../utils/utilityfunctions';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
@@ -64,12 +65,3 @@ export const emptyScenario = (): Scenario => ({
     konsekvens: 1000,
   },
 });
-
-function generateRandomId(): string {
-  return [...Array(3)]
-    .map(() => {
-      const randomChar = Math.random().toString(36)[2];
-      return Math.random() < 0.5 ? randomChar.toUpperCase() : randomChar;
-    })
-    .join('');
-}
