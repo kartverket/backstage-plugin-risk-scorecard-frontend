@@ -1,5 +1,4 @@
 export interface ROS {
-  versjon: string;
   skjemaVersjon: string;
   tittel: string;
   omfang: string;
@@ -7,7 +6,8 @@ export interface ROS {
 }
 
 export interface Scenario {
-  ID: number;
+  ID: string;
+  tittel: string;
   url?: string;
   sistEndret: string;
   beskrivelse: string;
@@ -15,6 +15,7 @@ export interface Scenario {
   sårbarheter: string[];
   risiko: Risiko;
   tiltak: Tiltak[];
+  restrisiko: Risiko;
 }
 
 export interface Risiko {
@@ -24,12 +25,11 @@ export interface Risiko {
 }
 
 export interface Tiltak {
-  ID: number;
+  ID: string;
   beskrivelse: string;
   tiltakseier: string;
   frist: string;
   status: string;
-  restrisiko: Risiko;
 }
 
 export interface TableData {

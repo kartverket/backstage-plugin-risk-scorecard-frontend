@@ -46,15 +46,30 @@ export const ScenarioDrawer = ({
 };
 
 export const emptyScenario = (): Scenario => ({
-  ID: Math.floor(Math.random() * 100000),
+  ID: generateRandomId(),
+  tittel: '',
   beskrivelse: '',
   sistEndret: new Date().toISOString().split('T')[0],
   trusselaktører: [],
   sårbarheter: [],
   risiko: {
     oppsummering: '',
-    sannsynlighet: 1,
-    konsekvens: 1,
+    sannsynlighet: 0.01,
+    konsekvens: 1000,
   },
   tiltak: [],
+  restrisiko: {
+    oppsummering: '',
+    sannsynlighet: 0.01,
+    konsekvens: 1000,
+  },
 });
+
+function generateRandomId(): string {
+  return [...Array(3)]
+    .map(() => {
+      const randomChar = Math.random().toString(36)[2];
+      return Math.random() < 0.5 ? randomChar.toUpperCase() : randomChar;
+    })
+    .join('');
+}
