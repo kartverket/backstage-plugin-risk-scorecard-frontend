@@ -29,7 +29,6 @@ export const ROSDialog = ({
   ...props
 }: ROSDialogProps) => {
   const emptyROS = (withVersions: NewROSOptions): ROS => ({
-    versjon: withVersions ? '1' : '',
     skjemaVersjon: withVersions ? '1' : '',
     tittel: '',
     omfang: '',

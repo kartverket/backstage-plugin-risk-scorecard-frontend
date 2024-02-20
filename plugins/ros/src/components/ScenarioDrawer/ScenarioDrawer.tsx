@@ -3,6 +3,7 @@ import { Drawer } from '@material-ui/core';
 import { ScenarioDrawerContent } from './ScenarioDrawerContent';
 import { Scenario } from '../interface/interfaces';
 import { useScenarioDrawerStyles } from './ScenarioDrawerStyle';
+import { generateRandomId } from '../utils/utilityfunctions';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
@@ -46,15 +47,21 @@ export const ScenarioDrawer = ({
 };
 
 export const emptyScenario = (): Scenario => ({
-  ID: Math.floor(Math.random() * 100000),
+  ID: generateRandomId(),
+  tittel: '',
   beskrivelse: '',
   sistEndret: new Date().toISOString().split('T')[0],
   trusselaktører: [],
   sårbarheter: [],
   risiko: {
     oppsummering: '',
-    sannsynlighet: 1,
-    konsekvens: 1,
+    sannsynlighet: 0.01,
+    konsekvens: 1000,
   },
   tiltak: [],
+  restrisiko: {
+    oppsummering: '',
+    sannsynlighet: 0.01,
+    konsekvens: 1000,
+  },
 });

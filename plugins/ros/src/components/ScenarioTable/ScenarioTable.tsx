@@ -14,8 +14,8 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 interface ScenarioTableProps {
   ros: ROS;
   addScenario: () => void;
-  deleteRow: (id: number) => void;
-  editRow: (id: number) => void;
+  deleteRow: (id: string) => void;
+  editRow: (id: string) => void;
 }
 
 export const ScenarioTable = ({

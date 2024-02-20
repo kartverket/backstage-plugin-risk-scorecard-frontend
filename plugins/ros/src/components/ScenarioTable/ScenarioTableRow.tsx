@@ -6,11 +6,15 @@ import { Collapse, Grid, IconButton, Typography } from '@material-ui/core';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { DeleteButton, EditButton } from './ScenarioTableButtons';
+import {
+  konsekvensOptions,
+  sannsynlighetOptions,
+} from '../ROSPlugin/ROSPlugin';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
-  editRow: (id: number) => void;
-  deleteRow: (id: number) => void;
+  editRow: (id: string) => void;
+  deleteRow: (id: string) => void;
 }
 
 export const ScenarioTableRow = ({
@@ -19,6 +23,10 @@ export const ScenarioTableRow = ({
   deleteRow,
 }: ScenarioTableRowProps) => {
   const [open, setOpen] = useState(false);
+
+  const sannsynlighet =
+    sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1;
+  const konsekvens = konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1;
 
   return (
     <Fragment>
@@ -36,7 +44,7 @@ export const ScenarioTableRow = ({
         <TableCell>{scenario.beskrivelse}</TableCell>
 
         <TableCell>
-          S:{scenario.risiko.sannsynlighet} K:{scenario.risiko.konsekvens}
+          S:{sannsynlighet} K:{konsekvens}
         </TableCell>
 
         <TableCell style={{ display: 'flex', justifyContent: 'flex-end' }}>
