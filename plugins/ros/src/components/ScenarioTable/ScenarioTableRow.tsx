@@ -24,12 +24,9 @@ export const ScenarioTableRow = ({
 }: ScenarioTableRowProps) => {
   const [open, setOpen] = useState(false);
 
-  const sannsynlighet = sannsynlighetOptions
-    .indexOf(scenario.risiko.sannsynlighet)
-    .toString();
-  const konsekvens = konsekvensOptions
-    .indexOf(scenario.risiko.konsekvens)
-    .toString();
+  const sannsynlighet =
+    sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1;
+  const konsekvens = konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1;
 
   return (
     <Fragment>
