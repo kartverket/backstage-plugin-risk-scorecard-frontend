@@ -1,3 +1,5 @@
+import { generateRandomId } from '../utils/utilityfunctions';
+
 export interface ROS {
   skjemaVersjon: string;
   tittel: string;
@@ -32,16 +34,35 @@ export interface Tiltak {
   status: string;
 }
 
-export interface TableData {
-  id: string;
-  beskrivelse: string;
-  trussel: string;
-  sårbarhet: string;
-  konsekvens: number;
-  sannsynlighet: number;
-}
-
 export interface GithubRepoInfo {
   name: string;
   owner: string;
 }
+
+export const emptyScenario = (): Scenario => ({
+  ID: generateRandomId(),
+  tittel: '',
+  beskrivelse: '',
+  sistEndret: new Date().toISOString().split('T')[0],
+  trusselaktører: [],
+  sårbarheter: [],
+  risiko: {
+    oppsummering: '',
+    sannsynlighet: 0.01,
+    konsekvens: 1000,
+  },
+  tiltak: [],
+  restrisiko: {
+    oppsummering: '',
+    sannsynlighet: 0.01,
+    konsekvens: 1000,
+  },
+});
+
+export const emptyTiltak = (): Tiltak => ({
+  ID: generateRandomId(),
+  beskrivelse: '',
+  tiltakseier: '',
+  frist: new Date().toISOString().split('T')[0],
+  status: 'Ikke startet',
+});

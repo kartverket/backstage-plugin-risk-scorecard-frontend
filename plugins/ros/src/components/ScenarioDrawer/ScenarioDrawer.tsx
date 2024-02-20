@@ -1,9 +1,8 @@
 import React from 'react';
 import { Drawer } from '@material-ui/core';
 import { ScenarioDrawerContent } from './ScenarioDrawerContent';
-import { Scenario } from '../interface/interfaces';
-import { useScenarioDrawerStyles } from './ScenarioDrawerStyle';
-import { generateRandomId } from '../utils/utilityfunctions';
+import { emptyScenario, Scenario } from '../interface/interfaces';
+import { useScenarioDrawerStyles } from './style';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
@@ -45,23 +44,3 @@ export const ScenarioDrawer = ({
     </Drawer>
   );
 };
-
-export const emptyScenario = (): Scenario => ({
-  ID: generateRandomId(),
-  tittel: '',
-  beskrivelse: '',
-  sistEndret: new Date().toISOString().split('T')[0],
-  trusselaktører: [],
-  sårbarheter: [],
-  risiko: {
-    oppsummering: '',
-    sannsynlighet: 0.01,
-    konsekvens: 1000,
-  },
-  tiltak: [],
-  restrisiko: {
-    oppsummering: '',
-    sannsynlighet: 0.01,
-    konsekvens: 1000,
-  },
-});
