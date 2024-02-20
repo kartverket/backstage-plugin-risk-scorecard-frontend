@@ -2,16 +2,21 @@ import React, { ChangeEvent, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
-import { Scenario, Tiltak as ITiltak } from '../interface/interfaces';
 import { Dropdown } from './Dropdown';
 import { TextField } from './Textfield';
-import schema from '../../ros_schema_no_v1_0.json';
-import { useScenarioDrawerStyles } from './ScenarioDrawerStyle';
+import { useScenarioDrawerStyles } from './style';
 import TabContext from '@material-ui/lab/TabContext';
 import { TabPanelTiltak } from './tabs/TabPanelTiltak';
 import { TabPanelSannsynlighet } from './tabs/TabPanelSannsynlighet';
 import { TabPanelKonsekvens } from './tabs/TabPanelKonsekvens';
 import { Tabs } from './tabs/Tabs';
+import {
+  konsekvensOptions,
+  sannsynlighetOptions,
+  sårbarheterOptions,
+  trusselaktørerOptions,
+} from '../utils/constants';
+import { emptyTiltak, Risiko, Scenario, Tiltak } from '../utils/interfaces';
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;
@@ -29,10 +34,6 @@ export const ScenarioDrawerContent = ({
   clearScenario,
 }: ROSDrawerContentProps) => {
   const options = ['1', '2', '3', '4', '5'];
-  const trusselaktørerOptions =
-    schema.properties.scenarier.items.properties.trusselaktører.items.enum;
-  const sårbarheterOptions =
-    schema.properties.scenarier.items.properties.sårbarheter.items.enum;
   // sconst requiredFields = schema.properties.scenarier.items.required;
 
   const { header, content, icon, buttons } = useScenarioDrawerStyles();
@@ -60,7 +61,7 @@ export const ScenarioDrawerContent = ({
       ...scenario,
       risiko: {
         ...scenario.risiko,
-        sannsynlighet: Number(event.target.value),
+        sannsynlighet: sannsynlighetOptions[Number(event.target.value) - 1],
       },
     });
 
@@ -69,24 +70,27 @@ export const ScenarioDrawerContent = ({
       ...scenario,
       risiko: {
         ...scenario.risiko,
-        konsekvens: Number(event.target.value),
+        konsekvens: konsekvensOptions[Number(event.target.value) - 1],
       },
     });
 
   const addTiltak = () =>
     setScenario({ ...scenario, tiltak: [...scenario.tiltak, emptyTiltak()] });
 
-  const updateTiltak = (tiltak: ITiltak) => {
+  const updateTiltak = (tiltak: Tiltak) => {
     const updatedTiltak = scenario.tiltak.some(t => t.ID === tiltak.ID)
       ? scenario.tiltak.map(t => (t.ID === tiltak.ID ? tiltak : t))
       : [...scenario.tiltak, tiltak];
     setScenario({ ...scenario, tiltak: updatedTiltak });
   };
 
-  const deleteTiltak = (tiltak: ITiltak) => {
+  const deleteTiltak = (tiltak: Tiltak) => {
     const updatedTiltak = scenario.tiltak.filter(t => t.ID !== tiltak.ID);
     setScenario({ ...scenario, tiltak: updatedTiltak });
   };
+
+  const updateRestrisiko = (restrisiko: Risiko) =>
+    setScenario({ ...scenario, restrisiko });
 
   const [tab, setTab] = useState('konsekvens');
 
@@ -143,12 +147,16 @@ export const ScenarioDrawerContent = ({
           <TabContext value={tab}>
             <Tabs setTab={setTab} />
             <TabPanelKonsekvens
-              scenario={scenario}
+              selected={
+                konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1
+              }
               setKonsekvens={setKonsekvens}
               options={options}
             />
             <TabPanelSannsynlighet
-              scenario={scenario}
+              selected={
+                sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1
+              }
               setSannsynlighet={setSannsynlighet}
               options={options}
             />
@@ -157,6 +165,8 @@ export const ScenarioDrawerContent = ({
               updateTiltak={updateTiltak}
               deleteTiltak={deleteTiltak}
               addTiltak={addTiltak}
+              updateRestrisiko={updateRestrisiko}
+              options={options}
             />
           </TabContext>
         </Box>
@@ -187,16 +197,3 @@ export const ScenarioDrawerContent = ({
     </>
   );
 };
-
-const emptyTiltak = (): ITiltak => ({
-  ID: Math.floor(Math.random() * 100000),
-  beskrivelse: '',
-  tiltakseier: '',
-  frist: new Date().toISOString().split('T')[0],
-  status: 'Ikke startet',
-  restrisiko: {
-    oppsummering: '',
-    sannsynlighet: 1,
-    konsekvens: 1,
-  },
-});

@@ -1,13 +1,27 @@
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { githubAuthApiRef, useApi } from '@backstage/core-plugin-api';
-import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
-import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
-import { RosIdentifier } from './types';
-import { useFetch } from './rosFunctions';
+import {
+  configApiRef,
+  fetchApiRef,
+  githubAuthApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
+import {
+  ROSContentResultDTO,
+  RosIdentifier,
+  RosIdentifierResponseDTO,
+  ROSProcessingStatus,
+  ROSProcessResultDTO,
+} from './types';
 import useAsync from 'react-use/lib/useAsync';
+import { emptyScenario, GithubRepoInfo, ROS, Scenario } from './interfaces';
 
-export const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
+export interface SubmitResponseObject {
+  statusMessage: string;
+  status: ROSProcessingStatus;
+}
+
+const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   const currentEntity = useAsyncEntity();
   const [repoInfo, setRepoInfo] = useState<GithubRepoInfo | null>(null);
 
@@ -32,6 +46,150 @@ export const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   return repoInfo;
 };
 
+const useResponse = (): [
+  SubmitResponseObject | null,
+  (submitStatus: SubmitResponseObject) => void,
+] => {
+  const [submitResponse, setSubmitResponse] =
+    useState<SubmitResponseObject | null>(null);
+
+  const displaySubmitResponse = (submitStatus: SubmitResponseObject) => {
+    setSubmitResponse(submitStatus);
+    setTimeout(() => {
+      setSubmitResponse(null);
+    }, 10000);
+  };
+
+  return [submitResponse, displaySubmitResponse];
+};
+
+const useFetch = (
+  accessToken: string | undefined,
+  repoInformation: GithubRepoInfo | null,
+) => {
+  const { fetch: fetchApi } = useApi(fetchApiRef);
+  const baseUri = useApi(configApiRef).getString('app.backendUrl');
+  const rosUri = `${baseUri}/api/ros/${repoInformation?.owner}/${repoInformation?.name}`;
+  const uriToFetchRosIds = () => `${rosUri}/ids`;
+  const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
+  const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;
+
+  const githubPostRequestHeaders = (accessToken: string): HeadersInit => ({
+    'Github-Access-Token': accessToken,
+    'Content-Type': 'application/json',
+  });
+
+  const [response, setResponse] = useResponse();
+
+  const fetch = <T>(
+    uri: string,
+    method: 'GET' | 'POST' | 'PUT',
+    onSuccess: (arg: T) => void,
+    onError: (error: T) => void,
+    body?: string,
+  ) => {
+    if (repoInformation && accessToken) {
+      fetchApi(uri, {
+        method: method,
+        headers: githubPostRequestHeaders(accessToken),
+        body: body,
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(json => json as T)
+        .then(res => onSuccess(res))
+        .catch(error => onError(error));
+    }
+  };
+
+  const fetchROSIds = (onSuccess: (rosIds: RosIdentifier[]) => void) =>
+    fetch<RosIdentifierResponseDTO>(
+      uriToFetchRosIds(),
+      'GET',
+      (res: RosIdentifierResponseDTO) => onSuccess(res.rosIds),
+      (error: RosIdentifierResponseDTO) =>
+        console.error('Kunne ikke hente ROS-ider:', error),
+    );
+
+  const fetchROS = (rosId: string, onSuccess: (ros: ROS) => void): void =>
+    fetch<ROSContentResultDTO>(
+      uriToFetchRos(rosId),
+      'GET',
+      (res: ROSContentResultDTO) => {
+        switch (res.rosContent) {
+          case null:
+            throw new Error(`Kunne ikke hente ros med status: ${res.status}`);
+          default:
+            onSuccess(JSON.parse(res.rosContent) as ROS);
+        }
+      },
+      (error: ROSContentResultDTO) => console.error(error),
+    );
+
+  const postROS = (
+    ros: ROS,
+    onSuccess?: (arg: ROSProcessResultDTO) => void,
+    onError?: (error: ROSProcessResultDTO) => void,
+  ) =>
+    fetch<ROSProcessResultDTO>(
+      rosUri,
+      'POST',
+      (arg: ROSProcessResultDTO) => {
+        setResponse(arg);
+        if (onSuccess) onSuccess(arg);
+      },
+      (error: ROSProcessResultDTO) => {
+        setResponse(error);
+        if (onError) onError(error);
+      },
+      JSON.stringify({ ros: JSON.stringify(ros) }),
+    );
+
+  const putROS = (
+    ros: ROS,
+    rosId: string,
+    onSuccess?: (arg: ROSProcessResultDTO) => void,
+    onError?: (error: ROSProcessResultDTO) => void,
+  ) =>
+    fetch<ROSProcessResultDTO>(
+      uriToFetchRos(rosId),
+      'PUT',
+      (arg: ROSProcessResultDTO) => {
+        setResponse(arg);
+        if (onSuccess) onSuccess(arg);
+      },
+      (error: ROSProcessResultDTO) => {
+        setResponse(error);
+        if (onError) onError(error);
+      },
+      JSON.stringify({ ros: JSON.stringify(ros) }),
+    );
+
+  const publishROS = (
+    rosId: string,
+    onSuccess?: (arg: ROSProcessResultDTO) => void,
+    onError?: (error: ROSProcessResultDTO) => void,
+  ) =>
+    fetch<ROSProcessResultDTO>(
+      uriToPublishROS(rosId),
+      'POST',
+      (arg: ROSProcessResultDTO) => {
+        setResponse(arg);
+        if (onSuccess) onSuccess(arg);
+      },
+      (error: ROSProcessResultDTO) => {
+        setResponse(error);
+        if (onError) onError(error);
+      },
+    );
+
+  return { fetchROSIds, fetchROS, postROS, putROS, publishROS, response };
+};
+
 export const useScenarioDrawer = (
   ros: ROS | undefined,
   setDrawerIsOpen: (open: boolean) => void,
@@ -40,9 +198,9 @@ export const useScenarioDrawer = (
   scenario: Scenario;
   setScenario: (scenario: Scenario) => void;
   saveScenario: () => void;
-  editScenario: (id: number) => void;
+  editScenario: (id: string) => void;
   deleteConfirmationIsOpen: boolean;
-  openDeleteConfirmation: (id: number) => void;
+  openDeleteConfirmation: (id: string) => void;
   closeDeleteConfirmation: () => void;
   confirmDeletion: () => void;
 } => {
@@ -60,7 +218,7 @@ export const useScenarioDrawer = (
     }
   };
 
-  const openDeleteConfirmation = (id: number) => {
+  const openDeleteConfirmation = (id: string) => {
     if (ros) {
       setScenario(ros.scenarier.find(s => s.ID === id)!!);
       setDeleteConfirmationIsOpen(true);
@@ -78,14 +236,14 @@ export const useScenarioDrawer = (
     }
   };
 
-  const deleteScenario = (id: number) => {
+  const deleteScenario = (id: string) => {
     if (ros) {
       const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
       onChange({ ...ros, scenarier: updatedScenarios });
     }
   };
 
-  const editScenario = (id: number) => {
+  const editScenario = (id: string) => {
     if (ros) {
       setScenario(ros.scenarier.find(s => s.ID === id)!!);
       setDrawerIsOpen(true);

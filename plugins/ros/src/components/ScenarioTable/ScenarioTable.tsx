@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Paper, Typography } from '@material-ui/core';
-import { ROS } from '../interface/interfaces';
+import { ROS } from '../utils/interfaces';
 import { InfoCard } from '@backstage/core-components';
 import TableRow from '@mui/material/TableRow';
 import Table from '@mui/material/Table';
@@ -14,8 +14,8 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 interface ScenarioTableProps {
   ros: ROS;
   addScenario: () => void;
-  deleteRow: (id: number) => void;
-  editRow: (id: number) => void;
+  deleteRow: (id: string) => void;
+  editRow: (id: string) => void;
 }
 
 export const ScenarioTable = ({

@@ -17,7 +17,7 @@ import {
 import { DeleteConfirmation } from './DeleteConfirmation';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
-import { ROS } from '../interface/interfaces';
+import { ROS } from '../utils/interfaces';
 import { ROSProcessingStatus, RosStatus } from '../utils/types';
 import { Alert } from '@mui/material';
 

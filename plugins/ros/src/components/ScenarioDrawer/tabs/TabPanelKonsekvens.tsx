@@ -1,16 +1,15 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React, { ChangeEvent } from 'react';
 import { Dropdown } from '../Dropdown';
-import { Scenario } from '../../interface/interfaces';
 
 interface TabPanelKonsekvensProps {
-  scenario: Scenario;
+  selected: number;
   setKonsekvens: (event: ChangeEvent<{ value: unknown }>) => void;
   options: string[];
 }
 
 export const TabPanelKonsekvens = ({
-  scenario,
+  selected,
   setKonsekvens,
   options,
 }: TabPanelKonsekvensProps) => {
@@ -18,7 +17,7 @@ export const TabPanelKonsekvens = ({
     <TabPanel value="konsekvens">
       <Dropdown
         label="Konsekvens"
-        selectedValues={[scenario.risiko.konsekvens.toString()]}
+        selectedValues={[selected.toString()]}
         options={options}
         handleChange={setKonsekvens}
       />
