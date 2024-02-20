@@ -1,4 +1,3 @@
-import { Scenario } from '../interface/interfaces';
 import React, { Fragment, useState } from 'react';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
@@ -6,10 +5,8 @@ import { Collapse, Grid, IconButton, Typography } from '@material-ui/core';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { DeleteButton, EditButton } from './ScenarioTableButtons';
-import {
-  konsekvensOptions,
-  sannsynlighetOptions,
-} from '../ROSPlugin/ROSPlugin';
+import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
+import { Scenario } from '../utils/interfaces';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;

@@ -2,10 +2,10 @@ import React from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import Box from '@mui/material/Box';
-import { ROS } from '../interface/interfaces';
+import { ROS } from '../utils/interfaces';
 import { useRiskMatrixStyles } from './style';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
-import { AggregatedCost} from "./AggregatedCost";
+import { AggregatedCost } from './AggregatedCost';
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];

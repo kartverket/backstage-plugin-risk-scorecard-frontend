@@ -1,4 +1,4 @@
-import { generateRandomId } from '../utils/utilityfunctions';
+import { generateRandomId } from './utilityfunctions';
 
 export interface ROS {
   skjemaVersjon: string;

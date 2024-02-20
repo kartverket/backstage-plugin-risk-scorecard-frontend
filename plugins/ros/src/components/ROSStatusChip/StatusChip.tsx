@@ -8,7 +8,6 @@ import { Grid, Typography } from '@material-ui/core';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 interface ChipProps {
-  selectedId: string;
   currentRosStatus: RosStatus;
 }
 

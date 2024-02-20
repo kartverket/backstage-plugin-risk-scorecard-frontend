@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
-import { ROS } from '../interface/interfaces';
+import { ROS } from '../../../../../../plugins/ros/src/components/utils/interfaces';
 import { useDialogStyles } from './DialogStyle';
 
 interface ROSDialogProps {

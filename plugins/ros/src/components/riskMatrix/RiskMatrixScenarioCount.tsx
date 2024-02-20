@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { ROS } from '../interface/interfaces';
+import { ROS } from '../../../../../../plugins/ros/src/components/utils/interfaces';
 import { useRiskMatrixStyles } from './style';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 

@@ -2,7 +2,6 @@ import React, { ChangeEvent, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
-import { emptyTiltak, Risiko, Scenario, Tiltak } from '../interface/interfaces';
 import { Dropdown } from './Dropdown';
 import { TextField } from './Textfield';
 import { useScenarioDrawerStyles } from './style';
@@ -16,7 +15,8 @@ import {
   sannsynlighetOptions,
   sårbarheterOptions,
   trusselaktørerOptions,
-} from '../ROSPlugin/ROSPlugin';
+} from '../utils/constants';
+import { emptyTiltak, Risiko, Scenario, Tiltak } from '../utils/interfaces';
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;

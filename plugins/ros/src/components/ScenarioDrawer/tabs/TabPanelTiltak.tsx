@@ -4,19 +4,12 @@ import Grid from '@mui/material/Grid';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import TabPanel from '@material-ui/lab/TabPanel';
 import React, { ChangeEvent } from 'react';
-import {
-  Risiko,
-  Scenario,
-  Tiltak as ITiltak,
-} from '../../interface/interfaces';
+import { Risiko, Scenario, Tiltak as ITiltak } from '../../utils/interfaces';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { TextField } from '../Textfield';
 import { Dropdown } from '../Dropdown';
 import { useTabsTiltakStyles } from './style';
-import {
-  konsekvensOptions,
-  sannsynlighetOptions,
-} from '../../ROSPlugin/ROSPlugin';
+import { konsekvensOptions, sannsynlighetOptions } from '../../utils/constants';
 
 interface TabPanelTiltakProps {
   scenario: Scenario;

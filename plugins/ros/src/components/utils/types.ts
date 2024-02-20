@@ -1,5 +1,5 @@
 export type RosIdentifierResponseDTO = {
-  status: String;
+  status: string;
   rosIds: RosIdentifier[];
 };
 
@@ -32,5 +32,7 @@ export enum ROSProcessingStatus {
   EncrptionFailed = 'EncrptionFailed',
   CouldNotCreateBranch = 'CouldNotCreateBranch',
   UpdatedROS = 'UpdatedROS',
+  ErrorWhenCreatingROS = 'ErrorWhenCreatingROS',
   ErrorWhenUpdatingROS = 'ErrorWhenUpdatingROS',
+  ErrorWhenPublishingROS = 'ErrorWhenPublishingROS',
 }

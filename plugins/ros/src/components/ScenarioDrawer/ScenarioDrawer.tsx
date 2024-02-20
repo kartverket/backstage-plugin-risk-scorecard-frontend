@@ -1,7 +1,7 @@
 import React from 'react';
 import { Drawer } from '@material-ui/core';
 import { ScenarioDrawerContent } from './ScenarioDrawerContent';
-import { emptyScenario, Scenario } from '../interface/interfaces';
+import { emptyScenario, Scenario } from '../utils/interfaces';
 import { useScenarioDrawerStyles } from './style';
 
 interface ScenarioDrawerProps {
