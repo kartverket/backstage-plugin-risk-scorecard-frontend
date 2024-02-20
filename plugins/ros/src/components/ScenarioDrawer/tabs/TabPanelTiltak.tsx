@@ -13,6 +13,10 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import { TextField } from '../Textfield';
 import { Dropdown } from '../Dropdown';
 import { useTabsTiltakStyles } from './style';
+import {
+  konsekvensOptions,
+  sannsynlighetOptions,
+} from '../../ROSPlugin/ROSPlugin';
 
 interface TabPanelTiltakProps {
   scenario: Scenario;
@@ -36,14 +40,14 @@ export const TabPanelTiltak = ({
   const setRestKonsekvens = (event: ChangeEvent<{ value: unknown }>) => {
     updateRestrisiko({
       ...scenario.restrisiko,
-      konsekvens: Number(event.target.value),
+      konsekvens: konsekvensOptions[Number(event.target.value) - 1],
     });
   };
 
   const setRestSannsynlighet = (event: ChangeEvent<{ value: unknown }>) => {
     updateRestrisiko({
       ...scenario.restrisiko,
-      sannsynlighet: Number(event.target.value),
+      sannsynlighet: sannsynlighetOptions[Number(event.target.value) - 1],
     });
   };
 
@@ -78,14 +82,18 @@ export const TabPanelTiltak = ({
         <Grid item xs={2} style={{ paddingTop: 0 }}>
           <TextField
             label="Konsekvens"
-            value={scenario.risiko.konsekvens.toString()}
+            value={(
+              konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1
+            ).toString()}
             disabled={true}
           />
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
           <TextField
             label="Sannsynlighet"
-            value={scenario.risiko.sannsynlighet.toString()}
+            value={(
+              sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1
+            ).toString()}
             disabled={true}
           />
         </Grid>
@@ -96,7 +104,11 @@ export const TabPanelTiltak = ({
           <Dropdown
             label={'Konsekvens'}
             options={options}
-            selectedValues={[scenario.restrisiko.konsekvens.toString()]}
+            selectedValues={[
+              (
+                konsekvensOptions.indexOf(scenario.restrisiko.konsekvens) + 1
+              ).toString(),
+            ]}
             handleChange={setRestKonsekvens}
           />
         </Grid>
@@ -104,7 +116,13 @@ export const TabPanelTiltak = ({
           <Dropdown
             label={'Sannsynlighet'}
             options={options}
-            selectedValues={[scenario.restrisiko.sannsynlighet.toString()]}
+            selectedValues={[
+              (
+                sannsynlighetOptions.indexOf(
+                  scenario.restrisiko.sannsynlighet,
+                ) + 1
+              ).toString(),
+            ]}
             handleChange={setRestSannsynlighet}
           />
         </Grid>

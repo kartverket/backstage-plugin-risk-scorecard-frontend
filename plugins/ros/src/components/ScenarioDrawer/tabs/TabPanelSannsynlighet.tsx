@@ -1,16 +1,15 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React, { ChangeEvent } from 'react';
 import { Dropdown } from '../Dropdown';
-import { Scenario } from '../../interface/interfaces';
 
 interface TabPanelSannsynlighetProps {
-  scenario: Scenario;
+  selected: number;
   setSannsynlighet: (event: ChangeEvent<{ value: unknown }>) => void;
   options: string[];
 }
 
 export const TabPanelSannsynlighet = ({
-  scenario,
+  selected,
   setSannsynlighet,
   options,
 }: TabPanelSannsynlighetProps) => {
@@ -18,7 +17,7 @@ export const TabPanelSannsynlighet = ({
     <TabPanel value="sannsynlighet">
       <Dropdown
         label="Sannsynlighet"
-        selectedValues={[scenario.risiko.sannsynlighet.toString()]}
+        selectedValues={[selected.toString()]}
         options={options}
         handleChange={setSannsynlighet}
       />

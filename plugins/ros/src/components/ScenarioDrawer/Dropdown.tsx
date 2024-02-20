@@ -6,7 +6,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
 import React, { ChangeEvent } from 'react';
 import { menuProps, useInputFieldStyles } from './style';
@@ -16,6 +15,7 @@ interface DropdownProps {
   options: string[];
   selectedValues: string[];
   handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
+  variant?: 'standard' | 'outlined' | 'filled';
   multiple?: boolean;
 }
 
@@ -24,6 +24,7 @@ export const Dropdown = ({
   options,
   selectedValues,
   handleChange,
+  variant = 'outlined',
   multiple = false,
 }: DropdownProps) => {
   const { formLabel, inputBox } = useInputFieldStyles();
@@ -48,7 +49,7 @@ export const Dropdown = ({
         multiple={multiple}
         value={selectedValues}
         onChange={handleChange}
-        input={<OutlinedInput />}
+        variant={variant}
         MenuProps={menuProps}
         renderValue={renderValue}
         style={{ minHeight: multiple ? '4.9rem' : 'auto' }}

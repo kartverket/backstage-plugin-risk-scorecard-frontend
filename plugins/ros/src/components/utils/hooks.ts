@@ -1,12 +1,18 @@
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import {
   emptyScenario,
   GithubRepoInfo,
   ROS,
   Scenario,
 } from '../interface/interfaces';
+import {
+  RosIdentifier,
+  RosIdentifierResponseDTO,
+  ROSProcessingStatus,
+} from './types';
+import { fetchROS, fetchROSIds } from './rosFunctions';
 
 export const useBaseUrl = () => {
   return useApi(configApiRef).getString('app.backendUrl');
@@ -41,48 +47,43 @@ export const useFetchRosIds = (
   token: string | undefined,
   repoInformation: GithubRepoInfo | null,
 ): [
-  string[] | null,
   string | null,
-  Dispatch<SetStateAction<string | null>>,
+  (
+    value: ((prevState: string | null) => string | null) | string | null,
+  ) => void,
+  RosIdentifier[] | null,
+  (
+    value:
+      | ((prevState: RosIdentifier[] | null) => RosIdentifier[] | null)
+      | RosIdentifier[]
+      | null,
+  ) => void,
 ] => {
-  const { fetch } = useApi(fetchApiRef);
   const baseUrl = useBaseUrl();
 
-  const [rosIds, setRosIds] = useState<string[] | null>(null);
+  const [rosIdsWithStatus, setRosIdsWithStatus] = useState<
+    RosIdentifier[] | null
+  >(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (token && repoInformation) {
-      try {
-        fetch(
-          `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/ids`,
-          {
-            headers: { 'Github-Access-Token': token },
-          },
-        )
-          .then(res => {
-            if (!res.ok) {
-              throw new Error(`HTTP error! Status: ${res.status}`);
-            }
-            return res.json();
-          })
-          .then(json => json as string[])
-          .then(ids => {
-            setRosIds(ids);
-            setSelectedId(ids[0]);
-          })
-          .catch(error => {
-            // Handle the error here, you can log it or show a user-friendly message
-            console.error('Error fetching ROS IDs:', error);
-          });
-      } catch (error) {
-        // Handle any synchronous errors that might occur outside the promise chain
-        console.error('Unexpected error:', error);
-      }
+    try {
+      fetchROSIds(
+        baseUrl,
+        token,
+        repoInformation,
+        (rosIdentifiersResponseDTO: RosIdentifierResponseDTO) => {
+          setRosIdsWithStatus(rosIdentifiersResponseDTO.rosIds);
+          setSelectedId(rosIdentifiersResponseDTO.rosIds[0].id);
+        },
+      );
+    } catch (error) {
+      // Handle any synchronous errors that might occur outside the promise chain
+      console.error('Unexpected error:', error);
     }
-  }, [token]);
+  }, [baseUrl, repoInformation, token]);
 
-  return [rosIds, selectedId, setSelectedId];
+  return [selectedId, setSelectedId, rosIdsWithStatus, setRosIdsWithStatus];
 };
 
 export const useFetchRos = (
@@ -90,39 +91,35 @@ export const useFetchRos = (
   token: string | undefined,
   repoInformation: GithubRepoInfo | null,
 ): [ROS | undefined, Dispatch<SetStateAction<ROS | undefined>>] => {
-  const { fetch } = useApi(fetchApiRef);
   const baseUrl = useBaseUrl();
-
   const [ros, setRos] = useState<ROS>();
 
   useEffect(() => {
-    if (selectedId && token && repoInformation) {
-      fetch(
-        `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`,
-        {
-          headers: { 'Github-Access-Token': token },
-        },
-      )
-        .then(res => res.json())
-        .then(json => json as ROS)
-        .then(fetchedRos => setRos(fetchedRos));
-    }
-  }, [selectedId, token]);
+    fetchROS(baseUrl, token, selectedId, repoInformation, (fetchedROS: ROS) => {
+      setRos(fetchedROS);
+    });
+  }, [baseUrl, repoInformation, selectedId, token]);
 
   return [ros, setRos];
 };
 
-export const useDisplaySubmitResponse = (): [
-  string,
-  (text: string) => void,
-] => {
-  const [submitResponse, setSubmitResponse] = useState<string>('');
+export interface SubmitResponseObject {
+  statusMessage: string;
+  processingStatus: ROSProcessingStatus;
+}
 
-  const displaySubmitResponse = (text: string) => {
-    setSubmitResponse(text);
+export const useDisplaySubmitResponse = (): [
+  SubmitResponseObject | null,
+  (submitStatus: SubmitResponseObject) => void,
+] => {
+  const [submitResponse, setSubmitResponse] =
+    useState<SubmitResponseObject | null>(null);
+
+  const displaySubmitResponse = (submitStatus: SubmitResponseObject) => {
+    setSubmitResponse(submitStatus);
     setTimeout(() => {
-      setSubmitResponse('');
-    }, 3000);
+      setSubmitResponse(null);
+    }, 10000);
   };
 
   return [submitResponse, displaySubmitResponse];
@@ -137,9 +134,9 @@ export const useScenarioDrawer = (
   scenario: Scenario;
   setScenario: (scenario: Scenario) => void;
   saveScenario: () => void;
-  editScenario: (id: number) => void;
+  editScenario: (id: string) => void;
   deleteConfirmationIsOpen: boolean;
-  openDeleteConfirmation: (id: number) => void;
+  openDeleteConfirmation: (id: string) => void;
   closeDeleteConfirmation: () => void;
   confirmDeletion: () => void;
 } => {
@@ -158,7 +155,7 @@ export const useScenarioDrawer = (
     }
   };
 
-  const openDeleteConfirmation = (id: number) => {
+  const openDeleteConfirmation = (id: string) => {
     if (ros) {
       setScenario(ros.scenarier.find(s => s.ID === id)!!);
       setDeleteConfirmationIsOpen(true);
@@ -176,7 +173,7 @@ export const useScenarioDrawer = (
     }
   };
 
-  const deleteScenario = (id: number) => {
+  const deleteScenario = (id: string) => {
     if (ros) {
       const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
       setRos({ ...ros, scenarier: updatedScenarios });
@@ -184,7 +181,7 @@ export const useScenarioDrawer = (
     }
   };
 
-  const editScenario = (id: number) => {
+  const editScenario = (id: string) => {
     if (ros) {
       setScenario(ros.scenarier.find(s => s.ID === id)!!);
       setDrawerIsOpen(true);

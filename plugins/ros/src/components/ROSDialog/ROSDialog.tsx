@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useState } from 'react';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
   Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
 import { ROS } from '../interface/interfaces';
@@ -29,7 +29,6 @@ export const ROSDialog = ({
   ...props
 }: ROSDialogProps) => {
   const emptyROS = (withVersions: NewROSOptions): ROS => ({
-    versjon: withVersions ? '1' : '',
     skjemaVersjon: withVersions ? '1' : '',
     tittel: '',
     omfang: '',
