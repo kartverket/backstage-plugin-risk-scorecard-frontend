@@ -1,5 +1,5 @@
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
 import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
@@ -40,8 +40,9 @@ export const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
 };
 
 export const useFetchRosIds = (
-  token: string | undefined,
+  token: string | null,
   repoInformation: GithubRepoInfo | null,
+  fetchFn: typeof fetch,
 ): [
   string | null,
   (
@@ -72,29 +73,38 @@ export const useFetchRosIds = (
           setRosIdsWithStatus(rosIdentifiersResponseDTO.rosIds);
           setSelectedId(rosIdentifiersResponseDTO.rosIds[0].id);
         },
+        fetchFn,
       );
     } catch (error) {
       // Handle any synchronous errors that might occur outside the promise chain
       console.error('Unexpected error:', error);
     }
-  }, [baseUrl, repoInformation, token]);
+  }, [baseUrl, fetchFn, repoInformation, token]);
 
   return [selectedId, setSelectedId, rosIdsWithStatus, setRosIdsWithStatus];
 };
 
 export const useFetchRos = (
   selectedId: string | null,
-  token: string | undefined,
+  token: string | null,
   repoInformation: GithubRepoInfo | null,
-): [ROS | undefined, Dispatch<SetStateAction<ROS | undefined>>] => {
+  fetchFn: typeof fetch,
+): [ROS | undefined, React.Dispatch<React.SetStateAction<ROS | undefined>>] => {
   const baseUrl = useBaseUrl();
   const [ros, setRos] = useState<ROS>();
 
   useEffect(() => {
-    fetchROS(baseUrl, token, selectedId, repoInformation, (fetchedROS: ROS) => {
-      setRos(fetchedROS);
-    });
-  }, [baseUrl, repoInformation, selectedId, token]);
+    fetchROS(
+      baseUrl,
+      token,
+      selectedId,
+      repoInformation,
+      (fetchedROS: ROS) => {
+        setRos(fetchedROS);
+      },
+      fetchFn,
+    );
+  }, [baseUrl, fetchFn, repoInformation, selectedId, token]);
 
   return [ros, setRos];
 };
@@ -158,6 +168,14 @@ export const useScenarioDrawer = (
     }
   };
 
+  const deleteScenario = (id: number) => {
+    if (ros) {
+      const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
+      setRos({ ...ros, scenarier: updatedScenarios });
+      putROS({ ...ros, scenarier: updatedScenarios });
+    }
+  };
+
   const confirmDeletion = () => {
     deleteScenario(scenario.ID);
   };
@@ -166,14 +184,6 @@ export const useScenarioDrawer = (
     if (ros) {
       setDeleteConfirmationIsOpen(false);
       setScenario(emptyScenario());
-    }
-  };
-
-  const deleteScenario = (id: number) => {
-    if (ros) {
-      const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
-      setRos({ ...ros, scenarier: updatedScenarios });
-      putROS({ ...ros, scenarier: updatedScenarios });
     }
   };
 

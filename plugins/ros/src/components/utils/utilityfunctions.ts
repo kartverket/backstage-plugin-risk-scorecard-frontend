@@ -40,7 +40,19 @@ export const githubGetRequestHeaders = (accessToken: string): HeadersInit => ({
   'Github-Access-Token': accessToken,
 });
 
-export const githubPostRequestHeaders = (accessToken: string): HeadersInit => ({
-  'Github-Access-Token': accessToken,
-  'Content-Type': 'application/json',
-});
+export const githubPostRequestHeaders = (
+  ghToken: string | null,
+  microsoftToken: string,
+): HeadersInit => {
+  if (ghToken)
+    return {
+      'Github-Access-Token': ghToken,
+      'Microsfot-Access-Token': microsoftToken,
+      'Content-Type': 'application/json',
+    };
+
+  return {
+    'Microsoft-Access-Token': microsoftToken,
+    'Content-Type': 'application/json',
+  };
+};

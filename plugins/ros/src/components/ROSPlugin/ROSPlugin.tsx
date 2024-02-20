@@ -8,9 +8,9 @@ import {
 import {
   fetchApiRef,
   githubAuthApiRef,
+  microsoftAuthApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
-import useAsync from 'react-use/lib/useAsync';
 import {
   useBaseUrl,
   useDisplaySubmitResponse,
@@ -43,15 +43,23 @@ import { getROSStatus } from '../ROSStatusChip/StatusChip';
 import { DeleteConfirmation } from './DeleteConfirmation';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
-import { Alert } from '@mui/material';
+import Alert from '@mui/material/Alert';
 
 export const ROSPlugin = () => {
   const githubApi = useApi(githubAuthApiRef);
-  const { fetch } = useApi(fetchApiRef);
+  const [ghToken, setGhToken] = useState<string | null>(null);
+  githubApi
+    .getAccessToken('repo')
+    .then(token => setGhToken(token))
+    .catch(() => setGhToken(null));
+
+  const microsoftApi = useApi(microsoftAuthApiRef);
+  const [microsoftToken, setMicrosoftToken] = useState<string | null>(null);
+  microsoftApi.getIdToken().then(token => setMicrosoftToken(token));
 
   const baseUrl = useBaseUrl();
   const repoInfo = useGithubRepositoryInformation();
-  const { value: token } = useAsync(() => githubApi.getAccessToken('repo'));
+  const { fetch } = useApi(fetchApiRef);
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
@@ -59,9 +67,9 @@ export const ROSPlugin = () => {
   const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
 
   const [selectedId, setSelectedId, rosIdsWithStatus, setRosIdsWithStatus] =
-    useFetchRosIds(token, repoInfo);
+    useFetchRosIds(ghToken, repoInfo, fetch);
 
-  const [ros, setRos] = useFetchRos(selectedId, token, repoInfo);
+  const [ros, setRos] = useFetchRos(selectedId, ghToken, repoInfo, fetch);
 
   const [selectedRosStatus, setSelectedRosStatus] = useState<RosStatus | null>(
     getROSStatus(rosIdsWithStatus, selectedId),
@@ -72,10 +80,10 @@ export const ROSPlugin = () => {
   }, [rosIdsWithStatus, selectedId]);
 
   const putROS = (updatedROS: ROS) => {
-    if (repoInfo && token && selectedId) {
+    if (repoInfo && ghToken && microsoftToken && selectedId) {
       fetch(uriToPutROS(baseUrl, repoInfo, selectedId), {
         method: 'PUT',
-        headers: githubPostRequestHeaders(token),
+        headers: githubPostRequestHeaders(ghToken, microsoftToken),
         body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
       }).then(res => {
         res
@@ -93,10 +101,10 @@ export const ROSPlugin = () => {
   };
 
   const publishROS = () => {
-    if (repoInfo && token && selectedId) {
+    if (repoInfo && ghToken && microsoftToken && selectedId) {
       fetch(uriToPublishROS(baseUrl, repoInfo, selectedId), {
         method: 'POST',
-        headers: githubPostRequestHeaders(token),
+        headers: githubPostRequestHeaders(ghToken, microsoftToken),
       }).then(res => {
         res
           .json()
@@ -116,7 +124,7 @@ export const ROSPlugin = () => {
       newRos,
       baseUrl,
       repoInfo,
-      token,
+      ghToken,
       rosProcessingResult => {
         if (!rosProcessingResult.rosId) return;
         const newRosIdWithDraftStatus = {
@@ -142,6 +150,7 @@ export const ROSPlugin = () => {
           processingStatus: ROSProcessingStatus.ErrorWhenUpdatingROS,
         });
       },
+      fetch,
     );
   };
 
@@ -162,10 +171,28 @@ export const ROSPlugin = () => {
         <SupportButton>Kul plugin ass!</SupportButton>
       </ContentHeader>
       <Grid container spacing={3} direction="column">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Token</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>github</th>
+              <th>{ghToken}</th>
+            </tr>
+            <tr>
+              <th>entra id</th>
+              <th>{microsoftToken}</th>
+            </tr>
+          </tbody>
+        </table>
         {rosIdsWithStatus && selectedId && (
           <Grid item xs={3}>
             <Dropdown
-              label={'ROS-analyser'}
+              label="ROS-analyser"
               options={rosIdsWithStatus.map(r => r.id)}
               selectedValues={[selectedId]}
               handleChange={e => setSelectedId(e.target.value as string)}
@@ -173,7 +200,6 @@ export const ROSPlugin = () => {
             />
           </Grid>
         )}
-
         <Grid item xs={12}>
           <Button
             startIcon={<AddCircleOutlineIcon />}
@@ -184,7 +210,6 @@ export const ROSPlugin = () => {
             Opprett ny analyse
           </Button>
         </Grid>
-
         {rosIdsWithStatus && selectedId && selectedRosStatus && ros && (
           <>
             <Grid item container direction="row">
@@ -223,7 +248,6 @@ export const ROSPlugin = () => {
             </Grid>
           </>
         )}
-
         <Grid item xs={12}>
           {submitResponse && (
             <Alert

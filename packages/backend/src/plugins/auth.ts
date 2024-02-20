@@ -35,32 +35,10 @@ export default async function createPlugin(
       // your own, see the auth documentation for more details:
       //
       //   https://backstage.io/docs/auth/identity-resolver
-      github: providers.github.create({
-        signIn: {
-          resolver: async (info, ctx) => {
-            const {
-              result: {
-                fullProfile: { username },
-              },
-            } = info;
-
-            if (!username) throw new Error(`Fant ikke bruker: ${username}`);
-            const { entity } = await ctx.findCatalogUser({
-              entityRef: { name: username },
-            });
-
-            return ctx.signInWithCatalogUser({
-              entityRef: {
-                kind: entity.kind,
-                name: entity.metadata.name,
-              },
-            });
-          },
-        },
-      }),
       microsoft: providers.microsoft.create({
         signIn: {
           resolver: async (info, ctx) => {
+            console.log('BRUKERINFORMASJON:::::: ', info);
             const {
               result: {
                 fullProfile: { displayName, emails },
@@ -87,6 +65,31 @@ export default async function createPlugin(
                 name: entity.metadata.name,
               },
             });
+          },
+        },
+      }),
+      github: providers.github.create({
+        signIn: {
+          resolver: async (info, ctx) => {
+            const {
+              result: {
+                fullProfile: { username },
+              },
+            } = info;
+
+            if (!username) throw new Error(`Fant ikke bruker: ${username}`);
+            const { entity } = await ctx.findCatalogUser({
+              entityRef: { name: username },
+            });
+
+            const user = ctx.signInWithCatalogUser({
+              entityRef: {
+                kind: entity.kind,
+                name: entity.metadata.name,
+              },
+            });
+
+            return user;
           },
         },
       }),

@@ -21,6 +21,19 @@ interface ROSDrawerContentProps {
   clearScenario: () => void;
 }
 
+const emptyTiltak = (): ITiltak => ({
+  ID: Math.floor(Math.random() * 100000),
+  beskrivelse: '',
+  tiltakseier: '',
+  frist: new Date().toISOString().split('T')[0],
+  status: 'Ikke startet',
+  restrisiko: {
+    oppsummering: '',
+    sannsynlighet: 1,
+    konsekvens: 1,
+  },
+});
+
 export const ScenarioDrawerContent = ({
   toggleDrawer,
   scenario,
@@ -187,16 +200,3 @@ export const ScenarioDrawerContent = ({
     </>
   );
 };
-
-const emptyTiltak = (): ITiltak => ({
-  ID: Math.floor(Math.random() * 100000),
-  beskrivelse: '',
-  tiltakseier: '',
-  frist: new Date().toISOString().split('T')[0],
-  status: 'Ikke startet',
-  restrisiko: {
-    oppsummering: '',
-    sannsynlighet: 1,
-    konsekvens: 1,
-  },
-});

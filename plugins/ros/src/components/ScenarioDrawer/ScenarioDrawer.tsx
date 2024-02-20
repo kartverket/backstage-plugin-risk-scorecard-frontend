@@ -12,6 +12,20 @@ interface ScenarioDrawerProps {
   saveScenario: () => void;
 }
 
+export const emptyScenario = (): Scenario => ({
+  ID: Math.floor(Math.random() * 100000),
+  beskrivelse: '',
+  sistEndret: new Date().toISOString().split('T')[0],
+  trusselaktører: [],
+  sårbarheter: [],
+  risiko: {
+    oppsummering: '',
+    sannsynlighet: 1,
+    konsekvens: 1,
+  },
+  tiltak: [],
+});
+
 export const ScenarioDrawer = ({
   isOpen,
   setIsOpen,
@@ -44,17 +58,3 @@ export const ScenarioDrawer = ({
     </Drawer>
   );
 };
-
-export const emptyScenario = (): Scenario => ({
-  ID: Math.floor(Math.random() * 100000),
-  beskrivelse: '',
-  sistEndret: new Date().toISOString().split('T')[0],
-  trusselaktører: [],
-  sårbarheter: [],
-  risiko: {
-    oppsummering: '',
-    sannsynlighet: 1,
-    konsekvens: 1,
-  },
-  tiltak: [],
-});

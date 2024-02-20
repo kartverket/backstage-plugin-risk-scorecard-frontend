@@ -13,7 +13,7 @@ backend:
   csp:
     connect-src: [ "'self'", 'http:', 'https:' ]
   cors:
-    origin: [ 'http://localhost:3000', 'https://kv-ros-backstage-245zlcbrnq-lz.a.run.app/' ]
+    origin: [ 'http://localhost:3000', 'http://localhost:7007', 'https://kv-ros-backstage-245zlcbrnq-lz.a.run.app/' ]
     methods: [ GET, HEAD, PATCH, POST, PUT, DELETE ]
     credentials: true
   database:
@@ -23,7 +23,12 @@ backend:
 integrations:
   github:
     - host: github.com
-      token: ${GITHUB_TOKEN}
+      apps:
+        - appId: ${GITHUB_APP_ID}
+          privateKey: ${GITHUB_APP_PK}
+          webhookSecret: ${GITHUB_APP_WEBHOOK_SECRET}
+          clientId: ${GITHUB_APP_CLIENT_ID}
+          clientSecret: ${GITHUB_APP_CLIENT_SECRET}
 
 techdocs:
   builder: 'local' # Alternatives - 'external'
@@ -35,11 +40,6 @@ techdocs:
 auth:
   environment: development
   providers:
-    github:
-      development:
-        clientId: ${GITHUB_CLIENT_ID}
-        clientSecret: ${GITHUB_CLIENT_SECRET}
-
     microsoft:
       development:
         clientId: ${AZURE_CLIENT_ID}
@@ -57,6 +57,12 @@ auth:
         domainHint: ${AZURE_TENANT_ID}
         additionalScopes:
           - Mail.Send
+
+    github:
+      development:
+        clientId: ${GITHUB_APP_CLIENT_ID}
+        clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+        callbackUrl: http://localhost:7007/api/auth/github/handler/frame
 
 
 scaffolder: { }

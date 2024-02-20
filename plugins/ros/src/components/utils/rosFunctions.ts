@@ -12,13 +12,14 @@ import {
 
 export const fetchROSIds = (
   baseUrl: string,
-  accessToken: string | undefined,
+  ghAccessToken: string | null,
   repoInformation: GithubRepoInfo | null,
   onSuccess: (arg: RosIdentifierResponseDTO) => void,
+  fetchFn: typeof fetch,
 ) => {
-  if (accessToken && repoInformation) {
-    fetch(uriToFetchRosIds(baseUrl, repoInformation), {
-      headers: githubGetRequestHeaders(accessToken),
+  if (ghAccessToken && repoInformation) {
+    fetchFn(uriToFetchRosIds(baseUrl, repoInformation), {
+      headers: githubGetRequestHeaders(ghAccessToken),
     })
       .then(res => {
         if (!res.ok) {
@@ -36,14 +37,15 @@ export const fetchROSIds = (
 
 export const fetchROS = (
   baseUrl: string,
-  accessToken: string | undefined,
+  ghAccessToken: string | null,
   selectedId: string | null,
   repoInformation: GithubRepoInfo | null,
   onSuccess: (arg: ROS) => void,
+  fetchFn: typeof fetch,
 ) => {
-  if (selectedId && accessToken && repoInformation) {
-    fetch(uriToFetchRos(baseUrl, repoInformation, selectedId), {
-      headers: githubGetRequestHeaders(accessToken),
+  if (selectedId && ghAccessToken && repoInformation) {
+    fetchFn(uriToFetchRos(baseUrl, repoInformation, selectedId), {
+      headers: githubGetRequestHeaders(ghAccessToken),
     })
       .then(res => res.json())
       .then(json => json as ROSContentResultDTO)
@@ -61,16 +63,17 @@ export const postROS = (
   newRos: ROS,
   baseUrl: string,
   repoInfo: GithubRepoInfo | null,
-  token: string | undefined,
+  ghAccessToken: string | null,
   onSuccess: (arg: ROSProcessResultDTO) => void,
   onError: (error: string) => void,
+  fetchFn: typeof fetch,
 ) => {
-  if (repoInfo && token) {
-    fetch(`${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}`, {
+  if (repoInfo && ghAccessToken) {
+    fetchFn(`${baseUrl}/api/ros/${repoInfo.owner}/${repoInfo.name}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Github-Access-Token': token,
+        'Github-Access-Token': ghAccessToken,
       },
       body: JSON.stringify({ ros: JSON.stringify(newRos) }),
     })
