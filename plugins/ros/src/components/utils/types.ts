@@ -29,7 +29,7 @@ export type ROSProcessResultDTO = {
 
 export enum ROSProcessingStatus {
   ROSNotValid = 'ROSNotValid',
-  EncrptionFailed = 'EncrptionFailed',
+  EncryptionFailed = 'EncryptionFailed',
   CouldNotCreateBranch = 'CouldNotCreateBranch',
   UpdatedROS = 'UpdatedROS',
   ErrorWhenCreatingROS = 'ErrorWhenCreatingROS',

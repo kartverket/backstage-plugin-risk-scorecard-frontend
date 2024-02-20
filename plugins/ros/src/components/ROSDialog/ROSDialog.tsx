@@ -7,8 +7,8 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
-import { ROS } from '../../../../../../plugins/ros/src/components/utils/interfaces';
 import { useDialogStyles } from './DialogStyle';
+import { ROS } from '../utils/interfaces';
 
 interface ROSDialogProps {
   isOpen: boolean;
