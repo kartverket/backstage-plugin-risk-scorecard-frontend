@@ -6,3 +6,13 @@ export function generateRandomId(): string {
     })
     .join('');
 }
+
+const formatter = new Intl.NumberFormat('nb-NO', {
+  style: 'currency',
+  currency: 'NOK',
+  maximumFractionDigits: 0,
+});
+
+export function formatNOK(amount: number): string {
+  return formatter.format(amount);
+}
