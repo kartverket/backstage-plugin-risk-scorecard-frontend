@@ -151,7 +151,6 @@ export const ScenarioDrawerContent = ({
                 konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1
               }
               setKonsekvens={setKonsekvens}
-              options={options}
             />
             <TabPanelSannsynlighet
               selected={
