@@ -19,17 +19,23 @@ import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import { ROS } from '../utils/interfaces';
 import { ROSProcessingStatus, RosStatus } from '../utils/types';
-import { Alert } from '@mui/material';
+import Alert from '@mui/material/Alert';
 
 export const ROSPlugin = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
 
-  const { useFetchRos, useFetchRosIds, postROS, putROS, publishROS, response } =
+  const { useFetchRoses, postROS, putROS, publishROS, response } =
     useROSPlugin();
 
-  const [selectedId, setSelectedId, rosIds, setRosIds] = useFetchRosIds();
-  const [ros, setRos] = useFetchRos(selectedId);
+  const [
+    selectedROS,
+    setSelectedROS,
+    titlesAndIds,
+    setTitlesAndIds,
+    selectedTitleAndId,
+    selectROSByTitle,
+  ] = useFetchRoses();
 
   const createNewROS = (ros: ROS) =>
     postROS(ros, res => {
@@ -37,21 +43,22 @@ export const ROSPlugin = () => {
       const newROSId = {
         id: res.rosId,
         status: RosStatus.Draft,
+        title: ros.tittel,
       };
-      setRosIds(rosIds ? [...rosIds, newROSId] : [newROSId]);
-      setSelectedId(newROSId);
+      setTitlesAndIds(titlesAndIds ? [...titlesAndIds, newROSId] : [newROSId]);
+      selectROSByTitle(ros.tittel);
     });
 
   const updateROS = (ros: ROS) => {
-    if (selectedId) {
-      setRos(ros);
-      putROS(ros, selectedId.id);
+    if (selectedTitleAndId) {
+      selectROSByTitle(ros.tittel);
+      putROS(ros, selectedTitleAndId.id);
     }
   };
 
   const approveROS = () => {
-    if (selectedId) {
-      publishROS(selectedId.id);
+    if (selectedTitleAndId) {
+      publishROS(selectedTitleAndId.id);
     }
   };
 
@@ -64,7 +71,7 @@ export const ROSPlugin = () => {
     openDeleteConfirmation,
     closeDeleteConfirmation,
     confirmDeletion,
-  } = useScenarioDrawer(ros, setDrawerIsOpen, updateROS);
+  } = useScenarioDrawer(selectedROS, setDrawerIsOpen, updateROS);
 
   return (
     <Content>
@@ -72,15 +79,15 @@ export const ROSPlugin = () => {
         <SupportButton>Kul plugin ass!</SupportButton>
       </ContentHeader>
       <Grid container spacing={3} direction="column">
-        {rosIds && selectedId && (
+        {titlesAndIds && (
           <Grid item xs={3}>
             <Dropdown
-              label={'ROS-analyser'}
-              options={rosIds.map(r => r.id)}
-              selectedValues={[selectedId.id]}
-              handleChange={e =>
-                setSelectedId(rosIds.find(r => r.id === e.target.value)!)
+              label="ROS-analyser"
+              options={titlesAndIds.map(ros => ros.title) ?? []}
+              selectedValues={
+                selectedTitleAndId?.title ? [selectedTitleAndId.title] : []
               }
+              handleChange={e => selectROSByTitle(e.target.value as string)}
               variant="standard"
             />
           </Grid>
@@ -97,35 +104,35 @@ export const ROSPlugin = () => {
           </Button>
         </Grid>
 
-        {rosIds && selectedId && ros && (
+        {selectedTitleAndId && selectedROS && selectedROS.omfang && (
           <>
             <Grid item container direction="row">
               <Grid item container xs direction="column" spacing={0}>
                 <Grid item xs>
                   <Typography variant="subtitle2">
-                    Tittel: {ros.tittel}
+                    ID: {selectedTitleAndId.id}
                   </Typography>
                 </Grid>
 
                 <Grid item xs>
                   <Typography variant="subtitle2">
-                    Omfang: {ros.omfang}
+                    Omfang: {selectedROS.omfang}
                   </Typography>
                 </Grid>
               </Grid>
               <ROSStatusComponent
-                selectedId={selectedId}
+                selectedId={selectedTitleAndId}
                 publishRosFn={approveROS}
               />
             </Grid>
 
             <Grid item container direction="row">
               <Grid item xs>
-                <RiskMatrix ros={ros} />
+                <RiskMatrix ros={selectedROS} />
               </Grid>
               <Grid item xs>
                 <ScenarioTable
-                  ros={ros}
+                  ros={selectedROS}
                   addScenario={() => setDrawerIsOpen(true)}
                   deleteRow={openDeleteConfirmation}
                   editRow={editScenario}
@@ -150,12 +157,10 @@ export const ROSPlugin = () => {
         </Grid>
       </Grid>
 
-      {/* --- Popups --- */}
-
       <ROSDialog
         isOpen={newROSDialogIsOpen}
         onClose={() => setNewROSDialogIsOpen(false)}
-        setRos={setRos}
+        setRos={setSelectedROS}
         saveRos={createNewROS}
       />
       <ScenarioDrawer
@@ -170,10 +175,12 @@ export const ROSPlugin = () => {
         close={closeDeleteConfirmation}
         confirmDeletion={confirmDeletion}
       />
-      <ROSStatusAlertNotApprovedByRisikoeier
-        currentROSId={selectedId}
-        ROSIds={rosIds}
-      />
+      {selectedTitleAndId && titlesAndIds && (
+        <ROSStatusAlertNotApprovedByRisikoeier
+          currentROSId={selectedTitleAndId}
+          rosTitleAndIds={titlesAndIds}
+        />
+      )}
     </Content>
   );
 };

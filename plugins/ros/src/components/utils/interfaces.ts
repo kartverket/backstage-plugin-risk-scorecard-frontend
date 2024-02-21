@@ -1,10 +1,23 @@
 import { generateRandomId } from './utilityfunctions';
+import { RosStatus } from '../utils/types';
+
+export interface ROSWrapper {
+  content: ROS;
+  id: string;
+  status: RosStatus;
+}
 
 export interface ROS {
   skjemaVersjon: string;
   tittel: string;
   omfang: string;
   scenarier: Scenario[];
+}
+
+export interface ROSTitleAndIdAndStatus {
+  title: string;
+  id: string;
+  status: RosStatus;
 }
 
 export interface Scenario {

@@ -12,10 +12,12 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import React, { ReactComponentElement, useState } from 'react';
 import { RosIdentifier, RosStatus } from '../utils/types';
 import { useButtonStyles } from '../ROSPlugin/rosPluginStyle';
-import { Alert, AlertTitle } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import { useAlertStyles } from '../ROSStatusChip/statusChipStyle';
 import { useDialogStyles } from '../ROSDialog/DialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
+import { ROSTitleAndIdAndStatus } from '../utils/interfaces';
 
 interface ROSPublisDialogProps {
   openDialog: boolean;
@@ -47,7 +49,7 @@ export const ROSPublishDialog = ({
                 color="primary"
                 checked={userIsRisikoEierAndApproves}
                 onChange={handleCheckboxInput}
-              ></Checkbox>
+              />
             </Grid>
             <Grid item xs={8}>
               Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne
@@ -83,7 +85,7 @@ export const ROSPublishDialog = ({
 };
 
 interface ROSStatusProps {
-  selectedId: RosIdentifier;
+  selectedId: ROSTitleAndIdAndStatus;
   publishRosFn: () => void;
 }
 
@@ -152,16 +154,20 @@ export const ROSStatusComponent = ({
 };
 
 interface ROSAlertProperties {
-  currentROSId: RosIdentifier | null;
-  ROSIds: RosIdentifier[] | null;
+  currentROSId: ROSTitleAndIdAndStatus | null;
+  rosTitleAndIds: RosIdentifier[] | null;
 }
 
 export const ROSStatusAlertNotApprovedByRisikoeier = ({
   currentROSId,
-  ROSIds,
+  rosTitleAndIds,
 }: ROSAlertProperties): ReactComponentElement<any> | null => {
   const { noApprovalBanner } = useAlertStyles();
-  if (!ROSIds || !currentROSId || currentROSId.status !== RosStatus.Draft) {
+  if (
+    !rosTitleAndIds ||
+    !currentROSId ||
+    currentROSId.status !== RosStatus.Draft
+  ) {
     return null;
   }
   return (

@@ -1,6 +1,5 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React, { ChangeEvent } from 'react';
-import { Scenario } from '../../utils/interfaces';
 import { PickerTable } from '../../PickerTable/PickerTable';
 
 interface TabPanelKonsekvensProps {

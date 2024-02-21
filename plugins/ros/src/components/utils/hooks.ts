@@ -1,20 +1,22 @@
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
-  githubAuthApiRef,
   useApi,
+  githubAuthApiRef,
 } from '@backstage/core-plugin-api';
-import {
-  ROSContentResultDTO,
-  RosIdentifier,
-  RosIdentifierResponseDTO,
-  ROSProcessingStatus,
-  ROSProcessResultDTO,
-} from './types';
+
+import { ROSProcessingStatus, ROSProcessResultDTO } from './types';
 import useAsync from 'react-use/lib/useAsync';
-import { emptyScenario, GithubRepoInfo, ROS, Scenario } from './interfaces';
+import {
+  emptyScenario,
+  GithubRepoInfo,
+  ROS,
+  ROSTitleAndIdAndStatus,
+  ROSWrapper,
+  Scenario,
+} from './interfaces';
 
 export interface SubmitResponseObject {
   statusMessage: string;
@@ -70,12 +72,12 @@ const useFetch = (
   const { fetch: fetchApi } = useApi(fetchApiRef);
   const baseUri = useApi(configApiRef).getString('app.backendUrl');
   const rosUri = `${baseUri}/api/ros/${repoInformation?.owner}/${repoInformation?.name}`;
-  const uriToFetchRosIds = () => `${rosUri}/ids`;
+  const uriToFetchAllRoses = () => `${rosUri}/all`;
   const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
   const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;
 
-  const githubPostRequestHeaders = (accessToken: string): HeadersInit => ({
-    'Github-Access-Token': accessToken,
+  const githubPostRequestHeaders = (token: string): HeadersInit => ({
+    'Github-Access-Token': token,
     'Content-Type': 'application/json',
   });
 
@@ -106,29 +108,19 @@ const useFetch = (
     }
   };
 
-  const fetchROSIds = (onSuccess: (rosIds: RosIdentifier[]) => void) =>
-    fetch<RosIdentifierResponseDTO>(
-      uriToFetchRosIds(),
+  const fetchRoses = (onSuccess: (rosWrapper: ROSWrapper[]) => void) => {
+    fetch<ROSWrapper[]>(
+      uriToFetchAllRoses(),
       'GET',
-      (res: RosIdentifierResponseDTO) => onSuccess(res.rosIds),
-      (error: RosIdentifierResponseDTO) =>
-        console.error('Kunne ikke hente ROS-ider:', error),
-    );
-
-  const fetchROS = (rosId: string, onSuccess: (ros: ROS) => void): void =>
-    fetch<ROSContentResultDTO>(
-      uriToFetchRos(rosId),
-      'GET',
-      (res: ROSContentResultDTO) => {
-        switch (res.rosContent) {
-          case null:
-            throw new Error(`Kunne ikke hente ros med status: ${res.status}`);
-          default:
-            onSuccess(JSON.parse(res.rosContent) as ROS);
-        }
+      onSuccess,
+      (_: ROSWrapper[]) => {
+        setResponse({
+          statusMessage: 'Failed to fetch ROSes',
+          status: ROSProcessingStatus.ROSNotValid,
+        });
       },
-      (error: ROSContentResultDTO) => console.error(error),
     );
+  };
 
   const postROS = (
     ros: ROS,
@@ -187,11 +179,11 @@ const useFetch = (
       },
     );
 
-  return { fetchROSIds, fetchROS, postROS, putROS, publishROS, response };
+  return { fetchRoses, postROS, putROS, publishROS, response };
 };
 
 export const useScenarioDrawer = (
-  ros: ROS | undefined,
+  ros: ROS | null,
   setDrawerIsOpen: (open: boolean) => void,
   onChange: (ros: ROS) => void,
 ): {
@@ -224,6 +216,12 @@ export const useScenarioDrawer = (
       setDeleteConfirmationIsOpen(true);
     }
   };
+  const deleteScenario = (id: string) => {
+    if (ros) {
+      const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
+      onChange({ ...ros, scenarier: updatedScenarios });
+    }
+  };
 
   const confirmDeletion = () => {
     deleteScenario(scenario.ID);
@@ -233,13 +231,6 @@ export const useScenarioDrawer = (
     if (ros) {
       setDeleteConfirmationIsOpen(false);
       setScenario(emptyScenario());
-    }
-  };
-
-  const deleteScenario = (id: string) => {
-    if (ros) {
-      const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
-      onChange({ ...ros, scenarier: updatedScenarios });
     }
   };
 
@@ -267,50 +258,78 @@ export const useROSPlugin = () => {
   const { value: accessToken } = useAsync(() => GHApi.getAccessToken('repo'));
   const repoInformation = useGithubRepositoryInformation();
 
-  const { fetchROSIds, fetchROS, postROS, putROS, publishROS, response } =
-    useFetch(accessToken, repoInformation);
+  const { fetchRoses, postROS, putROS, publishROS, response } = useFetch(
+    accessToken,
+    repoInformation,
+  );
 
-  const useFetchRos = (
-    selectedId: RosIdentifier | null,
-  ): [ROS | undefined, Dispatch<SetStateAction<ROS | undefined>>] => {
-    const [ros, setRos] = useState<ROS>();
-
-    useEffect(() => {
-      if (selectedId) {
-        fetchROS(selectedId.id, (fetchedROS: ROS) => setRos(fetchedROS));
-      }
-    }, [selectedId, accessToken, repoInformation]);
-
-    return [ros, setRos];
-  };
-
-  const useFetchRosIds = (): [
-    RosIdentifier | null,
-    Dispatch<SetStateAction<RosIdentifier | null>>,
-    RosIdentifier[] | null,
-    Dispatch<SetStateAction<RosIdentifier[] | null>>,
+  const useFetchRoses = (): [
+    ROS | null,
+    (ros: ROS | null) => void,
+    ROSTitleAndIdAndStatus[] | null,
+    (titlesAndIds: ROSTitleAndIdAndStatus[] | null) => void,
+    ROSTitleAndIdAndStatus | null,
+    (title: string) => void,
   ] => {
-    const [rosIds, setRosIds] = useState<RosIdentifier[] | null>(null);
-    const [selectedId, setSelectedId] = useState<RosIdentifier | null>(null);
+    const [roses, setRoses] = useState<ROS[] | null>(null);
+    const [selectedROS, setSelectedROS] = useState<ROS | null>(null);
+    const [titlesAndIds, setTitlesAndIds] = useState<
+      ROSTitleAndIdAndStatus[] | null
+    >(null);
+    const [selectedTitleAndId, setSelectedTitleAndId] =
+      useState<ROSTitleAndIdAndStatus | null>(null);
 
     useEffect(() => {
-      try {
-        fetchROSIds((rosIds: RosIdentifier[]) => {
-          setRosIds(rosIds);
-          setSelectedId(rosIds[0]);
-        });
-      } catch (error) {
-        // Handle any synchronous errors that might occur outside the promise chain
-        console.error('Unexpected error:', error);
-      }
-    }, [accessToken, repoInformation]);
+      fetchRoses((res: ROSWrapper[]) => {
+        const fetchedRoses: ROSWrapper[] = res.map((item: any) => ({
+          id: item.rosId,
+          content: JSON.parse(item.rosContent) as ROS,
+          status: item.rosStatus,
+        }));
 
-    return [selectedId, setSelectedId, rosIds, setRosIds];
+        setRoses(fetchedRoses.map((ros: ROSWrapper) => ros.content as ROS));
+
+        setTitlesAndIds(
+          fetchedRoses.map((ros: ROSWrapper) => ({
+            title: ros.content.tittel,
+            id: ros.id,
+            status: ros.status,
+          })),
+        );
+
+        setSelectedTitleAndId({
+          title: fetchedRoses[0].content.tittel,
+          id: fetchedRoses[0].id,
+          status: fetchedRoses[0].status,
+        });
+
+        setSelectedROS(
+          fetchedRoses.length > 0 ? (fetchedRoses[0].content as ROS) : null,
+        );
+        return fetchedRoses;
+      });
+    }, [accessToken]);
+
+    const selectROSByTitle = (title: string) => {
+      const pickedRos = roses?.find(ros => ros.tittel === title) || null;
+      const pickedTitleAndId =
+        titlesAndIds?.find(t => t.title === title) || null;
+      setSelectedROS(pickedRos);
+      setSelectedTitleAndId(pickedTitleAndId);
+    };
+
+    return [
+      selectedROS,
+      setSelectedROS,
+      titlesAndIds,
+      setTitlesAndIds,
+      selectedTitleAndId,
+      selectROSByTitle,
+    ];
   };
 
   return {
-    useFetchRos,
-    useFetchRosIds,
+    useFetchRoses,
     postROS,
     putROS,
     publishROS,

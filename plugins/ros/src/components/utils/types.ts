@@ -25,6 +25,7 @@ export type ROSProcessResultDTO = {
   statusMessage: string;
   rosContent: string | null;
   rosId: string | null;
+  tittel: string;
 };
 
 export enum ROSProcessingStatus {
