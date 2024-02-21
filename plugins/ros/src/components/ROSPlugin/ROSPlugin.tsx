@@ -5,31 +5,11 @@ import {
   ContentHeader,
   SupportButton,
 } from '@backstage/core-components';
-import {
-  fetchApiRef,
-  githubAuthApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
-import useAsync from 'react-use/lib/useAsync';
-import {
-  useBaseUrl,
-  useDisplaySubmitResponse,
-  useFetchRoses,
-  useGithubRepositoryInformation,
-  useScenarioDrawer,
-} from '../utils/hooks';
+import { useROSPlugin, useScenarioDrawer } from '../utils/hooks';
 import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
-import { ROS } from '../interface/interfaces';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { postROS } from '../utils/rosFunctions';
-import { RosStatus } from '../utils/types';
-import {
-  githubPostRequestHeaders,
-  uriToPublishROS,
-  uriToPutROS,
-} from '../utils/utilityfunctions';
 import {
   ROSStatusAlertNotApprovedByRisikoeier,
   ROSStatusComponent,
@@ -37,19 +17,16 @@ import {
 import { DeleteConfirmation } from './DeleteConfirmation';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
+import { ROS } from '../utils/interfaces';
+import { ROSProcessingStatus, RosStatus } from '../utils/types';
+import Alert from '@mui/material/Alert';
 
 export const ROSPlugin = () => {
-  const githubApi = useApi(githubAuthApiRef);
-  const { fetch } = useApi(fetchApiRef);
-
-  const baseUrl = useBaseUrl();
-  const repoInfo = useGithubRepositoryInformation();
-  const { value: token } = useAsync(() => githubApi.getAccessToken('repo'));
-
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
 
-  const [submitResponse, displaySubmitResponse] = useDisplaySubmitResponse();
+  const { useFetchRoses, postROS, putROS, publishROS, response } =
+    useROSPlugin();
 
   const [
     selectedROS,
@@ -58,58 +35,31 @@ export const ROSPlugin = () => {
     setTitlesAndIds,
     selectedTitleAndId,
     selectROSByTitle,
-  ] = useFetchRoses(token, repoInfo);
+  ] = useFetchRoses();
 
-  const putROS = (updatedROS: ROS) => {
-    if (repoInfo && token && selectedTitleAndId) {
-      fetch(uriToPutROS(baseUrl, repoInfo, selectedTitleAndId.id), {
-        method: 'PUT',
-        headers: githubPostRequestHeaders(token),
-        body: JSON.stringify({ ros: JSON.stringify(updatedROS) }),
-      }).then(res => {
-        if (res.ok) displaySubmitResponse('ROS ble oppdatert!');
-        else res.text().then(text => displaySubmitResponse(text));
-      });
+  const createNewROS = (ros: ROS) =>
+    postROS(ros, res => {
+      if (!res.rosId) return;
+      const newROSId = {
+        id: res.rosId,
+        status: RosStatus.Draft,
+        title: ros.tittel,
+      };
+      setTitlesAndIds(titlesAndIds ? [...titlesAndIds, newROSId] : [newROSId]);
+      selectROSByTitle(ros.tittel);
+    });
+
+  const updateROS = (ros: ROS) => {
+    if (selectedTitleAndId) {
+      selectROSByTitle(ros.tittel);
+      putROS(ros, selectedTitleAndId.id);
     }
   };
 
-  const publishROS = () => {
-    if (repoInfo && token && selectedTitleAndId) {
-      fetch(uriToPublishROS(baseUrl, repoInfo, selectedTitleAndId.id), {
-        method: 'POST',
-        headers: githubPostRequestHeaders(token),
-      }).then(res => {
-        if (res.ok) {
-          displaySubmitResponse('Det ble opprettet en PR for ROSen!');
-        } else res.text().then(text => displaySubmitResponse(text));
-      });
+  const approveROS = () => {
+    if (selectedTitleAndId) {
+      publishROS(selectedTitleAndId.id);
     }
-  };
-  const createNewROS = (newRos: ROS) => {
-    postROS(
-      newRos,
-      baseUrl,
-      repoInfo,
-      token,
-      rosProcessingResult => {
-        if (!rosProcessingResult.rosId) return;
-        const newRosIdWithDraftStatus = {
-          id: rosProcessingResult.rosId,
-          tittel: rosProcessingResult.tittel,
-          status: RosStatus.Draft,
-        };
-        const updatedRosIdsWithStatus = titlesAndIds
-          ? [...titlesAndIds, newRosIdWithDraftStatus]
-          : [newRosIdWithDraftStatus];
-
-        setTitlesAndIds(updatedRosIdsWithStatus);
-        setSelectedROS(newRos);
-        // spinn og ikke kunne redigere før her
-      },
-      (error: string) => {
-        console.log(error);
-      },
-    );
   };
 
   const {
@@ -121,7 +71,7 @@ export const ROSPlugin = () => {
     openDeleteConfirmation,
     closeDeleteConfirmation,
     confirmDeletion,
-  } = useScenarioDrawer(selectedROS, setSelectedROS, setDrawerIsOpen, putROS);
+  } = useScenarioDrawer(selectedROS, setDrawerIsOpen, updateROS);
 
   return (
     <Content>
@@ -133,9 +83,9 @@ export const ROSPlugin = () => {
           <Grid item xs={3}>
             <Dropdown
               label="ROS-analyser"
-              options={titlesAndIds.map(ros => ros.tittel) ?? []}
+              options={titlesAndIds.map(ros => ros.title) ?? []}
               selectedValues={
-                selectedTitleAndId?.tittel ? [selectedTitleAndId.tittel] : []
+                selectedTitleAndId?.title ? [selectedTitleAndId.title] : []
               }
               handleChange={e => selectROSByTitle(e.target.value as string)}
               variant="standard"
@@ -171,9 +121,8 @@ export const ROSPlugin = () => {
                 </Grid>
               </Grid>
               <ROSStatusComponent
-                currentROSId={selectedTitleAndId.id}
-                currentRosStatus={selectedTitleAndId.status}
-                publishRosFn={publishROS}
+                selectedId={selectedTitleAndId}
+                publishRosFn={approveROS}
               />
             </Grid>
 
@@ -194,11 +143,19 @@ export const ROSPlugin = () => {
         )}
 
         <Grid item xs={12}>
-          <Typography>{submitResponse}</Typography>
+          {response && (
+            <Alert
+              severity={
+                response.status === ROSProcessingStatus.UpdatedROS
+                  ? 'info'
+                  : 'warning'
+              }
+            >
+              <Typography>{response?.statusMessage}</Typography>
+            </Alert>
+          )}
         </Grid>
       </Grid>
-
-      {/* --- Popups --- */}
 
       <ROSDialog
         isOpen={newROSDialogIsOpen}
@@ -220,9 +177,8 @@ export const ROSPlugin = () => {
       />
       {selectedTitleAndId && titlesAndIds && (
         <ROSStatusAlertNotApprovedByRisikoeier
-          currentROSId={selectedTitleAndId.id}
-          rosIdsWithStatus={titlesAndIds}
-          rosStatus={selectedTitleAndId.status}
+          currentROSId={selectedTitleAndId}
+          rosTitleAndIds={titlesAndIds}
         />
       )}
     </Content>

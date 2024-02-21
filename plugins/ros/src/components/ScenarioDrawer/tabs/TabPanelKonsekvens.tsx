@@ -1,27 +1,19 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React, { ChangeEvent } from 'react';
-import { Dropdown } from '../Dropdown';
-import { Scenario } from '../../interface/interfaces';
+import { PickerTable } from '../../PickerTable/PickerTable';
 
 interface TabPanelKonsekvensProps {
-  scenario: Scenario;
   setKonsekvens: (event: ChangeEvent<{ value: unknown }>) => void;
-  options: string[];
+  selected: number;
 }
 
 export const TabPanelKonsekvens = ({
-  scenario,
   setKonsekvens,
-  options,
+  selected,
 }: TabPanelKonsekvensProps) => {
   return (
     <TabPanel value="konsekvens">
-      <Dropdown
-        label="Konsekvens"
-        selectedValues={[scenario.risiko.konsekvens.toString()]}
-        options={options}
-        handleChange={setKonsekvens}
-      />
+      <PickerTable selectedValue={selected} handleChange={setKonsekvens} />
     </TabPanel>
   );
 };

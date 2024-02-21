@@ -8,7 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import React, { ChangeEvent } from 'react';
-import { menuProps, useInputFieldStyles } from './ScenarioDrawerStyle';
+import { menuProps, useInputFieldStyles } from './style';
 
 interface DropdownProps {
   label: string;
@@ -52,6 +52,7 @@ export const Dropdown = ({
         variant={variant}
         MenuProps={menuProps}
         renderValue={renderValue}
+        style={{ minHeight: multiple ? '4.9rem' : 'auto' }}
       >
         {options.map(name => (
           <MenuItem key={name} value={name}>

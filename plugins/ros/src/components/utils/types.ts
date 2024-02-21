@@ -1,5 +1,5 @@
 export type RosIdentifierResponseDTO = {
-  status: String;
+  status: string;
   rosIds: RosIdentifier[];
 };
 
@@ -15,15 +15,25 @@ export enum RosStatus {
 }
 
 export type ROSContentResultDTO = {
-  status: string;
+  status: ROSProcessingStatus;
   rosContent: string | null;
   rosId: string;
 };
 
 export type ROSProcessResultDTO = {
-  status: string;
+  status: ROSProcessingStatus;
   statusMessage: string;
   rosContent: string | null;
   rosId: string | null;
   tittel: string;
 };
+
+export enum ROSProcessingStatus {
+  ROSNotValid = 'ROSNotValid',
+  EncryptionFailed = 'EncryptionFailed',
+  CouldNotCreateBranch = 'CouldNotCreateBranch',
+  UpdatedROS = 'UpdatedROS',
+  ErrorWhenCreatingROS = 'ErrorWhenCreatingROS',
+  ErrorWhenUpdatingROS = 'ErrorWhenUpdatingROS',
+  ErrorWhenPublishingROS = 'ErrorWhenPublishingROS',
+}

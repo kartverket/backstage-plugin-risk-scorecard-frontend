@@ -9,9 +9,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { ROS } from '../interface/interfaces';
 import { useRiskMatrixStyles } from './style';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import { ROS } from '../utils/interfaces';
+import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
 
 interface ScenarioCountProps {
   ros: ROS;
@@ -30,8 +31,9 @@ export const RiskMatrixScenarioCount = ({
 
   const scenarier = ros.scenarier.filter(
     scenario =>
-      scenario.risiko.sannsynlighet === probability + 1 &&
-      scenario.risiko.konsekvens === consequence + 1,
+      sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) ===
+        probability &&
+      konsekvensOptions.indexOf(scenario.risiko.konsekvens) === consequence,
   );
 
   if (scenarier.length === 0) {
