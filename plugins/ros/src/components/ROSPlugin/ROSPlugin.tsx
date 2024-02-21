@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography, makeStyles } from '@material-ui/core';
 import {
   Content,
   ContentHeader,
@@ -20,6 +20,7 @@ import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import { ROS } from '../utils/interfaces';
 import { ROSProcessingStatus, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const ROSPlugin = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -73,36 +74,58 @@ export const ROSPlugin = () => {
     confirmDeletion,
   } = useScenarioDrawer(selectedROS, setDrawerIsOpen, updateROS);
 
+  const useStyles = makeStyles({
+    container: {
+      minWidth: '100%',
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+
+  const classes = useStyles();
+
   return (
     <Content>
       <ContentHeader title="Risiko- og sårbarhetsanalyse">
         <SupportButton>Kul plugin ass!</SupportButton>
       </ContentHeader>
+
+      {!titlesAndIds && (
+        <div className={classes.container}>
+          <Grid item xl={12} justifyContent="center" alignItems="center">
+            <CircularProgress size={80} />
+          </Grid>
+        </div>
+      )}
+
       <Grid container spacing={3} direction="column">
         {titlesAndIds && (
-          <Grid item xs={3}>
-            <Dropdown
-              label="ROS-analyser"
-              options={titlesAndIds.map(ros => ros.title) ?? []}
-              selectedValues={
-                selectedTitleAndId?.title ? [selectedTitleAndId.title] : []
-              }
-              handleChange={e => selectROSByTitle(e.target.value as string)}
-              variant="standard"
-            />
-          </Grid>
+          <>
+            <Grid item xs={3}>
+              <Dropdown
+                label="ROS-analyser"
+                options={titlesAndIds.map(ros => ros.title) ?? []}
+                selectedValues={
+                  selectedTitleAndId?.title ? [selectedTitleAndId.title] : []
+                }
+                handleChange={e => selectROSByTitle(e.target.value as string)}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                startIcon={<AddCircleOutlineIcon />}
+                variant="text"
+                color="primary"
+                onClick={() => setNewROSDialogIsOpen(true)}
+              >
+                Opprett ny analyse
+              </Button>
+            </Grid>
+          </>
         )}
-
-        <Grid item xs={12}>
-          <Button
-            startIcon={<AddCircleOutlineIcon />}
-            variant="text"
-            color="primary"
-            onClick={() => setNewROSDialogIsOpen(true)}
-          >
-            Opprett ny analyse
-          </Button>
-        </Grid>
 
         {selectedTitleAndId && selectedROS && selectedROS.omfang && (
           <>
