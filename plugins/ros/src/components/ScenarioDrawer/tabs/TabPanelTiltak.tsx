@@ -1,16 +1,23 @@
 import { Tiltak } from '../Tiltak';
-import { Button } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
+import Grid from '@mui/material/Grid';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import TabPanel from '@material-ui/lab/TabPanel';
-import React from 'react';
-import { Scenario } from '../../interface/interfaces';
-import { Tiltak as ITiltak } from '../../interface/interfaces';
+import React, { ChangeEvent } from 'react';
+import { Risiko, Scenario, Tiltak as ITiltak } from '../../utils/interfaces';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { TextField } from '../Textfield';
+import { Dropdown } from '../Dropdown';
+import { useTabsTiltakStyles } from './style';
+import { konsekvensOptions, sannsynlighetOptions } from '../../utils/constants';
 
 interface TabPanelTiltakProps {
   scenario: Scenario;
   updateTiltak: (tiltak: ITiltak) => void;
   deleteTiltak: (tiltak: ITiltak) => void;
   addTiltak: () => void;
+  updateRestrisiko: (restrisiko: Risiko) => void;
+  options: string[];
 }
 
 export const TabPanelTiltak = ({
@@ -18,7 +25,25 @@ export const TabPanelTiltak = ({
   updateTiltak,
   deleteTiltak,
   addTiltak,
+  updateRestrisiko,
+  options,
 }: TabPanelTiltakProps) => {
+  const { arrow } = useTabsTiltakStyles();
+
+  const setRestKonsekvens = (event: ChangeEvent<{ value: unknown }>) => {
+    updateRestrisiko({
+      ...scenario.restrisiko,
+      konsekvens: konsekvensOptions[Number(event.target.value) - 1],
+    });
+  };
+
+  const setRestSannsynlighet = (event: ChangeEvent<{ value: unknown }>) => {
+    updateRestrisiko({
+      ...scenario.restrisiko,
+      sannsynlighet: sannsynlighetOptions[Number(event.target.value) - 1],
+    });
+  };
+
   return (
     <TabPanel value="tiltak">
       {scenario.tiltak.map(tiltak => (
@@ -34,10 +59,67 @@ export const TabPanelTiltak = ({
         variant="text"
         color="primary"
         onClick={addTiltak}
-        style={{ textTransform: 'none', paddingTop: '1rem' }}
+        style={{ textTransform: 'none', paddingTop: '2rem' }}
       >
         Legg til tiltak
       </Button>
+
+      <Grid container style={{ paddingTop: '2rem' }} columns={9}>
+        <Grid item xs={4}>
+          <Typography variant="h5">Risiko i dag</Typography>
+        </Grid>
+        <Grid item xs={1}></Grid>
+        <Grid item xs={4}>
+          <Typography variant="h5">Etter planlagte tiltak</Typography>
+        </Grid>
+        <Grid item xs={2} style={{ paddingTop: 0 }}>
+          <TextField
+            label="Konsekvens"
+            value={(
+              konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1
+            ).toString()}
+            disabled={true}
+          />
+        </Grid>
+        <Grid item xs={2} style={{ paddingTop: 0 }}>
+          <TextField
+            label="Sannsynlighet"
+            value={(
+              sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1
+            ).toString()}
+            disabled={true}
+          />
+        </Grid>
+        <Grid item xs={1} className={arrow}>
+          <KeyboardDoubleArrowRightIcon fontSize="large" />
+        </Grid>
+        <Grid item xs={2} style={{ paddingTop: 0 }}>
+          <Dropdown
+            label={'Konsekvens'}
+            options={options}
+            selectedValues={[
+              (
+                konsekvensOptions.indexOf(scenario.restrisiko.konsekvens) + 1
+              ).toString(),
+            ]}
+            handleChange={setRestKonsekvens}
+          />
+        </Grid>
+        <Grid item xs={2} style={{ paddingTop: 0 }}>
+          <Dropdown
+            label={'Sannsynlighet'}
+            options={options}
+            selectedValues={[
+              (
+                sannsynlighetOptions.indexOf(
+                  scenario.restrisiko.sannsynlighet,
+                ) + 1
+              ).toString(),
+            ]}
+            handleChange={setRestSannsynlighet}
+          />
+        </Grid>
+      </Grid>
     </TabPanel>
   );
 };

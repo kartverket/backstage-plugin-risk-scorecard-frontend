@@ -55,5 +55,6 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
   },
   formLabel: {
     marginBottom: theme.spacing(1),
+    fontWeight: 'bold',
   },
 }));

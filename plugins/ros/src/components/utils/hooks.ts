@@ -1,20 +1,27 @@
 import { useAsyncEntity } from '@backstage/plugin-catalog-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { GithubRepoInfo, ROS, Scenario } from '../interface/interfaces';
-import { emptyScenario } from '../ScenarioDrawer/ScenarioDrawer';
 import {
+  configApiRef,
+  fetchApiRef,
+  githubAuthApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
+import {
+  ROSContentResultDTO,
   RosIdentifier,
   RosIdentifierResponseDTO,
   ROSProcessingStatus,
+  ROSProcessResultDTO,
 } from './types';
-import { fetchROS, fetchROSIds } from './rosFunctions';
+import useAsync from 'react-use/lib/useAsync';
+import { emptyScenario, GithubRepoInfo, ROS, Scenario } from './interfaces';
 
-export const useBaseUrl = () => {
-  return useApi(configApiRef).getString('app.backendUrl');
-};
+export interface SubmitResponseObject {
+  statusMessage: string;
+  status: ROSProcessingStatus;
+}
 
-export const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
+const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   const currentEntity = useAsyncEntity();
   const [repoInfo, setRepoInfo] = useState<GithubRepoInfo | null>(null);
 
@@ -39,72 +46,7 @@ export const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   return repoInfo;
 };
 
-export const useFetchRosIds = (
-  token: string | undefined,
-  repoInformation: GithubRepoInfo | null,
-): [
-  string | null,
-  (
-    value: ((prevState: string | null) => string | null) | string | null,
-  ) => void,
-  RosIdentifier[] | null,
-  (
-    value:
-      | ((prevState: RosIdentifier[] | null) => RosIdentifier[] | null)
-      | RosIdentifier[]
-      | null,
-  ) => void,
-] => {
-  const baseUrl = useBaseUrl();
-
-  const [rosIdsWithStatus, setRosIdsWithStatus] = useState<
-    RosIdentifier[] | null
-  >(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-
-  useEffect(() => {
-    try {
-      fetchROSIds(
-        baseUrl,
-        token,
-        repoInformation,
-        (rosIdentifiersResponseDTO: RosIdentifierResponseDTO) => {
-          setRosIdsWithStatus(rosIdentifiersResponseDTO.rosIds);
-          setSelectedId(rosIdentifiersResponseDTO.rosIds[0].id);
-        },
-      );
-    } catch (error) {
-      // Handle any synchronous errors that might occur outside the promise chain
-      console.error('Unexpected error:', error);
-    }
-  }, [baseUrl, repoInformation, token]);
-
-  return [selectedId, setSelectedId, rosIdsWithStatus, setRosIdsWithStatus];
-};
-
-export const useFetchRos = (
-  selectedId: string | null,
-  token: string | undefined,
-  repoInformation: GithubRepoInfo | null,
-): [ROS | undefined, Dispatch<SetStateAction<ROS | undefined>>] => {
-  const baseUrl = useBaseUrl();
-  const [ros, setRos] = useState<ROS>();
-
-  useEffect(() => {
-    fetchROS(baseUrl, token, selectedId, repoInformation, (fetchedROS: ROS) => {
-      setRos(fetchedROS);
-    });
-  }, [baseUrl, repoInformation, selectedId, token]);
-
-  return [ros, setRos];
-};
-
-export interface SubmitResponseObject {
-  statusMessage: string;
-  processingStatus: ROSProcessingStatus;
-}
-
-export const useDisplaySubmitResponse = (): [
+const useResponse = (): [
   SubmitResponseObject | null,
   (submitStatus: SubmitResponseObject) => void,
 ] => {
@@ -121,18 +63,144 @@ export const useDisplaySubmitResponse = (): [
   return [submitResponse, displaySubmitResponse];
 };
 
+const useFetch = (
+  accessToken: string | undefined,
+  repoInformation: GithubRepoInfo | null,
+) => {
+  const { fetch: fetchApi } = useApi(fetchApiRef);
+  const baseUri = useApi(configApiRef).getString('app.backendUrl');
+  const rosUri = `${baseUri}/api/ros/${repoInformation?.owner}/${repoInformation?.name}`;
+  const uriToFetchRosIds = () => `${rosUri}/ids`;
+  const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
+  const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;
+
+  const githubPostRequestHeaders = (accessToken: string): HeadersInit => ({
+    'Github-Access-Token': accessToken,
+    'Content-Type': 'application/json',
+  });
+
+  const [response, setResponse] = useResponse();
+
+  const fetch = <T>(
+    uri: string,
+    method: 'GET' | 'POST' | 'PUT',
+    onSuccess: (arg: T) => void,
+    onError: (error: T) => void,
+    body?: string,
+  ) => {
+    if (repoInformation && accessToken) {
+      fetchApi(uri, {
+        method: method,
+        headers: githubPostRequestHeaders(accessToken),
+        body: body,
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(json => json as T)
+        .then(res => onSuccess(res))
+        .catch(error => onError(error));
+    }
+  };
+
+  const fetchROSIds = (onSuccess: (rosIds: RosIdentifier[]) => void) =>
+    fetch<RosIdentifierResponseDTO>(
+      uriToFetchRosIds(),
+      'GET',
+      (res: RosIdentifierResponseDTO) => onSuccess(res.rosIds),
+      (error: RosIdentifierResponseDTO) =>
+        console.error('Kunne ikke hente ROS-ider:', error),
+    );
+
+  const fetchROS = (rosId: string, onSuccess: (ros: ROS) => void): void =>
+    fetch<ROSContentResultDTO>(
+      uriToFetchRos(rosId),
+      'GET',
+      (res: ROSContentResultDTO) => {
+        switch (res.rosContent) {
+          case null:
+            throw new Error(`Kunne ikke hente ros med status: ${res.status}`);
+          default:
+            onSuccess(JSON.parse(res.rosContent) as ROS);
+        }
+      },
+      (error: ROSContentResultDTO) => console.error(error),
+    );
+
+  const postROS = (
+    ros: ROS,
+    onSuccess?: (arg: ROSProcessResultDTO) => void,
+    onError?: (error: ROSProcessResultDTO) => void,
+  ) =>
+    fetch<ROSProcessResultDTO>(
+      rosUri,
+      'POST',
+      (arg: ROSProcessResultDTO) => {
+        setResponse(arg);
+        if (onSuccess) onSuccess(arg);
+      },
+      (error: ROSProcessResultDTO) => {
+        setResponse(error);
+        if (onError) onError(error);
+      },
+      JSON.stringify({ ros: JSON.stringify(ros) }),
+    );
+
+  const putROS = (
+    ros: ROS,
+    rosId: string,
+    onSuccess?: (arg: ROSProcessResultDTO) => void,
+    onError?: (error: ROSProcessResultDTO) => void,
+  ) =>
+    fetch<ROSProcessResultDTO>(
+      uriToFetchRos(rosId),
+      'PUT',
+      (arg: ROSProcessResultDTO) => {
+        setResponse(arg);
+        if (onSuccess) onSuccess(arg);
+      },
+      (error: ROSProcessResultDTO) => {
+        setResponse(error);
+        if (onError) onError(error);
+      },
+      JSON.stringify({ ros: JSON.stringify(ros) }),
+    );
+
+  const publishROS = (
+    rosId: string,
+    onSuccess?: (arg: ROSProcessResultDTO) => void,
+    onError?: (error: ROSProcessResultDTO) => void,
+  ) =>
+    fetch<ROSProcessResultDTO>(
+      uriToPublishROS(rosId),
+      'POST',
+      (arg: ROSProcessResultDTO) => {
+        setResponse(arg);
+        if (onSuccess) onSuccess(arg);
+      },
+      (error: ROSProcessResultDTO) => {
+        setResponse(error);
+        if (onError) onError(error);
+      },
+    );
+
+  return { fetchROSIds, fetchROS, postROS, putROS, publishROS, response };
+};
+
 export const useScenarioDrawer = (
   ros: ROS | undefined,
-  setRos: (ros: ROS) => void,
   setDrawerIsOpen: (open: boolean) => void,
-  putROS: (ros: ROS) => void,
+  onChange: (ros: ROS) => void,
 ): {
   scenario: Scenario;
   setScenario: (scenario: Scenario) => void;
   saveScenario: () => void;
-  editScenario: (id: number) => void;
+  editScenario: (id: string) => void;
   deleteConfirmationIsOpen: boolean;
-  openDeleteConfirmation: (id: number) => void;
+  openDeleteConfirmation: (id: string) => void;
   closeDeleteConfirmation: () => void;
   confirmDeletion: () => void;
 } => {
@@ -145,13 +213,12 @@ export const useScenarioDrawer = (
       const updatedScenarios = ros.scenarier.some(s => s.ID === scenario.ID)
         ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
         : ros.scenarier.concat(scenario);
-      setRos({ ...ros, scenarier: updatedScenarios });
-      putROS({ ...ros, scenarier: updatedScenarios });
+      onChange({ ...ros, scenarier: updatedScenarios });
       setDrawerIsOpen(false);
     }
   };
 
-  const openDeleteConfirmation = (id: number) => {
+  const openDeleteConfirmation = (id: string) => {
     if (ros) {
       setScenario(ros.scenarier.find(s => s.ID === id)!!);
       setDeleteConfirmationIsOpen(true);
@@ -169,15 +236,14 @@ export const useScenarioDrawer = (
     }
   };
 
-  const deleteScenario = (id: number) => {
+  const deleteScenario = (id: string) => {
     if (ros) {
       const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
-      setRos({ ...ros, scenarier: updatedScenarios });
-      putROS({ ...ros, scenarier: updatedScenarios });
+      onChange({ ...ros, scenarier: updatedScenarios });
     }
   };
 
-  const editScenario = (id: number) => {
+  const editScenario = (id: string) => {
     if (ros) {
       setScenario(ros.scenarier.find(s => s.ID === id)!!);
       setDrawerIsOpen(true);
@@ -193,5 +259,61 @@ export const useScenarioDrawer = (
     openDeleteConfirmation,
     closeDeleteConfirmation,
     confirmDeletion,
+  };
+};
+
+export const useROSPlugin = () => {
+  const GHApi = useApi(githubAuthApiRef);
+  const { value: accessToken } = useAsync(() => GHApi.getAccessToken('repo'));
+  const repoInformation = useGithubRepositoryInformation();
+
+  const { fetchROSIds, fetchROS, postROS, putROS, publishROS, response } =
+    useFetch(accessToken, repoInformation);
+
+  const useFetchRos = (
+    selectedId: RosIdentifier | null,
+  ): [ROS | undefined, Dispatch<SetStateAction<ROS | undefined>>] => {
+    const [ros, setRos] = useState<ROS>();
+
+    useEffect(() => {
+      if (selectedId) {
+        fetchROS(selectedId.id, (fetchedROS: ROS) => setRos(fetchedROS));
+      }
+    }, [selectedId, accessToken, repoInformation]);
+
+    return [ros, setRos];
+  };
+
+  const useFetchRosIds = (): [
+    RosIdentifier | null,
+    Dispatch<SetStateAction<RosIdentifier | null>>,
+    RosIdentifier[] | null,
+    Dispatch<SetStateAction<RosIdentifier[] | null>>,
+  ] => {
+    const [rosIds, setRosIds] = useState<RosIdentifier[] | null>(null);
+    const [selectedId, setSelectedId] = useState<RosIdentifier | null>(null);
+
+    useEffect(() => {
+      try {
+        fetchROSIds((rosIds: RosIdentifier[]) => {
+          setRosIds(rosIds);
+          setSelectedId(rosIds[0]);
+        });
+      } catch (error) {
+        // Handle any synchronous errors that might occur outside the promise chain
+        console.error('Unexpected error:', error);
+      }
+    }, [accessToken, repoInformation]);
+
+    return [selectedId, setSelectedId, rosIds, setRosIds];
+  };
+
+  return {
+    useFetchRos,
+    useFetchRosIds,
+    postROS,
+    putROS,
+    publishROS,
+    response,
   };
 };

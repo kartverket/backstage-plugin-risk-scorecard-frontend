@@ -7,8 +7,8 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
-import { ROS } from '../interface/interfaces';
 import { useDialogStyles } from './DialogStyle';
+import { ROS } from '../utils/interfaces';
 
 interface ROSDialogProps {
   isOpen: boolean;
@@ -29,7 +29,6 @@ export const ROSDialog = ({
   ...props
 }: ROSDialogProps) => {
   const emptyROS = (withVersions: NewROSOptions): ROS => ({
-    versjon: withVersions ? '1' : '',
     skjemaVersjon: withVersions ? '1' : '',
     tittel: '',
     omfang: '',

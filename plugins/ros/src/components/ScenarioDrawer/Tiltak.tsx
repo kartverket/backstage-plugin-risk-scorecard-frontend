@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Tiltak as ITiltak } from '../interface/interfaces';
+import { Tiltak as ITiltak } from '../utils/interfaces';
 import { Dropdown } from './Dropdown';
 import schema from '../../ros_schema_no_v1_0.json';
 import { TextField } from './Textfield';
@@ -33,7 +33,7 @@ export const Tiltak = ({ tiltak, updateTiltak, deleteTiltak }: TiltakProps) => {
 
   return (
     <Grid container>
-      <Grid item xs={6}>
+      <Grid item xs={8}>
         <TextField
           label="Tiltak"
           value={tiltak.beskrivelse}
@@ -42,7 +42,7 @@ export const Tiltak = ({ tiltak, updateTiltak, deleteTiltak }: TiltakProps) => {
         />
       </Grid>
 
-      <Grid item xs={5}>
+      <Grid item xs={3}>
         <Dropdown
           label="Status"
           options={statusOptions}
