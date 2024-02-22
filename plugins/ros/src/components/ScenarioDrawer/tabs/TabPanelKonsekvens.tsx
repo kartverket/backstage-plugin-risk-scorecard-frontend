@@ -1,6 +1,7 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React, { ChangeEvent } from 'react';
 import { PickerTable } from '../../PickerTable/PickerTable';
+import { tabStyles } from './style';
 
 interface TabPanelKonsekvensProps {
   setKonsekvens: (event: ChangeEvent<{ value: unknown }>) => void;
@@ -11,8 +12,10 @@ export const TabPanelKonsekvens = ({
   setKonsekvens,
   selected,
 }: TabPanelKonsekvensProps) => {
+  const classes = tabStyles();
+
   return (
-    <TabPanel value="konsekvens">
+    <TabPanel className={classes.tabPanel} value="konsekvens">
       <PickerTable selectedValue={selected} handleChange={setKonsekvens} />
     </TabPanel>
   );

@@ -97,7 +97,7 @@ export const ScenarioDrawerContent = ({
   return (
     <>
       <Box className={header}>
-        <Typography variant="h4">Nytt risikoscenario</Typography>
+        <Typography variant="h4">Risikoscenario</Typography>
         <IconButton
           key="dismiss"
           title="Close the drawer"

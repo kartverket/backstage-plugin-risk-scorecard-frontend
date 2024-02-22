@@ -32,7 +32,13 @@ export const Dropdown = ({
   const renderValue = (selected: any) => {
     if (multiple) {
       return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gridGap: 0.5 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gridGap: 0.5,
+          }}
+        >
           {selected.map((value: string) => (
             <Chip key={value} label={value} />
           ))}
