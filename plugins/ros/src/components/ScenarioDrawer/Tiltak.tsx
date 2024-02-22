@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Tiltak as ITiltak } from '../utils/interfaces';
+import { Tiltak as ITiltak } from '../utils/types';
 import { Dropdown } from './Dropdown';
 import schema from '../../ros_schema_no_v1_0.json';
 import { TextField } from './Textfield';

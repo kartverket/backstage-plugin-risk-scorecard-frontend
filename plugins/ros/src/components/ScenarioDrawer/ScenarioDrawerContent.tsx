@@ -16,7 +16,8 @@ import {
   sårbarheterOptions,
   trusselaktørerOptions,
 } from '../utils/constants';
-import { emptyTiltak, Risiko, Scenario, Tiltak } from '../utils/interfaces';
+import { Risiko, Scenario, Tiltak } from '../utils/types';
+import { emptyTiltak } from '../utils/utilityfunctions';
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;

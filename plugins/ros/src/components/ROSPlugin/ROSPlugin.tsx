@@ -17,9 +17,9 @@ import {
 import { DeleteConfirmation } from './DeleteConfirmation';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
-import { ROS } from '../utils/interfaces';
-import { ROSProcessingStatus, RosStatus } from '../utils/types';
+import { ROS, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
+import { getAlertSeverity } from '../utils/utilityfunctions';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useContainerStyles, useLoadingStyles } from './rosPluginStyle';
 
@@ -30,37 +30,41 @@ export const ROSPlugin = () => {
   const { useFetchRoses, postROS, putROS, publishROS, response } =
     useROSPlugin();
 
-  const [
-    selectedROS,
-    setSelectedROS,
-    titlesAndIds,
-    setTitlesAndIds,
-    selectedTitleAndId,
-    selectROSByTitle,
-  ] = useFetchRoses();
+  const { selectedROS, setSelectedROS, roses, setRoses, selectROSByTitle } =
+    useFetchRoses();
 
   const createNewROS = (ros: ROS) =>
     postROS(ros, res => {
-      if (!res.rosId) return;
-      const newROSId = {
+      if (!res.rosId) {
+        throw new Error('No ROS ID returned');
+      }
+
+      const newROS = {
         id: res.rosId,
-        status: RosStatus.Draft,
         title: ros.tittel,
+        status: RosStatus.Draft,
+        content: ros,
       };
-      setTitlesAndIds(titlesAndIds ? [...titlesAndIds, newROSId] : [newROSId]);
-      selectROSByTitle(ros.tittel);
+
+      setRoses(roses ? [...roses, newROS] : [newROS]);
+      setSelectedROS(newROS);
     });
 
   const updateROS = (ros: ROS) => {
-    if (selectedTitleAndId) {
-      selectROSByTitle(ros.tittel);
-      putROS(ros, selectedTitleAndId.id);
+    if (selectedROS && roses) {
+      const updatedROS = { ...selectedROS, content: ros };
+      setSelectedROS(updatedROS);
+      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      putROS(updatedROS);
     }
   };
 
   const approveROS = () => {
-    if (selectedTitleAndId) {
-      publishROS(selectedTitleAndId.id);
+    if (selectedROS && roses) {
+      const updatedROS = { ...selectedROS, status: RosStatus.SentForApproval };
+      setSelectedROS(updatedROS);
+      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      publishROS(selectedROS.id);
     }
   };
 
@@ -73,7 +77,11 @@ export const ROSPlugin = () => {
     openDeleteConfirmation,
     closeDeleteConfirmation,
     confirmDeletion,
-  } = useScenarioDrawer(selectedROS, setDrawerIsOpen, updateROS);
+  } = useScenarioDrawer(
+    selectedROS?.content ?? null,
+    setDrawerIsOpen,
+    updateROS,
+  );
 
   const classes = useLoadingStyles();
 
@@ -83,7 +91,7 @@ export const ROSPlugin = () => {
         <SupportButton>Kul plugin ass!</SupportButton>
       </ContentHeader>
 
-      {!titlesAndIds && (
+      {!roses && (
         <div className={classes.container}>
           <Grid item>
             <CircularProgress className={classes.spinner} size={80} />
@@ -92,15 +100,13 @@ export const ROSPlugin = () => {
       )}
 
       <Grid container spacing={3} direction="column">
-        {titlesAndIds && (
+        {roses && (
           <>
             <Grid item xs={3}>
               <Dropdown
                 label="ROS-analyser"
-                options={titlesAndIds.map(ros => ros.title) ?? []}
-                selectedValues={
-                  selectedTitleAndId?.title ? [selectedTitleAndId.title] : []
-                }
+                options={roses.map(ros => ros.title) ?? []}
+                selectedValues={selectedROS?.title ? [selectedROS.title] : []}
                 handleChange={e => selectROSByTitle(e.target.value as string)}
                 variant="standard"
               />
@@ -118,35 +124,35 @@ export const ROSPlugin = () => {
           </>
         )}
 
-        {selectedTitleAndId && selectedROS && selectedROS.omfang && (
+        {selectedROS && (
           <>
             <Grid item container direction="row">
               <Grid item container xs direction="column" spacing={0}>
                 <Grid item xs>
                   <Typography variant="subtitle2">
-                    ID: {selectedTitleAndId.id}
+                    ID: {selectedROS.id}
                   </Typography>
                 </Grid>
 
                 <Grid item xs>
                   <Typography variant="subtitle2">
-                    Omfang: {selectedROS.omfang}
+                    Omfang: {selectedROS.content.omfang}
                   </Typography>
                 </Grid>
               </Grid>
               <ROSStatusComponent
-                selectedId={selectedTitleAndId}
+                selectedROS={selectedROS}
                 publishRosFn={approveROS}
               />
             </Grid>
 
             <Grid item container direction="row">
               <Grid item xs>
-                <RiskMatrix ros={selectedROS} />
+                <RiskMatrix ros={selectedROS.content} />
               </Grid>
               <Grid item xs>
                 <ScenarioTable
-                  ros={selectedROS}
+                  ros={selectedROS.content}
                   addScenario={() => setDrawerIsOpen(true)}
                   deleteRow={openDeleteConfirmation}
                   editRow={editScenario}
@@ -158,14 +164,8 @@ export const ROSPlugin = () => {
 
         <Grid item xs={12}>
           {response && (
-            <Alert
-              severity={
-                response.status === ROSProcessingStatus.UpdatedROS
-                  ? 'info'
-                  : 'warning'
-              }
-            >
-              <Typography>{response?.statusMessage}</Typography>
+            <Alert severity={getAlertSeverity(response.status)}>
+              <Typography>{response.statusMessage}</Typography>
             </Alert>
           )}
         </Grid>
@@ -174,7 +174,6 @@ export const ROSPlugin = () => {
       <ROSDialog
         isOpen={newROSDialogIsOpen}
         onClose={() => setNewROSDialogIsOpen(false)}
-        setRos={setSelectedROS}
         saveRos={createNewROS}
       />
       <ScenarioDrawer
@@ -189,12 +188,10 @@ export const ROSPlugin = () => {
         close={closeDeleteConfirmation}
         confirmDeletion={confirmDeletion}
       />
-      {selectedTitleAndId && titlesAndIds && (
-        <ROSStatusAlertNotApprovedByRisikoeier
-          currentROSId={selectedTitleAndId}
-          rosTitleAndIds={titlesAndIds}
-        />
-      )}
+      <ROSStatusAlertNotApprovedByRisikoeier
+        selectedROS={selectedROS}
+        roses={roses}
+      />
     </Content>
   );
 };

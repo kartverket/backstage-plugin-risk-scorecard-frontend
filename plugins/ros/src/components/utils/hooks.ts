@@ -3,25 +3,23 @@ import { useEffect, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
-  useApi,
   githubAuthApiRef,
+  useApi,
 } from '@backstage/core-plugin-api';
 
-import { ROSProcessingStatus, ROSProcessResultDTO } from './types';
-import useAsync from 'react-use/lib/useAsync';
 import {
-  emptyScenario,
   GithubRepoInfo,
+  ProcessingStatus,
+  ProcessROSResultDTO,
+  PublishROSResultDTO,
   ROS,
-  ROSTitleAndIdAndStatus,
-  ROSWrapper,
+  ROSContentResultDTO,
+  ROSWithMetadata,
   Scenario,
-} from './interfaces';
-
-export interface SubmitResponseObject {
-  statusMessage: string;
-  status: ROSProcessingStatus;
-}
+  SubmitResponseObject,
+} from './types';
+import useAsync from 'react-use/lib/useAsync';
+import { emptyScenario } from './utilityfunctions';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   const currentEntity = useAsyncEntity();
@@ -76,24 +74,22 @@ const useFetch = (
   const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
   const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;
 
-  const githubPostRequestHeaders = (token: string): HeadersInit => ({
-    'Github-Access-Token': token,
-    'Content-Type': 'application/json',
-  });
-
   const [response, setResponse] = useResponse();
 
   const fetch = <T>(
     uri: string,
     method: 'GET' | 'POST' | 'PUT',
-    onSuccess: (arg: T) => void,
+    onSuccess: (response: T) => void,
     onError: (error: T) => void,
     body?: string,
   ) => {
     if (repoInformation && accessToken) {
       fetchApi(uri, {
         method: method,
-        headers: githubPostRequestHeaders(accessToken),
+        headers: {
+          'Github-Access-Token': accessToken,
+          'Content-Type': 'application/json',
+        },
         body: body,
       })
         .then(res => {
@@ -103,38 +99,32 @@ const useFetch = (
           return res.json();
         })
         .then(json => json as T)
-        .then(res => onSuccess(res))
+        .then(response => onSuccess(response))
         .catch(error => onError(error));
     }
   };
 
-  const fetchRoses = (onSuccess: (rosWrapper: ROSWrapper[]) => void) => {
-    fetch<ROSWrapper[]>(
-      uriToFetchAllRoses(),
-      'GET',
-      onSuccess,
-      (_: ROSWrapper[]) => {
-        setResponse({
-          statusMessage: 'Failed to fetch ROSes',
-          status: ROSProcessingStatus.ROSNotValid,
-        });
-      },
+  const fetchRoses = (onSuccess: (response: ROSContentResultDTO[]) => void) =>
+    fetch<ROSContentResultDTO[]>(uriToFetchAllRoses(), 'GET', onSuccess, () =>
+      setResponse({
+        statusMessage: 'Failed to fetch ROSes',
+        status: ProcessingStatus.ErrorWhenFetchingROSes,
+      }),
     );
-  };
 
   const postROS = (
     ros: ROS,
-    onSuccess?: (arg: ROSProcessResultDTO) => void,
-    onError?: (error: ROSProcessResultDTO) => void,
+    onSuccess?: (response: ProcessROSResultDTO) => void,
+    onError?: (error: ProcessROSResultDTO) => void,
   ) =>
-    fetch<ROSProcessResultDTO>(
+    fetch<ProcessROSResultDTO>(
       rosUri,
       'POST',
-      (arg: ROSProcessResultDTO) => {
-        setResponse(arg);
-        if (onSuccess) onSuccess(arg);
+      response => {
+        setResponse(response);
+        if (onSuccess) onSuccess(response);
       },
-      (error: ROSProcessResultDTO) => {
+      error => {
         setResponse(error);
         if (onError) onError(error);
       },
@@ -142,38 +132,37 @@ const useFetch = (
     );
 
   const putROS = (
-    ros: ROS,
-    rosId: string,
-    onSuccess?: (arg: ROSProcessResultDTO) => void,
-    onError?: (error: ROSProcessResultDTO) => void,
+    ros: ROSWithMetadata,
+    onSuccess?: (response: ProcessROSResultDTO) => void,
+    onError?: (error: ProcessROSResultDTO) => void,
   ) =>
-    fetch<ROSProcessResultDTO>(
-      uriToFetchRos(rosId),
+    fetch<ProcessROSResultDTO>(
+      uriToFetchRos(ros.id),
       'PUT',
-      (arg: ROSProcessResultDTO) => {
-        setResponse(arg);
-        if (onSuccess) onSuccess(arg);
+      response => {
+        setResponse(response);
+        if (onSuccess) onSuccess(response);
       },
-      (error: ROSProcessResultDTO) => {
+      error => {
         setResponse(error);
         if (onError) onError(error);
       },
-      JSON.stringify({ ros: JSON.stringify(ros) }),
+      JSON.stringify({ ros: JSON.stringify(ros.content) }),
     );
 
   const publishROS = (
     rosId: string,
-    onSuccess?: (arg: ROSProcessResultDTO) => void,
-    onError?: (error: ROSProcessResultDTO) => void,
+    onSuccess?: (response: PublishROSResultDTO) => void,
+    onError?: (error: PublishROSResultDTO) => void,
   ) =>
-    fetch<ROSProcessResultDTO>(
+    fetch<PublishROSResultDTO>(
       uriToPublishROS(rosId),
       'POST',
-      (arg: ROSProcessResultDTO) => {
-        setResponse(arg);
-        if (onSuccess) onSuccess(arg);
+      response => {
+        setResponse(response);
+        if (onSuccess) onSuccess(response);
       },
-      (error: ROSProcessResultDTO) => {
+      error => {
         setResponse(error);
         if (onError) onError(error);
       },
@@ -263,69 +252,47 @@ export const useROSPlugin = () => {
     repoInformation,
   );
 
-  const useFetchRoses = (): [
-    ROS | null,
-    (ros: ROS | null) => void,
-    ROSTitleAndIdAndStatus[] | null,
-    (titlesAndIds: ROSTitleAndIdAndStatus[] | null) => void,
-    ROSTitleAndIdAndStatus | null,
-    (title: string) => void,
-  ] => {
-    const [roses, setRoses] = useState<ROS[] | null>(null);
-    const [selectedROS, setSelectedROS] = useState<ROS | null>(null);
-    const [titlesAndIds, setTitlesAndIds] = useState<
-      ROSTitleAndIdAndStatus[] | null
-    >(null);
-    const [selectedTitleAndId, setSelectedTitleAndId] =
-      useState<ROSTitleAndIdAndStatus | null>(null);
+  const useFetchRoses = (): {
+    selectedROS: ROSWithMetadata | null;
+    setSelectedROS: (ros: ROSWithMetadata) => void;
+    roses: ROSWithMetadata[] | null;
+    setRoses: (roses: ROSWithMetadata[]) => void;
+    selectROSByTitle: (title: string) => void;
+  } => {
+    const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
+    const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(
+      null,
+    );
 
     useEffect(() => {
-      fetchRoses((res: ROSWrapper[]) => {
-        const fetchedRoses: ROSWrapper[] = res.map((item: any) => ({
-          id: item.rosId,
-          content: JSON.parse(item.rosContent) as ROS,
-          status: item.rosStatus,
-        }));
-
-        setRoses(fetchedRoses.map((ros: ROSWrapper) => ros.content as ROS));
-
-        setTitlesAndIds(
-          fetchedRoses.map((ros: ROSWrapper) => ({
-            title: ros.content.tittel,
-            id: ros.id,
-            status: ros.status,
-          })),
-        );
-
-        setSelectedTitleAndId({
-          title: fetchedRoses[0].content.tittel,
-          id: fetchedRoses[0].id,
-          status: fetchedRoses[0].status,
+      fetchRoses(response => {
+        const fetchedRoses: ROSWithMetadata[] = response.map(rosDTO => {
+          const content = JSON.parse(rosDTO.rosContent) as ROS;
+          return {
+            id: rosDTO.rosId,
+            title: content.tittel,
+            content: content,
+            status: rosDTO.rosStatus,
+          };
         });
 
-        setSelectedROS(
-          fetchedRoses.length > 0 ? (fetchedRoses[0].content as ROS) : null,
-        );
-        return fetchedRoses;
+        setRoses(fetchedRoses);
+        setSelectedROS(fetchedRoses[0]);
       });
     }, [accessToken]);
 
     const selectROSByTitle = (title: string) => {
-      const pickedRos = roses?.find(ros => ros.tittel === title) || null;
-      const pickedTitleAndId =
-        titlesAndIds?.find(t => t.title === title) || null;
+      const pickedRos = roses?.find(ros => ros.title === title) || null;
       setSelectedROS(pickedRos);
-      setSelectedTitleAndId(pickedTitleAndId);
     };
 
-    return [
+    return {
       selectedROS,
       setSelectedROS,
-      titlesAndIds,
-      setTitlesAndIds,
-      selectedTitleAndId,
+      roses,
+      setRoses,
       selectROSByTitle,
-    ];
+    };
   };
 
   return {

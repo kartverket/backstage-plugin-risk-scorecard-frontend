@@ -1,8 +1,9 @@
 import React from 'react';
 import { Drawer } from '@material-ui/core';
 import { ScenarioDrawerContent } from './ScenarioDrawerContent';
-import { emptyScenario, Scenario } from '../utils/interfaces';
 import { useScenarioDrawerStyles } from './style';
+import { Scenario } from '../utils/types';
+import { emptyScenario } from '../utils/utilityfunctions';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
