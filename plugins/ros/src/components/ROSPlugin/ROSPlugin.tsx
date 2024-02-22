@@ -21,6 +21,7 @@ import { ROS } from '../utils/interfaces';
 import { ROSProcessingStatus, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useContainerStyles, useLoadingStyles } from './rosPluginStyle';
 
 export const ROSPlugin = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -74,17 +75,7 @@ export const ROSPlugin = () => {
     confirmDeletion,
   } = useScenarioDrawer(selectedROS, setDrawerIsOpen, updateROS);
 
-  const useStyles = makeStyles({
-    container: {
-      minWidth: '100%',
-      height: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  });
-
-  const classes = useStyles();
+  const classes = useLoadingStyles();
 
   return (
     <Content>
@@ -94,8 +85,8 @@ export const ROSPlugin = () => {
 
       {!titlesAndIds && (
         <div className={classes.container}>
-          <Grid item xl={12} justifyContent="center" alignItems="center">
-            <CircularProgress size={80} />
+          <Grid item>
+            <CircularProgress className={classes.spinner} size={80} />
           </Grid>
         </div>
       )}
