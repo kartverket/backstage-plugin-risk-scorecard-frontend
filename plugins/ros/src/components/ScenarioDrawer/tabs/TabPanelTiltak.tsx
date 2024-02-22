@@ -68,7 +68,7 @@ export const TabPanelTiltak = ({
         <Grid item xs={4}>
           <Typography variant="h5">Risiko i dag</Typography>
         </Grid>
-        <Grid item xs={1}></Grid>
+        <Grid item xs={1} />
         <Grid item xs={4}>
           <Typography variant="h5">Etter planlagte tiltak</Typography>
         </Grid>
@@ -78,7 +78,7 @@ export const TabPanelTiltak = ({
             value={(
               konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1
             ).toString()}
-            disabled={true}
+            disabled
           />
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
@@ -87,7 +87,7 @@ export const TabPanelTiltak = ({
             value={(
               sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1
             ).toString()}
-            disabled={true}
+            disabled
           />
         </Grid>
         <Grid item xs={1} className={arrow}>
@@ -95,7 +95,7 @@ export const TabPanelTiltak = ({
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
           <Dropdown
-            label={'Konsekvens'}
+            label="Konsekvens"
             options={options}
             selectedValues={[
               (
@@ -107,7 +107,7 @@ export const TabPanelTiltak = ({
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
           <Dropdown
-            label={'Sannsynlighet'}
+            label="Sannsynlighet"
             options={options}
             selectedValues={[
               (
