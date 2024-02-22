@@ -1,5 +1,5 @@
 import { Tiltak } from '../Tiltak';
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography, makeStyles } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import TabPanel from '@material-ui/lab/TabPanel';
@@ -8,7 +8,7 @@ import { Risiko, Scenario, Tiltak as ITiltak } from '../../utils/interfaces';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { TextField } from '../Textfield';
 import { Dropdown } from '../Dropdown';
-import { useTabsTiltakStyles } from './style';
+import { tabStyles, useTabsTiltakStyles } from './style';
 import { konsekvensOptions, sannsynlighetOptions } from '../../utils/constants';
 
 interface TabPanelTiltakProps {
@@ -44,11 +44,14 @@ export const TabPanelTiltak = ({
     });
   };
 
+  const classes = tabStyles();
+
   return (
-    <TabPanel value="tiltak">
-      {scenario.tiltak.map(tiltak => (
+    <TabPanel value="tiltak" className={classes.tabPanel}>
+      {scenario.tiltak.map((tiltak, index) => (
         <Tiltak
           tiltak={tiltak}
+          index={index + 1}
           updateTiltak={updateTiltak}
           deleteTiltak={deleteTiltak}
         />
@@ -56,21 +59,19 @@ export const TabPanelTiltak = ({
 
       <Button
         startIcon={<AddCircleOutlineIcon />}
-        variant="text"
         color="primary"
         onClick={addTiltak}
-        style={{ textTransform: 'none', paddingTop: '2rem' }}
       >
         Legg til tiltak
       </Button>
 
       <Grid container style={{ paddingTop: '2rem' }} columns={9}>
         <Grid item xs={4}>
-          <Typography variant="h5">Risiko i dag</Typography>
+          <Typography variant="h6">Risiko i dag</Typography>
         </Grid>
         <Grid item xs={1} />
         <Grid item xs={4}>
-          <Typography variant="h5">Etter planlagte tiltak</Typography>
+          <Typography variant="h6">Etter planlagte tiltak</Typography>
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
           <TextField

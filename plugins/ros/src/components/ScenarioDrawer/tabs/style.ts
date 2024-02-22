@@ -10,3 +10,10 @@ export const useTabsTiltakStyles = makeStyles((theme: Theme) => ({
     color: '#1DB954',
   },
 }));
+
+export const tabStyles = makeStyles({
+  tabPanel: {
+    padding: '0px',
+    paddingTop: '1.5rem',
+  },
+});
