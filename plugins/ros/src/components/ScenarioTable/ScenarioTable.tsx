@@ -25,10 +25,7 @@ export const ScenarioTable = ({
   editRow,
 }: ScenarioTableProps) => {
   return (
-    <InfoCard>
-      <Typography variant="h3" style={{ padding: '0.5rem' }}>
-        Risikoscenarioer
-      </Typography>
+    <InfoCard title="Risikoscenarioer">
       <Button
         startIcon={<AddCircleOutlineIcon />}
         variant="text"

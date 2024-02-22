@@ -132,13 +132,12 @@ const useFetch = (
     );
 
   const putROS = (
-    ros: ROS,
-    rosId: string,
+    ros: ROSWithMetadata,
     onSuccess?: (response: ProcessROSResultDTO) => void,
     onError?: (error: ProcessROSResultDTO) => void,
   ) =>
     fetch<ProcessROSResultDTO>(
-      uriToFetchRos(rosId),
+      uriToFetchRos(ros.id),
       'PUT',
       response => {
         setResponse(response);
@@ -148,7 +147,7 @@ const useFetch = (
         setResponse(error);
         if (onError) onError(error);
       },
-      JSON.stringify({ ros: JSON.stringify(ros) }),
+      JSON.stringify({ ros: JSON.stringify(ros.content) }),
     );
 
   const publishROS = (
@@ -160,7 +159,6 @@ const useFetch = (
       uriToPublishROS(rosId),
       'POST',
       response => {
-        console.log(response);
         setResponse(response);
         if (onSuccess) onSuccess(response);
       },

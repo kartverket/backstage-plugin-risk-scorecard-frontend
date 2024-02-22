@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography, makeStyles } from '@material-ui/core';
 import {
   Content,
   ContentHeader,
@@ -20,6 +20,7 @@ import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import { ROS, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../utils/utilityfunctions';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const ROSPlugin = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -49,22 +50,20 @@ export const ROSPlugin = () => {
     });
 
   const updateROS = (ros: ROS) => {
-    if (selectedROS) {
-      setSelectedROS({ ...selectedROS, content: ros });
-      putROS(ros, selectedROS.id);
+    if (selectedROS && roses) {
+      const updatedROS = { ...selectedROS, content: ros };
+      setSelectedROS(updatedROS);
+      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      putROS(updatedROS);
     }
   };
 
   const approveROS = () => {
     if (selectedROS && roses) {
       const updatedROS = { ...selectedROS, status: RosStatus.SentForApproval };
-      publishROS(selectedROS.id, () => {
-        setSelectedROS(updatedROS);
-        setRoses([
-          ...roses.filter(ros => ros.id !== updatedROS.id),
-          updatedROS,
-        ]);
-      });
+      setSelectedROS(updatedROS);
+      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      publishROS(selectedROS.id);
     }
   };
 
@@ -83,34 +82,56 @@ export const ROSPlugin = () => {
     updateROS,
   );
 
+  const useStyles = makeStyles({
+    container: {
+      minWidth: '100%',
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+
+  const classes = useStyles();
+
   return (
     <Content>
       <ContentHeader title="Risiko- og sårbarhetsanalyse">
         <SupportButton>Kul plugin ass!</SupportButton>
       </ContentHeader>
+
+      {!roses && (
+        <div className={classes.container}>
+          <Grid item xl={12} justifyContent="center" alignItems="center">
+            <CircularProgress size={80} />
+          </Grid>
+        </div>
+      )}
+
       <Grid container spacing={3} direction="column">
         {roses && (
-          <Grid item xs={3}>
-            <Dropdown
-              label="ROS-analyser"
-              options={roses.map(ros => ros.title) ?? []}
-              selectedValues={selectedROS?.title ? [selectedROS.title] : []}
-              handleChange={e => selectROSByTitle(e.target.value as string)}
-              variant="standard"
-            />
-          </Grid>
+          <>
+            <Grid item xs={3}>
+              <Dropdown
+                label="ROS-analyser"
+                options={roses.map(ros => ros.title) ?? []}
+                selectedValues={selectedROS?.title ? [selectedROS.title] : []}
+                handleChange={e => selectROSByTitle(e.target.value as string)}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                startIcon={<AddCircleOutlineIcon />}
+                variant="text"
+                color="primary"
+                onClick={() => setNewROSDialogIsOpen(true)}
+              >
+                Opprett ny analyse
+              </Button>
+            </Grid>
+          </>
         )}
-
-        <Grid item xs={12}>
-          <Button
-            startIcon={<AddCircleOutlineIcon />}
-            variant="text"
-            color="primary"
-            onClick={() => setNewROSDialogIsOpen(true)}
-          >
-            Opprett ny analyse
-          </Button>
-        </Grid>
 
         {selectedROS && (
           <>
@@ -151,7 +172,6 @@ export const ROSPlugin = () => {
         )}
 
         <Grid item xs={12}>
-          {console.log(response)}
           {response && (
             <Alert severity={getAlertSeverity(response.status)}>
               <Typography>{response.statusMessage}</Typography>
