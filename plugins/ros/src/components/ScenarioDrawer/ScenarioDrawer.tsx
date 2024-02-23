@@ -22,7 +22,6 @@ export const ScenarioDrawer = ({
   const classes = useScenarioDrawerStyles();
 
   const clearScenario = () => setScenario(emptyScenario());
-
   return (
     <Drawer
       classes={{ paper: classes.paper }}
@@ -40,6 +39,7 @@ export const ScenarioDrawer = ({
         setScenario={setScenario}
         saveScenario={saveScenario}
         clearScenario={clearScenario}
+        isOpen={isOpen}
       />
     </Drawer>
   );
