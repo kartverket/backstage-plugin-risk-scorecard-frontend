@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Grid, Typography, makeStyles } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import {
   Content,
   ContentHeader,
@@ -21,7 +21,7 @@ import { ROS, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../utils/utilityfunctions';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useContainerStyles, useLoadingStyles } from './rosPluginStyle';
+import { useLoadingStyles } from './rosPluginStyle';
 
 export const ROSPlugin = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
