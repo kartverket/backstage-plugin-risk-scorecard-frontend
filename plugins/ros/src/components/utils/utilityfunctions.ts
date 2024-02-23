@@ -1,4 +1,5 @@
 import { ROS, ProcessingStatus, Scenario, Tiltak } from './types';
+import { konsekvensOptions, sannsynlighetOptions } from './constants';
 
 export function generateRandomId(): string {
   return [...Array(3)]
@@ -31,6 +32,18 @@ export function getAlertSeverity(
       return 'warning';
   }
 }
+
+export const getSannsynlighetLevel = (scenario: Scenario) =>
+  sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1;
+
+export const getKonsekvensLevel = (scenario: Scenario) =>
+  konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1;
+
+export const getRestSannsynlighetLevel = (scenario: Scenario) =>
+  sannsynlighetOptions.indexOf(scenario.restrisiko.sannsynlighet) + 1;
+
+export const getRestKonsekvensLevel = (scenario: Scenario) =>
+  konsekvensOptions.indexOf(scenario.restrisiko.konsekvens) + 1;
 
 export const emptyROS = (withVersions: boolean): ROS => ({
   skjemaVersjon: withVersions ? '1' : '',

@@ -10,6 +10,12 @@ import { TextField } from '../Textfield';
 import { Dropdown } from '../Dropdown';
 import { tabStyles, useTabsTiltakStyles } from './style';
 import { konsekvensOptions, sannsynlighetOptions } from '../../utils/constants';
+import {
+  getKonsekvensLevel,
+  getRestKonsekvensLevel,
+  getRestSannsynlighetLevel,
+  getSannsynlighetLevel,
+} from '../../utils/utilityfunctions';
 
 interface TabPanelTiltakProps {
   scenario: Scenario;
@@ -44,18 +50,6 @@ export const TabPanelTiltak = ({
     });
   };
 
-  const getKonsekvensIndex = () =>
-    konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1;
-
-  const getSannsynlighetIndex = () =>
-    sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1;
-
-  const getRestKonsekvensIndex = () =>
-    konsekvensOptions.indexOf(scenario.restrisiko.konsekvens) + 1;
-
-  const getRestSannsynlighetIndex = () =>
-    sannsynlighetOptions.indexOf(scenario.restrisiko.sannsynlighet) + 1;
-
   const classes = tabStyles();
 
   return (
@@ -86,10 +80,13 @@ export const TabPanelTiltak = ({
           <Typography variant="h6">Etter planlagte tiltak</Typography>
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
-          <TextField label="Konsekvens" value={getKonsekvensIndex()} />
+          <TextField label="Konsekvens" value={getKonsekvensLevel(scenario)} />
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
-          <TextField label="Sannsynlighet" value={getSannsynlighetIndex()} />
+          <TextField
+            label="Sannsynlighet"
+            value={getSannsynlighetLevel(scenario)}
+          />
         </Grid>
         <Grid item xs={1} className={arrow}>
           <KeyboardDoubleArrowRightIcon fontSize="large" />
@@ -98,7 +95,7 @@ export const TabPanelTiltak = ({
           <Dropdown<number>
             label="Konsekvens"
             options={options}
-            selectedValues={getRestKonsekvensIndex()}
+            selectedValues={getRestKonsekvensLevel(scenario)}
             handleChange={setRestKonsekvens}
           />
         </Grid>
@@ -106,7 +103,7 @@ export const TabPanelTiltak = ({
           <Dropdown<number>
             label="Sannsynlighet"
             options={options}
-            selectedValues={getRestSannsynlighetIndex()}
+            selectedValues={getRestSannsynlighetLevel(scenario)}
             handleChange={setRestSannsynlighet}
           />
         </Grid>

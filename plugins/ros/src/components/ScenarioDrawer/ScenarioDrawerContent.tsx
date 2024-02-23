@@ -17,7 +17,11 @@ import {
   trusselaktørerOptions,
 } from '../utils/constants';
 import { Risiko, Scenario, Tiltak } from '../utils/types';
-import { emptyTiltak } from '../utils/utilityfunctions';
+import {
+  emptyTiltak,
+  getKonsekvensLevel,
+  getSannsynlighetLevel,
+} from '../utils/utilityfunctions';
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;
@@ -63,9 +67,6 @@ export const ScenarioDrawerContent = ({
       sårbarheter: sårbarheter,
     });
 
-  const getSannsynlighetIndex = () =>
-    sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1;
-
   const setSannsynlighet = (sannsynlighetIndex: number) =>
     setScenario({
       ...scenario,
@@ -74,9 +75,6 @@ export const ScenarioDrawerContent = ({
         sannsynlighet: sannsynlighetOptions[sannsynlighetIndex - 1],
       },
     });
-
-  const getKonsekvensIndex = () =>
-    konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1;
 
   const setKonsekvens = (konsekvensIndex: number) =>
     setScenario({
@@ -167,11 +165,11 @@ export const ScenarioDrawerContent = ({
           <TabContext value={tab}>
             <Tabs setTab={setTab} />
             <TabPanelKonsekvens
-              selected={getKonsekvensIndex()}
+              selected={getKonsekvensLevel(scenario)}
               setKonsekvens={setKonsekvens}
             />
             <TabPanelSannsynlighet
-              selected={getSannsynlighetIndex()}
+              selected={getSannsynlighetLevel(scenario)}
               setSannsynlighet={setSannsynlighet}
               options={options}
             />
