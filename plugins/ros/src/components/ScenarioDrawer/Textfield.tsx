@@ -8,9 +8,9 @@ import { useInputFieldStyles } from './style';
 
 interface TextFieldProps {
   label: string;
-  value: string;
+  value: string | number;
+  handleChange?: (value: string) => void;
   minRows?: number;
-  handleChange?: (event: ChangeEvent<{ value: unknown }>) => void;
   disabled?: boolean;
 }
 
@@ -19,15 +19,17 @@ export const TextField = ({
   value,
   minRows = 1,
   handleChange,
-  disabled,
 }: TextFieldProps) => {
   const { formLabel, inputBox } = useInputFieldStyles();
+
+  const onChange = (event: ChangeEvent<{ value: string }>) =>
+    handleChange && handleChange(event.target.value);
 
   return (
     <FormControl className={inputBox}>
       <FormLabel className={formLabel}>{label}</FormLabel>
       <MUITextField
-        disabled={disabled}
+        disabled={!handleChange}
         required
         id="filled-multiline-static"
         value={value}
@@ -35,7 +37,7 @@ export const TextField = ({
         fullWidth
         minRows={minRows}
         variant="outlined"
-        onChange={handleChange}
+        onChange={onChange}
       />
     </FormControl>
   );

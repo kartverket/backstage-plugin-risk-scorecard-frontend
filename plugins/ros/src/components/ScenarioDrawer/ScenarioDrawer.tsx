@@ -24,16 +24,18 @@ export const ScenarioDrawer = ({
 
   const clearScenario = () => setScenario(emptyScenario());
 
+  const onClose = () => {
+    setIsOpen(false);
+    clearScenario();
+  };
+
   return (
     <Drawer
       classes={{ paper: classes.paper }}
       variant="persistent"
       anchor="right"
       open={isOpen}
-      onClose={() => {
-        clearScenario();
-        setIsOpen(false);
-      }}
+      onClose={onClose}
     >
       <ScenarioDrawerContent
         toggleDrawer={setIsOpen}

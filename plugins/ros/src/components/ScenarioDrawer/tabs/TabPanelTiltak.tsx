@@ -1,15 +1,21 @@
 import { Tiltak } from '../Tiltak';
-import { Button, Typography, makeStyles } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import TabPanel from '@material-ui/lab/TabPanel';
-import React, { ChangeEvent } from 'react';
-import { Risiko, Scenario, Tiltak as ITiltak } from '../../utils/interfaces';
+import React from 'react';
+import { Risiko, Scenario, Tiltak as ITiltak } from '../../utils/types';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { TextField } from '../Textfield';
 import { Dropdown } from '../Dropdown';
 import { tabStyles, useTabsTiltakStyles } from './style';
 import { konsekvensOptions, sannsynlighetOptions } from '../../utils/constants';
+import {
+  getKonsekvensLevel,
+  getRestKonsekvensLevel,
+  getRestSannsynlighetLevel,
+  getSannsynlighetLevel,
+} from '../../utils/utilityfunctions';
 
 interface TabPanelTiltakProps {
   scenario: Scenario;
@@ -30,17 +36,17 @@ export const TabPanelTiltak = ({
 }: TabPanelTiltakProps) => {
   const { arrow } = useTabsTiltakStyles();
 
-  const setRestKonsekvens = (event: ChangeEvent<{ value: unknown }>) => {
+  const setRestKonsekvens = (restKonsekvensLevel: number) => {
     updateRestrisiko({
       ...scenario.restrisiko,
-      konsekvens: konsekvensOptions[Number(event.target.value) - 1],
+      konsekvens: konsekvensOptions[restKonsekvensLevel - 1],
     });
   };
 
-  const setRestSannsynlighet = (event: ChangeEvent<{ value: unknown }>) => {
+  const setRestSannsynlighet = (restSannsynlighetLevel: number) => {
     updateRestrisiko({
       ...scenario.restrisiko,
-      sannsynlighet: sannsynlighetOptions[Number(event.target.value) - 1],
+      sannsynlighet: sannsynlighetOptions[restSannsynlighetLevel - 1],
     });
   };
 
@@ -74,49 +80,30 @@ export const TabPanelTiltak = ({
           <Typography variant="h6">Etter planlagte tiltak</Typography>
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
-          <TextField
-            label="Konsekvens"
-            value={(
-              konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1
-            ).toString()}
-            disabled
-          />
+          <TextField label="Konsekvens" value={getKonsekvensLevel(scenario)} />
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
           <TextField
             label="Sannsynlighet"
-            value={(
-              sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1
-            ).toString()}
-            disabled
+            value={getSannsynlighetLevel(scenario)}
           />
         </Grid>
         <Grid item xs={1} className={arrow}>
           <KeyboardDoubleArrowRightIcon fontSize="large" />
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
-          <Dropdown
+          <Dropdown<number>
             label="Konsekvens"
             options={options}
-            selectedValues={[
-              (
-                konsekvensOptions.indexOf(scenario.restrisiko.konsekvens) + 1
-              ).toString(),
-            ]}
+            selectedValues={getRestKonsekvensLevel(scenario)}
             handleChange={setRestKonsekvens}
           />
         </Grid>
         <Grid item xs={2} style={{ paddingTop: 0 }}>
-          <Dropdown
+          <Dropdown<number>
             label="Sannsynlighet"
             options={options}
-            selectedValues={[
-              (
-                sannsynlighetOptions.indexOf(
-                  scenario.restrisiko.sannsynlighet,
-                ) + 1
-              ).toString(),
-            ]}
+            selectedValues={getRestSannsynlighetLevel(scenario)}
             handleChange={setRestSannsynlighet}
           />
         </Grid>
