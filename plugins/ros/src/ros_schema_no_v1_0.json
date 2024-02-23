@@ -5,12 +5,16 @@
   "description": "Skjema for risiko- og sårbarhetsanalyser",
   "type": "object",
   "properties": {
-    "versjon": {
-      "description": "Versjon av analysen",
-      "type": "string"
-    },
     "skjemaVersjon": {
       "description": "Versjon av skjema",
+      "type": "string"
+    },
+    "tittel": {
+      "description": "Tittel på analysen",
+      "type": "string"
+    },
+    "omfang": {
+      "description": "Omfang av analysen",
       "type": "string"
     },
     "scenarier": {
@@ -21,7 +25,13 @@
           "minLength": 2
         },
         "properties": {
-          "ID": { "type": "number" },
+          "ID": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{3}$"
+          },
+          "tittel": {
+            "type": "string"
+          },
           "beskrivelse": {
             "type": "string"
           },
@@ -75,7 +85,10 @@
                 "minLength": 2
               },
               "properties": {
-                "ID": { "type": "number" },
+                "ID": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9]{3}$"
+                },
                 "beskrivelse": {
                   "type": "string"
                 },
@@ -95,9 +108,6 @@
                     "Fullført",
                     "Avbrutt"
                   ]
-                },
-                "restrisiko": {
-                  "$ref": "#/$defs/risiko"
                 }
               },
               "required": [
@@ -105,21 +115,25 @@
                 "beskrivelse",
                 "tiltakseier",
                 "frist",
-                "status",
-                "restrisiko"
+                "status"
               ],
               "additionalProperties": false
             }
+          },
+          "restrisiko": {
+            "$ref": "#/$defs/risiko"
           }
         },
         "required": [
           "ID",
+          "tittel",
           "beskrivelse",
           "sistEndret",
           "trusselaktører",
           "sårbarheter",
           "risiko",
-          "tiltak"
+          "tiltak",
+          "restrisiko"
         ],
         "additionalProperties": false
       }
@@ -128,7 +142,11 @@
       "type": "object"
     }
   },
-  "required": ["skjemaVersjon", "versjon", "scenarier"],
+  "required": [
+    "skjemaVersjon",
+    "tittel",
+    "scenarier"
+  ],
   "additionalProperties": false,
   "$defs": {
     "risiko": {
@@ -140,15 +158,30 @@
         "sannsynlighet": {
           "description": "Antall hendelser/dag",
           "type": "number",
-          "minimum": 0
+          "enum": [
+            0.01,
+            0.1,
+            1,
+            50,
+            300
+          ]
         },
         "konsekvens": {
-          "description": "Beløp i kroner",
+          "description": "Beløp i kroner/hendelse",
           "type": "number",
-          "minimum": 0
+          "enum": [
+            1000,
+            30000,
+            1000000,
+            30000000,
+            1000000000
+          ]
         }
       },
-      "required": ["sannsynlighet", "konsekvens"],
+      "required": [
+        "sannsynlighet",
+        "konsekvens"
+      ],
       "additionalProperties": false
     },
     "url": {

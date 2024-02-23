@@ -1,58 +1,81 @@
-import { GithubRepoInfo, ROS, TableData } from '../interface/interfaces';
+import { ROS, ProcessingStatus, Scenario, Tiltak } from './types';
+import { konsekvensOptions, sannsynlighetOptions } from './constants';
 
-export const mapToTableData = (data: ROS): TableData[] =>
-  data.scenarier.map(scenario => ({
-    beskrivelse: scenario.beskrivelse,
-    trussel: scenario.trusselaktører.join(', '),
-    sårbarhet: scenario.sårbarheter.join(', '),
-    konsekvens: scenario.risiko.konsekvens,
-    sannsynlighet: scenario.risiko.sannsynlighet,
-    id: scenario.ID,
-  }));
+export function generateRandomId(): string {
+  return [...Array(3)]
+    .map(() => {
+      const randomChar = Math.random().toString(36)[2];
+      return Math.random() < 0.5 ? randomChar.toUpperCase() : randomChar;
+    })
+    .join('');
+}
 
-export const uriToFetchRosIds = (
-  baseUrl: string,
-  repoInformation: GithubRepoInfo,
-) => `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/ids`;
-
-export const uriToFetchRos = (
-  baseUrl: string,
-  repoInformation: GithubRepoInfo,
-  selectedId: string,
-) =>
-  `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
-
-export const uriToPutROS = (
-  baseUrl: string,
-  repoInformation: GithubRepoInfo,
-  selectedId: string,
-) =>
-  `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/${selectedId}`;
-
-export const uriToPublishROS = (
-  baseUrl: string,
-  repoInformation: GithubRepoInfo,
-  selectedId: string,
-) =>
-  `${baseUrl}/api/ros/${repoInformation.owner}/${repoInformation.name}/publish/${selectedId}`;
-
-export const githubGetRequestHeaders = (accessToken: string): HeadersInit => ({
-  'Github-Access-Token': accessToken,
+const formatter = new Intl.NumberFormat('nb-NO', {
+  style: 'currency',
+  currency: 'NOK',
+  maximumFractionDigits: 0,
 });
 
-export const githubPostRequestHeaders = (
-  ghToken: string | null,
-  microsoftToken: string,
-): HeadersInit => {
-  if (ghToken)
-    return {
-      'Github-Access-Token': ghToken,
-      'Microsfot-Access-Token': microsoftToken,
-      'Content-Type': 'application/json',
-    };
+export function formatNOK(amount: number): string {
+  return formatter.format(amount);
+}
 
-  return {
-    'Microsoft-Access-Token': microsoftToken,
-    'Content-Type': 'application/json',
-  };
-};
+export function getAlertSeverity(
+  status: ProcessingStatus,
+): 'error' | 'warning' | 'info' {
+  switch (status) {
+    case ProcessingStatus.UpdatedROS:
+    case ProcessingStatus.CreatedROS:
+    case ProcessingStatus.CreatedPullRequest:
+      return 'info';
+    default:
+      return 'warning';
+  }
+}
+
+export const getSannsynlighetLevel = (scenario: Scenario) =>
+  sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1;
+
+export const getKonsekvensLevel = (scenario: Scenario) =>
+  konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1;
+
+export const getRestSannsynlighetLevel = (scenario: Scenario) =>
+  sannsynlighetOptions.indexOf(scenario.restrisiko.sannsynlighet) + 1;
+
+export const getRestKonsekvensLevel = (scenario: Scenario) =>
+  konsekvensOptions.indexOf(scenario.restrisiko.konsekvens) + 1;
+
+export const emptyROS = (withVersions: boolean): ROS => ({
+  skjemaVersjon: withVersions ? '1' : '',
+  tittel: '',
+  omfang: '',
+  scenarier: [],
+});
+
+export const emptyScenario = (): Scenario => ({
+  ID: generateRandomId(),
+  tittel: '',
+  beskrivelse: '',
+  sistEndret: new Date().toISOString().split('T')[0],
+  trusselaktører: [],
+  sårbarheter: [],
+  risiko: {
+    oppsummering: '',
+    sannsynlighet: 0.01,
+    konsekvens: 1000,
+  },
+  tiltak: [],
+  restrisiko: {
+    oppsummering: '',
+    sannsynlighet: 0.01,
+    konsekvens: 1000,
+  },
+});
+
+export const emptyTiltak = (): Tiltak => ({
+  ID: generateRandomId(),
+  beskrivelse: '',
+  tiltakseier: '',
+  frist: new Date().toISOString().split('T')[0],
+  status: 'Ikke startet',
+});

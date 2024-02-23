@@ -10,9 +10,10 @@ import {
 import { StatusChip } from '../ROSStatusChip/StatusChip';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import React, { ReactComponentElement, useState } from 'react';
-import { RosIdentifier, RosStatus } from '../utils/types';
+import { RosStatus, ROSWithMetadata } from '../utils/types';
 import { useButtonStyles } from '../ROSPlugin/rosPluginStyle';
-import { Alert, AlertTitle } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import { useAlertStyles } from '../ROSStatusChip/statusChipStyle';
 import { useDialogStyles } from '../ROSDialog/DialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -47,7 +48,7 @@ export const ROSPublishDialog = ({
                 color="primary"
                 checked={userIsRisikoEierAndApproves}
                 onChange={handleCheckboxInput}
-              ></Checkbox>
+              />
             </Grid>
             <Grid item xs={8}>
               Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne
@@ -83,8 +84,7 @@ export const ROSPublishDialog = ({
 };
 
 interface ROSStatusProps {
-  currentROSId: string;
-  currentRosStatus: RosStatus;
+  selectedROS: ROSWithMetadata;
   publishRosFn: () => void;
 }
 
@@ -101,8 +101,7 @@ const rosNsApproval = (status: RosStatus) => {
 };
 
 export const ROSStatusComponent = ({
-  currentROSId,
-  currentRosStatus,
+  selectedROS,
   publishRosFn,
 }: ROSStatusProps) => {
   const statusComponentClasses = useButtonStyles();
@@ -117,10 +116,7 @@ export const ROSStatusComponent = ({
   return (
     <Grid item container xs direction="column" alignItems="flex-end">
       <Grid item xs>
-        <StatusChip
-          selectedId={currentROSId}
-          currentRosStatus={currentRosStatus}
-        />
+        <StatusChip currentRosStatus={selectedROS.status} />
       </Grid>
 
       <Grid item container spacing={1} justifyContent="flex-end">
@@ -131,7 +127,7 @@ export const ROSStatusComponent = ({
             onClick={() => setPublishROSDialogIsOpen(!publishROSDialogIsOpen)}
             className={statusComponentClasses.godkjennButton}
             fullWidth
-            disabled={!rosNsApproval(currentRosStatus)}
+            disabled={!rosNsApproval(selectedROS.status)}
           >
             <Typography variant="button">Godkjenn ROS</Typography>
           </Button>
@@ -157,21 +153,22 @@ export const ROSStatusComponent = ({
 };
 
 interface ROSAlertProperties {
-  currentROSId: string | null;
-  rosIdsWithStatus: RosIdentifier[] | null;
-  rosStatus: RosStatus | null;
+  selectedROS: ROSWithMetadata | null;
+  roses: ROSWithMetadata[] | null;
 }
 
 export const ROSStatusAlertNotApprovedByRisikoeier = ({
-  currentROSId,
-  rosIdsWithStatus,
-  rosStatus,
+  selectedROS,
+  roses,
 }: ROSAlertProperties): ReactComponentElement<any> | null => {
-  const classes = useAlertStyles();
-  if (!rosIdsWithStatus || !currentROSId) return null;
-  else if (rosStatus !== RosStatus.Draft) return null;
-  return (
-    <Alert severity="warning" className={classes.noApprovalBanner}>
+  const { noApprovalBanner } = useAlertStyles();
+
+  return !(
+    roses &&
+    selectedROS &&
+    selectedROS.status === RosStatus.Draft
+  ) ? null : (
+    <Alert severity="warning" className={noApprovalBanner}>
       <AlertTitle>
         ROS-analysen inneholder endringer som ikke er godkjent
       </AlertTitle>

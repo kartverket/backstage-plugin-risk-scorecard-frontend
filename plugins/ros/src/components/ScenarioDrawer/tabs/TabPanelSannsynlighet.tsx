@@ -1,26 +1,32 @@
 import TabPanel from '@material-ui/lab/TabPanel';
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { Dropdown } from '../Dropdown';
-import { Scenario } from '../../interface/interfaces';
+import { tabStyles } from './style';
 
 interface TabPanelSannsynlighetProps {
-  scenario: Scenario;
-  setSannsynlighet: (event: ChangeEvent<{ value: unknown }>) => void;
+  selected: number;
+  setSannsynlighet: (sannsynlighetIndex: number) => void;
   options: string[];
 }
 
 export const TabPanelSannsynlighet = ({
-  scenario,
+  selected,
   setSannsynlighet,
   options,
 }: TabPanelSannsynlighetProps) => {
+  const classes = tabStyles();
+
+  const handleChange = (value: number) => {
+    setSannsynlighet(value);
+  };
+
   return (
-    <TabPanel value="sannsynlighet">
-      <Dropdown
+    <TabPanel className={classes.tabPanel} value="sannsynlighet">
+      <Dropdown<number>
         label="Sannsynlighet"
-        selectedValues={[scenario.risiko.sannsynlighet.toString()]}
+        selectedValues={selected}
         options={options}
-        handleChange={setSannsynlighet}
+        handleChange={handleChange}
       />
     </TabPanel>
   );

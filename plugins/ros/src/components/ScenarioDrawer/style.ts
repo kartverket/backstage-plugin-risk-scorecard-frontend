@@ -21,7 +21,7 @@ export const menuProps: Partial<MenuProps> = {
 
 export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
   paper: {
-    width: '50%',
+    width: '65%',
     padding: theme.spacing(8),
   },
   header: {
@@ -55,5 +55,6 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
   },
   formLabel: {
     marginBottom: theme.spacing(1),
+    fontWeight: 'bold',
   },
 }));

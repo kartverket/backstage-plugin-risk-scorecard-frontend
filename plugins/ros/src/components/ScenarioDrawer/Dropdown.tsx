@@ -8,39 +8,48 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import React, { ChangeEvent } from 'react';
-import { menuProps, useInputFieldStyles } from './ScenarioDrawerStyle';
+import { menuProps, useInputFieldStyles } from './style';
 
-interface DropdownProps {
+interface DropdownProps<T> {
   label: string;
   options: string[];
-  selectedValues: string[];
-  handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
+  selectedValues: T;
+  handleChange: (value: T) => void;
   variant?: 'standard' | 'outlined' | 'filled';
   multiple?: boolean;
 }
 
-export const Dropdown = ({
+export const Dropdown = <T,>({
   label,
   options,
   selectedValues,
   handleChange,
   variant = 'outlined',
-  multiple = false,
-}: DropdownProps) => {
+}: DropdownProps<T>) => {
   const { formLabel, inputBox } = useInputFieldStyles();
 
-  const renderValue = (selected: any) => {
-    if (multiple) {
-      return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gridGap: 0.5 }}>
-          {selected.map((value: string) => (
-            <Chip key={value} label={value} />
-          ))}
-        </Box>
-      );
-    }
-    return selected;
+  const multiple = Array.isArray(selectedValues);
+
+  const onChange = (event: ChangeEvent<{ value: unknown }>) => {
+    handleChange(event.target.value as T);
   };
+
+  const renderValue = (selected: any) =>
+    multiple ? (
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gridGap: 0.5,
+        }}
+      >
+        {selected.map((value: string) => (
+          <Chip key={value} label={value} />
+        ))}
+      </Box>
+    ) : (
+      selected
+    );
 
   return (
     <FormControl className={inputBox}>
@@ -48,18 +57,19 @@ export const Dropdown = ({
       <Select
         multiple={multiple}
         value={selectedValues}
-        onChange={handleChange}
+        onChange={onChange}
         variant={variant}
         MenuProps={menuProps}
         renderValue={renderValue}
+        style={{ minHeight: multiple ? '4.9rem' : 'auto' }}
       >
         {options.map(name => (
           <MenuItem key={name} value={name}>
-            {multiple ? (
+            {multiple && (
               <ListItemIcon>
                 <Checkbox checked={selectedValues.indexOf(name) > -1} />
               </ListItemIcon>
-            ) : null}
+            )}
             <ListItemText primary={name} />
           </MenuItem>
         ))}

@@ -12,7 +12,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <TabList
         onChange={(_: any, newValue: string) => setTab(newValue)}
-        variant={'fullWidth'}
+        variant="fullWidth"
       >
         <Tab
           label={

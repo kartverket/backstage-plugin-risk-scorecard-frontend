@@ -1,6 +1,6 @@
 import Chip from '@material-ui/core/Chip';
 import React, { ReactComponentElement, useEffect, useState } from 'react';
-import { RosIdentifier, RosStatus } from '../utils/types';
+import { RosStatus } from '../utils/types';
 import { useStatusChipStyles, useStatusTextStyles } from './statusChipStyle';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -8,7 +8,6 @@ import { Grid, Typography } from '@material-ui/core';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 interface ChipProps {
-  selectedId: string;
   currentRosStatus: RosStatus;
 }
 
@@ -54,15 +53,6 @@ const getPRStatus = (
       return null;
   }
 };
-
-export const getROSStatus = (
-  rosIdsWithStatus: RosIdentifier[] | null,
-  selectedId: string | null,
-): RosStatus | null => {
-  if (!rosIdsWithStatus || !selectedId) return null;
-  return rosIdsWithStatus.filter(x => x.id === selectedId)[0].status;
-};
-
 export const StatusChip = ({ currentRosStatus }: ChipProps) => {
   const chipClasses: ClassNameMap = useStatusChipStyles();
   const textClasses: ClassNameMap = useStatusTextStyles();
