@@ -106,7 +106,7 @@ export const ROSPlugin = () => {
               <Dropdown<string>
                 label="ROS-analyser"
                 options={roses.map(ros => ros.title) ?? []}
-                selectedValues={selectedROS?.title ? selectedROS.title : ''}
+                selectedValues={selectedROS?.title ?? ''}
                 handleChange={title => selectROSByTitle(title)}
                 variant="standard"
               />

@@ -45,7 +45,7 @@ export const ScenarioDrawerContent = ({
       tittel: tittel,
     });
 
-  const setDescription = (beskrivelse: string) =>
+  const setBeskrivelse = (beskrivelse: string) =>
     setScenario({
       ...scenario,
       beskrivelse: beskrivelse,
@@ -140,7 +140,7 @@ export const ScenarioDrawerContent = ({
               label="Beskrivelse"
               value={scenario.beskrivelse}
               minRows={4}
-              handleChange={setDescription}
+              handleChange={setBeskrivelse}
             />
           </Grid>
 
