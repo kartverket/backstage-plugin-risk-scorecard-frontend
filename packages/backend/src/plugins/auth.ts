@@ -38,7 +38,6 @@ export default async function createPlugin(
       microsoft: providers.microsoft.create({
         signIn: {
           resolver: async (info, ctx) => {
-            console.log('BRUKERINFORMASJON:::::: ', info);
             const {
               result: {
                 fullProfile: { displayName, emails },
@@ -68,6 +67,7 @@ export default async function createPlugin(
           },
         },
       }),
+
       github: providers.github.create({
         signIn: {
           resolver: async (info, ctx) => {
