@@ -36,17 +36,17 @@ export const TabPanelTiltak = ({
 }: TabPanelTiltakProps) => {
   const { arrow } = useTabsTiltakStyles();
 
-  const setRestKonsekvens = (restKonsekvensIndex: number) => {
+  const setRestKonsekvens = (restKonsekvensLevel: number) => {
     updateRestrisiko({
       ...scenario.restrisiko,
-      konsekvens: konsekvensOptions[restKonsekvensIndex - 1],
+      konsekvens: konsekvensOptions[restKonsekvensLevel - 1],
     });
   };
 
-  const setRestSannsynlighet = (restSannsynlighetIndex: number) => {
+  const setRestSannsynlighet = (restSannsynlighetLevel: number) => {
     updateRestrisiko({
       ...scenario.restrisiko,
-      sannsynlighet: sannsynlighetOptions[restSannsynlighetIndex - 1],
+      sannsynlighet: sannsynlighetOptions[restSannsynlighetLevel - 1],
     });
   };
 

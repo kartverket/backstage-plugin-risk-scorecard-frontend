@@ -67,21 +67,21 @@ export const ScenarioDrawerContent = ({
       sårbarheter: sårbarheter,
     });
 
-  const setSannsynlighet = (sannsynlighetIndex: number) =>
+  const setSannsynlighet = (sannsynlighetLevel: number) =>
     setScenario({
       ...scenario,
       risiko: {
         ...scenario.risiko,
-        sannsynlighet: sannsynlighetOptions[sannsynlighetIndex - 1],
+        sannsynlighet: sannsynlighetOptions[sannsynlighetLevel - 1],
       },
     });
 
-  const setKonsekvens = (konsekvensIndex: number) =>
+  const setKonsekvens = (konsekvensLevel: number) =>
     setScenario({
       ...scenario,
       risiko: {
         ...scenario.risiko,
-        konsekvens: konsekvensOptions[konsekvensIndex - 1],
+        konsekvens: konsekvensOptions[konsekvensLevel - 1],
       },
     });
 
