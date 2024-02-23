@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
@@ -16,8 +16,13 @@ import {
   sårbarheterOptions,
   trusselaktørerOptions,
 } from '../utils/constants';
-import { emptyTiltak, Risiko, Scenario, Tiltak } from '../utils/interfaces';
+import { Risiko, Scenario, Tiltak } from '../utils/types';
 import { CloseConfirmation } from './CloseConfirmation';
+import {
+  emptyTiltak,
+  getKonsekvensLevel,
+  getSannsynlighetLevel,
+} from '../utils/utilityfunctions';
 
 interface ROSDrawerContentProps {
   toggleDrawer: (isOpen: boolean) => void;
@@ -47,39 +52,45 @@ export const ScenarioDrawerContent = ({
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  const setBeskrivelse = (event: ChangeEvent<{ value: unknown }>) =>
+  const setTittel = (tittel: string) =>
     setScenario({
       ...scenario,
-      beskrivelse: event.target.value as string,
+      tittel: tittel,
     });
 
-  const setTrusselaktører = (event: ChangeEvent<{ value: unknown }>) =>
+  const setBeskrivelse = (beskrivelse: string) =>
     setScenario({
       ...scenario,
-      trusselaktører: event.target.value as string[],
+      beskrivelse: beskrivelse,
     });
 
-  const setSårbarheter = (event: ChangeEvent<{ value: unknown }>) =>
+  const setTrusselaktører = (trusselaktører: string[]) =>
     setScenario({
       ...scenario,
-      sårbarheter: event.target.value as string[],
+      trusselaktører: trusselaktører,
     });
 
-  const setSannsynlighet = (event: ChangeEvent<{ value: unknown }>) =>
+  const setSårbarheter = (sårbarheter: string[]) =>
+    setScenario({
+      ...scenario,
+      sårbarheter: sårbarheter,
+    });
+
+  const setSannsynlighet = (sannsynlighetLevel: number) =>
     setScenario({
       ...scenario,
       risiko: {
         ...scenario.risiko,
-        sannsynlighet: sannsynlighetOptions[Number(event.target.value) - 1],
+        sannsynlighet: sannsynlighetOptions[sannsynlighetLevel - 1],
       },
     });
 
-  const setKonsekvens = (event: ChangeEvent<{ value: unknown }>) =>
+  const setKonsekvens = (konsekvensLevel: number) =>
     setScenario({
       ...scenario,
       risiko: {
         ...scenario.risiko,
-        konsekvens: konsekvensOptions[Number(event.target.value) - 1],
+        konsekvens: konsekvensOptions[konsekvensLevel - 1],
       },
     });
 
@@ -150,6 +161,15 @@ export const ScenarioDrawerContent = ({
         <Grid container>
           <Grid item xs={12}>
             <TextField
+              label="Tittel"
+              value={scenario.tittel}
+              minRows={1}
+              handleChange={setTittel}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
               label="Beskrivelse"
               value={scenario.beskrivelse}
               minRows={4}
@@ -158,22 +178,20 @@ export const ScenarioDrawerContent = ({
           </Grid>
 
           <Grid item xs={6}>
-            <Dropdown
+            <Dropdown<string[]>
               label="Trusselaktører"
               selectedValues={scenario.trusselaktører}
               options={trusselaktørerOptions}
               handleChange={setTrusselaktører}
-              multiple
             />
           </Grid>
 
           <Grid item xs={6}>
-            <Dropdown
+            <Dropdown<string[]>
               label="Sårbarheter"
               selectedValues={scenario.sårbarheter}
               options={sårbarheterOptions}
               handleChange={setSårbarheter}
-              multiple
             />
           </Grid>
         </Grid>
@@ -182,15 +200,11 @@ export const ScenarioDrawerContent = ({
           <TabContext value={tab}>
             <Tabs setTab={setTab} />
             <TabPanelKonsekvens
-              selected={
-                konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1
-              }
+              selected={getKonsekvensLevel(scenario)}
               setKonsekvens={setKonsekvens}
             />
             <TabPanelSannsynlighet
-              selected={
-                sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1
-              }
+              selected={getSannsynlighetLevel(scenario)}
               setSannsynlighet={setSannsynlighet}
               options={options}
             />

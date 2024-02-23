@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React from 'react';
 import { Radio, TableCell, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles({
@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 
 interface PickerTableProps {
   selectedValue: number;
-  handleChange: (event: ChangeEvent<{ value: unknown }>) => void;
+  handleChange: (index: number) => void;
 }
 
 export const PickerTable = ({
@@ -76,9 +76,7 @@ export const PickerTable = ({
   const classes = useStyles();
 
   const handleChangeRow = (rowIndex: number) => () => {
-    handleChange({ target: { value: 5 - rowIndex } } as ChangeEvent<{
-      value: unknown;
-    }>);
+    handleChange(5 - rowIndex);
   };
 
   return (

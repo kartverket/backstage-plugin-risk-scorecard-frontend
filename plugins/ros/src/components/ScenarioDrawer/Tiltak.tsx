@@ -1,5 +1,5 @@
-import React, { ChangeEvent } from 'react';
-import { Tiltak as ITiltak } from '../utils/interfaces';
+import React from 'react';
+import { Tiltak as ITiltak } from '../utils/types';
 import { Dropdown } from './Dropdown';
 import schema from '../../ros_schema_no_v1_0.json';
 import { TextField } from './Textfield';
@@ -27,17 +27,17 @@ export const Tiltak = ({
     schema.properties.scenarier.items.properties.tiltak.items.properties.status
       .enum;
 
-  const setBeskrivelse = (event: ChangeEvent<{ value: unknown }>) => {
+  const setBeskrivelse = (beskrivelse: string) => {
     updateTiltak({
       ...tiltak,
-      beskrivelse: event.target.value as string,
+      beskrivelse: beskrivelse,
     });
   };
 
-  const setStatus = (event: ChangeEvent<{ value: unknown }>) => {
+  const setStatus = (status: string) => {
     updateTiltak({
       ...tiltak,
-      status: event.target.value as string,
+      status: status,
     });
   };
 
@@ -51,10 +51,10 @@ export const Tiltak = ({
     }
   };
 
-  const setTiltakseier = (event: ChangeEvent<{ value: unknown }>) => {
+  const setTiltakseier = (tiltakseier: string) => {
     updateTiltak({
       ...tiltak,
-      tiltakseier: event.target.value as string,
+      tiltakseier: tiltakseier,
     });
   };
 
@@ -102,10 +102,10 @@ export const Tiltak = ({
         </Grid>
 
         <Grid item xs={4}>
-          <Dropdown
+          <Dropdown<string>
             label="Status"
             options={statusOptions}
-            selectedValues={[tiltak.status]}
+            selectedValues={tiltak.status}
             handleChange={setStatus}
           />
         </Grid>

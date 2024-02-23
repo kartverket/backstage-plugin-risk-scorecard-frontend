@@ -1,8 +1,9 @@
 import React from 'react';
 import { Drawer } from '@material-ui/core';
 import { ScenarioDrawerContent } from './ScenarioDrawerContent';
-import { emptyScenario, Scenario } from '../utils/interfaces';
 import { useScenarioDrawerStyles } from './style';
+import { Scenario } from '../utils/types';
+import { emptyScenario } from '../utils/utilityfunctions';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
@@ -22,16 +23,19 @@ export const ScenarioDrawer = ({
   const classes = useScenarioDrawerStyles();
 
   const clearScenario = () => setScenario(emptyScenario());
+
+  const onClose = () => {
+    setIsOpen(false);
+    clearScenario();
+  };
+
   return (
     <Drawer
       classes={{ paper: classes.paper }}
       variant="persistent"
       anchor="right"
       open={isOpen}
-      onClose={() => {
-        clearScenario();
-        setIsOpen(false);
-      }}
+      onClose={onClose}
     >
       <ScenarioDrawerContent
         toggleDrawer={setIsOpen}

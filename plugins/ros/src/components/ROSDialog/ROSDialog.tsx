@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -8,43 +8,30 @@ import {
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
 import { useDialogStyles } from './DialogStyle';
-import { ROS } from '../utils/interfaces';
+import { ROS } from '../utils/types';
+import { emptyROS } from '../utils/utilityfunctions';
 
 interface ROSDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  setRos: (ros: ROS) => void;
   saveRos: (newRos: ROS) => void;
-}
-
-interface NewROSOptions {
-  withVersions: boolean;
 }
 
 export const ROSDialog = ({
   isOpen,
   onClose,
-  setRos,
   saveRos,
   ...props
 }: ROSDialogProps) => {
-  const emptyROS = (withVersions: NewROSOptions): ROS => ({
-    skjemaVersjon: withVersions ? '1' : '',
-    tittel: '',
-    omfang: '',
-    scenarier: [],
-  });
-
-  const [newROS, setNewROS] = useState<ROS>(emptyROS({ withVersions: true }));
+  const [newROS, setNewROS] = useState<ROS>(emptyROS(true));
 
   const classes = useDialogStyles();
 
   const clearROS = () => {
-    setNewROS(emptyROS({ withVersions: false }));
+    setNewROS(emptyROS(false));
   };
 
   const handleCreate = () => {
-    setRos(newROS);
     saveRos(newROS);
     onClose();
     clearROS();
@@ -55,16 +42,16 @@ export const ROSDialog = ({
     clearROS();
   };
 
-  const setTittel = (event: ChangeEvent<{ value: unknown }>) =>
+  const setTittel = (tittel: string) =>
     setNewROS({
       ...newROS,
-      tittel: event.target.value as string,
+      tittel: tittel,
     });
 
-  const setOmfang = (event: ChangeEvent<{ value: unknown }>) =>
+  const setOmfang = (omfang: string) =>
     setNewROS({
       ...newROS,
-      omfang: event.target.value as string,
+      omfang: omfang,
     });
 
   return (
