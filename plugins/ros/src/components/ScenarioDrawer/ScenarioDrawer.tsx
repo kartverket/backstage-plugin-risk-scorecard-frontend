@@ -43,6 +43,7 @@ export const ScenarioDrawer = ({
         setScenario={setScenario}
         saveScenario={saveScenario}
         clearScenario={clearScenario}
+        isOpen={isOpen}
       />
     </Drawer>
   );

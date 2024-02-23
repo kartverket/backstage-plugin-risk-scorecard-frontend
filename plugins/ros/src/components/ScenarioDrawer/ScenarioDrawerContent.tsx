@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
@@ -17,6 +17,7 @@ import {
   trusselaktørerOptions,
 } from '../utils/constants';
 import { Risiko, Scenario, Tiltak } from '../utils/types';
+import { CloseConfirmation } from './CloseConfirmation';
 import {
   emptyTiltak,
   getKonsekvensLevel,
@@ -29,6 +30,7 @@ interface ROSDrawerContentProps {
   setScenario: (nyttScenario: Scenario) => void;
   saveScenario: () => void;
   clearScenario: () => void;
+  isOpen: boolean;
 }
 
 export const ScenarioDrawerContent = ({
@@ -37,11 +39,18 @@ export const ScenarioDrawerContent = ({
   setScenario,
   saveScenario,
   clearScenario,
+  isOpen,
 }: ROSDrawerContentProps) => {
   const options = ['1', '2', '3', '4', '5'];
   // sconst requiredFields = schema.properties.scenarier.items.required;
 
   const { header, content, icon, buttons } = useScenarioDrawerStyles();
+
+  const [tab, setTab] = useState('konsekvens');
+
+  const [originalScenario, setOriginalScenario] = useState<Scenario>(scenario);
+  const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const setTittel = (tittel: string) =>
     setScenario({
@@ -103,7 +112,34 @@ export const ScenarioDrawerContent = ({
   const updateRestrisiko = (restrisiko: Risiko) =>
     setScenario({ ...scenario, restrisiko });
 
-  const [tab, setTab] = useState('konsekvens');
+  useEffect(() => {
+    if (isOpen) {
+      setOriginalScenario(scenario);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (originalScenario) {
+      setHasUnsavedChanges(
+        JSON.stringify(scenario) !== JSON.stringify(originalScenario),
+      );
+    }
+  }, [scenario, originalScenario]);
+
+  const handleConfirmClose = () => {
+    clearScenario();
+    toggleDrawer(false);
+    setShowCloseConfirmation(false);
+  };
+
+  const handleCloseDrawer = () => {
+    if (hasUnsavedChanges) {
+      setShowCloseConfirmation(true);
+    } else {
+      clearScenario();
+      toggleDrawer(false);
+    }
+  };
 
   return (
     <>
@@ -113,8 +149,7 @@ export const ScenarioDrawerContent = ({
           key="dismiss"
           title="Close the drawer"
           onClick={() => {
-            clearScenario();
-            toggleDrawer(false);
+            handleCloseDrawer();
           }}
           color="inherit"
         >
@@ -199,14 +234,16 @@ export const ScenarioDrawerContent = ({
           style={{ textTransform: 'none' }}
           variant="outlined"
           color="primary"
-          onClick={() => {
-            clearScenario();
-            toggleDrawer(false);
-          }}
+          onClick={handleCloseDrawer}
         >
           Avbryt
         </Button>
       </Box>
+      <CloseConfirmation
+        isOpen={showCloseConfirmation}
+        close={handleConfirmClose}
+        cancel={() => setShowCloseConfirmation(false)}
+      />
     </>
   );
 };
