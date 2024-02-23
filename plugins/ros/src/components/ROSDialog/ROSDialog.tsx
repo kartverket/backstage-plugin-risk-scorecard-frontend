@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -42,16 +42,16 @@ export const ROSDialog = ({
     clearROS();
   };
 
-  const setTittel = (event: ChangeEvent<{ value: unknown }>) =>
+  const setTittel = (tittel: string) =>
     setNewROS({
       ...newROS,
-      tittel: event.target.value as string,
+      tittel: tittel,
     });
 
-  const setOmfang = (event: ChangeEvent<{ value: unknown }>) =>
+  const setOmfang = (omfang: string) =>
     setNewROS({
       ...newROS,
-      omfang: event.target.value as string,
+      omfang: omfang,
     });
 
   return (
