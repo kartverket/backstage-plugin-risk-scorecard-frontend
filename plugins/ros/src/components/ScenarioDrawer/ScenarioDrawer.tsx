@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Drawer } from '@material-ui/core';
-import { ScenarioDrawerContent } from './ScenarioDrawerContent';
+import { ScenarioDrawerView } from './ScenarioDrawerView';
 import { useScenarioDrawerStyles } from './style';
 import { Scenario } from '../utils/types';
 import { emptyScenario } from '../utils/utilityfunctions';
+import { ScenarioDrawerEdit } from './ScenarioDrawerEdit';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
@@ -24,6 +25,10 @@ export const ScenarioDrawer = ({
 
   const clearScenario = () => setScenario(emptyScenario());
 
+  const [editMode, setEditMode] = useState(false);
+
+  const editScenario = () => setEditMode(true);
+
   return (
     <Drawer
       classes={{ paper: classes.paper }}
@@ -35,13 +40,24 @@ export const ScenarioDrawer = ({
         setIsOpen(false);
       }}
     >
-      <ScenarioDrawerContent
-        toggleDrawer={setIsOpen}
-        scenario={scenario}
-        setScenario={setScenario}
-        saveScenario={saveScenario}
-        clearScenario={clearScenario}
-      />
+      {editMode ? (
+        <ScenarioDrawerEdit
+          toggleDrawer={setIsOpen}
+          scenario={scenario}
+          setScenario={setScenario}
+          saveScenario={saveScenario}
+          clearScenario={clearScenario}
+        />
+      ) : (
+        <ScenarioDrawerView
+          toggleDrawer={setIsOpen}
+          scenario={scenario}
+          setScenario={setScenario}
+          saveScenario={saveScenario}
+          clearScenario={clearScenario}
+          editScenario={editScenario}
+        />
+      )}
     </Drawer>
   );
 };

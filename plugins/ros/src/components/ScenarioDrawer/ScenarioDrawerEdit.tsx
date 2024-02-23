@@ -27,7 +27,7 @@ interface ROSDrawerContentProps {
   clearScenario: () => void;
 }
 
-export const ScenarioDrawerContent = ({
+export const ScenarioDrawerEdit = ({
   toggleDrawer,
   scenario,
   setScenario,
