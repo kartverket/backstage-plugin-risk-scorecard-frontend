@@ -57,4 +57,10 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(1),
     fontWeight: 'bold',
   },
+  paper: {
+    padding: '1rem',
+    marginBottom: '1rem',
+    backgroundColor:
+      theme.palette.type === 'dark' ? '#333333' : 'rgba(0, 0, 0, 0.1)',
+  },
 }));

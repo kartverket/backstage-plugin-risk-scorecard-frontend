@@ -61,18 +61,10 @@ export const Tiltak = ({
   const classes = useInputFieldStyles();
 
   return (
-    <Paper
-      style={{
-        padding: '1rem',
-        marginBottom: '1rem',
-        backgroundColor: '#333333',
-      }}
-    >
+    <Paper className={classes.paper}>
       <Grid container>
         <Grid item xs={10}>
-          <Typography variant="h6" style={{ color: 'white' }}>
-            Tiltak {index}
-          </Typography>
+          <Typography variant="h6">Tiltak {index}</Typography>
         </Grid>
         <Grid
           item
