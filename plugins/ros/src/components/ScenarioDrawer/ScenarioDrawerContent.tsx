@@ -39,6 +39,12 @@ export const ScenarioDrawerContent = ({
 
   const { header, content, icon, buttons } = useScenarioDrawerStyles();
 
+  const setTittel = (event: ChangeEvent<{ value: unknown }>) =>
+    setScenario({
+      ...scenario,
+      tittel: event.target.value as string,
+    });
+
   const setBeskrivelse = (event: ChangeEvent<{ value: unknown }>) =>
     setScenario({
       ...scenario,
@@ -114,6 +120,15 @@ export const ScenarioDrawerContent = ({
 
       <Box className={content}>
         <Grid container>
+          <Grid item xs={12}>
+            <TextField
+              label="Tittel"
+              value={scenario.tittel}
+              minRows={1}
+              handleChange={setTittel}
+            />
+          </Grid>
+
           <Grid item xs={12}>
             <TextField
               label="Beskrivelse"
