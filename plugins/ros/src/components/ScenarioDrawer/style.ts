@@ -29,8 +29,11 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  iconButton: {
+    padding: 0,
+  },
   icon: {
-    fontSize: 20,
+    fontSize: 30,
   },
   content: {
     display: 'flex',
