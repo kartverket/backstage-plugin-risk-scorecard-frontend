@@ -103,11 +103,11 @@ export const ROSPlugin = () => {
         {roses && (
           <>
             <Grid item xs={3}>
-              <Dropdown
+              <Dropdown<string>
                 label="ROS-analyser"
                 options={roses.map(ros => ros.title) ?? []}
-                selectedValues={selectedROS?.title ? [selectedROS.title] : []}
-                handleChange={e => selectROSByTitle(e.target.value as string)}
+                selectedValues={selectedROS?.title ?? ''}
+                handleChange={title => selectROSByTitle(title)}
                 variant="standard"
               />
             </Grid>

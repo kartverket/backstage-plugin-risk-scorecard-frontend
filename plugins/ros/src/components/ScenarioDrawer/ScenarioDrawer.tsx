@@ -25,6 +25,11 @@ export const ScenarioDrawer = ({
 
   const clearScenario = () => setScenario(emptyScenario());
 
+  const onClose = () => {
+    setIsOpen(false);
+    clearScenario();
+  };
+
   const [editMode, setEditMode] = useState(false);
 
   const editScenario = () => setEditMode(true);
@@ -35,10 +40,7 @@ export const ScenarioDrawer = ({
       variant="persistent"
       anchor="right"
       open={isOpen}
-      onClose={() => {
-        clearScenario();
-        setIsOpen(false);
-      }}
+      onClose={onClose}
     >
       {editMode ? (
         <ScenarioDrawerEdit
