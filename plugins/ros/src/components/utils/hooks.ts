@@ -196,6 +196,7 @@ export const useScenarioDrawer = (
         : ros.scenarier.concat(scenario);
       onChange({ ...ros, scenarier: updatedScenarios });
       setDrawerIsOpen(false);
+      setScenario(emptyScenario());
     }
   };
 
