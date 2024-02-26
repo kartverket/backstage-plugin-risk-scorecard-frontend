@@ -49,7 +49,7 @@ const app = createApp({
         auto
         provider={{
           id: 'microsoft-auth-provider',
-          title: 'Bekk-login',
+          title: 'Entra ID',
           message: 'Logg inn med din Bekk-konto',
           apiRef: microsoftAuthApiRef,
         }}
