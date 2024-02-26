@@ -1,21 +1,24 @@
-import { Tiltak } from '../Tiltak';
+import { TiltakEdit } from '../TiltakEdit';
 import { Button, Typography } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import TabPanel from '@material-ui/lab/TabPanel';
 import React from 'react';
-import { Risiko, Scenario, Tiltak as ITiltak } from '../../utils/types';
+import { Risiko, Scenario, Tiltak as ITiltak } from '../../../utils/types';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import { TextField } from '../Textfield';
-import { Dropdown } from '../Dropdown';
+import { TextField } from '../../Textfield';
+import { Dropdown } from '../../Dropdown';
 import { tabStyles, useTabsTiltakStyles } from './style';
-import { konsekvensOptions, sannsynlighetOptions } from '../../utils/constants';
+import {
+  konsekvensOptions,
+  sannsynlighetOptions,
+} from '../../../utils/constants';
 import {
   getKonsekvensLevel,
   getRestKonsekvensLevel,
   getRestSannsynlighetLevel,
   getSannsynlighetLevel,
-} from '../../utils/utilityfunctions';
+} from '../../../utils/utilityfunctions';
 
 interface TabPanelTiltakProps {
   scenario: Scenario;
@@ -55,7 +58,7 @@ export const TabPanelTiltak = ({
   return (
     <TabPanel value="tiltak" className={classes.tabPanel}>
       {scenario.tiltak.map((tiltak, index) => (
-        <Tiltak
+        <TiltakEdit
           tiltak={tiltak}
           index={index + 1}
           updateTiltak={updateTiltak}

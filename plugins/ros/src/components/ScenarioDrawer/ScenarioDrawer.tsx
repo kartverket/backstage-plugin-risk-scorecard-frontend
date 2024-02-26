@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { Drawer } from '@material-ui/core';
-import { ScenarioDrawerView } from './ScenarioDrawerView';
 import { useScenarioDrawerStyles } from './style';
 import { emptyScenario } from '../utils/utilityfunctions';
-import { ScenarioDrawerEdit } from './ScenarioDrawerEdit';
 import { ScenarioContext } from '../ROSPlugin/ScenarioContext';
+import { ScenarioDrawerEdit } from './edit/ScenarioDrawerEdit';
+import { ScenarioDrawerView } from './view/ScenarioDrawerView';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
@@ -20,6 +20,7 @@ export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
     setIsOpen(false);
     setScenario(emptyScenario());
     setOriginalScenario(emptyScenario());
+    setEditMode(false);
   };
 
   const [editMode, setEditMode] = useState(false);
@@ -35,9 +36,9 @@ export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
       onClose={onClose}
     >
       {editMode ? (
-        <ScenarioDrawerEdit setIsOpen={setIsOpen} />
+        <ScenarioDrawerEdit onClose={onClose} />
       ) : (
-        <ScenarioDrawerView setIsOpen={setIsOpen} editScenario={editScenario} />
+        <ScenarioDrawerView onClose={onClose} editScenario={editScenario} />
       )}
     </Drawer>
   );

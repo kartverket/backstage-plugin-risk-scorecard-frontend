@@ -1,6 +1,6 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React from 'react';
-import { Dropdown } from '../Dropdown';
+import { Dropdown } from '../../Dropdown';
 import { tabStyles } from './style';
 
 interface TabPanelSannsynlighetProps {

@@ -2,9 +2,9 @@ import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
-import { Dropdown } from './Dropdown';
-import { TextField } from './Textfield';
-import { useScenarioDrawerStyles } from './style';
+import { Dropdown } from '../Dropdown';
+import { TextField } from '../Textfield';
+import { useScenarioDrawerStyles } from '../style';
 import TabContext from '@material-ui/lab/TabContext';
 import { TabPanelTiltak } from './tabs/TabPanelTiltak';
 import { TabPanelSannsynlighet } from './tabs/TabPanelSannsynlighet';
@@ -15,24 +15,21 @@ import {
   sannsynlighetOptions,
   sårbarheterOptions,
   trusselaktørerOptions,
-} from '../utils/constants';
-import { Risiko, Tiltak } from '../utils/types';
+} from '../../utils/constants';
+import { Risiko, Tiltak } from '../../utils/types';
 import { CloseConfirmation } from './CloseConfirmation';
 import {
   emptyTiltak,
   getKonsekvensLevel,
   getSannsynlighetLevel,
-} from '../utils/utilityfunctions';
-import { ScenarioContext } from '../ROSPlugin/ScenarioContext';
+} from '../../utils/utilityfunctions';
+import { ScenarioContext } from '../../ROSPlugin/ScenarioContext';
 
-interface ROSDrawerContentProps {
-  setIsOpen: (isOpen: boolean) => void;
+interface ScenarioDrawerEitProps {
+  onClose: () => void;
 }
 
-export const ScenarioDrawerEdit = ({ setIsOpen }: ROSDrawerContentProps) => {
-  const options = ['1', '2', '3', '4', '5'];
-  // sconst requiredFields = schema.properties.scenarier.items.required;
-
+export const ScenarioDrawerEdit = ({ onClose }: ScenarioDrawerEitProps) => {
   const { header, content, icon, buttons } = useScenarioDrawerStyles();
 
   const { scenario, setScenario, originalScenario, saveScenario } =
@@ -106,13 +103,13 @@ export const ScenarioDrawerEdit = ({ setIsOpen }: ROSDrawerContentProps) => {
     if (JSON.stringify(scenario) !== JSON.stringify(originalScenario)) {
       setShowCloseConfirmation(true);
     } else {
-      setIsOpen(false);
+      onClose();
     }
   };
 
   const handleConfirmClose = () => {
     setShowCloseConfirmation(false);
-    setIsOpen(false);
+    onClose();
   };
 
   return (
@@ -180,7 +177,9 @@ export const ScenarioDrawerEdit = ({ setIsOpen }: ROSDrawerContentProps) => {
             <TabPanelSannsynlighet
               selected={getSannsynlighetLevel(scenario)}
               setSannsynlighet={setSannsynlighet}
-              options={options}
+              options={sannsynlighetOptions.map((_, index) =>
+                (index + 1).toString(),
+              )}
             />
             <TabPanelTiltak
               scenario={scenario}
@@ -188,7 +187,9 @@ export const ScenarioDrawerEdit = ({ setIsOpen }: ROSDrawerContentProps) => {
               deleteTiltak={deleteTiltak}
               addTiltak={addTiltak}
               updateRestrisiko={updateRestrisiko}
-              options={options}
+              options={konsekvensOptions.map((_, index) =>
+                (index + 1).toString(),
+              )}
             />
           </TabContext>
         </Box>

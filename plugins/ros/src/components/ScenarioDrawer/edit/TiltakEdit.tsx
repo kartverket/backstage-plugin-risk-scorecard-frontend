@@ -1,14 +1,14 @@
 import React from 'react';
-import { Tiltak as ITiltak } from '../utils/types';
-import { Dropdown } from './Dropdown';
-import schema from '../../ros_schema_no_v1_0.json';
-import { TextField } from './Textfield';
+import { Tiltak as ITiltak } from '../../utils/types';
+import { Dropdown } from '../Dropdown';
+import schema from '../../../ros_schema_no_v1_0.json';
+import { TextField } from '../Textfield';
 import { Button, FormLabel, Grid, Paper, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { nb } from 'date-fns/locale/nb';
-import { useInputFieldStyles } from './style';
+import { useInputFieldStyles } from '../style';
 
 interface TiltakProps {
   tiltak: ITiltak;
@@ -17,7 +17,7 @@ interface TiltakProps {
   deleteTiltak: (tiltak: ITiltak) => void;
 }
 
-export const Tiltak = ({
+export const TiltakEdit = ({
   tiltak,
   index,
   updateTiltak,

@@ -7,3 +7,4 @@ export const trusselaktørerOptions =
   schema.properties.scenarier.items.properties.trusselaktører.items.enum;
 export const sårbarheterOptions =
   schema.properties.scenarier.items.properties.sårbarheter.items.enum;
+export const options = ['1', '2', '3', '4', '5'];
