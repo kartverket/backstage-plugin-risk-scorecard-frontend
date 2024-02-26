@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
@@ -16,41 +16,31 @@ import {
   sårbarheterOptions,
   trusselaktørerOptions,
 } from '../utils/constants';
-import { Risiko, Scenario, Tiltak } from '../utils/types';
+import { Risiko, Tiltak } from '../utils/types';
 import { CloseConfirmation } from './CloseConfirmation';
 import {
   emptyTiltak,
   getKonsekvensLevel,
   getSannsynlighetLevel,
 } from '../utils/utilityfunctions';
+import { ScenarioContext } from '../ROSPlugin/ScenarioContext';
 
 interface ROSDrawerContentProps {
-  toggleDrawer: (isOpen: boolean) => void;
-  scenario: Scenario;
-  setScenario: (nyttScenario: Scenario) => void;
-  saveScenario: () => void;
-  clearScenario: () => void;
-  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
-export const ScenarioDrawerContent = ({
-  toggleDrawer,
-  scenario,
-  setScenario,
-  saveScenario,
-  clearScenario,
-  isOpen,
-}: ROSDrawerContentProps) => {
+export const ScenarioDrawerContent = ({ setIsOpen }: ROSDrawerContentProps) => {
   const options = ['1', '2', '3', '4', '5'];
   // sconst requiredFields = schema.properties.scenarier.items.required;
 
   const { header, content, icon, buttons } = useScenarioDrawerStyles();
 
+  const { scenario, setScenario, originalScenario, saveScenario } =
+    useContext(ScenarioContext)!!;
+
   const [tab, setTab] = useState('konsekvens');
 
-  const [originalScenario, setOriginalScenario] = useState<Scenario>(scenario);
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const setTittel = (tittel: string) =>
     setScenario({
@@ -112,33 +102,17 @@ export const ScenarioDrawerContent = ({
   const updateRestrisiko = (restrisiko: Risiko) =>
     setScenario({ ...scenario, restrisiko });
 
-  useEffect(() => {
-    if (isOpen) {
-      setOriginalScenario(scenario);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (originalScenario) {
-      setHasUnsavedChanges(
-        JSON.stringify(scenario) !== JSON.stringify(originalScenario),
-      );
-    }
-  }, [scenario, originalScenario]);
-
-  const handleConfirmClose = () => {
-    clearScenario();
-    toggleDrawer(false);
-    setShowCloseConfirmation(false);
-  };
-
   const handleCloseDrawer = () => {
-    if (hasUnsavedChanges) {
+    if (JSON.stringify(scenario) !== JSON.stringify(originalScenario)) {
       setShowCloseConfirmation(true);
     } else {
-      clearScenario();
-      toggleDrawer(false);
+      setIsOpen(false);
     }
+  };
+
+  const handleConfirmClose = () => {
+    setShowCloseConfirmation(false);
+    setIsOpen(false);
   };
 
   return (

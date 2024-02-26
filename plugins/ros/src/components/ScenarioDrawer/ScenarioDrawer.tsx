@@ -1,32 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Drawer } from '@material-ui/core';
 import { ScenarioDrawerContent } from './ScenarioDrawerContent';
 import { useScenarioDrawerStyles } from './style';
-import { Scenario } from '../utils/types';
 import { emptyScenario } from '../utils/utilityfunctions';
+import { ScenarioContext } from '../ROSPlugin/ScenarioContext';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  scenario: Scenario;
-  setScenario: (scenario: Scenario) => void;
-  saveScenario: () => void;
 }
 
-export const ScenarioDrawer = ({
-  isOpen,
-  setIsOpen,
-  scenario,
-  setScenario,
-  saveScenario,
-}: ScenarioDrawerProps) => {
+export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
   const classes = useScenarioDrawerStyles();
 
-  const clearScenario = () => setScenario(emptyScenario());
+  const { setScenario, setOriginalScenario } = useContext(ScenarioContext)!!;
 
   const onClose = () => {
     setIsOpen(false);
-    clearScenario();
+    setScenario(emptyScenario());
+    setOriginalScenario(emptyScenario());
   };
 
   return (
@@ -37,14 +29,7 @@ export const ScenarioDrawer = ({
       open={isOpen}
       onClose={onClose}
     >
-      <ScenarioDrawerContent
-        toggleDrawer={setIsOpen}
-        scenario={scenario}
-        setScenario={setScenario}
-        saveScenario={saveScenario}
-        clearScenario={clearScenario}
-        isOpen={isOpen}
-      />
+      <ScenarioDrawerContent setIsOpen={setIsOpen} />
     </Drawer>
   );
 };

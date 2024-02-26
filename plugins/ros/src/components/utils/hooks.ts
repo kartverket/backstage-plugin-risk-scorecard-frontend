@@ -171,21 +171,27 @@ const useFetch = (
   return { fetchRoses, postROS, putROS, publishROS, response };
 };
 
-export const useScenarioDrawer = (
-  ros: ROS | null,
-  setDrawerIsOpen: (open: boolean) => void,
-  onChange: (ros: ROS) => void,
-): {
+export interface ScenarioDrawerProps {
   scenario: Scenario;
   setScenario: (scenario: Scenario) => void;
-  saveScenario: () => void;
+  originalScenario: Scenario;
+  setOriginalScenario: (scenario: Scenario) => void;
+  newScenario: () => void;
   editScenario: (id: string) => void;
+  saveScenario: () => void;
   deleteConfirmationIsOpen: boolean;
   openDeleteConfirmation: (id: string) => void;
   closeDeleteConfirmation: () => void;
   confirmDeletion: () => void;
-} => {
+}
+
+export const useScenarioDrawer = (
+  ros: ROS | null,
+  setDrawerIsOpen: (open: boolean) => void,
+  onChange: (ros: ROS) => void,
+): ScenarioDrawerProps => {
   const [scenario, setScenario] = useState(emptyScenario());
+  const [originalScenario, setOriginalScenario] = useState(emptyScenario());
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
 
@@ -197,6 +203,7 @@ export const useScenarioDrawer = (
       onChange({ ...ros, scenarier: updatedScenarios });
       setDrawerIsOpen(false);
       setScenario(emptyScenario());
+      setOriginalScenario(emptyScenario());
     }
   };
 
@@ -206,6 +213,7 @@ export const useScenarioDrawer = (
       setDeleteConfirmationIsOpen(true);
     }
   };
+
   const deleteScenario = (id: string) => {
     if (ros) {
       const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
@@ -221,21 +229,34 @@ export const useScenarioDrawer = (
     if (ros) {
       setDeleteConfirmationIsOpen(false);
       setScenario(emptyScenario());
+      setOriginalScenario(emptyScenario());
     }
   };
 
-  const editScenario = (id: string) => {
+  const editScenario = (id?: string) => {
     if (ros) {
-      setScenario(ros.scenarier.find(s => s.ID === id)!!);
+      const currentScenario =
+        ros.scenarier.find(s => s.ID === id) ?? emptyScenario();
+      setScenario(currentScenario);
+      setOriginalScenario(currentScenario);
       setDrawerIsOpen(true);
     }
+  };
+
+  const newScenario = () => {
+    setScenario(emptyScenario());
+    setOriginalScenario(emptyScenario());
+    setDrawerIsOpen(true);
   };
 
   return {
     scenario,
     setScenario,
-    saveScenario,
+    originalScenario,
+    setOriginalScenario,
+    newScenario,
     editScenario,
+    saveScenario,
     deleteConfirmationIsOpen,
     openDeleteConfirmation,
     closeDeleteConfirmation,
