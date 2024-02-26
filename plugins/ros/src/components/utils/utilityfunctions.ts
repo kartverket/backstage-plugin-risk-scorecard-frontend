@@ -11,8 +11,6 @@ export function generateRandomId(): string {
 }
 
 const formatter = new Intl.NumberFormat('nb-NO', {
-  style: 'currency',
-  currency: 'NOK',
   maximumFractionDigits: 0,
 });
 

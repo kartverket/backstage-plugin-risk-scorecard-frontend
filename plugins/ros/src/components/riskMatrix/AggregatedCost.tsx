@@ -1,7 +1,8 @@
 import React from 'react';
-import { ROS } from '../utils/interfaces';
-import { Typography } from '@material-ui/core';
+
+import { Grid, Typography } from '@material-ui/core';
 import { formatNOK } from '../utils/utilityfunctions';
+import { ROS } from '../utils/types';
 
 interface AggregatedCostProps {
   ros: ROS;
@@ -13,8 +14,11 @@ export const AggregatedCost = ({ ros }: AggregatedCostProps) => {
     .reduce((a, b) => a + b, 0);
 
   return (
-    <Typography>
-      Den aggregerte risikokostnaden for ROS-en er {formatNOK(cost)},- NOK
-    </Typography>
+    <Grid alignContent="center" container direction="column">
+      <Typography>Risikoen har en potensiell årlig kostnad på</Typography>
+      <Typography style={{ paddingBottom: '1rem' }} align="center" variant="h5">
+        {formatNOK(cost)} kr
+      </Typography>
+    </Grid>
   );
 };
