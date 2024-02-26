@@ -115,6 +115,12 @@ export const ScenarioDrawerContent = ({ setIsOpen }: ROSDrawerContentProps) => {
     setIsOpen(false);
   };
 
+  const handleSaveAndClose = () => {
+    saveScenario();
+    setIsOpen(false);
+    setShowCloseConfirmation(false);
+  };
+
   return (
     <>
       <Box className={header}>
@@ -216,7 +222,7 @@ export const ScenarioDrawerContent = ({ setIsOpen }: ROSDrawerContentProps) => {
       <CloseConfirmation
         isOpen={showCloseConfirmation}
         close={handleConfirmClose}
-        cancel={() => setShowCloseConfirmation(false)}
+        save={handleSaveAndClose}
       />
     </>
   );

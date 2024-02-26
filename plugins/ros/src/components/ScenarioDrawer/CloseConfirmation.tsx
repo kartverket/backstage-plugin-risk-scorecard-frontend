@@ -4,29 +4,29 @@ import React from 'react';
 interface CloseConfirmationProps {
   isOpen: boolean;
   close: () => void;
-  cancel: () => void;
+  save: () => void;
 }
 
 export const CloseConfirmation = ({
   isOpen,
   close,
-  cancel,
+  save,
 }: CloseConfirmationProps) => {
   return (
     <Dialog open={isOpen}>
-      <DialogTitle>Er du sikker på at du vil lukke uten å lagre?</DialogTitle>
+      <DialogTitle>Vil du lagre endringene dine?</DialogTitle>
       <DialogActions>
-        <Button style={{ textTransform: 'none' }} onClick={cancel}>
-          Avbryt
+        <Button style={{ textTransform: 'none' }} onClick={close}>
+          Forkast endringer
         </Button>
 
         <Button
           style={{ textTransform: 'none' }}
           onClick={() => {
-            close();
+            save();
           }}
         >
-          Lukk
+          Lagre
         </Button>
       </DialogActions>
     </Dialog>
