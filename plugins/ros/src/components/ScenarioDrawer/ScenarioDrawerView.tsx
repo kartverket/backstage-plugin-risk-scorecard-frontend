@@ -1,28 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
-import Close from '@material-ui/icons/Close';
 import { useScenarioDrawerStyles } from './style';
-import { Scenario } from '../utils/types';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
+import { ScenarioContext } from '../ROSPlugin/ScenarioContext';
 
 interface ROSDrawerContentProps {
-  toggleDrawer: (isOpen: boolean) => void;
-  scenario: Scenario;
-  deleteScenario: () => void;
+  setIsOpen: (isOpen: boolean) => void;
   editScenario: () => void;
 }
 
 export const ScenarioDrawerView = ({
-  toggleDrawer,
-  scenario,
+  setIsOpen,
   editScenario,
-  deleteScenario,
 }: ROSDrawerContentProps) => {
   const { header, content, iconButton, icon, buttons } =
     useScenarioDrawerStyles();
+
+  const { scenario } = useContext(ScenarioContext)!!;
 
   return (
     <>
@@ -31,7 +28,7 @@ export const ScenarioDrawerView = ({
         <IconButton
           key="dismiss"
           title="Close the drawer"
-          onClick={() => toggleDrawer(false)}
+          onClick={() => setIsOpen(false)}
           color="inherit"
           className={iconButton}
         >
@@ -58,7 +55,7 @@ export const ScenarioDrawerView = ({
               style={{ textTransform: 'none' }}
               variant="contained"
               color="primary"
-              onClick={() => {}}
+              onClick={editScenario}
               startIcon={<BorderColorOutlinedIcon />}
             >
               Rediger

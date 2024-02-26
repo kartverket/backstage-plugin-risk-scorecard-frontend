@@ -1,24 +1,21 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
-import React from 'react';
+import React, { useContext } from 'react';
+import { ScenarioContext } from './ScenarioContext';
 
-interface DeleteConfirmationProps {
-  isOpen: boolean;
-  close: () => void;
-  confirmDeletion: () => void;
-}
+export const DeleteConfirmation = () => {
+  const { deleteConfirmationIsOpen, closeDeleteConfirmation, confirmDeletion } =
+    useContext(ScenarioContext)!!;
 
-export const DeleteConfirmation = ({
-  isOpen,
-  close,
-  confirmDeletion,
-}: DeleteConfirmationProps) => {
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={deleteConfirmationIsOpen}>
       <DialogTitle>
         {'Er du sikker på at du vil du slette scenario?'}
       </DialogTitle>
       <DialogActions>
-        <Button style={{ textTransform: 'none' }} onClick={close}>
+        <Button
+          style={{ textTransform: 'none' }}
+          onClick={closeDeleteConfirmation}
+        >
           Avbryt
         </Button>
 
@@ -26,7 +23,7 @@ export const DeleteConfirmation = ({
           style={{ textTransform: 'none' }}
           onClick={() => {
             confirmDeletion();
-            close();
+            closeDeleteConfirmation();
           }}
         >
           Slett scenario

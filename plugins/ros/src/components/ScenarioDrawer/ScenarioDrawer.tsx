@@ -1,33 +1,25 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Drawer } from '@material-ui/core';
 import { ScenarioDrawerView } from './ScenarioDrawerView';
 import { useScenarioDrawerStyles } from './style';
-import { Scenario } from '../utils/types';
 import { emptyScenario } from '../utils/utilityfunctions';
 import { ScenarioDrawerEdit } from './ScenarioDrawerEdit';
+import { ScenarioContext } from '../ROSPlugin/ScenarioContext';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  scenario: Scenario;
-  setScenario: (scenario: Scenario) => void;
-  saveScenario: () => void;
 }
 
-export const ScenarioDrawer = ({
-  isOpen,
-  setIsOpen,
-  scenario,
-  setScenario,
-  saveScenario,
-}: ScenarioDrawerProps) => {
+export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
   const classes = useScenarioDrawerStyles();
 
-  const clearScenario = () => setScenario(emptyScenario());
+  const { setScenario, setOriginalScenario } = useContext(ScenarioContext)!!;
 
   const onClose = () => {
     setIsOpen(false);
-    clearScenario();
+    setScenario(emptyScenario());
+    setOriginalScenario(emptyScenario());
   };
 
   const [editMode, setEditMode] = useState(false);
@@ -43,22 +35,9 @@ export const ScenarioDrawer = ({
       onClose={onClose}
     >
       {editMode ? (
-        <ScenarioDrawerEdit
-          toggleDrawer={setIsOpen}
-          scenario={scenario}
-          setScenario={setScenario}
-          saveScenario={saveScenario}
-          clearScenario={clearScenario}
-        />
+        <ScenarioDrawerEdit setIsOpen={setIsOpen} />
       ) : (
-        <ScenarioDrawerView
-          toggleDrawer={setIsOpen}
-          scenario={scenario}
-          setScenario={setScenario}
-          saveScenario={saveScenario}
-          clearScenario={clearScenario}
-          editScenario={editScenario}
-        />
+        <ScenarioDrawerView setIsOpen={setIsOpen} editScenario={editScenario} />
       )}
     </Drawer>
   );
