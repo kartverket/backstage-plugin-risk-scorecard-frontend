@@ -44,7 +44,7 @@ export const RiskMatrixScenarioCount = ({
     <List dense>
       <ListSubheader className={tooltipText}>
         <Typography variant="h6" className={tooltipText}>
-          Risikoscenarier
+          Risikoscenarioer
         </Typography>
       </ListSubheader>
       {scenarier.map(s => (
