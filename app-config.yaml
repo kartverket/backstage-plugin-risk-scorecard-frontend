@@ -49,15 +49,6 @@ auth:
         additionalScopes:
           - Mail.Send
 
-    microsoftOrgGraph:
-      development:
-        clientId: ${AZURE_CLIENT_ID}
-        clientSecret: ${AZURE_CLIENT_SECRET}
-        tenantId: ${AZURE_TENANT_ID}
-        domainHint: ${AZURE_TENANT_ID}
-        additionalScopes:
-          - Mail.Send
-
     github:
       development:
         clientId: ${GITHUB_APP_CLIENT_ID}
