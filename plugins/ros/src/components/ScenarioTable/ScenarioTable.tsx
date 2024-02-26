@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, Paper, Typography } from '@material-ui/core';
-import { ROS } from '../utils/interfaces';
+import { ROS } from '../utils/types';
 import { InfoCard } from '@backstage/core-components';
 import TableRow from '@mui/material/TableRow';
 import Table from '@mui/material/Table';
@@ -10,27 +10,23 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { ScenarioTableRow } from './ScenarioTableRow';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { ScenarioContext } from '../ROSPlugin/ScenarioContext';
 
 interface ScenarioTableProps {
   ros: ROS;
-  addScenario: () => void;
-  deleteRow: (id: string) => void;
-  editRow: (id: string) => void;
 }
 
-export const ScenarioTable = ({
-  ros,
-  addScenario,
-  deleteRow,
-  editRow,
-}: ScenarioTableProps) => {
+export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
+  const { newScenario, editScenario, openDeleteConfirmation } =
+    useContext(ScenarioContext)!!;
+
   return (
     <InfoCard title="Risikoscenarioer">
       <Button
         startIcon={<AddCircleOutlineIcon />}
         variant="text"
         color="primary"
-        onClick={addScenario}
+        onClick={newScenario}
         style={{ textTransform: 'none', padding: '1rem' }}
       >
         Legg til scenario
@@ -67,8 +63,8 @@ export const ScenarioTable = ({
               <ScenarioTableRow
                 key={scenario.ID}
                 scenario={scenario}
-                editRow={editRow}
-                deleteRow={deleteRow}
+                editRow={editScenario}
+                deleteRow={openDeleteConfirmation}
               />
             ))}
           </TableBody>
