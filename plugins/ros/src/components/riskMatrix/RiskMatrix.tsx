@@ -2,10 +2,10 @@ import React from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import Box from '@mui/material/Box';
-import { ROS } from '../utils/interfaces';
 import { useRiskMatrixStyles } from './style';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
+import { ROS } from '../utils/types';
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];
@@ -18,7 +18,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
     ['#6CC6A4', '#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A'],
   ];
 
-  const { grid, riskMatrix, topRow, rightColumn, riskMatrixItem } =
+  const { grid, riskMatrix, topRow, rightColumn, riskMatrixItem, riskSummary } =
     useRiskMatrixStyles();
 
   return (
@@ -61,10 +61,8 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
             <Typography variant="h6">Konsekvens</Typography>
           </Box>
         </Box>
-        <Box>
-          <Paper>
-            <AggregatedCost ros={ros} />
-          </Paper>
+        <Box className={riskSummary}>
+          <AggregatedCost ros={ros} />
         </Box>
       </InfoCard>
     </Box>
