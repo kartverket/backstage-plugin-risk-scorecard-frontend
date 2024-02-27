@@ -112,6 +112,12 @@ export const ScenarioDrawerEdit = ({ onClose }: ScenarioDrawerEitProps) => {
     onClose();
   };
 
+  const handleSaveAndClose = () => {
+    saveScenario();
+    setIsOpen(false);
+    setShowCloseConfirmation(false);
+  };
+
   return (
     <>
       <Box className={header}>
@@ -217,7 +223,7 @@ export const ScenarioDrawerEdit = ({ onClose }: ScenarioDrawerEitProps) => {
       <CloseConfirmation
         isOpen={showCloseConfirmation}
         close={handleConfirmClose}
-        cancel={() => setShowCloseConfirmation(false)}
+        save={handleSaveAndClose}
       />
     </>
   );

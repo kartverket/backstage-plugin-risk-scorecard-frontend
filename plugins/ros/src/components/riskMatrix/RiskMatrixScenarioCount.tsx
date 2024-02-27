@@ -11,8 +11,8 @@ import {
 import React, { useState } from 'react';
 import { useRiskMatrixStyles } from './style';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import { ROS } from '../utils/interfaces';
 import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
+import { ROS } from '../utils/types';
 
 interface ScenarioCountProps {
   ros: ROS;
@@ -44,7 +44,7 @@ export const RiskMatrixScenarioCount = ({
     <List dense>
       <ListSubheader className={tooltipText}>
         <Typography variant="h6" className={tooltipText}>
-          Risikoscenarier
+          Risikoscenarioer
         </Typography>
       </ListSubheader>
       {scenarier.map(s => (
@@ -57,7 +57,7 @@ export const RiskMatrixScenarioCount = ({
             className={tooltipText}
             style={{ paddingLeft: '0.6rem' }}
           >
-            <b>{s.ID}</b> - {s.trusselaktører.join(', ')}
+            <span>{s.tittel}</span>
           </ListItemText>
         </ListItem>
       ))}
