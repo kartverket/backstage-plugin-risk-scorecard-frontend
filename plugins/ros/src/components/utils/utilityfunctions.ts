@@ -1,5 +1,9 @@
-import { ROS, ProcessingStatus, Scenario, Tiltak } from './types';
-import { konsekvensOptions, sannsynlighetOptions } from './constants';
+import { ROS, ProcessingStatus, Scenario, Tiltak, Risiko } from './types';
+import {
+  konsekvensOptions,
+  riskMatrix,
+  sannsynlighetOptions,
+} from './constants';
 
 export function generateRandomId(): string {
   return [...Array(3)]
@@ -37,6 +41,12 @@ export function getAlertSeverity(
     default:
       return 'warning';
   }
+}
+
+export function getRiskMatrixColor(risiko: Risiko) {
+  const sannsynlighet = sannsynlighetOptions.indexOf(risiko.sannsynlighet);
+  const konsekvens = konsekvensOptions.indexOf(risiko.konsekvens);
+  return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
 export const getSannsynlighetLevel = (scenario: Scenario) =>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-
-import { Grid, IconButton, Typography, makeStyles } from '@material-ui/core';
+import { Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
 import { formatNOK } from '../utils/utilityfunctions';
 import { ROS } from '../utils/types';
@@ -8,7 +7,6 @@ import { InfotextDialog } from './InfotextDialog';
 
 interface AggregatedCostProps {
   ros: ROS;
-  onClose: () => void;
 }
 
 const useStyles = makeStyles({

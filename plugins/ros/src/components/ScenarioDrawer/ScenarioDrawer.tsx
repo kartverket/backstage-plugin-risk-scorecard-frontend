@@ -12,7 +12,7 @@ interface ScenarioDrawerProps {
 }
 
 export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
-  const classes = useScenarioDrawerStyles();
+  const { paperEdit, paperView } = useScenarioDrawerStyles();
 
   const { setScenario, setOriginalScenario } = useContext(ScenarioContext)!!;
 
@@ -25,11 +25,11 @@ export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
 
   const [editMode, setEditMode] = useState(false);
 
-  const editScenario = () => setEditMode(true);
+  const openEditMode = () => setEditMode(true);
 
   return (
     <Drawer
-      classes={{ paper: classes.paper }}
+      classes={{ paper: editMode ? paperEdit : paperView }}
       variant="persistent"
       anchor="right"
       open={isOpen}
@@ -38,7 +38,7 @@ export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
       {editMode ? (
         <ScenarioDrawerEdit onClose={onClose} />
       ) : (
-        <ScenarioDrawerView onClose={onClose} editScenario={editScenario} />
+        <ScenarioDrawerView onClose={onClose} openEditMode={openEditMode} />
       )}
     </Drawer>
   );

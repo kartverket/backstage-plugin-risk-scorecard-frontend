@@ -6,9 +6,10 @@ import { TextField } from '../Textfield';
 import { Button, FormLabel, Grid, Paper, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { AdapterDateFns as ADF } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { nb } from 'date-fns/locale/nb';
-import { useInputFieldStyles } from '../style';
+import { useFontStyles, useInputFieldStyles } from '../style';
+import FormControl from '@material-ui/core/FormControl';
 
 interface TiltakProps {
   tiltak: ITiltak;
@@ -58,21 +59,19 @@ export const TiltakEdit = ({
     });
   };
 
-  const classes = useInputFieldStyles();
+  const { paper, formLabel, formControl } = useInputFieldStyles();
+  const { label, button } = useFontStyles();
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={paper}>
       <Grid container>
-        <Grid item xs={10}>
-          <Typography variant="h6">Tiltak {index}</Typography>
+        <Grid item xs={6} style={{ display: 'flex', alignItems: 'center' }}>
+          <Typography className={label}>Tiltak {index}</Typography>
         </Grid>
         <Grid
           item
-          xs={2}
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}
+          xs={6}
+          style={{ display: 'flex', justifyContent: 'flex-end' }}
         >
           <Button
             startIcon={<DeleteIcon />}
@@ -80,10 +79,12 @@ export const TiltakEdit = ({
             title="Slett tiltaket"
             onClick={() => deleteTiltak(tiltak)}
             color="primary"
+            className={button}
           >
             Slett
           </Button>
         </Grid>
+
         <Grid item xs={8}>
           <TextField
             label="Beskrivelse"
@@ -111,20 +112,13 @@ export const TiltakEdit = ({
           />
         </Grid>
 
-        <Grid
-          item
-          xs={4}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            paddingTop: '1.5em',
-          }}
-        >
-          <FormLabel className={classes.formLabel}> Frist </FormLabel>
-          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={nb}>
-            <DatePicker value={tiltak.frist} onChange={setTiltaksfrist} />
-          </LocalizationProvider>
+        <Grid item xs={4}>
+          <FormControl className={formControl}>
+            <FormLabel className={formLabel}>Frist</FormLabel>
+            <LocalizationProvider dateAdapter={ADF} adapterLocale={nb}>
+              <DatePicker value={tiltak.frist} onChange={setTiltaksfrist} />
+            </LocalizationProvider>
+          </FormControl>
         </Grid>
       </Grid>
     </Paper>

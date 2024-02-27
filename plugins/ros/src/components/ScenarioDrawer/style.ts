@@ -4,7 +4,7 @@ import { makeStyles, Theme } from '@material-ui/core';
 export const menuProps: Partial<MenuProps> = {
   PaperProps: {
     style: {
-      maxHeight: 48 * 4.5 + 8,
+      maxHeight: 230,
     },
   },
   getContentAnchorEl: null,
@@ -20,28 +20,21 @@ export const menuProps: Partial<MenuProps> = {
 };
 
 export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
-  paper: {
-    width: '65%',
+  paperEdit: {
     padding: theme.spacing(8),
+    width: '65%',
   },
+  paperView: {
+    padding: theme.spacing(8),
+    width: '50%',
+  },
+}));
+
+export const useScenarioDrawerContentStyles = makeStyles((theme: Theme) => ({
   header: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  iconButton: {
-    padding: 0,
-  },
-  icon: {
-    fontSize: 30,
-  },
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: theme.spacing(4),
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
   },
   buttons: {
     display: 'flex',
@@ -49,20 +42,65 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     gap: theme.spacing(2),
   },
+  risikoBadge: {
+    width: '20px',
+    height: '20px',
+    borderRadius: '20%',
+  },
+}));
+
+export const useFontStyles = makeStyles(theme => ({
+  h1: {
+    fontSize: theme.spacing(2.25),
+    fontWeight: 700,
+    color: '#D9D9D9',
+  },
+  h2: {
+    fontSize: theme.spacing(3),
+    fontWeight: 400,
+  },
+  body1: {
+    fontSize: theme.spacing(2),
+    fontWeight: 700,
+  },
+  body2: {
+    fontSize: theme.spacing(2),
+    fontWeight: 500,
+  },
+  label: {
+    fontSize: theme.spacing(1.5),
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    color: '#D9D9D9',
+  },
+  subtitle1: {
+    fontSize: theme.spacing(2),
+    fontWeight: 700,
+  },
+  button: {
+    textTransform: 'none',
+  },
+  risikoLevel: {
+    fontSize: theme.spacing(2.25),
+    fontWeight: 700,
+    paddingTop: 0,
+  },
 }));
 
 export const useInputFieldStyles = makeStyles((theme: Theme) => ({
-  inputBox: {
-    paddingTop: theme.spacing(2),
+  formControl: {
     width: '100%',
   },
   formLabel: {
+    fontSize: theme.spacing(1.5),
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    color: '#D9D9D9',
     marginBottom: theme.spacing(1),
-    fontWeight: 'bold',
   },
   paper: {
-    padding: '1rem',
-    marginBottom: '1rem',
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
     backgroundColor:
       theme.palette.type === 'dark' ? '#333333' : 'rgba(0, 0, 0, 0.1)',
   },
