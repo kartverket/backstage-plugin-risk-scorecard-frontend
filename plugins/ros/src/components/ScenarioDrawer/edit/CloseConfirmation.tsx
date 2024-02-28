@@ -20,12 +20,7 @@ export const CloseConfirmation = ({
           Forkast endringer
         </Button>
 
-        <Button
-          style={{ textTransform: 'none' }}
-          onClick={() => {
-            save();
-          }}
-        >
+        <Button style={{ textTransform: 'none' }} onClick={save}>
           Lagre
         </Button>
       </DialogActions>

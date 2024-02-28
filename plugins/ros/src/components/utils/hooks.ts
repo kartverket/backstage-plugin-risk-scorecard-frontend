@@ -12,14 +12,17 @@ import {
   ProcessingStatus,
   ProcessROSResultDTO,
   PublishROSResultDTO,
+  Risiko,
   ROS,
   ROSContentResultDTO,
   ROSWithMetadata,
   Scenario,
   SubmitResponseObject,
+  Tiltak,
 } from './types';
 import useAsync from 'react-use/lib/useAsync';
-import { emptyScenario } from './utilityfunctions';
+import { emptyScenario, emptyTiltak } from './utilityfunctions';
+import { konsekvensOptions, sannsynlighetOptions } from './constants';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   const currentEntity = useAsyncEntity();
@@ -179,10 +182,22 @@ export interface ScenarioDrawerProps {
   newScenario: () => void;
   editScenario: (id: string) => void;
   saveScenario: () => void;
+
   deleteConfirmationIsOpen: boolean;
   openDeleteConfirmation: (id: string) => void;
   closeDeleteConfirmation: () => void;
   confirmDeletion: () => void;
+
+  setTittel: (tittel: string) => void;
+  setBeskrivelse: (beskrivelse: string) => void;
+  setTrusselaktører: (trusselaktører: string[]) => void;
+  setSårbarheter: (sårbarheter: string[]) => void;
+  setSannsynlighet: (sannsynlighetLevel: number) => void;
+  setKonsekvens: (konsekvensLevel: number) => void;
+  addTiltak: () => void;
+  updateTiltak: (tiltak: Tiltak) => void;
+  deleteTiltak: (tiltak: Tiltak) => void;
+  updateRestrisiko: (restrisiko: Risiko) => void;
 }
 
 export const useScenarioDrawer = (
@@ -249,6 +264,66 @@ export const useScenarioDrawer = (
     setDrawerIsOpen(true);
   };
 
+  const setTittel = (tittel: string) =>
+    setScenario({
+      ...scenario,
+      tittel: tittel,
+    });
+
+  const setBeskrivelse = (beskrivelse: string) =>
+    setScenario({
+      ...scenario,
+      beskrivelse: beskrivelse,
+    });
+
+  const setTrusselaktører = (trusselaktører: string[]) =>
+    setScenario({
+      ...scenario,
+      trusselaktører: trusselaktører,
+    });
+
+  const setSårbarheter = (sårbarheter: string[]) =>
+    setScenario({
+      ...scenario,
+      sårbarheter: sårbarheter,
+    });
+
+  const setSannsynlighet = (sannsynlighetLevel: number) =>
+    setScenario({
+      ...scenario,
+      risiko: {
+        ...scenario.risiko,
+        sannsynlighet: sannsynlighetOptions[sannsynlighetLevel - 1],
+      },
+    });
+
+  const setKonsekvens = (konsekvensLevel: number) =>
+    setScenario({
+      ...scenario,
+      risiko: {
+        ...scenario.risiko,
+        konsekvens: konsekvensOptions[konsekvensLevel - 1],
+      },
+    });
+
+  const addTiltak = () =>
+    setScenario({ ...scenario, tiltak: [...scenario.tiltak, emptyTiltak()] });
+
+  const updateTiltak = (tiltak: Tiltak) => {
+    const updatedTiltak = scenario.tiltak.some(t => t.ID === tiltak.ID)
+      ? scenario.tiltak.map(t => (t.ID === tiltak.ID ? tiltak : t))
+      : [...scenario.tiltak, tiltak];
+    setScenario({ ...scenario, tiltak: updatedTiltak });
+  };
+
+  const deleteTiltak = (tiltak: Tiltak) => {
+    const updatedTiltak = scenario.tiltak.filter(t => t.ID !== tiltak.ID);
+    setScenario({ ...scenario, tiltak: updatedTiltak });
+  };
+
+  const updateRestrisiko = (restrisiko: Risiko) =>
+    setScenario({ ...scenario, restrisiko });
+
   return {
     scenario,
     setScenario,
@@ -257,10 +332,22 @@ export const useScenarioDrawer = (
     newScenario,
     editScenario,
     saveScenario,
+
     deleteConfirmationIsOpen,
     openDeleteConfirmation,
     closeDeleteConfirmation,
     confirmDeletion,
+
+    setTittel,
+    setBeskrivelse,
+    setTrusselaktører,
+    setSårbarheter,
+    setSannsynlighet,
+    setKonsekvens,
+    addTiltak,
+    updateTiltak,
+    deleteTiltak,
+    updateRestrisiko,
   };
 };
 

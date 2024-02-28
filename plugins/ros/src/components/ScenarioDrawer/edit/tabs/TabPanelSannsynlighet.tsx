@@ -1,6 +1,6 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React from 'react';
-import { Dropdown } from '../Dropdown';
+import { Dropdown } from '../../Dropdown';
 import { tabStyles } from './style';
 
 interface TabPanelSannsynlighetProps {
@@ -14,14 +14,14 @@ export const TabPanelSannsynlighet = ({
   setSannsynlighet,
   options,
 }: TabPanelSannsynlighetProps) => {
-  const classes = tabStyles();
+  const { tabPanel } = tabStyles();
 
   const handleChange = (value: number) => {
     setSannsynlighet(value);
   };
 
   return (
-    <TabPanel className={classes.tabPanel} value="sannsynlighet">
+    <TabPanel className={tabPanel} value="sannsynlighet">
       <Dropdown<number>
         label="Sannsynlighet"
         selectedValues={selected}
