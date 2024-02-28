@@ -85,7 +85,7 @@ export const TiltakEdit = ({
           </Button>
         </Grid>
 
-        <Grid item xs={8}>
+        <Grid item xs={12}>
           <TextField
             label="Beskrivelse"
             value={tiltak.beskrivelse}
@@ -103,7 +103,7 @@ export const TiltakEdit = ({
           />
         </Grid>
 
-        <Grid item xs={8}>
+        <Grid item xs={4}>
           <TextField
             label="Tiltakseier"
             value={tiltak.tiltakseier}

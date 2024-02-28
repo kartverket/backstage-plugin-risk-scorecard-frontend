@@ -1,19 +1,17 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
-export const useTabsTiltakStyles = makeStyles((theme: Theme) => ({
+export const useTabsTiltakStyles = makeStyles(theme => ({
   arrow: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 0,
-    marginTop: theme.spacing(5),
-    color: '#1DB954',
+    marginTop: theme.spacing(3),
   },
 }));
 
-export const tabStyles = makeStyles({
+export const tabStyles = makeStyles(theme => ({
   tabPanel: {
-    padding: '0px',
-    paddingTop: '1.5rem',
+    padding: 0,
+    paddingTop: theme.spacing(3),
   },
-});
+}));

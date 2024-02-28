@@ -103,7 +103,12 @@ export const ScenarioDrawerView = ({
             <Grid
               item
               xs={12}
-              style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '0.5rem',
+                alignItems: 'center',
+              }}
             >
               <Box
                 className={risikoBadge}
@@ -160,7 +165,12 @@ export const ScenarioDrawerView = ({
             <Grid
               item
               xs={12}
-              style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '0.5rem',
+                alignItems: 'center',
+              }}
             >
               <Box
                 className={risikoBadge}
@@ -218,8 +228,6 @@ export const ScenarioDrawerView = ({
           ))}
         </Grid>
       </Grid>
-
-      <Button>Slett</Button>
     </>
   );
 };
