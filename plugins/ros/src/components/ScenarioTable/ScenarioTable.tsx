@@ -45,7 +45,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                 style={{ paddingTop: '0.1rem', paddingBottom: '0.1rem' }}
               >
                 <Typography variant="subtitle1">
-                  <b>Beskrivelse</b>
+                  <b>Tittel</b>
                 </Typography>
               </TableCell>
               <TableCell

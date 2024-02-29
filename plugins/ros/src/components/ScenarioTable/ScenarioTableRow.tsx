@@ -38,7 +38,7 @@ export const ScenarioTableRow = ({
           </IconButton>
         </TableCell>
 
-        <TableCell>{scenario.beskrivelse}</TableCell>
+        <TableCell>{scenario.tittel}</TableCell>
 
         <TableCell>
           S:{sannsynlighet} K:{konsekvens}
