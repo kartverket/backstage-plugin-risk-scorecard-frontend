@@ -363,15 +363,18 @@ export const useROSPlugin = () => {
 
   const useFetchRoses = (): {
     selectedROS: ROSWithMetadata | null;
-    setSelectedROS: (ros: ROSWithMetadata) => void;
+    setSelectedROS: (ros: ROSWithMetadata | null) => void;
     roses: ROSWithMetadata[] | null;
     setRoses: (roses: ROSWithMetadata[]) => void;
     selectROSByTitle: (title: string) => void;
+    isFetching: boolean;
+    setIsFetching: (isFetching: boolean) => void;
   } => {
     const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
     const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(
       null,
     );
+    const [isFetching, setIsFetching] = useState(true);
 
     useEffect(() => {
       fetchRoses(response => {
@@ -387,6 +390,7 @@ export const useROSPlugin = () => {
 
         setRoses(fetchedRoses);
         setSelectedROS(fetchedRoses[0]);
+        setIsFetching(false);
       });
     }, [accessToken]);
 
@@ -401,6 +405,8 @@ export const useROSPlugin = () => {
       roses,
       setRoses,
       selectROSByTitle,
+      isFetching,
+      setIsFetching,
     };
   };
 

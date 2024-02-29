@@ -21,8 +21,9 @@ import { ROS, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../utils/utilityfunctions';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useLoadingStyles } from './rosPluginStyle';
+import { useSpinnerStyles } from './rosPluginStyle';
 import { ScenarioContext } from './ScenarioContext';
+import { useFontStyles } from '../ScenarioDrawer/style';
 
 export const ROSPlugin = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -31,25 +32,41 @@ export const ROSPlugin = () => {
   const { useFetchRoses, postROS, putROS, publishROS, response } =
     useROSPlugin();
 
-  const { selectedROS, setSelectedROS, roses, setRoses, selectROSByTitle } =
-    useFetchRoses();
+  const {
+    selectedROS,
+    setSelectedROS,
+    roses,
+    setRoses,
+    selectROSByTitle,
+    isFetching,
+    setIsFetching,
+  } = useFetchRoses();
 
-  const createNewROS = (ros: ROS) =>
-    postROS(ros, res => {
-      if (!res.rosId) {
-        throw new Error('No ROS ID returned');
-      }
+  const createNewROS = (ros: ROS) => {
+    setIsFetching(true);
+    setSelectedROS(null);
+    postROS(
+      ros,
+      res => {
+        if (!res.rosId) throw new Error('No ROS ID returned');
 
-      const newROS = {
-        id: res.rosId,
-        title: ros.tittel,
-        status: RosStatus.Draft,
-        content: ros,
-      };
+        const newROS = {
+          id: res.rosId,
+          title: ros.tittel,
+          status: RosStatus.Draft,
+          content: ros,
+        };
 
-      setRoses(roses ? [...roses, newROS] : [newROS]);
-      setSelectedROS(newROS);
-    });
+        setRoses(roses ? [...roses, newROS] : [newROS]);
+        setSelectedROS(newROS);
+        setIsFetching(false);
+      },
+      () => {
+        setSelectedROS(selectedROS);
+        setIsFetching(false);
+      },
+    );
+  };
 
   const updateROS = (ros: ROS) => {
     if (selectedROS && roses) {
@@ -75,88 +92,76 @@ export const ROSPlugin = () => {
     updateROS,
   );
 
-  const classes = useLoadingStyles();
+  const { container, spinner } = useSpinnerStyles();
+  const { button } = useFontStyles();
 
   return (
     <ScenarioContext.Provider value={scenario}>
-      <Content>
+      <Content stretch>
         <ContentHeader title="Risiko- og sårbarhetsanalyse">
           <SupportButton>Kul plugin ass!</SupportButton>
         </ContentHeader>
 
-        {!roses && (
-          <div className={classes.container}>
-            <Grid item>
-              <CircularProgress className={classes.spinner} size={80} />
+        <Grid container spacing={3}>
+          {roses !== null && roses.length !== 0 && (
+            <Grid item xs={3}>
+              <Dropdown<string>
+                options={roses.map(ros => ros.title) ?? []}
+                selectedValues={selectedROS?.title ?? ''}
+                handleChange={title => selectROSByTitle(title)}
+                variant="standard"
+              />
             </Grid>
-          </div>
-        )}
+          )}
 
-        <Grid container spacing={3} direction="column">
-          {roses && (
-            <>
-              <Grid item xs={3}>
-                <Dropdown<string>
-                  label="ROS-analyser"
-                  options={roses.map(ros => ros.title) ?? []}
-                  selectedValues={selectedROS?.title ?? ''}
-                  handleChange={title => selectROSByTitle(title)}
-                  variant="standard"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  startIcon={<AddCircleOutlineIcon />}
-                  variant="text"
-                  color="primary"
-                  onClick={() => setNewROSDialogIsOpen(true)}
-                >
-                  Opprett ny analyse
-                </Button>
-              </Grid>
-            </>
+          <Grid item xs={9}>
+            <Button
+              startIcon={<AddCircleOutlineIcon />}
+              variant="text"
+              color="primary"
+              onClick={() => setNewROSDialogIsOpen(true)}
+              className={button}
+            >
+              Opprett ny analyse
+            </Button>
+          </Grid>
+
+          {isFetching && (
+            <Grid item xs={12} className={container}>
+              <CircularProgress className={spinner} size={80} />
+            </Grid>
           )}
 
           {selectedROS && (
             <>
-              <Grid item container direction="row">
-                <Grid item container xs direction="column" spacing={0}>
-                  <Grid item xs>
-                    <Typography variant="subtitle2">
-                      ID: {selectedROS.id}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs>
-                    <Typography variant="subtitle2">
-                      Omfang: {selectedROS.content.omfang}
-                    </Typography>
-                  </Grid>
-                </Grid>
+              <Grid item xs={6}>
+                <Typography variant="subtitle2">
+                  Omfang: {selectedROS.content.omfang}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
                 <ROSStatusComponent
                   selectedROS={selectedROS}
                   publishRosFn={approveROS}
                 />
               </Grid>
 
-              <Grid item container direction="row">
-                <Grid item xs>
-                  <RiskMatrix ros={selectedROS.content} />
-                </Grid>
-                <Grid item xs>
-                  <ScenarioTable ros={selectedROS.content} />
-                </Grid>
+              <Grid item xs={6}>
+                <RiskMatrix ros={selectedROS.content} />
+              </Grid>
+              <Grid item xs={6}>
+                <ScenarioTable ros={selectedROS.content} />
               </Grid>
             </>
           )}
 
-          <Grid item xs={12}>
-            {response && (
+          {response && (
+            <Grid item xs={12}>
               <Alert severity={getAlertSeverity(response.status)}>
                 <Typography>{response.statusMessage}</Typography>
               </Alert>
-            )}
-          </Grid>
+            </Grid>
+          )}
         </Grid>
 
         <ROSDialog
