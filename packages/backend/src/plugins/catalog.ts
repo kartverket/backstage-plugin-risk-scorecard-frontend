@@ -8,6 +8,7 @@ import {
   GithubOrgEntityProvider,
   GithubUser,
 } from '@backstage/plugin-catalog-backend-module-github';
+import { MicrosoftGraphOrgEntityProvider } from '@backstage/plugin-catalog-backend-module-msgraph';
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -16,7 +17,7 @@ export default async function createPlugin(
   builder.addProcessor(new ScaffolderEntitiesProcessor());
   const githubOrgProvider = GithubOrgEntityProvider.fromConfig(env.config, {
     id: 'production',
-    orgUrl: 'https://github.com/bekk',
+    orgUrl: 'https://github.com/spire-test',
     logger: env.logger,
     schedule: env.scheduler.createScheduledTaskRunner({
       frequency: { minutes: 1440 },
@@ -31,6 +32,13 @@ export default async function createPlugin(
     },
   });
   builder.addEntityProvider(githubOrgProvider);
+
+  builder.addEntityProvider(
+    MicrosoftGraphOrgEntityProvider.fromConfig(env.config, {
+      logger: env.logger,
+      scheduler: env.scheduler,
+    }),
+  );
 
   const githubEntityProvider = GithubEntityProvider.fromConfig(env.config, {
     logger: env.logger,
