@@ -1,49 +1,45 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Drawer } from '@material-ui/core';
-import { ScenarioDrawerContent } from './ScenarioDrawerContent';
 import { useScenarioDrawerStyles } from './style';
-import { Scenario } from '../utils/types';
 import { emptyScenario } from '../utils/utilityfunctions';
+import { ScenarioContext } from '../ROSPlugin/ScenarioContext';
+import { ScenarioDrawerEdit } from './edit/ScenarioDrawerEdit';
+import { ScenarioDrawerView } from './view/ScenarioDrawerView';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  scenario: Scenario;
-  setScenario: (scenario: Scenario) => void;
-  saveScenario: () => void;
 }
 
-export const ScenarioDrawer = ({
-  isOpen,
-  setIsOpen,
-  scenario,
-  setScenario,
-  saveScenario,
-}: ScenarioDrawerProps) => {
-  const classes = useScenarioDrawerStyles();
+export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
+  const { paperEdit, paperView } = useScenarioDrawerStyles();
 
-  const clearScenario = () => setScenario(emptyScenario());
+  const { setScenario, setOriginalScenario } = useContext(ScenarioContext)!!;
 
   const onClose = () => {
     setIsOpen(false);
-    clearScenario();
+    setScenario(emptyScenario());
+    setOriginalScenario(emptyScenario());
+    setEditMode(false);
   };
+
+  const [editMode, setEditMode] = useState(false);
+
+  const openEditMode = () => setEditMode(true);
 
   return (
     <Drawer
-      classes={{ paper: classes.paper }}
+      classes={{ paper: editMode ? paperEdit : paperView }}
       variant="persistent"
       anchor="right"
       open={isOpen}
       onClose={onClose}
     >
-      <ScenarioDrawerContent
-        toggleDrawer={setIsOpen}
-        scenario={scenario}
-        setScenario={setScenario}
-        saveScenario={saveScenario}
-        clearScenario={clearScenario}
-      />
+      {editMode ? (
+        <ScenarioDrawerEdit onClose={onClose} />
+      ) : (
+        <ScenarioDrawerView onClose={onClose} openEditMode={openEditMode} />
+      )}
     </Drawer>
   );
 };

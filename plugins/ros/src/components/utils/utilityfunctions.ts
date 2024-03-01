@@ -1,5 +1,9 @@
-import { ROS, ProcessingStatus, Scenario, Tiltak } from './types';
-import { konsekvensOptions, sannsynlighetOptions } from './constants';
+import { ROS, ProcessingStatus, Scenario, Tiltak, Risiko } from './types';
+import {
+  konsekvensOptions,
+  riskMatrix,
+  sannsynlighetOptions,
+} from './constants';
 
 export function generateRandomId(): string {
   return [...Array(3)]
@@ -11,13 +15,19 @@ export function generateRandomId(): string {
 }
 
 const formatter = new Intl.NumberFormat('nb-NO', {
-  style: 'currency',
-  currency: 'NOK',
   maximumFractionDigits: 0,
 });
 
 export function formatNOK(amount: number): string {
   return formatter.format(amount);
+}
+
+export function formatDate(date: string): string {
+  return new Date(date).toLocaleDateString('nb-NO', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
 }
 
 export function getAlertSeverity(
@@ -31,6 +41,12 @@ export function getAlertSeverity(
     default:
       return 'warning';
   }
+}
+
+export function getRiskMatrixColor(risiko: Risiko) {
+  const sannsynlighet = sannsynlighetOptions.indexOf(risiko.sannsynlighet);
+  const konsekvens = konsekvensOptions.indexOf(risiko.konsekvens);
+  return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
 export const getSannsynlighetLevel = (scenario: Scenario) =>

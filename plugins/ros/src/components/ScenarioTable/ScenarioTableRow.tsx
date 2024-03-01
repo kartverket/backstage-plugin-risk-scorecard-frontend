@@ -6,7 +6,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { DeleteButton, EditButton } from './ScenarioTableButtons';
 import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
-import { Scenario } from '../utils/interfaces';
+import { Scenario } from '../utils/types';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -38,7 +38,7 @@ export const ScenarioTableRow = ({
           </IconButton>
         </TableCell>
 
-        <TableCell>{scenario.beskrivelse}</TableCell>
+        <TableCell>{scenario.tittel}</TableCell>
 
         <TableCell>
           S:{sannsynlighet} K:{konsekvens}

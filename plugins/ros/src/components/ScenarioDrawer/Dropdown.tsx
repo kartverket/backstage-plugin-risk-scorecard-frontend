@@ -26,7 +26,7 @@ export const Dropdown = <T,>({
   handleChange,
   variant = 'outlined',
 }: DropdownProps<T>) => {
-  const { formLabel, inputBox } = useInputFieldStyles();
+  const { formLabel, formControl } = useInputFieldStyles();
 
   const multiple = Array.isArray(selectedValues);
 
@@ -52,7 +52,7 @@ export const Dropdown = <T,>({
     );
 
   return (
-    <FormControl className={inputBox}>
+    <FormControl className={formControl}>
       <FormLabel className={formLabel}>{label}</FormLabel>
       <Select
         multiple={multiple}

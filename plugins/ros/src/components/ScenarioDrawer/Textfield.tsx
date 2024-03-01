@@ -20,13 +20,13 @@ export const TextField = ({
   minRows = 1,
   handleChange,
 }: TextFieldProps) => {
-  const { formLabel, inputBox } = useInputFieldStyles();
+  const { formLabel, formControl } = useInputFieldStyles();
 
   const onChange = (event: ChangeEvent<{ value: string }>) =>
     handleChange && handleChange(event.target.value);
 
   return (
-    <FormControl className={inputBox}>
+    <FormControl className={formControl}>
       <FormLabel className={formLabel}>{label}</FormLabel>
       <MUITextField
         disabled={!handleChange}

@@ -7,7 +7,7 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     gridTemplateRows: 'repeat(7, 1fr)',
     gap: '2px',
   },
-  riskMatrix: {
+  riskMatrixGrid: {
     gridColumn: 'span 11',
     gridRow: 'span 6',
     display: 'grid',
@@ -58,5 +58,9 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
   tooltipText: {
     padding: 0,
     color: 'black',
+  },
+  riskSummary: {
+    display: 'flex',
+    justifyContent: 'center',
   },
 }));
