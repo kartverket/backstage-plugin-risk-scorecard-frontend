@@ -55,6 +55,11 @@ auth:
         clientSecret: ${GITHUB_APP_CLIENT_SECRET}
         callbackUrl: http://localhost:7007/api/auth/github/handler/frame
 
+    google:
+      development:
+        clientId: ${GOOGLE_CLIENT_ID}
+        clientSecret: ${GOOGLE_CLIENT_SECRET}
+
 
 scaffolder: { }
 
