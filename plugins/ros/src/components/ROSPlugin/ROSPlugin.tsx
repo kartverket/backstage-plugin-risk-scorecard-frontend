@@ -104,7 +104,9 @@ export const ROSPlugin = () => {
 
         {isFetching && (
             <div className={classes.container}>
-              <CircularProgress className={classes.spinner} size={80} />
+              <Grid item>
+                <CircularProgress className={classes.spinner} size={80} />
+              </Grid>
             </div>
         )}
 
