@@ -22,6 +22,7 @@ export default async function createPlugin(
     schedule: env.scheduler.createScheduledTaskRunner({
       frequency: { minutes: 1440 },
       timeout: { minutes: 15 },
+      initialDelay: { minutes: 1 },
     }),
     userTransformer: async (user: GithubUser, ctx) => {
       const entity = await defaultUserTransformer(user, ctx);
@@ -36,13 +37,21 @@ export default async function createPlugin(
   builder.addEntityProvider(
     MicrosoftGraphOrgEntityProvider.fromConfig(env.config, {
       logger: env.logger,
-      scheduler: env.scheduler,
+      schedule: env.scheduler.createScheduledTaskRunner({
+        frequency: { minutes: 1440 },
+        timeout: { minutes: 15 },
+        initialDelay: { minutes: 1 },
+      }),
     }),
   );
 
   const githubEntityProvider = GithubEntityProvider.fromConfig(env.config, {
     logger: env.logger,
-    scheduler: env.scheduler,
+    schedule: env.scheduler.createScheduledTaskRunner({
+      frequency: { minutes: 1440 },
+      timeout: { minutes: 15 },
+      initialDelay: { minutes: 1 },
+    }),
   });
 
   builder.addEntityProvider(githubEntityProvider);
