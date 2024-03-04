@@ -22,7 +22,6 @@ export default async function createPlugin(
     schedule: env.scheduler.createScheduledTaskRunner({
       frequency: { minutes: 1440 },
       timeout: { minutes: 15 },
-      initialDelay: { minutes: 1 },
     }),
     userTransformer: async (user: GithubUser, ctx) => {
       const entity = await defaultUserTransformer(user, ctx);
@@ -40,7 +39,6 @@ export default async function createPlugin(
       schedule: env.scheduler.createScheduledTaskRunner({
         frequency: { minutes: 1440 },
         timeout: { minutes: 15 },
-        initialDelay: { minutes: 1 },
       }),
     }),
   );
@@ -50,7 +48,6 @@ export default async function createPlugin(
     schedule: env.scheduler.createScheduledTaskRunner({
       frequency: { minutes: 1440 },
       timeout: { minutes: 15 },
-      initialDelay: { minutes: 1 },
     }),
   });
 
