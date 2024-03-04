@@ -103,11 +103,11 @@ export const ROSPlugin = () => {
         </ContentHeader>
 
         {isFetching && (
-            <div className={classes.container}>
-              <Grid item>
-                <CircularProgress className={classes.spinner} size={80} />
-              </Grid>
-            </div>
+          <div className={classes.container}>
+            <Grid item>
+              <CircularProgress className={classes.spinner} size={80} />
+            </Grid>
+          </div>
         )}
 
         <Grid container spacing={3}>
