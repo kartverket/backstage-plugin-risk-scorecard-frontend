@@ -122,17 +122,19 @@ export const ROSPlugin = () => {
             </Grid>
           )}
 
-          <Grid item xs={9}>
-            <Button
-              startIcon={<AddCircleOutlineIcon />}
-              variant="text"
-              color="primary"
-              onClick={() => setNewROSDialogIsOpen(true)}
-              className={button}
-            >
-              Opprett ny analyse
-            </Button>
-          </Grid>
+          {!isFetching && (
+            <Grid item xs={9}>
+              <Button
+                startIcon={<AddCircleOutlineIcon />}
+                variant="text"
+                color="primary"
+                onClick={() => setNewROSDialogIsOpen(true)}
+                className={button}
+              >
+                Opprett ny analyse
+              </Button>
+            </Grid>
+          )}
 
           {selectedROS && (
             <>
@@ -157,13 +159,13 @@ export const ROSPlugin = () => {
             </>
           )}
 
-          <Grid item xs={12}>
-            {response && (
+          {response && (
+            <Grid item xs={12}>
               <Alert severity={getAlertSeverity(response.status)}>
                 <Typography>{response.statusMessage}</Typography>
               </Alert>
-            )}
-          </Grid>
+            </Grid>
+          )}
         </Grid>
 
         <ROSDialog
