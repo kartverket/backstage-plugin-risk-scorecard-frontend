@@ -14,13 +14,16 @@ export const useButtonStyles = makeStyles(() => ({
   },
 }));
 
-export const useSpinnerStyles = makeStyles({
+export const useLoadingStyles = makeStyles({
   container: {
     display: 'flex',
+    minWidth: '100wh',
+    height: '100vh',
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
   spinner: {
+    display: 'flex',
     marginTop: '200px',
   },
 });

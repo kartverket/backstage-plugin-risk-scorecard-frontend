@@ -21,7 +21,7 @@ import { ROS, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../utils/utilityfunctions';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useSpinnerStyles } from './rosPluginStyle';
+import { useLoadingStyles } from './rosPluginStyle';
 import { ScenarioContext } from './ScenarioContext';
 import { useFontStyles } from '../ScenarioDrawer/style';
 
@@ -92,15 +92,21 @@ export const ROSPlugin = () => {
     updateROS,
   );
 
-  const { container, spinner } = useSpinnerStyles();
+  const classes = useLoadingStyles();
   const { button } = useFontStyles();
 
   return (
     <ScenarioContext.Provider value={scenario}>
-      <Content stretch>
+      <Content>
         <ContentHeader title="Risiko- og sårbarhetsanalyse">
           <SupportButton>Kul plugin ass!</SupportButton>
         </ContentHeader>
+
+        {isFetching && (
+            <div className={classes.container}>
+              <CircularProgress className={classes.spinner} size={80} />
+            </div>
+        )}
 
         <Grid container spacing={3}>
           {roses !== null && roses.length !== 0 && (
@@ -126,12 +132,6 @@ export const ROSPlugin = () => {
             </Button>
           </Grid>
 
-          {isFetching && (
-            <Grid item xs={12} className={container}>
-              <CircularProgress className={spinner} size={80} />
-            </Grid>
-          )}
-
           {selectedROS && (
             <>
               <Grid item xs={6}>
@@ -155,13 +155,13 @@ export const ROSPlugin = () => {
             </>
           )}
 
-          {response && (
-            <Grid item xs={12}>
+          <Grid item xs={12}>
+            {response && (
               <Alert severity={getAlertSeverity(response.status)}>
                 <Typography>{response.statusMessage}</Typography>
               </Alert>
-            </Grid>
-          )}
+            )}
+          </Grid>
         </Grid>
 
         <ROSDialog
