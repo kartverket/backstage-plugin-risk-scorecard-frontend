@@ -21,7 +21,7 @@ backend:
 techdocs:
   builder: 'local' # Alternatives - 'external'
   generator:
-    runIn: 'docker' # Alternatives - 'local'
+    runIn: 'local' # Alternatives - 'local'
   publisher:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
@@ -39,7 +39,7 @@ auth:
   environment: development
   providers:
     microsoft:
-      default:
+      development:
         clientId: ${AZURE_CLIENT_ID}
         clientSecret: ${AZURE_CLIENT_SECRET}
         tenantId: ${AZURE_TENANT_ID}
@@ -48,7 +48,7 @@ auth:
           - Mail.Send
 
     github:
-      default:
+      development:
         clientId: ${GITHUB_APP_CLIENT_ID}
         clientSecret: ${GITHUB_APP_CLIENT_SECRET}
         callbackUrl: https://kv-ros-backstage-245zlcbrnq-lz.a.run.app/api/auth/github/handler/frame
@@ -81,7 +81,7 @@ catalog:
           timeout: { minutes: 3 }
 
     microsoftGraphOrg:
-      default:
+      development:
         tenantId: ${AZURE_TENANT_ID}
         domainHint: ${AZURE_TENANT_ID}
         clientId: ${AZURE_CLIENT_ID}
