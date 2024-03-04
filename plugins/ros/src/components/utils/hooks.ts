@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
-  githubAuthApiRef,
+  microsoftAuthApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
-
 import {
   GithubRepoInfo,
   ProcessingStatus,
@@ -67,7 +66,7 @@ const useResponse = (): [
 };
 
 const useFetch = (
-  accessToken: string | undefined,
+  idToken: string | undefined,
   repoInformation: GithubRepoInfo | null,
 ) => {
   const { fetch: fetchApi } = useApi(fetchApiRef);
@@ -86,11 +85,11 @@ const useFetch = (
     onError: (error: T) => void,
     body?: string,
   ) => {
-    if (repoInformation && accessToken) {
+    if (repoInformation && idToken) {
       fetchApi(uri, {
         method: method,
         headers: {
-          'Github-Access-Token': accessToken,
+          'Microsoft-Id-Token': idToken,
           'Content-Type': 'application/json',
         },
         body: body,
@@ -352,12 +351,12 @@ export const useScenarioDrawer = (
 };
 
 export const useROSPlugin = () => {
-  const GHApi = useApi(githubAuthApiRef);
-  const { value: accessToken } = useAsync(() => GHApi.getAccessToken('repo'));
+  const microsoftAPI = useApi(microsoftAuthApiRef);
+  const { value: idToken } = useAsync(() => microsoftAPI.getIdToken());
   const repoInformation = useGithubRepositoryInformation();
 
   const { fetchRoses, postROS, putROS, publishROS, response } = useFetch(
-    accessToken,
+    idToken,
     repoInformation,
   );
 
@@ -388,7 +387,7 @@ export const useROSPlugin = () => {
         setRoses(fetchedRoses);
         setSelectedROS(fetchedRoses[0]);
       });
-    }, [accessToken]);
+    }, [idToken]);
 
     const selectROSByTitle = (title: string) => {
       const pickedRos = roses?.find(ros => ros.title === title) || null;
