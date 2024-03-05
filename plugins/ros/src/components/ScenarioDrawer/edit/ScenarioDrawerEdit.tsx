@@ -23,15 +23,12 @@ import {
 import { ScenarioContext } from '../../ROSPlugin/ScenarioContext';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
 
-interface ScenarioDrawerEitProps {
-  onClose: () => void;
-}
-
-export const ScenarioDrawerEdit = ({ onClose }: ScenarioDrawerEitProps) => {
+export const ScenarioDrawerEdit = () => {
   const { header, buttons } = useScenarioDrawerContentStyles();
   const { h1, button } = useFontStyles();
 
   const {
+    closeScenarioDrawer,
     scenario,
     originalScenario,
     saveScenario,
@@ -55,12 +52,12 @@ export const ScenarioDrawerEdit = ({ onClose }: ScenarioDrawerEitProps) => {
     if (JSON.stringify(scenario) !== JSON.stringify(originalScenario)) {
       setShowCloseConfirmation(true);
     } else {
-      onClose();
+      closeScenarioDrawer();
     }
   };
 
   const close = () => {
-    onClose();
+    closeScenarioDrawer();
     setShowCloseConfirmation(false);
   };
 
@@ -79,7 +76,7 @@ export const ScenarioDrawerEdit = ({ onClose }: ScenarioDrawerEitProps) => {
           className={button}
           variant="outlined"
           color="primary"
-          onClick={onClose}
+          onClick={closeScenarioDrawer}
           endIcon={<KeyboardTabIcon />}
         >
           Lukk
