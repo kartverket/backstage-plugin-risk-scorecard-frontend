@@ -23,7 +23,12 @@ backend:
 integrations:
   github:
     - host: github.com
-      token: ${GITHUB_TOKEN}
+      apps:
+        - appId: ${GITHUB_APP_ID}
+          privateKey: ${GITHUB_APP_PK}
+          webhookSecret: ${GITHUB_APP_WEBHOOK_SECRET}
+          clientId: ${GITHUB_APP_CLIENT_ID}
+          clientSecret: ${GITHUB_APP_CLIENT_SECRET}
 
 techdocs:
   builder: 'local' # Alternatives - 'external'
@@ -35,10 +40,21 @@ techdocs:
 auth:
   environment: development
   providers:
+    microsoft:
+      development:
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: ${AZURE_TENANT_ID}
+        domainHint: ${AZURE_TENANT_ID}
+        additionalScopes:
+          - Mail.Send
+
     github:
       development:
-        clientId: ${GITHUB_CLIENT_ID}
-        clientSecret: ${GITHUB_CLIENT_SECRET}
+        clientId: ${GITHUB_APP_CLIENT_ID}
+        clientSecret: ${GITHUB_APP_CLIENT_SECRET}
+        callbackUrl: http://localhost:7007/api/auth/github/handler/frame
+
 
 scaffolder: { }
 
@@ -56,8 +72,8 @@ catalog:
         - allow: [ User, Group ]
   providers:
     github:
-      providerId:
-        organization: 'bekk'
+      spire-test:
+        organization: 'spire-test'
         catalogPath: '.security/catalog-info.yaml'
         filters:
           branch: 'main'
@@ -65,3 +81,31 @@ catalog:
         schedule:
           frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
+
+    githubOrg:
+      - spire-test-org:
+        organization: 'spire-test'
+        catalogPath: '.security/catalog-info.yaml'
+        filters:
+          branch: 'main'
+          repository: '*'
+        schedule:
+          frequency: { minutes: 1 }
+          timeout: { minutes: 3 }
+
+    microsoftGraphOrg:
+      development:
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: ${AZURE_TENANT_ID}
+        domainHint: ${AZURE_TENANT_ID}
+        user:
+          filter: accountEnabled eq true and userType eq 'member'
+        group:
+          filter: >
+            securityEnabled eq false
+            and mailEnabled eq true
+            and groupTypes/any(c:c+eq+'Unified')
+        schedule:
+          frequency: PT1H
+          timeout: PT50M

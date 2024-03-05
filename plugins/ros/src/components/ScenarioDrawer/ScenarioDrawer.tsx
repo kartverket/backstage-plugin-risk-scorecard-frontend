@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Drawer } from '@material-ui/core';
-import { ScenarioDrawerContent } from './ScenarioDrawerContent';
 import { useScenarioDrawerStyles } from './style';
 import { emptyScenario } from '../utils/utilityfunctions';
 import { ScenarioContext } from '../ROSPlugin/ScenarioContext';
+import { ScenarioDrawerEdit } from './edit/ScenarioDrawerEdit';
+import { ScenarioDrawerView } from './view/ScenarioDrawerView';
 
 interface ScenarioDrawerProps {
   isOpen: boolean;
@@ -11,7 +12,7 @@ interface ScenarioDrawerProps {
 }
 
 export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
-  const classes = useScenarioDrawerStyles();
+  const { paperEdit, paperView } = useScenarioDrawerStyles();
 
   const { setScenario, setOriginalScenario } = useContext(ScenarioContext)!!;
 
@@ -19,17 +20,26 @@ export const ScenarioDrawer = ({ isOpen, setIsOpen }: ScenarioDrawerProps) => {
     setIsOpen(false);
     setScenario(emptyScenario());
     setOriginalScenario(emptyScenario());
+    setEditMode(false);
   };
+
+  const [editMode, setEditMode] = useState(false);
+
+  const openEditMode = () => setEditMode(true);
 
   return (
     <Drawer
-      classes={{ paper: classes.paper }}
+      classes={{ paper: editMode ? paperEdit : paperView }}
       variant="persistent"
       anchor="right"
       open={isOpen}
       onClose={onClose}
     >
-      <ScenarioDrawerContent setIsOpen={setIsOpen} />
+      {editMode ? (
+        <ScenarioDrawerEdit onClose={onClose} />
+      ) : (
+        <ScenarioDrawerView onClose={onClose} openEditMode={openEditMode} />
+      )}
     </Drawer>
   );
 };

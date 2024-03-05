@@ -11,8 +11,14 @@ import { MatrixColors } from '../ScenarioTable/ScenarioTableStyles';
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];
 
-  const { grid, riskMatrix, topRow, rightColumn, riskMatrixItem, riskSummary } =
-    useRiskMatrixStyles();
+  const {
+    grid,
+    riskMatrixGrid,
+    topRow,
+    rightColumn,
+    riskMatrixItem,
+    riskSummary,
+  } = useRiskMatrixStyles();
 
   return (
     <Box>
@@ -22,7 +28,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
             <Typography variant="h6">Sannsynlighet</Typography>
           </Box>
 
-          <Box className={riskMatrix}>
+          <Box className={riskMatrixGrid}>
             {indices.map(row => (
               <>
                 <Box className={riskMatrixItem}>

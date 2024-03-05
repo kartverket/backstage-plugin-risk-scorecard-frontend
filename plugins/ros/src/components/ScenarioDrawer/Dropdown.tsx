@@ -11,12 +11,11 @@ import React, { ChangeEvent } from 'react';
 import { menuProps, useInputFieldStyles } from './style';
 
 interface DropdownProps<T> {
-  label: string;
   options: string[];
   selectedValues: T;
   handleChange: (value: T) => void;
+  label?: string;
   variant?: 'standard' | 'outlined' | 'filled';
-  multiple?: boolean;
 }
 
 export const Dropdown = <T,>({
@@ -26,7 +25,7 @@ export const Dropdown = <T,>({
   handleChange,
   variant = 'outlined',
 }: DropdownProps<T>) => {
-  const { formLabel, inputBox } = useInputFieldStyles();
+  const { formLabel, formControl } = useInputFieldStyles();
 
   const multiple = Array.isArray(selectedValues);
 
@@ -52,8 +51,8 @@ export const Dropdown = <T,>({
     );
 
   return (
-    <FormControl className={inputBox}>
-      <FormLabel className={formLabel}>{label}</FormLabel>
+    <FormControl className={formControl}>
+      {label && <FormLabel className={formLabel}>{label}</FormLabel>}
       <Select
         multiple={multiple}
         value={selectedValues}
