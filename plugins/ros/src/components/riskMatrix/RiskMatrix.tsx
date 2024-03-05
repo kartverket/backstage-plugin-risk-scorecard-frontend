@@ -6,17 +6,10 @@ import { useRiskMatrixStyles } from './style';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
 import { ROS } from '../utils/types';
+import { MatrixColors } from '../ScenarioTable/ScenarioTableStyles';
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];
-
-  const matrixColors = [
-    ['#FBE36A', '#FF8B38', '#FF8B38', '#F23131', '#F23131'],
-    ['#FBE36A', '#FBE36A', '#FF8B38', '#FF8B38', '#F23131'],
-    ['#6CC6A4', '#FBE36A', '#FBE36A', '#FF8B38', '#FF8B38'],
-    ['#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A', '#FF8B38'],
-    ['#6CC6A4', '#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A'],
-  ];
 
   const { grid, riskMatrix, topRow, rightColumn, riskMatrixItem, riskSummary } =
     useRiskMatrixStyles();
@@ -38,7 +31,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
                 {indices.map(col => (
                   <Paper
                     className={riskMatrixItem}
-                    style={{ backgroundColor: matrixColors[row][col] }}
+                    style={{ backgroundColor: MatrixColors[4 - row][col] }}
                   >
                     <RiskMatrixScenarioCount
                       ros={ros}

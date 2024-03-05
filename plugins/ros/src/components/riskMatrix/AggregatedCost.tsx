@@ -8,7 +8,6 @@ import { InfotextDialog } from './InfotextDialog';
 
 interface AggregatedCostProps {
   ros: ROS;
-  onClose: () => void;
 }
 
 const useStyles = makeStyles({
