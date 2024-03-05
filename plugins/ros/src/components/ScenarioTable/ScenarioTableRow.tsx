@@ -8,9 +8,13 @@ import { MatrixColors, useTableStyles } from './ScenarioTableStyles';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
+  viewRow: (id: string) => void;
 }
 
-export const ScenarioTableRow = ({ scenario }: ScenarioTableRowProps) => {
+export const ScenarioTableRow = ({
+  scenario,
+  viewRow,
+}: ScenarioTableRowProps) => {
   const sannsynlighet =
     sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1;
   const konsekvens = konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1;
@@ -22,7 +26,7 @@ export const ScenarioTableRow = ({ scenario }: ScenarioTableRowProps) => {
     tiltak => tiltak.status === 'Fullført',
   ).length;
 
-  const { riskColor, background } = useTableStyles();
+  const { riskColor, rowBackground } = useTableStyles();
 
   return (
     <TableRow
@@ -30,11 +34,14 @@ export const ScenarioTableRow = ({ scenario }: ScenarioTableRowProps) => {
         borderBottom: 'solid 1px #616161',
       }}
     >
-      <div
-        className={background}
+      <button
+        className={rowBackground}
+        onClick={() => viewRow(scenario.ID)}
         style={{
           display: 'flex',
           alignItems: 'center',
+          width: '100%',
+          border: 'none',
         }}
       >
         <TableCell style={{ display: 'flex', width: '40%' }}>
@@ -81,7 +88,7 @@ export const ScenarioTableRow = ({ scenario }: ScenarioTableRowProps) => {
         <TableCell style={{ display: 'flex', width: '20%' }}>
           {fullførteTiltak}/{scenario.tiltak.length} fullførte
         </TableCell>
-      </div>
+      </button>
     </TableRow>
   );
 };

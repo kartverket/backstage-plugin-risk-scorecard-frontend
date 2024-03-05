@@ -17,14 +17,13 @@ interface ScenarioTableProps {
 }
 
 export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
-  const { newScenario } = useContext(ScenarioContext)!!;
-
-  const { background } = useTableStyles();
+  const { newScenario, openScenario } = useContext(ScenarioContext)!!;
+  const { titleBackground } = useTableStyles();
 
   return (
     <>
       <Paper
-        className={background}
+        className={titleBackground}
         style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -119,7 +118,11 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
           </TableHead>
           <TableBody>
             {ros.scenarier.map(scenario => (
-              <ScenarioTableRow key={scenario.ID} scenario={scenario} />
+              <ScenarioTableRow
+                key={scenario.ID}
+                scenario={scenario}
+                viewRow={openScenario}
+              />
             ))}
           </TableBody>
         </Table>
