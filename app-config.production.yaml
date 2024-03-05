@@ -91,7 +91,10 @@ catalog:
           filter: accountEnabled eq true and userType eq 'member'
         group:
           filter: >
-            displayName eq 'Spire-ros'
+            securityEnabled eq false
+            and mailEnabled eq true
+            and groupTypes/any(c:c+eq+'Unified')
+
         schedule:
           frequency: PT1H
           timeout: PT50M
