@@ -88,7 +88,7 @@ catalog:
         clientSecret: ${AZURE_CLIENT_SECRET}
 
         user:
-          filter: accountEnabled eq true and userType eq 'member'
+          filter: accountEnabled eq true and userType eq 'member' and displayName eq 'Maren Sofie Ringsby'
         group:
           filter: >
             displayName eq 'Spire-ros'
