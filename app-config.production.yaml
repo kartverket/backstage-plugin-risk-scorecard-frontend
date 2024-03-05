@@ -59,7 +59,7 @@ catalog:
   locations: [ ]
   providers:
     github:
-      providerId:
+      spire-test:
         organization: 'spire-test'
         catalogPath: '.security/catalog-info.yaml'
         filters:
@@ -70,7 +70,7 @@ catalog:
           timeout: { minutes: 3 }
 
     githubOrg:
-      providerId:
+      spire-test-org:
         organization: 'spire-test'
         catalogPath: '.security/catalog-info.yaml'
         filters:
