@@ -28,6 +28,7 @@ export default async function createPlugin(
       if (entity && user.organizationVerifiedDomainEmails?.length) {
         entity.spec.profile!.email = user.organizationVerifiedDomainEmails[0];
       }
+
       return entity;
     },
   });
@@ -36,10 +37,7 @@ export default async function createPlugin(
   builder.addEntityProvider(
     MicrosoftGraphOrgEntityProvider.fromConfig(env.config, {
       logger: env.logger,
-      schedule: env.scheduler.createScheduledTaskRunner({
-        frequency: { minutes: 1440 },
-        timeout: { minutes: 15 },
-      }),
+      scheduler: env.scheduler,
     }),
   );
 
