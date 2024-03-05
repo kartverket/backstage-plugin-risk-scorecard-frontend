@@ -70,12 +70,12 @@ catalog:
           timeout: { minutes: 3 }
 
     githubOrg:
-      spire-test:
+      - spire-test-org:
         organization: 'spire-test'
         catalogPath: '.security/catalog-info.yaml'
         filters:
           branch: 'main'
-          repository: '^kv-ros-.*$'
+          repository: '*'
         schedule:
           frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
