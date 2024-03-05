@@ -88,12 +88,13 @@ catalog:
         clientSecret: ${AZURE_CLIENT_SECRET}
 
         user:
-          filter: accountEnabled eq true and userType eq 'member'
+          filter: accountEnabled eq true and userType eq 'member' and displayName eq 'Denne brukeren finnes ikke'
         group:
           filter: >
             securityEnabled eq false
             and mailEnabled eq true
             and groupTypes/any(c:c+eq+'Unified')
+            and displayName eq 'Denne gruppa finnes ikke'
 
         schedule:
           frequency: PT1H
