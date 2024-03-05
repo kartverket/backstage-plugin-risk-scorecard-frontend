@@ -17,7 +17,7 @@ interface ScenarioTableProps {
 }
 
 export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
-  const { newScenario, editScenario, openDeleteConfirmation } =
+  const { newScenario, openScenario, openDeleteConfirmation } =
     useContext(ScenarioContext)!!;
 
   return (
@@ -63,7 +63,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
               <ScenarioTableRow
                 key={scenario.ID}
                 scenario={scenario}
-                editRow={editScenario}
+                editRow={openScenario}
                 deleteRow={openDeleteConfirmation}
               />
             ))}

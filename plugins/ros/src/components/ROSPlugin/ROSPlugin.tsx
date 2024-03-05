@@ -26,7 +26,6 @@ import { ScenarioContext } from './ScenarioContext';
 import { useFontStyles } from '../ScenarioDrawer/style';
 
 export const ROSPlugin = () => {
-  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
   const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
 
   const { useFetchRoses, postROS, putROS, publishROS, response } =
@@ -86,11 +85,7 @@ export const ROSPlugin = () => {
     }
   };
 
-  const scenario = useScenarioDrawer(
-    selectedROS?.content ?? null,
-    setDrawerIsOpen,
-    updateROS,
-  );
+  const scenario = useScenarioDrawer(selectedROS?.content ?? null, updateROS);
 
   const classes = useLoadingStyles();
   const { button } = useFontStyles();
@@ -174,7 +169,7 @@ export const ROSPlugin = () => {
           saveRos={createNewROS}
         />
 
-        <ScenarioDrawer isOpen={drawerIsOpen} setIsOpen={setDrawerIsOpen} />
+        <ScenarioDrawer />
 
         <DeleteConfirmation />
 
