@@ -87,13 +87,11 @@ catalog:
         clientId: ${AZURE_CLIENT_ID}
         clientSecret: ${AZURE_CLIENT_SECRET}
 
-        user:
-          filter: accountEnabled eq true and userType eq 'member'
+        userGroupMember:
+          filter: displayName eq 'Spire-ros'
         group:
           filter: >
-            securityEnabled eq false
-            and mailEnabled eq true
-            and groupTypes/any(c:c+eq+'Unified')
+            displayName eq 'Spire-ros's
 
         schedule:
           frequency: PT1H
