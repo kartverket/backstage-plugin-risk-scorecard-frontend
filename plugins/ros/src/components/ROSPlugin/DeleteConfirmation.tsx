@@ -8,9 +8,7 @@ export const DeleteConfirmation = () => {
 
   return (
     <Dialog open={deleteConfirmationIsOpen}>
-      <DialogTitle>
-        {'Er du sikker på at du vil du slette scenario?'}
-      </DialogTitle>
+      <DialogTitle>Er du sikker på at du vil du slette scenario?</DialogTitle>
       <DialogActions>
         <Button
           style={{ textTransform: 'none' }}

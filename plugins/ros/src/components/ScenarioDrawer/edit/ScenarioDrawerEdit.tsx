@@ -22,6 +22,8 @@ import {
 } from '../../utils/utilityfunctions';
 import { ScenarioContext } from '../../ROSPlugin/ScenarioContext';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { DeleteConfirmation } from '../../ROSPlugin/DeleteConfirmation';
 
 export const ScenarioDrawerEdit = () => {
   const { header, buttons } = useScenarioDrawerContentStyles();
@@ -32,6 +34,7 @@ export const ScenarioDrawerEdit = () => {
     scenario,
     originalScenario,
     saveScenario,
+    openDeleteConfirmation,
     setTittel,
     setBeskrivelse,
     setTrusselaktører,
@@ -147,26 +150,38 @@ export const ScenarioDrawerEdit = () => {
           </TabContext>
         </Grid>
 
-        <Grid item xs={12} className={buttons} style={{ paddingTop: '2rem' }}>
-          <Button
-            style={{ textTransform: 'none' }}
-            variant="contained"
-            color="primary"
-            onClick={saveAndClose}
-          >
+        <Grid item xs={12} className={buttons} style={{ paddingTop: '1rem' }}>
+          <Button variant="contained" color="primary" onClick={saveAndClose}>
             Lagre
           </Button>
 
           <Button
-            style={{ textTransform: 'none' }}
             variant="outlined"
             color="primary"
             onClick={handleCloseDrawer}
           >
             Avbryt
           </Button>
+
+          <Grid
+            item
+            container
+            xs={12}
+            style={{ display: 'flex', justifyContent: 'flex-end' }}
+          >
+            <Button
+              startIcon={<DeleteIcon />}
+              variant="text"
+              color="primary"
+              onClick={() => openDeleteConfirmation(scenario.ID)}
+            >
+              Slett scenario
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
+
+      <DeleteConfirmation />
 
       <CloseConfirmation
         isOpen={showCloseConfirmation}

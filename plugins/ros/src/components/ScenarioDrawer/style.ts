@@ -41,6 +41,8 @@ export const useScenarioDrawerContentStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing(2),
+    borderTop: '1px solid #616161',
+    marginTop: theme.spacing(4),
   },
   risikoBadge: {
     width: '20px',
