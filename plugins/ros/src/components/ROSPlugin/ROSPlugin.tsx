@@ -145,11 +145,13 @@ export const ROSPlugin = () => {
                 />
               </Grid>
 
-              <Grid item xs={6}>
-                <RiskMatrix ros={selectedROS.content} />
-              </Grid>
-              <Grid item xs={6}>
-                <ScenarioTable ros={selectedROS.content} />
+              <Grid item container direction="row">
+                <Grid item xs={4}>
+                  <RiskMatrix ros={selectedROS.content} />
+                </Grid>
+                <Grid item xs={8}>
+                  <ScenarioTable ros={selectedROS.content} />
+                </Grid>
               </Grid>
             </>
           )}
