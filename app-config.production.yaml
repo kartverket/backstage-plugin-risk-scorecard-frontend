@@ -59,7 +59,7 @@ catalog:
   locations: [ ]
   providers:
     github:
-      spire-test:
+      providerId:
         organization: 'spire-test'
         catalogPath: '.security/catalog-info.yaml'
         filters:
@@ -70,12 +70,12 @@ catalog:
           timeout: { minutes: 3 }
 
     githubOrg:
-      - spire-test-org:
+      providerId:
         organization: 'spire-test'
         catalogPath: '.security/catalog-info.yaml'
         filters:
           branch: 'main'
-          repository: '*'
+          repository: '^kv-ros-.*$'
         schedule:
           frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
@@ -91,9 +91,7 @@ catalog:
           filter: accountEnabled eq true and userType eq 'member'
         group:
           filter: >
-            securityEnabled eq false
-            and mailEnabled eq true
-            and groupTypes/any(c:c+eq+'Unified')
+            displayName eq 'Spire-ros'
         schedule:
           frequency: PT1H
           timeout: PT50M
