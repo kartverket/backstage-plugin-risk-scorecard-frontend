@@ -173,8 +173,6 @@ export const ROSPlugin = () => {
 
         <ScenarioDrawer />
 
-        <DeleteConfirmation />
-
         <ROSStatusAlertNotApprovedByRisikoeier
           selectedROS={selectedROS}
           roses={roses}

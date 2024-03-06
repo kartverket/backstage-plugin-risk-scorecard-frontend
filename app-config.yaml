@@ -82,9 +82,9 @@ catalog:
         catalogPath: '.security/catalog-info.yaml'
         filters:
           branch: 'main'
-          repository: '*'
+          repository: '^kv-ros-.*$'
         schedule:
-          frequency: { minutes: 1 }
+          frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
 
     githubOrg:
