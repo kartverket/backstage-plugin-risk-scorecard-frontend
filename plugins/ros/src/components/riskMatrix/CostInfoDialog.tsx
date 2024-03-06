@@ -8,7 +8,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 
-export interface InfoTextDialogProps {
+export interface CostInfoDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const InfotextDialog = ({ isOpen, onClose }: InfoTextDialogProps) => {
+export const CostInfoDialog = ({ isOpen, onClose }: CostInfoDialogProps) => {
   const classes = useStyles();
 
   return (

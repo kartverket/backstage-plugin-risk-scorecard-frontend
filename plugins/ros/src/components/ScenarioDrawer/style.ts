@@ -53,9 +53,9 @@ export const useScenarioDrawerContentStyles = makeStyles((theme: Theme) => ({
 
 export const useFontStyles = makeStyles(theme => ({
   h1: {
-    fontSize: theme.spacing(2.25),
+    fontSize: theme.spacing(4),
     fontWeight: 700,
-    color: '#D9D9D9',
+    color: '#F8F8F8',
   },
   h2: {
     fontSize: theme.spacing(3),
@@ -70,14 +70,28 @@ export const useFontStyles = makeStyles(theme => ({
     fontWeight: 500,
   },
   label: {
-    fontSize: theme.spacing(1.5),
+    fontSize: theme.spacing(1.75),
     fontWeight: 700,
     textTransform: 'uppercase',
-    color: '#D9D9D9',
+    color: '#F8F8F8',
+    paddingBottom: '0.4rem',
+  },
+  labelSubtitle: {
+    fontSize: theme.spacing(1.5),
+    fontWeight: 400,
+    color: '#F8F8F8',
+    paddingBottom: '0.4rem',
+    marginTop: '-0.2rem',
   },
   subtitle1: {
     fontSize: theme.spacing(2),
     fontWeight: 700,
+  },
+  headerSubtitle: {
+    fontSize: theme.spacing(2),
+    fontWeight: 500,
+    paddingBottom: '1rem',
+    marginTop: '-0.2rem',
   },
   button: {
     textTransform: 'none',
@@ -94,10 +108,10 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
     width: '100%',
   },
   formLabel: {
-    fontSize: theme.spacing(1.5),
+    fontSize: theme.spacing(1.75),
     fontWeight: 700,
     textTransform: 'uppercase',
-    color: '#D9D9D9',
+    color: '#F8F8F8',
     marginBottom: theme.spacing(1),
   },
   paper: {
