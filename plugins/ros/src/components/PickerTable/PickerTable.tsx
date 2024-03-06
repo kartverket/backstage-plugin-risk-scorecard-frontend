@@ -74,44 +74,37 @@ export const PickerTable = ({
   };
 
   return (
-    <>
-      <Typography style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-        Hvor alvorlig er den potensielle konsekvensen i det relevante området?
-        Hvis konsekvensen er relevant for flere områder gjelder det høyeste
-        konsekvensnivået.
-      </Typography>
-      <table className={classes.grid}>
-        <tbody>
-          <tr>
-            <TableCell className={classes.firstCell} />
-            {tableHeader.map((header, index) => (
-              <TableCell key={index} className={classes.firstCell}>
-                <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-                  {header}
-                </Typography>
+    <table className={classes.grid}>
+      <tbody>
+        <tr>
+          <TableCell className={classes.firstCell} />
+          {tableHeader.map((header, index) => (
+            <TableCell key={index} className={classes.firstCell}>
+              <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                {header}
+              </Typography>
+            </TableCell>
+          ))}
+        </tr>
+        {data.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            <TableCell className={classes.firstCell}>
+              <div className={classes.label}>
+                <Typography>{5 - rowIndex}</Typography>
+                <Radio
+                  checked={selectedValue === 5 - rowIndex}
+                  onChange={handleChangeRow(rowIndex)}
+                />
+              </div>
+            </TableCell>
+            {row.map((cell, cellIndex) => (
+              <TableCell key={cellIndex} className={classes.cell}>
+                {cell}
               </TableCell>
             ))}
           </tr>
-          {data.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              <TableCell className={classes.firstCell}>
-                <div className={classes.label}>
-                  <Typography>{5 - rowIndex}</Typography>
-                  <Radio
-                    checked={selectedValue === 5 - rowIndex}
-                    onChange={handleChangeRow(rowIndex)}
-                  />
-                </div>
-              </TableCell>
-              {row.map((cell, cellIndex) => (
-                <TableCell key={cellIndex} className={classes.cell}>
-                  {cell}
-                </TableCell>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
+        ))}
+      </tbody>
+    </table>
   );
 };
