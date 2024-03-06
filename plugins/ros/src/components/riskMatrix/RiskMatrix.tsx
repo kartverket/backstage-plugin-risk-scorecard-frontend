@@ -6,9 +6,11 @@ import { useRiskMatrixStyles } from './style';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
 import { ROS } from '../utils/types';
-import { riskMatrix } from '../utils/constants';
+import { MatrixColors } from '../ScenarioTable/ScenarioTableStyles';
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
+  const indices = [0, 1, 2, 3, 4];
+
   const {
     grid,
     riskMatrixGrid,
@@ -25,16 +27,17 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
           <Box className={topRow}>
             <Typography variant="h6">Sannsynlighet</Typography>
           </Box>
+
           <Box className={riskMatrixGrid}>
-            {riskMatrix.map((cols, row) => (
+            {indices.map(row => (
               <>
                 <Box className={riskMatrixItem}>
                   <Typography variant="h6">{5 - row}</Typography>
                 </Box>
-                {cols.map((color, col) => (
+                {indices.map(col => (
                   <Paper
                     className={riskMatrixItem}
-                    style={{ backgroundColor: color }}
+                    style={{ backgroundColor: MatrixColors[4 - row][col] }}
                   >
                     <RiskMatrixScenarioCount
                       ros={ros}
@@ -46,12 +49,13 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
               </>
             ))}
             <Box className={riskMatrixItem} />
-            {riskMatrix.map((_, col) => (
+            {indices.map(col => (
               <Box className={riskMatrixItem}>
                 <Typography variant="h6">{col + 1}</Typography>
               </Box>
             ))}
           </Box>
+
           <Box className={rightColumn}>
             <Typography variant="h6">Konsekvens</Typography>
           </Box>

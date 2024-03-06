@@ -17,21 +17,14 @@ import {
 } from '../../utils/utilityfunctions';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
-interface ScenarioDrawerViewProps {
-  onClose: () => void;
-  openEditMode: () => void;
-}
-
-export const ScenarioDrawerView = ({
-  onClose,
-  openEditMode,
-}: ScenarioDrawerViewProps) => {
+export const ScenarioDrawerView = () => {
   const { header, buttons, risikoBadge } = useScenarioDrawerContentStyles();
 
   const { h1, h2, subtitle1, body1, body2, label, button, risikoLevel } =
     useFontStyles();
 
-  const { scenario } = useContext(ScenarioContext)!!;
+  const { scenario, closeScenarioDrawer, openScenarioDrawerEdit } =
+    useContext(ScenarioContext)!!;
 
   return (
     <>
@@ -44,7 +37,7 @@ export const ScenarioDrawerView = ({
             className={button}
             variant="contained"
             color="primary"
-            onClick={openEditMode}
+            onClick={openScenarioDrawerEdit}
             startIcon={<BorderColorOutlinedIcon />}
           >
             Rediger
@@ -54,7 +47,7 @@ export const ScenarioDrawerView = ({
             className={button}
             variant="outlined"
             color="primary"
-            onClick={onClose}
+            onClick={closeScenarioDrawer}
             endIcon={<KeyboardTabIcon />}
           >
             Lukk

@@ -104,18 +104,22 @@ const useFetch = (
           return res.json();
         })
         .then(json => json as T)
-        .then(response => onSuccess(response))
+        .then(res => onSuccess(res))
         .catch(error => onError(error));
     }
   };
 
-  const fetchRoses = (onSuccess: (response: ROSContentResultDTO[]) => void) =>
-    fetch<ROSContentResultDTO[]>(uriToFetchAllRoses(), 'GET', onSuccess, () =>
+  const fetchRoses = (
+    onSuccess: (response: ROSContentResultDTO[]) => void,
+    onError?: () => void,
+  ) =>
+    fetch<ROSContentResultDTO[]>(uriToFetchAllRoses(), 'GET', onSuccess, () => {
+      if (onError) onError();
       setResponse({
         statusMessage: 'Failed to fetch ROSes',
         status: ProcessingStatus.ErrorWhenFetchingROSes,
-      }),
-    );
+      });
+    });
 
   const postROS = (
     ros: ROS,
@@ -125,9 +129,9 @@ const useFetch = (
     fetch<ProcessROSResultDTO>(
       rosUri,
       'POST',
-      response => {
-        setResponse(response);
-        if (onSuccess) onSuccess(response);
+      res => {
+        setResponse(res);
+        if (onSuccess) onSuccess(res);
       },
       error => {
         setResponse(error);
@@ -144,9 +148,9 @@ const useFetch = (
     fetch<ProcessROSResultDTO>(
       uriToFetchRos(ros.id),
       'PUT',
-      response => {
-        setResponse(response);
-        if (onSuccess) onSuccess(response);
+      res => {
+        setResponse(res);
+        if (onSuccess) onSuccess(res);
       },
       error => {
         setResponse(error);
@@ -163,9 +167,9 @@ const useFetch = (
     fetch<PublishROSResultDTO>(
       uriToPublishROS(rosId),
       'POST',
-      response => {
-        setResponse(response);
-        if (onSuccess) onSuccess(response);
+      res => {
+        setResponse(res);
+        if (onSuccess) onSuccess(res);
       },
       error => {
         setResponse(error);
@@ -177,12 +181,16 @@ const useFetch = (
 };
 
 export interface ScenarioDrawerProps {
+  scenarioDrawerState: ScenarioDrawerState;
+  openScenarioDrawerEdit: () => void;
+  closeScenarioDrawer: () => void;
+
   scenario: Scenario;
   setScenario: (scenario: Scenario) => void;
   originalScenario: Scenario;
   setOriginalScenario: (scenario: Scenario) => void;
   newScenario: () => void;
-  editScenario: (id: string) => void;
+  openScenario: (id: string) => void;
   saveScenario: () => void;
 
   deleteConfirmationIsOpen: boolean;
@@ -202,23 +210,40 @@ export interface ScenarioDrawerProps {
   updateRestrisiko: (restrisiko: Risiko) => void;
 }
 
+export enum ScenarioDrawerState {
+  Closed,
+  Edit,
+  View,
+}
+
 export const useScenarioDrawer = (
   ros: ROS | null,
-  setDrawerIsOpen: (open: boolean) => void,
-  onChange: (ros: ROS) => void,
+  updateRos: (ros: ROS) => void,
 ): ScenarioDrawerProps => {
+  const [scenarioDrawerState, setScenarioDrawerState] = useState(
+    ScenarioDrawerState.Closed,
+  );
   const [scenario, setScenario] = useState(emptyScenario());
   const [originalScenario, setOriginalScenario] = useState(emptyScenario());
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
+
+  const openScenarioDrawerEdit = () =>
+    setScenarioDrawerState(ScenarioDrawerState.Edit);
+
+  const closeScenarioDrawer = () => {
+    setScenarioDrawerState(ScenarioDrawerState.Closed);
+    setScenario(emptyScenario());
+    setOriginalScenario(emptyScenario());
+  };
 
   const saveScenario = () => {
     if (ros) {
       const updatedScenarios = ros.scenarier.some(s => s.ID === scenario.ID)
         ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
         : ros.scenarier.concat(scenario);
-      onChange({ ...ros, scenarier: updatedScenarios });
-      setDrawerIsOpen(false);
+      updateRos({ ...ros, scenarier: updatedScenarios });
+      closeScenarioDrawer();
       setScenario(emptyScenario());
       setOriginalScenario(emptyScenario());
     }
@@ -234,7 +259,7 @@ export const useScenarioDrawer = (
   const deleteScenario = (id: string) => {
     if (ros) {
       const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
-      onChange({ ...ros, scenarier: updatedScenarios });
+      updateRos({ ...ros, scenarier: updatedScenarios });
     }
   };
 
@@ -250,20 +275,20 @@ export const useScenarioDrawer = (
     }
   };
 
-  const editScenario = (id?: string) => {
+  const openScenario = (id: string) => {
     if (ros) {
       const currentScenario =
         ros.scenarier.find(s => s.ID === id) ?? emptyScenario();
       setScenario(currentScenario);
       setOriginalScenario(currentScenario);
-      setDrawerIsOpen(true);
+      setScenarioDrawerState(ScenarioDrawerState.View);
     }
   };
 
   const newScenario = () => {
     setScenario(emptyScenario());
     setOriginalScenario(emptyScenario());
-    setDrawerIsOpen(true);
+    openScenarioDrawerEdit();
   };
 
   const setTittel = (tittel: string) =>
@@ -327,12 +352,16 @@ export const useScenarioDrawer = (
     setScenario({ ...scenario, restrisiko });
 
   return {
+    scenarioDrawerState,
+    openScenarioDrawerEdit,
+    closeScenarioDrawer,
+
     scenario,
     setScenario,
     originalScenario,
     setOriginalScenario,
     newScenario,
-    editScenario,
+    openScenario,
     saveScenario,
 
     deleteConfirmationIsOpen,
@@ -370,31 +399,38 @@ export const useROSPlugin = () => {
 
   const useFetchRoses = (): {
     selectedROS: ROSWithMetadata | null;
-    setSelectedROS: (ros: ROSWithMetadata) => void;
+    setSelectedROS: (ros: ROSWithMetadata | null) => void;
     roses: ROSWithMetadata[] | null;
     setRoses: (roses: ROSWithMetadata[]) => void;
     selectROSByTitle: (title: string) => void;
+    isFetching: boolean;
+    setIsFetching: (isFetching: boolean) => void;
   } => {
     const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
     const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(
       null,
     );
+    const [isFetching, setIsFetching] = useState(true);
 
     useEffect(() => {
-      fetchRoses(response => {
-        const fetchedRoses: ROSWithMetadata[] = response.map(rosDTO => {
-          const content = JSON.parse(rosDTO.rosContent) as ROS;
-          return {
-            id: rosDTO.rosId,
-            title: content.tittel,
-            content: content,
-            status: rosDTO.rosStatus,
-          };
-        });
+      fetchRoses(
+        res => {
+          const fetchedRoses: ROSWithMetadata[] = res.map(rosDTO => {
+            const content = JSON.parse(rosDTO.rosContent) as ROS;
+            return {
+              id: rosDTO.rosId,
+              title: content.tittel,
+              content: content,
+              status: rosDTO.rosStatus,
+            };
+          });
 
-        setRoses(fetchedRoses);
-        setSelectedROS(fetchedRoses[0]);
-      });
+          setRoses(fetchedRoses);
+          setSelectedROS(fetchedRoses[0]);
+          setIsFetching(false);
+        },
+        () => setIsFetching(false),
+      );
     }, [idToken, accessToken]);
 
     const selectROSByTitle = (title: string) => {
@@ -408,6 +444,8 @@ export const useROSPlugin = () => {
       roses,
       setRoses,
       selectROSByTitle,
+      isFetching,
+      setIsFetching,
     };
   };
 

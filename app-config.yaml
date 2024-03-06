@@ -76,8 +76,19 @@ catalog:
       rules:
         - allow: [ User, Group ]
   providers:
+    github:
+      spire-test:
+        organization: 'spire-test'
+        catalogPath: '.security/catalog-info.yaml'
+        filters:
+          branch: 'main'
+          repository: '*'
+        schedule:
+          frequency: { minutes: 1 }
+          timeout: { minutes: 3 }
+
     githubOrg:
-      - spire:
+      - spire-test-org:
         organization: 'spire-test'
         catalogPath: '.security/catalog-info.yaml'
         filters:
@@ -88,15 +99,17 @@ catalog:
           timeout: { minutes: 3 }
 
     microsoftGraphOrg:
-      default:
+      development:
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
         tenantId: ${AZURE_TENANT_ID}
-        user:
-          filter: accountEnabled eq true and userType eq 'member'
+        domainHint: ${AZURE_TENANT_ID}
+        userGroupMember:
+          filter: displayName eq 'Spire-ros'
         group:
           filter: >
-            securityEnabled eq false
-            and mailEnabled eq true
-            and groupTypes/any(c:c+eq+'Unified')
+            displayName eq 'Spire-ros'
+
         schedule:
           frequency: PT1H
           timeout: PT50M
