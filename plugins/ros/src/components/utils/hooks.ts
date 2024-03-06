@@ -87,7 +87,7 @@ const useFetch = (
     onError: (error: T) => void,
     body?: string,
   ) => {
-    if (repoInformation && microsoftIdToken) {
+    if (repoInformation && microsoftIdToken && googleAccessToken) {
       fetchApi(uri, {
         method: method,
         headers: {
@@ -387,7 +387,12 @@ export const useROSPlugin = () => {
   const { value: idToken } = useAsync(() => microsoftAPI.getIdToken());
 
   const googleApi = useApi(googleAuthApiRef);
-  const { value: accessToken } = useAsync(() => googleApi.getAccessToken());
+  const { value: accessToken } = useAsync(() =>
+    googleApi.getAccessToken([
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/cloudkms',
+    ]),
+  );
 
   const repoInformation = useGithubRepositoryInformation();
 
