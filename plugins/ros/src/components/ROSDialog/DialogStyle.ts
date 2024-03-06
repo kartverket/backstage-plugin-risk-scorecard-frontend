@@ -3,7 +3,7 @@ import { Theme, makeStyles } from '@material-ui/core';
 export const useDialogStyles = makeStyles((theme: Theme) => ({
   paper: {
     width: '80%',
-    padding: theme.spacing(4),
+    padding: theme.spacing(2),
   },
   header: {
     display: 'flex',
