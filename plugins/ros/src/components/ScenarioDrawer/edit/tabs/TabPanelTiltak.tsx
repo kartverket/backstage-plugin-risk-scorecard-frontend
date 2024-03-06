@@ -57,10 +57,14 @@ export const TabPanelTiltak = ({
 
   const { tabPanel } = tabStyles();
 
-  const { body2, subtitle1 } = useFontStyles();
+  const { body2, subtitle1, headerSubtitle } = useFontStyles();
 
   return (
     <TabPanel value="tiltak" className={tabPanel}>
+      <Typography variant="h5">Tiltak</Typography>
+      <Typography className={headerSubtitle}>
+        Hvilke tiltak kan gjøres for å unngå den uønskede hendelsen
+      </Typography>
       {scenario.tiltak.map((tiltak, index) => (
         <TiltakEdit
           tiltak={tiltak}
