@@ -3,7 +3,7 @@ import { Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
 import { formatNOK } from '../utils/utilityfunctions';
 import { ROS } from '../utils/types';
-import { InfotextDialog } from './InfotextDialog';
+import { CostInfoDialog } from './CostInfoDialog';
 
 interface AggregatedCostProps {
   ros: ROS;
@@ -41,7 +41,7 @@ export const AggregatedCost = ({ ros }: AggregatedCostProps) => {
           </IconButton>
         </Grid>
       </Grid>
-      <InfotextDialog
+      <CostInfoDialog
         isOpen={showDialog}
         onClose={() => setShowDialog(false)}
       />

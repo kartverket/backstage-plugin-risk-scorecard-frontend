@@ -27,7 +27,7 @@ import { DeleteConfirmation } from '../../ROSPlugin/DeleteConfirmation';
 
 export const ScenarioDrawerEdit = () => {
   const { header, buttons } = useScenarioDrawerContentStyles();
-  const { h1, button } = useFontStyles();
+  const { h1, headerSubtitle, labelSubtitle, button, label } = useFontStyles();
 
   const {
     closeScenarioDrawer,
@@ -72,9 +72,8 @@ export const ScenarioDrawerEdit = () => {
   return (
     <>
       <Box className={header}>
-        <Typography variant="h1" className={h1}>
-          Risikoscenario
-        </Typography>
+        <Typography className={h1}>Risikoscenario</Typography>
+
         <Button
           className={button}
           variant="outlined"
@@ -85,6 +84,9 @@ export const ScenarioDrawerEdit = () => {
           Lukk
         </Button>
       </Box>
+      <Typography className={headerSubtitle}>
+        En uønsket hendelse som potensielt kan ramme systemet
+      </Typography>
 
       <Grid container>
         <Grid item xs={12}>
@@ -106,8 +108,11 @@ export const ScenarioDrawerEdit = () => {
         </Grid>
 
         <Grid item xs={6}>
+          <Typography className={label}>Trusselaktører</Typography>
+          <Typography className={labelSubtitle}>
+            Aktøren som prøver å få tilgang til eller misbruke systemet
+          </Typography>
           <Dropdown<string[]>
-            label="Trusselaktører"
             selectedValues={scenario.trusselaktører}
             options={trusselaktørerOptions}
             handleChange={setTrusselaktører}
@@ -115,8 +120,12 @@ export const ScenarioDrawerEdit = () => {
         </Grid>
 
         <Grid item xs={6}>
+          <Typography className={label}>Sårbarheter</Typography>
+          <Typography className={labelSubtitle}>
+            Svakhet i systemet som kan utnyttes av trusselaktøren
+          </Typography>
+
           <Dropdown<string[]>
-            label="Sårbarheter"
             selectedValues={scenario.sårbarheter}
             options={sårbarheterOptions}
             handleChange={setSårbarheter}

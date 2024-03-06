@@ -59,8 +59,8 @@ export const TiltakEdit = ({
     });
   };
 
-  const { paper, formLabel, formControl } = useInputFieldStyles();
-  const { label, button } = useFontStyles();
+  const { paper, formControl } = useInputFieldStyles();
+  const { label, labelSubtitle, button } = useFontStyles();
 
   return (
     <Paper className={paper}>
@@ -95,26 +95,42 @@ export const TiltakEdit = ({
         </Grid>
 
         <Grid item xs={4}>
-          <Dropdown<string>
-            label="Status"
-            options={statusOptions}
-            selectedValues={tiltak.status}
-            handleChange={setStatus}
-          />
+          <Typography className={label}>Tiltakseier</Typography>
+          <Typography className={labelSubtitle}>
+            De eller den som er ansvarlig for at tiltaket blir gjennomført
+          </Typography>
         </Grid>
 
         <Grid item xs={4}>
+          <Typography className={label} style={{ marginTop: '3rem' }}>
+            Status
+          </Typography>
+        </Grid>
+
+        <Grid item xs={4}>
+          <Typography className={label} style={{ marginTop: '3rem' }}>
+            Status
+          </Typography>
+        </Grid>
+
+        <Grid item xs={4} style={{ marginTop: '-1.5rem' }}>
           <TextField
-            label="Tiltakseier"
             value={tiltak.tiltakseier}
             handleChange={setTiltakseier}
             minRows={1}
           />
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid item xs={4} style={{ marginTop: '-1rem' }}>
+          <Dropdown<string>
+            options={statusOptions}
+            selectedValues={tiltak.status}
+            handleChange={setStatus}
+          />
+        </Grid>
+
+        <Grid item xs={4} style={{ marginTop: '-1rem' }}>
           <FormControl className={formControl}>
-            <FormLabel className={formLabel}>Frist</FormLabel>
             <LocalizationProvider dateAdapter={ADF} adapterLocale={nb}>
               <DatePicker value={tiltak.frist} onChange={setTiltaksfrist} />
             </LocalizationProvider>

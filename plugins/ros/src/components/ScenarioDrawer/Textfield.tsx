@@ -7,7 +7,7 @@ import React, { ChangeEvent } from 'react';
 import { useInputFieldStyles } from './style';
 
 interface TextFieldProps {
-  label: string;
+  label?: string;
   value: string | number;
   handleChange?: (value: string) => void;
   minRows?: number;
