@@ -1,6 +1,6 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React from 'react';
-import { PickerTable } from '../../../PickerTable/PickerTable';
+import { PickerTable } from '../../../HelperTables/KonsekvensTable';
 import { tabStyles } from './style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../style';

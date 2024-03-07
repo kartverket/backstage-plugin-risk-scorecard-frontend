@@ -3,7 +3,7 @@ import React from 'react';
 import { tabStyles } from './style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../style';
-import { SannsynlighetTable } from '../../../PickerTable/SannsynlighetTable';
+import { SannsynlighetTable } from '../../../HelperTables/SannsynlighetTable';
 
 interface TabPanelSannsynlighetProps {
   selected: number;
