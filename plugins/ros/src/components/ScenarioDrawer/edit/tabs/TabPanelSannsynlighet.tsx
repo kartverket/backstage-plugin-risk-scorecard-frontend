@@ -25,9 +25,10 @@ export const TabPanelSannsynlighet = ({
 
   return (
     <TabPanel className={tabPanel} value="sannsynlighet">
-      <Typography variant="h5">Tiltak</Typography>
+      <Typography variant="h5">Sannsynlighet</Typography>
       <Typography className={headerSubtitle}>
-        Hvilke tiltak kan gjøres for å unngå den uønskede hendelsen
+        Hvor sannsynlig er det at dette scenarioet vil forekomme? Dersom du er
+        mellom to sannsynlighetsverdier velger du den høyeste.
       </Typography>
       <Dropdown<number>
         label="Sannsynlighet"
