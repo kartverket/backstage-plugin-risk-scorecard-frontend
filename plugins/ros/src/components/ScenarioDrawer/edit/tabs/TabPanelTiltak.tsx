@@ -87,7 +87,12 @@ export const TabPanelTiltak = ({
 
       <Grid container style={{ paddingTop: '1.5rem' }} columns={9}>
         <Grid item xs={12}>
-          <Typography className={subtitle1}>Restrisiko</Typography>
+          <Typography variant="h5">Restrisiko</Typography>
+          <Typography className={headerSubtitle}>
+            Sett restrisiko for scenarioet. Restrisiko er konsekvens og
+            sannsynlighet for scenarioet etter at alle tiltak i listen er
+            gjennomført.
+          </Typography>
         </Grid>
         <Grid item xs={4}>
           <Typography className={body2}>Risiko i dag</Typography>
