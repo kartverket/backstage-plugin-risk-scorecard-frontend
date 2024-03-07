@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
+  googleAuthApiRef,
   microsoftAuthApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
@@ -66,7 +67,8 @@ const useResponse = (): [
 };
 
 const useFetch = (
-  idToken: string | undefined,
+  microsoftIdToken: string | undefined,
+  googleAccessToken: string | undefined,
   repoInformation: GithubRepoInfo | null,
 ) => {
   const { fetch: fetchApi } = useApi(fetchApiRef);
@@ -85,11 +87,12 @@ const useFetch = (
     onError: (error: T) => void,
     body?: string,
   ) => {
-    if (repoInformation && idToken) {
+    if (repoInformation && microsoftIdToken && googleAccessToken) {
       fetchApi(uri, {
         method: method,
         headers: {
-          'Microsoft-Id-Token': idToken,
+          'Microsoft-Id-Token': microsoftIdToken,
+          'GCP-Access-Token': googleAccessToken,
           'Content-Type': 'application/json',
         },
         body: body,
@@ -382,10 +385,20 @@ export const useScenarioDrawer = (
 export const useROSPlugin = () => {
   const microsoftAPI = useApi(microsoftAuthApiRef);
   const { value: idToken } = useAsync(() => microsoftAPI.getIdToken());
+
+  const googleApi = useApi(googleAuthApiRef);
+  const { value: accessToken } = useAsync(() =>
+    googleApi.getAccessToken([
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/cloudkms',
+    ]),
+  );
+
   const repoInformation = useGithubRepositoryInformation();
 
   const { fetchRoses, postROS, putROS, publishROS, response } = useFetch(
     idToken,
+    accessToken,
     repoInformation,
   );
 
@@ -423,7 +436,7 @@ export const useROSPlugin = () => {
         },
         () => setIsFetching(false),
       );
-    }, [idToken]);
+    }, [idToken, accessToken]);
 
     const selectROSByTitle = (title: string) => {
       const pickedRos = roses?.find(ros => ros.title === title) || null;
