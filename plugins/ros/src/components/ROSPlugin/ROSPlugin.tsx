@@ -14,7 +14,6 @@ import {
   ROSStatusAlertNotApprovedByRisikoeier,
   ROSStatusComponent,
 } from '../ROSStatus/ROSStatusComponent';
-import { DeleteConfirmation } from './DeleteConfirmation';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import { ROS, RosStatus } from '../utils/types';
@@ -34,6 +33,7 @@ export const ROSPlugin = () => {
   const {
     selectedROS,
     setSelectedROS,
+
     roses,
     setRoses,
     selectROSByTitle,
