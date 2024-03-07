@@ -3,7 +3,7 @@ import { Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
 import { formatNOK } from '../utils/utilityfunctions';
 import { ROS } from '../utils/types';
-import { CostInfoDialog } from './CostInfoDialog';
+import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
 
 interface AggregatedCostProps {
   ros: ROS;
@@ -41,7 +41,7 @@ export const AggregatedCost = ({ ros }: AggregatedCostProps) => {
           </IconButton>
         </Grid>
       </Grid>
-      <CostInfoDialog
+      <EstimatedRiskInfoDialog
         isOpen={showDialog}
         onClose={() => setShowDialog(false)}
       />
