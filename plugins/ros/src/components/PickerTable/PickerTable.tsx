@@ -76,8 +76,7 @@ export const PickerTable = ({
         <tr>
           <td className={classes.firstCell}>
             <div className={classes.label}>
-              <b> Kritisk - </b>
-              <Typography>5</Typography>
+              <b> Kritisk - 5 </b>
               <Radio
                 checked={selectedValue === 5}
                 onChange={handleChangeRow(5)}
@@ -99,8 +98,7 @@ export const PickerTable = ({
         <tr>
           <td className={classes.firstCell}>
             <div className={classes.label}>
-              <b> Alvorlig - </b>
-              <Typography>4</Typography>
+              <b> Alvorlig - 4 </b>
               <Radio
                 checked={selectedValue === 4}
                 onChange={handleChangeRow(4)}
@@ -125,8 +123,7 @@ export const PickerTable = ({
         <tr>
           <td className={classes.firstCell}>
             <div className={classes.label}>
-              <b> Moderat - </b>
-              <Typography>3</Typography>
+              <b> Moderat - 3 </b>
               <Radio
                 checked={selectedValue === 3}
                 onChange={handleChangeRow(3)}
@@ -150,8 +147,7 @@ export const PickerTable = ({
         <tr>
           <td className={classes.firstCell}>
             <div className={classes.label}>
-              <b> Liten - </b>
-              <Typography>2</Typography>
+              <b> Liten - 2 </b>
               <Radio
                 checked={selectedValue === 2}
                 onChange={handleChangeRow(2)}
@@ -174,8 +170,7 @@ export const PickerTable = ({
         <tr>
           <td className={classes.firstCell}>
             <div className={classes.label}>
-              <b> Ubetydelig - </b>
-              <Typography>1</Typography>
+              <b> Ubetydelig - 1 </b>
               <Radio
                 checked={selectedValue === 1}
                 onChange={handleChangeRow(1)}
