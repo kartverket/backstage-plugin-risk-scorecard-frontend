@@ -31,7 +31,6 @@ integrations:
       apps:
         - appId: ${GITHUB_APP_ID}
           privateKey: ${GITHUB_APP_PK}
-          webhookSecret: ${GITHUB_APP_WEBHOOK_SECRET}
           clientId: ${GITHUB_APP_CLIENT_ID}
           clientSecret: ${GITHUB_APP_CLIENT_SECRET}
 

@@ -4,12 +4,13 @@ import {
   Button,
   Dialog,
   DialogContent,
-  DialogTitle,
+  Typography,
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
 import { useDialogStyles } from './DialogStyle';
 import { ROS } from '../utils/types';
 import { emptyROS } from '../utils/utilityfunctions';
+import { useFontStyles } from '../ScenarioDrawer/style';
 
 interface ROSDialogProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export const ROSDialog = ({
   const [newROS, setNewROS] = useState<ROS>(emptyROS(true));
 
   const classes = useDialogStyles();
+  const { label, labelSubtitle, h1 } = useFontStyles();
 
   const clearROS = () => {
     setNewROS(emptyROS(false));
@@ -61,10 +63,9 @@ export const ROSDialog = ({
       onClose={onClose}
       {...props}
     >
-      <DialogTitle>Ny analyse</DialogTitle>
       <DialogContent>
+        <Typography className={h1}>Ny risiko- og sårbarhetsanalyse</Typography>
         <Box className={classes.content}>
-          {/* TODO: feltvalidering */}
           <TextField
             label="Tittel"
             value={newROS.tittel}
@@ -73,8 +74,12 @@ export const ROSDialog = ({
           />
         </Box>
         <Box className={classes.content}>
+          <Typography className={label}>Omfang</Typography>
+          <Typography className={labelSubtitle}>
+            Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av
+            omfanget må også defineres.
+          </Typography>
           <TextField
-            label="Omfang"
             value={newROS.omfang}
             minRows={4}
             handleChange={setOmfang}
@@ -90,11 +95,11 @@ export const ROSDialog = ({
         }}
       >
         <Box className={classes.buttons}>
+          <Button variant="contained" color="primary" onClick={handleCreate}>
+            Lagre
+          </Button>
           <Button variant="outlined" color="primary" onClick={handleCancel}>
             Avbryt
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleCreate}>
-            Opprett
           </Button>
         </Box>
       </div>
