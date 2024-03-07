@@ -1,9 +1,9 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React from 'react';
-import { Dropdown } from '../../Dropdown';
 import { tabStyles } from './style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../style';
+import { SannsynlighetTable } from '../../../PickerTable/SannsynlighetTable';
 
 interface TabPanelSannsynlighetProps {
   selected: number;
@@ -14,7 +14,6 @@ interface TabPanelSannsynlighetProps {
 export const TabPanelSannsynlighet = ({
   selected,
   setSannsynlighet,
-  options,
 }: TabPanelSannsynlighetProps) => {
   const { tabPanel } = tabStyles();
   const { headerSubtitle } = useFontStyles();
@@ -27,13 +26,12 @@ export const TabPanelSannsynlighet = ({
     <TabPanel className={tabPanel} value="sannsynlighet">
       <Typography variant="h5">Sannsynlighet</Typography>
       <Typography className={headerSubtitle}>
-        Hvor sannsynlig er det at dette scenarioet vil forekomme? Dersom du er
-        mellom to sannsynlighetsverdier velger du den høyeste.
+        Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme
+        Dersom du er mellom to sannsynlighetsverdier velger du den høyeste.
       </Typography>
-      <Dropdown<number>
-        label="Sannsynlighet"
-        selectedValues={selected}
-        options={options}
+
+      <SannsynlighetTable
+        selectedValue={selected}
         handleChange={handleChange}
       />
     </TabPanel>
