@@ -9,6 +9,7 @@ import { useInputFieldStyles } from './style';
 
 interface TextFieldProps {
   label?: string;
+  subtitle?: string;
   value: string | number;
   error?: string | null;
   required?: boolean;
@@ -18,6 +19,7 @@ interface TextFieldProps {
 
 export const TextField = ({
   label,
+  subtitle,
   value,
   error,
   required,
@@ -31,9 +33,12 @@ export const TextField = ({
 
   return (
     <FormControl className={formControl}>
-      <FormLabel className={formLabel} required={required}>
-        {label}
-      </FormLabel>
+      {label && (
+        <FormLabel className={formLabel} required={required}>
+          {label}
+        </FormLabel>
+      )}
+      {subtitle && <FormHelperText>{subtitle}</FormHelperText>}
       <MUITextField
         disabled={!handleChange}
         required

@@ -4,6 +4,7 @@ import {
   Button,
   Dialog,
   DialogContent,
+  FormHelperText,
   Typography,
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
@@ -11,6 +12,7 @@ import { useDialogStyles } from './DialogStyle';
 import { ROS } from '../utils/types';
 import { emptyROS } from '../utils/utilityfunctions';
 import { useFontStyles } from '../ScenarioDrawer/style';
+import FormControl from '@material-ui/core/FormControl';
 
 interface ROSDialogProps {
   isOpen: boolean;
@@ -26,6 +28,14 @@ export const ROSDialog = ({
 }: ROSDialogProps) => {
   const [newROS, setNewROS] = useState<ROS>(emptyROS(true));
 
+  const [newROSError, setNewROSError] = useState<{
+    tittel: string | null;
+    omfang: string | null;
+  }>({
+    tittel: null,
+    omfang: null,
+  });
+
   const classes = useDialogStyles();
   const { label, labelSubtitle, h1 } = useFontStyles();
 
@@ -34,6 +44,12 @@ export const ROSDialog = ({
   };
 
   const handleCreate = () => {
+    setNewROSError({
+      tittel: newROS.tittel ? null : 'Tittel må fylles ut',
+      omfang: newROS.omfang ? null : 'Omfang må fylles ut',
+    });
+    if (!newROS.tittel || !newROS.omfang) return;
+
     saveRos(newROS);
     onClose();
     clearROS();
@@ -44,17 +60,27 @@ export const ROSDialog = ({
     clearROS();
   };
 
-  const setTittel = (tittel: string) =>
+  const setTittel = (tittel: string) => {
+    setNewROSError({
+      ...newROSError,
+      tittel: null,
+    });
     setNewROS({
       ...newROS,
       tittel: tittel,
     });
+  };
 
-  const setOmfang = (omfang: string) =>
+  const setOmfang = (omfang: string) => {
+    setNewROSError({
+      ...newROSError,
+      omfang: null,
+    });
     setNewROS({
       ...newROS,
       omfang: omfang,
     });
+  };
 
   return (
     <Dialog
@@ -71,18 +97,24 @@ export const ROSDialog = ({
             value={newROS.tittel}
             minRows={1}
             handleChange={setTittel}
+            error={newROSError.tittel}
+            required
           />
         </Box>
         <Box className={classes.content}>
-          <Typography className={label}>Omfang</Typography>
+          {/* <Typography className={label}>Omfang</Typography>
           <Typography className={labelSubtitle}>
             Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av
             omfanget må også defineres.
-          </Typography>
+          </Typography>*/}
           <TextField
+            label="Omfang"
+            subtitle="Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres."
             value={newROS.omfang}
             minRows={4}
             handleChange={setOmfang}
+            error={newROSError.omfang}
+            required
           />
         </Box>
       </DialogContent>
