@@ -9,11 +9,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import React, { ChangeEvent } from 'react';
 import { menuProps, useInputFieldStyles } from './style';
+import { FormHelperText } from '@material-ui/core';
 
 interface DropdownProps<T> {
   options: string[];
   selectedValues: T;
   handleChange: (value: T) => void;
+  error?: string | null;
+  required?: boolean;
   label?: string;
   variant?: 'standard' | 'outlined' | 'filled';
 }
@@ -23,6 +26,8 @@ export const Dropdown = <T,>({
   options,
   selectedValues,
   handleChange,
+  error,
+  required,
   variant = 'outlined',
 }: DropdownProps<T>) => {
   const { formLabel, formControl } = useInputFieldStyles();
@@ -52,7 +57,11 @@ export const Dropdown = <T,>({
 
   return (
     <FormControl className={formControl}>
-      {label && <FormLabel className={formLabel}>{label}</FormLabel>}
+      {label && (
+        <FormLabel className={formLabel} required={required}>
+          {label}
+        </FormLabel>
+      )}
       <Select
         multiple={multiple}
         value={selectedValues}
@@ -61,6 +70,7 @@ export const Dropdown = <T,>({
         MenuProps={menuProps}
         renderValue={renderValue}
         style={{ minHeight: multiple ? '4.9rem' : 'auto' }}
+        error={!!error}
       >
         {options.map(name => (
           <MenuItem key={name} value={name}>
@@ -73,6 +83,7 @@ export const Dropdown = <T,>({
           </MenuItem>
         ))}
       </Select>
+      {error && <FormHelperText error>{error}</FormHelperText>}
     </FormControl>
   );
 };

@@ -191,7 +191,9 @@ export interface ScenarioDrawerProps {
   setOriginalScenario: (scenario: Scenario) => void;
   newScenario: () => void;
   openScenario: (id: string) => void;
-  saveScenario: () => void;
+  saveScenario: () => boolean;
+
+  scenarioErrors: ScenarioErrors;
 
   deleteConfirmationIsOpen: boolean;
   openDeleteConfirmation: (id: string) => void;
@@ -216,6 +218,13 @@ export enum ScenarioDrawerState {
   View,
 }
 
+type ScenarioErrors = {
+  tittel: string | null;
+  beskrivelse: string | null;
+  trusselaktører: string | null;
+  sårbarheter: string | null;
+};
+
 export const useScenarioDrawer = (
   ros: ROS | null,
   updateRos: (ros: ROS) => void,
@@ -228,6 +237,13 @@ export const useScenarioDrawer = (
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
 
+  const [scenarioErrors, setScenarioErrors] = useState<ScenarioErrors>({
+    tittel: null,
+    beskrivelse: null,
+    trusselaktører: null,
+    sårbarheter: null,
+  });
+
   const openScenarioDrawerEdit = () =>
     setScenarioDrawerState(ScenarioDrawerState.Edit);
 
@@ -239,14 +255,35 @@ export const useScenarioDrawer = (
 
   const saveScenario = () => {
     if (ros) {
-      const updatedScenarios = ros.scenarier.some(s => s.ID === scenario.ID)
-        ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
-        : ros.scenarier.concat(scenario);
-      updateRos({ ...ros, scenarier: updatedScenarios });
-      closeScenarioDrawer();
-      setScenario(emptyScenario());
-      setOriginalScenario(emptyScenario());
+      setScenarioErrors({
+        tittel: scenario.tittel === '' ? 'Tittel kan ikke være tom' : null,
+        beskrivelse:
+          scenario.beskrivelse === '' ? 'Beskrivelse kan ikke være tom' : null,
+        trusselaktører:
+          scenario.trusselaktører.length === 0
+            ? 'Velg minst én trusselaktør'
+            : null,
+        sårbarheter:
+          scenario.sårbarheter.length === 0 ? 'Velg minst én sårbarhet' : null,
+      });
+
+      if (
+        scenario.tittel !== '' &&
+        scenario.beskrivelse !== '' &&
+        scenario.trusselaktører.length !== 0 &&
+        scenario.sårbarheter.length !== 0
+      ) {
+        const updatedScenarios = ros.scenarier.some(s => s.ID === scenario.ID)
+          ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
+          : ros.scenarier.concat(scenario);
+        updateRos({ ...ros, scenarier: updatedScenarios });
+        closeScenarioDrawer();
+        setScenario(emptyScenario());
+        setOriginalScenario(emptyScenario());
+        return true;
+      }
     }
+    return false;
   };
 
   const openDeleteConfirmation = (id: string) => {
@@ -291,29 +328,49 @@ export const useScenarioDrawer = (
     openScenarioDrawerEdit();
   };
 
-  const setTittel = (tittel: string) =>
+  const setTittel = (tittel: string) => {
+    setScenarioErrors({
+      ...scenarioErrors,
+      tittel: null,
+    });
     setScenario({
       ...scenario,
       tittel: tittel,
     });
+  };
 
-  const setBeskrivelse = (beskrivelse: string) =>
+  const setBeskrivelse = (beskrivelse: string) => {
+    setScenarioErrors({
+      ...scenarioErrors,
+      beskrivelse: null,
+    });
     setScenario({
       ...scenario,
       beskrivelse: beskrivelse,
     });
+  };
 
-  const setTrusselaktører = (trusselaktører: string[]) =>
+  const setTrusselaktører = (trusselaktører: string[]) => {
+    setScenarioErrors({
+      ...scenarioErrors,
+      trusselaktører: null,
+    });
     setScenario({
       ...scenario,
       trusselaktører: trusselaktører,
     });
+  };
 
-  const setSårbarheter = (sårbarheter: string[]) =>
+  const setSårbarheter = (sårbarheter: string[]) => {
+    setScenarioErrors({
+      ...scenarioErrors,
+      sårbarheter: null,
+    });
     setScenario({
       ...scenario,
       sårbarheter: sårbarheter,
     });
+  };
 
   const setSannsynlighet = (sannsynlighetLevel: number) =>
     setScenario({
@@ -363,6 +420,8 @@ export const useScenarioDrawer = (
     newScenario,
     openScenario,
     saveScenario,
+
+    scenarioErrors,
 
     deleteConfirmationIsOpen,
     openDeleteConfirmation,
