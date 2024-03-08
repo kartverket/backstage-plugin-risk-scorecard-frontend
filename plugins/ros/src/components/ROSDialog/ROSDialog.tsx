@@ -4,7 +4,6 @@ import {
   Button,
   Dialog,
   DialogContent,
-  FormHelperText,
   Typography,
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
@@ -12,7 +11,6 @@ import { useDialogStyles } from './DialogStyle';
 import { ROS } from '../utils/types';
 import { emptyROS } from '../utils/utilityfunctions';
 import { useFontStyles } from '../ScenarioDrawer/style';
-import FormControl from '@material-ui/core/FormControl';
 
 interface ROSDialogProps {
   isOpen: boolean;
@@ -37,7 +35,7 @@ export const ROSDialog = ({
   });
 
   const classes = useDialogStyles();
-  const { label, labelSubtitle, h1 } = useFontStyles();
+  const { h1 } = useFontStyles();
 
   const clearROS = () => {
     setNewROS(emptyROS(false));

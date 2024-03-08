@@ -5,7 +5,7 @@ import {
   TextField as MUITextField,
 } from '@material-ui/core';
 import React, { ChangeEvent } from 'react';
-import { useInputFieldStyles } from './style';
+import { useFontStyles, useInputFieldStyles } from './style';
 
 interface TextFieldProps {
   label?: string;
@@ -27,6 +27,7 @@ export const TextField = ({
   handleChange,
 }: TextFieldProps) => {
   const { formLabel, formControl } = useInputFieldStyles();
+  const { labelSubtitle } = useFontStyles();
 
   const onChange = (event: ChangeEvent<{ value: string }>) =>
     handleChange && handleChange(event.target.value);
@@ -38,7 +39,9 @@ export const TextField = ({
           {label}
         </FormLabel>
       )}
-      {subtitle && <FormHelperText>{subtitle}</FormHelperText>}
+      {subtitle && (
+        <FormHelperText className={labelSubtitle}>{subtitle}</FormHelperText>
+      )}
       <MUITextField
         disabled={!handleChange}
         required
