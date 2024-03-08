@@ -265,6 +265,7 @@ export const useScenarioDrawer = (
 
   const confirmDeletion = () => {
     deleteScenario(scenario.ID);
+    closeScenarioDrawer();
   };
 
   const closeDeleteConfirmation = () => {
