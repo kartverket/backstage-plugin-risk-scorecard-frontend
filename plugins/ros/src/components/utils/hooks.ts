@@ -269,11 +269,7 @@ export const useScenarioDrawer = (
   };
 
   const closeDeleteConfirmation = () => {
-    if (ros) {
-      setDeleteConfirmationIsOpen(false);
-      setScenario(emptyScenario());
-      setOriginalScenario(emptyScenario());
-    }
+    setDeleteConfirmationIsOpen(false);
   };
 
   const openScenario = (id: string) => {
