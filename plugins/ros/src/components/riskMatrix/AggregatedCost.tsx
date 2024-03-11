@@ -7,23 +7,27 @@ import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
 
 interface AggregatedCostProps {
   ros: ROS;
+  startRisiko: boolean;
 }
 
 const useStyles = makeStyles({
   gridOuterContainer: {
-    alignItems: 'center',
+    display: 'flex',
     flexDirection: 'column',
   },
   gridInnerContainer: {
-    justifyContent: 'center',
-    paddingBottom: '1rem',
-    paddingTop: '0.5rem',
+    display: 'flex',
+    justifyContent: 'start',
   },
 });
 
-export const AggregatedCost = ({ ros }: AggregatedCostProps) => {
+export const AggregatedCost = ({ ros, startRisiko }: AggregatedCostProps) => {
   const cost = ros.scenarier
-    .map(scenario => scenario.risiko.sannsynlighet * scenario.risiko.konsekvens)
+    .map(scenario =>
+      startRisiko
+        ? scenario.risiko.sannsynlighet * scenario.risiko.konsekvens
+        : scenario.restrisiko.sannsynlighet * scenario.restrisiko.konsekvens,
+    )
     .reduce((a, b) => a + b, 0);
 
   const [showDialog, setShowDialog] = useState(false);
@@ -31,11 +35,11 @@ export const AggregatedCost = ({ ros }: AggregatedCostProps) => {
   return (
     <>
       <Grid container className={classes.gridOuterContainer}>
-        <Typography>Risikoen har en potensiell årlig kostnad på</Typography>
-        <Grid container className={classes.gridInnerContainer}>
-          <Typography align="center" variant="h5">
-            {formatNOK(cost)} kr
-          </Typography>
+        <Grid item>
+          <Typography>Estimert risiko</Typography>
+        </Grid>
+        <Grid item className={classes.gridInnerContainer}>
+          <Typography variant="h5">{formatNOK(cost)} kr/år</Typography>
           <IconButton size="small" onClick={() => setShowDialog(true)}>
             <InfoIcon />
           </IconButton>

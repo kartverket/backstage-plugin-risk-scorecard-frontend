@@ -3,39 +3,36 @@ import { makeStyles, Theme } from '@material-ui/core';
 export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(12, 1fr)',
-    gridTemplateRows: 'repeat(7, 1fr)',
-    gap: '2px',
-  },
-  riskMatrixGrid: {
-    gridColumn: 'span 11',
-    gridRow: 'span 6',
-    display: 'grid',
-    gridTemplateColumns: '1fr repeat(5, 2fr)',
-    gridTemplateRows: 'repeat(6, 1fr)',
+    gridTemplateRows: 'repeat(5, 4rem) auto auto',
+    gridTemplateColumns: '2rem 2rem repeat(5, 4rem)',
     gap: '0.3rem',
+    paddingRight: '4rem',
   },
-  riskMatrixItem: {
+  konsekvens: {
+    gridRow: '1 / span 5',
+    writingMode: 'vertical-lr',
+    transform: 'rotate(180deg)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: theme.spacing(2),
   },
-  topRow: {
-    gridColumn: 'span 12',
+  sannsynlighet: {
+    gridRow: 7,
+    gridColumn: '3 / span 5',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: theme.spacing(2),
   },
-  rightColumn: {
-    gridColumn: 'span 1',
-    gridRow: 'span 5',
-    padding: theme.spacing(2),
-    writingMode: 'vertical-rl',
+  index: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  square: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '15%',
   },
   circle: {
     backgroundColor: 'white',
@@ -61,6 +58,11 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
   },
   riskSummary: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    backgroundColor:
+      theme.palette.type === 'dark' ? '#FFFFFF1A' : 'rgba(0, 0, 0, 0.1)',
   },
 }));
