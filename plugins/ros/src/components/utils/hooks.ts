@@ -265,14 +265,11 @@ export const useScenarioDrawer = (
 
   const confirmDeletion = () => {
     deleteScenario(scenario.ID);
+    closeScenarioDrawer();
   };
 
   const closeDeleteConfirmation = () => {
-    if (ros) {
-      setDeleteConfirmationIsOpen(false);
-      setScenario(emptyScenario());
-      setOriginalScenario(emptyScenario());
-    }
+    setDeleteConfirmationIsOpen(false);
   };
 
   const openScenario = (id: string) => {
