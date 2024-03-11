@@ -102,15 +102,6 @@ export const ScenarioDrawerEdit = () => {
           />
         </Grid>
 
-        <Grid item xs={12}>
-          <TextField
-            label="Beskrivelse"
-            value={scenario.beskrivelse}
-            minRows={4}
-            handleChange={setBeskrivelse}
-          />
-        </Grid>
-
         <Grid item xs={6}>
           <Typography className={label}>Trusselaktører</Typography>
           <Typography className={labelSubtitle}>
@@ -133,6 +124,14 @@ export const ScenarioDrawerEdit = () => {
             selectedValues={scenario.sårbarheter}
             options={sårbarheterOptions}
             handleChange={setSårbarheter}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            label="Beskrivelse"
+            value={scenario.beskrivelse}
+            minRows={4}
+            handleChange={setBeskrivelse}
           />
         </Grid>
 
