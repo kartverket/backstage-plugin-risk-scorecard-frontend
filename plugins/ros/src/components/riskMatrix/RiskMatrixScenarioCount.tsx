@@ -27,8 +27,15 @@ export const RiskMatrixScenarioCount = ({
   consequence,
   startRisiko,
 }: ScenarioCountProps) => {
-  const { circle, circleText, tooltip, tooltipArrow, tooltipText } =
-    useRiskMatrixStyles();
+  const {
+    circle,
+    centered,
+    circleText,
+    text,
+    tooltip,
+    tooltipArrow,
+    tooltipText,
+  } = useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -81,11 +88,13 @@ export const RiskMatrixScenarioCount = ({
         open={tooltipOpen}
       >
         <Paper
-          className={circle}
+          className={`${circle} ${centered}`}
           elevation={10}
           onClick={() => setTooltipOpen(!tooltipOpen)}
         >
-          <Typography className={circleText}>{scenarier.length}</Typography>
+          <Typography className={`${circleText} ${text}`}>
+            {scenarier.length}
+          </Typography>
         </Paper>
       </Tooltip>
     </ClickAwayListener>

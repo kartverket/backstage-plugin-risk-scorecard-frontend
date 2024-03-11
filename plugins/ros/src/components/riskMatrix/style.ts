@@ -14,10 +14,12 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     paddingRight: '64px',
     gap: theme.spacing(0.5),
   },
-  label: {
+  centered: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  text: {
     fontWeight: 700,
     fontSize: theme.spacing(2.5),
   },
@@ -30,15 +32,7 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     gridRow: 7,
     gridColumn: '3 / span 5',
   },
-  index: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   square: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: '10%',
     aspectRatio: '1 / 1',
   },
@@ -46,21 +40,12 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     backgroundColor: 'white',
     height: '60%',
     aspectRatio: '1 / 1',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: '50%',
     cursor: 'pointer',
     minHeight: theme.spacing(2.5),
   },
-  indexText: {
-    fontWeight: 700,
-    fontSize: theme.spacing(2.5),
-  },
   circleText: {
-    fontWeight: 700,
     color: 'black',
-    fontSize: theme.spacing(2.5),
   },
   tooltip: {
     backgroundColor: 'white',

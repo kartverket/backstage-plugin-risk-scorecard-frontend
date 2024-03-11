@@ -18,10 +18,9 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
     gridWrapper,
     konsekvens,
     sannsynlighet,
-    indexText,
-    index,
     square,
-    label,
+    text,
+    centered,
   } = useRiskMatrixStyles();
 
   const [tab, setTab] = useState('startrisiko');
@@ -36,16 +35,18 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
         <Box className={gridWrapper}>
           <Box className={grid}>
             <Box className={konsekvens}>
-              <Typography className={label}>Konsekvens</Typography>
+              <Typography className={`${centered} ${text}`}>
+                Konsekvens
+              </Typography>
             </Box>
             {indices.map(row => (
               <>
-                <Box className={index}>
-                  <Typography className={indexText}>{5 - row}</Typography>
+                <Box className={centered}>
+                  <Typography className={text}>{5 - row}</Typography>
                 </Box>
                 {indices.map(col => (
                   <Box
-                    className={square}
+                    className={`${square} ${centered}`}
                     style={{ backgroundColor: MatrixColors[4 - row][col] }}
                   >
                     <RiskMatrixScenarioCount
@@ -58,15 +59,17 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
                 ))}
               </>
             ))}
-            <Box className={index} />
-            <Box className={index} />
+            <Box className={centered} />
+            <Box className={centered} />
             {indices.map(col => (
-              <Box className={index}>
-                <Typography className={indexText}>{col + 1}</Typography>
+              <Box className={centered}>
+                <Typography className={text}>{col + 1}</Typography>
               </Box>
             ))}
             <Box className={sannsynlighet}>
-              <Typography className={label}>Sannsynlighet</Typography>
+              <Typography className={`${centered} ${text}`}>
+                Sannsynlighet
+              </Typography>
             </Box>
           </Box>
         </Box>
