@@ -12,8 +12,15 @@ import { Tabs } from './Tabs';
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];
-  const { riskSummary, grid, konsekvens, sannsynlighet, index, square } =
-    useRiskMatrixStyles();
+  const {
+    riskSummary,
+    grid,
+    gridWrapper,
+    konsekvens,
+    sannsynlighet,
+    index,
+    square,
+  } = useRiskMatrixStyles();
 
   const [tab, setTab] = useState('startrisiko');
 
@@ -24,39 +31,41 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
         <Box className={riskSummary}>
           <AggregatedCost ros={ros} startRisiko={tab === 'startrisiko'} />
         </Box>
-        <Box className={grid}>
-          <Box className={konsekvens}>
-            <Typography variant="h6">Konsekvens</Typography>
-          </Box>
-          {indices.map(row => (
-            <>
-              <Box className={index}>
-                <Typography variant="h6">{5 - row}</Typography>
-              </Box>
-              {indices.map(col => (
-                <Box
-                  className={square}
-                  style={{ backgroundColor: MatrixColors[4 - row][col] }}
-                >
-                  <RiskMatrixScenarioCount
-                    ros={ros}
-                    probability={col}
-                    consequence={4 - row}
-                    startRisiko={tab === 'startrisiko'}
-                  />
-                </Box>
-              ))}
-            </>
-          ))}
-          <Box className={index} />
-          <Box className={index} />
-          {indices.map(col => (
-            <Box className={index}>
-              <Typography variant="h6">{col + 1}</Typography>
+        <Box className={gridWrapper}>
+          <Box className={grid}>
+            <Box className={konsekvens}>
+              <Typography variant="h6">Konsekvens</Typography>
             </Box>
-          ))}
-          <Box className={sannsynlighet}>
-            <Typography variant="h6">Sannsynlighet</Typography>
+            {indices.map(row => (
+              <>
+                <Box className={index}>
+                  <Typography variant="h6">{5 - row}</Typography>
+                </Box>
+                {indices.map(col => (
+                  <Box
+                    className={square}
+                    style={{ backgroundColor: MatrixColors[4 - row][col] }}
+                  >
+                    <RiskMatrixScenarioCount
+                      ros={ros}
+                      probability={col}
+                      consequence={4 - row}
+                      startRisiko={tab === 'startrisiko'}
+                    />
+                  </Box>
+                ))}
+              </>
+            ))}
+            <Box className={index} />
+            <Box className={index} />
+            {indices.map(col => (
+              <Box className={index}>
+                <Typography variant="h6">{col + 1}</Typography>
+              </Box>
+            ))}
+            <Box className={sannsynlighet}>
+              <Typography variant="h6">Sannsynlighet</Typography>
+            </Box>
           </Box>
         </Box>
       </TabContext>

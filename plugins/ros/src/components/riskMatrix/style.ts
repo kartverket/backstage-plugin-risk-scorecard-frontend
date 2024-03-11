@@ -1,12 +1,15 @@
 import { makeStyles, Theme } from '@material-ui/core';
 
 export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
+  gridWrapper: {
+    maxWidth: 600,
+  },
   grid: {
     display: 'grid',
-    gridTemplateRows: 'repeat(5, 4rem) auto auto',
-    gridTemplateColumns: '2rem 2rem repeat(5, 4rem)',
-    gap: '0.3rem',
-    paddingRight: '4rem',
+    gridTemplateRows: 'repeat(5, 1fr) auto auto',
+    gridTemplateColumns: '34px 34px repeat(5, 1fr)',
+    gap: theme.spacing(0.5),
+    paddingRight: '72px',
   },
   konsekvens: {
     gridRow: '1 / span 5',
@@ -33,11 +36,13 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '15%',
+    aspectRatio: '1 / 1',
   },
   circle: {
     backgroundColor: 'white',
-    width: 40,
-    height: 40,
+    minWidth: theme.spacing(4),
+    width: '60%',
+    aspectRatio: '1 / 1',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
