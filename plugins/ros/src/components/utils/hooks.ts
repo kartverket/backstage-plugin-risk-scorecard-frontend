@@ -22,7 +22,11 @@ import {
 } from './types';
 import useAsync from 'react-use/lib/useAsync';
 import { emptyScenario, emptyTiltak } from './utilityfunctions';
-import { konsekvensOptions, sannsynlighetOptions } from './constants';
+import {
+  konsekvensOptions,
+  sannsynlighetOptions,
+  scenarioTittelError,
+} from './constants';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   const currentEntity = useAsyncEntity();
@@ -191,7 +195,9 @@ export interface ScenarioDrawerProps {
   setOriginalScenario: (scenario: Scenario) => void;
   newScenario: () => void;
   openScenario: (id: string) => void;
-  saveScenario: () => void;
+  saveScenario: () => boolean;
+
+  scenarioErrors: ScenarioErrors;
 
   deleteConfirmationIsOpen: boolean;
   openDeleteConfirmation: (id: string) => void;
@@ -216,6 +222,14 @@ export enum ScenarioDrawerState {
   View,
 }
 
+type ScenarioErrors = {
+  tittel: string | null;
+};
+
+const emptyScenarioErrors = (): ScenarioErrors => ({
+  tittel: null,
+});
+
 export const useScenarioDrawer = (
   ros: ROS | null,
   updateRos: (ros: ROS) => void,
@@ -228,6 +242,8 @@ export const useScenarioDrawer = (
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
 
+  const [scenarioErrors, setScenarioErrors] = useState(emptyScenarioErrors());
+
   const openScenarioDrawerEdit = () =>
     setScenarioDrawerState(ScenarioDrawerState.Edit);
 
@@ -235,18 +251,27 @@ export const useScenarioDrawer = (
     setScenarioDrawerState(ScenarioDrawerState.Closed);
     setScenario(emptyScenario());
     setOriginalScenario(emptyScenario());
+    setScenarioErrors(emptyScenarioErrors());
   };
 
   const saveScenario = () => {
     if (ros) {
-      const updatedScenarios = ros.scenarier.some(s => s.ID === scenario.ID)
-        ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
-        : ros.scenarier.concat(scenario);
-      updateRos({ ...ros, scenarier: updatedScenarios });
-      closeScenarioDrawer();
-      setScenario(emptyScenario());
-      setOriginalScenario(emptyScenario());
+      setScenarioErrors({
+        tittel: scenario.tittel === '' ? scenarioTittelError : null,
+      });
+
+      if (scenario.tittel !== '') {
+        const updatedScenarios = ros.scenarier.some(s => s.ID === scenario.ID)
+          ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
+          : ros.scenarier.concat(scenario);
+        updateRos({ ...ros, scenarier: updatedScenarios });
+        closeScenarioDrawer();
+        setScenario(emptyScenario());
+        setOriginalScenario(emptyScenario());
+        return true;
+      }
     }
+    return false;
   };
 
   const openDeleteConfirmation = (id: string) => {
@@ -288,29 +313,37 @@ export const useScenarioDrawer = (
     openScenarioDrawerEdit();
   };
 
-  const setTittel = (tittel: string) =>
+  const setTittel = (tittel: string) => {
+    setScenarioErrors({
+      ...scenarioErrors,
+      tittel: null,
+    });
     setScenario({
       ...scenario,
       tittel: tittel,
     });
+  };
 
-  const setBeskrivelse = (beskrivelse: string) =>
+  const setBeskrivelse = (beskrivelse: string) => {
     setScenario({
       ...scenario,
       beskrivelse: beskrivelse,
     });
+  };
 
-  const setTrusselaktører = (trusselaktører: string[]) =>
+  const setTrusselaktører = (trusselaktører: string[]) => {
     setScenario({
       ...scenario,
       trusselaktører: trusselaktører,
     });
+  };
 
-  const setSårbarheter = (sårbarheter: string[]) =>
+  const setSårbarheter = (sårbarheter: string[]) => {
     setScenario({
       ...scenario,
       sårbarheter: sårbarheter,
     });
+  };
 
   const setSannsynlighet = (sannsynlighetLevel: number) =>
     setScenario({
@@ -360,6 +393,8 @@ export const useScenarioDrawer = (
     newScenario,
     openScenario,
     saveScenario,
+
+    scenarioErrors,
 
     deleteConfirmationIsOpen,
     openDeleteConfirmation,

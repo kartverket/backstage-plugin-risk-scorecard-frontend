@@ -1,33 +1,47 @@
 import {
   FormControl,
+  FormHelperText,
   FormLabel,
   TextField as MUITextField,
 } from '@material-ui/core';
 import React, { ChangeEvent } from 'react';
-import { useInputFieldStyles } from './style';
+import { useFontStyles, useInputFieldStyles } from './style';
 
 interface TextFieldProps {
   label?: string;
+  subtitle?: string;
   value: string | number;
-  handleChange?: (value: string) => void;
+  error?: string | null;
+  required?: boolean;
   minRows?: number;
-  disabled?: boolean;
+  handleChange?: (value: string) => void;
 }
 
 export const TextField = ({
   label,
+  subtitle,
   value,
+  error,
+  required,
   minRows = 1,
   handleChange,
 }: TextFieldProps) => {
   const { formLabel, formControl } = useInputFieldStyles();
+  const { labelSubtitle } = useFontStyles();
 
   const onChange = (event: ChangeEvent<{ value: string }>) =>
     handleChange && handleChange(event.target.value);
 
   return (
     <FormControl className={formControl}>
-      <FormLabel className={formLabel}>{label}</FormLabel>
+      {label && (
+        <FormLabel className={formLabel} required={required}>
+          {label}
+        </FormLabel>
+      )}
+      {subtitle && (
+        <FormHelperText className={labelSubtitle}>{subtitle}</FormHelperText>
+      )}
       <MUITextField
         disabled={!handleChange}
         required
@@ -38,7 +52,9 @@ export const TextField = ({
         minRows={minRows}
         variant="outlined"
         onChange={onChange}
+        error={!!error}
       />
+      {error && <FormHelperText error>{error}</FormHelperText>}
     </FormControl>
   );
 };

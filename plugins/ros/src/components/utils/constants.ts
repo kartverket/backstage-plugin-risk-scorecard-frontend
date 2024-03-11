@@ -16,3 +16,7 @@ export const riskMatrix = [
   ['#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A', '#FF8B38'],
   ['#6CC6A4', '#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A'],
 ];
+
+export const scenarioTittelError = 'Scenarioet må ha en tittel';
+export const rosTittelError = 'ROS-analysen må ha en tittel';
+export const rosOmfangError = 'ROS-analysen må ha et omfang';
