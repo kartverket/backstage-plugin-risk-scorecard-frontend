@@ -23,9 +23,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useLoadingStyles } from './rosPluginStyle';
 import { ScenarioContext } from './ScenarioContext';
 import { useFontStyles } from '../ScenarioDrawer/style';
+import TabContext from '@material-ui/lab/TabContext';
+import { Tabs } from '../riskMatrix/Tabs';
 
 export const ROSPlugin = () => {
   const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
+  const [tab, setTab] = useState('originalrisiko');
 
   const { useFetchRoses, postROS, putROS, publishROS, response } =
     useROSPlugin();

@@ -18,12 +18,14 @@ interface ScenarioCountProps {
   ros: ROS;
   probability: number;
   consequence: number;
+  startRisiko: boolean;
 }
 
 export const RiskMatrixScenarioCount = ({
   ros,
   probability,
   consequence,
+  startRisiko,
 }: ScenarioCountProps) => {
   const { circle, tooltip, tooltipArrow, tooltipText } = useRiskMatrixStyles();
 
@@ -31,9 +33,16 @@ export const RiskMatrixScenarioCount = ({
 
   const scenarier = ros.scenarier.filter(
     scenario =>
-      sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) ===
-        probability &&
-      konsekvensOptions.indexOf(scenario.risiko.konsekvens) === consequence,
+      sannsynlighetOptions.indexOf(
+        startRisiko
+          ? scenario.risiko.sannsynlighet
+          : scenario.restrisiko.sannsynlighet,
+      ) === probability &&
+      konsekvensOptions.indexOf(
+        startRisiko
+          ? scenario.risiko.konsekvens
+          : scenario.restrisiko.konsekvens,
+      ) === consequence,
   );
 
   if (scenarier.length === 0) {
