@@ -10,10 +10,7 @@ import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import {
-  ROSStatusAlertNotApprovedByRisikoeier,
-  ROSStatusComponent,
-} from '../ROSStatus/ROSStatusComponent';
+import { ROSStatusComponent } from '../ROSStatus/ROSStatusComponent';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import { ROS, RosStatus } from '../utils/types';
@@ -91,93 +88,89 @@ export const ROSPlugin = () => {
   const { button } = useFontStyles();
 
   return (
-    <ScenarioContext.Provider value={scenario}>
-      <Content>
-        <ContentHeader title="Risiko- og sårbarhetsanalyse">
-          <SupportButton>Kul plugin ass!</SupportButton>
-        </ContentHeader>
-
-        {isFetching && (
-          <div className={classes.container}>
-            <Grid item>
-              <CircularProgress className={classes.spinner} size={80} />
-            </Grid>
-          </div>
+    <>
+      <ScenarioContext.Provider value={scenario}>
+        {response && (
+          <Grid item xs={12}>
+            <Alert severity={getAlertSeverity(response.status)}>
+              <Typography>{response.statusMessage}</Typography>
+            </Alert>
+          </Grid>
         )}
+        <Content>
+          <ContentHeader title="Risiko- og sårbarhetsanalyse">
+            <SupportButton>Kul plugin ass!</SupportButton>
+          </ContentHeader>
 
-        <Grid container spacing={3}>
-          {roses !== null && roses.length !== 0 && (
-            <Grid item xs={3}>
-              <Dropdown<string>
-                options={roses.map(ros => ros.title) ?? []}
-                selectedValues={selectedROS?.title ?? ''}
-                handleChange={title => selectROSByTitle(title)}
-                variant="standard"
-              />
-            </Grid>
-          )}
-
-          {!isFetching && (
-            <Grid item xs={9}>
-              <Button
-                startIcon={<AddCircleOutlineIcon />}
-                variant="text"
-                color="primary"
-                onClick={() => setNewROSDialogIsOpen(true)}
-                className={button}
-              >
-                Opprett ny analyse
-              </Button>
-            </Grid>
-          )}
-
-          {selectedROS && (
-            <>
-              <Grid item xs={6}>
-                <Typography variant="subtitle2">
-                  Omfang: {selectedROS.content.omfang}
-                </Typography>
+          {isFetching && (
+            <div className={classes.container}>
+              <Grid item>
+                <CircularProgress className={classes.spinner} size={80} />
               </Grid>
-              <Grid item xs={6}>
-                <ROSStatusComponent
-                  selectedROS={selectedROS}
-                  publishRosFn={approveROS}
+            </div>
+          )}
+
+          <Grid container spacing={3}>
+            {roses !== null && roses.length !== 0 && (
+              <Grid item xs={3}>
+                <Dropdown<string>
+                  options={roses.map(ros => ros.title) ?? []}
+                  selectedValues={selectedROS?.title ?? ''}
+                  handleChange={title => selectROSByTitle(title)}
+                  variant="standard"
                 />
               </Grid>
+            )}
 
-              <Grid item container direction="row">
-                <Grid item xs={4}>
-                  <RiskMatrix ros={selectedROS.content} />
-                </Grid>
-                <Grid item xs={8}>
-                  <ScenarioTable ros={selectedROS.content} />
-                </Grid>
+            {!isFetching && (
+              <Grid item xs={9}>
+                <Button
+                  startIcon={<AddCircleOutlineIcon />}
+                  variant="text"
+                  color="primary"
+                  onClick={() => setNewROSDialogIsOpen(true)}
+                  className={button}
+                >
+                  Opprett ny analyse
+                </Button>
               </Grid>
-            </>
-          )}
+            )}
 
-          {response && (
-            <Grid item xs={12}>
-              <Alert severity={getAlertSeverity(response.status)}>
-                <Typography>{response.statusMessage}</Typography>
-              </Alert>
-            </Grid>
-          )}
-        </Grid>
+            {selectedROS && (
+              <>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2">
+                    Omfang: {selectedROS.content.omfang}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <ROSStatusComponent
+                    selectedROS={selectedROS}
+                    publishRosFn={approveROS}
+                  />
+                </Grid>
 
-        <ROSDialog
-          isOpen={newROSDialogIsOpen}
-          onClose={() => setNewROSDialogIsOpen(false)}
-          saveRos={createNewROS}
-        />
+                <Grid item container direction="row">
+                  <Grid item xs={4}>
+                    <RiskMatrix ros={selectedROS.content} />
+                  </Grid>
+                  <Grid item xs={8}>
+                    <ScenarioTable ros={selectedROS.content} />
+                  </Grid>
+                </Grid>
+              </>
+            )}
+          </Grid>
 
-        <ScenarioDrawer />
+          <ROSDialog
+            isOpen={newROSDialogIsOpen}
+            onClose={() => setNewROSDialogIsOpen(false)}
+            saveRos={createNewROS}
+          />
 
-        <ROSStatusAlertNotApprovedByRisikoeier
-          selectedROS={selectedROS}
-          roses={roses}
-        />
-      </Content>
-    </ScenarioContext.Provider>
+          <ScenarioDrawer />
+        </Content>
+      </ScenarioContext.Provider>
+    </>
   );
 };

@@ -168,9 +168,9 @@ export const ROSStatusAlertNotApprovedByRisikoeier = ({
     selectedROS &&
     selectedROS.status === RosStatus.Draft
   ) ? null : (
-    <Alert severity="warning" className={noApprovalBanner}>
+    <Alert severity="warning">
       <AlertTitle>
-        ROS-analysen inneholder endringer som ikke er godkjent
+        ROS-analysen inneholder endringer som ikke er godkjent.
       </AlertTitle>
       Nivået for restrisiko har endret seg som krever ny godkjenning fra
       risikoeier.
