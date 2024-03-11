@@ -11,6 +11,7 @@ import { useDialogStyles } from './DialogStyle';
 import { ROS } from '../utils/types';
 import { emptyROS } from '../utils/utilityfunctions';
 import { useFontStyles } from '../ScenarioDrawer/style';
+import { rosOmfangError, rosTittelError } from '../utils/constants';
 
 interface ROSDialogProps {
   isOpen: boolean;
@@ -41,21 +42,24 @@ export const ROSDialog = ({
     setNewROS(emptyROS(false));
   };
 
+  const handleCancel = () => {
+    onClose();
+    setNewROSError({
+      tittel: null,
+      omfang: null,
+    });
+    clearROS();
+  };
+
   const handleCreate = () => {
     setNewROSError({
-      tittel: newROS.tittel ? null : 'Tittel må fylles ut',
-      omfang: newROS.omfang ? null : 'Omfang må fylles ut',
+      tittel: newROS.tittel === '' ? rosTittelError : null,
+      omfang: newROS.omfang === '' ? rosOmfangError : null,
     });
     if (!newROS.tittel || !newROS.omfang) return;
 
     saveRos(newROS);
-    onClose();
-    clearROS();
-  };
-
-  const handleCancel = () => {
-    onClose();
-    clearROS();
+    handleCancel();
   };
 
   const setTittel = (tittel: string) => {
@@ -100,11 +104,6 @@ export const ROSDialog = ({
           />
         </Box>
         <Box className={classes.content}>
-          {/* <Typography className={label}>Omfang</Typography>
-          <Typography className={labelSubtitle}>
-            Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av
-            omfanget må også defineres.
-          </Typography>*/}
           <TextField
             label="Omfang"
             subtitle="Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres."

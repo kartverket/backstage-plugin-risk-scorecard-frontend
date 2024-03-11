@@ -22,7 +22,11 @@ import {
 } from './types';
 import useAsync from 'react-use/lib/useAsync';
 import { emptyScenario, emptyTiltak } from './utilityfunctions';
-import { konsekvensOptions, sannsynlighetOptions } from './constants';
+import {
+  konsekvensOptions,
+  sannsynlighetOptions,
+  scenarioTittelError,
+} from './constants';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   const currentEntity = useAsyncEntity();
@@ -220,10 +224,11 @@ export enum ScenarioDrawerState {
 
 type ScenarioErrors = {
   tittel: string | null;
-  beskrivelse: string | null;
-  trusselaktører: string | null;
-  sårbarheter: string | null;
 };
+
+const emptyScenarioErrors = (): ScenarioErrors => ({
+  tittel: null,
+});
 
 export const useScenarioDrawer = (
   ros: ROS | null,
@@ -237,12 +242,7 @@ export const useScenarioDrawer = (
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
 
-  const [scenarioErrors, setScenarioErrors] = useState<ScenarioErrors>({
-    tittel: null,
-    beskrivelse: null,
-    trusselaktører: null,
-    sårbarheter: null,
-  });
+  const [scenarioErrors, setScenarioErrors] = useState(emptyScenarioErrors());
 
   const openScenarioDrawerEdit = () =>
     setScenarioDrawerState(ScenarioDrawerState.Edit);
@@ -251,28 +251,16 @@ export const useScenarioDrawer = (
     setScenarioDrawerState(ScenarioDrawerState.Closed);
     setScenario(emptyScenario());
     setOriginalScenario(emptyScenario());
+    setScenarioErrors(emptyScenarioErrors());
   };
 
   const saveScenario = () => {
     if (ros) {
       setScenarioErrors({
-        tittel: scenario.tittel === '' ? 'Tittel kan ikke være tom' : null,
-        beskrivelse:
-          scenario.beskrivelse === '' ? 'Beskrivelse kan ikke være tom' : null,
-        trusselaktører:
-          scenario.trusselaktører.length === 0
-            ? 'Velg minst én trusselaktør'
-            : null,
-        sårbarheter:
-          scenario.sårbarheter.length === 0 ? 'Velg minst én sårbarhet' : null,
+        tittel: scenario.tittel === '' ? scenarioTittelError : null,
       });
 
-      if (
-        scenario.tittel !== '' &&
-        scenario.beskrivelse !== '' &&
-        scenario.trusselaktører.length !== 0 &&
-        scenario.sårbarheter.length !== 0
-      ) {
+      if (scenario.tittel !== '') {
         const updatedScenarios = ros.scenarier.some(s => s.ID === scenario.ID)
           ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
           : ros.scenarier.concat(scenario);
@@ -340,10 +328,6 @@ export const useScenarioDrawer = (
   };
 
   const setBeskrivelse = (beskrivelse: string) => {
-    setScenarioErrors({
-      ...scenarioErrors,
-      beskrivelse: null,
-    });
     setScenario({
       ...scenario,
       beskrivelse: beskrivelse,
@@ -351,10 +335,6 @@ export const useScenarioDrawer = (
   };
 
   const setTrusselaktører = (trusselaktører: string[]) => {
-    setScenarioErrors({
-      ...scenarioErrors,
-      trusselaktører: null,
-    });
     setScenario({
       ...scenario,
       trusselaktører: trusselaktører,
@@ -362,10 +342,6 @@ export const useScenarioDrawer = (
   };
 
   const setSårbarheter = (sårbarheter: string[]) => {
-    setScenarioErrors({
-      ...scenarioErrors,
-      sårbarheter: null,
-    });
     setScenario({
       ...scenario,
       sårbarheter: sårbarheter,

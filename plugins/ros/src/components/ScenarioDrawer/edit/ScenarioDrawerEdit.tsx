@@ -106,8 +106,6 @@ export const ScenarioDrawerEdit = () => {
           <TextField
             label="Beskrivelse"
             value={scenario.beskrivelse}
-            error={scenarioErrors.beskrivelse}
-            required
             minRows={4}
             handleChange={setBeskrivelse}
           />
@@ -122,8 +120,6 @@ export const ScenarioDrawerEdit = () => {
             selectedValues={scenario.trusselaktører}
             options={trusselaktørerOptions}
             handleChange={setTrusselaktører}
-            error={scenarioErrors.trusselaktører}
-            required
           />
         </Grid>
 
@@ -137,8 +133,6 @@ export const ScenarioDrawerEdit = () => {
             selectedValues={scenario.sårbarheter}
             options={sårbarheterOptions}
             handleChange={setSårbarheter}
-            error={scenarioErrors.sårbarheter}
-            required
           />
         </Grid>
 
