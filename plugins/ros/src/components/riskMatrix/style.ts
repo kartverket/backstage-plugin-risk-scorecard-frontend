@@ -2,29 +2,33 @@ import { makeStyles, Theme } from '@material-ui/core';
 
 export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
   gridWrapper: {
-    maxWidth: 600,
+    display: 'flex',
+    justifyContent: 'center',
   },
   grid: {
+    width: '100%',
+    maxWidth: 600,
     display: 'grid',
     gridTemplateRows: 'repeat(5, 1fr) auto auto',
-    gridTemplateColumns: '34px 34px repeat(5, 1fr)',
+    gridTemplateColumns: '30px 30px repeat(5, 1fr)',
+    paddingRight: '64px',
     gap: theme.spacing(0.5),
-    paddingRight: '72px',
+  },
+  label: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 700,
+    fontSize: theme.spacing(2.5),
   },
   konsekvens: {
     gridRow: '1 / span 5',
     writingMode: 'vertical-lr',
     transform: 'rotate(180deg)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   sannsynlighet: {
     gridRow: 7,
     gridColumn: '3 / span 5',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   index: {
     display: 'flex',
@@ -35,19 +39,28 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '15%',
+    borderRadius: '10%',
     aspectRatio: '1 / 1',
   },
   circle: {
     backgroundColor: 'white',
-    minWidth: theme.spacing(4),
-    width: '60%',
+    height: '60%',
     aspectRatio: '1 / 1',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '50%',
     cursor: 'pointer',
+    minHeight: theme.spacing(2.5),
+  },
+  indexText: {
+    fontWeight: 700,
+    fontSize: theme.spacing(2.5),
+  },
+  circleText: {
+    fontWeight: 700,
+    color: 'black',
+    fontSize: theme.spacing(2.5),
   },
   tooltip: {
     backgroundColor: 'white',
@@ -65,5 +78,9 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'flex-end',
     padding: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    backgroundColor:
+      theme.palette.type === 'dark' ? '#FFFFFF1A' : 'rgba(0, 0, 0, 0.1)',
   },
 }));

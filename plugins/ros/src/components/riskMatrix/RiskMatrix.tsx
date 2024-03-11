@@ -18,8 +18,10 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
     gridWrapper,
     konsekvens,
     sannsynlighet,
+    indexText,
     index,
     square,
+    label,
   } = useRiskMatrixStyles();
 
   const [tab, setTab] = useState('startrisiko');
@@ -34,12 +36,12 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
         <Box className={gridWrapper}>
           <Box className={grid}>
             <Box className={konsekvens}>
-              <Typography variant="h6">Konsekvens</Typography>
+              <Typography className={label}>Konsekvens</Typography>
             </Box>
             {indices.map(row => (
               <>
                 <Box className={index}>
-                  <Typography variant="h6">{5 - row}</Typography>
+                  <Typography className={indexText}>{5 - row}</Typography>
                 </Box>
                 {indices.map(col => (
                   <Box
@@ -60,11 +62,11 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
             <Box className={index} />
             {indices.map(col => (
               <Box className={index}>
-                <Typography variant="h6">{col + 1}</Typography>
+                <Typography className={indexText}>{col + 1}</Typography>
               </Box>
             ))}
             <Box className={sannsynlighet}>
-              <Typography variant="h6">Sannsynlighet</Typography>
+              <Typography className={label}>Sannsynlighet</Typography>
             </Box>
           </Box>
         </Box>

@@ -34,6 +34,7 @@ export const ScenarioDrawerEdit = () => {
     scenario,
     originalScenario,
     saveScenario,
+    scenarioErrors,
     openDeleteConfirmation,
     setTittel,
     setBeskrivelse,
@@ -65,8 +66,9 @@ export const ScenarioDrawerEdit = () => {
   };
 
   const saveAndClose = () => {
-    saveScenario();
-    close();
+    if (saveScenario()) {
+      close();
+    }
   };
 
   return (
@@ -93,17 +95,10 @@ export const ScenarioDrawerEdit = () => {
           <TextField
             label="Tittel"
             value={scenario.tittel}
+            error={scenarioErrors.tittel}
+            required
             minRows={1}
             handleChange={setTittel}
-          />
-        </Grid>
-
-        <Grid item xs={12}>
-          <TextField
-            label="Beskrivelse"
-            value={scenario.beskrivelse}
-            minRows={4}
-            handleChange={setBeskrivelse}
           />
         </Grid>
 
@@ -129,6 +124,14 @@ export const ScenarioDrawerEdit = () => {
             selectedValues={scenario.sårbarheter}
             options={sårbarheterOptions}
             handleChange={setSårbarheter}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            label="Beskrivelse"
+            value={scenario.beskrivelse}
+            minRows={4}
+            handleChange={setBeskrivelse}
           />
         </Grid>
 
