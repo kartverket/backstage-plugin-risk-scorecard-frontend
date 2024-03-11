@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useRiskMatrixStyles } from './style';
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import CircleIcon from '@material-ui/icons/FiberManualRecord';
 import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
 import { ROS } from '../utils/types';
 
@@ -27,7 +27,15 @@ export const RiskMatrixScenarioCount = ({
   consequence,
   startRisiko,
 }: ScenarioCountProps) => {
-  const { circle, tooltip, tooltipArrow, tooltipText } = useRiskMatrixStyles();
+  const {
+    circle,
+    centered,
+    circleText,
+    text,
+    tooltip,
+    tooltipArrow,
+    tooltipText,
+  } = useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -58,10 +66,7 @@ export const RiskMatrixScenarioCount = ({
       </ListSubheader>
       {scenarier.map(s => (
         <ListItem button disableGutters className={tooltipText}>
-          <FiberManualRecordIcon
-            className={tooltipText}
-            style={{ width: '10px' }}
-          />
+          <CircleIcon className={tooltipText} style={{ width: '10px' }} />
           <ListItemText
             className={tooltipText}
             style={{ paddingLeft: '0.6rem' }}
@@ -83,11 +88,11 @@ export const RiskMatrixScenarioCount = ({
         open={tooltipOpen}
       >
         <Paper
-          className={circle}
+          className={`${circle} ${centered}`}
           elevation={10}
           onClick={() => setTooltipOpen(!tooltipOpen)}
         >
-          <Typography variant="h6" style={{ color: 'black' }}>
+          <Typography className={`${circleText} ${text}`}>
             {scenarier.length}
           </Typography>
         </Paper>

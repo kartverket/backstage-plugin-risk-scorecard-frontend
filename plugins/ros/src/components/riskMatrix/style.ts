@@ -1,48 +1,51 @@
 import { makeStyles, Theme } from '@material-ui/core';
 
 export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
+  gridWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
   grid: {
+    width: '100%',
+    maxWidth: 600,
     display: 'grid',
-    gridTemplateRows: 'repeat(5, 4rem) auto auto',
-    gridTemplateColumns: '2rem 2rem repeat(5, 4rem)',
-    gap: '0.3rem',
-    paddingRight: '4rem',
+    gridTemplateRows: 'repeat(5, 1fr) auto auto',
+    gridTemplateColumns: '30px 30px repeat(5, 1fr)',
+    paddingRight: '64px',
+    gap: theme.spacing(0.5),
+  },
+  centered: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    fontWeight: 700,
+    fontSize: theme.spacing(2.5),
   },
   konsekvens: {
     gridRow: '1 / span 5',
     writingMode: 'vertical-lr',
     transform: 'rotate(180deg)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   sannsynlighet: {
     gridRow: 7,
     gridColumn: '3 / span 5',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  index: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   square: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '15%',
+    borderRadius: '10%',
+    aspectRatio: '1 / 1',
   },
   circle: {
     backgroundColor: 'white',
-    width: 40,
-    height: 40,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: '60%',
+    aspectRatio: '1 / 1',
     borderRadius: '50%',
     cursor: 'pointer',
+    minHeight: theme.spacing(2.5),
+  },
+  circleText: {
+    color: 'black',
   },
   tooltip: {
     backgroundColor: 'white',
