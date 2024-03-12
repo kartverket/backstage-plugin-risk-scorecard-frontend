@@ -6,6 +6,7 @@ import {
   googleAuthApiRef,
   microsoftAuthApiRef,
   useApi,
+  useRouteRef,
 } from '@backstage/core-plugin-api';
 import {
   GithubRepoInfo,
@@ -15,6 +16,7 @@ import {
   Risiko,
   ROS,
   ROSContentResultDTO,
+  RosStatus,
   ROSWithMetadata,
   Scenario,
   SubmitResponseObject,
@@ -27,6 +29,8 @@ import {
   sannsynlighetOptions,
   scenarioTittelError,
 } from './constants';
+import { rosRouteRef } from '../../routes';
+import { useNavigate } from 'react-router';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   const currentEntity = useAsyncEntity();
@@ -235,6 +239,8 @@ export const useScenarioDrawer = (
   updateRos: (ros: ROS) => void,
   scenarioIdFromParams?: string,
 ): ScenarioDrawerProps => {
+  // STATES
+
   const [scenarioDrawerState, setScenarioDrawerState] = useState(
     ScenarioDrawerState.Closed,
   );
@@ -257,6 +263,8 @@ export const useScenarioDrawer = (
       }
     }
   }, [ros, scenarioIdFromParams]);
+
+  // SCENARIO DRAWER FUNCTIONS
 
   const openScenarioDrawerEdit = () =>
     setScenarioDrawerState(ScenarioDrawerState.Edit);
@@ -326,6 +334,8 @@ export const useScenarioDrawer = (
     setOriginalScenario(emptyScenario());
     openScenarioDrawerEdit();
   };
+
+  // UPDATE SCENARIO FUNCTIONS
 
   const setTittel = (tittel: string) => {
     setScenarioErrors({
@@ -428,7 +438,18 @@ export const useScenarioDrawer = (
   };
 };
 
-export const useROSPlugin = () => {
+export const useFetchRoses = (
+  rosIdFromParams?: string,
+): {
+  selectedROS: ROSWithMetadata | null;
+  roses: ROSWithMetadata[] | null;
+  selectRos: (title: string) => void;
+  isFetching: boolean;
+  createNewROS: (ros: ROS) => void;
+  updateROS: (ros: ROS) => void;
+  approveROS: () => void;
+  response: SubmitResponseObject | null;
+} => {
   const microsoftAPI = useApi(microsoftAuthApiRef);
   const { value: idToken } = useAsync(() => microsoftAPI.getIdToken());
 
@@ -440,6 +461,9 @@ export const useROSPlugin = () => {
     ]),
   );
 
+  const navigate = useNavigate();
+  const getRosPath = useRouteRef(rosRouteRef);
+
   const repoInformation = useGithubRepositoryInformation();
 
   const { fetchRoses, postROS, putROS, publishROS, response } = useFetch(
@@ -448,67 +472,125 @@ export const useROSPlugin = () => {
     repoInformation,
   );
 
-  const useFetchRoses = (
-    rosIdFromParams?: string,
-  ): {
-    selectedROS: ROSWithMetadata | null;
-    setSelectedROS: (ros: ROSWithMetadata | null) => void;
-    roses: ROSWithMetadata[] | null;
-    setRoses: (roses: ROSWithMetadata[]) => void;
-    selectROSByTitle: (title: string) => void;
-    isFetching: boolean;
-    setIsFetching: (isFetching: boolean) => void;
-  } => {
-    const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
-    const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(
-      null,
-    );
-    const [isFetching, setIsFetching] = useState(true);
+  const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
+  const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(null);
+  const [isFetching, setIsFetching] = useState(true);
 
-    useEffect(() => {
-      fetchRoses(
-        res => {
-          const fetchedRoses: ROSWithMetadata[] = res.map(rosDTO => {
-            const content = JSON.parse(rosDTO.rosContent) as ROS;
-            return {
-              id: rosDTO.rosId,
-              title: content.tittel,
-              content: content,
-              status: rosDTO.rosStatus,
-            };
+  // Initial fetch of ROSes
+  useEffect(() => {
+    fetchRoses(
+      res => {
+        const fetchedRoses: ROSWithMetadata[] = res.map(rosDTO => {
+          const content = JSON.parse(rosDTO.rosContent) as ROS;
+          return {
+            id: rosDTO.rosId,
+            title: content.tittel,
+            content: content,
+            status: rosDTO.rosStatus,
+          };
+        });
+
+        setRoses(fetchedRoses);
+        setIsFetching(false);
+
+        // If there are no ROSes, don't set a selected ROS
+        if (fetchedRoses.length === 0) {
+          return;
+        }
+
+        // If there is no ROS ID in the URL, navigate to the first ROS
+        if (!rosIdFromParams) {
+          navigate(getRosPath({ rosId: fetchedRoses[0].id }));
+          return;
+        }
+
+        const ros = fetchedRoses.find(r => r.id === rosIdFromParams);
+
+        // If there is an invalid ROS ID in the URL, navigate to the first ROS with error state
+        if (!ros) {
+          navigate(getRosPath({ rosId: fetchedRoses[0].id }), {
+            state: 'Ugyldig ROS id',
           });
+          return;
+        }
+      },
+      () => setIsFetching(false),
+    );
+  }, [accessToken, idToken]);
 
-          setRoses(fetchedRoses);
-          setSelectedROS(
-            fetchedRoses.find(r => r.id === rosIdFromParams) ?? fetchedRoses[0],
-          );
-          setIsFetching(false);
-        },
-        () => setIsFetching(false),
-      );
-    }, [idToken, accessToken]);
+  // Set selected ROS based on URL
+  useEffect(() => {
+    if (rosIdFromParams) {
+      const ros = roses?.find(r => r.id === rosIdFromParams);
+      if (ros) {
+        setSelectedROS(ros);
+      }
+    }
+  }, [roses, rosIdFromParams]);
 
-    const selectROSByTitle = (title: string) => {
-      const pickedRos = roses?.find(ros => ros.title === title) || null;
-      setSelectedROS(pickedRos);
-    };
+  const selectRos = (title: string) => {
+    const rosId = roses?.find(ros => ros.title === title)?.id;
+    if (rosId) {
+      navigate(getRosPath({ rosId }));
+    }
+  };
 
-    return {
-      selectedROS,
-      setSelectedROS,
-      roses,
-      setRoses,
-      selectROSByTitle,
-      isFetching,
-      setIsFetching,
-    };
+  const createNewROS = (ros: ROS) => {
+    setIsFetching(true);
+    setSelectedROS(null);
+    postROS(
+      ros,
+      res => {
+        if (!res.rosId) throw new Error('No ROS ID returned');
+
+        const newROS = {
+          id: res.rosId,
+          title: ros.tittel,
+          status: RosStatus.Draft,
+          content: ros,
+        };
+
+        setRoses(roses ? [...roses, newROS] : [newROS]);
+        setSelectedROS(newROS);
+        setIsFetching(false);
+        navigate(getRosPath({ rosId: res.rosId }));
+      },
+      () => {
+        setSelectedROS(selectedROS);
+        setIsFetching(false);
+      },
+    );
+  };
+
+  const updateROS = (ros: ROS) => {
+    if (selectedROS && roses) {
+      const updatedROS = { ...selectedROS, content: ros };
+      setSelectedROS(updatedROS);
+      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      putROS(updatedROS);
+    }
+  };
+
+  const approveROS = () => {
+    if (selectedROS && roses) {
+      const updatedROS = {
+        ...selectedROS,
+        status: RosStatus.SentForApproval,
+      };
+      setSelectedROS(updatedROS);
+      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      publishROS(selectedROS.id);
+    }
   };
 
   return {
-    useFetchRoses,
-    postROS,
-    putROS,
-    publishROS,
+    selectedROS,
+    roses,
+    selectRos,
+    isFetching,
+    createNewROS,
+    updateROS,
+    approveROS,
     response,
   };
 };

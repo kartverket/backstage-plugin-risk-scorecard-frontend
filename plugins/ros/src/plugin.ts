@@ -9,8 +9,8 @@ export const rosPlugin = createPlugin({
   id: 'ros',
   routes: {
     root: rootRouteRef,
-    ros: rosRouteRef,
     scenario: scenarioRouteRef,
+    ros: rosRouteRef,
   },
 });
 

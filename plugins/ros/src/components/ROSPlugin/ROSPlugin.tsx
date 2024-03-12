@@ -5,7 +5,7 @@ import {
   ContentHeader,
   SupportButton,
 } from '@backstage/core-components';
-import { useROSPlugin, useScenarioDrawer } from '../utils/hooks';
+import { useFetchRoses, useScenarioDrawer } from '../utils/hooks';
 import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
@@ -13,7 +13,6 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { ROSStatusComponent } from '../ROSStatus/ROSStatusComponent';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
-import { ROS, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../utils/utilityfunctions';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -23,72 +22,25 @@ import { useFontStyles } from '../ScenarioDrawer/style';
 import { useParams } from 'react-router';
 
 export const ROSPlugin = () => {
+  const params = useParams();
+
   const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
-
-  const { rosId, scenarioId } = useParams();
-
-  const { useFetchRoses, postROS, putROS, publishROS, response } =
-    useROSPlugin();
 
   const {
     selectedROS,
-    setSelectedROS,
-
     roses,
-    setRoses,
-    selectROSByTitle,
+    selectRos,
     isFetching,
-    setIsFetching,
-  } = useFetchRoses(rosId);
-
-  const createNewROS = (ros: ROS) => {
-    setIsFetching(true);
-    setSelectedROS(null);
-    postROS(
-      ros,
-      res => {
-        if (!res.rosId) throw new Error('No ROS ID returned');
-
-        const newROS = {
-          id: res.rosId,
-          title: ros.tittel,
-          status: RosStatus.Draft,
-          content: ros,
-        };
-
-        setRoses(roses ? [...roses, newROS] : [newROS]);
-        setSelectedROS(newROS);
-        setIsFetching(false);
-      },
-      () => {
-        setSelectedROS(selectedROS);
-        setIsFetching(false);
-      },
-    );
-  };
-
-  const updateROS = (ros: ROS) => {
-    if (selectedROS && roses) {
-      const updatedROS = { ...selectedROS, content: ros };
-      setSelectedROS(updatedROS);
-      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
-      putROS(updatedROS);
-    }
-  };
-
-  const approveROS = () => {
-    if (selectedROS && roses) {
-      const updatedROS = { ...selectedROS, status: RosStatus.SentForApproval };
-      setSelectedROS(updatedROS);
-      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
-      publishROS(selectedROS.id);
-    }
-  };
+    createNewROS,
+    updateROS,
+    approveROS,
+    response,
+  } = useFetchRoses(params.rosId);
 
   const scenario = useScenarioDrawer(
     selectedROS?.content ?? null,
     updateROS,
-    scenarioId,
+    params.scenarioId,
   );
 
   const classes = useLoadingStyles();
@@ -109,9 +61,6 @@ export const ROSPlugin = () => {
             <SupportButton>Kul plugin ass!</SupportButton>
           </ContentHeader>
 
-          {/* <Typography>ROS ID: {rosId}</Typography>*/}
-          {/* <Typography>Scenario ID: {scenarioId}</Typography>*/}
-
           {isFetching && (
             <div className={classes.container}>
               <Grid item>
@@ -126,7 +75,7 @@ export const ROSPlugin = () => {
                 <Dropdown<string>
                   options={roses.map(ros => ros.title) ?? []}
                   selectedValues={selectedROS?.title ?? ''}
-                  handleChange={title => selectROSByTitle(title)}
+                  handleChange={title => selectRos(title)}
                   variant="standard"
                 />
               </Grid>
