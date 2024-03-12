@@ -87,7 +87,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                 }}
               >
                 <Typography variant="subtitle1">
-                  <b>DAGENS RISIKO</b>
+                  <b>STARTRISIKO</b>
                 </Typography>
               </TableCell>
               <TableCell

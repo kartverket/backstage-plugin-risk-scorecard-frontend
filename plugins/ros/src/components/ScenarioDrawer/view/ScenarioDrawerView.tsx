@@ -109,7 +109,7 @@ export const ScenarioDrawerView = () => {
                   backgroundColor: getRiskMatrixColor(scenario.risiko),
                 }}
               />
-              <Typography className={body2}>I dag</Typography>
+              <Typography className={body2}>Startrisiko</Typography>
             </Grid>
             <Grid item xs={6} style={{ paddingBottom: 0 }}>
               <Typography className={label}>Konsekvens</Typography>
@@ -128,7 +128,7 @@ export const ScenarioDrawerView = () => {
               </Typography>
             </Grid>
             <Grid item xs={12} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>Forventet kostnad</Typography>
+              <Typography className={label}>Estimert risiko</Typography>
             </Grid>
             <Grid item xs={12} style={{ paddingTop: 0 }}>
               <Typography className={body1}>
@@ -171,7 +171,7 @@ export const ScenarioDrawerView = () => {
                   backgroundColor: getRiskMatrixColor(scenario.restrisiko),
                 }}
               />
-              <Typography className={body2}>Etter planlagte tiltak</Typography>
+              <Typography className={body2}>Restrisiko</Typography>
             </Grid>
 
             <Grid item xs={6} style={{ paddingBottom: 0 }}>
@@ -192,7 +192,7 @@ export const ScenarioDrawerView = () => {
               </Typography>
             </Grid>
             <Grid item xs={12} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>Forventet kostnad</Typography>
+              <Typography className={label}>Estimert risiko</Typography>
             </Grid>
             <Grid item xs={12} style={{ paddingTop: 0 }}>
               <Typography className={body1}>
