@@ -20,9 +20,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useLoadingStyles } from './rosPluginStyle';
 import { ScenarioContext } from './ScenarioContext';
 import { useFontStyles } from '../ScenarioDrawer/style';
+import { useParams } from 'react-router';
 
 export const ROSPlugin = () => {
   const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
+
+  const { rosId, scenarioId } = useParams();
 
   const { useFetchRoses, postROS, putROS, publishROS, response } =
     useROSPlugin();
@@ -36,7 +39,7 @@ export const ROSPlugin = () => {
     selectROSByTitle,
     isFetching,
     setIsFetching,
-  } = useFetchRoses();
+  } = useFetchRoses(rosId);
 
   const createNewROS = (ros: ROS) => {
     setIsFetching(true);
@@ -82,7 +85,11 @@ export const ROSPlugin = () => {
     }
   };
 
-  const scenario = useScenarioDrawer(selectedROS?.content ?? null, updateROS);
+  const scenario = useScenarioDrawer(
+    selectedROS?.content ?? null,
+    updateROS,
+    scenarioId,
+  );
 
   const classes = useLoadingStyles();
   const { button } = useFontStyles();
@@ -101,6 +108,9 @@ export const ROSPlugin = () => {
           <ContentHeader title="Risiko- og sårbarhetsanalyse">
             <SupportButton>Kul plugin ass!</SupportButton>
           </ContentHeader>
+
+          {/* <Typography>ROS ID: {rosId}</Typography>*/}
+          {/* <Typography>Scenario ID: {scenarioId}</Typography>*/}
 
           {isFetching && (
             <div className={classes.container}>

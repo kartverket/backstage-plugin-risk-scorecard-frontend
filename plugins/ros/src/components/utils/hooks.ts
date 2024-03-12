@@ -233,6 +233,7 @@ const emptyScenarioErrors = (): ScenarioErrors => ({
 export const useScenarioDrawer = (
   ros: ROS | null,
   updateRos: (ros: ROS) => void,
+  scenarioIdFromParams?: string,
 ): ScenarioDrawerProps => {
   const [scenarioDrawerState, setScenarioDrawerState] = useState(
     ScenarioDrawerState.Closed,
@@ -243,6 +244,19 @@ export const useScenarioDrawer = (
     useState(false);
 
   const [scenarioErrors, setScenarioErrors] = useState(emptyScenarioErrors());
+
+  useEffect(() => {
+    if (scenarioIdFromParams) {
+      const selectedScenario = ros?.scenarier.find(
+        s => s.ID === scenarioIdFromParams,
+      );
+      if (selectedScenario) {
+        setScenario(selectedScenario);
+        setOriginalScenario(selectedScenario);
+        setScenarioDrawerState(ScenarioDrawerState.View);
+      }
+    }
+  }, [ros, scenarioIdFromParams]);
 
   const openScenarioDrawerEdit = () =>
     setScenarioDrawerState(ScenarioDrawerState.Edit);
@@ -434,7 +448,9 @@ export const useROSPlugin = () => {
     repoInformation,
   );
 
-  const useFetchRoses = (): {
+  const useFetchRoses = (
+    rosIdFromParams?: string,
+  ): {
     selectedROS: ROSWithMetadata | null;
     setSelectedROS: (ros: ROSWithMetadata | null) => void;
     roses: ROSWithMetadata[] | null;
@@ -463,7 +479,9 @@ export const useROSPlugin = () => {
           });
 
           setRoses(fetchedRoses);
-          setSelectedROS(fetchedRoses[0]);
+          setSelectedROS(
+            fetchedRoses.find(r => r.id === rosIdFromParams) ?? fetchedRoses[0],
+          );
           setIsFetching(false);
         },
         () => setIsFetching(false),

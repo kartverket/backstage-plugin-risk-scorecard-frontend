@@ -57,7 +57,7 @@ import {
 
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
-import { ROSPlugin } from '@internal/plugin-ros/src/components/ROSPlugin';
+import { RosPage } from '@internal/plugin-ros/src';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -178,7 +178,7 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/ros" title="ROS">
-      <ROSPlugin />
+      <RosPage />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -209,7 +209,7 @@ const websiteEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/ros" title="ROS">
-      <ROSPlugin />
+      <RosPage />
     </EntityLayout.Route>
   </EntityLayout>
 );
