@@ -3,18 +3,19 @@ import {
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
 
-import { rootRouteRef } from './routes';
+import { rootRouteRef, rosRouteRef } from './routes';
 
 export const rosPlugin = createPlugin({
   id: 'ros',
   routes: {
     root: rootRouteRef,
+    ros: rosRouteRef,
   },
 });
 
 export const RosPage = rosPlugin.provide(
   createRoutableExtension({
-    name: 'RosPage',
+    name: 'RosPlugin',
     component: () => import('./components/ROSPlugin').then(m => m.ROSPlugin),
     mountPoint: rootRouteRef,
   }),
