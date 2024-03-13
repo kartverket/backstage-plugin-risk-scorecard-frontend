@@ -61,7 +61,8 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
   },
   riskSummary: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
+    borderRadius: '8px',
     padding: theme.spacing(2),
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
