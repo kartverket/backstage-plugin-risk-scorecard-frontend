@@ -54,11 +54,10 @@ export const useFontStyles = makeStyles(theme => ({
   h1: {
     fontSize: theme.spacing(4),
     fontWeight: 700,
-    color: '#F8F8F8',
   },
   h2: {
-    fontSize: theme.spacing(3),
-    fontWeight: 400,
+    fontSize: theme.spacing(3.5),
+    fontWeight: 500,
   },
   body1: {
     fontSize: theme.spacing(2),
@@ -66,7 +65,7 @@ export const useFontStyles = makeStyles(theme => ({
   },
   body2: {
     fontSize: theme.spacing(2),
-    fontWeight: 500,
+    fontWeight: 400,
   },
   label: {
     fontSize: theme.spacing(1.75),

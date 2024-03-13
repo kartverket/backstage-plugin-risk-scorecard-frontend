@@ -8,24 +8,31 @@ import {
 } from '@material-ui/core';
 import { TextField } from '../ScenarioDrawer/Textfield';
 import { useDialogStyles } from './DialogStyle';
-import { ROS } from '../utils/types';
-import { emptyROS } from '../utils/utilityfunctions';
+import { ROS, ROSWithMetadata } from '../utils/types';
 import { useFontStyles } from '../ScenarioDrawer/style';
 import { rosOmfangError, rosTittelError } from '../utils/constants';
+import { emptyROS } from '../utils/utilityfunctions';
+import { ROSDialogStates } from '../ROSPlugin/ROSPlugin';
 
 interface ROSDialogProps {
-  isOpen: boolean;
   onClose: () => void;
-  saveRos: (newRos: ROS) => void;
+  dialogState: ROSDialogStates;
+  createNewRos: (newRos: ROS) => void;
+  updateRos: (newRos: ROS) => void;
+  ros: ROSWithMetadata | null;
 }
 
 export const ROSDialog = ({
-  isOpen,
   onClose,
-  saveRos,
+  dialogState,
+  createNewRos,
+  updateRos,
+  ros,
   ...props
 }: ROSDialogProps) => {
-  const [newROS, setNewROS] = useState<ROS>(emptyROS(true));
+  const [newROS, setNewROS] = useState<ROS>(
+    dialogState === ROSDialogStates.Edit ? ros!!.content : emptyROS(),
+  );
 
   const [newROSError, setNewROSError] = useState<{
     tittel: string | null;
@@ -38,27 +45,27 @@ export const ROSDialog = ({
   const classes = useDialogStyles();
   const { h1 } = useFontStyles();
 
-  const clearROS = () => {
-    setNewROS(emptyROS(false));
-  };
-
   const handleCancel = () => {
     onClose();
+    setNewROS(emptyROS());
     setNewROSError({
       tittel: null,
       omfang: null,
     });
-    clearROS();
   };
 
-  const handleCreate = () => {
+  const handleSave = () => {
     setNewROSError({
       tittel: newROS.tittel === '' ? rosTittelError : null,
       omfang: newROS.omfang === '' ? rosOmfangError : null,
     });
     if (!newROS.tittel || !newROS.omfang) return;
 
-    saveRos(newROS);
+    if (dialogState === ROSDialogStates.Create) {
+      createNewRos(newROS);
+    } else {
+      updateRos(newROS);
+    }
     handleCancel();
   };
 
@@ -84,15 +91,20 @@ export const ROSDialog = ({
     });
   };
 
+  const header =
+    dialogState === ROSDialogStates.Create
+      ? 'Ny risiko- og sårbarhetsanalyse'
+      : 'Rediger ROS-analyse';
+
   return (
     <Dialog
       classes={{ paper: classes.paper }}
-      open={isOpen}
+      open={dialogState !== ROSDialogStates.Closed}
       onClose={onClose}
       {...props}
     >
       <DialogContent>
-        <Typography className={h1}>Ny risiko- og sårbarhetsanalyse</Typography>
+        <Typography className={h1}>{header}</Typography>
         <Box className={classes.content}>
           <TextField
             label="Tittel"
@@ -124,7 +136,7 @@ export const ROSDialog = ({
         }}
       >
         <Box className={classes.buttons}>
-          <Button variant="contained" color="primary" onClick={handleCreate}>
+          <Button variant="contained" color="primary" onClick={handleSave}>
             Lagre
           </Button>
           <Button variant="outlined" color="primary" onClick={handleCancel}>

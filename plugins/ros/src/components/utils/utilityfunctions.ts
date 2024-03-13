@@ -61,8 +61,8 @@ export const getRestSannsynlighetLevel = (scenario: Scenario) =>
 export const getRestKonsekvensLevel = (scenario: Scenario) =>
   konsekvensOptions.indexOf(scenario.restrisiko.konsekvens) + 1;
 
-export const emptyROS = (withVersions: boolean): ROS => ({
-  skjemaVersjon: withVersions ? '1' : '',
+export const emptyROS = (): ROS => ({
+  skjemaVersjon: '1',
   tittel: '',
   omfang: '',
   scenarier: [],
