@@ -109,11 +109,11 @@ export const TiltakEdit = ({
 
         <Grid item xs={4}>
           <Typography className={label} style={{ marginTop: '3rem' }}>
-            Status
+            Frist
           </Typography>
         </Grid>
 
-        <Grid item xs={4} style={{ marginTop: '-1.5rem' }}>
+        <Grid item xs={4} style={{ marginTop: '-1rem' }}>
           <TextField
             value={tiltak.tiltakseier}
             handleChange={setTiltakseier}
