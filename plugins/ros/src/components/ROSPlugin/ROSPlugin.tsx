@@ -13,7 +13,7 @@ import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import { ROS, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
-import { emptyROS, getAlertSeverity } from '../utils/utilityfunctions';
+import { getAlertSeverity } from '../utils/utilityfunctions';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useLoadingStyles } from './rosPluginStyle';
 import { ScenarioContext } from './ScenarioContext';
@@ -28,8 +28,6 @@ export enum ROSDialogStates {
 }
 
 export const ROSPlugin = () => {
-  // const [ROSDialogIsOpen, setROSDialogIsOpen] = useState<boolean>(false);
-  // const [isNewROS, setIsNewROS] = useState<boolean>(false);
   const [ROSDialogState, setROSDialogState] = useState<ROSDialogStates>(
     ROSDialogStates.Closed,
   );
