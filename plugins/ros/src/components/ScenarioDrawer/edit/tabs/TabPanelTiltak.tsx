@@ -57,7 +57,7 @@ export const TabPanelTiltak = ({
 
   const { tabPanel } = tabStyles();
 
-  const { body2, subtitle1, headerSubtitle } = useFontStyles();
+  const { body2, headerSubtitle } = useFontStyles();
 
   return (
     <TabPanel value="tiltak" className={tabPanel}>

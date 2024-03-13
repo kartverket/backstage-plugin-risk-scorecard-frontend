@@ -13,6 +13,8 @@ export const Tabs = ({ setTab }: TabsProps) => {
       <TabList
         onChange={(_: any, newValue: string) => setTab(newValue)}
         variant="fullWidth"
+        indicatorColor="primary"
+        style={{ color: 'white' }}
       >
         <Tab
           label={
@@ -21,6 +23,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
             </Typography>
           }
           value="startrisiko"
+          style={{ backgroundColor: 'transparent', color: 'white' }}
         />
         <Tab
           label={
@@ -29,6 +32,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
             </Typography>
           }
           value="restrisiko"
+          style={{ backgroundColor: 'transparent', color: 'white' }}
         />
       </TabList>
     </Box>
