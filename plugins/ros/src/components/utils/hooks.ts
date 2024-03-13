@@ -29,7 +29,7 @@ import {
   sannsynlighetOptions,
   scenarioTittelError,
 } from './constants';
-import { rosRouteRef } from '../../routes';
+import { rosRouteRef, scenarioRouteRef } from '../../routes';
 import { useNavigate } from 'react-router';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
@@ -190,22 +190,21 @@ const useFetch = (
 
 export interface ScenarioDrawerProps {
   scenarioDrawerState: ScenarioDrawerState;
-  openScenarioDrawerEdit: () => void;
-  closeScenarioDrawer: () => void;
+  editScenario: () => void;
 
   scenario: Scenario;
-  setScenario: (scenario: Scenario) => void;
   originalScenario: Scenario;
-  setOriginalScenario: (scenario: Scenario) => void;
   newScenario: () => void;
-  openScenario: (id: string) => void;
   saveScenario: () => boolean;
+
+  openScenario: (id: string) => void;
+  closeScenario: () => void;
 
   scenarioErrors: ScenarioErrors;
 
   deleteConfirmationIsOpen: boolean;
-  openDeleteConfirmation: (id: string) => void;
-  closeDeleteConfirmation: () => void;
+  openDeleteConfirmation: () => void;
+  abortDeletion: () => void;
   confirmDeletion: () => void;
 
   setTittel: (tittel: string) => void;
@@ -235,46 +234,76 @@ const emptyScenarioErrors = (): ScenarioErrors => ({
 });
 
 export const useScenarioDrawer = (
-  ros: ROS | null,
+  ros: ROSWithMetadata | null,
   updateRos: (ros: ROS) => void,
   scenarioIdFromParams?: string,
 ): ScenarioDrawerProps => {
   // STATES
-
   const [scenarioDrawerState, setScenarioDrawerState] = useState(
     ScenarioDrawerState.Closed,
   );
+  const [isNewScenario, setIsNewScenario] = useState(false);
   const [scenario, setScenario] = useState(emptyScenario());
   const [originalScenario, setOriginalScenario] = useState(emptyScenario());
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
 
   const [scenarioErrors, setScenarioErrors] = useState(emptyScenarioErrors());
+  const navigate = useNavigate();
+  const getScenarioPath = useRouteRef(scenarioRouteRef);
+  const getRosPath = useRouteRef(rosRouteRef);
 
+  // Open scenario when url changes
   useEffect(() => {
-    if (scenarioIdFromParams) {
-      const selectedScenario = ros?.scenarier.find(
+    if (ros) {
+      // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
+      if (!scenarioIdFromParams) {
+        setScenarioDrawerState(ScenarioDrawerState.Closed);
+        const s = emptyScenario();
+        setScenario(s);
+        setOriginalScenario(s);
+        setScenarioErrors(emptyScenarioErrors());
+        return;
+      }
+
+      if (isNewScenario) {
+        setScenarioDrawerState(ScenarioDrawerState.Edit);
+        return;
+      }
+
+      const selectedScenario = ros.content.scenarier.find(
         s => s.ID === scenarioIdFromParams,
       );
-      if (selectedScenario) {
-        setScenario(selectedScenario);
-        setOriginalScenario(selectedScenario);
-        setScenarioDrawerState(ScenarioDrawerState.View);
+
+      // If there is an invalid scenario ID in the URL, navigate to the ROS with error state
+      if (!selectedScenario) {
+        navigate(getRosPath({ rosId: ros.id }), {
+          state: 'Ugyldig scenario ID',
+        });
+        return;
       }
+
+      setScenario(selectedScenario);
+      setOriginalScenario(selectedScenario);
+      setScenarioDrawerState(ScenarioDrawerState.View);
     }
   }, [ros, scenarioIdFromParams]);
 
   // SCENARIO DRAWER FUNCTIONS
-
-  const openScenarioDrawerEdit = () =>
-    setScenarioDrawerState(ScenarioDrawerState.Edit);
-
-  const closeScenarioDrawer = () => {
-    setScenarioDrawerState(ScenarioDrawerState.Closed);
-    setScenario(emptyScenario());
-    setOriginalScenario(emptyScenario());
-    setScenarioErrors(emptyScenarioErrors());
+  const openScenario = (id: string) => {
+    if (ros) {
+      navigate(getScenarioPath({ rosId: ros.id, scenarioId: id }));
+    }
   };
+
+  const closeScenario = () => {
+    if (ros) {
+      setIsNewScenario(false);
+      navigate(getRosPath({ rosId: ros.id }));
+    }
+  };
+
+  const editScenario = () => setScenarioDrawerState(ScenarioDrawerState.Edit);
 
   const saveScenario = () => {
     if (ros) {
@@ -283,56 +312,44 @@ export const useScenarioDrawer = (
       });
 
       if (scenario.tittel !== '') {
-        const updatedScenarios = ros.scenarier.some(s => s.ID === scenario.ID)
-          ? ros.scenarier.map(s => (s.ID === scenario.ID ? scenario : s))
-          : ros.scenarier.concat(scenario);
-        updateRos({ ...ros, scenarier: updatedScenarios });
-        closeScenarioDrawer();
-        setScenario(emptyScenario());
-        setOriginalScenario(emptyScenario());
+        const updatedScenarios = ros.content.scenarier.some(
+          s => s.ID === scenario.ID,
+        )
+          ? ros.content.scenarier.map(s =>
+              s.ID === scenario.ID ? scenario : s,
+            )
+          : ros.content.scenarier.concat(scenario);
+        updateRos({ ...ros.content, scenarier: updatedScenarios });
+        closeScenario();
         return true;
       }
     }
     return false;
   };
 
-  const openDeleteConfirmation = (id: string) => {
-    if (ros) {
-      setScenario(ros.scenarier.find(s => s.ID === id)!!);
-      setDeleteConfirmationIsOpen(true);
-    }
-  };
+  const openDeleteConfirmation = () => setDeleteConfirmationIsOpen(true);
 
-  const deleteScenario = (id: string) => {
-    if (ros) {
-      const updatedScenarios = ros.scenarier.filter(s => s.ID !== id);
-      updateRos({ ...ros, scenarier: updatedScenarios });
-    }
-  };
+  const abortDeletion = () => setDeleteConfirmationIsOpen(false);
 
   const confirmDeletion = () => {
-    deleteScenario(scenario.ID);
-    closeScenarioDrawer();
-  };
-
-  const closeDeleteConfirmation = () => {
-    setDeleteConfirmationIsOpen(false);
-  };
-
-  const openScenario = (id: string) => {
     if (ros) {
-      const currentScenario =
-        ros.scenarier.find(s => s.ID === id) ?? emptyScenario();
-      setScenario(currentScenario);
-      setOriginalScenario(currentScenario);
-      setScenarioDrawerState(ScenarioDrawerState.View);
+      setDeleteConfirmationIsOpen(false);
+      closeScenario();
+      const updatedScenarios = ros.content.scenarier.filter(
+        s => s.ID !== scenario.ID,
+      );
+      updateRos({ ...ros.content, scenarier: updatedScenarios });
     }
   };
 
   const newScenario = () => {
-    setScenario(emptyScenario());
-    setOriginalScenario(emptyScenario());
-    openScenarioDrawerEdit();
+    if (ros) {
+      setIsNewScenario(true);
+      const s = emptyScenario();
+      setScenario(s);
+      setOriginalScenario(s);
+      openScenario(s.ID);
+    }
   };
 
   // UPDATE SCENARIO FUNCTIONS
@@ -407,22 +424,21 @@ export const useScenarioDrawer = (
 
   return {
     scenarioDrawerState,
-    openScenarioDrawerEdit,
-    closeScenarioDrawer,
 
     scenario,
-    setScenario,
     originalScenario,
-    setOriginalScenario,
     newScenario,
-    openScenario,
     saveScenario,
+    editScenario,
+
+    openScenario,
+    closeScenario,
 
     scenarioErrors,
 
     deleteConfirmationIsOpen,
     openDeleteConfirmation,
-    closeDeleteConfirmation,
+    abortDeletion,
     confirmDeletion,
 
     setTittel,

@@ -9,8 +9,7 @@ import { ScenarioDrawerState } from '../utils/hooks';
 export const ScenarioDrawer = () => {
   const { paperEdit, paperView } = useScenarioDrawerStyles();
 
-  const { scenarioDrawerState, closeScenarioDrawer } =
-    useContext(ScenarioContext)!!;
+  const { scenarioDrawerState, closeScenario } = useContext(ScenarioContext)!!;
 
   const isOpen = scenarioDrawerState !== ScenarioDrawerState.Closed;
   const editMode = scenarioDrawerState === ScenarioDrawerState.Edit;
@@ -21,7 +20,7 @@ export const ScenarioDrawer = () => {
       variant="persistent"
       anchor="right"
       open={isOpen}
-      onClose={closeScenarioDrawer}
+      onClose={closeScenario}
     >
       {editMode ? <ScenarioDrawerEdit /> : <ScenarioDrawerView />}
     </Drawer>

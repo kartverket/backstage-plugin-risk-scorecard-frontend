@@ -38,7 +38,7 @@ export const ROSPlugin = () => {
   } = useFetchRoses(params.rosId);
 
   const scenario = useScenarioDrawer(
-    selectedROS?.content ?? null,
+    selectedROS ?? null,
     updateROS,
     params.scenarioId,
   );
