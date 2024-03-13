@@ -2,6 +2,7 @@ import TabList from '@material-ui/lab/TabList/TabList';
 import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import React from 'react';
+import { tabStyles } from './style';
 
 interface TabsProps {
   setTab: (tab: string) => void;
@@ -13,6 +14,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
       <TabList
         onChange={(_: any, newValue: string) => setTab(newValue)}
         variant="fullWidth"
+        indicatorColor="primary"
       >
         <Tab
           label={
@@ -21,6 +23,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
             </Typography>
           }
           value="konsekvens"
+          style={{ backgroundColor: 'transparent', color: 'white' }}
         />
         <Tab
           label={
@@ -29,6 +32,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
             </Typography>
           }
           value="sannsynlighet"
+          style={{ backgroundColor: 'transparent', color: 'white' }}
         />
         <Tab
           label={
@@ -37,6 +41,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
             </Typography>
           }
           value="tiltak"
+          style={{ backgroundColor: 'transparent', color: 'white' }}
         />
       </TabList>
     </Box>
