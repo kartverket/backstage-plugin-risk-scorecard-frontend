@@ -30,7 +30,7 @@ import {
   scenarioTittelError,
 } from './constants';
 import { rosRouteRef, scenarioRouteRef } from '../../routes';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   const currentEntity = useAsyncEntity();
@@ -185,7 +185,7 @@ const useFetch = (
       },
     );
 
-  return { fetchRoses, postROS, putROS, publishROS, response };
+  return { fetchRoses, postROS, putROS, publishROS, response, setResponse };
 };
 
 export interface ScenarioDrawerProps {
@@ -278,7 +278,7 @@ export const useScenarioDrawer = (
       // If there is an invalid scenario ID in the URL, navigate to the ROS with error state
       if (!selectedScenario) {
         navigate(getRosPath({ rosId: ros.id }), {
-          state: 'Ugyldig scenario ID',
+          state: 'Risikoscenarioet eksisterer ikke',
         });
         return;
       }
@@ -477,20 +477,27 @@ export const useFetchRoses = (
     ]),
   );
 
+  const location = useLocation();
   const navigate = useNavigate();
   const getRosPath = useRouteRef(rosRouteRef);
 
   const repoInformation = useGithubRepositoryInformation();
 
-  const { fetchRoses, postROS, putROS, publishROS, response } = useFetch(
-    idToken,
-    accessToken,
-    repoInformation,
-  );
+  const { fetchRoses, postROS, putROS, publishROS, response, setResponse } =
+    useFetch(idToken, accessToken, repoInformation);
 
   const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
   const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(null);
   const [isFetching, setIsFetching] = useState(true);
+
+  useEffect(() => {
+    if (location.state) {
+      setResponse({
+        statusMessage: location.state,
+        status: ProcessingStatus.ErrorWhenFetchingROSes,
+      });
+    }
+  }, [location]);
 
   // Initial fetch of ROSes
   useEffect(() => {
@@ -525,7 +532,7 @@ export const useFetchRoses = (
         // If there is an invalid ROS ID in the URL, navigate to the first ROS with error state
         if (!ros) {
           navigate(getRosPath({ rosId: fetchedRoses[0].id }), {
-            state: 'Ugyldig ROS id',
+            state: 'ROS-analysen eksisterer ikke',
           });
           return;
         }
