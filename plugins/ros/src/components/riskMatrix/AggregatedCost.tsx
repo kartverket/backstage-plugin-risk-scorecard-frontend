@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
+import { Box, IconButton, makeStyles, Typography } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
 import { formatNOK } from '../utils/utilityfunctions';
 import { ROS } from '../utils/types';
@@ -11,13 +11,14 @@ interface AggregatedCostProps {
 }
 
 const useStyles = makeStyles({
-  gridOuterContainer: {
+  outerBox: {
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'flex-start',
   },
-  gridInnerContainer: {
+  innerBox: {
     display: 'flex',
-    justifyContent: 'start',
+    alignItems: 'center',
   },
 });
 
@@ -31,24 +32,20 @@ export const AggregatedCost = ({ ros, startRisiko }: AggregatedCostProps) => {
     .reduce((a, b) => a + b, 0);
 
   const [showDialog, setShowDialog] = useState(false);
-  const classes = useStyles();
+  const { outerBox, innerBox } = useStyles();
   return (
-    <>
-      <Grid container className={classes.gridOuterContainer}>
-        <Grid item>
-          <Typography>Estimert risiko</Typography>
-        </Grid>
-        <Grid item className={classes.gridInnerContainer}>
-          <Typography variant="h5">{formatNOK(cost)} kr/år</Typography>
-          <IconButton size="small" onClick={() => setShowDialog(true)}>
-            <InfoIcon />
-          </IconButton>
-        </Grid>
-      </Grid>
+    <Box className={outerBox}>
+      <Typography>Estimert risiko</Typography>
+      <Box className={innerBox}>
+        <Typography variant="h5">{formatNOK(cost)} kr/år</Typography>
+        <IconButton size="small" onClick={() => setShowDialog(true)}>
+          <InfoIcon />
+        </IconButton>
+      </Box>
       <EstimatedRiskInfoDialog
         isOpen={showDialog}
         onClose={() => setShowDialog(false)}
       />
-    </>
+    </Box>
   );
 };
