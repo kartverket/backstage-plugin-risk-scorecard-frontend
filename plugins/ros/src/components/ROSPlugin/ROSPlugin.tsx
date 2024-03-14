@@ -7,10 +7,8 @@ import {
 } from '@backstage/core-components';
 import { useFetchRoses, useScenarioDrawer } from '../utils/hooks';
 import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
-import { ROSDialog } from '../ROSDialog/ROSDialog';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { ROSStatusComponent } from '../ROSStatus/ROSStatusComponent';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
 import Alert from '@mui/material/Alert';
@@ -20,11 +18,25 @@ import { useLoadingStyles } from './rosPluginStyle';
 import { ScenarioContext } from './ScenarioContext';
 import { useFontStyles } from '../ScenarioDrawer/style';
 import { useParams } from 'react-router';
+import { RosInfo } from '../rosInfo/RosInfo';
+import { ROSDialog } from '../ROSDialog/ROSDialog';
+
+export enum ROSDialogStates {
+  Closed,
+  Edit,
+  Create,
+}
 
 export const ROSPlugin = () => {
   const params = useParams();
 
-  const [newROSDialogIsOpen, setNewROSDialogIsOpen] = useState<boolean>(false);
+  const [ROSDialogState, setROSDialogState] = useState<ROSDialogStates>(
+    ROSDialogStates.Closed,
+  );
+
+  const openCreateRosDialog = () => setROSDialogState(ROSDialogStates.Create);
+  const openEditRosDialog = () => setROSDialogState(ROSDialogStates.Edit);
+  const closeRosDialog = () => setROSDialogState(ROSDialogStates.Closed);
 
   const {
     selectedROS,
@@ -50,12 +62,11 @@ export const ROSPlugin = () => {
     <>
       <ScenarioContext.Provider value={scenario}>
         {response && (
-          <Grid item xs={12}>
-            <Alert severity={getAlertSeverity(response.status)}>
-              <Typography>{response.statusMessage}</Typography>
-            </Alert>
-          </Grid>
+          <Alert severity={getAlertSeverity(response.status)}>
+            <Typography>{response.statusMessage}</Typography>
+          </Alert>
         )}
+
         <Content>
           <ContentHeader title="Risiko- og sårbarhetsanalyse">
             <SupportButton>Kul plugin ass!</SupportButton>
@@ -63,9 +74,7 @@ export const ROSPlugin = () => {
 
           {isFetching && (
             <div className={classes.container}>
-              <Grid item>
-                <CircularProgress className={classes.spinner} size={80} />
-              </Grid>
+              <CircularProgress className={classes.spinner} size={80} />
             </div>
           )}
 
@@ -82,12 +91,12 @@ export const ROSPlugin = () => {
             )}
 
             {!isFetching && (
-              <Grid item xs={9}>
+              <Grid item xs>
                 <Button
                   startIcon={<AddCircleOutlineIcon />}
                   variant="text"
                   color="primary"
-                  onClick={() => setNewROSDialogIsOpen(true)}
+                  onClick={openCreateRosDialog}
                   className={button}
                 >
                   Opprett ny analyse
@@ -97,35 +106,32 @@ export const ROSPlugin = () => {
 
             {selectedROS && (
               <>
-                <Grid item xs={6}>
-                  <Typography variant="subtitle2">
-                    Omfang: {selectedROS.content.omfang}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <ROSStatusComponent
-                    selectedROS={selectedROS}
-                    publishRosFn={approveROS}
+                <Grid item xs={12}>
+                  <RosInfo
+                    ros={selectedROS}
+                    approveROS={approveROS}
+                    edit={openEditRosDialog}
                   />
                 </Grid>
-
-                <Grid item container direction="row">
-                  <Grid item xs={4}>
-                    <RiskMatrix ros={selectedROS.content} />
-                  </Grid>
-                  <Grid item xs={8}>
-                    <ScenarioTable ros={selectedROS.content} />
-                  </Grid>
+                <Grid item xs={4}>
+                  <RiskMatrix ros={selectedROS.content} />
+                </Grid>
+                <Grid item xs={8}>
+                  <ScenarioTable ros={selectedROS.content} />
                 </Grid>
               </>
             )}
           </Grid>
 
-          <ROSDialog
-            isOpen={newROSDialogIsOpen}
-            onClose={() => setNewROSDialogIsOpen(false)}
-            saveRos={createNewROS}
-          />
+          {ROSDialogState !== ROSDialogStates.Closed && (
+            <ROSDialog
+              onClose={closeRosDialog}
+              createNewRos={createNewROS}
+              updateRos={updateROS}
+              ros={selectedROS}
+              dialogState={ROSDialogState}
+            />
+          )}
 
           <ScenarioDrawer />
         </Content>

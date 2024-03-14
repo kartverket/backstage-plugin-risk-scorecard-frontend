@@ -587,7 +587,14 @@ export const useFetchRoses = (
 
   const updateROS = (ros: ROS) => {
     if (selectedROS && roses) {
-      const updatedROS = { ...selectedROS, content: ros };
+      const updatedROS = {
+        ...selectedROS,
+        content: ros,
+        status:
+          selectedROS.status !== RosStatus.Draft
+            ? RosStatus.Draft
+            : selectedROS.status,
+      };
       setSelectedROS(updatedROS);
       setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
       putROS(updatedROS);

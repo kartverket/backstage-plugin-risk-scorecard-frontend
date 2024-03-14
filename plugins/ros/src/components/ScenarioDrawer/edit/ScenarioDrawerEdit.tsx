@@ -52,14 +52,6 @@ export const ScenarioDrawerEdit = () => {
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
-  const handleCloseDrawer = () => {
-    if (JSON.stringify(scenario) !== JSON.stringify(originalScenario)) {
-      setShowCloseConfirmation(true);
-    } else {
-      closeScenario();
-    }
-  };
-
   const close = () => {
     closeScenario();
     setShowCloseConfirmation(false);
@@ -67,6 +59,14 @@ export const ScenarioDrawerEdit = () => {
 
   const saveAndClose = () => {
     if (saveScenario()) {
+      close();
+    }
+  };
+
+  const handleCloseDrawer = () => {
+    if (JSON.stringify(scenario) !== JSON.stringify(originalScenario)) {
+      setShowCloseConfirmation(true);
+    } else {
       close();
     }
   };
@@ -80,7 +80,7 @@ export const ScenarioDrawerEdit = () => {
           className={button}
           variant="outlined"
           color="primary"
-          onClick={closeScenario}
+          onClick={handleCloseDrawer}
           endIcon={<KeyboardTabIcon />}
         >
           Lukk
