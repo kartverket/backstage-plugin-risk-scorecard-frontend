@@ -80,7 +80,7 @@ export const ScenarioDrawerEdit = () => {
           className={button}
           variant="outlined"
           color="primary"
-          onClick={closeScenarioDrawer}
+          onClick={handleCloseDrawer}
           endIcon={<KeyboardTabIcon />}
         >
           Lukk
