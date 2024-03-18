@@ -278,7 +278,7 @@ export const useScenarioDrawer = (
       // If there is an invalid scenario ID in the URL, navigate to the ROS with error state
       if (!selectedScenario) {
         navigate(getRosPath({ rosId: ros.id }), {
-          state: 'Risikoscenarioet eksisterer ikke',
+          state: 'Risikoscenarioet du prøver å åpne eksisterer ikke',
         });
         return;
       }
@@ -532,7 +532,7 @@ export const useFetchRoses = (
         // If there is an invalid ROS ID in the URL, navigate to the first ROS with error state
         if (!ros) {
           navigate(getRosPath({ rosId: fetchedRoses[0].id }), {
-            state: 'ROS-analysen eksisterer ikke',
+            state: 'ROS-analysen du prøver å åpne eksisterer ikke',
           });
           return;
         }
