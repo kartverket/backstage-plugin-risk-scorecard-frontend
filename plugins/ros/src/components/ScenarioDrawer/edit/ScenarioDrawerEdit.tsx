@@ -30,7 +30,6 @@ export const ScenarioDrawerEdit = () => {
   const { h1, headerSubtitle, labelSubtitle, button, label } = useFontStyles();
 
   const {
-    closeScenarioDrawer,
     scenario,
     originalScenario,
     saveScenario,
@@ -46,27 +45,28 @@ export const ScenarioDrawerEdit = () => {
     updateTiltak,
     deleteTiltak,
     updateRestrisiko,
+    closeScenario,
   } = useContext(ScenarioContext)!!;
 
   const [tab, setTab] = useState('konsekvens');
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
-  const handleCloseDrawer = () => {
-    if (JSON.stringify(scenario) !== JSON.stringify(originalScenario)) {
-      setShowCloseConfirmation(true);
-    } else {
-      closeScenarioDrawer();
-    }
-  };
-
   const close = () => {
-    closeScenarioDrawer();
+    closeScenario();
     setShowCloseConfirmation(false);
   };
 
   const saveAndClose = () => {
     if (saveScenario()) {
+      close();
+    }
+  };
+
+  const handleCloseDrawer = () => {
+    if (JSON.stringify(scenario) !== JSON.stringify(originalScenario)) {
+      setShowCloseConfirmation(true);
+    } else {
       close();
     }
   };
@@ -185,7 +185,7 @@ export const ScenarioDrawerEdit = () => {
               startIcon={<DeleteIcon />}
               variant="text"
               color="primary"
-              onClick={() => openDeleteConfirmation(scenario.ID)}
+              onClick={openDeleteConfirmation}
             >
               Slett scenario
             </Button>

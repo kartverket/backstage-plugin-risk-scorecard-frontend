@@ -23,7 +23,7 @@ export const ScenarioDrawerView = () => {
   const { h1, h2, subtitle1, body1, body2, label, button, risikoLevel } =
     useFontStyles();
 
-  const { scenario, closeScenarioDrawer, openScenarioDrawerEdit } =
+  const { scenario, closeScenario, editScenario } =
     useContext(ScenarioContext)!!;
 
   return (
@@ -37,7 +37,7 @@ export const ScenarioDrawerView = () => {
             className={button}
             variant="contained"
             color="primary"
-            onClick={openScenarioDrawerEdit}
+            onClick={editScenario}
             startIcon={<BorderColorOutlinedIcon />}
           >
             Rediger
@@ -47,7 +47,7 @@ export const ScenarioDrawerView = () => {
             className={button}
             variant="outlined"
             color="primary"
-            onClick={closeScenarioDrawer}
+            onClick={closeScenario}
             endIcon={<KeyboardTabIcon />}
           >
             Lukk

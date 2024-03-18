@@ -3,12 +3,14 @@ import {
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
 
-import { rootRouteRef } from './routes';
+import { rootRouteRef, rosRouteRef, scenarioRouteRef } from './routes';
 
 export const rosPlugin = createPlugin({
   id: 'ros',
   routes: {
     root: rootRouteRef,
+    scenario: scenarioRouteRef,
+    ros: rosRouteRef,
   },
 });
 

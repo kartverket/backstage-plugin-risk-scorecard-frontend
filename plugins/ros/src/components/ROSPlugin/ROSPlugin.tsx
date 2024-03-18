@@ -5,19 +5,19 @@ import {
   ContentHeader,
   SupportButton,
 } from '@backstage/core-components';
-import { useROSPlugin, useScenarioDrawer } from '../utils/hooks';
+import { useFetchRoses, useScenarioDrawer } from '../utils/hooks';
 import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Dropdown } from '../ScenarioDrawer/Dropdown';
-import { ROS, RosStatus } from '../utils/types';
 import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../utils/utilityfunctions';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useLoadingStyles } from './rosPluginStyle';
 import { ScenarioContext } from './ScenarioContext';
 import { useFontStyles } from '../ScenarioDrawer/style';
+import { useParams } from 'react-router';
 import { RosInfo } from '../rosInfo/RosInfo';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
 
@@ -28,6 +28,8 @@ export enum ROSDialogStates {
 }
 
 export const ROSPlugin = () => {
+  const params = useParams();
+
   const [ROSDialogState, setROSDialogState] = useState<ROSDialogStates>(
     ROSDialogStates.Closed,
   );
@@ -36,72 +38,22 @@ export const ROSPlugin = () => {
   const openEditRosDialog = () => setROSDialogState(ROSDialogStates.Edit);
   const closeRosDialog = () => setROSDialogState(ROSDialogStates.Closed);
 
-  const { useFetchRoses, postROS, putROS, publishROS, response } =
-    useROSPlugin();
-
   const {
     selectedROS,
-    setSelectedROS,
-
     roses,
-    setRoses,
-    selectROSByTitle,
+    selectRos,
     isFetching,
-    setIsFetching,
-  } = useFetchRoses();
+    createNewROS,
+    updateROS,
+    approveROS,
+    response,
+  } = useFetchRoses(params.rosId);
 
-  const createNewROS = (ros: ROS) => {
-    setIsFetching(true);
-    setSelectedROS(null);
-    postROS(
-      ros,
-      res => {
-        if (!res.rosId) throw new Error('No ROS ID returned');
-
-        const newROS = {
-          id: res.rosId,
-          title: ros.tittel,
-          status: RosStatus.Draft,
-          content: ros,
-        };
-
-        setRoses(roses ? [...roses, newROS] : [newROS]);
-        setSelectedROS(newROS);
-        setIsFetching(false);
-      },
-      () => {
-        setSelectedROS(selectedROS);
-        setIsFetching(false);
-      },
-    );
-  };
-
-  const updateROS = (ros: ROS) => {
-    if (selectedROS && roses) {
-      const updatedROS = {
-        ...selectedROS,
-        content: ros,
-        status:
-          selectedROS.status !== RosStatus.Draft
-            ? RosStatus.Draft
-            : selectedROS.status,
-      };
-      setSelectedROS(updatedROS);
-      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
-      putROS(updatedROS);
-    }
-  };
-
-  const approveROS = () => {
-    if (selectedROS && roses) {
-      const updatedROS = { ...selectedROS, status: RosStatus.SentForApproval };
-      setSelectedROS(updatedROS);
-      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
-      publishROS(selectedROS.id);
-    }
-  };
-
-  const scenario = useScenarioDrawer(selectedROS?.content ?? null, updateROS);
+  const scenario = useScenarioDrawer(
+    selectedROS ?? null,
+    updateROS,
+    params.scenarioId,
+  );
 
   const classes = useLoadingStyles();
   const { button } = useFontStyles();
@@ -132,7 +84,7 @@ export const ROSPlugin = () => {
                 <Dropdown<string>
                   options={roses.map(ros => ros.title) ?? []}
                   selectedValues={selectedROS?.title ?? ''}
-                  handleChange={title => selectROSByTitle(title)}
+                  handleChange={title => selectRos(title)}
                   variant="standard"
                 />
               </Grid>
