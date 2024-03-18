@@ -113,11 +113,11 @@ export const ROSPlugin = () => {
                     edit={openEditRosDialog}
                   />
                 </Grid>
-                <Grid item xs={4}>
-                  <RiskMatrix ros={selectedROS.content} />
-                </Grid>
                 <Grid item xs={8}>
                   <ScenarioTable ros={selectedROS.content} />
+                </Grid>
+                <Grid item xs={4}>
+                  <RiskMatrix ros={selectedROS.content} />
                 </Grid>
               </>
             )}
