@@ -24,6 +24,7 @@ import { ScenarioContext } from '../../ROSPlugin/ScenarioContext';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DeleteConfirmation } from '../../ROSPlugin/DeleteConfirmation';
+import { TabPanelStartrisiko } from './tabs/TabPanelStartrisiko';
 
 export const ScenarioDrawerEdit = () => {
   const { header, buttons } = useScenarioDrawerContentStyles();
@@ -48,7 +49,7 @@ export const ScenarioDrawerEdit = () => {
     updateRestrisiko,
   } = useContext(ScenarioContext)!!;
 
-  const [tab, setTab] = useState('konsekvens');
+  const [tab, setTab] = useState('startrisiko');
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
@@ -138,9 +139,11 @@ export const ScenarioDrawerEdit = () => {
         <Grid item xs={12}>
           <TabContext value={tab}>
             <Tabs setTab={setTab} />
-            <TabPanelKonsekvens
-              selected={getKonsekvensLevel(scenario)}
+            <TabPanelStartrisiko
+              selectedKonsekvens={getKonsekvensLevel(scenario)}
+              selectedSannsynlighet={getSannsynlighetLevel(scenario)}
               setKonsekvens={setKonsekvens}
+              setSannsynlighet={setSannsynlighet}
             />
             <TabPanelSannsynlighet
               selected={getSannsynlighetLevel(scenario)}

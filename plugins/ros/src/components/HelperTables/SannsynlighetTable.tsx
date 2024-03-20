@@ -6,7 +6,6 @@ const useStyles = makeStyles({
     display: 'flex',
     borderCollapse: 'collapse',
     width: '100%',
-    justifyContent: 'center',
     paddingTop: '2rem',
   },
   cell: {

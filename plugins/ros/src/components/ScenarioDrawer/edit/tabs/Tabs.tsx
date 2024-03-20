@@ -2,7 +2,6 @@ import TabList from '@material-ui/lab/TabList/TabList';
 import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import React from 'react';
-import { tabStyles } from './style';
 
 interface TabsProps {
   setTab: (tab: string) => void;
@@ -19,10 +18,10 @@ export const Tabs = ({ setTab }: TabsProps) => {
         <Tab
           label={
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Konsekvens
+              Startrisiko
             </Typography>
           }
-          value="konsekvens"
+          value="startrisiko"
           style={{ backgroundColor: 'transparent', color: 'white' }}
         />
         <Tab

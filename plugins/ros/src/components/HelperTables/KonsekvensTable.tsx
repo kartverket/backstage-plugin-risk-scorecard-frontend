@@ -7,6 +7,7 @@ const useStyles = makeStyles({
     borderCollapse: 'collapse',
     width: '100%',
     justifyContent: 'flex-end',
+    paddingBottom: '2rem',
   },
   cell: {
     padding: '8px',
@@ -31,15 +32,15 @@ const useStyles = makeStyles({
   },
 });
 
-interface PickerTableProps {
+interface KonsekvensTableProps {
   selectedValue: number;
   handleChange: (index: number) => void;
 }
 
-export const PickerTable = ({
+export const KonsekvensTable = ({
   selectedValue,
   handleChange,
-}: PickerTableProps) => {
+}: KonsekvensTableProps) => {
   const classes = useStyles();
 
   const handleChangeRow = (row: number) => () => {

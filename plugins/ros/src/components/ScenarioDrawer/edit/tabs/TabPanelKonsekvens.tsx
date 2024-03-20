@@ -1,6 +1,6 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React from 'react';
-import { PickerTable } from '../../../HelperTables/KonsekvensTable';
+import { KonsekvensTable } from '../../../HelperTables/KonsekvensTable';
 import { tabStyles } from './style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../style';
@@ -25,7 +25,7 @@ export const TabPanelKonsekvens = ({
         Hvis konsekvensen er relevant for flere områder gjelder det høyeste
         konsekvensnivået.
       </Typography>
-      <PickerTable selectedValue={selected} handleChange={setKonsekvens} />
+      <KonsekvensTable selectedValue={selected} handleChange={setKonsekvens} />
     </TabPanel>
   );
 };
