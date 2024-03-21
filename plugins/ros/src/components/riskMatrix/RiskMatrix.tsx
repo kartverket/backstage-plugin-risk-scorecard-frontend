@@ -29,9 +29,11 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
     <InfoCard title="Risikomatrise">
       <TabContext value={tab}>
         <Tabs setTab={setTab} />
-        <Box className={riskSummary}>
-          <AggregatedCost ros={ros} startRisiko={tab === 'startrisiko'} />
-        </Box>
+        {ros.scenarier.length > 0 && (
+          <Box className={riskSummary}>
+            <AggregatedCost ros={ros} startRisiko={tab === 'startrisiko'} />
+          </Box>
+        )}
         <Box className={gridWrapper}>
           <Box className={grid}>
             <Box className={konsekvens}>

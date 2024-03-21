@@ -1,4 +1,4 @@
-import { Theme, emphasize, makeStyles } from '@material-ui/core';
+import { Theme, makeStyles } from '@material-ui/core';
 
 export const MatrixColors = [
   ['#6CC6A4', '#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A'],
