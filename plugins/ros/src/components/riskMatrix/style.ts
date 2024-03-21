@@ -4,6 +4,7 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
   gridWrapper: {
     display: 'flex',
     justifyContent: 'center',
+    paddingTop: theme.spacing(4),
   },
   grid: {
     width: '100%',
@@ -65,7 +66,6 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     borderRadius: '8px',
     padding: theme.spacing(2),
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
     backgroundColor:
       theme.palette.type === 'dark' ? '#FFFFFF1A' : 'rgba(0, 0, 0, 0.1)',
   },

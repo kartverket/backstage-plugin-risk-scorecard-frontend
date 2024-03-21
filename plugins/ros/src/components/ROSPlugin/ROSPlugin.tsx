@@ -6,7 +6,6 @@ import {
   SupportButton,
 } from '@backstage/core-components';
 import { useFetchRoses, useScenarioDrawer } from '../utils/hooks';
-import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 import { ScenarioDrawer } from '../ScenarioDrawer/ScenarioDrawer';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
@@ -20,6 +19,7 @@ import { useFontStyles } from '../ScenarioDrawer/style';
 import { useParams } from 'react-router';
 import { RosInfo } from '../rosInfo/RosInfo';
 import { ROSDialog } from '../ROSDialog/ROSDialog';
+import { ScenarioTable } from '../ScenarioTable/ScenarioTable';
 
 export enum ROSDialogStates {
   Closed,
