@@ -65,6 +65,7 @@ export const emptyROS = (): ROS => ({
   skjemaVersjon: '1',
   tittel: '',
   omfang: '',
+  verdivurderinger: [],
   scenarier: [],
 });
 
@@ -90,6 +91,7 @@ export const emptyScenario = (): Scenario => ({
 
 export const emptyTiltak = (): Tiltak => ({
   ID: generateRandomId(),
+  tittel: '',
   beskrivelse: '',
   tiltakseier: '',
   frist: new Date().toISOString().split('T')[0],

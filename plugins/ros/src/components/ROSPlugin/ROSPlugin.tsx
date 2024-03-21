@@ -82,8 +82,8 @@ export const ROSPlugin = () => {
             {roses !== null && roses.length !== 0 && (
               <Grid item xs={3}>
                 <Dropdown<string>
-                  options={roses.map(ros => ros.title) ?? []}
-                  selectedValues={selectedROS?.title ?? ''}
+                  options={roses.map(ros => ros.content.tittel) ?? []}
+                  selectedValues={selectedROS?.content.tittel ?? ''}
                   handleChange={title => selectRos(title)}
                   variant="standard"
                 />
