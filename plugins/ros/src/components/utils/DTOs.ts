@@ -7,7 +7,6 @@ import {
   Tiltak,
   Verdivurdering,
 } from './types';
-import { generateRandomId } from './utilityfunctions';
 
 export type ProcessROSResultDTO = {
   rosId: string;
@@ -38,7 +37,7 @@ export type ROSDTO = {
 type ScenarioDTO = {
   tittel: string;
   scenario: {
-    ID?: string;
+    ID: string;
     url?: string;
     sistEndret: string;
     beskrivelse: string;
@@ -53,7 +52,7 @@ type ScenarioDTO = {
 type TiltakDTO = {
   tittel: string;
   oppgave: {
-    ID?: string;
+    ID: string;
     beskrivelse: string;
     tiltakseier: string;
     frist: string;
@@ -72,7 +71,6 @@ function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
   return {
     ...scenarioDTO.scenario,
     tittel: scenarioDTO.tittel,
-    ID: scenarioDTO.scenario.ID ?? generateRandomId(),
     tiltak: scenarioDTO.scenario.tiltak.map(dtoToTiltak),
   };
 }
@@ -81,7 +79,6 @@ function dtoToTiltak(tiltakDTO: TiltakDTO): Tiltak {
   return {
     ...tiltakDTO.oppgave,
     tittel: tiltakDTO.tittel,
-    ID: tiltakDTO.oppgave.ID ?? generateRandomId(),
   };
 }
 
