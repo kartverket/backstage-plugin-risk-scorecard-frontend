@@ -119,4 +119,14 @@ devmiljø/lokalt og en for "produksjon".
 # Secrets
 
 [Her](https://console.cloud.google.com/security/secret-manager?project=spire-ros-5lmr) ligger secrets som brukes i
-Backstage. 
+Backstage.
+
+# Bygge Plugin-pakke
+
+```sh
+cd plugins/ros
+yarn install
+yarn tsc
+yarn build
+yarn publish # husk å sette ny versjon
+```
