@@ -41,7 +41,6 @@ import {
   githubAuthApiRef,
   microsoftAuthApiRef,
 } from '@backstage/core-plugin-api';
-import { RosPage } from '@bekk-spire/plugin-ros';
 
 const app = createApp({
   apis,

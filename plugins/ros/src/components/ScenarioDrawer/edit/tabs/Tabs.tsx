@@ -2,7 +2,6 @@ import TabList from '@material-ui/lab/TabList/TabList';
 import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import React from 'react';
-import { tabStyles } from './style';
 
 interface TabsProps {
   setTab: (tab: string) => void;
