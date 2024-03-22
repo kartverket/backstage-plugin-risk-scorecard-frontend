@@ -209,7 +209,7 @@ const websiteEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/ros" title="ROS">
-      <div>hello</div>
+      <RosPage />
     </EntityLayout.Route>
   </EntityLayout>
 );
