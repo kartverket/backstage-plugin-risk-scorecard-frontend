@@ -14,7 +14,6 @@ import { RosStatus, ROSWithMetadata } from '../utils/types';
 import { useButtonStyles } from '../ROSPlugin/rosPluginStyle';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import { useAlertStyles } from '../ROSStatusChip/statusChipStyle';
 import { useDialogStyles } from '../ROSDialog/DialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
 
@@ -161,8 +160,6 @@ export const ROSStatusAlertNotApprovedByRisikoeier = ({
   selectedROS,
   roses,
 }: ROSAlertProperties): ReactComponentElement<any> | null => {
-  const { noApprovalBanner } = useAlertStyles();
-
   return !(
     roses &&
     selectedROS &&

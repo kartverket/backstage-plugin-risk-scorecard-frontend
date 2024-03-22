@@ -23,7 +23,11 @@ import {
   Tiltak,
 } from './types';
 import useAsync from 'react-use/lib/useAsync';
-import { emptyScenario, emptyTiltak } from './utilityfunctions';
+import {
+  requiresNewApproval,
+  emptyScenario,
+  emptyTiltak,
+} from './utilityfunctions';
 import {
   konsekvensOptions,
   sannsynlighetOptions,
@@ -164,7 +168,10 @@ const useFetch = (
         setResponse(error);
         if (onError) onError(error);
       },
-      JSON.stringify({ ros: JSON.stringify(ros.content) }),
+      JSON.stringify({
+        ros: JSON.stringify(ros.content),
+        isRequiresNewApproval: ros.isRequiresNewApproval,
+      }),
     );
 
   const publishROS = (
@@ -587,13 +594,18 @@ export const useFetchRoses = (
 
   const updateROS = (ros: ROS) => {
     if (selectedROS && roses) {
+      const isRequiresNewApproval = requiresNewApproval(
+        selectedROS.content,
+        ros,
+      );
       const updatedROS = {
         ...selectedROS,
         content: ros,
         status:
-          selectedROS.status !== RosStatus.Draft
+          selectedROS.status !== RosStatus.Draft && isRequiresNewApproval
             ? RosStatus.Draft
             : selectedROS.status,
+        isRequiresNewApproval: isRequiresNewApproval,
       };
       setSelectedROS(updatedROS);
       setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));

@@ -95,3 +95,47 @@ export const emptyTiltak = (): Tiltak => ({
   frist: new Date().toISOString().split('T')[0],
   status: 'Ikke startet',
 });
+
+// keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
+export const requiresNewApproval = (oldROS: ROS, updatedROS: ROS): boolean => {
+  if (oldROS.scenarier.length !== updatedROS.scenarier.length) {
+    return true;
+  }
+  let requiresApproval = false;
+
+  oldROS.scenarier.map((oldScenario, index) => {
+    const updatedScenario = updatedROS.scenarier[index];
+
+    if (oldScenario.trusselaktører !== updatedScenario.trusselaktører)
+      requiresApproval = true;
+    if (oldScenario.sårbarheter !== updatedScenario.sårbarheter)
+      requiresApproval = true;
+
+    if (
+      oldScenario.risiko.sannsynlighet !== updatedScenario.risiko.sannsynlighet
+    )
+      requiresApproval = true;
+    if (oldScenario.risiko.konsekvens !== updatedScenario.risiko.konsekvens)
+      requiresApproval = true;
+    if (oldScenario.tiltak.length !== updatedScenario.tiltak.length)
+      requiresApproval = true;
+
+    if (
+      oldScenario.restrisiko.sannsynlighet !==
+      updatedScenario.restrisiko.sannsynlighet
+    )
+      requiresApproval = true;
+    if (
+      oldScenario.restrisiko.konsekvens !==
+      updatedScenario.restrisiko.konsekvens
+    )
+      requiresApproval = true;
+
+    oldScenario.tiltak.map((oldTiltak, i) => {
+      const updatedTiltak = updatedScenario.tiltak[i];
+
+      if (oldTiltak.frist !== updatedTiltak.frist) requiresApproval = true;
+    });
+  });
+  return requiresApproval;
+};
