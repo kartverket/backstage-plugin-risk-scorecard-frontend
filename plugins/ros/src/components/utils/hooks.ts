@@ -11,11 +11,8 @@ import {
 import {
   GithubRepoInfo,
   ProcessingStatus,
-  ProcessROSResultDTO,
-  PublishROSResultDTO,
   Risiko,
   ROS,
-  ROSContentResultDTO,
   RosStatus,
   ROSWithMetadata,
   Scenario,
@@ -31,6 +28,14 @@ import {
 } from './constants';
 import { rosRouteRef, scenarioRouteRef } from '../../routes';
 import { useLocation, useNavigate } from 'react-router';
+import {
+  dtoToROS,
+  ProcessROSResultDTO,
+  PublishROSResultDTO,
+  ROSContentResultDTO,
+  ROSDTO,
+  rosToDTOString,
+} from './DTOs';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
   const currentEntity = useAsyncEntity();
@@ -145,7 +150,7 @@ const useFetch = (
         setResponse(error);
         if (onError) onError(error);
       },
-      JSON.stringify({ ros: JSON.stringify(ros) }),
+      rosToDTOString(ros),
     );
 
   const putROS = (
@@ -164,7 +169,7 @@ const useFetch = (
         setResponse(error);
         if (onError) onError(error);
       },
-      JSON.stringify({ ros: JSON.stringify(ros.content) }),
+      rosToDTOString(ros.content),
     );
 
   const publishROS = (
@@ -504,10 +509,9 @@ export const useFetchRoses = (
     fetchRoses(
       res => {
         const fetchedRoses: ROSWithMetadata[] = res.map(rosDTO => {
-          const content = JSON.parse(rosDTO.rosContent) as ROS;
+          const content = dtoToROS(JSON.parse(rosDTO.rosContent) as ROSDTO);
           return {
             id: rosDTO.rosId,
-            title: content.tittel,
             content: content,
             status: rosDTO.rosStatus,
           };
@@ -552,7 +556,7 @@ export const useFetchRoses = (
   }, [roses, rosIdFromParams]);
 
   const selectRos = (title: string) => {
-    const rosId = roses?.find(ros => ros.title === title)?.id;
+    const rosId = roses?.find(ros => ros.content.tittel === title)?.id;
     if (rosId) {
       navigate(getRosPath({ rosId }));
     }
@@ -568,7 +572,6 @@ export const useFetchRoses = (
 
         const newROS = {
           id: res.rosId,
-          title: ros.tittel,
           status: RosStatus.Draft,
           content: ros,
         };
