@@ -39,7 +39,6 @@ type ScenarioDTO = {
   scenario: {
     ID: string;
     url?: string;
-    sistEndret: string;
     beskrivelse: string;
     trusselaktører: string[];
     sårbarheter: string[];
@@ -99,7 +98,6 @@ function scenarioToDTO(scenario: Scenario): ScenarioDTO {
     scenario: {
       ID: scenario.ID,
       url: scenario.url,
-      sistEndret: scenario.sistEndret,
       beskrivelse: scenario.beskrivelse,
       trusselaktører: scenario.trusselaktører,
       sårbarheter: scenario.sårbarheter,

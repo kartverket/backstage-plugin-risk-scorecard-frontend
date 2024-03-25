@@ -6,7 +6,7 @@ import {
 } from './constants';
 
 export function generateRandomId(): string {
-  return [...Array(3)]
+  return [...Array(5)]
     .map(() => {
       const randomChar = Math.random().toString(36)[2];
       return Math.random() < 0.5 ? randomChar.toUpperCase() : randomChar;
@@ -73,7 +73,6 @@ export const emptyScenario = (): Scenario => ({
   ID: generateRandomId(),
   tittel: '',
   beskrivelse: '',
-  sistEndret: new Date().toISOString().split('T')[0],
   trusselaktører: [],
   sårbarheter: [],
   risiko: {

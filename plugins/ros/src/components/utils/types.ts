@@ -23,7 +23,6 @@ export type Scenario = {
   ID: string;
   tittel: string;
   url?: string;
-  sistEndret: string;
   beskrivelse: string;
   trusselaktører: string[];
   sårbarheter: string[];
