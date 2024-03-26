@@ -8,7 +8,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import { StatusChip } from './StatusChip';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import React, { ReactComponentElement, useState } from 'react';
 import { RosStatus, ROSWithMetadata } from '../../utils/types';
 import { useButtonStyles } from '../../rosPlugin/rosPluginStyle';
@@ -131,7 +130,7 @@ export const ROSStatusComponent = ({
             <Typography variant="button">Godkjenn ROS</Typography>
           </Button>
         </Grid>
-        <Grid item>
+        {/*<Grid item>
           <Button
             color="primary"
             variant="outlined"
@@ -139,7 +138,7 @@ export const ROSStatusComponent = ({
           >
             <SettingsOutlinedIcon />
           </Button>
-        </Grid>
+        </Grid>*/}
       </Grid>
 
       <ROSPublishDialog
