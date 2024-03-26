@@ -113,12 +113,12 @@ export const ROSStatusComponent = ({
 
   return (
     <Grid item container xs direction="column" alignItems="flex-end">
-      <Grid item>
+      <Grid item xs>
         <StatusChip currentRosStatus={selectedROS.status} />
       </Grid>
 
       <Grid item container spacing={1} justifyContent="flex-end">
-        <Grid item xs>
+        <Grid item>
           <Button
             color="primary"
             variant="contained"
