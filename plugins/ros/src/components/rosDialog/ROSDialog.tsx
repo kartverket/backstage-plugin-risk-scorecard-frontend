@@ -6,13 +6,18 @@ import {
   DialogContent,
   Typography,
 } from '@material-ui/core';
-import { TextField } from '../../utils/Textfield';
-import { ROS, ROSWithMetadata } from '../../utils/types';
-import { useFontStyles } from '../../scenarioDrawer/style';
-import { rosOmfangError, rosTittelError } from '../../utils/constants';
-import { emptyROS } from '../../utils/utilityfunctions';
-import { ROSDialogStates } from '@internal/plugin-ros/src/components/rosPlugin/ROSPlugin';
+import { TextField } from '../utils/Textfield';
+import { ROS, ROSWithMetadata } from '../utils/types';
+import { useFontStyles } from '../scenarioDrawer/style';
+import { rosOmfangError, rosTittelError } from '../utils/constants';
+import { emptyROS } from '../utils/utilityfunctions';
 import {useRosDialogStyles} from "./rosDialogStyle";
+
+export enum ROSDialogStates {
+  Closed,
+  Edit,
+  Create,
+}
 
 interface ROSDialogProps {
   onClose: () => void;

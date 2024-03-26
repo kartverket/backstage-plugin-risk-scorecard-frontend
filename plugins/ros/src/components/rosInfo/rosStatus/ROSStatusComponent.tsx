@@ -14,7 +14,7 @@ import { RosStatus, ROSWithMetadata } from '../../utils/types';
 import { useButtonStyles } from '../../rosPlugin/rosPluginStyle';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import { useRosDialogStyles } from '../../rosPlugin/rosDialog/rosDialogStyle';
+import { useRosDialogStyles } from '../../rosDialog/rosDialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
 
 interface ROSPublisDialogProps {

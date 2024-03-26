@@ -1,1 +1,1 @@
-export { ROSPlugin } from '@internal/plugin-ros/src/components/rosPlugin/ROSPlugin';
+export { ROSPlugin } from './ROSPlugin';

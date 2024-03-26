@@ -18,16 +18,10 @@ import { ScenarioContext } from './ScenarioContext';
 import { useFontStyles } from '../scenarioDrawer/style';
 import { useParams } from 'react-router';
 import { ROSInfo } from '../rosInfo/ROSInfo';
-import { ROSDialog } from './rosDialog/ROSDialog';
+import {ROSDialog, ROSDialogStates} from '../rosDialog/ROSDialog';
 import { ScenarioTable } from '../scenarioTable/ScenarioTable';
 import {Route, Routes} from "react-router-dom";
 import {rosRouteRef, scenarioRouteRef} from "../../routes";
-
-export enum ROSDialogStates {
-  Closed,
-  Edit,
-  Create,
-}
 
 export const ROSPlugin = () => {
   return (
