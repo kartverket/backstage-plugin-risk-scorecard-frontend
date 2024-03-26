@@ -8,7 +8,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import { StatusChip } from './StatusChip';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import React, { ReactComponentElement, useState } from 'react';
 import { RosStatus, ROSWithMetadata } from '../../utils/types';
 import { useButtonStyles } from '../../rosPlugin/rosPluginStyle';
@@ -119,7 +118,7 @@ export const ROSStatusComponent = ({
       </Grid>
 
       <Grid item container spacing={1} justifyContent="flex-end">
-        <Grid item>
+        <Grid item xs>
           <Button
             color="primary"
             variant="contained"
