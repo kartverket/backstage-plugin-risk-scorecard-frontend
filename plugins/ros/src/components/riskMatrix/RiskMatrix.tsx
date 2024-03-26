@@ -6,9 +6,9 @@ import { useRiskMatrixStyles } from './style';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
 import { ROS } from '../utils/types';
-import { MatrixColors } from '../ScenarioTable/ScenarioTableStyles';
 import TabContext from '@material-ui/lab/TabContext';
 import { Tabs } from './Tabs';
+import {riskMatrix} from "../utils/constants";
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];
@@ -49,7 +49,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
                 {indices.map(col => (
                   <Box
                     className={`${square} ${centered}`}
-                    style={{ backgroundColor: MatrixColors[4 - row][col] }}
+                    style={{ backgroundColor: riskMatrix[row][col] }}
                   >
                     <RiskMatrixScenarioCount
                       ros={ros}
