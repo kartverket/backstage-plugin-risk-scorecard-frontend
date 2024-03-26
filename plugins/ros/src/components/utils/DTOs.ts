@@ -1,4 +1,4 @@
-import {ProcessingStatus, Risiko, ROS, RosStatus, ROSWithMetadata, Scenario, Tiltak, Verdivurdering,} from './types';
+import {ProcessingStatus, Risiko, ROS, RosStatus, Scenario, Tiltak, Verdivurdering,} from './types';
 
 export type ProcessROSResultDTO = {
     rosId: string;
@@ -73,10 +73,10 @@ function dtoToTiltak(tiltakDTO: TiltakDTO): Tiltak {
     };
 }
 
-export function rosToDTOString(ros: ROSWithMetadata): string {
+export function rosToDTOString(ros: ROS, isRequiresNewApproval?: boolean): string {
     return JSON.stringify({
-        ros: JSON.stringify(rosToDTO(ros.content)),
-        isRequiresNewApproval: ros.isRequiresNewApproval
+        ros: JSON.stringify(rosToDTO(ros)),
+        isRequiresNewApproval: isRequiresNewApproval ?? null,
     });
 }
 
