@@ -2,6 +2,7 @@ export type ROSWithMetadata = {
   id: string;
   status: RosStatus;
   content: ROS;
+  isRequiresNewApproval?: boolean;
 };
 
 export type ROS = {
