@@ -54,12 +54,12 @@ function formatNumber(cost: number): string {
     if (cost < 1e4) {
         return formatNOK(cost);
     } else if (cost < 1e6) {
-        return `${cost / 1e3} tusen`;
+        return `${(cost / 1e3).toFixed(1)} tusen`;
     } else if (cost < 1e9) {
-        return `${cost / 1e6} ${cost / 1e6 === 1 ? 'million' : 'millioner'}`;
+        return `${(cost / 1e6).toFixed(1)} ${cost / 1e6 === 1 ? 'million' : 'millioner'}`;
     } else if (cost < 1e12) {
-        return `${cost / 1e9} ${cost / 1e9 === 1 ? 'milliard' : 'milliarder'}`;
+        return `${(cost / 1e9).toFixed(1)} ${cost / 1e9 === 1 ? 'milliard' : 'milliarder'}`;
     } else {
-        return `${cost / 1e12} ${cost / 1e12 === 1 ? 'billion' : 'billioner'}`;
+        return `${(cost / 1e12).toFixed(1)} ${cost / 1e12 === 1 ? 'billion' : 'billioner'}`;
     }
 }
