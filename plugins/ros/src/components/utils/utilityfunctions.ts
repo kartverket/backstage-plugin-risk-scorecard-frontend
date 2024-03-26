@@ -49,20 +49,14 @@ export function getRiskMatrixColor(risiko: Risiko) {
   return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
-export const getSannsynlighetLevel = (scenario: Scenario) =>
-  sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1;
+export const getSannsynlighetLevel = (risiko: Risiko) =>
+  sannsynlighetOptions.indexOf(risiko.sannsynlighet) + 1;
 
-export const getKonsekvensLevel = (scenario: Scenario) =>
-  konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1;
-
-export const getRestSannsynlighetLevel = (scenario: Scenario) =>
-  sannsynlighetOptions.indexOf(scenario.restrisiko.sannsynlighet) + 1;
-
-export const getRestKonsekvensLevel = (scenario: Scenario) =>
-  konsekvensOptions.indexOf(scenario.restrisiko.konsekvens) + 1;
+export const getKonsekvensLevel = (risiko: Risiko) =>
+  konsekvensOptions.indexOf(risiko.konsekvens) + 1;
 
 export const emptyROS = (): ROS => ({
-  skjemaVersjon: '1',
+  skjemaVersjon: '3.1',
   tittel: '',
   omfang: '',
   verdivurderinger: [],
