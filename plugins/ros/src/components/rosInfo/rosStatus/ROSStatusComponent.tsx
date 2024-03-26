@@ -114,7 +114,7 @@ export const ROSStatusComponent = ({
 
   return (
     <Grid item container xs direction="column" alignItems="flex-end">
-      <Grid item xs>
+      <Grid item>
         <StatusChip currentRosStatus={selectedROS.status} />
       </Grid>
 
@@ -131,7 +131,7 @@ export const ROSStatusComponent = ({
             <Typography variant="button">Godkjenn ROS</Typography>
           </Button>
         </Grid>
-        <Grid item>
+        {/*<Grid item>
           <Button
             color="primary"
             variant="outlined"
@@ -139,7 +139,7 @@ export const ROSStatusComponent = ({
           >
             <SettingsOutlinedIcon />
           </Button>
-        </Grid>
+        </Grid>*/}
       </Grid>
 
       <ROSPublishDialog
