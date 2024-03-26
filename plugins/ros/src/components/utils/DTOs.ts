@@ -73,10 +73,10 @@ function dtoToTiltak(tiltakDTO: TiltakDTO): Tiltak {
     };
 }
 
-export function rosToDTOString(ros: ROS, isRequiresNewApproval?: boolean): string {
+export function rosToDTOString(ros: ROS, isRequiresNewApproval: boolean): string {
     return JSON.stringify({
         ros: JSON.stringify(rosToDTO(ros)),
-        isRequiresNewApproval: isRequiresNewApproval ?? null,
+        isRequiresNewApproval: isRequiresNewApproval,
     });
 }
 

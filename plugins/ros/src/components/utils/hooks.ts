@@ -154,7 +154,7 @@ const useFetch = (
         setResponse(error);
         if (onError) onError(error);
       },
-      rosToDTOString(ros),
+      rosToDTOString(ros, true),
     );
 
   const putROS = (
@@ -173,7 +173,7 @@ const useFetch = (
         setResponse(error);
         if (onError) onError(error);
       },
-      rosToDTOString(ros.content, ros.isRequiresNewApproval),
+      rosToDTOString(ros.content, ros.isRequiresNewApproval!!),
     );
 
   const publishROS = (
