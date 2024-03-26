@@ -4,7 +4,7 @@ import { makeStyles, Theme } from '@material-ui/core';
 export const menuProps: Partial<MenuProps> = {
   PaperProps: {
     style: {
-      maxHeight: 230,
+      maxHeight: 255,
     },
   },
   getContentAnchorEl: null,
