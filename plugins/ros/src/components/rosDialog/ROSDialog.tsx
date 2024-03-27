@@ -105,7 +105,7 @@ export const ROSDialog = ({
     <Dialog
       classes={{ paper: classes.paper }}
       open={dialogState !== ROSDialogStates.Closed}
-      onClose={onClose}
+      onClose={handleSave}
       {...props}
     >
       <DialogContent>
