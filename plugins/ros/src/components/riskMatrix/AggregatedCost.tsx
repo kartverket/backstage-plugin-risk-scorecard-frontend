@@ -53,13 +53,29 @@ export const AggregatedCost = ({ros, startRisiko}: AggregatedCostProps) => {
 function formatNumber(cost: number): string {
     if (cost < 1e4) {
         return formatNOK(cost);
-    } else if (cost < 1e6) {
-        return `${(cost / 1e3).toFixed(1)} tusen`;
-    } else if (cost < 1e9) {
-        return `${(cost / 1e6).toFixed(1)} ${cost / 1e6 === 1 ? 'million' : 'millioner'}`;
-    } else if (cost < 1e12) {
-        return `${(cost / 1e9).toFixed(1)} ${cost / 1e9 === 1 ? 'milliard' : 'milliarder'}`;
     } else {
-        return `${(cost / 1e12).toFixed(1)} ${cost / 1e12 === 1 ? 'billion' : 'billioner'}`;
+        let zeros;
+        let unit;
+        if (cost < 1e6) {
+            zeros = 1e3;
+            unit = 'tusen';
+        } else if (cost < 1e9) {
+            zeros = 1e6;
+            unit = 'million'
+        } else if (cost < 1e12) {
+            zeros = 1e9;
+            unit = 'milliard'
+        } else {
+            zeros = 1e12;
+            unit = 'billiard'
+        }
+        let prefix = (cost / zeros).toFixed(1);
+        if (prefix.endsWith('0') || zeros === 1e3) {
+            prefix = (cost / zeros).toFixed(0)
+        }
+        if ((cost / zeros) > 1 && zeros != 1e3) {
+            unit = unit + 'er';
+        }
+        return `${prefix} ${unit}`
     }
 }
