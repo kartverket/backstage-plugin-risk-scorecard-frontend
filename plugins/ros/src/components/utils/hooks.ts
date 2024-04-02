@@ -19,7 +19,6 @@ import {
   SubmitResponseObject,
   Tiltak,
 } from './types';
-import useAsync from 'react-use/lib/useAsync';
 import {
   requiresNewApproval,
   emptyScenario,
@@ -83,11 +82,9 @@ const useResponse = (): [
   return [submitResponse, displaySubmitResponse];
 };
 
-const useFetch = (
-  microsoftIdToken: string | undefined,
-  googleAccessToken: string | undefined,
-  repoInformation: GithubRepoInfo | null,
-) => {
+const useFetch = (repoInformation: GithubRepoInfo | null) => {
+  const microsoftAPI = useApi(microsoftAuthApiRef);
+  const googleApi = useApi(googleAuthApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
   const baseUri = useApi(configApiRef).getString('app.backendUrl');
   const rosUri = `${baseUri}/api/ros/${repoInformation?.owner}/${repoInformation?.name}`;
@@ -97,13 +94,22 @@ const useFetch = (
 
   const [response, setResponse] = useResponse();
 
-  const fetch = <T>(
+  const fetch = async <T>(
     uri: string,
     method: 'GET' | 'POST' | 'PUT',
     onSuccess: (response: T) => void,
     onError: (error: T) => void,
     body?: string,
   ) => {
+    const microsoftIdToken = await microsoftAPI.getIdToken();
+    const googleAccessToken = await googleApi.getAccessToken([
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/cloudkms',
+    ]);
+
+    console.log('microsoftIdToken', microsoftIdToken);
+    console.log('googleAccessToken', googleAccessToken);
+
     if (repoInformation && microsoftIdToken && googleAccessToken) {
       fetchApi(uri, {
         method: method,
@@ -475,17 +481,6 @@ export const useFetchRoses = (
   approveROS: () => void;
   response: SubmitResponseObject | null;
 } => {
-  const microsoftAPI = useApi(microsoftAuthApiRef);
-  const { value: idToken } = useAsync(() => microsoftAPI.getIdToken());
-
-  const googleApi = useApi(googleAuthApiRef);
-  const { value: accessToken } = useAsync(() =>
-    googleApi.getAccessToken([
-      'https://www.googleapis.com/auth/cloud-platform',
-      'https://www.googleapis.com/auth/cloudkms',
-    ]),
-  );
-
   const location = useLocation();
   const navigate = useNavigate();
   const getRosPath = useRouteRef(rosRouteRef);
@@ -493,7 +488,7 @@ export const useFetchRoses = (
   const repoInformation = useGithubRepositoryInformation();
 
   const { fetchRoses, postROS, putROS, publishROS, response, setResponse } =
-    useFetch(idToken, accessToken, repoInformation);
+    useFetch(repoInformation);
 
   const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
   const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(null);
@@ -547,7 +542,7 @@ export const useFetchRoses = (
       },
       () => setIsFetching(false),
     );
-  }, [accessToken, idToken]);
+  }, [repoInformation]);
 
   // Set selected ROS based on URL
   useEffect(() => {
