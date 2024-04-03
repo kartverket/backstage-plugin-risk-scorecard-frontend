@@ -1,45 +1,29 @@
-export type ProcessROSResultDTO = {
-  rosId: string;
-  status: ProcessingStatus;
-  statusMessage: string;
-};
-
-export type PublishROSResultDTO = {
-  rosId: string;
-  status: ProcessingStatus;
-  statusMessage: string;
-  pendingApproval?: PendingApprovalDTO;
-};
-
-type PendingApprovalDTO = {
-  pullRequestUrl: string;
-  pullRequestName: string;
-};
-
-export type ROSContentResultDTO = {
-  rosStatus: RosStatus;
-  rosContent: string;
-} & ProcessROSResultDTO;
-
 export type ROSWithMetadata = {
   id: string;
-  title: string;
   status: RosStatus;
   content: ROS;
+  isRequiresNewApproval?: boolean;
 };
 
 export type ROS = {
   skjemaVersjon: string;
   tittel: string;
   omfang: string;
+  verdivurderinger: Verdivurdering[];
   scenarier: Scenario[];
+};
+
+export type Verdivurdering = {
+  beskrivelse: string;
+  konfidensialitet: string;
+  integritet: string;
+  tilgjengelighet: string;
 };
 
 export type Scenario = {
   ID: string;
   tittel: string;
   url?: string;
-  sistEndret: string;
   beskrivelse: string;
   trusselaktører: string[];
   sårbarheter: string[];
@@ -56,6 +40,7 @@ export type Risiko = {
 
 export type Tiltak = {
   ID: string;
+  tittel: string;
   beskrivelse: string;
   tiltakseier: string;
   frist: string;

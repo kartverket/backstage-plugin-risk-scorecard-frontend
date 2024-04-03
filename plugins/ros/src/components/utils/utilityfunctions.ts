@@ -6,7 +6,7 @@ import {
 } from './constants';
 
 export function generateRandomId(): string {
-  return [...Array(3)]
+  return [...Array(5)]
     .map(() => {
       const randomChar = Math.random().toString(36)[2];
       return Math.random() < 0.5 ? randomChar.toUpperCase() : randomChar;
@@ -49,22 +49,17 @@ export function getRiskMatrixColor(risiko: Risiko) {
   return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
-export const getSannsynlighetLevel = (scenario: Scenario) =>
-  sannsynlighetOptions.indexOf(scenario.risiko.sannsynlighet) + 1;
+export const getSannsynlighetLevel = (risiko: Risiko) =>
+  sannsynlighetOptions.indexOf(risiko.sannsynlighet) + 1;
 
-export const getKonsekvensLevel = (scenario: Scenario) =>
-  konsekvensOptions.indexOf(scenario.risiko.konsekvens) + 1;
-
-export const getRestSannsynlighetLevel = (scenario: Scenario) =>
-  sannsynlighetOptions.indexOf(scenario.restrisiko.sannsynlighet) + 1;
-
-export const getRestKonsekvensLevel = (scenario: Scenario) =>
-  konsekvensOptions.indexOf(scenario.restrisiko.konsekvens) + 1;
+export const getKonsekvensLevel = (risiko: Risiko) =>
+  konsekvensOptions.indexOf(risiko.konsekvens) + 1;
 
 export const emptyROS = (): ROS => ({
-  skjemaVersjon: '1',
+  skjemaVersjon: '3.1',
   tittel: '',
   omfang: '',
+  verdivurderinger: [],
   scenarier: [],
 });
 
@@ -72,7 +67,6 @@ export const emptyScenario = (): Scenario => ({
   ID: generateRandomId(),
   tittel: '',
   beskrivelse: '',
-  sistEndret: new Date().toISOString().split('T')[0],
   trusselaktører: [],
   sårbarheter: [],
   risiko: {
@@ -90,8 +84,53 @@ export const emptyScenario = (): Scenario => ({
 
 export const emptyTiltak = (): Tiltak => ({
   ID: generateRandomId(),
+  tittel: '',
   beskrivelse: '',
   tiltakseier: '',
   frist: new Date().toISOString().split('T')[0],
   status: 'Ikke startet',
 });
+
+// keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
+export const requiresNewApproval = (oldROS: ROS, updatedROS: ROS): boolean => {
+  if (oldROS.scenarier.length !== updatedROS.scenarier.length) {
+    return true;
+  }
+  let requiresApproval = false;
+
+  oldROS.scenarier.map((oldScenario, index) => {
+    const updatedScenario = updatedROS.scenarier[index];
+
+    if (oldScenario.trusselaktører !== updatedScenario.trusselaktører)
+      requiresApproval = true;
+    if (oldScenario.sårbarheter !== updatedScenario.sårbarheter)
+      requiresApproval = true;
+
+    if (
+      oldScenario.risiko.sannsynlighet !== updatedScenario.risiko.sannsynlighet
+    )
+      requiresApproval = true;
+    if (oldScenario.risiko.konsekvens !== updatedScenario.risiko.konsekvens)
+      requiresApproval = true;
+    if (oldScenario.tiltak.length !== updatedScenario.tiltak.length)
+      requiresApproval = true;
+
+    if (
+      oldScenario.restrisiko.sannsynlighet !==
+      updatedScenario.restrisiko.sannsynlighet
+    )
+      requiresApproval = true;
+    if (
+      oldScenario.restrisiko.konsekvens !==
+      updatedScenario.restrisiko.konsekvens
+    )
+      requiresApproval = true;
+
+    oldScenario.tiltak.map((oldTiltak, i) => {
+      const updatedTiltak = updatedScenario.tiltak[i];
+
+      if (oldTiltak.frist !== updatedTiltak.frist) requiresApproval = true;
+    });
+  });
+  return requiresApproval;
+};
