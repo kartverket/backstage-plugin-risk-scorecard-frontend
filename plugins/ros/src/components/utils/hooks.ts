@@ -1,4 +1,4 @@
-import { useAsyncEntity } from '@backstage/plugin-catalog-react';
+import { useEntity } from '@backstage/plugin-catalog-react';
 import { useEffect, useState } from 'react';
 import {
   configApiRef,
@@ -19,11 +19,10 @@ import {
   SubmitResponseObject,
   Tiltak,
 } from './types';
-import useAsync from 'react-use/lib/useAsync';
 import {
-  requiresNewApproval,
   emptyScenario,
   emptyTiltak,
+  requiresNewApproval,
 } from './utilityfunctions';
 import {
   konsekvensOptions,
@@ -40,30 +39,16 @@ import {
   ROSDTO,
   rosToDTOString,
 } from './DTOs';
+import { useEffectOnce } from 'react-use';
 
-const useGithubRepositoryInformation = (): GithubRepoInfo | null => {
-  const currentEntity = useAsyncEntity();
-  const [repoInfo, setRepoInfo] = useState<GithubRepoInfo | null>(null);
-
-  useEffect(() => {
-    if (!currentEntity.loading && currentEntity.entity !== undefined) {
-      const slug =
-        currentEntity.entity.metadata.annotations !== undefined
-          ? currentEntity.entity.metadata.annotations[
-              'github.com/project-slug'
-            ].split('/')
-          : null;
-
-      if (slug === null) return;
-
-      setRepoInfo({
-        name: slug[1],
-        owner: slug[0],
-      });
-    }
-  }, [currentEntity.entity, currentEntity.loading]);
-
-  return repoInfo;
+const useGithubRepositoryInformation = (): GithubRepoInfo => {
+  const entity = useEntity();
+  const slug =
+    entity.entity.metadata.annotations?.['github.com/project-slug'].split('/');
+  return {
+    name: slug ? slug[1] : '',
+    owner: slug ? slug[0] : '',
+  };
 };
 
 const useResponse = (): [
@@ -83,14 +68,13 @@ const useResponse = (): [
   return [submitResponse, displaySubmitResponse];
 };
 
-const useFetch = (
-  microsoftIdToken: string | undefined,
-  googleAccessToken: string | undefined,
-  repoInformation: GithubRepoInfo | null,
-) => {
+const useFetch = () => {
+  const repoInformation = useGithubRepositoryInformation();
+  const microsoftAPI = useApi(microsoftAuthApiRef);
+  const googleApi = useApi(googleAuthApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
   const baseUri = useApi(configApiRef).getString('app.backendUrl');
-  const rosUri = `${baseUri}/api/ros/${repoInformation?.owner}/${repoInformation?.name}`;
+  const rosUri = `${baseUri}/api/ros/${repoInformation.owner}/${repoInformation.name}`;
   const uriToFetchAllRoses = () => `${rosUri}/all`;
   const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
   const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;
@@ -104,7 +88,13 @@ const useFetch = (
     onError: (error: T) => void,
     body?: string,
   ) => {
-    if (repoInformation && microsoftIdToken && googleAccessToken) {
+    Promise.all([
+      microsoftAPI.getIdToken(),
+      googleApi.getAccessToken([
+        'https://www.googleapis.com/auth/cloud-platform',
+        'https://www.googleapis.com/auth/cloudkms',
+      ]),
+    ]).then(([microsoftIdToken, googleAccessToken]) => {
       fetchApi(uri, {
         method: method,
         headers: {
@@ -123,7 +113,7 @@ const useFetch = (
         .then(json => json as T)
         .then(res => onSuccess(res))
         .catch(error => onError(error));
-    }
+    });
   };
 
   const fetchRoses = (
@@ -475,25 +465,12 @@ export const useFetchRoses = (
   approveROS: () => void;
   response: SubmitResponseObject | null;
 } => {
-  const microsoftAPI = useApi(microsoftAuthApiRef);
-  const { value: idToken } = useAsync(() => microsoftAPI.getIdToken());
-
-  const googleApi = useApi(googleAuthApiRef);
-  const { value: accessToken } = useAsync(() =>
-    googleApi.getAccessToken([
-      'https://www.googleapis.com/auth/cloud-platform',
-      'https://www.googleapis.com/auth/cloudkms',
-    ]),
-  );
-
   const location = useLocation();
   const navigate = useNavigate();
   const getRosPath = useRouteRef(rosRouteRef);
 
-  const repoInformation = useGithubRepositoryInformation();
-
   const { fetchRoses, postROS, putROS, publishROS, response, setResponse } =
-    useFetch(idToken, accessToken, repoInformation);
+    useFetch();
 
   const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
   const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(null);
@@ -509,7 +486,7 @@ export const useFetchRoses = (
   }, [location]);
 
   // Initial fetch of ROSes
-  useEffect(() => {
+  useEffectOnce(() => {
     fetchRoses(
       res => {
         const fetchedRoses: ROSWithMetadata[] = res.map(rosDTO => {
@@ -547,7 +524,7 @@ export const useFetchRoses = (
       },
       () => setIsFetching(false),
     );
-  }, [accessToken, idToken]);
+  });
 
   // Set selected ROS based on URL
   useEffect(() => {
