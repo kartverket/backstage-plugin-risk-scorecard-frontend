@@ -48,12 +48,11 @@ auth:
         domainHint: ${AZURE_TENANT_ID}
         additionalScopes:
           - Mail.Send
-
-    github:
-      development:
-        clientId: ${GITHUB_APP_CLIENT_ID}
-        clientSecret: ${GITHUB_APP_CLIENT_SECRET}
-        callbackUrl: http://localhost:7007/api/auth/github/handler/frame
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityAnnotation
+            - resolver: emailMatchingUserEntityProfileEmail
+            - resolver: emailLocalPartMatchingUserEntityName
 
     google:
       development:
@@ -64,17 +63,6 @@ auth:
 scaffolder: { }
 
 catalog:
-  rules:
-    - allow: [ Component, Group, User, Resource, Location, Template, System ]
-  locations:
-    - type: file
-      target: ../../examples/template/template.yaml
-      rules:
-        - allow: [ Template ]
-    - type: file
-      target: ../../examples/org.yaml
-      rules:
-        - allow: [ User, Group ]
   providers:
     github:
       spire-test:
@@ -86,30 +74,18 @@ catalog:
         schedule:
           frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
-
-    githubOrg:
-      - spire-test-org:
-        organization: 'spire-test'
-        catalogPath: '.security/catalog-info.yaml'
-        filters:
-          branch: 'main'
-          repository: '*'
-        schedule:
-          frequency: { minutes: 1 }
-          timeout: { minutes: 3 }
-
+    
     microsoftGraphOrg:
       development:
-        clientId: ${AZURE_CLIENT_ID}
-        clientSecret: ${AZURE_CLIENT_SECRET}
         tenantId: ${AZURE_TENANT_ID}
         domainHint: ${AZURE_TENANT_ID}
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
         userGroupMember:
           filter: displayName eq 'Spire-ros'
         group:
           filter: >
             displayName eq 'Spire-ros'
-
         schedule:
           frequency: PT1H
           timeout: PT50M
