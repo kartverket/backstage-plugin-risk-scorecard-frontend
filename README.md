@@ -134,6 +134,4 @@ yarn publish # husk å sette ny versjon
 
 ## Konfigurasjon
 
-Opprett filen app-config.local.yaml på rotnivå. Lim inn innholdet fra secreten som heter app-config-local-maren (finnes i secret manager i gcp).
-
-Opprett filen github-app-backstage-testis-credentials.yaml på rotnviå. Lim inn innholdet fra secret som heter backstage-testis-app (finnes i secret manager i gcp).
+Opprett filen app-config.local.yaml på rotnivå. Lim inn innholdet fra GCP-secret'en som heter [backstage-app-config-local](https://console.cloud.google.com/security/secret-manager/secret/backstage-app-config-local/versions?project=spire-ros-5lmr).
