@@ -121,6 +121,17 @@ devmiljø/lokalt og en for "produksjon".
 [Her](https://console.cloud.google.com/security/secret-manager?project=spire-ros-5lmr) ligger secrets som brukes i
 Backstage.
 
+
+# Bygge Plugin-pakke
+
+```sh
+cd plugins/ros
+yarn install
+yarn tsc
+yarn build
+yarn publish # husk å sette ny versjon
+```
+
 ## Konfigurasjon
 
 Opprett filen app-config.local.yaml på rotnivå. Lim inn innholdet fra secreten som heter app-config-local-maren (finnes i secret manager i gcp).

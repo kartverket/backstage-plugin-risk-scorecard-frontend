@@ -1,13 +1,21 @@
-# ros
+# ROS
 
-Welcome to the ros plugin!
+This is a plugin for Backstage that helps you and your team when working continuously with your risk analyses (:))
+The plugin is dependent on a backend service in order to decrypt and communicate with GitHub, and some configuration is
+necessary for them to communicate.
 
-_This plugin was created through the Backstage CLI_
+Add the root url to your running backend service to the app-config:
 
-## Getting started
+``` yaml
+app:
+  backendUrl: http://localhost:8080
+```
 
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/ros](http://localhost:3000/ros).
+The backend uses EntraID id-tokens to validate the user, and GCP access tokens to federate access to the GCP KMS.
+The plugin uses the apiRefs for both of these providers, and entity providers and authentication have to be implemented
+for both:
 
-You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
+1. Add discovery of organization data for Microsoft Org
+2. Add authentication for both providers
+
+Happy ROS-ing 🌹
