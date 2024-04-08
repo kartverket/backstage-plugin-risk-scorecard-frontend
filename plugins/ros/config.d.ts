@@ -1,9 +1,9 @@
 export interface Config {
-  app: {
+  riskAssessment: {
     /**
      * Backend root URL
      * @visibility frontend
      */
-    backendUrl: string;
+    baseUrl: string;
   };
 }

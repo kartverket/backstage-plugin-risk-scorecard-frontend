@@ -1,7 +1,9 @@
 app:
   title: Rosenes Backstage App
   baseUrl: http://localhost:3000
-  backendUrl: http://localhost:8080
+
+riskAssessment:
+  baseUrl: http://localhost:8080
 
 organization:
   name: Rosene
