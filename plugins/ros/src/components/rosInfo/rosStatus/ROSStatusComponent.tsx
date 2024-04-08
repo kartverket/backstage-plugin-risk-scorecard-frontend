@@ -15,6 +15,8 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { useRosDialogStyles } from '../../rosDialog/rosDialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginTranslationRef } from '../../utils/translations';
 
 interface ROSPublisDialogProps {
   openDialog: boolean;
@@ -111,6 +113,8 @@ export const ROSStatusComponent = ({
     setPublishROSDialogIsOpen(false);
   };
 
+  const { t } = useTranslationRef(pluginTranslationRef);
+
   return (
     <Grid item container xs direction="column" alignItems="flex-end">
       <Grid item xs>
@@ -127,7 +131,9 @@ export const ROSStatusComponent = ({
             fullWidth
             disabled={!rosNsApproval(selectedROS.status)}
           >
-            <Typography variant="button">Godkjenn ROS</Typography>
+            <Typography variant="button">
+              {t('rosInfo.statusBox.approveButton')}
+            </Typography>
           </Button>
         </Grid>
         {/*<Grid item>

@@ -11,6 +11,8 @@ import { ScenarioTableRow } from './ScenarioTableRow';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { ScenarioContext } from '../rosPlugin/ScenarioContext';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginTranslationRef } from '../utils/translations';
 
 interface ScenarioTableProps {
   ros: ROS;
@@ -18,6 +20,8 @@ interface ScenarioTableProps {
 
 export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
   const { newScenario, openScenario } = useContext(ScenarioContext)!!;
+
+  const { t } = useTranslationRef(pluginTranslationRef);
 
   return (
     <>
@@ -30,7 +34,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
           }}
         >
           <Typography variant="h5" style={{ padding: '1rem' }}>
-            Risikoscenarioer
+            {t('scenarioTable.header')}
           </Typography>
 
           {ros.scenarier.length > 0 && (
@@ -45,7 +49,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                 justifyContent: 'flex-end',
               }}
             >
-              Legg til risikoscenario
+              {t('scenarioTable.addScenarioButton')}
             </Button>
           )}
         </Box>
@@ -68,7 +72,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                 justifyContent: 'center',
               }}
             >
-              Legg til risikoscenario
+              {t('scenarioTable.addScenarioButton')}
             </Button>
           </Box>
         ) : (
@@ -94,8 +98,11 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                       paddingBottom: '0.1rem',
                     }}
                   >
-                    <Typography variant="subtitle1">
-                      <b>TITTEL </b>
+                    <Typography
+                      variant="subtitle1"
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      {t('scenarioTable.columns.title')}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -106,8 +113,11 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                       paddingBottom: '0.1rem',
                     }}
                   >
-                    <Typography variant="subtitle1">
-                      <b>STARTRISIKO</b>
+                    <Typography
+                      variant="subtitle1"
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      {t('initialRiskLabel')}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -118,8 +128,11 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                       paddingBottom: '0.1rem',
                     }}
                   >
-                    <Typography variant="subtitle1">
-                      <b>RESTRISIKO</b>
+                    <Typography
+                      variant="subtitle1"
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      {t('restRiskLabel')}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -130,8 +143,11 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                       paddingBottom: '0.1rem',
                     }}
                   >
-                    <Typography variant="subtitle1">
-                      <b>ANTALL TILTAK</b>
+                    <Typography
+                      variant="subtitle1"
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      {t('scenarioTable.columns.actionsCount')}
                     </Typography>
                   </TableCell>
                 </TableRow>
