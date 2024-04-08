@@ -495,6 +495,7 @@ export const useFetchRoses = (
             id: rosDTO.rosId,
             content: content,
             status: rosDTO.rosStatus,
+            schemaVersion: content.skjemaVersjon,
           };
         });
 
@@ -555,6 +556,7 @@ export const useFetchRoses = (
           id: res.rosId,
           status: RosStatus.Draft,
           content: ros,
+          schemaVersion: ros.skjemaVersjon,
         };
 
         setRoses(roses ? [...roses, newROS] : [newROS]);
@@ -583,6 +585,7 @@ export const useFetchRoses = (
             ? RosStatus.Draft
             : selectedROS.status,
         isRequiresNewApproval: isRequiresNewApproval,
+        schemaVersion: ros.skjemaVersjon,
       };
       setSelectedROS(updatedROS);
       setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));

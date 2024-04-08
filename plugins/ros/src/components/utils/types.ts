@@ -3,6 +3,7 @@ export type ROSWithMetadata = {
   status: RosStatus;
   content: ROS;
   isRequiresNewApproval?: boolean;
+  schemaVersion: string;
 };
 
 export type ROS = {
