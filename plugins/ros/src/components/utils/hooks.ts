@@ -73,7 +73,7 @@ const useFetch = () => {
   const microsoftAPI = useApi(microsoftAuthApiRef);
   const googleApi = useApi(googleAuthApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
-  const baseUri = useApi(configApiRef).getString('app.backendUrl');
+  const baseUri = useApi(configApiRef).getString('riskAssessment.baseUrl');
   const rosUri = `${baseUri}/api/ros/${repoInformation.owner}/${repoInformation.name}`;
   const uriToFetchAllRoses = () => `${rosUri}/all`;
   const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
