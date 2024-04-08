@@ -34,7 +34,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
           }}
         >
           <Typography variant="h5" style={{ padding: '1rem' }}>
-            {t('scenarioTable.header')}
+            {t('scenarioTable.title')}
           </Typography>
 
           {ros.scenarier.length > 0 && (
@@ -100,9 +100,9 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                   >
                     <Typography
                       variant="subtitle1"
-                      style={{ fontWeight: 'bold' }}
+                      style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
                     >
-                      {t('scenarioTable.columns.title')}
+                      {t('dictionary.title')}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -115,9 +115,9 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                   >
                     <Typography
                       variant="subtitle1"
-                      style={{ fontWeight: 'bold' }}
+                      style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
                     >
-                      {t('initialRiskLabel')}
+                      {t('dictionary.initialRisk')}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -130,9 +130,9 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                   >
                     <Typography
                       variant="subtitle1"
-                      style={{ fontWeight: 'bold' }}
+                      style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
                     >
-                      {t('restRiskLabel')}
+                      {t('dictionary.restRisk')}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -145,9 +145,9 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                   >
                     <Typography
                       variant="subtitle1"
-                      style={{ fontWeight: 'bold' }}
+                      style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
                     >
-                      {t('scenarioTable.columns.actionsCount')}
+                      {t('scenarioTable.columns.measuresCount')}
                     </Typography>
                   </TableCell>
                 </TableRow>

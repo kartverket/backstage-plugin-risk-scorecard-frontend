@@ -38,7 +38,7 @@ export const ROSInfo = ({ ros, approveROS, edit }: RosInfoProps) => {
             }}
           >
             <Typography className={subtitle1}>
-              {t('rosInfo.descriptionHeader')}
+              {t('dictionary.scope')}
             </Typography>
             <IconButton onClick={edit} style={{ padding: 0 }}>
               <BorderColorOutlinedIcon />

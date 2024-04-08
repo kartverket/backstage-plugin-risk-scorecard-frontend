@@ -42,7 +42,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
           <Box className={grid}>
             <Box className={konsekvens}>
               <Typography className={`${centered} ${text}`}>
-                Konsekvens
+                {t('dictionary.consequence')}
               </Typography>
             </Box>
             {indices.map(row => (
@@ -74,7 +74,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
             ))}
             <Box className={sannsynlighet}>
               <Typography className={`${centered} ${text}`}>
-                Sannsynlighet
+                {t('dictionary.probability')}
               </Typography>
             </Box>
           </Box>
