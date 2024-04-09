@@ -30,12 +30,12 @@ const getChipTextStatus = (status: RosStatus): string => {
 
   switch (status) {
     case RosStatus.Draft:
-      return t('rosInfo.statusBox.status.missing');
+      return t('rosStatus.statusBadge.missing');
     case RosStatus.SentForApproval:
     case RosStatus.Published:
-      return t('rosInfo.statusBox.status.approved');
+      return t('rosStatus.statusBadge.approved');
     default:
-      return t('rosInfo.statusBox.status.error');
+      return t('rosStatus.statusBadge.error');
   }
 };
 
@@ -50,7 +50,7 @@ const getPRStatus = (
       return (
         <Typography className={classes.prStatus}>
           <GitHubIcon className={classes.prIcon} />
-          {t('rosInfo.statusBox.prStatus')}
+          {t('rosStatus.prStatus')}
         </Typography>
       );
     case RosStatus.Draft:

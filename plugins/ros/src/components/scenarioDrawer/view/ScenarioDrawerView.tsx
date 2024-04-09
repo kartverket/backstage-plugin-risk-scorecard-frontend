@@ -224,7 +224,7 @@ export const ScenarioDrawerView = () => {
                   scenario.restrisiko.konsekvens *
                     scenario.restrisiko.sannsynlighet,
                 )}{' '}
-                kr / år
+                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
               </Typography>
             </Grid>
           </Grid>
@@ -238,7 +238,7 @@ export const ScenarioDrawerView = () => {
 
         <Grid item xs={12}>
           <Typography className={body2} gutterBottom>
-            Tiltak
+            {t('dictionary.measure')}
           </Typography>
           {scenario.tiltak.map((tiltak, index) => (
             <TiltakView tiltak={tiltak} index={index + 1} />

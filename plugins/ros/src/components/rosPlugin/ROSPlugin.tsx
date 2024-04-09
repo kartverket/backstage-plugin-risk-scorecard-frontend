@@ -109,7 +109,7 @@ const Plugin = () => {
                   onClick={openCreateRosDialog}
                   className={button}
                 >
-                  {t('createNewButton')}
+                  {t('contentHeader.createNewButton')}
                 </Button>
               </Grid>
             )}
