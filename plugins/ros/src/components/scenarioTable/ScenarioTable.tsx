@@ -11,6 +11,7 @@ import { ScenarioTableRow } from './ScenarioTableRow';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { ScenarioContext } from '../rosPlugin/ScenarioContext';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { useTableStyles } from './ScenarioTableStyles';
 
 interface ScenarioTableProps {
   ros: ROS;
@@ -18,17 +19,12 @@ interface ScenarioTableProps {
 
 export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
   const { newScenario, openScenario } = useContext(ScenarioContext)!!;
+  const { titleBox, rowBorder } = useTableStyles();
 
   return (
     <>
       <Paper>
-        <Box
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            borderBottom: '1px solid #616161',
-          }}
-        >
+        <Box className={titleBox}>
           <Typography variant="h5" style={{ padding: '1rem' }}>
             Risikoscenarioer
           </Typography>
@@ -73,19 +69,9 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
           </Box>
         ) : (
           <TableContainer component={Paper}>
-            <Table
-              style={{
-                backgroundColor: '#424242',
-              }}
-            >
+            <Table>
               <TableHead>
-                <TableRow
-                  style={{
-                    display: 'flex',
-                    borderBottom: '1px solid #616161',
-                    alignItems: 'center',
-                  }}
-                >
+                <TableRow className={rowBorder}>
                   <TableCell
                     style={{
                       display: 'flex',

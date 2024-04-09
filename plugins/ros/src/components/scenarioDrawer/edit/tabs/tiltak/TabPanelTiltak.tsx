@@ -100,7 +100,10 @@ export const TabPanelTiltak = ({
           <Typography className={body2}>Restrisiko</Typography>
         </Grid>
         <Grid item xs={2}>
-          <TextField label="Konsekvens" value={getKonsekvensLevel(scenario.risiko)} />
+          <TextField
+            label="Konsekvens"
+            value={getKonsekvensLevel(scenario.risiko)}
+          />
         </Grid>
         <Grid item xs={2}>
           <TextField
