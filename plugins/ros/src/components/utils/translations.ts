@@ -60,13 +60,13 @@ export const pluginTranslationRef = createTranslationRef({
       estimatedRisk: {
         title: 'Estimert risiko',
         suffix: {
-          thousand: 'tusen',
-          million: 'million',
-          millions: 'millioner',
-          billion: 'milliard',
-          billions: 'milliarder',
-          trillion: 'billion',
-          trillions: 'billioner',
+          thousand: '{{count}} tusen',
+          million_one: '{{count}} million',
+          million_other: '{{count}} millioner',
+          billion_one: '{{count}} milliard',
+          billion_other: '{{count}} milliarder',
+          trillion_one: '{{count}} billion',
+          trillion_other: '{{count}} billioner',
         },
         unit: {
           nokPerYear: 'kr / år',

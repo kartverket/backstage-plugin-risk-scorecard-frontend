@@ -36,13 +36,12 @@ export const AggregatedCost = ({ ros, startRisiko }: AggregatedCostProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const { outerBox, innerBox } = useStyles();
   const { t } = useTranslationRef(pluginTranslationRef);
-  const { num, unit } = formatNumber(cost, t);
   return (
     <Box className={outerBox}>
       <Typography>Estimert risiko</Typography>
       <Box className={innerBox}>
         <Typography variant="h5">
-          {num} {unit && unit + ' '}
+          {formatNumber(cost, t)}{' '}
           {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
         </Typography>
         <IconButton size="small" onClick={() => setShowDialog(true)}>
@@ -57,36 +56,18 @@ export const AggregatedCost = ({ ros, startRisiko }: AggregatedCostProps) => {
   );
 };
 
-function formatNumber(
-  cost: number,
-  t: (s: any) => string,
-): { num: string; unit?: string } {
+function formatNumber(cost: number, t: (s: any, c: any) => string): string {
   if (cost < 1e4) {
-    return { num: formatNOK(cost) };
+    return formatNOK(cost);
   } else {
-    let zeros;
-    let unit;
-    if (cost < 1e6) {
-      zeros = 1e3;
-      unit = 'thousand';
-    } else if (cost < 1e9) {
-      zeros = 1e6;
-      unit = 'million';
-    } else if (cost < 1e12) {
-      zeros = 1e9;
-      unit = 'billion';
-    } else {
-      zeros = 1e12;
-      unit = 'trillion';
-    }
-    let num = (cost / zeros).toFixed(1);
-    if (num.endsWith('0') || zeros === 1e3) {
-      num = (cost / zeros).toFixed(0);
-    }
-    if (cost / zeros > 1 && unit != 'thousand') {
-      unit = unit + 's';
-    }
-    unit = t(`riskMatrix.estimatedRisk.suffix.${unit}`) ?? unit;
-    return { num, unit };
+    let { threshold, unit } = [
+      { threshold: 1e6, unit: 'thousand' },
+      { threshold: 1e9, unit: 'million' },
+      { threshold: 1e12, unit: 'billion' },
+      { threshold: 1e15, unit: 'trillion' },
+    ].find(({ threshold }) => cost < threshold)!!;
+    return t(`riskMatrix.estimatedRisk.suffix.${unit}`, {
+      count: Number(((cost / threshold) * 1000).toFixed(0)),
+    });
   }
 }

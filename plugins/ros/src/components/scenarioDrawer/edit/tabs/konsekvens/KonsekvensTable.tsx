@@ -58,7 +58,7 @@ export const PickerTable = ({
           {t(`consequenceTable.rows.${row}`)} - {row}{' '}
           <Radio
             checked={selectedValue === row}
-            onChange={handleChangeRow(2)}
+            onChange={handleChangeRow(row)}
           />
         </div>
       </td>
