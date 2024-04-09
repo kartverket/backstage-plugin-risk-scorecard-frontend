@@ -194,7 +194,7 @@ export const pluginTranslationRef = createTranslationRef({
         '2': 'Liten',
         '3': 'Moderat',
         '4': 'Stor',
-        '5': 'Svært liten',
+        '5': 'Svært stor',
       },
       cells: {
         '1': 'Scenarioet er usannsynlig å inntreffe. Det inntreffer sjeldnere enn hvert 100. år',
