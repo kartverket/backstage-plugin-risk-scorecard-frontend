@@ -43,8 +43,9 @@ import { useEffectOnce } from 'react-use';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo => {
   const entity = useEntity();
-  const slug =
-    entity.entity.metadata.annotations?.['github.com/project-slug'].split('/');
+  const slug = entity.entity.metadata.annotations?.['backstage.io/view-url']
+    .split('https://github.com/')[1]
+    .split('/', 2);
   return {
     name: slug ? slug[1] : '',
     owner: slug ? slug[0] : '',
