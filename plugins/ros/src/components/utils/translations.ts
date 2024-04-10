@@ -133,6 +133,7 @@ export const pluginTranslationRef = createTranslationRef({
         measureOwnerDescription:
           'De eller den som er ansvarlig for at tiltaket blir gjennomført',
         addMeasureButton: 'Legg til tiltak',
+        existingMeasure: 'Eksisterende tiltak',
       },
       restRiskTab: {
         subtitle:

@@ -99,6 +99,13 @@ export const useFontStyles = makeStyles(theme => ({
     fontWeight: 700,
     paddingTop: 0,
   },
+  tiltakSubtitle: {
+    fontSize: theme.spacing(2.25),
+    fontWeight: 700,
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
+
+  }
 }));
 
 export const useInputFieldStyles = makeStyles((theme: Theme) => ({

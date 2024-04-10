@@ -3,7 +3,6 @@ export type ROSWithMetadata = {
   status: RosStatus;
   content: ROS;
   isRequiresNewApproval?: boolean;
-  schemaVersion: string;
 };
 
 export type ROS = {
@@ -29,6 +28,7 @@ export type Scenario = {
   trusselaktører: string[];
   sårbarheter: string[];
   risiko: Risiko;
+  eksisterendeTiltak: string;
   tiltak: Tiltak[];
   restrisiko: Risiko;
 };

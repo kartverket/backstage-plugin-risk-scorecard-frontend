@@ -24,6 +24,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabPanelTiltakProps {
   scenario: Scenario;
+  setEksisterendeTiltak: (eksisterendeTiltak: string) => void;
   updateTiltak: (tiltak: ITiltak) => void;
   deleteTiltak: (tiltak: ITiltak) => void;
   addTiltak: () => void;
@@ -33,6 +34,7 @@ interface TabPanelTiltakProps {
 
 export const TabPanelTiltak = ({
   scenario,
+  setEksisterendeTiltak,
   updateTiltak,
   deleteTiltak,
   addTiltak,
@@ -57,7 +59,7 @@ export const TabPanelTiltak = ({
 
   const { tabPanel } = tabStyles();
 
-  const { body2, headerSubtitle } = useFontStyles();
+  const { body2, headerSubtitle, tiltakSubtitle } = useFontStyles();
   const { t } = useTranslationRef(pluginTranslationRef);
 
   return (
@@ -66,6 +68,15 @@ export const TabPanelTiltak = ({
       <Typography className={headerSubtitle}>
         {t('scenarioDrawer.measureTab.subtitle')}
       </Typography>
+      <Grid item xs={12}>
+        <TextField
+            label={t('scenarioDrawer.measureTab.existingMeasure')}
+            value={scenario.eksisterendeTiltak}
+            handleChange={setEksisterendeTiltak}
+            minRows={3}
+        />
+      </Grid>
+      <Typography variant="h6" className={tiltakSubtitle}>Planlagte tiltak</Typography>
       {scenario.tiltak.map((tiltak, index) => (
         <TiltakEdit
           tiltak={tiltak}
@@ -88,7 +99,7 @@ export const TabPanelTiltak = ({
 
       <Grid container style={{ paddingTop: '1.5rem' }} columns={9}>
         <Grid item xs={12}>
-          <Typography variant="h5">Restrisiko</Typography>
+          <Typography variant="h5">{t('dictionary.restRisk')}</Typography>
           <Typography className={headerSubtitle}>
             {t('scenarioDrawer.restRiskTab.subtitle')}
           </Typography>

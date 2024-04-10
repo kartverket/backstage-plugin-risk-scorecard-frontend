@@ -214,6 +214,7 @@ export interface ScenarioDrawerProps {
   setSårbarheter: (sårbarheter: string[]) => void;
   setSannsynlighet: (sannsynlighetLevel: number) => void;
   setKonsekvens: (konsekvensLevel: number) => void;
+  setEksisterendeTiltak: (eksisterendeTiltak: string) => void;
   addTiltak: () => void;
   updateTiltak: (tiltak: Tiltak) => void;
   deleteTiltak: (tiltak: Tiltak) => void;
@@ -405,6 +406,13 @@ export const useScenarioDrawer = (
       },
     });
 
+  const setEksisterendeTiltak = (eksisterendeTiltak: string) => {
+      setScenario({
+        ...scenario,
+        eksisterendeTiltak: eksisterendeTiltak
+      });
+  }
+
   const addTiltak = () =>
     setScenario({ ...scenario, tiltak: [...scenario.tiltak, emptyTiltak()] });
 
@@ -448,6 +456,7 @@ export const useScenarioDrawer = (
     setSårbarheter,
     setSannsynlighet,
     setKonsekvens,
+    setEksisterendeTiltak,
     addTiltak,
     updateTiltak,
     deleteTiltak,
@@ -497,7 +506,6 @@ export const useFetchRoses = (
             id: rosDTO.rosId,
             content: content,
             status: rosDTO.rosStatus,
-            schemaVersion: content.skjemaVersjon,
           };
         });
 
