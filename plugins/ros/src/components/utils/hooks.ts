@@ -42,13 +42,14 @@ import {
 import { useEffectOnce } from 'react-use';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo => {
-  const entity = useEntity();
-  const slug = entity.entity.metadata.annotations?.['backstage.io/view-url']
-    .split('https://github.com/')[1]
-    .split('/', 2);
+  const [, org, repo] =
+    useEntity().entity.metadata.annotations?.['backstage.io/view-url'].match(
+      /github\.com\/([^\/]+)\/([^\/]+)/,
+    ) || [];
+
   return {
-    name: slug ? slug[1] : '',
-    owner: slug ? slug[0] : '',
+    owner: org,
+    name: repo,
   };
 };
 
@@ -99,7 +100,7 @@ const useFetch = () => {
       fetchApi(uri, {
         method: method,
         headers: {
-          'Microsoft-Id-Token': microsoftIdToken,
+          Authorization: microsoftIdToken,
           'GCP-Access-Token': googleAccessToken,
           'Content-Type': 'application/json',
         },
