@@ -6,6 +6,8 @@ import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
 import { Scenario } from '../utils/types';
 import { useTableStyles } from './ScenarioTableStyles';
 import { getRiskMatrixColor } from '../utils/utilityfunctions';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginTranslationRef } from '../utils/translations';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -28,6 +30,8 @@ export const ScenarioTableRow = ({
   ).length;
 
   const { riskColor, rowBackground, rowBorder } = useTableStyles();
+
+  const { t } = useTranslationRef(pluginTranslationRef);
 
   return (
     <TableRow className={rowBorder}>
@@ -61,7 +65,8 @@ export const ScenarioTableRow = ({
               backgroundColor: getRiskMatrixColor(scenario.risiko),
             }}
           />
-          K:{konsekvens} S:{sannsynlighet}
+          {t('scenarioTable.columns.consequenceChar')}:{konsekvens}{' '}
+          {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}
         </TableCell>
 
         <TableCell
@@ -77,13 +82,14 @@ export const ScenarioTableRow = ({
             className={riskColor}
             style={{
               backgroundColor: getRiskMatrixColor(scenario.restrisiko),
-              // riskMatrix[restKonsekvens - 1][restSannsynlighet - 1],
             }}
           />
-          K:{restKonsekvens} S:{restSannsynlighet}
+          {t('scenarioTable.columns.consequenceChar')}:{restKonsekvens}{' '}
+          {t('scenarioTable.columns.probabilityChar')}:{restSannsynlighet}
         </TableCell>
         <TableCell style={{ display: 'flex', width: '20%' }}>
-          {fullførteTiltak}/{scenario.tiltak.length} fullførte
+          {fullførteTiltak}/{scenario.tiltak.length}{' '}
+          {t('scenarioTable.columns.completed')}
         </TableCell>
       </button>
     </TableRow>

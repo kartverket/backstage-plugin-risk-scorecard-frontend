@@ -3,6 +3,8 @@ import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import React from 'react';
 import { useTabsStyle } from '../../../riskMatrix/tabsStyle';
+import { pluginTranslationRef } from '../../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabsProps {
   setTab: (tab: string) => void;
@@ -10,6 +12,7 @@ interface TabsProps {
 
 export const Tabs = ({ setTab }: TabsProps) => {
   const tabsStyle = useTabsStyle();
+  const { t } = useTranslationRef(pluginTranslationRef);
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <TabList
@@ -20,7 +23,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
         <Tab
           label={
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Konsekvens
+              {t('dictionary.consequence')}
             </Typography>
           }
           value="konsekvens"
@@ -29,7 +32,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
         <Tab
           label={
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Sannsynlighet
+              {t('dictionary.probability')}
             </Typography>
           }
           value="sannsynlighet"
@@ -38,7 +41,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
         <Tab
           label={
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Tiltak
+              {t('dictionary.measure')}
             </Typography>
           }
           value="tiltak"

@@ -4,6 +4,8 @@ import { tabStyles } from '../style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../../style';
 import { SannsynlighetTable } from './SannsynlighetTable';
+import { pluginTranslationRef } from '../../../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabPanelSannsynlighetProps {
   selected: number;
@@ -17,6 +19,7 @@ export const TabPanelSannsynlighet = ({
 }: TabPanelSannsynlighetProps) => {
   const { tabPanel } = tabStyles();
   const { headerSubtitle } = useFontStyles();
+  const { t } = useTranslationRef(pluginTranslationRef);
 
   const handleChange = (value: number) => {
     setSannsynlighet(value);
@@ -24,12 +27,10 @@ export const TabPanelSannsynlighet = ({
 
   return (
     <TabPanel className={tabPanel} value="sannsynlighet">
-      <Typography variant="h5">Sannsynlighet</Typography>
+      <Typography variant="h5">{t('dictionary.probability')}</Typography>
       <Typography className={headerSubtitle}>
-        Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme
-        Dersom du er mellom to sannsynlighetsverdier velger du den høyeste.
+        {t('scenarioDrawer.probabilityTab.subtitle')}
       </Typography>
-
       <SannsynlighetTable
         selectedValue={selected}
         handleChange={handleChange}

@@ -6,6 +6,8 @@ import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import CircleIcon from '@mui/icons-material/Circle';
 import { Grid, Typography } from '@material-ui/core';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginTranslationRef } from '../../utils/translations';
 
 interface ChipProps {
   currentRosStatus: RosStatus;
@@ -24,14 +26,16 @@ const getChipColor = (status: RosStatus, classes: ClassNameMap): string => {
 };
 
 const getChipTextStatus = (status: RosStatus): string => {
+  const { t } = useTranslationRef(pluginTranslationRef);
+
   switch (status) {
     case RosStatus.Draft:
-      return 'Mangler godkjenning av risikoeier';
+      return t('rosStatus.statusBadge.missing');
     case RosStatus.SentForApproval:
     case RosStatus.Published:
-      return 'Godkjent av risikoeier';
+      return t('rosStatus.statusBadge.approved');
     default:
-      return 'Kunne ikke hente status';
+      return t('rosStatus.statusBadge.error');
   }
 };
 
@@ -39,12 +43,14 @@ const getPRStatus = (
   status: RosStatus,
   classes: ClassNameMap,
 ): ReactComponentElement<any> | null => {
+  const { t } = useTranslationRef(pluginTranslationRef);
+
   switch (status) {
     case RosStatus.SentForApproval:
       return (
         <Typography className={classes.prStatus}>
           <GitHubIcon className={classes.prIcon} />
-          Avventer godkjenning av PR
+          {t('rosStatus.prStatus')}
         </Typography>
       );
     case RosStatus.Draft:

@@ -3,6 +3,8 @@ import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import React from 'react';
 import { useTabsStyle } from './tabsStyle';
+import { pluginTranslationRef } from '../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabsProps {
   setTab: (tab: string) => void;
@@ -10,6 +12,8 @@ interface TabsProps {
 
 export const Tabs = ({ setTab }: TabsProps) => {
   const tabsStyle = useTabsStyle();
+  const { t } = useTranslationRef(pluginTranslationRef);
+
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <TabList
@@ -20,7 +24,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
         <Tab
           label={
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Startrisiko
+              {t('dictionary.initialRisk')}
             </Typography>
           }
           value="startrisiko"
@@ -29,7 +33,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
         <Tab
           label={
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Restrisiko
+              {t('dictionary.restRisk')}
             </Typography>
           }
           value="restrisiko"
