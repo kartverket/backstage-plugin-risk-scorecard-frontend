@@ -1,30 +1,36 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
-import {Button, Grid, Typography} from '@material-ui/core';
-import {useFontStyles, useScenarioDrawerContentStyles} from '../style';
+import { Button, Grid, Typography } from '@material-ui/core';
+import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
 import TabContext from '@material-ui/lab/TabContext';
-import {Tabs} from './tabs/Tabs';
+import { Tabs } from './tabs/Tabs';
 import {
   konsekvensOptions,
   sannsynlighetOptions,
   sårbarheterOptions,
   trusselaktørerOptions,
 } from '../../utils/constants';
-import {CloseConfirmation} from './CloseConfirmation';
-import {getKonsekvensLevel, getSannsynlighetLevel,} from '../../utils/utilityfunctions';
-import {ScenarioContext} from '../../rosPlugin/ScenarioContext';
+import { CloseConfirmation } from './CloseConfirmation';
+import {
+  getKonsekvensLevel,
+  getSannsynlighetLevel,
+} from '../../utils/utilityfunctions';
+import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TextField } from '../../utils/Textfield';
-import {Dropdown} from "../../utils/Dropdown";
-import {TabPanelKonsekvens} from "./tabs/konsekvens/TabPanelKonsekvens";
-import {TabPanelSannsynlighet} from "./tabs/sannsynlighet/TabPanelSannsynlighet";
-import {TabPanelTiltak} from "./tabs/tiltak/TabPanelTiltak";
-import {DeleteConfirmation} from "./DeleteConfirmation";
+import { Dropdown } from '../../utils/Dropdown';
+import { TabPanelKonsekvens } from './tabs/konsekvens/TabPanelKonsekvens';
+import { TabPanelSannsynlighet } from './tabs/sannsynlighet/TabPanelSannsynlighet';
+import { TabPanelTiltak } from './tabs/tiltak/TabPanelTiltak';
+import { DeleteConfirmation } from './DeleteConfirmation';
+import { pluginTranslationRef } from '../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export const ScenarioDrawerEdit = () => {
   const { header, buttons } = useScenarioDrawerContentStyles();
   const { h1, headerSubtitle, labelSubtitle, button, label } = useFontStyles();
+  const { t } = useTranslationRef(pluginTranslationRef);
 
   const {
     scenario,
@@ -71,7 +77,7 @@ export const ScenarioDrawerEdit = () => {
   return (
     <>
       <Box className={header}>
-        <Typography className={h1}>Risikoscenario</Typography>
+        <Typography className={h1}>{t('scenarioDrawer.title')}</Typography>
 
         <Button
           className={button}
@@ -80,17 +86,17 @@ export const ScenarioDrawerEdit = () => {
           onClick={handleCloseDrawer}
           endIcon={<KeyboardTabIcon />}
         >
-          Lukk
+          {t('dictionary.close')}
         </Button>
       </Box>
       <Typography className={headerSubtitle}>
-        En uønsket hendelse som potensielt kan ramme systemet
+        {t('scenarioDrawer.subtitle')}
       </Typography>
 
       <Grid container>
         <Grid item xs={12}>
           <TextField
-            label="Tittel"
+            label={t('dictionary.title')}
             value={scenario.tittel}
             error={scenarioErrors.tittel}
             required
@@ -100,9 +106,11 @@ export const ScenarioDrawerEdit = () => {
         </Grid>
 
         <Grid item xs={6}>
-          <Typography className={label}>Trusselaktører</Typography>
+          <Typography className={label}>
+            {t('dictionary.threatActors')}
+          </Typography>
           <Typography className={labelSubtitle}>
-            Aktøren som prøver å få tilgang til eller misbruke systemet
+            {t('scenarioDrawer.threatActorSubtitle')}
           </Typography>
           <Dropdown<string[]>
             selectedValues={scenario.trusselaktører}
@@ -112,9 +120,11 @@ export const ScenarioDrawerEdit = () => {
         </Grid>
 
         <Grid item xs={6}>
-          <Typography className={label}>Sårbarheter</Typography>
+          <Typography className={label}>
+            {t('dictionary.vulnerabilities')}
+          </Typography>
           <Typography className={labelSubtitle}>
-            Svakhet i systemet som kan utnyttes av trusselaktøren
+            {t('scenarioDrawer.vulnerabilitySubtitle')}
           </Typography>
 
           <Dropdown<string[]>
@@ -125,7 +135,7 @@ export const ScenarioDrawerEdit = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            label="Beskrivelse"
+            label={t('dictionary.description')}
             value={scenario.beskrivelse}
             minRows={4}
             handleChange={setBeskrivelse}
@@ -161,7 +171,7 @@ export const ScenarioDrawerEdit = () => {
 
         <Grid item xs={12} className={buttons} style={{ paddingTop: '1rem' }}>
           <Button variant="contained" color="primary" onClick={saveAndClose}>
-            Lagre
+            {t('dictionary.save')}
           </Button>
 
           <Button
@@ -169,7 +179,7 @@ export const ScenarioDrawerEdit = () => {
             color="primary"
             onClick={handleCloseDrawer}
           >
-            Avbryt
+            {t('dictionary.cancel')}
           </Button>
 
           <Grid
@@ -184,7 +194,7 @@ export const ScenarioDrawerEdit = () => {
               color="primary"
               onClick={openDeleteConfirmation}
             >
-              Slett scenario
+              {t('scenarioDrawer.deleteScenarioButton')}
             </Button>
           </Grid>
         </Grid>

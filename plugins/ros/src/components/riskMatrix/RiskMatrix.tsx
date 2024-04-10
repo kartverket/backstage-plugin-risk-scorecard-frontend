@@ -8,7 +8,9 @@ import { AggregatedCost } from './AggregatedCost';
 import { ROS } from '../utils/types';
 import TabContext from '@material-ui/lab/TabContext';
 import { Tabs } from './Tabs';
-import {riskMatrix} from "../utils/constants";
+import { riskMatrix } from '../utils/constants';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginTranslationRef } from '../utils/translations';
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];
@@ -25,6 +27,8 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
 
   const [tab, setTab] = useState('startrisiko');
 
+  const { t } = useTranslationRef(pluginTranslationRef);
+
   return (
     <InfoCard title="Risikomatrise">
       <TabContext value={tab}>
@@ -38,7 +42,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
           <Box className={grid}>
             <Box className={konsekvens}>
               <Typography className={`${centered} ${text}`}>
-                Konsekvens
+                {t('dictionary.consequence')}
               </Typography>
             </Box>
             {indices.map(row => (
@@ -70,7 +74,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
             ))}
             <Box className={sannsynlighet}>
               <Typography className={`${centered} ${text}`}>
-                Sannsynlighet
+                {t('dictionary.probability')}
               </Typography>
             </Box>
           </Box>

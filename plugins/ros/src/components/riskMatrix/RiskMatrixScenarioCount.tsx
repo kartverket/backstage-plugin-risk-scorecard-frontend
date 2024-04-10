@@ -13,6 +13,8 @@ import { useRiskMatrixStyles } from './style';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
 import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
 import { ROS } from '../utils/types';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginTranslationRef } from '../utils/translations';
 
 interface ScenarioCountProps {
   ros: ROS;
@@ -36,6 +38,8 @@ export const RiskMatrixScenarioCount = ({
     tooltipArrow,
     tooltipText,
   } = useRiskMatrixStyles();
+
+  const { t } = useTranslationRef(pluginTranslationRef);
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -61,7 +65,7 @@ export const RiskMatrixScenarioCount = ({
     <List dense>
       <ListSubheader className={tooltipText}>
         <Typography variant="h6" className={tooltipText}>
-          Risikoscenarioer
+          {t('riskMatrix.tooltip.title')}
         </Typography>
       </ListSubheader>
       {scenarier.map(s => (
