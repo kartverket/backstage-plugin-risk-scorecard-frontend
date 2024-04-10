@@ -19,12 +19,16 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     borderBottom:
-      theme.palette.type === 'dark' ? '1px solid #616161' : '#0000001f',
+      theme.palette.type === 'dark'
+        ? '1px solid #616161'
+        : '1px solid #0000001f',
   },
   rowBorder: {
     display: 'flex',
     alignItems: 'center',
     borderBottom:
-      theme.palette.type === 'dark' ? '1px solid #616161' : '#0000001f',
+      theme.palette.type === 'dark'
+        ? '1px solid #616161'
+        : '1px solid #0000001f',
   },
 }));
