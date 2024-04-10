@@ -1,11 +1,11 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
-import {Button, Grid, Typography} from '@material-ui/core';
-import {useFontStyles, useScenarioDrawerContentStyles} from '../style';
+import { Button, Grid, Typography } from '@material-ui/core';
+import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
-import {ScenarioContext} from '../../rosPlugin/ScenarioContext';
-import {TiltakView} from './TiltakView';
+import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
+import { TiltakView } from './TiltakView';
 import Divider from '@mui/material/Divider';
 import {
   formatNOK,
@@ -14,6 +14,8 @@ import {
   getSannsynlighetLevel,
 } from '../../utils/utilityfunctions';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginTranslationRef } from '../../utils/translations';
 
 export const ScenarioDrawerView = () => {
   const { header, buttons, risikoBadge } = useScenarioDrawerContentStyles();
@@ -24,11 +26,13 @@ export const ScenarioDrawerView = () => {
   const { scenario, closeScenario, editScenario } =
     useContext(ScenarioContext)!!;
 
+  const { t } = useTranslationRef(pluginTranslationRef);
+
   return (
     <>
       <Box className={header}>
         <Typography variant="h1" className={h1}>
-          Risikoscenario
+          {t('scenarioDrawer.title')}
         </Typography>
         <Box className={buttons}>
           <Button
@@ -38,7 +42,7 @@ export const ScenarioDrawerView = () => {
             onClick={editScenario}
             startIcon={<BorderColorOutlinedIcon />}
           >
-            Rediger
+            {t('dictionary.edit')}
           </Button>
 
           <Button
@@ -48,7 +52,7 @@ export const ScenarioDrawerView = () => {
             onClick={closeScenario}
             endIcon={<KeyboardTabIcon />}
           >
-            Lukk
+            {t('dictionary.close')}
           </Button>
         </Box>
       </Box>
@@ -59,7 +63,9 @@ export const ScenarioDrawerView = () => {
         </Grid>
 
         <Grid item xs={12}>
-          <Typography className={label}>Beskrivelse</Typography>
+          <Typography className={label}>
+            {t('dictionary.description')}
+          </Typography>
           <Typography className={body2}>{scenario.beskrivelse}</Typography>
         </Grid>
 
@@ -68,14 +74,18 @@ export const ScenarioDrawerView = () => {
         </Grid>
 
         <Grid item xs={6}>
-          <Typography className={label}>Trusselaktører</Typography>
+          <Typography className={label}>
+            {t('dictionary.threatActors')}
+          </Typography>
           {scenario.trusselaktører.map(trusselaktør => (
             <Typography className={body2}>{trusselaktør}</Typography>
           ))}
         </Grid>
 
         <Grid item xs={6}>
-          <Typography className={label}>Sårbarheter</Typography>
+          <Typography className={label}>
+            {t('dictionary.vulnerabilities')}
+          </Typography>
           {scenario.sårbarheter.map(sårbarhet => (
             <Typography className={body2}>{sårbarhet}</Typography>
           ))}
@@ -86,7 +96,7 @@ export const ScenarioDrawerView = () => {
         </Grid>
 
         <Grid item xs={12}>
-          <Typography className={subtitle1}>Risiko</Typography>
+          <Typography className={subtitle1}>{t('dictionary.risk')}</Typography>
         </Grid>
 
         <Grid item xs={4}>
@@ -107,13 +117,19 @@ export const ScenarioDrawerView = () => {
                   backgroundColor: getRiskMatrixColor(scenario.risiko),
                 }}
               />
-              <Typography className={body2}>Startrisiko</Typography>
+              <Typography className={body2}>
+                {t('dictionary.initialRisk')}
+              </Typography>
             </Grid>
             <Grid item xs={6} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>Konsekvens</Typography>
+              <Typography className={label}>
+                {t('dictionary.consequence')}
+              </Typography>
             </Grid>
             <Grid item xs={6} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>Sannsynlighet</Typography>
+              <Typography className={label}>
+                {t('dictionary.probability')}
+              </Typography>
             </Grid>
             <Grid item xs={6} style={{ paddingTop: 0 }}>
               <Typography className={risikoLevel}>
@@ -126,14 +142,16 @@ export const ScenarioDrawerView = () => {
               </Typography>
             </Grid>
             <Grid item xs={12} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>Estimert risiko</Typography>
+              <Typography className={label}>
+                {t('dictionary.estimatedRisk')}
+              </Typography>
             </Grid>
             <Grid item xs={12} style={{ paddingTop: 0 }}>
               <Typography className={body1}>
                 {formatNOK(
                   scenario.risiko.konsekvens * scenario.risiko.sannsynlighet,
                 )}{' '}
-                kr / år
+                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
               </Typography>
             </Grid>
           </Grid>
@@ -169,14 +187,20 @@ export const ScenarioDrawerView = () => {
                   backgroundColor: getRiskMatrixColor(scenario.restrisiko),
                 }}
               />
-              <Typography className={body2}>Restrisiko</Typography>
+              <Typography className={body2}>
+                {t('dictionary.restRisk')}
+              </Typography>
             </Grid>
 
             <Grid item xs={6} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>Konsekvens</Typography>
+              <Typography className={label}>
+                {t('dictionary.consequence')}
+              </Typography>
             </Grid>
             <Grid item xs={6} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>Sannsynlighet</Typography>
+              <Typography className={label}>
+                {t('dictionary.probability')}
+              </Typography>
             </Grid>
 
             <Grid item xs={6} style={{ paddingTop: 0 }}>
@@ -190,7 +214,9 @@ export const ScenarioDrawerView = () => {
               </Typography>
             </Grid>
             <Grid item xs={12} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>Estimert risiko</Typography>
+              <Typography className={label}>
+                {t('dictionary.estimatedRisk')}
+              </Typography>
             </Grid>
             <Grid item xs={12} style={{ paddingTop: 0 }}>
               <Typography className={body1}>
@@ -198,7 +224,7 @@ export const ScenarioDrawerView = () => {
                   scenario.restrisiko.konsekvens *
                     scenario.restrisiko.sannsynlighet,
                 )}{' '}
-                kr / år
+                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
               </Typography>
             </Grid>
           </Grid>
@@ -212,7 +238,7 @@ export const ScenarioDrawerView = () => {
 
         <Grid item xs={12}>
           <Typography className={body2} gutterBottom>
-            Tiltak
+            {t('dictionary.measure')}
           </Typography>
           {scenario.tiltak.map((tiltak, index) => (
             <TiltakView tiltak={tiltak} index={index + 1} />

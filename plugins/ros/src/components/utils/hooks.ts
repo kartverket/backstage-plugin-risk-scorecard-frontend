@@ -100,7 +100,7 @@ const useFetch = () => {
       fetchApi(uri, {
         method: method,
         headers: {
-          Authorization: microsoftIdToken,
+          Authorization: `Bearer ${microsoftIdToken}`,
           'GCP-Access-Token': googleAccessToken,
           'Content-Type': 'application/json',
         },

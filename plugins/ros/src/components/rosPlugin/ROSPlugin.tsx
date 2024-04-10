@@ -18,18 +18,20 @@ import { ScenarioContext } from './ScenarioContext';
 import { useFontStyles } from '../scenarioDrawer/style';
 import { useParams } from 'react-router';
 import { ROSInfo } from '../rosInfo/ROSInfo';
-import {ROSDialog, ROSDialogStates} from '../rosDialog/ROSDialog';
+import { ROSDialog, ROSDialogStates } from '../rosDialog/ROSDialog';
 import { ScenarioTable } from '../scenarioTable/ScenarioTable';
-import {Route, Routes} from "react-router-dom";
-import {rosRouteRef, scenarioRouteRef} from "../../routes";
+import { Route, Routes } from 'react-router-dom';
+import { rosRouteRef, scenarioRouteRef } from '../../routes';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginTranslationRef } from '../utils/translations';
 
 export const ROSPlugin = () => {
   return (
-      <Routes>
-        <Route path="/" element={<Plugin />} />
-        <Route path={rosRouteRef.path} element={<Plugin />} />
-        <Route path={scenarioRouteRef.path} element={<Plugin />} />
-      </Routes>
+    <Routes>
+      <Route path="/" element={<Plugin />} />
+      <Route path={rosRouteRef.path} element={<Plugin />} />
+      <Route path={scenarioRouteRef.path} element={<Plugin />} />
+    </Routes>
   );
 };
 
@@ -64,6 +66,8 @@ const Plugin = () => {
   const classes = useLoadingStyles();
   const { button } = useFontStyles();
 
+  const { t } = useTranslationRef(pluginTranslationRef);
+
   return (
     <>
       <ScenarioContext.Provider value={scenario}>
@@ -74,7 +78,7 @@ const Plugin = () => {
         )}
 
         <Content>
-          <ContentHeader title="Risiko- og sårbarhetsanalyse">
+          <ContentHeader title={t('contentHeader.title')}>
             <SupportButton>Kul plugin ass!</SupportButton>
           </ContentHeader>
 
@@ -105,7 +109,7 @@ const Plugin = () => {
                   onClick={openCreateRosDialog}
                   className={button}
                 >
-                  Opprett ny analyse
+                  {t('contentHeader.createNewButton')}
                 </Button>
               </Grid>
             )}
