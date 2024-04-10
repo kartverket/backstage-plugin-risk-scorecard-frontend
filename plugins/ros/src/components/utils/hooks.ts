@@ -42,12 +42,14 @@ import {
 import { useEffectOnce } from 'react-use';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo => {
-  const entity = useEntity();
-  const slug =
-    entity.entity.metadata.annotations?.['github.com/project-slug'].split('/');
+  const [, org, repo] =
+    useEntity().entity.metadata.annotations?.['backstage.io/view-url'].match(
+      /github\.com\/([^\/]+)\/([^\/]+)/,
+    ) || [];
+
   return {
-    name: slug ? slug[1] : '',
-    owner: slug ? slug[0] : '',
+    owner: org,
+    name: repo,
   };
 };
 
