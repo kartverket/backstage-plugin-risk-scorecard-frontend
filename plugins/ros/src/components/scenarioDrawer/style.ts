@@ -120,7 +120,7 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
   },
   root: {
     '&.Mui-disabled': {
-      color: theme.palette.type === 'dark' ? '#FFFFFF80' : '#818181',
+      color: theme.palette.type === 'dark' ? '#FFFFFF80' : '#757575',
     },
   },
 }));
