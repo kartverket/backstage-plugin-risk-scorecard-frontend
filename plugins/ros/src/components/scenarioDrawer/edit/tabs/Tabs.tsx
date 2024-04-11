@@ -2,6 +2,7 @@ import TabList from '@material-ui/lab/TabList/TabList';
 import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import React from 'react';
+import { useTabsStyle } from '../../../riskMatrix/tabsStyle';
 import { pluginTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
@@ -10,6 +11,7 @@ interface TabsProps {
 }
 
 export const Tabs = ({ setTab }: TabsProps) => {
+  const tabsStyle = useTabsStyle();
   const { t } = useTranslationRef(pluginTranslationRef);
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -25,7 +27,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
             </Typography>
           }
           value="konsekvens"
-          style={{ backgroundColor: 'transparent', color: 'white' }}
+          className={tabsStyle.tab}
         />
         <Tab
           label={
@@ -34,7 +36,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
             </Typography>
           }
           value="sannsynlighet"
-          style={{ backgroundColor: 'transparent', color: 'white' }}
+          className={tabsStyle.tab}
         />
         <Tab
           label={
@@ -43,7 +45,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
             </Typography>
           }
           value="tiltak"
-          style={{ backgroundColor: 'transparent', color: 'white' }}
+          className={tabsStyle.tab}
         />
       </TabList>
     </Box>

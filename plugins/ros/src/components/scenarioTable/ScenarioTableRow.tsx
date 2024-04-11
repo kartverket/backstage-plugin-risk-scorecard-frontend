@@ -29,16 +29,12 @@ export const ScenarioTableRow = ({
     tiltak => tiltak.status === 'Fullført',
   ).length;
 
-  const { riskColor, rowBackground } = useTableStyles();
+  const { riskColor, rowBackground, rowBorder } = useTableStyles();
 
   const { t } = useTranslationRef(pluginTranslationRef);
 
   return (
-    <TableRow
-      style={{
-        borderBottom: 'solid 1px #616161',
-      }}
-    >
+    <TableRow className={rowBorder}>
       <button
         className={rowBackground}
         onClick={() => viewRow(scenario.ID)}

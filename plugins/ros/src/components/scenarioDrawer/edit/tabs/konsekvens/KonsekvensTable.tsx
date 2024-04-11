@@ -1,9 +1,9 @@
 import React from 'react';
-import { makeStyles, Radio, Typography } from '@material-ui/core';
+import { makeStyles, Radio, Theme, Typography } from '@material-ui/core';
 import { pluginTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   grid: {
     display: 'flex',
     borderCollapse: 'collapse',
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   voidCell: {
     padding: '8px',
     border: '1px solid grey',
-    color: '#9E9E9E',
+    color: theme.palette.type === 'dark' ? '#9E9E9E' : '#757575',
   },
   firstCell: {
     padding: '8px',
@@ -32,7 +32,7 @@ const useStyles = makeStyles({
     gap: '5px',
     justifyContent: 'flex-end',
   },
-});
+}));
 
 interface PickerTableProps {
   selectedValue: number;

@@ -15,7 +15,20 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
       cursor: 'pointer',
     },
   },
-  titleBackground: {
-    backgroundColor: theme.palette.type === 'dark' ? '#424242' : 'white',
+  titleBox: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    borderBottom:
+      theme.palette.type === 'dark'
+        ? '1px solid #616161'
+        : '1px solid #0000001f',
+  },
+  rowBorder: {
+    display: 'flex',
+    alignItems: 'center',
+    borderBottom:
+      theme.palette.type === 'dark'
+        ? '1px solid #616161'
+        : '1px solid #0000001f',
   },
 }));

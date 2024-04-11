@@ -71,13 +71,13 @@ export const useFontStyles = makeStyles(theme => ({
     fontSize: theme.spacing(1.75),
     fontWeight: 700,
     textTransform: 'uppercase',
-    color: '#F8F8F8',
+    color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
     paddingBottom: '0.4rem',
   },
   labelSubtitle: {
     fontSize: theme.spacing(1.5),
     fontWeight: 400,
-    color: '#F8F8F8',
+    color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
     paddingBottom: '0.4rem',
     marginTop: '-0.2rem',
   },
@@ -109,13 +109,18 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
     fontSize: theme.spacing(1.75),
     fontWeight: 700,
     textTransform: 'uppercase',
-    color: '#F8F8F8',
     marginBottom: theme.spacing(1),
+    color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
   },
   paper: {
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
     backgroundColor:
       theme.palette.type === 'dark' ? '#333333' : 'rgba(0, 0, 0, 0.1)',
+  },
+  root: {
+    '&.Mui-disabled': {
+      color: theme.palette.type === 'dark' ? '#FFFFFF80' : '#757575',
+    },
   },
 }));
