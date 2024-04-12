@@ -129,11 +129,12 @@ export const pluginTranslationRef = createTranslationRef({
       },
       measureTab: {
         subtitle:
-          'Hvilke tiltak som kan gjøres for å unngå den uønskede hendelsen',
+          'Hvilke tiltak burde gjøres for å unngå scenarioet?',
         measureOwnerDescription:
           'De eller den som er ansvarlig for at tiltaket blir gjennomført',
         addMeasureButton: 'Legg til tiltak',
         existingMeasure: 'Eksisterende tiltak',
+        existingMeasureSubtitle: 'Kort beskrivelse av relevante tiltak som allerede har blitt gjennomført',
       },
       restRiskTab: {
         subtitle:

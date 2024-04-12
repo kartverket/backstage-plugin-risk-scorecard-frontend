@@ -71,6 +71,7 @@ export const TabPanelTiltak = ({
       <Grid item xs={12}>
         <TextField
             label={t('scenarioDrawer.measureTab.existingMeasure')}
+            subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
             value={scenario.eksisterendeTiltak}
             handleChange={setEksisterendeTiltak}
             minRows={3}
