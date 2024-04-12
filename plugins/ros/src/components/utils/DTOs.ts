@@ -43,6 +43,7 @@ type ScenarioDTO = {
     trusselaktører: string[];
     sårbarheter: string[];
     risiko: Risiko;
+    eksisterendeTiltak?: string;
     tiltak: TiltakDTO[];
     restrisiko: Risiko;
   };
@@ -62,6 +63,8 @@ type TiltakDTO = {
 export function dtoToROS(rosDTO: ROSDTO): ROS {
   return {
     ...rosDTO,
+    // TODO implementere løsning for migrering, kan bumpe fra 3.1 til 3.2 på denne måten manuelt ved å åpne og lagre rosen:
+    // skjemaVersjon: '3.2',
     scenarier: rosDTO.scenarier.map(dtoToScenario),
   };
 }
@@ -70,6 +73,7 @@ function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
   return {
     ...scenarioDTO.scenario,
     tittel: scenarioDTO.tittel,
+    eksisterendeTiltak: scenarioDTO.scenario.eksisterendeTiltak || '',
     tiltak: scenarioDTO.scenario.tiltak.map(dtoToTiltak),
   };
 }
@@ -109,6 +113,7 @@ function scenarioToDTO(scenario: Scenario): ScenarioDTO {
       trusselaktører: scenario.trusselaktører,
       sårbarheter: scenario.sårbarheter,
       risiko: scenario.risiko,
+      eksisterendeTiltak: scenario.eksisterendeTiltak.length === 0 ? undefined : scenario.eksisterendeTiltak,
       tiltak: scenario.tiltak.map(tiltakToDTO),
       restrisiko: scenario.restrisiko,
     },

@@ -74,6 +74,7 @@ export const emptyScenario = (): Scenario => ({
     sannsynlighet: 0.01,
     konsekvens: 1000,
   },
+  eksisterendeTiltak: '',
   tiltak: [],
   restrisiko: {
     oppsummering: '',

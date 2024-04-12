@@ -44,6 +44,7 @@ export const ScenarioDrawerEdit = () => {
     setSårbarheter,
     setSannsynlighet,
     setKonsekvens,
+    setEksisterendeTiltak,
     addTiltak,
     updateTiltak,
     deleteTiltak,
@@ -158,6 +159,7 @@ export const ScenarioDrawerEdit = () => {
             />
             <TabPanelTiltak
               scenario={scenario}
+              setEksisterendeTiltak={setEksisterendeTiltak}
               updateTiltak={updateTiltak}
               deleteTiltak={deleteTiltak}
               addTiltak={addTiltak}
