@@ -4,80 +4,82 @@ export const pluginTranslationRef = createTranslationRef({
     id: 'plugin.ros',
     messages: {
         contentHeader: {
-            title: 'Risiko- og sårbarhetsanalyse',
-            createNewButton: 'Opprett ny analyse',
+            title: 'Risk score card',
+            createNewButton: 'Create new score card',
         },
         dictionary: {
-            cancel: 'Avbryt',
-            close: 'Lukk',
-            confirm: 'Bekreft',
-            consequence: 'Konsekvens',
-            deadline: 'Frist',
-            delete: 'Slett',
-            description: 'Beskrivelse',
-            discardChanges: 'Forkast endringer',
-            edit: 'Rediger',
-            estimatedRisk: 'Estimert risiko',
-            initialRisk: 'Startrisiko',
-            measure: 'Tiltak',
-            measureOwner: 'Tiltakseier',
-            probability: 'Sannsynlighet',
-            restRisk: 'Restrisiko',
-            risk: 'Risiko',
-            save: 'Lagre',
-            scope: 'Omfang',
+            cancel: 'Cancel',
+            close: 'Close',
+            confirm: 'Confirm',
+            consequence: 'Consequence', // Severity, Impact, Effect or Consequence
+            deadline: 'Deadline', // Deadline or Due date
+            delete: 'Delete',
+            description: 'Description',
+            discardChanges: 'Discard changes',
+            edit: 'Edit',
+            estimatedRisk: 'Estimated risk',
+            initialRisk: 'Initial risk', // Starting risk or Initial risk
+            measure: 'Measure', // Measure, Action or Initiative
+            measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
+            probability: 'Probability', // Likelihood or Probability
+            restRisk: 'Remaining risk', // Residual or Remaining risk
+            risk: 'Risk',
+            save: 'Save',
+            scope: 'Scope',
             status: 'Status',
-            threatActors: 'Trusselaktører',
-            title: 'Tittel',
-            vulnerabilities: 'Sårbarheter',
+            threatActors: 'Threat actors',
+            title: 'Title',
+            vulnerabilities: 'Vulnerabilities',
         },
         rosStatus: {
             statusBadge: {
-                missing: 'Mangler godkjenning av risikoeier',
-                approved: 'Godkjent av risikoeier',
-                error: 'Kunne ikke hente status',
+                // Approve/Approval eller Accept/Acceptance?? (Approval brukes i Github så kanskje fint å skille)
+                missing: 'Risk owner acceptance missing', // Mangler godkjenning av risikoeier
+                approved: 'Accepted by risk owner', // Godkjent av risikoeier
+                error: 'Failed to retrieve status', // Kunne ikke hente status
             },
-            prStatus: 'Avventer godkjenning av PR',
-            approveButton: 'Godkjenn ROS',
+            prStatus: 'Awaiting PR approval', // Avventer godkjenning av PR
+            approveButton: 'Accept risks', // Godkjenn ROS
         },
         publishDialog: {
-            title: 'Godkjenn ROS',
+            title: 'Accept risks', // Godkjenn ROS
             checkboxLabel:
-                'Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne risiko- og sårbarhetsanalysen.',
+                'I confirm that I am the risk owner and accept the risks in this risk score card.',
+            // Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne risiko- og sårbarhetsanalysen.
         },
         scenarioTable: {
-            title: 'Risikoscenarioer',
-            addScenarioButton: 'Legg til risikoscenario',
+            title: 'Risk scenarios',
+            addScenarioButton: 'Add risk scenario',
             columns: {
-                measuresCount: 'Antall tiltak',
-                consequenceChar: 'K',
-                probabilityChar: 'S',
-                completed: 'fullførte',
+                measuresCount: 'Number of measures',
+                consequenceChar: 'C',
+                probabilityChar: 'P',
+                completed: 'completed',
             },
         },
         riskMatrix: {
-            title: 'Risikomatrise',
+            title: 'Risk matrix', // Risk matrix or Risk overview
             estimatedRisk: {
-                title: 'Estimert risiko',
+                title: 'Estimated risk',
                 suffix: {
-                    thousand: '{{count}} tusen',
+                    thousand: '{{count}} thousand',
                     million_one: '{{count}} million',
-                    million_other: '{{count}} millioner',
-                    billion_one: '{{count}} milliard',
-                    billion_other: '{{count}} milliarder',
-                    trillion_one: '{{count}} billion',
-                    trillion_other: '{{count}} billioner',
+                    million_other: '{{count}} million',
+                    billion_one: '{{count}} billion',
+                    billion_other: '{{count}} billion',
+                    trillion_one: '{{count}} trillion',
+                    trillion_other: '{{count}} trillion',
                 },
                 unit: {
-                    nokPerYear: 'kr / år',
+                    nokPerYear: 'NOK/year',
                 },
             },
             tooltip: {
-                title: 'Risikoscenarioer',
+                title: 'Risk scenarios',
             },
         },
         infoDialog: {
-            title: 'Estimert risiko',
+            title: 'Estimated risk',
             description:
                 'Den estimerte risikoen er basert på hvor stor risiko de forskjellige' +
                 'scenariene utgjør. Hvis det er stor sannsynlighet for at en alvorlig' +
@@ -103,15 +105,15 @@ export const pluginTranslationRef = createTranslationRef({
                 '30 000 kr / hendelse x 50 hendelser / år = 1 500 000 kr/år.',
         },
         rosDialog: {
-            titleNew: 'Ny risiko- og sårbarhetsanalyse',
-            titleEdit: 'Rediger ROS-analyse',
-            titleError: 'ROS-analysen må ha en tittel',
+            titleNew: 'New risk score card', // Ny risiko- og sårbarhetsanalyse
+            titleEdit: 'Edit risk score card', // Rediger ROS-analyse
+            titleError: 'The score card must have a title', // TODO
             scopeDescription:
                 'Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.',
-            scopeError: 'ROS-analysen må ha et omfang',
+            scopeError: 'The score card must have a description of the scope', // TODO
         },
         scenarioDrawer: {
-            title: 'Risikoscenario',
+            title: 'Risk scenario',
             subtitle: 'En uønsket hendelse som potensielt kan ramme systemet',
             threatActorSubtitle:
                 'Aktøren som prøver å få tilgang til eller misbruke systemet',
@@ -132,7 +134,7 @@ export const pluginTranslationRef = createTranslationRef({
                     'Hvilke tiltak burde gjøres for å unngå scenarioet?',
                 measureOwnerDescription:
                     'De eller den som er ansvarlig for at tiltaket blir gjennomført',
-                addMeasureButton: 'Legg til tiltak',
+                addMeasureButton: 'Add measure',
                 existingMeasure: 'Eksisterende tiltak',
                 existingMeasureSubtitle: 'Kort beskrivelse av relevante tiltak som allerede har blitt gjennomført',
             },
@@ -141,7 +143,7 @@ export const pluginTranslationRef = createTranslationRef({
                     'Sett restrisiko for scenarioet. Restrisiko er konsekvens og sannsynlighet for' +
                     'scenarioet etter at alle tiltak i listen er gjennomført.',
             },
-            deleteScenarioButton: 'Slett scenario',
+            deleteScenarioButton: 'Delete scenario',
             deleteScenarioConfirmation: 'Er du sikker på at du vil slette scenario?',
             closeConfirmation: 'Vil du lagre endringene dine?',
         },
