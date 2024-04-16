@@ -30,7 +30,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <InfoCard title="Risikomatrise">
+    <InfoCard title={t('riskMatrix.title')}>
       <TabContext value={tab}>
         <Tabs setTab={setTab} />
         {ros.scenarier.length > 0 && (
