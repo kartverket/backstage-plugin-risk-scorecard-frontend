@@ -77,7 +77,7 @@ export const TabPanelTiltak = ({
             minRows={3}
         />
       </Grid>
-      <Typography variant="h6" className={tiltakSubtitle}>Planlagte tiltak</Typography>
+      <Typography variant="h6" className={tiltakSubtitle}>{t('scenarioDrawer.measureTab.plannedMeasures')}</Typography>
       {scenario.tiltak.map((tiltak, index) => (
         <TiltakEdit
           tiltak={tiltak}

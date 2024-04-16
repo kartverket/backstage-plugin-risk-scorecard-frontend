@@ -131,6 +131,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         measureOwnerDescription:
           'The team or person responsible for completing the initiative',
         addMeasureButton: 'Add initiative',
+        plannedMeasures: 'Planned initiatives',
         existingMeasure: 'Existing initiatives',
         existingMeasureSubtitle: 'Brief description of relevant actions that have already been implemented',
       },
@@ -287,6 +288,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.measureTab.subtitle': 'Hvilke tiltak burde gjøres for å unngå scenarioet?',
           'scenarioDrawer.measureTab.measureOwnerDescription': 'De eller den som er ansvarlig for at tiltaket blir gjennomført',
           'scenarioDrawer.measureTab.addMeasureButton': 'Legg til tiltak',
+          'scenarioDrawer.measureTab.plannedMeasures': 'Planlagte tiltak',
           'scenarioDrawer.measureTab.existingMeasure': 'Eksisterende tiltak',
           'scenarioDrawer.measureTab.existingMeasureSubtitle': 'Kort beskrivelse av relevante tiltak som allerede har blitt gjennomført',
           'scenarioDrawer.restRiskTab.subtitle': 'Sett restrisiko for scenarioet. Restrisiko er konsekvens og sannsynlighet for scenarioet etter at alle tiltak i listen er gjennomført.',
