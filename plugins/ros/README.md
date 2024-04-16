@@ -1,4 +1,4 @@
-# ROS
+# RiSc
 
 This is a plugin for Backstage that helps you and your team when working continuously with your risk analyses (:))
 The plugin is dependent on a backend service in order to decrypt and communicate with GitHub, and some configuration is
@@ -18,4 +18,4 @@ for both:
 1. Add discovery of organization data for Microsoft Org
 2. Add authentication for both providers
 
-Happy ROS-ing 🌹
+Happy RiSc-ing 🌹
