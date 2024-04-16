@@ -5,7 +5,7 @@ import { useFontStyles, useInputFieldStyles } from '../style';
 import { useTiltakViewStyles } from './style';
 import { formatDate } from '../../utils/utilityfunctions';
 import Chip from '@material-ui/core/Chip';
-import { pluginTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TiltakProps {
@@ -17,7 +17,7 @@ export const TiltakView = ({ tiltak, index }: TiltakProps) => {
   const { paper } = useInputFieldStyles();
   const { alignCenter, justifyEnd } = useTiltakViewStyles();
   const { body2, label } = useFontStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Paper className={paper} style={{ padding: '1rem' }}>

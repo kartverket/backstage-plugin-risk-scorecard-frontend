@@ -6,7 +6,7 @@ import { useFontStyles } from '../scenarioDrawer/style';
 import { InfoCard } from '@backstage/core-components';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 interface RosInfoProps {
   ros: ROSWithMetadata;
@@ -17,7 +17,7 @@ interface RosInfoProps {
 export const ROSInfo = ({ ros, approveROS, edit }: RosInfoProps) => {
   const { h2, subtitle1, body2 } = useFontStyles();
 
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Grid container>

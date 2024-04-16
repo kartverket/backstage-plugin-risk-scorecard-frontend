@@ -7,7 +7,7 @@ import { Scenario } from '../utils/types';
 import { useTableStyles } from './ScenarioTableStyles';
 import { getRiskMatrixColor } from '../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -31,7 +31,7 @@ export const ScenarioTableRow = ({
 
   const { riskColor, rowBackground, rowBorder } = useTableStyles();
 
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <TableRow className={rowBorder}>

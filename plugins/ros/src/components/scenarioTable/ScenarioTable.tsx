@@ -13,7 +13,7 @@ import { ScenarioContext } from '../rosPlugin/ScenarioContext';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { useTableStyles } from './ScenarioTableStyles';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 interface ScenarioTableProps {
   ros: ROS;
@@ -23,7 +23,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
   const { newScenario, openScenario } = useContext(ScenarioContext)!!;
   const { titleBox, rowBorder } = useTableStyles();
 
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <>

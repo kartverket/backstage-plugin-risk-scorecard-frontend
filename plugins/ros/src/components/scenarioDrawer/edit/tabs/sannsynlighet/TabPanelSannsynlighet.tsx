@@ -4,7 +4,7 @@ import { tabStyles } from '../style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../../style';
 import { SannsynlighetTable } from './SannsynlighetTable';
-import { pluginTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabPanelSannsynlighetProps {
@@ -19,7 +19,7 @@ export const TabPanelSannsynlighet = ({
 }: TabPanelSannsynlighetProps) => {
   const { tabPanel } = tabStyles();
   const { headerSubtitle } = useFontStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleChange = (value: number) => {
     setSannsynlighet(value);

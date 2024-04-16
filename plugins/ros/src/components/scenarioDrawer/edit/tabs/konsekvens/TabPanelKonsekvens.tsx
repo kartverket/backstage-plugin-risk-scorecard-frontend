@@ -4,7 +4,7 @@ import { PickerTable } from './KonsekvensTable';
 import { tabStyles } from '../style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../../style';
-import { pluginTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabPanelKonsekvensProps {
@@ -18,7 +18,7 @@ export const TabPanelKonsekvens = ({
 }: TabPanelKonsekvensProps) => {
   const { tabPanel } = tabStyles();
   const { headerSubtitle } = useFontStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <TabPanel className={tabPanel} value="konsekvens">

@@ -15,7 +15,7 @@ import Alert from '@mui/material/Alert';
 import { useRosDialogStyles } from '../../rosDialog/rosDialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 
 interface ROSPublisDialogProps {
   openDialog: boolean;
@@ -29,7 +29,7 @@ const ROSPublishDialog = ({
   handlePublish,
 }: ROSPublisDialogProps): ReactComponentElement<any> => {
   const classes = useRosDialogStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [userIsRisikoEierAndApproves, setUserIsRisikoEierAndApproves] =
     useState<boolean>(false);
 
@@ -92,7 +92,7 @@ export const ROSStatusComponent = ({
   publishRosFn,
 }: ROSStatusProps) => {
   const statusComponentClasses = useButtonStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [publishROSDialogIsOpen, setPublishROSDialogIsOpen] =
     useState<boolean>(false);

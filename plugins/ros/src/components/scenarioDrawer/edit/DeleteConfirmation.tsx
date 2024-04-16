@@ -1,14 +1,14 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 import React, { useContext } from 'react';
 import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
-import { pluginTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export const DeleteConfirmation = () => {
   const { deleteConfirmationIsOpen, abortDeletion, confirmDeletion } =
     useContext(ScenarioContext)!!;
 
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Dialog open={deleteConfirmationIsOpen}>
