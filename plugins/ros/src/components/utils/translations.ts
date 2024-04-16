@@ -19,10 +19,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
       edit: 'Edit',
       estimatedRisk: 'Estimated risk',
       initialRisk: 'Initial risk', // Starting risk or Initial risk
-      measure: 'Measure', // Measure, Action or Initiative
+      measure: 'Initiative', // Measure, Action or Initiative
       measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
       probability: 'Probability', // Likelihood or Probability
-      restRisk: 'Remaining risk', // Residual or Remaining risk
+      restRisk: 'Remaining risk', // TODO Residual or Remaining risk
       risk: 'Risk',
       save: 'Save',
       scope: 'Scope',
@@ -44,14 +44,14 @@ export const pluginRiScTranslationRef = createTranslationRef({
     publishDialog: {
       title: 'Accept risks', // Godkjenn ROS
       checkboxLabel:
-        'I confirm that I am the risk owner and accept the risks in this risk score card.',
+        'I confirm that I am the risk owner and accept the risks detailed in this risk score card.',
       // Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne risiko- og sårbarhetsanalysen.
     },
     scenarioTable: {
       title: 'Risk scenarios',
       addScenarioButton: 'Add risk scenario',
       columns: {
-        measuresCount: 'Number of measures',
+        measuresCount: 'No. of measures',
         consequenceChar: 'C',
         probabilityChar: 'P',
         completed: 'completed',
@@ -87,101 +87,102 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'kostnad for Kartverket. Kostnaden er m.a.o. et forsøk på å' +
         'konkretisere verdien av risiko og er summen av den estimerte' +
         'risikoen for alle risikoscenariene i denne ROS-analysen.',
-      calculatedHowTitle: 'Hvordan regner vi ut estimert risiko?',
+      calculatedHowTitle: 'How do we calculate the estimated risk?',
       calculatedHow:
-        'Konsekvensen måles i kroner per hendelse og sannsynlighet måles i hendelser per år.' +
-        'Den estimerte risikoen blir da: K x S.',
-      consequenceTitle: 'Konsekvens (kr/hendelse)',
-      probabilityTitle: 'Sannsynlighet (hendelser/år)',
+        'Consequence is measured in kroner (NOK) per incident and probability is measured in incidents per year.' +
+        'The estimated risk then becomes: C x P.',
+      consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
+      probabilityTitle: 'Probability (incidents/year)',
       probabilityDescription: {
-        '0': 'ca hvert 100. år',
-        '1': 'ca hvert 10. år',
-        '2': 'ca årlig',
-        '3': 'ca ukentlig',
-        '4': 'ca daglig',
+        '0': 'every 100 years', // 100 year intervals
+        '1': 'every 10 years', // 10 year intervals
+        '2': 'yearly', // almost yearly?
+        '3': 'weekly',
+        '4': 'daily',
       },
       example:
-        'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på' +
-        '30 000 kr / hendelse x 50 hendelser / år = 1 500 000 kr/år.',
+        'A scenario with consequence 2 and probability 4 has an estimated risk of' +
+        '30 000 NOK/incident x 50 incidents/year = 1 500 000 NOK/year.',
     },
     rosDialog: {
       titleNew: 'New risk score card', // Ny risiko- og sårbarhetsanalyse
       titleEdit: 'Edit risk score card', // Rediger ROS-analyse
-      titleError: 'The score card must have a title', // TODO
+      titleError: 'The score card has to have a title', 
       scopeDescription:
-        'Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.',
-      scopeError: 'The score card must have a description of the scope', // TODO
+        'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
+        // TODO "Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres."
+      scopeError: 'The score card has to have a description of the scope', 
     },
     scenarioDrawer: {
       title: 'Risk scenario',
-      subtitle: 'En uønsket hendelse som potensielt kan ramme systemet',
+      subtitle: 'An unwanted incident that could potentially harm the system.', // harm or affect?
       threatActorSubtitle:
-        'Aktøren som prøver å få tilgang til eller misbruke systemet',
+        'The actor who attempts to access or abuse the system',
       vulnerabilitySubtitle:
-        'Svakhet i systemet som kan utnyttes av trusselaktøren',
+        'Weakness in the system that the threat actor can exploit',
       consequenceTab: {
         subtitle:
-          'Hvor alvorlig er den potensielle konsekvensen i det relevante området?' +
-          'Hvis konsekvensen er relevant for flere områder gjelder det høyeste konsekvensnivået.',
+          'How severe is the potential impact?' + 
+          'If the scenario can impact more than one category, choose the highest level of consequence.',
       },
       probabilityTab: {
         subtitle:
-          'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme.' +
-          'Dersom du er mellom to sannsynlighetsverdier velger du den høyeste.',
+          'How likely is it that this scenario will occur?' +
+          'If you are between two probability values, choose the higher one.',
       },
       measureTab: {
         subtitle:
-          'Hvilke tiltak burde gjøres for å unngå scenarioet?',
+          'What actions should be taken to avoid the scenario?',
         measureOwnerDescription:
-          'De eller den som er ansvarlig for at tiltaket blir gjennomført',
-        addMeasureButton: 'Add measure',
-        existingMeasure: 'Eksisterende tiltak',
-        existingMeasureSubtitle: 'Kort beskrivelse av relevante tiltak som allerede har blitt gjennomført',
+          'The team or person responsible for completing the initiative',
+        addMeasureButton: 'Add initiative',
+        existingMeasure: 'Existing initiatives',
+        existingMeasureSubtitle: 'Brief description of relevant actions that have already been implemented',
       },
       restRiskTab: {
         subtitle:
-          'Sett restrisiko for scenarioet. Restrisiko er konsekvens og sannsynlighet for' +
-          'scenarioet etter at alle tiltak i listen er gjennomført.',
+          'Define the remaining risk for the scenario. Remaining risk is the consequence and probability for this' +
+          'scenario after all initiatives have been completed.',
       },
       deleteScenarioButton: 'Delete scenario',
-      deleteScenarioConfirmation: 'Er du sikker på at du vil slette scenario?',
-      closeConfirmation: 'Vil du lagre endringene dine?',
+      deleteScenarioConfirmation: 'Are you sure you want to delete the scenario?',
+      closeConfirmation: 'Do you want to save your changes?',
     },
     consequenceTable: {
       rows: {
-        '1': 'Ubetydelig',
-        '2': 'Liten',
-        '3': 'Moderat',
-        '4': 'Alvorlig',
-        '5': 'Kritisk',
+        '1': 'Insignificant', // Insignificant, negligible (ubetydelig)
+        '2': 'Small', // Liten
+        '3': 'Moderate', 
+        '4': 'Severe', // Alvorlig
+        '5': 'Critical',
       },
       columns: {
-        health: 'Liv og helse',
-        economical: 'Økonomisk',
-        privacy: 'Personvern',
-        reputation: 'Omdømme og tillit',
+        health: 'Life and health', // Health and safety, Life and limb, Health and lives (Liv og helse)
+        economical: 'Financial', // Financial consequences, economic implications
+        privacy: 'Privacy', // Personvern
+        reputation: 'Reputation and trust', // Reputation and trust, confidence, faith (Omdømme og tillit)
       },
       cells: {
         health: {
-          '1': 'Liv og helse kan ikke være mindre alvorlig enn 3',
-          '2': 'Liv og helse kan ikke være mindre alvorlig enn 3',
-          '3': 'Midlertidig eller mindre alvorlige helsemessige konsekvenser',
-          '4': 'Varige eller alvorlige helsemessige konsekvenser',
-          '5': 'Død eller varige alvorlige helsemssige konsekvenser',
+          '1': 'Life and health cannot be less severe than 3', // Liv og helse kan ikke være mindre alvorlig enn 3
+          '2': 'Life and health cannot be less severe than 3',
+          '3': 'Temporary or less severe health implications', // implications, effects or consequence? Midlertidig eller mindre alvorlige helsemessige konsekvenser
+          '4': 'Permanent or severe health implications', // implications, effects or consequence? Lasting or Permanent? Varige eller alvorlige helsemessige konsekvenser
+          '5': 'Death or permanent severe health implications', // implications, effects or consequence? Lasting or permanent? Død eller varige alvorlige helsemssige konsekvenser
         },
         economical: {
-          '1': 'Forbigående mindre økonomisk tap',
-          '2': 'Forbigående økonomisk tap',
-          '3': 'Økonomisk tap av noe varighet',
-          '4': 'Økonomisk tap av betydelig varighet for Kartverket og evt. tredjeparter',
-          '5': 'Varig og alvorlig økonomisk tap',
+          '1': 'Temporary minor financial loss', // TODO: Hvor kort er forbigående? Forbigående mindre økonomisk tap
+          '2': 'Temporary financial loss', // Forbigående økonomisk tap
+          '3': 'Financial loss of some duration', // Økonomisk tap av noe varighet
+          '4': 'Financial loss of considerable duration for the organization and any third parties', // Økonomisk tap av betydelig varighet for Kartverket og evt. tredjeparter
+          '5': 'Permanent and severe financial loss', // Varig og alvorlig økonomisk tap
         },
         privacy: {
-          '1': 'Retten til personvern utfordres i en svært kort periode og involverer ikke særlige kategorier/sårbare grupper',
-          '2': 'Retten til personvern krenkes i en lengre periode eller involverer særlige kategorier/sårbare grupper',
-          '3': 'Retten til personvern krenkes alvorlig i en lengre periode og involverer særlige kategorier/sårbare grupper',
-          '4': 'Retten til personvern krenkes på en svært alvorlig måte',
-          '5': 'Personvern kan ikke være mer alvorlig enn 4',
+          '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories/vulnerable groups', //særlige kategorier = sensitive kategorier? special/particular/sensitive categories
+          '2': 'The right to privacy is violated for longer periods and involves sensitive categories/vulnerable groups',
+          '3': 'The right to privacy is severely violated for a longer period and involves sensitive categories/vulnerable groups',
+          '4': 'The right to privacy is very severely violated', // The right to privacy is being violated in a very serious manner
+          '5': 'Privacy cannot be more severe than 4',
         },
         reputation: {
           '1': 'Midlertidig omdømmetap og liten innvirkning på tillit',
