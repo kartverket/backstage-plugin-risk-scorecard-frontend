@@ -17,8 +17,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       description: 'Description',
       discardChanges: 'Discard changes',
       edit: 'Edit',
-      estimatedRisk: 'Estimated risk',
-      initialRisk: 'Initial risk', // Starting risk or Initial risk
+      estimatedRisk: 'Estimated risk', 
+      initialRisk: 'Initial risk', // TODO Starting or Initial risk
       measure: 'Initiative', // Measure, Action or Initiative
       measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
       probability: 'Probability', // Likelihood or Probability
@@ -34,7 +34,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     rosStatus: {
       statusBadge: {
         // Approve/Approval eller Accept/Acceptance?? (Approval brukes i Github så kanskje fint å skille)
-        missing: 'Risk owner acceptance missing', // Mangler godkjenning av risikoeier
+        missing: 'Needs acceptance from risk owner', // Mangler godkjenning av risikoeier
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
       },
@@ -49,9 +49,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     scenarioTable: {
       title: 'Risk scenarios',
-      addScenarioButton: 'Add risk scenario',
+      addScenarioButton: 'Add scenario',
       columns: {
-        measuresCount: 'No. of measures',
+        measuresCount: 'No. of initiatives',
         consequenceChar: 'C',
         probabilityChar: 'P',
         completed: 'completed',
@@ -84,19 +84,19 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'The estimated risk is a calculation based on the risks the different scenarios pose. If there is a high probability that a serious consequence will occur, this could potentially become a large cost for the organization. In other words, the cost is an attempt to concretize the risk value and is the sum of the estimated risk for all the risk scenarios in this risk score card.',
       calculatedHowTitle: 'How do we calculate the estimated risk?',
       calculatedHow:
-        'Consequence is measured in kroner (NOK) per incident and probability is measured in incidents per year.' +
-        'The estimated risk then becomes: C x P.',
-      consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
+        'Consequence is measured in kroner (NOK) per incident and probability is measured in incidents per year. ' +
+        'The estimated risk is defined by C x P.',
+      consequenceTitle: 'Consequence (NOK/incident)', // TODO incident, event or occurrence
       probabilityTitle: 'Probability (incidents/year)',
       probabilityDescription: {
-        '0': 'every 100 years', // 100 year intervals
-        '1': 'every 10 years', // 10 year intervals
+        '0': 'every 100 years', // TODO 100 year intervals
+        '1': 'every 10 years', // TODO 10 year intervals
         '2': 'yearly', // almost yearly?
         '3': 'weekly',
         '4': 'daily',
       },
       example:
-        'A scenario with consequence 2 and probability 4 has an estimated risk of' +
+        'A scenario with consequence 2 and probability 4 has an estimated risk of ' +
         '30 000 NOK/incident x 50 incidents/year = 1 500 000 NOK/year.',
     },
     rosDialog: {
@@ -105,7 +105,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
       titleError: 'The score card has to have a title', 
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
-        // TODO "Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres."
       scopeError: 'The score card has to have a description of the scope', 
     },
     scenarioDrawer: {
@@ -117,19 +116,19 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'Weakness in the system that the threat actor can exploit',
       consequenceTab: {
         subtitle:
-          'How severe is the potential impact?' + 
+          'How severe is the potential impact? ' + 
           'If the scenario can impact more than one category, choose the highest level of consequence.',
       },
       probabilityTab: {
         subtitle:
-          'How likely is it that this scenario will occur?' +
+          'How likely is it that this scenario will occur? ' +
           'If you are between two probability values, choose the higher one.',
       },
       measureTab: {
         subtitle:
           'What actions should be taken to avoid the scenario?',
         measureOwnerDescription:
-          'The team or person responsible for completing the initiative',
+          'Decide who will be responsible for completing the initiative',
         addMeasureButton: 'Add initiative',
         plannedMeasures: 'Planned initiatives',
         existingMeasure: 'Existing initiatives',
