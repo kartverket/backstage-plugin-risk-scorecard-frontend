@@ -10,7 +10,7 @@ import TabContext from '@material-ui/lab/TabContext';
 import { Tabs } from './Tabs';
 import { riskMatrix } from '../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];
@@ -27,7 +27,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
 
   const [tab, setTab] = useState('startrisiko');
 
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <InfoCard title="Risikomatrise">

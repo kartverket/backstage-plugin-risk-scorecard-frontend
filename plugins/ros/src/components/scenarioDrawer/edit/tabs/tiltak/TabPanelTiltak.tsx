@@ -19,7 +19,7 @@ import {
 } from '../../../../utils/utilityfunctions';
 import { useFontStyles } from '../../../style';
 import Divider from '@mui/material/Divider';
-import { pluginTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabPanelTiltakProps {
@@ -60,7 +60,7 @@ export const TabPanelTiltak = ({
   const { tabPanel } = tabStyles();
 
   const { body2, headerSubtitle, tiltakSubtitle } = useFontStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <TabPanel value="tiltak" className={tabPanel}>

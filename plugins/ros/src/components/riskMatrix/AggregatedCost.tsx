@@ -4,7 +4,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import { ROS } from '../utils/types';
 import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
 import { formatNOK } from '../utils/utilityfunctions';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface AggregatedCostProps {
@@ -35,7 +35,7 @@ export const AggregatedCost = ({ ros, startRisiko }: AggregatedCostProps) => {
 
   const [showDialog, setShowDialog] = useState(false);
   const { outerBox, innerBox } = useStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Box className={outerBox}>
       <Typography>Estimert risiko</Typography>

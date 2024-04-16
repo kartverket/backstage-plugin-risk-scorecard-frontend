@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles, Radio, Theme, Typography } from '@material-ui/core';
-import { pluginTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -44,7 +44,7 @@ export const PickerTable = ({
   handleChange,
 }: PickerTableProps) => {
   const { grid, firstCell, label, cell, voidCell } = useStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleChangeRow = (row: number) => () => {
     handleChange(row);

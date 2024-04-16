@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles, Radio } from '@material-ui/core';
-import { pluginTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 const useStyles = makeStyles({
@@ -40,7 +40,7 @@ export const SannsynlighetTable = ({
   handleChange,
 }: SannsynlighetTableProps) => {
   const classes = useStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleChangeRow = (row: number) => () => {
     handleChange(row);

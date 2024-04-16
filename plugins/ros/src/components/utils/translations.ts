@@ -1,6 +1,6 @@
 import {createTranslationRef, createTranslationResource} from '@backstage/core-plugin-api/alpha';
 
-export const pluginTranslationRef = createTranslationRef({
+export const pluginRiScTranslationRef = createTranslationRef({
   id: 'plugin.ros',
   messages: {
     contentHeader: {
@@ -212,7 +212,7 @@ export const pluginTranslationRef = createTranslationRef({
 });
 
 export const pluginRiScNorwegianTranslation = createTranslationResource({
-  ref: pluginTranslationRef,
+  ref: pluginRiScTranslationRef,
   translations: {
     no: () =>
       Promise.resolve({

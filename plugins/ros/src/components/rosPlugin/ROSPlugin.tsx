@@ -23,7 +23,7 @@ import { ScenarioTable } from '../scenarioTable/ScenarioTable';
 import { Route, Routes } from 'react-router-dom';
 import { rosRouteRef, scenarioRouteRef } from '../../routes';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 export const ROSPlugin = () => {
   return (
@@ -66,7 +66,7 @@ const Plugin = () => {
   const classes = useLoadingStyles();
   const { button } = useFontStyles();
 
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <>

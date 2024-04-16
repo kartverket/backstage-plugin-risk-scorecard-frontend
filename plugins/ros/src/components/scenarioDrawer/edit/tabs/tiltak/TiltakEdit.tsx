@@ -10,7 +10,7 @@ import { AdapterDateFns as ADF } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { nb } from 'date-fns/locale/nb';
 import { useFontStyles, useInputFieldStyles } from '../../../style';
 import FormControl from '@material-ui/core/FormControl';
-import { pluginTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TiltakProps {
@@ -63,7 +63,7 @@ export const TiltakEdit = ({
 
   const { paper, formControl } = useInputFieldStyles();
   const { label, labelSubtitle, button } = useFontStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Paper className={paper}>

@@ -3,7 +3,7 @@ import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import React from 'react';
 import { useTabsStyle } from './tabsStyle';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabsProps {
@@ -12,7 +12,7 @@ interface TabsProps {
 
 export const Tabs = ({ setTab }: TabsProps) => {
   const tabsStyle = useTabsStyle();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
