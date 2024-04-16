@@ -81,12 +81,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     infoDialog: {
       title: 'Estimated risk',
       description:
-        'Den estimerte risikoen er basert på hvor stor risiko de forskjellige' +
-        'scenariene utgjør. Hvis det er stor sannsynlighet for at en alvorlig' +
-        'konsekvens skjer er det høy risiko for at det kan bli en stor' +
-        'kostnad for Kartverket. Kostnaden er m.a.o. et forsøk på å' +
-        'konkretisere verdien av risiko og er summen av den estimerte' +
-        'risikoen for alle risikoscenariene i denne ROS-analysen.',
+        'The estimated risk is a calculation based on the risks the different scenarios pose. If there is a high probability that a serious consequence will occur, this could potentially become a large cost for the organization. In other words, the cost is an attempt to concretize the risk value and is the sum of the estimated risk for all the risk scenarios in this risk score card.',
       calculatedHowTitle: 'How do we calculate the estimated risk?',
       calculatedHow:
         'Consequence is measured in kroner (NOK) per incident and probability is measured in incidents per year.' +
@@ -164,8 +159,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       },
       cells: {
         health: {
-          '1': 'Life and health cannot be less severe than 3', // Liv og helse kan ikke være mindre alvorlig enn 3
-          '2': 'Life and health cannot be less severe than 3',
+          '1': 'Impact on life and health cannot be rated less severe than 3', // Liv og helse kan ikke være mindre alvorlig enn 3
+          '2': 'Impact on life and health cannot be rated less severe than 3',
           '3': 'Temporary or less severe health implications', // implications, effects or consequence? Midlertidig eller mindre alvorlige helsemessige konsekvenser
           '4': 'Permanent or severe health implications', // implications, effects or consequence? Lasting or Permanent? Varige eller alvorlige helsemessige konsekvenser
           '5': 'Death or permanent severe health implications', // implications, effects or consequence? Lasting or permanent? Død eller varige alvorlige helsemssige konsekvenser
@@ -178,35 +173,35 @@ export const pluginRiScTranslationRef = createTranslationRef({
           '5': 'Permanent and severe financial loss', // Varig og alvorlig økonomisk tap
         },
         privacy: {
-          '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories/vulnerable groups', //særlige kategorier = sensitive kategorier? special/particular/sensitive categories
-          '2': 'The right to privacy is violated for longer periods and involves sensitive categories/vulnerable groups',
-          '3': 'The right to privacy is severely violated for a longer period and involves sensitive categories/vulnerable groups',
-          '4': 'The right to privacy is very severely violated', // The right to privacy is being violated in a very serious manner
-          '5': 'Privacy cannot be more severe than 4',
+          '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', //særlige kategorier = sensitive kategorier? special/particular/sensitive categories
+          '2': 'The right to privacy is violated for a longer period and involves sensitive categories or vulnerable groups',
+          '3': 'The right to privacy is severely violated for a longer period and involves sensitive categories or vulnerable groups',
+          '4': 'The right to privacy is being violated in a very serious manner', // very severely violated?
+          '5': 'Impact on privacy cannot be rated more severe than 4',
         },
         reputation: {
-          '1': 'Midlertidig omdømmetap og liten innvirkning på tillit',
-          '2': 'Negative saker i nasjonale medier som kan redusere tillit',
-          '3': 'Varig negativ oppmerksomhet i nasjonale og internasjonale medier som kan redusere tillit',
-          '4': 'Omdømme og tillit kan ikke være mer alvorlig enn 3',
-          '5': 'Omdømme og tillit kan ikke være mer alvorlig enn 3',
+          '1': 'Temporary loss of reputation and little impact on trust',
+          '2': 'Negative attention in national media that can reduce trust', // TODO saker = articles, news, items, publicity, mentions, attention
+          '3': 'Lasting negative attention in national and international media that can reduce trust',
+          '4': 'Impact on reputation and trust cannot be rated more severe than 3',
+          '5': 'Impact on reputation and trust cannot be rated more severe than 3',
         },
       },
     },
     probabilityTable: {
       rows: {
-        '1': 'Svært liten',
-        '2': 'Liten',
-        '3': 'Moderat',
-        '4': 'Stor',
-        '5': 'Svært stor',
+        '1': 'Very low', // svært liten
+        '2': 'Low', // liten
+        '3': 'Moderat', // moderat 
+        '4': 'High', // stor
+        '5': 'Very high', // svært stor
       },
       cells: {
-        '1': 'Scenarioet er usannsynlig å inntreffe. Det inntreffer sjeldnere enn hvert 100. år',
-        '2': 'Scenarioet er lite sannsynlig å inntreffe. Det kan inntreffe hvert 10. år',
-        '3': 'Scenarioet kan inntreffe. Det kan inntreffe nærmest årlig',
-        '4': 'Scenarioet vil med stor sannsynlighet inntreffe. Det kan inntreffe nærmest ukentlig',
-        '5': 'Scenarioet er nesten garantert å inntreffe. Det kan inntreffe nærmest daglig',
+        '1': 'The scenario is unlikely to occur. It occurs less often than every 100 years',
+        '2': 'The scenario is unlikely to occur. It can occur every 10 years',
+        '3': 'The scenario can occur. It can occur almost every year',
+        '4': 'The scenario will very likely occur. It can occur almost weekly',
+        '5': 'The scenario is almost guaranteed to occur. It can occur almost daily',
       },
     },
   },
