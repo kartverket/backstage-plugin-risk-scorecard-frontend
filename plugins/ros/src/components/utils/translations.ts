@@ -38,7 +38,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
       },
-      prStatus: 'Awaiting PR approval', // Avventer godkjenning av PR
+      prStatus: 'Pending PR approval in Github ', // Avventer godkjenning av PR i Github
       approveButton: 'Accept risks', // Godkjenn ROS
     },
     publishDialog: {
@@ -111,7 +111,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       title: 'Risk scenario',
       subtitle: 'An unwanted incident that could potentially harm the system.', // harm or affect?
       threatActorSubtitle:
-        'The actor who attempts to access or abuse the system',
+        'Someone who attempts to access or abuse the system',
       vulnerabilitySubtitle:
         'Weakness in the system that the threat actor can exploit',
       consequenceTab: {
@@ -136,11 +136,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
       },
       restRiskTab: {
         subtitle:
-          'Define the remaining risk for the scenario. Remaining risk is the consequence and probability for this' +
+          'Define the remaining risk for the scenario. Remaining risk is the consequence and probability for this ' +
           'scenario after all initiatives have been completed.',
       },
       deleteScenarioButton: 'Delete scenario',
-      deleteScenarioConfirmation: 'Are you sure you want to delete the scenario?',
+      deleteScenarioConfirmation: 'Are you sure you want to delete this scenario?',
       closeConfirmation: 'Do you want to save your changes?',
     },
     consequenceTable: {
