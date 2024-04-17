@@ -18,11 +18,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
       discardChanges: 'Discard changes',
       edit: 'Edit',
       estimatedRisk: 'Estimated risk', 
-      initialRisk: 'Initial risk', // TODO Starting or Initial risk
+      initialRisk: 'Initial risk', // Starting or Initial risk
       measure: 'Initiative', // Measure, Action or Initiative
-      measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
+      measureOwner: 'Responsible', 
       probability: 'Probability', // Likelihood or Probability
-      restRisk: 'Remaining risk', // TODO Residual or Remaining risk
+      restRisk: 'Remaining risk', // Residual or Remaining risk
       risk: 'Risk',
       save: 'Save',
       scope: 'Scope',
@@ -33,7 +33,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     rosStatus: {
       statusBadge: {
-        // Approve/Approval eller Accept/Acceptance?? (Approval brukes i Github så kanskje fint å skille)
         missing: 'Needs acceptance from risk owner', // Mangler godkjenning av risikoeier
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
@@ -86,7 +85,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       calculatedHow:
         'Consequence is measured in kroner (NOK) per incident and probability is measured in incidents per year. ' +
         'The estimated risk is defined by C x P.',
-      consequenceTitle: 'Consequence (NOK/incident)', // TODO incident, event or occurrence
+      consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
       probabilityTitle: 'Probability (incidents/year)',
       probabilityDescription: {
         '0': 'every 100 years', // TODO 100 year intervals
@@ -100,8 +99,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
         '30 000 NOK/incident x 50 incidents/year = 1 500 000 NOK/year.',
     },
     rosDialog: {
-      titleNew: 'New risk scorecard', // Ny risiko- og sårbarhetsanalyse
-      titleEdit: 'Edit risk scorecard', // Rediger ROS-analyse
+      titleNew: 'New risk scorecard', 
+      titleEdit: 'Edit risk scorecard', 
       titleError: 'The scorecard has to have a title', 
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
