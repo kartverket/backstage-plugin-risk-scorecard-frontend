@@ -407,11 +407,11 @@ export const useScenarioDrawer = (
     });
 
   const setEksisterendeTiltak = (eksisterendeTiltak: string) => {
-      setScenario({
-        ...scenario,
-        eksisterendeTiltak: eksisterendeTiltak
-      });
-  }
+    setScenario({
+      ...scenario,
+      eksisterendeTiltak: eksisterendeTiltak,
+    });
+  };
 
   const addTiltak = () =>
     setScenario({ ...scenario, tiltak: [...scenario.tiltak, emptyTiltak()] });
@@ -597,9 +597,11 @@ export const useFetchRoses = (
         isRequiresNewApproval: isRequiresNewApproval,
         schemaVersion: ros.skjemaVersjon,
       };
-      setSelectedROS(updatedROS);
-      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
-      putROS(updatedROS);
+
+      putROS(updatedROS, () => {
+        setSelectedROS(updatedROS);
+        setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      });
     }
   };
 
