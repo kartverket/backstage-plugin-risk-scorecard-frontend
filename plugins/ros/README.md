@@ -1,4 +1,4 @@
-# RiSc
+# Risk Scorecard (RiSc)
 
 This is a plugin for Backstage that helps you and your team when working continuously with your risk analyses (:))
 The plugin is dependent on a backend service in order to decrypt and communicate with GitHub, and some configuration is

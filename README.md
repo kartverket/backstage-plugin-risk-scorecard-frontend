@@ -38,7 +38,7 @@ We have set up a catalog of entities for this project, which fetches:
 Components (kind: Component) are fetched from Github, where discovery is set up towards the ["spire-test"](https://github.com/spire-test) organization. 
 Here, all information from repositories defined in `catalog.providers.github` in `app-config.yaml` is fetched. 
 
-This is an example of our github discovery config. Here, we fetch all entities from the main branch of repositories beginning with `kv-ros` and search for the definition (OF WHAT?) set in the file called `.security/catalog-info.yaml`.
+This is an example of our github discovery config. Here, we fetch all entities from the main branch of repositories beginning with `kv-ros` and search for the definition set in the file called `.security/catalog-info.yaml`.
 To use this, we add an `entityProvider` in `catalog.ts`.
 
 
@@ -98,7 +98,7 @@ This approach ensures that the user do not gain access to more than they should.
 Note! You have to remember to add all users that take part in the testing of this application to this consent screen.
 
 ## Github
-Login through Github is as of now not used for anything in particular in ros-as-code, but the idea for the future is to have some of the same 
+Login through Github is as of now not used for anything in particular in risk-as-code (Risk Scorecard), but the idea for the future is to have some of the same 
 solution set up as GCP has today. That means that if you have a Github user account and you are signed in, we can fetch the user account's own permissions from Github.
 
 
