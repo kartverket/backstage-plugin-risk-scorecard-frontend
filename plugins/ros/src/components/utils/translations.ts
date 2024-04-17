@@ -4,8 +4,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
   id: 'plugin.ros',
   messages: {
     contentHeader: {
-      title: 'Risk score card',
-      createNewButton: 'Create new score card',
+      title: 'Risk scorecard',
+      createNewButton: 'Create new scorecard',
     },
     dictionary: {
       cancel: 'Cancel',
@@ -44,7 +44,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     publishDialog: {
       title: 'Accept risks', // Godkjenn ROS
       checkboxLabel:
-        'I confirm that I am the risk owner and accept the risks detailed in this risk score card.',
+        'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
       // Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne risiko- og sårbarhetsanalysen.
     },
     scenarioTable: {
@@ -81,7 +81,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     infoDialog: {
       title: 'Estimated risk',
       description:
-        'The estimated risk is a calculation based on the risks the different scenarios pose. If there is a high probability that a serious consequence will occur, this could potentially become a large cost for the organization. In other words, the cost is an attempt to concretize the risk value and is the sum of the estimated risk for all the risk scenarios in this risk score card.',
+        'The estimated risk is a calculation based on the risks the different scenarios pose. If there is a high probability that a serious consequence will occur, this could potentially become a large cost for the organization. In other words, the cost is an attempt to concretize the risk value and is the sum of the estimated risk for all the risk scenarios in this risk scorecard.',
       calculatedHowTitle: 'How do we calculate the estimated risk?',
       calculatedHow:
         'Consequence is measured in kroner (NOK) per incident and probability is measured in incidents per year. ' +
@@ -100,12 +100,12 @@ export const pluginRiScTranslationRef = createTranslationRef({
         '30 000 NOK/incident x 50 incidents/year = 1 500 000 NOK/year.',
     },
     rosDialog: {
-      titleNew: 'New risk score card', // Ny risiko- og sårbarhetsanalyse
-      titleEdit: 'Edit risk score card', // Rediger ROS-analyse
-      titleError: 'The score card has to have a title', 
+      titleNew: 'New risk scorecard', // Ny risiko- og sårbarhetsanalyse
+      titleEdit: 'Edit risk scorecard', // Rediger ROS-analyse
+      titleError: 'The scorecard has to have a title', 
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
-      scopeError: 'The score card has to have a description of the scope', 
+      scopeError: 'The scorecard has to have a description of the scope', 
     },
     scenarioDrawer: {
       title: 'Risk scenario',
