@@ -6,10 +6,7 @@ import { useParams } from 'react-router';
 import { ROSDialog, ROSDialogStates } from '../rosDialog/ROSDialog';
 import { Route, Routes } from 'react-router-dom';
 import { rosRouteRef, scenarioRouteRef } from '../../routes';
-import {
-  ScenarioStepper,
-  ScenarioStepperSteps,
-} from '../scenarioStepper/ScenarioStepper';
+import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
 import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { Button, CircularProgress, Grid, Typography } from '@material-ui/core';
@@ -49,9 +46,6 @@ const Plugin = () => {
   const openEditRosDialog = () => setROSDialogState(ROSDialogStates.Edit);
   const closeRosDialog = () => setROSDialogState(ROSDialogStates.Closed);
 
-  const [scenarioWizardStep, setScenarioWizardStep] =
-    useState<ScenarioStepperSteps | null>(null);
-
   const {
     selectedROS,
     roses,
@@ -84,11 +78,8 @@ const Plugin = () => {
         )}
 
         <Content>
-          {scenarioWizardStep !== null ? (
-            <ScenarioStepper
-              step={scenarioWizardStep}
-              setStep={setScenarioWizardStep}
-            />
+          {scenario.scenarioWizardStep !== null ? (
+            <ScenarioWizard step={scenario.scenarioWizardStep} />
           ) : (
             <>
               <ContentHeader title={t('contentHeader.title')}>

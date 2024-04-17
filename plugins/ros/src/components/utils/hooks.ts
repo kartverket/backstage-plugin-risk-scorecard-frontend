@@ -40,6 +40,7 @@ import {
   rosToDTOString,
 } from './DTOs';
 import { useEffectOnce } from 'react-use';
+import { ScenarioWizardSteps } from '../scenarioWizard/ScenarioWizard';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo => {
   const [, org, repo] =
@@ -191,12 +192,13 @@ const useFetch = () => {
 
 export interface ScenarioDrawerProps {
   scenarioDrawerState: ScenarioDrawerState;
-  editScenario: () => void;
+  scenarioWizardStep: ScenarioWizardSteps | null;
 
   scenario: Scenario;
   originalScenario: Scenario;
   newScenario: () => void;
   saveScenario: () => boolean;
+  editScenario: (step: ScenarioWizardSteps) => void;
 
   openScenario: (id: string) => void;
   closeScenario: () => void;
@@ -244,6 +246,9 @@ export const useScenarioDrawer = (
   const [scenarioDrawerState, setScenarioDrawerState] = useState(
     ScenarioDrawerState.Closed,
   );
+  const [scenarioWizardStep, setScenarioWizardStep] =
+    useState<ScenarioWizardSteps | null>(null);
+
   const [isNewScenario, setIsNewScenario] = useState(false);
   const [scenario, setScenario] = useState(emptyScenario());
   const [originalScenario, setOriginalScenario] = useState(emptyScenario());
@@ -260,7 +265,8 @@ export const useScenarioDrawer = (
     if (ros) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
-        setScenarioDrawerState(ScenarioDrawerState.Closed);
+        // setScenarioDrawerState(ScenarioDrawerState.Closed);
+        setScenarioWizardStep(null);
         const s = emptyScenario();
         setScenario(s);
         setOriginalScenario(s);
@@ -269,7 +275,8 @@ export const useScenarioDrawer = (
       }
 
       if (isNewScenario) {
-        setScenarioDrawerState(ScenarioDrawerState.Edit);
+        // setScenarioDrawerState(ScenarioDrawerState.Edit);
+        setScenarioWizardStep('scenario');
         return;
       }
 
@@ -305,7 +312,10 @@ export const useScenarioDrawer = (
     }
   };
 
-  const editScenario = () => setScenarioDrawerState(ScenarioDrawerState.Edit);
+  const editScenario = (step: ScenarioWizardSteps) => {
+    setScenarioDrawerState(ScenarioDrawerState.Closed);
+    setScenarioWizardStep(step);
+  };
 
   const saveScenario = () => {
     if (ros) {
@@ -407,11 +417,11 @@ export const useScenarioDrawer = (
     });
 
   const setEksisterendeTiltak = (eksisterendeTiltak: string) => {
-      setScenario({
-        ...scenario,
-        eksisterendeTiltak: eksisterendeTiltak
-      });
-  }
+    setScenario({
+      ...scenario,
+      eksisterendeTiltak: eksisterendeTiltak,
+    });
+  };
 
   const addTiltak = () =>
     setScenario({ ...scenario, tiltak: [...scenario.tiltak, emptyTiltak()] });
@@ -433,6 +443,7 @@ export const useScenarioDrawer = (
 
   return {
     scenarioDrawerState,
+    scenarioWizardStep,
 
     scenario,
     originalScenario,

@@ -1,4 +1,7 @@
-import {createTranslationRef, createTranslationResource} from '@backstage/core-plugin-api/alpha';
+import {
+  createTranslationRef,
+  createTranslationResource,
+} from '@backstage/core-plugin-api/alpha';
 
 export const pluginRiScTranslationRef = createTranslationRef({
   id: 'plugin.ros',
@@ -17,14 +20,17 @@ export const pluginRiScTranslationRef = createTranslationRef({
       description: 'Description',
       discardChanges: 'Discard changes',
       edit: 'Edit',
-      estimatedRisk: 'Estimated risk', 
+      estimatedRisk: 'Estimated risk',
       initialRisk: 'Initial risk', // TODO Starting or Initial risk
       measure: 'Initiative', // Measure, Action or Initiative
       measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
+      next: 'Next',
+      previous: 'Previous',
       probability: 'Probability', // Likelihood or Probability
       restRisk: 'Remaining risk', // TODO Residual or Remaining risk
       risk: 'Risk',
       save: 'Save',
+      saveAndClose: 'Save and close',
       scope: 'Scope',
       status: 'Status',
       threatActors: 'Threat actors',
@@ -102,10 +108,22 @@ export const pluginRiScTranslationRef = createTranslationRef({
     rosDialog: {
       titleNew: 'New risk score card', // Ny risiko- og sårbarhetsanalyse
       titleEdit: 'Edit risk score card', // Rediger ROS-analyse
-      titleError: 'The score card has to have a title', 
+      titleError: 'The score card has to have a title',
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
-      scopeError: 'The score card has to have a description of the scope', 
+      scopeError: 'The score card has to have a description of the scope',
+    },
+    scenarioStepper: {
+      initialRiskStep: {
+        title: 'Initial risk',
+        subtitle: 'FYLL INN HER',
+      },
+      restRiskStep: {
+        title: 'Remaining risk',
+        subtitle: 'FYLL INN HER',
+        consequenceSubtitle: 'FYLL INN HER',
+        probabilitySubtitle: 'FYLL INN HER',
+      },
     },
     scenarioDrawer: {
       title: 'Risk scenario',
@@ -116,7 +134,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'Weakness in the system that the threat actor can exploit',
       consequenceTab: {
         subtitle:
-          'How severe is the potential impact? ' + 
+          'How severe is the potential impact? ' +
           'If the scenario can impact more than one category, choose the highest level of consequence.',
       },
       probabilityTab: {
@@ -125,14 +143,14 @@ export const pluginRiScTranslationRef = createTranslationRef({
           'If you are between two probability values, choose the higher one.',
       },
       measureTab: {
-        subtitle:
-          'What actions should be taken to avoid the scenario?',
+        subtitle: 'What actions should be taken to avoid the scenario?',
         measureOwnerDescription:
           'Decide who will be responsible for completing the initiative',
         addMeasureButton: 'Add initiative',
         plannedMeasures: 'Planned initiatives',
         existingMeasure: 'Existing initiatives',
-        existingMeasureSubtitle: 'Brief description of relevant actions that have already been implemented',
+        existingMeasureSubtitle:
+          'Brief description of relevant actions that have already been implemented',
       },
       restRiskTab: {
         subtitle:
@@ -140,14 +158,15 @@ export const pluginRiScTranslationRef = createTranslationRef({
           'scenario after all initiatives have been completed.',
       },
       deleteScenarioButton: 'Delete scenario',
-      deleteScenarioConfirmation: 'Are you sure you want to delete the scenario?',
+      deleteScenarioConfirmation:
+        'Are you sure you want to delete the scenario?',
       closeConfirmation: 'Do you want to save your changes?',
     },
     consequenceTable: {
       rows: {
         '1': 'Insignificant', // Insignificant, negligible (ubetydelig)
         '2': 'Small', // Liten
-        '3': 'Moderate', 
+        '3': 'Moderate',
         '4': 'Severe', // Alvorlig
         '5': 'Critical',
       },
@@ -192,7 +211,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       rows: {
         '1': 'Very low', // svært liten
         '2': 'Low', // liten
-        '3': 'Moderat', // moderat 
+        '3': 'Moderat', // moderat
         '4': 'High', // stor
         '5': 'Very high', // svært stor
       },
@@ -228,10 +247,13 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.initialRisk': 'Startrisiko',
           'dictionary.measure': 'Tiltak',
           'dictionary.measureOwner': 'Tiltakseier',
+          'dictionary.next': 'Neste',
+          'dictionary.previous': 'Forrige',
           'dictionary.probability': 'Sannsynlighet',
           'dictionary.restRisk': 'Restrisiko',
           'dictionary.risk': 'Risiko',
           'dictionary.save': 'Lagre',
+          'dictionary.saveAndClose': 'Lagre og lukk',
           'dictionary.scope': 'Omfang',
           'dictionary.status': 'Status',
           'dictionary.threatActors': 'Trusselaktører',
@@ -243,7 +265,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.prStatus': 'Avventer godkjenning av PR',
           'rosStatus.approveButton': 'Godkjenn ROS',
           'publishDialog.title': 'Godkjenn ROS',
-          'publishDialog.checkboxLabel': 'Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne risiko- og sårbarhetsanalysen.',
+          'publishDialog.checkboxLabel':
+            'Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne risiko- og sårbarhetsanalysen.',
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til risikoscenario',
           'scenarioTable.columns.measuresCount': 'Antall tiltak',
@@ -254,17 +277,23 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',
           'riskMatrix.estimatedRisk.suffix.thousand': '{{count}} tusen',
           'riskMatrix.estimatedRisk.suffix.million_one': '{{count}} million',
-          'riskMatrix.estimatedRisk.suffix.million_other': '{{count}} millioner',
+          'riskMatrix.estimatedRisk.suffix.million_other':
+            '{{count}} millioner',
           'riskMatrix.estimatedRisk.suffix.billion_one': '{{count}} milliard',
-          'riskMatrix.estimatedRisk.suffix.billion_other': '{{count}} milliarder',
+          'riskMatrix.estimatedRisk.suffix.billion_other':
+            '{{count}} milliarder',
           'riskMatrix.estimatedRisk.suffix.trillion_one': '{{count}} billion',
-          'riskMatrix.estimatedRisk.suffix.trillion_other': '{{count}} billioner',
+          'riskMatrix.estimatedRisk.suffix.trillion_other':
+            '{{count}} billioner',
           'riskMatrix.estimatedRisk.unit.nokPerYear': 'kr / år',
           'riskMatrix.tooltip.title': 'Risikoscenarioer',
           'infoDialog.title': 'Estimert risiko',
-          'infoDialog.description': 'Den estimerte risikoen er basert på hvor stor risiko de forskjellige scenariene utgjør. Hvis det er stor sannsynlighet for at en alvorlig konsekvens skjer er det høy risiko for at det kan bli en stor kostnad for Kartverket. Kostnaden er m.a.o. et forsøk på å konkretisere verdien av risiko og er summen av den estimerte risikoen for alle risikoscenariene i denne ROS-analysen.',
-          'infoDialog.calculatedHowTitle': 'Hvordan regner vi ut estimert risiko?',
-          'infoDialog.calculatedHow': 'Konsekvensen måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: K x S.',
+          'infoDialog.description':
+            'Den estimerte risikoen er basert på hvor stor risiko de forskjellige scenariene utgjør. Hvis det er stor sannsynlighet for at en alvorlig konsekvens skjer er det høy risiko for at det kan bli en stor kostnad for Kartverket. Kostnaden er m.a.o. et forsøk på å konkretisere verdien av risiko og er summen av den estimerte risikoen for alle risikoscenariene i denne ROS-analysen.',
+          'infoDialog.calculatedHowTitle':
+            'Hvordan regner vi ut estimert risiko?',
+          'infoDialog.calculatedHow':
+            'Konsekvensen måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: K x S.',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
           'infoDialog.probabilityDescription.0': 'ca hvert 100. år',
@@ -272,27 +301,49 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.probabilityDescription.2': 'ca årlig',
           'infoDialog.probabilityDescription.3': 'ca ukentlig',
           'infoDialog.probabilityDescription.4': 'ca daglig',
-          'infoDialog.example': 'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr / hendelse x 50 hendelser / år = 1 500 000 kr/år.',
+          'infoDialog.example':
+            'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr / hendelse x 50 hendelser / år = 1 500 000 kr/år.',
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger ROS-analyse',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
-          'rosDialog.scopeDescription': 'Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.',
+          'rosDialog.scopeDescription':
+            'Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.',
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
+          'scenarioStepper.initialRiskStep.title': 'Startrisiko',
+          'scenarioStepper.initialRiskStep.subtitle':
+            'Risikoen er kombinasjonen av konsekvensen av scenarioet og sannsynligheten for at det inntreffer.',
+          'scenarioStepper.restRiskStep.title': 'Restrisiko',
+          'scenarioStepper.restRiskStep.subtitle':
+            'Hvordan endrer risikoen seg fra startrisikoen etter alle tiltakene er fullført?',
+          'scenarioStepper.restRiskStep.consequenceSubtitle':
+            'Hva blir konsekvensen etter alle tiltakene er fullført?',
+          'scenarioStepper.restRiskStep.probabilitySubtitle':
+            'Hva blir sannsynligheten etter alle tiltakene er fullført?',
           'scenarioDrawer.title': 'Risikoscenario',
-          'scenarioDrawer.subtitle': 'En uønsket hendelse som potensielt kan ramme systemet',
-          'scenarioDrawer.threatActorSubtitle': 'Aktøren som prøver å få tilgang til eller misbruke systemet',
-          'scenarioDrawer.vulnerabilitySubtitle': 'Svakhet i systemet som kan utnyttes av trusselaktøren',
-          'scenarioDrawer.consequenceTab.subtitle': 'Hvor alvorlig er den potensielle konsekvensen i det relevante området? Hvis konsekvensen er relevant for flere områder gjelder det høyeste konsekvensnivået.',
-          'scenarioDrawer.probabilityTab.subtitle': 'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velger du den høyeste.',
-          'scenarioDrawer.measureTab.subtitle': 'Hvilke tiltak burde gjøres for å unngå scenarioet?',
-          'scenarioDrawer.measureTab.measureOwnerDescription': 'De eller den som er ansvarlig for at tiltaket blir gjennomført',
+          'scenarioDrawer.subtitle':
+            'En uønsket hendelse som potensielt kan ramme systemet',
+          'scenarioDrawer.threatActorSubtitle':
+            'Aktøren som prøver å få tilgang til eller misbruke systemet',
+          'scenarioDrawer.vulnerabilitySubtitle':
+            'Svakhet i systemet som kan utnyttes av trusselaktøren',
+          'scenarioDrawer.consequenceTab.subtitle':
+            'Hvor alvorlig er den potensielle konsekvensen i det relevante området? Hvis konsekvensen er relevant for flere områder gjelder det høyeste konsekvensnivået.',
+          'scenarioDrawer.probabilityTab.subtitle':
+            'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velger du den høyeste.',
+          'scenarioDrawer.measureTab.subtitle':
+            'Hvilke tiltak burde gjøres for å unngå scenarioet?',
+          'scenarioDrawer.measureTab.measureOwnerDescription':
+            'De eller den som er ansvarlig for at tiltaket blir gjennomført',
           'scenarioDrawer.measureTab.addMeasureButton': 'Legg til tiltak',
           'scenarioDrawer.measureTab.plannedMeasures': 'Planlagte tiltak',
           'scenarioDrawer.measureTab.existingMeasure': 'Eksisterende tiltak',
-          'scenarioDrawer.measureTab.existingMeasureSubtitle': 'Kort beskrivelse av relevante tiltak som allerede har blitt gjennomført',
-          'scenarioDrawer.restRiskTab.subtitle': 'Sett restrisiko for scenarioet. Restrisiko er konsekvens og sannsynlighet for scenarioet etter at alle tiltak i listen er gjennomført.',
+          'scenarioDrawer.measureTab.existingMeasureSubtitle':
+            'Kort beskrivelse av relevante tiltak som allerede har blitt gjennomført',
+          'scenarioDrawer.restRiskTab.subtitle':
+            'Sett restrisiko for scenarioet. Restrisiko er konsekvens og sannsynlighet for scenarioet etter at alle tiltak i listen er gjennomført.',
           'scenarioDrawer.deleteScenarioButton': 'Slett scenario',
-          'scenarioDrawer.deleteScenarioConfirmation': 'Er du sikker på at du vil slette scenario?',
+          'scenarioDrawer.deleteScenarioConfirmation':
+            'Er du sikker på at du vil slette scenario?',
           'scenarioDrawer.closeConfirmation': 'Vil du lagre endringene dine?',
           'consequenceTable.rows.1': 'Ubetydelig',
           'consequenceTable.rows.2': 'Liten',
@@ -303,37 +354,61 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.columns.economical': 'Økonomisk',
           'consequenceTable.columns.privacy': 'Personvern',
           'consequenceTable.columns.reputation': 'Omdømme og tillit',
-          'consequenceTable.cells.health.1': 'Liv og helse kan ikke være mindre alvorlig enn 3',
-          'consequenceTable.cells.health.2': 'Liv og helse kan ikke være mindre alvorlig enn 3',
-          'consequenceTable.cells.health.3': 'Midlertidig eller mindre alvorlige helsemessige konsekvenser',
-          'consequenceTable.cells.health.4': 'Varige eller alvorlige helsemessige konsekvenser',
-          'consequenceTable.cells.health.5': 'Død eller varige alvorlige helsemssige konsekvenser',
-          'consequenceTable.cells.economical.1': 'Forbigående mindre økonomisk tap',
+          'consequenceTable.cells.health.1':
+            'Liv og helse kan ikke være mindre alvorlig enn 3',
+          'consequenceTable.cells.health.2':
+            'Liv og helse kan ikke være mindre alvorlig enn 3',
+          'consequenceTable.cells.health.3':
+            'Midlertidig eller mindre alvorlige helsemessige konsekvenser',
+          'consequenceTable.cells.health.4':
+            'Varige eller alvorlige helsemessige konsekvenser',
+          'consequenceTable.cells.health.5':
+            'Død eller varige alvorlige helsemssige konsekvenser',
+          'consequenceTable.cells.economical.1':
+            'Forbigående mindre økonomisk tap',
           'consequenceTable.cells.economical.2': 'Forbigående økonomisk tap',
-          'consequenceTable.cells.economical.3': 'Økonomisk tap av noe varighet',
-          'consequenceTable.cells.economical.4': 'Økonomisk tap av betydelig varighet for Kartverket og evt. tredjeparter',
-          'consequenceTable.cells.economical.5': 'Varig og alvorlig økonomisk tap',
-          'consequenceTable.cells.privacy.1': 'Retten til personvern utfordres i en svært kort periode og involverer ikke særlige kategorier/sårbare grupper',
-          'consequenceTable.cells.privacy.2': 'Retten til personvern krenkes i en lengre periode eller involverer særlige kategorier/sårbare grupper',
-          'consequenceTable.cells.privacy.3': 'Retten til personvern krenkes alvorlig i en lengre periode og involverer særlige kategorier/sårbare grupper',
-          'consequenceTable.cells.privacy.4': 'Retten til personvern krenkes på en svært alvorlig måte',
-          'consequenceTable.cells.privacy.5': 'Personvern kan ikke være mer alvorlig enn 4',
-          'consequenceTable.cells.reputation.1': 'Midlertidig omdømmetap og liten innvirkning på tillit',
-          'consequenceTable.cells.reputation.2': 'Negative saker i nasjonale medier som kan redusere tillit',
-          'consequenceTable.cells.reputation.3': 'Varig negativ oppmerksomhet i nasjonale og internasjonale medier som kan redusere tillit',
-          'consequenceTable.cells.reputation.4': 'Omdømme og tillit kan ikke være mer alvorlig enn 3',
-          'consequenceTable.cells.reputation.5': 'Omdømme og tillit kan ikke være mer alvorlig enn 3',
+          'consequenceTable.cells.economical.3':
+            'Økonomisk tap av noe varighet',
+          'consequenceTable.cells.economical.4':
+            'Økonomisk tap av betydelig varighet for Kartverket og evt. tredjeparter',
+          'consequenceTable.cells.economical.5':
+            'Varig og alvorlig økonomisk tap',
+          'consequenceTable.cells.privacy.1':
+            'Retten til personvern utfordres i en svært kort periode og involverer ikke særlige kategorier/sårbare grupper',
+          'consequenceTable.cells.privacy.2':
+            'Retten til personvern krenkes i en lengre periode eller involverer særlige kategorier/sårbare grupper',
+          'consequenceTable.cells.privacy.3':
+            'Retten til personvern krenkes alvorlig i en lengre periode og involverer særlige kategorier/sårbare grupper',
+          'consequenceTable.cells.privacy.4':
+            'Retten til personvern krenkes på en svært alvorlig måte',
+          'consequenceTable.cells.privacy.5':
+            'Personvern kan ikke være mer alvorlig enn 4',
+          'consequenceTable.cells.reputation.1':
+            'Midlertidig omdømmetap og liten innvirkning på tillit',
+          'consequenceTable.cells.reputation.2':
+            'Negative saker i nasjonale medier som kan redusere tillit',
+          'consequenceTable.cells.reputation.3':
+            'Varig negativ oppmerksomhet i nasjonale og internasjonale medier som kan redusere tillit',
+          'consequenceTable.cells.reputation.4':
+            'Omdømme og tillit kan ikke være mer alvorlig enn 3',
+          'consequenceTable.cells.reputation.5':
+            'Omdømme og tillit kan ikke være mer alvorlig enn 3',
           'probabilityTable.rows.1': 'Svært liten',
           'probabilityTable.rows.2': 'Liten',
           'probabilityTable.rows.3': 'Moderat',
           'probabilityTable.rows.4': 'Stor',
           'probabilityTable.rows.5': 'Svært stor',
-          'probabilityTable.cells.1': 'Scenarioet er usannsynlig å inntreffe. Det inntreffer sjeldnere enn hvert 100. år',
-          'probabilityTable.cells.2': 'Scenarioet er lite sannsynlig å inntreffe. Det kan inntreffe hvert 10. år',
-          'probabilityTable.cells.3': 'Scenarioet kan inntreffe. Det kan inntreffe nærmest årlig',
-          'probabilityTable.cells.4': 'Scenarioet vil med stor sannsynlighet inntreffe. Det kan inntreffe nærmest ukentlig',
-          'probabilityTable.cells.5': 'Scenarioet er nesten garantert å inntreffe. Det kan inntreffe nærmest daglig',
+          'probabilityTable.cells.1':
+            'Scenarioet er usannsynlig å inntreffe. Det inntreffer sjeldnere enn hvert 100. år',
+          'probabilityTable.cells.2':
+            'Scenarioet er lite sannsynlig å inntreffe. Det kan inntreffe hvert 10. år',
+          'probabilityTable.cells.3':
+            'Scenarioet kan inntreffe. Det kan inntreffe nærmest årlig',
+          'probabilityTable.cells.4':
+            'Scenarioet vil med stor sannsynlighet inntreffe. Det kan inntreffe nærmest ukentlig',
+          'probabilityTable.cells.5':
+            'Scenarioet er nesten garantert å inntreffe. Det kan inntreffe nærmest daglig',
         },
-    })
-  }
+      }),
+  },
 });

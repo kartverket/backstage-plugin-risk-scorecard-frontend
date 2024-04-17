@@ -46,33 +46,38 @@ export const SannsynlighetTable = ({
     handleChange(row);
   };
 
-  const tr = (row: number) => (
-    <tr>
-      <td className={classes.firstCell}>
-        <div className={classes.label}>
-          {/* @ts-ignore */}
-          {t(`probabilityTable.rows.${row}`)} - {row}
-          <Radio
-            checked={selectedValue === row}
-            onChange={handleChangeRow(row)}
-          />
-        </div>
-      </td>
-      <td className={classes.cell}>
-        {/* @ts-ignore */}
-        {t(`probabilityTable.cells.${row}`)}
-      </td>
-    </tr>
+  const radioCell = (row: number) => (
+    <td className={classes.firstCell}>
+      <Radio checked={selectedValue === row} onChange={handleChangeRow(row)} />
+      {/* @ts-ignore */}
+      {row}: {t(`probabilityTable.rows.${row}`)}
+    </td>
+  );
+
+  const contentCell = (row: number) => (
+    <td className={classes.cell}>
+      {/* @ts-ignore */}
+      {t(`probabilityTable.cells.${row}`)}
+    </td>
   );
 
   return (
     <table className={classes.grid}>
       <tbody>
-        {tr(5)}
-        {tr(4)}
-        {tr(3)}
-        {tr(2)}
-        {tr(1)}
+        <tr>
+          {radioCell(1)}
+          {radioCell(2)}
+          {radioCell(3)}
+          {radioCell(4)}
+          {radioCell(5)}
+        </tr>
+        <tr>
+          {contentCell(1)}
+          {contentCell(2)}
+          {contentCell(3)}
+          {contentCell(4)}
+          {contentCell(5)}
+        </tr>
       </tbody>
     </table>
   );
