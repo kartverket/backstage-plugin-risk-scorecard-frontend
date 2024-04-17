@@ -611,9 +611,11 @@ export const useFetchRoses = (
         ...selectedROS,
         status: RosStatus.SentForApproval,
       };
-      setSelectedROS(updatedROS);
-      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
-      publishROS(selectedROS.id);
+
+      publishROS(selectedROS.id, () => {
+        setSelectedROS(updatedROS);
+        setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      });
     }
   };
 
