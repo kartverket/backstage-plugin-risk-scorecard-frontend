@@ -19,9 +19,12 @@ import {
 } from '../../../../utils/utilityfunctions';
 import { useFontStyles } from '../../../style';
 import Divider from '@mui/material/Divider';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabPanelTiltakProps {
   scenario: Scenario;
+  setEksisterendeTiltak: (eksisterendeTiltak: string) => void;
   updateTiltak: (tiltak: ITiltak) => void;
   deleteTiltak: (tiltak: ITiltak) => void;
   addTiltak: () => void;
@@ -31,6 +34,7 @@ interface TabPanelTiltakProps {
 
 export const TabPanelTiltak = ({
   scenario,
+  setEksisterendeTiltak,
   updateTiltak,
   deleteTiltak,
   addTiltak,
@@ -55,14 +59,25 @@ export const TabPanelTiltak = ({
 
   const { tabPanel } = tabStyles();
 
-  const { body2, headerSubtitle } = useFontStyles();
+  const { body2, headerSubtitle, tiltakSubtitle } = useFontStyles();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <TabPanel value="tiltak" className={tabPanel}>
-      <Typography variant="h5">Tiltak</Typography>
+      <Typography variant="h5">{t('dictionary.measure')}</Typography>
       <Typography className={headerSubtitle}>
-        Hvilke tiltak kan gjøres for å unngå den uønskede hendelsen
+        {t('scenarioDrawer.measureTab.subtitle')}
       </Typography>
+      <Grid item xs={12}>
+        <TextField
+            label={t('scenarioDrawer.measureTab.existingMeasure')}
+            subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
+            value={scenario.eksisterendeTiltak}
+            handleChange={setEksisterendeTiltak}
+            minRows={3}
+        />
+      </Grid>
+      <Typography variant="h6" className={tiltakSubtitle}>{t('scenarioDrawer.measureTab.plannedMeasures')}</Typography>
       {scenario.tiltak.map((tiltak, index) => (
         <TiltakEdit
           tiltak={tiltak}
@@ -78,33 +93,36 @@ export const TabPanelTiltak = ({
         onClick={addTiltak}
         style={{ textTransform: 'none' }}
       >
-        Legg til tiltak
+        {t('scenarioDrawer.measureTab.addMeasureButton')}
       </Button>
 
       <Divider variant="fullWidth" style={{ paddingTop: '1.5rem' }} />
 
       <Grid container style={{ paddingTop: '1.5rem' }} columns={9}>
         <Grid item xs={12}>
-          <Typography variant="h5">Restrisiko</Typography>
+          <Typography variant="h5">{t('dictionary.restRisk')}</Typography>
           <Typography className={headerSubtitle}>
-            Sett restrisiko for scenarioet. Restrisiko er konsekvens og
-            sannsynlighet for scenarioet etter at alle tiltak i listen er
-            gjennomført.
+            {t('scenarioDrawer.restRiskTab.subtitle')}
           </Typography>
         </Grid>
         <Grid item xs={4}>
-          <Typography className={body2}>Startrisiko</Typography>
+          <Typography className={body2}>
+            {t('dictionary.initialRisk')}
+          </Typography>
         </Grid>
         <Grid item xs={1} />
         <Grid item xs={4}>
-          <Typography className={body2}>Restrisiko</Typography>
-        </Grid>
-        <Grid item xs={2}>
-          <TextField label="Konsekvens" value={getKonsekvensLevel(scenario.risiko)} />
+          <Typography className={body2}>{t('dictionary.restRisk')}</Typography>
         </Grid>
         <Grid item xs={2}>
           <TextField
-            label="Sannsynlighet"
+            label={t('dictionary.consequence')}
+            value={getKonsekvensLevel(scenario.risiko)}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            label={t('dictionary.probability')}
             value={getSannsynlighetLevel(scenario.risiko)}
           />
         </Grid>
@@ -113,7 +131,7 @@ export const TabPanelTiltak = ({
         </Grid>
         <Grid item xs={2}>
           <Dropdown<number>
-            label="Konsekvens"
+            label={t('dictionary.consequence')}
             options={options}
             selectedValues={getKonsekvensLevel(scenario.restrisiko)}
             handleChange={setRestKonsekvens}
@@ -121,7 +139,7 @@ export const TabPanelTiltak = ({
         </Grid>
         <Grid item xs={2}>
           <Dropdown<number>
-            label="Sannsynlighet"
+            label={t('dictionary.probability')}
             options={options}
             selectedValues={getSannsynlighetLevel(scenario.restrisiko)}
             handleChange={setRestSannsynlighet}

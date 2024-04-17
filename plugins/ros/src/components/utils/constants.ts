@@ -18,5 +18,3 @@ export const riskMatrix = [
 ];
 
 export const scenarioTittelError = 'Scenarioet må ha en tittel';
-export const rosTittelError = 'ROS-analysen må ha en tittel';
-export const rosOmfangError = 'ROS-analysen må ha et omfang';

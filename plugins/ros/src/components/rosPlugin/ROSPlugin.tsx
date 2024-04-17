@@ -23,6 +23,8 @@ import {
   ContentHeader,
   SupportButton,
 } from '@backstage/core-components';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../utils/translations';
 import { Dropdown } from '../utils/Dropdown';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
@@ -69,6 +71,9 @@ const Plugin = () => {
 
   const classes = useLoadingStyles();
   const { button } = useFontStyles();
+
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
   return (
     <>
       <ScenarioContext.Provider value={scenario}>
@@ -86,7 +91,7 @@ const Plugin = () => {
             />
           ) : (
             <>
-              <ContentHeader title="Risiko- og sårbarhetsanalyse">
+              <ContentHeader title={t('contentHeader.title')}>
                 <SupportButton>Kul plugin ass!</SupportButton>
               </ContentHeader>
 
@@ -117,7 +122,7 @@ const Plugin = () => {
                       onClick={openCreateRosDialog}
                       className={button}
                     >
-                      Opprett ny analyse
+                      {t('contentHeader.createNewButton')}
                     </Button>
                   </Grid>
                 )}

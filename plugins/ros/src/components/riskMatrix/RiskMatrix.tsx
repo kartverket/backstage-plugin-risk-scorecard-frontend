@@ -8,7 +8,9 @@ import { AggregatedCost } from './AggregatedCost';
 import { ROS } from '../utils/types';
 import TabContext from '@material-ui/lab/TabContext';
 import { Tabs } from './Tabs';
-import {riskMatrix} from "../utils/constants";
+import { riskMatrix } from '../utils/constants';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];
@@ -25,8 +27,10 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
 
   const [tab, setTab] = useState('startrisiko');
 
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
   return (
-    <InfoCard title="Risikomatrise">
+    <InfoCard title={t('riskMatrix.title')}>
       <TabContext value={tab}>
         <Tabs setTab={setTab} />
         {ros.scenarier.length > 0 && (
@@ -38,7 +42,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
           <Box className={grid}>
             <Box className={konsekvens}>
               <Typography className={`${centered} ${text}`}>
-                Konsekvens
+                {t('dictionary.consequence')}
               </Typography>
             </Box>
             {indices.map(row => (
@@ -70,7 +74,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
             ))}
             <Box className={sannsynlighet}>
               <Typography className={`${centered} ${text}`}>
-                Sannsynlighet
+                {t('dictionary.probability')}
               </Typography>
             </Box>
           </Box>

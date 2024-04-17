@@ -42,12 +42,14 @@ import {
 import { useEffectOnce } from 'react-use';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo => {
-  const entity = useEntity();
-  const slug =
-    entity.entity.metadata.annotations?.['github.com/project-slug'].split('/');
+  const [, org, repo] =
+    useEntity().entity.metadata.annotations?.['backstage.io/view-url'].match(
+      /github\.com\/([^\/]+)\/([^\/]+)/,
+    ) || [];
+
   return {
-    name: slug ? slug[1] : '',
-    owner: slug ? slug[0] : '',
+    owner: org,
+    name: repo,
   };
 };
 
@@ -73,7 +75,7 @@ const useFetch = () => {
   const microsoftAPI = useApi(microsoftAuthApiRef);
   const googleApi = useApi(googleAuthApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
-  const baseUri = useApi(configApiRef).getString('app.backendUrl');
+  const baseUri = useApi(configApiRef).getString('riskAssessment.baseUrl');
   const rosUri = `${baseUri}/api/ros/${repoInformation.owner}/${repoInformation.name}`;
   const uriToFetchAllRoses = () => `${rosUri}/all`;
   const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
@@ -98,7 +100,7 @@ const useFetch = () => {
       fetchApi(uri, {
         method: method,
         headers: {
-          'Microsoft-Id-Token': microsoftIdToken,
+          Authorization: `Bearer ${microsoftIdToken}`,
           'GCP-Access-Token': googleAccessToken,
           'Content-Type': 'application/json',
         },
@@ -212,6 +214,7 @@ export interface ScenarioDrawerProps {
   setSårbarheter: (sårbarheter: string[]) => void;
   setSannsynlighet: (sannsynlighetLevel: number) => void;
   setKonsekvens: (konsekvensLevel: number) => void;
+  setEksisterendeTiltak: (eksisterendeTiltak: string) => void;
   addTiltak: () => void;
   updateTiltak: (tiltak: Tiltak) => void;
   deleteTiltak: (tiltak: Tiltak) => void;
@@ -403,6 +406,13 @@ export const useScenarioDrawer = (
       },
     });
 
+  const setEksisterendeTiltak = (eksisterendeTiltak: string) => {
+      setScenario({
+        ...scenario,
+        eksisterendeTiltak: eksisterendeTiltak
+      });
+  }
+
   const addTiltak = () =>
     setScenario({ ...scenario, tiltak: [...scenario.tiltak, emptyTiltak()] });
 
@@ -446,6 +456,7 @@ export const useScenarioDrawer = (
     setSårbarheter,
     setSannsynlighet,
     setKonsekvens,
+    setEksisterendeTiltak,
     addTiltak,
     updateTiltak,
     deleteTiltak,
@@ -555,6 +566,7 @@ export const useFetchRoses = (
           id: res.rosId,
           status: RosStatus.Draft,
           content: ros,
+          schemaVersion: ros.skjemaVersjon,
         };
 
         setRoses(roses ? [...roses, newROS] : [newROS]);
@@ -583,6 +595,7 @@ export const useFetchRoses = (
             ? RosStatus.Draft
             : selectedROS.status,
         isRequiresNewApproval: isRequiresNewApproval,
+        schemaVersion: ros.skjemaVersjon,
       };
       setSelectedROS(updatedROS);
       setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));

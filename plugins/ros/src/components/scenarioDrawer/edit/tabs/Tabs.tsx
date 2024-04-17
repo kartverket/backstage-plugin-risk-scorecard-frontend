@@ -1,13 +1,18 @@
 import TabList from '@material-ui/lab/TabList/TabList';
-import {Tab, Typography} from '@material-ui/core';
+import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import React from 'react';
+import { useTabsStyle } from '../../../riskMatrix/tabsStyle';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabsProps {
   setTab: (tab: string) => void;
 }
 
 export const Tabs = ({ setTab }: TabsProps) => {
+  const tabsStyle = useTabsStyle();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <TabList
@@ -18,29 +23,29 @@ export const Tabs = ({ setTab }: TabsProps) => {
         <Tab
           label={
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Konsekvens
+              {t('dictionary.consequence')}
             </Typography>
           }
           value="konsekvens"
-          style={{ backgroundColor: 'transparent', color: 'white' }}
+          className={tabsStyle.tab}
         />
         <Tab
           label={
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Sannsynlighet
+              {t('dictionary.probability')}
             </Typography>
           }
           value="sannsynlighet"
-          style={{ backgroundColor: 'transparent', color: 'white' }}
+          className={tabsStyle.tab}
         />
         <Tab
           label={
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Tiltak
+              {t('dictionary.measure')}
             </Typography>
           }
           value="tiltak"
-          style={{ backgroundColor: 'transparent', color: 'white' }}
+          className={tabsStyle.tab}
         />
       </TabList>
     </Box>

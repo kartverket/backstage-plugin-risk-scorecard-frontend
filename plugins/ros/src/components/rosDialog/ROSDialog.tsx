@@ -9,9 +9,10 @@ import {
 import { TextField } from '../utils/Textfield';
 import { ROS, ROSWithMetadata } from '../utils/types';
 import { useFontStyles } from '../scenarioDrawer/style';
-import { rosOmfangError, rosTittelError } from '../utils/constants';
 import { emptyROS } from '../utils/utilityfunctions';
-import {useRosDialogStyles} from "./rosDialogStyle";
+import { useRosDialogStyles } from './rosDialogStyle';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 export enum ROSDialogStates {
   Closed,
@@ -49,6 +50,7 @@ export const ROSDialog = ({
 
   const classes = useRosDialogStyles();
   const { h1 } = useFontStyles();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleCancel = () => {
     onClose();
@@ -61,8 +63,8 @@ export const ROSDialog = ({
 
   const handleSave = () => {
     setNewROSError({
-      tittel: newROS.tittel === '' ? rosTittelError : null,
-      omfang: newROS.omfang === '' ? rosOmfangError : null,
+      tittel: newROS.tittel === '' ? t('rosDialog.titleError') : null,
+      omfang: newROS.omfang === '' ? t('rosDialog.scopeError') : null,
     });
     if (!newROS.tittel || !newROS.omfang) return;
 
@@ -98,8 +100,8 @@ export const ROSDialog = ({
 
   const header =
     dialogState === ROSDialogStates.Create
-      ? 'Ny risiko- og sårbarhetsanalyse'
-      : 'Rediger ROS-analyse';
+      ? t('rosDialog.titleNew')
+      : t('rosDialog.titleEdit');
 
   return (
     <Dialog
@@ -112,7 +114,7 @@ export const ROSDialog = ({
         <Typography className={h1}>{header}</Typography>
         <Box className={classes.content}>
           <TextField
-            label="Tittel"
+            label={t('dictionary.title')}
             value={newROS.tittel}
             minRows={1}
             handleChange={setTittel}
@@ -122,8 +124,8 @@ export const ROSDialog = ({
         </Box>
         <Box className={classes.content}>
           <TextField
-            label="Omfang"
-            subtitle="Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres."
+            label={t('dictionary.scope')}
+            subtitle={t('rosDialog.scopeDescription')}
             value={newROS.omfang}
             minRows={4}
             handleChange={setOmfang}
@@ -142,10 +144,10 @@ export const ROSDialog = ({
       >
         <Box className={classes.buttons}>
           <Button variant="contained" color="primary" onClick={handleSave}>
-            Lagre
+            {t('dictionary.save')}
           </Button>
           <Button variant="outlined" color="primary" onClick={handleCancel}>
-            Avbryt
+            {t('dictionary.cancel')}
           </Button>
         </Box>
       </div>

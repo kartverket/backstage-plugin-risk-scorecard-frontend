@@ -28,6 +28,7 @@ export type Scenario = {
   trusselaktører: string[];
   sårbarheter: string[];
   risiko: Risiko;
+  eksisterendeTiltak: string;
   tiltak: Tiltak[];
   restrisiko: Risiko;
 };

@@ -26,7 +26,7 @@ export const TextField = ({
   minRows = 1,
   handleChange,
 }: TextFieldProps) => {
-  const { formLabel, formControl } = useInputFieldStyles();
+  const { formLabel, formControl, root } = useInputFieldStyles();
   const { labelSubtitle } = useFontStyles();
 
   const onChange = (event: ChangeEvent<{ value: string }>) =>
@@ -53,6 +53,7 @@ export const TextField = ({
         variant="outlined"
         onChange={onChange}
         error={!!error}
+        InputProps={{ className: root }}
       />
       {error && <FormHelperText error>{error}</FormHelperText>}
     </FormControl>

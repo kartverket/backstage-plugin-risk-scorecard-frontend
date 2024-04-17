@@ -56,7 +56,7 @@ export const getKonsekvensLevel = (risiko: Risiko) =>
   konsekvensOptions.indexOf(risiko.konsekvens) + 1;
 
 export const emptyROS = (): ROS => ({
-  skjemaVersjon: '3.1',
+  skjemaVersjon: '3.2',
   tittel: '',
   omfang: '',
   verdivurderinger: [],
@@ -74,6 +74,7 @@ export const emptyScenario = (): Scenario => ({
     sannsynlighet: 0.01,
     konsekvens: 1000,
   },
+  eksisterendeTiltak: '',
   tiltak: [],
   restrisiko: {
     oppsummering: '',

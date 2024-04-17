@@ -1,11 +1,13 @@
 import React from 'react';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
-import {Paper, Typography} from '@material-ui/core';
-import {konsekvensOptions, sannsynlighetOptions} from '../utils/constants';
-import {Scenario} from '../utils/types';
-import {useTableStyles} from './ScenarioTableStyles';
-import {getRiskMatrixColor} from "../utils/utilityfunctions";
+import { Paper, Typography } from '@material-ui/core';
+import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
+import { Scenario } from '../utils/types';
+import { useTableStyles } from './ScenarioTableStyles';
+import { getRiskMatrixColor } from '../utils/utilityfunctions';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -27,14 +29,12 @@ export const ScenarioTableRow = ({
     tiltak => tiltak.status === 'Fullført',
   ).length;
 
-  const { riskColor, rowBackground } = useTableStyles();
+  const { riskColor, rowBackground, rowBorder } = useTableStyles();
+
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <TableRow
-      style={{
-        borderBottom: 'solid 1px #616161',
-      }}
-    >
+    <TableRow className={rowBorder}>
       <button
         className={rowBackground}
         onClick={() => viewRow(scenario.ID)}
@@ -65,7 +65,8 @@ export const ScenarioTableRow = ({
               backgroundColor: getRiskMatrixColor(scenario.risiko),
             }}
           />
-          K:{konsekvens} S:{sannsynlighet}
+          {t('scenarioTable.columns.consequenceChar')}:{konsekvens}{' '}
+          {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}
         </TableCell>
 
         <TableCell
@@ -80,14 +81,15 @@ export const ScenarioTableRow = ({
           <Paper
             className={riskColor}
             style={{
-              backgroundColor: getRiskMatrixColor(scenario.restrisiko)
-                // riskMatrix[restKonsekvens - 1][restSannsynlighet - 1],
+              backgroundColor: getRiskMatrixColor(scenario.restrisiko),
             }}
           />
-          K:{restKonsekvens} S:{restSannsynlighet}
+          {t('scenarioTable.columns.consequenceChar')}:{restKonsekvens}{' '}
+          {t('scenarioTable.columns.probabilityChar')}:{restSannsynlighet}
         </TableCell>
         <TableCell style={{ display: 'flex', width: '20%' }}>
-          {fullførteTiltak}/{scenario.tiltak.length} fullførte
+          {fullførteTiltak}/{scenario.tiltak.length}{' '}
+          {t('scenarioTable.columns.completed')}
         </TableCell>
       </button>
     </TableRow>

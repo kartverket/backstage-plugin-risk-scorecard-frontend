@@ -1,12 +1,15 @@
 import React from 'react';
-import { Radio, Typography, makeStyles } from '@material-ui/core';
+import { makeStyles, Radio, Theme, Typography } from '@material-ui/core';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   grid: {
     display: 'flex',
     borderCollapse: 'collapse',
     width: '100%',
     justifyContent: 'flex-end',
+    fontWeight: 'bold',
   },
   cell: {
     padding: '8px',
@@ -15,7 +18,7 @@ const useStyles = makeStyles({
   voidCell: {
     padding: '8px',
     border: '1px solid grey',
-    color: '#9E9E9E',
+    color: theme.palette.type === 'dark' ? '#9E9E9E' : '#757575',
   },
   firstCell: {
     padding: '8px',
@@ -29,7 +32,7 @@ const useStyles = makeStyles({
     gap: '5px',
     justifyContent: 'flex-end',
   },
-});
+}));
 
 interface PickerTableProps {
   selectedValue: number;
@@ -40,155 +43,75 @@ export const PickerTable = ({
   selectedValue,
   handleChange,
 }: PickerTableProps) => {
-  const classes = useStyles();
+  const { grid, firstCell, label, cell, voidCell } = useStyles();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleChangeRow = (row: number) => () => {
     handleChange(row);
   };
 
+  const tr = (row: number, cellType: string[]) => (
+    <tr>
+      <td className={firstCell}>
+        <div className={label}>
+          {/* @ts-ignore */}
+          {t(`consequenceTable.rows.${row}`)} - {row}{' '}
+          <Radio
+            checked={selectedValue === row}
+            onChange={handleChangeRow(row)}
+          />
+        </div>
+      </td>
+      <td className={cellType[0]}>
+        {/* @ts-ignore */}
+        {t(`consequenceTable.cells.health.${row}`)}
+      </td>
+      <td className={cellType[1]}>
+        {/* @ts-ignore */}
+        {t(`consequenceTable.cells.economical.${row}`)}
+      </td>
+      <td className={cellType[2]}>
+        {/* @ts-ignore */}
+        {t(`consequenceTable.cells.privacy.${row}`)}
+      </td>
+      <td className={cellType[3]}>
+        {/* @ts-ignore */}
+        {t(`consequenceTable.cells.reputation.${row}`)}
+      </td>
+    </tr>
+  );
+
   return (
-    <table className={classes.grid}>
+    <table className={grid}>
       <tbody>
         <tr>
-          <td className={classes.firstCell} />
-          <td className={classes.firstCell}>
+          <td className={firstCell} />
+          <td className={firstCell}>
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Liv og helse
+              {t('consequenceTable.columns.health')}
             </Typography>
           </td>
-          <td className={classes.firstCell}>
+          <td className={firstCell}>
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Økonomisk
+              {t('consequenceTable.columns.economical')}
             </Typography>
           </td>
-          <td className={classes.firstCell}>
+          <td className={firstCell}>
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Personvern
+              {t('consequenceTable.columns.privacy')}
             </Typography>
           </td>
-          <td className={classes.firstCell}>
+          <td className={firstCell}>
             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              Omdømme og tillit
+              {t('consequenceTable.columns.reputation')}
             </Typography>
           </td>
         </tr>
-
-        <tr>
-          <td className={classes.firstCell}>
-            <div className={classes.label}>
-              <b> Kritisk - 5 </b>
-              <Radio
-                checked={selectedValue === 5}
-                onChange={handleChangeRow(5)}
-              />
-            </div>
-          </td>
-          <td className={classes.cell}>
-            Død eller varige alvorlige helsemssige konsekvenser
-          </td>
-          <td className={classes.cell}>Varig og alvorlig økonomisk tap</td>
-          <td className={classes.voidCell}>
-            Personvern kan ikke være mer alvorlig enn 4
-          </td>
-          <td className={classes.voidCell}>
-            Omdømme og tillit kan ikke være mer alvorlig enn 3
-          </td>
-        </tr>
-
-        <tr>
-          <td className={classes.firstCell}>
-            <div className={classes.label}>
-              <b> Alvorlig - 4 </b>
-              <Radio
-                checked={selectedValue === 4}
-                onChange={handleChangeRow(4)}
-              />
-            </div>
-          </td>
-          <td className={classes.cell}>
-            Varig eller alvorlig helsemessige konsekvenser
-          </td>
-          <td className={classes.cell}>
-            Økonomisk tap av betydelig varighet for Kartverket og evt.
-            tredjeparter
-          </td>
-          <td className={classes.cell}>
-            Retten til personvern krenkes på en svært alvorlig måte
-          </td>
-          <td className={classes.voidCell}>
-            Omdømme og tillit kan ikke være mer alvorlig enn 3
-          </td>
-        </tr>
-
-        <tr>
-          <td className={classes.firstCell}>
-            <div className={classes.label}>
-              <b> Moderat - 3 </b>
-              <Radio
-                checked={selectedValue === 3}
-                onChange={handleChangeRow(3)}
-              />
-            </div>
-          </td>
-          <td className={classes.cell}>
-            Midlertidig eller mindre alvorlige helsemessige konsekvenser
-          </td>
-          <td className={classes.cell}>Økonomisk tap av noe varighet</td>
-          <td className={classes.cell}>
-            Retten til personvern krenkes alvorlig i en lengre periode og
-            involverer særlige kategorier/sårbare grupper
-          </td>
-          <td className={classes.cell}>
-            Varig negativ oppmerksomhet i nasjonale og internasjonale medier som
-            kan redusere tillit
-          </td>
-        </tr>
-
-        <tr>
-          <td className={classes.firstCell}>
-            <div className={classes.label}>
-              <b> Liten - 2 </b>
-              <Radio
-                checked={selectedValue === 2}
-                onChange={handleChangeRow(2)}
-              />
-            </div>
-          </td>
-          <td className={classes.voidCell}>
-            Liv og helse kan ikke være mindre alvorlig enn 3
-          </td>
-          <td className={classes.cell}>Forbigående økonomisk tap</td>
-          <td className={classes.cell}>
-            Retten til personvern krenkes i en lengre periode eller involverer
-            særlige kategorier/sårbare grupper
-          </td>
-          <td className={classes.cell}>
-            Negative saker i nasjonale medier som kan redusere tillit
-          </td>
-        </tr>
-
-        <tr>
-          <td className={classes.firstCell}>
-            <div className={classes.label}>
-              <b> Ubetydelig - 1 </b>
-              <Radio
-                checked={selectedValue === 1}
-                onChange={handleChangeRow(1)}
-              />
-            </div>
-          </td>
-          <td className={classes.voidCell}>
-            Liv og helse kan ikke være mindre alvorlig enn 3
-          </td>
-          <td className={classes.cell}>Forbigående mindre økonomisk tap</td>
-          <td className={classes.cell}>
-            Retten til personvern utfordres i en svært kort periode og
-            involverer ikke særlige kategorier/sårbare grupper
-          </td>
-          <td className={classes.cell}>
-            Midlertidig omdømmetap og liten innvirkning på tillit
-          </td>
-        </tr>
+        {tr(5, [cell, cell, voidCell, voidCell])}
+        {tr(4, [cell, cell, cell, voidCell])}
+        {tr(3, [cell, cell, cell, cell])}
+        {tr(2, [voidCell, cell, cell, cell])}
+        {tr(1, [voidCell, cell, cell, cell])}
       </tbody>
     </table>
   );

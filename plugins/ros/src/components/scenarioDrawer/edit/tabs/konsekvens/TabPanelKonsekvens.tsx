@@ -4,6 +4,8 @@ import { PickerTable } from './KonsekvensTable';
 import { tabStyles } from '../style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../../style';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabPanelKonsekvensProps {
   setKonsekvens: (konsekvensIndex: number) => void;
@@ -16,14 +18,13 @@ export const TabPanelKonsekvens = ({
 }: TabPanelKonsekvensProps) => {
   const { tabPanel } = tabStyles();
   const { headerSubtitle } = useFontStyles();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <TabPanel className={tabPanel} value="konsekvens">
-      <Typography variant="h5">Konsekvens</Typography>
+      <Typography variant="h5">{t('dictionary.consequence')}</Typography>
       <Typography className={headerSubtitle}>
-        Hvor alvorlig er den potensielle konsekvensen i det relevante området?
-        Hvis konsekvensen er relevant for flere områder gjelder det høyeste
-        konsekvensnivået.
+        {t('scenarioDrawer.consequenceTab.subtitle')}
       </Typography>
       <PickerTable selectedValue={selected} handleChange={setKonsekvens} />
     </TabPanel>

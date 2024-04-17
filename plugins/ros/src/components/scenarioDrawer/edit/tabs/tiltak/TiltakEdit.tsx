@@ -10,6 +10,8 @@ import { AdapterDateFns as ADF } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { nb } from 'date-fns/locale/nb';
 import { useFontStyles, useInputFieldStyles } from '../../../style';
 import FormControl from '@material-ui/core/FormControl';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TiltakProps {
   tiltak: ITiltak;
@@ -61,12 +63,15 @@ export const TiltakEdit = ({
 
   const { paper, formControl } = useInputFieldStyles();
   const { label, labelSubtitle, button } = useFontStyles();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Paper className={paper}>
       <Grid container>
         <Grid item xs={6} style={{ display: 'flex', alignItems: 'center' }}>
-          <Typography className={label}>Tiltak {index}</Typography>
+          <Typography className={label}>
+            {t('dictionary.measure')} {index}
+          </Typography>
         </Grid>
         <Grid
           item
@@ -81,13 +86,13 @@ export const TiltakEdit = ({
             color="primary"
             className={button}
           >
-            Slett
+            {t('dictionary.delete')}
           </Button>
         </Grid>
 
         <Grid item xs={12}>
           <TextField
-            label="Beskrivelse"
+            label={t('dictionary.description')}
             value={tiltak.beskrivelse}
             handleChange={setBeskrivelse}
             minRows={1}
@@ -95,21 +100,23 @@ export const TiltakEdit = ({
         </Grid>
 
         <Grid item xs={4}>
-          <Typography className={label}>Tiltakseier</Typography>
+          <Typography className={label}>
+            {t('dictionary.measureOwner')}
+          </Typography>
           <Typography className={labelSubtitle}>
-            De eller den som er ansvarlig for at tiltaket blir gjennomført
+            {t('scenarioDrawer.measureTab.measureOwnerDescription')}
           </Typography>
         </Grid>
 
         <Grid item xs={4}>
           <Typography className={label} style={{ marginTop: '3rem' }}>
-            Status
+            {t('dictionary.status')}
           </Typography>
         </Grid>
 
         <Grid item xs={4}>
           <Typography className={label} style={{ marginTop: '3rem' }}>
-            Frist
+            {t('dictionary.deadline')}
           </Typography>
         </Grid>
 

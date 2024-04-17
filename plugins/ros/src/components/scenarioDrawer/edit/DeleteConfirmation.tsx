@@ -1,21 +1,27 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 import React, { useContext } from 'react';
 import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export const DeleteConfirmation = () => {
   const { deleteConfirmationIsOpen, abortDeletion, confirmDeletion } =
     useContext(ScenarioContext)!!;
 
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
   return (
     <Dialog open={deleteConfirmationIsOpen}>
-      <DialogTitle>Er du sikker på at du vil du slette scenario?</DialogTitle>
+      <DialogTitle>
+        {t('scenarioDrawer.deleteScenarioConfirmation')}
+      </DialogTitle>
       <DialogActions>
         <Button style={{ textTransform: 'none' }} onClick={abortDeletion}>
-          Avbryt
+          {t('dictionary.cancel')}
         </Button>
 
         <Button style={{ textTransform: 'none' }} onClick={confirmDeletion}>
-          Slett scenario
+          {t('scenarioDrawer.deleteScenarioButton')}
         </Button>
       </DialogActions>
     </Dialog>

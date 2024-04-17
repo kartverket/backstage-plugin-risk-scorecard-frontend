@@ -5,6 +5,8 @@ import { ROSStatusComponent } from './rosStatus/ROSStatusComponent';
 import { useFontStyles } from '../scenarioDrawer/style';
 import { InfoCard } from '@backstage/core-components';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 interface RosInfoProps {
   ros: ROSWithMetadata;
@@ -14,6 +16,8 @@ interface RosInfoProps {
 
 export const ROSInfo = ({ ros, approveROS, edit }: RosInfoProps) => {
   const { h2, subtitle1, body2 } = useFontStyles();
+
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Grid container>
@@ -33,7 +37,9 @@ export const ROSInfo = ({ ros, approveROS, edit }: RosInfoProps) => {
               paddingBottom: '1rem',
             }}
           >
-            <Typography className={subtitle1}>Omfang</Typography>
+            <Typography className={subtitle1}>
+              {t('dictionary.scope')}
+            </Typography>
             <IconButton onClick={edit} style={{ padding: 0 }}>
               <BorderColorOutlinedIcon />
             </IconButton>
