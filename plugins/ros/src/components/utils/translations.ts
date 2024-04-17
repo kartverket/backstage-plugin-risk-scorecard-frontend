@@ -109,7 +109,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     scenarioDrawer: {
       title: 'Risk scenario',
-      subtitle: 'An unwanted incident that could potentially harm the system.', // harm or affect?
+      subtitle: 'An unwanted incident that could potentially harm the component.', // harm or affect?
       threatActorSubtitle:
         'Someone who attempts to access or abuse the system',
       vulnerabilitySubtitle:
@@ -279,7 +279,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeDescription': 'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', //TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
           'scenarioDrawer.title': 'Risikoscenario',
-          'scenarioDrawer.subtitle': 'En uønsket hendelse som potensielt kan ramme systemet',
+          'scenarioDrawer.subtitle': 'En uønsket hendelse som potensielt kan ramme komponenten',
           'scenarioDrawer.threatActorSubtitle': 'Noen som prøver å få tilgang til eller misbruke systemet',
           'scenarioDrawer.vulnerabilitySubtitle': 'Svakhet i systemet som kan utnyttes av trusselaktøren',
           'scenarioDrawer.consequenceTab.subtitle': 'Hvor alvorlig er den potensielle konsekvensen? Hvis konsekvensen gjelder flere kategorier velg det høyeste konsekvensnivået av disse.',
