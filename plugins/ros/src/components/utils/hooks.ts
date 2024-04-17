@@ -608,9 +608,11 @@ export const useFetchRoses = (
         isRequiresNewApproval: isRequiresNewApproval,
         schemaVersion: ros.skjemaVersjon,
       };
-      setSelectedROS(updatedROS);
-      setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
-      putROS(updatedROS);
+
+      putROS(updatedROS, () => {
+        setSelectedROS(updatedROS);
+        setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      });
     }
   };
 

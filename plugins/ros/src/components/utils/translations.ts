@@ -44,7 +44,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
       },
-      prStatus: 'Awaiting PR approval', // Avventer godkjenning av PR
+      prStatus: 'Pending PR approval in Github ', // Avventer godkjenning av PR i Github
       approveButton: 'Accept risks', // Godkjenn ROS
     },
     publishDialog: {
@@ -129,7 +129,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       title: 'Risk scenario',
       subtitle: 'An unwanted incident that could potentially harm the system.', // harm or affect?
       threatActorSubtitle:
-        'The actor who attempts to access or abuse the system',
+        'Someone who attempts to access or abuse the system',
       vulnerabilitySubtitle:
         'Weakness in the system that the threat actor can exploit',
       consequenceTab: {
@@ -154,12 +154,12 @@ export const pluginRiScTranslationRef = createTranslationRef({
       },
       restRiskTab: {
         subtitle:
-          'Define the remaining risk for the scenario. Remaining risk is the consequence and probability for this' +
+          'Define the remaining risk for the scenario. Remaining risk is the consequence and probability for this ' +
           'scenario after all initiatives have been completed.',
       },
       deleteScenarioButton: 'Delete scenario',
       deleteScenarioConfirmation:
-        'Are you sure you want to delete the scenario?',
+        'Are you sure you want to delete this scenario?',
       closeConfirmation: 'Do you want to save your changes?',
     },
     consequenceTable: {
@@ -262,13 +262,13 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.missing': 'Mangler godkjenning',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
-          'rosStatus.prStatus': 'Avventer godkjenning av PR',
+          'rosStatus.prStatus': 'Avventer godkjenning av PR i Github',
           'rosStatus.approveButton': 'Godkjenn ROS',
-          'publishDialog.title': 'Godkjenn ROS',
+          'publishDialog.title': 'Godkjenn ROS-analyse',
           'publishDialog.checkboxLabel':
-            'Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne risiko- og sårbarhetsanalysen.',
+            'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
           'scenarioTable.title': 'Risikoscenarioer',
-          'scenarioTable.addScenarioButton': 'Legg til risikoscenario',
+          'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.columns.measuresCount': 'Antall tiltak',
           'scenarioTable.columns.consequenceChar': 'K',
           'scenarioTable.columns.probabilityChar': 'S',
@@ -285,11 +285,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'riskMatrix.estimatedRisk.suffix.trillion_one': '{{count}} billion',
           'riskMatrix.estimatedRisk.suffix.trillion_other':
             '{{count}} billioner',
-          'riskMatrix.estimatedRisk.unit.nokPerYear': 'kr / år',
+          'riskMatrix.estimatedRisk.unit.nokPerYear': 'kr/år',
           'riskMatrix.tooltip.title': 'Risikoscenarioer',
           'infoDialog.title': 'Estimert risiko',
           'infoDialog.description':
-            'Den estimerte risikoen er basert på hvor stor risiko de forskjellige scenariene utgjør. Hvis det er stor sannsynlighet for at en alvorlig konsekvens skjer er det høy risiko for at det kan bli en stor kostnad for Kartverket. Kostnaden er m.a.o. et forsøk på å konkretisere verdien av risiko og er summen av den estimerte risikoen for alle risikoscenariene i denne ROS-analysen.',
+            'Den estimerte risikoen er basert på hvor stor risiko de forskjellige scenariene utgjør. Hvis det er stor sannsynlighet for at en alvorlig konsekvens skjer er det høy risiko for at det kan bli en stor kostnad for Kartverket. Kostnaden er med andre ord et forsøk på å konkretisere verdien av risiko og er summen av den estimerte risikoen for alle risikoscenariene i denne ROS-analysen.',
           'infoDialog.calculatedHowTitle':
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
@@ -302,12 +302,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.probabilityDescription.3': 'ca ukentlig',
           'infoDialog.probabilityDescription.4': 'ca daglig',
           'infoDialog.example':
-            'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr / hendelse x 50 hendelser / år = 1 500 000 kr/år.',
+            'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr/hendelse x 50 hendelser/år = 1 500 000 kr/år.',
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
-          'rosDialog.titleEdit': 'Rediger ROS-analyse',
+          'rosDialog.titleEdit': 'Rediger tittel og omfang',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':
-            'Hva risikoanalysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.',
+            'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', //TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
@@ -323,15 +323,15 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.subtitle':
             'En uønsket hendelse som potensielt kan ramme systemet',
           'scenarioDrawer.threatActorSubtitle':
-            'Aktøren som prøver å få tilgang til eller misbruke systemet',
+            'Noen som prøver å få tilgang til eller misbruke systemet',
           'scenarioDrawer.vulnerabilitySubtitle':
             'Svakhet i systemet som kan utnyttes av trusselaktøren',
           'scenarioDrawer.consequenceTab.subtitle':
-            'Hvor alvorlig er den potensielle konsekvensen i det relevante området? Hvis konsekvensen er relevant for flere områder gjelder det høyeste konsekvensnivået.',
+            'Hvor alvorlig er den potensielle konsekvensen? Hvis konsekvensen gjelder flere kategorier velg det høyeste konsekvensnivået av disse.',
           'scenarioDrawer.probabilityTab.subtitle':
-            'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velger du den høyeste.',
+            'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velg den høyeste.',
           'scenarioDrawer.measureTab.subtitle':
-            'Hvilke tiltak burde gjøres for å unngå scenarioet?',
+            'Hvilke tiltak bør gjøres for å unngå scenarioet?',
           'scenarioDrawer.measureTab.measureOwnerDescription':
             'De eller den som er ansvarlig for at tiltaket blir gjennomført',
           'scenarioDrawer.measureTab.addMeasureButton': 'Legg til tiltak',
