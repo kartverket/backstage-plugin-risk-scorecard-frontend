@@ -50,7 +50,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
       title: 'Accept risks', // Godkjenn ROS
       checkboxLabel:
         'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
-      // Jeg bekrefter at jeg er risikoeier og godtar risikoen i denne risiko- og sårbarhetsanalysen.
     },
     scenarioTable: {
       title: 'Risk scenarios',
@@ -115,13 +114,13 @@ export const pluginRiScTranslationRef = createTranslationRef({
     scenarioStepper: {
       initialRiskStep: {
         title: 'Initial risk',
-        subtitle: 'FYLL INN HER',
+        subtitle: 'The initial risk is defined by the consequence of the scenario and the probability of it occurring.',
       },
       restRiskStep: {
         title: 'Remaining risk',
-        subtitle: 'FYLL INN HER',
-        consequenceSubtitle: 'FYLL INN HER',
-        probabilitySubtitle: 'FYLL INN HER',
+        subtitle: 'What is the risk reduced to when all the planned initiatives have been completed?',
+        consequenceSubtitle: 'How severe is the consequence of this scenario after all initiatives are complete?',
+        probabilitySubtitle: 'What is the likelihood of this scenario after all initiatives are complete?',
       },
     },
     scenarioDrawer: {
