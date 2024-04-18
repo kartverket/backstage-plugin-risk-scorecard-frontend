@@ -23,8 +23,7 @@ import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 const useStyle = makeStyles({
   root: {
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
   },
   container: {
