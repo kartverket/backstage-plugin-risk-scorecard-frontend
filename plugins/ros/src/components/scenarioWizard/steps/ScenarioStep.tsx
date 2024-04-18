@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { TextField } from '../../utils/Textfield';
 import { Dropdown } from '../../utils/Dropdown';
 import {
@@ -45,13 +45,24 @@ export const ScenarioStep = () => {
         />
       </Grid>
 
-      <Grid item xs={6}>
-        <Typography className={label}>
-          {t('dictionary.threatActors')}
-        </Typography>
-        <Typography className={labelSubtitle}>
-          {t('scenarioDrawer.threatActorSubtitle')}
-        </Typography>
+      <Grid
+        item
+        md={6}
+        xs={12}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Box>
+          <Typography className={label}>
+            {t('dictionary.threatActors')}
+          </Typography>
+          <Typography className={labelSubtitle}>
+            {t('scenarioDrawer.threatActorSubtitle')}
+          </Typography>
+        </Box>
         <Dropdown<string[]>
           selectedValues={scenario.trusselaktører}
           options={trusselaktørerOptions}
@@ -59,14 +70,24 @@ export const ScenarioStep = () => {
         />
       </Grid>
 
-      <Grid item xs={6}>
-        <Typography className={label}>
-          {t('dictionary.vulnerabilities')}
-        </Typography>
-        <Typography className={labelSubtitle}>
-          {t('scenarioDrawer.vulnerabilitySubtitle')}
-        </Typography>
-
+      <Grid
+        item
+        md={6}
+        xs={12}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Box>
+          <Typography className={label}>
+            {t('dictionary.vulnerabilities')}
+          </Typography>
+          <Typography className={labelSubtitle}>
+            {t('scenarioDrawer.vulnerabilitySubtitle')}
+          </Typography>
+        </Box>
         <Dropdown<string[]>
           selectedValues={scenario.sårbarheter}
           options={sårbarheterOptions}

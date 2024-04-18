@@ -118,6 +118,7 @@ export const useFontStyles = makeStyles(theme => ({
 export const useInputFieldStyles = makeStyles((theme: Theme) => ({
   formControl: {
     width: '100%',
+    height: '100%',
   },
   formLabel: {
     fontSize: theme.spacing(1.75),
