@@ -287,7 +287,7 @@ export const useScenarioDrawer = (
     if (ros) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
-        // setScenarioDrawerState(ScenarioDrawerState.Closed);
+        setScenarioDrawerState(ScenarioDrawerState.Closed);
         setScenarioWizardStep(null);
         const s = emptyScenario();
         setScenario(s);
