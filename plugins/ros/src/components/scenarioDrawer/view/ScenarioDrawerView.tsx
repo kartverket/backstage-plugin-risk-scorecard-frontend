@@ -39,7 +39,7 @@ export const ScenarioDrawerView = () => {
             className={button}
             variant="contained"
             color="primary"
-            onClick={editScenario}
+            onClick={() => editScenario('scenario')}
             startIcon={<BorderColorOutlinedIcon />}
           >
             {t('dictionary.edit')}

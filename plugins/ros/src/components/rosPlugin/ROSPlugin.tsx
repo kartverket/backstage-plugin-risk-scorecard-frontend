@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { useFetchRoses, useScenarioDrawer } from '../utils/hooks';
+import { useLoadingStyles } from './rosPluginStyle';
+import { useFontStyles } from '../scenarioDrawer/style';
+import { useParams } from 'react-router';
+import { ROSDialog, ROSDialogStates } from '../rosDialog/ROSDialog';
+import { Route, Routes } from 'react-router-dom';
+import { rosRouteRef, scenarioRouteRef } from '../../routes';
+import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
+import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
+import { RiskMatrix } from '../riskMatrix/RiskMatrix';
+import { Button, CircularProgress, Grid, Typography } from '@material-ui/core';
+import { ScenarioTable } from '../scenarioTable/ScenarioTable';
+import { ROSInfo } from '../rosInfo/ROSInfo';
+import { ScenarioContext } from './ScenarioContext';
+import Alert from '@mui/material/Alert';
+import { getAlertSeverity } from '../utils/utilityfunctions';
 import {
   Content,
   ContentHeader,
   SupportButton,
 } from '@backstage/core-components';
-import { useFetchRoses, useScenarioDrawer } from '../utils/hooks';
-import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { RiskMatrix } from '../riskMatrix/RiskMatrix';
-import { Dropdown } from '../utils/Dropdown';
-import Alert from '@mui/material/Alert';
-import { getAlertSeverity } from '../utils/utilityfunctions';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useLoadingStyles } from './rosPluginStyle';
-import { ScenarioContext } from './ScenarioContext';
-import { useFontStyles } from '../scenarioDrawer/style';
-import { useParams } from 'react-router';
-import { ROSInfo } from '../rosInfo/ROSInfo';
-import { ROSDialog, ROSDialogStates } from '../rosDialog/ROSDialog';
-import { ScenarioTable } from '../scenarioTable/ScenarioTable';
-import { Route, Routes } from 'react-router-dom';
-import { rosRouteRef, scenarioRouteRef } from '../../routes';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { Dropdown } from '../utils/Dropdown';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 export const ROSPlugin = () => {
   return (
@@ -78,60 +78,66 @@ const Plugin = () => {
         )}
 
         <Content>
-          <ContentHeader title={t('contentHeader.title')}>
-            <SupportButton>Kul plugin ass!</SupportButton>
-          </ContentHeader>
+          {scenario.scenarioWizardStep !== null ? (
+            <ScenarioWizard step={scenario.scenarioWizardStep} />
+          ) : (
+            <>
+              <ContentHeader title={t('contentHeader.title')}>
+                <SupportButton>Kul plugin ass!</SupportButton>
+              </ContentHeader>
 
-          {isFetching && (
-            <div className={classes.container}>
-              <CircularProgress className={classes.spinner} size={80} />
-            </div>
+              {isFetching && (
+                <div className={classes.container}>
+                  <CircularProgress className={classes.spinner} size={80} />
+                </div>
+              )}
+
+              <Grid container spacing={3}>
+                {roses !== null && roses.length !== 0 && (
+                  <Grid item xs={3}>
+                    <Dropdown<string>
+                      options={roses.map(ros => ros.content.tittel) ?? []}
+                      selectedValues={selectedROS?.content.tittel ?? ''}
+                      handleChange={title => selectRos(title)}
+                      variant="standard"
+                    />
+                  </Grid>
+                )}
+
+                {!isFetching && (
+                  <Grid item xs>
+                    <Button
+                      startIcon={<AddCircleOutlineIcon />}
+                      variant="text"
+                      color="primary"
+                      onClick={openCreateRosDialog}
+                      className={button}
+                    >
+                      {t('contentHeader.createNewButton')}
+                    </Button>
+                  </Grid>
+                )}
+
+                {selectedROS && (
+                  <>
+                    <Grid item xs={12}>
+                      <ROSInfo
+                        ros={selectedROS}
+                        approveROS={approveROS}
+                        edit={openEditRosDialog}
+                      />
+                    </Grid>
+                    <Grid item xs={8}>
+                      <ScenarioTable ros={selectedROS.content} />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <RiskMatrix ros={selectedROS.content} />
+                    </Grid>
+                  </>
+                )}
+              </Grid>
+            </>
           )}
-
-          <Grid container spacing={3}>
-            {roses !== null && roses.length !== 0 && (
-              <Grid item xs={3}>
-                <Dropdown<string>
-                  options={roses.map(ros => ros.content.tittel) ?? []}
-                  selectedValues={selectedROS?.content.tittel ?? ''}
-                  handleChange={title => selectRos(title)}
-                  variant="standard"
-                />
-              </Grid>
-            )}
-
-            {!isFetching && (
-              <Grid item xs>
-                <Button
-                  startIcon={<AddCircleOutlineIcon />}
-                  variant="text"
-                  color="primary"
-                  onClick={openCreateRosDialog}
-                  className={button}
-                >
-                  {t('contentHeader.createNewButton')}
-                </Button>
-              </Grid>
-            )}
-
-            {selectedROS && (
-              <>
-                <Grid item xs={12}>
-                  <ROSInfo
-                    ros={selectedROS}
-                    approveROS={approveROS}
-                    edit={openEditRosDialog}
-                  />
-                </Grid>
-                <Grid item xs={8}>
-                  <ScenarioTable ros={selectedROS.content} />
-                </Grid>
-                <Grid item xs={4}>
-                  <RiskMatrix ros={selectedROS.content} />
-                </Grid>
-              </>
-            )}
-          </Grid>
 
           {ROSDialogState !== ROSDialogStates.Closed && (
             <ROSDialog
