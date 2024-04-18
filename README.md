@@ -1,7 +1,6 @@
 # [Backstage](https://backstage.io)
 
-For å kjøre backstage lokalt, kjør:
-
+To run Backstage locally, run these commands:
 ```sh
 yarn install
 yarn dev
@@ -9,13 +8,13 @@ yarn dev
 
 ### Docker
 
-For å bygge docker-image, kjør:
+To build the Docker image, run this command:
 
 ```sh
 docker image build -t backstage .
 ```
 
-For å kjøre docker-image, kjør:
+To run the Docker image, run this command:
 
 ```sh
 docker run -it -p 3000:7007 \
@@ -31,19 +30,17 @@ docker run -it -p 3000:7007 \
 backstage
 ```
 
-# Spire ROS Catalog
+# Spire Risk Catalog
 
-Katalogen med entiteter som er satt opp for dette prosjektet henter:
+We have set up a catalog of entities for this project, which fetches:
 
-## Discovery av komponenter
+## Discovery of components
+Components (kind: Component) are fetched from Github, where discovery is set up towards the ["spire-test"](https://github.com/spire-test) organization. 
+Here, all information from repositories defined in `catalog.providers.github` in `app-config.yaml` is fetched. 
 
-Komponenter (kind: Component) hentes fra Github, hvor det er satt opp discovery mot
-organisasjonen ["spire-test"](https://github.com/spire-test). Her hentes all informasjon fra repositories definert
-i `catalog.providers.github` i `app-config.yaml`.
+This is an example of our github discovery config. Here, we fetch all entities from the main branch of repositories beginning with `kv-ros` and search for the definition set in the file called `.security/catalog-info.yaml`.
+To use this, we add an `entityProvider` in `catalog.ts`.
 
-Sånn ser en eksempelvis (og den vi bruker) config av github-discovery ut. Her henter vi alle entiteter fra repoer som
-starter på kv-ros, fra main-branchen, og leter etter definisjon i filen `.security/catalog-info.yaml`.
-For å ta i bruk dette, legges det til en `entityProvider` i `catalog.ts`.
 
 ```yaml
 github:
@@ -57,81 +54,75 @@ github:
       frequency: { minutes: 1440 }
       timeout: { minutes: 3 }
 ```
+If you want to add more, you can look at the documentation for Github found [here](https://backstage.io/docs/integrations/github/discovery), or look at the already existing integrations.
 
-Om du vil legge til flere, kan du se på [denne](https://backstage.io/docs/integrations/github/discovery) dokumentasjonen
-for github, eller sjekke ut de andre integrasjonene som finnes fra før (eller lage egne ☺️).
+## Discovery of organisational data
+We fetch information about the users from two different sources: Github and Microsoft.
+This is configured with the same approach as the discovery of components, where we defined the configuration in `app-config.yaml`,
+and add the entityProvider in `catalog.ts`.
 
-## Discovery av organisasjonsdata
+An important thing to keep in mind: 
+Discovery can be quite slow when the number of users, groups and entities increases. 
+Thus, we have tried to limit what we need to fetch when testing, to ensure that we are able to quickly spin up the local environment.
 
-Vi henter informasjon om brukere fra to forskjellige steder: github og microsoft.
-Settes opp på den samme måten som discovery av komponenter, hvor man definerer konfigurasjon i `app-config.yaml`, og
-legger til entityProvider i `catalog.ts`.
+# Spire Risk Authentication of users
 
-En ting å tenke på: Discovery kan være ganske treigt når det er utrolig mange brukere, grupper og entiteter. Vi har
-derfor prøvd å begrense hva vi trenger når vi har testet, for at det skal ta kortest mulig tid å spinne opp miljøet.
+We have configured the login with three different providers: Microsoft Entra ID, GCP and Github.
+The configuration of authentication takes place in `auth.providers`, and is used in `auth.ts`. 
+It is possible to configure this with the number of providers that is desirable. 
 
-# Spire ROS Autentisering av brukere
+When you add login with a provider, you also have the opportunity to use `*authApiRef` for that provider. Here, you will get access to id tokens and access tokens. 
+If the user is not logged in with the provider you want to check the token access for, the user is automatically toggled with a login screen for the provider you want to use by the help of these APIs. 
+You can look at `hooks.ts` to see how this works.
 
-Vi har satt opp innlogging med tre forskjellige providers: Entra ID, GCP og Github.
-Konfigurasjon av autentisering skjer i `auth.providers`, taes i bruk i `auth.ts` og kan settes opp med så mange
-providers man kunne ønske seg.
-
-Når man har lagt til innlogging med en provider, har man også mulighet til å ta i bruk `*authApiRef` for den gitte
-provideren. Da får man tilgang på bla. id-tokens og access-tokens. Om en bruker ikke er logget inn med provideren du vil
-ha tilgang til tokens for, blir en bruker togglet med innoggings-skjerm for den du ønsker automatisk ved å bruke disse
-api-ene. Sjekk ut `hooks.ts` for å sjekke ut hvordan man kan bruke dem.
 
 ## Entra ID
+Entra ID is now configured to log in with your Bekk account. Because we have configured discovery of organisational data with the Bekk organisation, sessions will be connected to this.
 
-Entra ID er satt til å logge inn med Bekk-kontoen din, og fordi vi har satt opp discovery av organisasjonsdata med
-Bekk-organisasjonen vil session knyttes til denne.
 
-[Her](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/4db9a5d4-74c3-4c7e-bd71-1029f96a099c/isMSAApp~/false)
-kan du finne "App Registraton" for Entra ID consent-screen/innlogging.
+[Here](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/4db9a5d4-74c3-4c7e-bd71-1029f96a099c/isMSAApp~/false)
+you can find "App Registration" for Entra ID consent screen / login. 
 
-### Hva brukes egentlig dette til?
 
-Entra-brukeren brukes til å gjøre autorisering av brukeren i backend-appen ved hjelp av et id-token.
-Validering av token gjør også at vi prøver å issue et access token via en Github App, sånn at brukere uten github-bruker
-også kan nå dokumentene.
+### What is this actually used for?
+The Entra user is necessary to do authorisation of the user in the backend app with the help of an ID token. 
+The validation of tokens is also the reason why we try to issue an access token through a Github App, such that users without a Github user also will be able to reach the documents.
 
 ## GCP
+Google is used to be able to utilise the logged in user's permissions in GCP, where the key chains have been saved in the KMS. 
+This approach ensures that the user do not gain access to more than they should.
 
-Google brukes for å kunne bruke den innlogga brukeren sine permissions i GCP hvor nøkkelringene er lagret i KMSen. På
-den måten får man ikke tilgang til mer enn man skal.
 
-[Her](https://console.cloud.google.com/apis/credentials/consent?referrer=search&project=spire-ros-5lmr) kan du finne
-OAuth Consent Screen, som man bruker for å logge seg inn med GCP.
+[Here](https://console.cloud.google.com/apis/credentials/consent?referrer=search&project=spire-ros-5lmr) you can find the OAuth Consent Screen, which is used to log in with GCP.
 
-Obs. husk å legge til brukere som kan ta del av testingen her.
+Note! You have to remember to add all users that take part in the testing of this application to this consent screen.
 
 ## Github
+Login through Github is as of now not used for anything in particular in risk-as-code (Risk Scorecard), but the idea for the future is to have some of the same 
+solution set up as GCP has today. That means that if you have a Github user account and you are signed in, we can fetch the user account's own permissions from Github.
 
-Github-innlogging brukes per nå ikke til noe spesielt i selve ros-as-code, men tanken er å ha noe av den samme løsningen
-som med gcp. Om man har en github-bruker og er logget inn, kan man bruke brukerens egne permissions i github.
 
-[Her](https://github.com/organizations/spire-test/settings/installations) kan du finne appene som brukes. Vi har en for
-devmiljø/lokalt og en for "produksjon".
+[Here](https://github.com/organizations/spire-test/settings/installations) you can find all the apps currently in use. Today, we have one application for the development/local environment and one application for "production". 
 
-- [Nåværende test-app](https://github.com/organizations/spire-test/settings/apps/backstage-ros)
-- [Nåværende prod-app](https://github.com/organizations/spire-test/settings/apps/backstage-testis)
+- [Test application](https://github.com/organizations/spire-test/settings/apps/backstage-ros)
+- [Production application](https://github.com/organizations/spire-test/settings/apps/backstage-testis)
 
 # Secrets
 
-[Her](https://console.cloud.google.com/security/secret-manager?project=spire-ros-5lmr) ligger secrets som brukes i
-Backstage.
+[Here](https://console.cloud.google.com/security/secret-manager?project=spire-ros-5lmr) you can find all the secrets that are used in Backstage.
 
 
-# Bygge Plugin-pakke
+
+# Build Plugin package
 
 ```sh
 cd plugins/ros
 yarn install
 yarn tsc
 yarn build
-yarn publish # husk å sette ny versjon
+yarn publish # remember to set the new version
 ```
 
-## Konfigurasjon
-
-Opprett filen app-config.local.yaml på rotnivå. Lim inn innholdet fra GCP-secret'en som heter [backstage-app-config-local](https://console.cloud.google.com/security/secret-manager/secret/backstage-app-config-local/versions?project=spire-ros-5lmr).
+## Configuration
+Crete the file `app-config.local.yaml` at root level. 
+Paste the content from the GCP secret called [backstage-app-config-local](https://console.cloud.google.com/security/secret-manager/secret/backstage-app-config-local/versions?project=spire-ros-5lmr).

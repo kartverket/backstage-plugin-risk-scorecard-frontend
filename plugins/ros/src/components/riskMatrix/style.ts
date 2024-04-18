@@ -8,11 +8,10 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
   },
   grid: {
     width: '100%',
-    maxWidth: 600,
+    maxWidth: 400,
     display: 'grid',
     gridTemplateRows: 'repeat(5, 1fr) auto auto',
     gridTemplateColumns: '30px 30px repeat(5, 1fr)',
-    paddingRight: '64px',
     gap: theme.spacing(0.5),
   },
   centered: {

@@ -38,7 +38,7 @@ export const AggregatedCost = ({ ros, startRisiko }: AggregatedCostProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Box className={outerBox}>
-      <Typography>Estimert risiko</Typography>
+      <Typography>{t('riskMatrix.estimatedRisk.title')}</Typography>
       <Box className={innerBox}>
         <Typography variant="h5">
           {formatNumber(cost, t)}{' '}
