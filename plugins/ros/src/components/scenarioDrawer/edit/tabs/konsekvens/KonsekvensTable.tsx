@@ -4,33 +4,45 @@ import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  grid: {
-    display: 'flex',
-    borderCollapse: 'collapse',
+  table: {
+    borderCollapse: 'separate',
+    borderSpacing: '0.3rem 0',
     width: '100%',
-    justifyContent: 'flex-end',
-    fontWeight: 'bold',
+    tableLayout: 'fixed',
+  },
+  labelCell: {
+    writingMode: 'vertical-rl',
+    transform: 'rotate(180deg)',
+    whiteSpace: 'nowrap',
+    width: '2rem !important',
+    textTransform: 'uppercase',
   },
   cell: {
-    padding: '8px',
+    padding: theme.spacing(1.5),
     border: '1px solid grey',
+    textAlign: 'left',
+    verticalAlign: 'top',
   },
   voidCell: {
-    padding: '8px',
+    padding: theme.spacing(1.5),
     border: '1px solid grey',
     color: theme.palette.type === 'dark' ? '#9E9E9E' : '#757575',
-  },
-  firstCell: {
-    padding: '8px',
-    border: 'none',
-    width: 'fit-content',
-    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    verticalAlign: 'top',
   },
   label: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'flex-start',
     gap: '5px',
-    justifyContent: 'flex-end',
+  },
+  radio: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: '0.5rem 0',
+    gap: '0.3rem',
+    textTransform: 'uppercase',
   },
 }));
 
@@ -43,75 +55,67 @@ export const PickerTable = ({
   selectedValue,
   handleChange,
 }: PickerTableProps) => {
-  const { grid, firstCell, label, cell, voidCell } = useStyles();
+  const { table, labelCell, cell, voidCell, radio } = useStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleChangeRow = (row: number) => () => {
     handleChange(row);
   };
 
-  const tr = (row: number, cellType: string[]) => (
-    <tr>
-      <td className={firstCell}>
-        <div className={label}>
-          {/* @ts-ignore */}
-          {t(`consequenceTable.rows.${row}`)} - {row}{' '}
+  const getRadioCell = (row: number) => {
+    return (
+      <th scope="col">
+        <div className={radio}>
           <Radio
             checked={selectedValue === row}
-            onChange={handleChangeRow(row)}
+            onChange={() => handleChangeRow(row)}
+            style={{ padding: 0, color: '#9BC9FE' }}
           />
+          {/* @ts-ignore */}
+          {row}: {t(`consequenceTable.rows.${row}`)}
         </div>
-      </td>
-      <td className={cellType[0]}>
-        {/* @ts-ignore */}
-        {t(`consequenceTable.cells.health.${row}`)}
-      </td>
-      <td className={cellType[1]}>
-        {/* @ts-ignore */}
-        {t(`consequenceTable.cells.economical.${row}`)}
-      </td>
-      <td className={cellType[2]}>
-        {/* @ts-ignore */}
-        {t(`consequenceTable.cells.privacy.${row}`)}
-      </td>
-      <td className={cellType[3]}>
-        {/* @ts-ignore */}
-        {t(`consequenceTable.cells.reputation.${row}`)}
-      </td>
+      </th>
+    );
+  };
+
+  const getTextCell = (resourceKey: string, row: number, className: string) => (
+    <td className={className}>
+      {/* @ts-ignore */}
+      {t(`consequenceTable.cells.${resourceKey}.${row}`)}
+    </td>
+  );
+
+  const getRow = (resourceKey: string, cellType: string[]) => (
+    <tr>
+      <th scope="row" className={labelCell}>
+        <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+          {/* @ts-ignore */}
+          {t(`consequenceTable.columns.${resourceKey}`)}
+        </Typography>
+      </th>
+      {getTextCell(resourceKey, 1, cellType[0])}
+      {getTextCell(resourceKey, 2, cellType[1])}
+      {getTextCell(resourceKey, 3, cellType[2])}
+      {getTextCell(resourceKey, 4, cellType[3])}
+      {getTextCell(resourceKey, 5, cellType[4])}
     </tr>
   );
 
   return (
-    <table className={grid}>
+    <table className={table}>
       <tbody>
         <tr>
-          <td className={firstCell} />
-          <td className={firstCell}>
-            <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              {t('consequenceTable.columns.health')}
-            </Typography>
-          </td>
-          <td className={firstCell}>
-            <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              {t('consequenceTable.columns.economical')}
-            </Typography>
-          </td>
-          <td className={firstCell}>
-            <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              {t('consequenceTable.columns.privacy')}
-            </Typography>
-          </td>
-          <td className={firstCell}>
-            <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-              {t('consequenceTable.columns.reputation')}
-            </Typography>
-          </td>
+          <td className={labelCell} />
+          {getRadioCell(1)}
+          {getRadioCell(2)}
+          {getRadioCell(3)}
+          {getRadioCell(4)}
+          {getRadioCell(5)}
         </tr>
-        {tr(5, [cell, cell, voidCell, voidCell])}
-        {tr(4, [cell, cell, cell, voidCell])}
-        {tr(3, [cell, cell, cell, cell])}
-        {tr(2, [voidCell, cell, cell, cell])}
-        {tr(1, [voidCell, cell, cell, cell])}
+        {getRow('economical', [cell, cell, cell, cell, cell])}
+        {getRow('privacy', [cell, cell, cell, cell, voidCell])}
+        {getRow('reputation', [cell, cell, cell, voidCell, voidCell])}
+        {getRow('health', [voidCell, voidCell, cell, cell, cell])}
       </tbody>
     </table>
   );
