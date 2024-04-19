@@ -76,4 +76,5 @@ export enum ProcessingStatus {
   ErrorWhenPublishingROS = 'ErrorWhenPublishingROS',
   ErrorWhenFetchingROSes = 'ErrorWhenFetchingROSes',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
+  ErrorWhenFetchingJSONSchema = 'ErrorWhenFetchingJSONSchema',
 }
