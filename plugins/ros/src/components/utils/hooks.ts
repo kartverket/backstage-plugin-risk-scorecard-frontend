@@ -128,7 +128,7 @@ const useFetch = () => {
       if (onError) onError();
       setResponse({
         statusMessage: 'Failed to fetch ROSes',
-        status: ProcessingStatus.ErrorWhenFetchingROSes,
+        status: ProcessingStatus.ErrorWhenFetchingRiScs,
       });
     });
 
@@ -531,7 +531,7 @@ export const useFetchRoses = (
     if (location.state) {
       setResponse({
         statusMessage: location.state,
-        status: ProcessingStatus.ErrorWhenFetchingROSes,
+        status: ProcessingStatus.ErrorWhenFetchingRiScs,
       });
     }
   }, [location]);
