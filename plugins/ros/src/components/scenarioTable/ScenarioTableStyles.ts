@@ -31,4 +31,11 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
         ? '1px solid #616161'
         : '1px solid #0000001f',
   },
+  tableCell: {
+    display: 'flex',
+    width: '20%',
+    minWidth: '120px',
+    padding: '20px 10px 20px 16px',
+    gap: '0.4rem',
+  },
 }));
