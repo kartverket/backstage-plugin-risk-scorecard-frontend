@@ -4,6 +4,7 @@ import {
   Step,
   StepLabel,
   Stepper,
+  Theme,
   Typography,
 } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
@@ -14,20 +15,19 @@ import Divider from '@mui/material/Divider';
 import { useFontStyles } from '../scenarioDrawer/style';
 import { ScenarioContext } from '../rosPlugin/ScenarioContext';
 import { CloseConfirmation } from '../scenarioDrawer/edit/CloseConfirmation';
-import { StartRiskStep } from './steps/StartRiskStep';
 import { InitiativesStep } from './steps/InitiativesStep';
-import { RestRiskStep } from './steps/RestRiskStep';
 import Button from '@mui/material/Button';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { RiskStep } from './steps/RiskStep';
 
-const useStyle = makeStyles({
+const useStyle = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
     width: '100%',
   },
   container: {
-    maxWidth: '50rem',
+    maxWidth: theme.spacing(100),
   },
   header: {
     display: 'flex',
@@ -35,7 +35,7 @@ const useStyle = makeStyles({
   },
   stepper: {
     background: 'transparent',
-    padding: '1rem 0 1rem 0',
+    padding: '2rem 0 1rem 0',
   },
   steps: {
     padding: '1rem 0 1rem 0',
@@ -52,15 +52,15 @@ const useStyle = makeStyles({
   },
   saveAndNextButtons: {
     display: 'flex',
-    gap: '1rem',
+    gap: theme.spacing(2),
   },
-});
+}));
 
 const ScenarioWizardSteps = [
   'scenario',
-  'startrisiko',
-  'tiltak',
-  'restrisiko',
+  'initialRisk',
+  'measure',
+  'restRisk',
 ] as const;
 
 export type ScenarioWizardSteps = (typeof ScenarioWizardSteps)[number];
@@ -164,7 +164,7 @@ export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
                 return (
                   <Step {...stepProps}>
                     <StepLabel {...stepLabelProps}>
-                      {stepLabel.charAt(0).toUpperCase() + stepLabel.slice(1)}
+                      {t(`dictionary.${stepLabel}`)}
                     </StepLabel>
                   </Step>
                 );
@@ -175,9 +175,9 @@ export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
               {
                 {
                   [ScenarioWizardSteps[0]]: <ScenarioStep />,
-                  [ScenarioWizardSteps[1]]: <StartRiskStep />,
+                  [ScenarioWizardSteps[1]]: <RiskStep riskType="initial" />,
                   [ScenarioWizardSteps[2]]: <InitiativesStep />,
-                  [ScenarioWizardSteps[3]]: <RestRiskStep />,
+                  [ScenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
                 }[step]
               }
             </Box>

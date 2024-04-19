@@ -3,7 +3,7 @@ import { makeStyles, Radio, Theme, Typography } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
-const useStyles = makeStyles((theme: Theme) => ({
+export const useTableStyles = makeStyles((theme: Theme) => ({
   table: {
     borderCollapse: 'separate',
     borderSpacing: '0.3rem 0',
@@ -30,12 +30,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     textAlign: 'left',
     verticalAlign: 'top',
   },
-  label: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    gap: '5px',
-  },
   radio: {
     display: 'flex',
     alignItems: 'center',
@@ -46,16 +40,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface PickerTableProps {
+interface ConsequenceTableProps {
   selectedValue: number;
   handleChange: (index: number) => void;
 }
 
-export const PickerTable = ({
+export const ConsequenceTable = ({
   selectedValue,
   handleChange,
-}: PickerTableProps) => {
-  const { table, labelCell, cell, voidCell, radio } = useStyles();
+}: ConsequenceTableProps) => {
+  const { table, labelCell, cell, voidCell, radio } = useTableStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleChangeRow = (row: number) => () => {
