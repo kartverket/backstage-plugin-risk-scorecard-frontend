@@ -21,16 +21,6 @@ import { pluginRiScTranslationRef } from '../utils/translations';
 import { Dropdown } from '../utils/Dropdown';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
-export const ROSPlugin = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<Plugin />} />
-      <Route path={rosRouteRef.path} element={<Plugin />} />
-      <Route path={scenarioRouteRef.path} element={<Plugin />} />
-    </Routes>
-  );
-};
-
 const Plugin = () => {
   const params = useParams();
 
@@ -158,5 +148,15 @@ const Plugin = () => {
         <ScenarioDrawer />
       </ScenarioContext.Provider>
     </>
+  );
+};
+
+export const ROSPlugin = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<Plugin />} />
+      <Route path={rosRouteRef.path} element={<Plugin />} />
+      <Route path={scenarioRouteRef.path} element={<Plugin />} />
+    </Routes>
   );
 };
