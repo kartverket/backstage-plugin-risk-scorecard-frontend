@@ -17,7 +17,7 @@ export const ScenarioDrawer = () => {
   return (
     <Drawer
       classes={{ paper: editMode ? paperEdit : paperView }}
-      variant="persistent"
+      variant="temporary"
       anchor="right"
       open={isOpen}
       onClose={closeScenario}

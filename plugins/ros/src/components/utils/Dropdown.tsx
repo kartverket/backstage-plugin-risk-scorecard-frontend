@@ -44,7 +44,8 @@ export const Dropdown = <T,>({
         sx={{
           display: 'flex',
           flexWrap: 'wrap',
-          gridGap: 0.5,
+          marginBottom: 0,
+          paddingBottom: 0,
         }}
       >
         {selected.map((value: string) => (
@@ -69,8 +70,18 @@ export const Dropdown = <T,>({
         variant={variant}
         MenuProps={menuProps}
         renderValue={renderValue}
-        style={{ minHeight: multiple ? '4.9rem' : 'auto' }}
         error={!!error}
+        SelectDisplayProps={
+          multiple
+            ? {
+                style: {
+                  paddingBottom: 8,
+                  paddingTop: 16,
+                  minHeight: 40,
+                },
+              }
+            : {}
+        }
       >
         {options.map(name => (
           <MenuItem key={name} value={name}>

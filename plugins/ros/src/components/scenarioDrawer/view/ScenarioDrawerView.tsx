@@ -15,7 +15,7 @@ import {
 } from '../../utils/utilityfunctions';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 
 export const ScenarioDrawerView = () => {
   const { header, buttons, risikoBadge } = useScenarioDrawerContentStyles();
@@ -26,7 +26,7 @@ export const ScenarioDrawerView = () => {
   const { scenario, closeScenario, editScenario } =
     useContext(ScenarioContext)!!;
 
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <>
@@ -39,7 +39,7 @@ export const ScenarioDrawerView = () => {
             className={button}
             variant="contained"
             color="primary"
-            onClick={editScenario}
+            onClick={() => editScenario('scenario')}
             startIcon={<BorderColorOutlinedIcon />}
           >
             {t('dictionary.edit')}

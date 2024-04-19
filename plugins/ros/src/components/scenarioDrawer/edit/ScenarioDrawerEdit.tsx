@@ -24,13 +24,13 @@ import { TabPanelKonsekvens } from './tabs/konsekvens/TabPanelKonsekvens';
 import { TabPanelSannsynlighet } from './tabs/sannsynlighet/TabPanelSannsynlighet';
 import { TabPanelTiltak } from './tabs/tiltak/TabPanelTiltak';
 import { DeleteConfirmation } from './DeleteConfirmation';
-import { pluginTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export const ScenarioDrawerEdit = () => {
   const { header, buttons } = useScenarioDrawerContentStyles();
   const { h1, headerSubtitle, labelSubtitle, button, label } = useFontStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const {
     scenario,

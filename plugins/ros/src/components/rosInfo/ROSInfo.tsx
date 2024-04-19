@@ -6,7 +6,8 @@ import { useFontStyles } from '../scenarioDrawer/style';
 import { InfoCard } from '@backstage/core-components';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
+import { useRosInfoStyles } from './rosInfoStyle';
 
 interface RosInfoProps {
   ros: ROSWithMetadata;
@@ -16,8 +17,9 @@ interface RosInfoProps {
 
 export const ROSInfo = ({ ros, approveROS, edit }: RosInfoProps) => {
   const { h2, subtitle1, body2 } = useFontStyles();
+  const { infoCard } = useRosInfoStyles();
 
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Grid container>
@@ -27,8 +29,17 @@ export const ROSInfo = ({ ros, approveROS, edit }: RosInfoProps) => {
           <BorderColorOutlinedIcon />
         </IconButton>
       </Grid>
-      <Grid item xs={6} style={{ display: 'flex', flexDirection: 'column' }}>
-        <InfoCard>
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        md={8}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <InfoCard className={infoCard}>
           <Box
             style={{
               display: 'flex',
@@ -47,7 +58,7 @@ export const ROSInfo = ({ ros, approveROS, edit }: RosInfoProps) => {
           <Typography className={body2}>{ros.content.omfang}</Typography>
         </InfoCard>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} sm={6} md={4}>
         <ROSStatusComponent selectedROS={ros} publishRosFn={approveROS} />
       </Grid>
     </Grid>

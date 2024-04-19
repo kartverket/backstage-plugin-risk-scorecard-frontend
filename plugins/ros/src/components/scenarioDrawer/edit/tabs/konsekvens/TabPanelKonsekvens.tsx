@@ -1,10 +1,10 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React from 'react';
-import { PickerTable } from './KonsekvensTable';
+import { ConsequenceTable } from './KonsekvensTable';
 import { tabStyles } from '../style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../../style';
-import { pluginTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TabPanelKonsekvensProps {
@@ -18,7 +18,7 @@ export const TabPanelKonsekvens = ({
 }: TabPanelKonsekvensProps) => {
   const { tabPanel } = tabStyles();
   const { headerSubtitle } = useFontStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <TabPanel className={tabPanel} value="konsekvens">
@@ -26,7 +26,7 @@ export const TabPanelKonsekvens = ({
       <Typography className={headerSubtitle}>
         {t('scenarioDrawer.consequenceTab.subtitle')}
       </Typography>
-      <PickerTable selectedValue={selected} handleChange={setKonsekvens} />
+      <ConsequenceTable selectedValue={selected} handleChange={setKonsekvens} />
     </TabPanel>
   );
 };

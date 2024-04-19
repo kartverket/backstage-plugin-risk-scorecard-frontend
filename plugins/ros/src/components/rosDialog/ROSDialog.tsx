@@ -12,7 +12,7 @@ import { useFontStyles } from '../scenarioDrawer/style';
 import { emptyROS } from '../utils/utilityfunctions';
 import { useRosDialogStyles } from './rosDialogStyle';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 export enum ROSDialogStates {
   Closed,
@@ -50,7 +50,7 @@ export const ROSDialog = ({
 
   const classes = useRosDialogStyles();
   const { h1 } = useFontStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleCancel = () => {
     onClose();

@@ -8,7 +8,7 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import { pluginTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
 import { formatNOK } from '../utils/utilityfunctions';
@@ -37,7 +37,7 @@ export const EstimatedRiskInfoDialog = ({
 }: EstimatedRiskInfoDialogProps) => {
   const classes = useStyles();
 
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="xs">

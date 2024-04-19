@@ -7,7 +7,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import { Grid, Typography } from '@material-ui/core';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 
 interface ChipProps {
   currentRosStatus: RosStatus;
@@ -26,7 +26,7 @@ const getChipColor = (status: RosStatus, classes: ClassNameMap): string => {
 };
 
 const getChipTextStatus = (status: RosStatus): string => {
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   switch (status) {
     case RosStatus.Draft:
@@ -43,7 +43,7 @@ const getPRStatus = (
   status: RosStatus,
   classes: ClassNameMap,
 ): ReactComponentElement<any> | null => {
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   switch (status) {
     case RosStatus.SentForApproval:

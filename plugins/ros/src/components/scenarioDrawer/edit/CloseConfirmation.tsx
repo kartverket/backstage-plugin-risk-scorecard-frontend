@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 import React from 'react';
-import { pluginTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface CloseConfirmationProps {
@@ -14,7 +14,7 @@ export const CloseConfirmation = ({
   close,
   save,
 }: CloseConfirmationProps) => {
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Dialog open={isOpen}>
       <DialogTitle>{t('scenarioDrawer.closeConfirmation')}</DialogTitle>

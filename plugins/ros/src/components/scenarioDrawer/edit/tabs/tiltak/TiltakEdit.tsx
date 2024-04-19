@@ -10,7 +10,7 @@ import { AdapterDateFns as ADF } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { nb } from 'date-fns/locale/nb';
 import { useFontStyles, useInputFieldStyles } from '../../../style';
 import FormControl from '@material-ui/core/FormControl';
-import { pluginTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface TiltakProps {
@@ -63,21 +63,24 @@ export const TiltakEdit = ({
 
   const { paper, formControl } = useInputFieldStyles();
   const { label, labelSubtitle, button } = useFontStyles();
-  const { t } = useTranslationRef(pluginTranslationRef);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Paper className={paper}>
-      <Grid container>
-        <Grid item xs={6} style={{ display: 'flex', alignItems: 'center' }}>
+      <Grid container style={{ display: 'flex', rowGap: '0.7rem' }}>
+        <Grid
+          item
+          xs={12}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <Typography className={label}>
             {t('dictionary.measure')} {index}
           </Typography>
-        </Grid>
-        <Grid
-          item
-          xs={6}
-          style={{ display: 'flex', justifyContent: 'flex-end' }}
-        >
+
           <Button
             startIcon={<DeleteIcon />}
             key="dismiss"
@@ -99,28 +102,21 @@ export const TiltakEdit = ({
           />
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid
+          item
+          md={6}
+          xs={12}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <Typography className={label}>
             {t('dictionary.measureOwner')}
           </Typography>
           <Typography className={labelSubtitle}>
             {t('scenarioDrawer.measureTab.measureOwnerDescription')}
           </Typography>
-        </Grid>
-
-        <Grid item xs={4}>
-          <Typography className={label} style={{ marginTop: '3rem' }}>
-            {t('dictionary.status')}
-          </Typography>
-        </Grid>
-
-        <Grid item xs={4}>
-          <Typography className={label} style={{ marginTop: '3rem' }}>
-            {t('dictionary.deadline')}
-          </Typography>
-        </Grid>
-
-        <Grid item xs={4} style={{ marginTop: '-1rem' }}>
           <TextField
             value={tiltak.tiltakseier}
             handleChange={setTiltakseier}
@@ -128,7 +124,17 @@ export const TiltakEdit = ({
           />
         </Grid>
 
-        <Grid item xs={4} style={{ marginTop: '-1rem' }}>
+        <Grid
+          item
+          md={3}
+          xs={12}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Typography className={label}>{t('dictionary.status')}</Typography>
           <Dropdown<string>
             options={statusOptions}
             selectedValues={tiltak.status}
@@ -136,7 +142,17 @@ export const TiltakEdit = ({
           />
         </Grid>
 
-        <Grid item xs={4} style={{ marginTop: '-1rem' }}>
+        <Grid
+          item
+          md={3}
+          xs={12}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Typography className={label}>{t('dictionary.deadline')}</Typography>
           <FormControl className={formControl}>
             <LocalizationProvider dateAdapter={ADF} adapterLocale={nb}>
               <DatePicker value={tiltak.frist} onChange={setTiltaksfrist} />
