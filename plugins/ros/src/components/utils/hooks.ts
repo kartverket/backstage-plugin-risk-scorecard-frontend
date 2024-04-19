@@ -77,7 +77,7 @@ const useFetch = () => {
   const googleApi = useApi(googleAuthApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
   const baseUri = useApi(configApiRef).getString('riskAssessment.baseUrl');
-  const rosUri = `${baseUri}/api/ros/${repoInformation.owner}/${repoInformation.name}`;
+  const rosUri = `${baseUri}/api/risc/${repoInformation.owner}/${repoInformation.name}`;
   const uriToFetchAllRoses = () => `${rosUri}/all`;
   const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
   const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;
@@ -541,11 +541,11 @@ export const useFetchRoses = (
     fetchRoses(
       res => {
         const fetchedRoses: ROSWithMetadata[] = res.map(rosDTO => {
-          const content = dtoToROS(JSON.parse(rosDTO.rosContent) as ROSDTO);
+          const content = dtoToROS(JSON.parse(rosDTO.riScContent) as ROSDTO);
           return {
-            id: rosDTO.rosId,
+            id: rosDTO.riScId,
             content: content,
-            status: rosDTO.rosStatus,
+            status: rosDTO.riScStatus,
           };
         });
 
@@ -612,10 +612,10 @@ export const useFetchRoses = (
       postROS(
         newROS,
         res2 => {
-          if (!res2.rosId) throw new Error('No ROS ID returned');
+          if (!res2.riScId) throw new Error('No ROS ID returned');
 
           const ROSWithLatestSchemaVersion = {
-            id: res2.rosId,
+            id: res2.riScId,
             status: RosStatus.Draft,
             content: ros,
             schemaVersion: ros.skjemaVersjon,
@@ -628,7 +628,7 @@ export const useFetchRoses = (
           );
           setSelectedROS(ROSWithLatestSchemaVersion);
           setIsFetching(false);
-          navigate(getRosPath({ rosId: res2.rosId }));
+          navigate(getRosPath({ rosId: res2.riScId }));
         },
         () => {
           setSelectedROS(selectedROS);
