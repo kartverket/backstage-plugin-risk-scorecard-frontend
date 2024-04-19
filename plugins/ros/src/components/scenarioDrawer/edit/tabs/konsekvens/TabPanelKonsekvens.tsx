@@ -1,6 +1,6 @@
 import TabPanel from '@material-ui/lab/TabPanel';
 import React from 'react';
-import { PickerTable } from './KonsekvensTable';
+import { ConsequenceTable } from './KonsekvensTable';
 import { tabStyles } from '../style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../../style';
@@ -26,7 +26,7 @@ export const TabPanelKonsekvens = ({
       <Typography className={headerSubtitle}>
         {t('scenarioDrawer.consequenceTab.subtitle')}
       </Typography>
-      <PickerTable selectedValue={selected} handleChange={setKonsekvens} />
+      <ConsequenceTable selectedValue={selected} handleChange={setKonsekvens} />
     </TabPanel>
   );
 };

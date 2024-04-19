@@ -31,6 +31,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       risk: 'Risk',
       save: 'Save',
       saveAndClose: 'Save and close',
+      scenario: 'Scenario',
       scope: 'Scope',
       status: 'Status',
       threatActors: 'Threat actors',
@@ -115,6 +116,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
       initialRiskStep: {
         title: 'Initial risk',
         subtitle: 'The initial risk is defined by the consequence of the scenario and the probability of it occurring.',
+        consequenceSubtitle:
+          'How severe is the potential impact? If the scenario can impact more than one category, choose the highest level of consequence.',
+        probabilitySubtitle:
+          'How likely is it that this scenario will occur? If you are between two probability values, choose the higher one.',
       },
       restRiskStep: {
         title: 'Remaining risk',
@@ -126,19 +131,16 @@ export const pluginRiScTranslationRef = createTranslationRef({
     scenarioDrawer: {
       title: 'Risk scenario',
       subtitle: 'An unwanted incident that could potentially harm the component.', // harm or affect?
-      threatActorSubtitle:
-        'Someone who attempts to access or abuse the system',
+      threatActorSubtitle: 'Someone who attempts to access or abuse the system',
       vulnerabilitySubtitle:
         'Weakness in the system that the threat actor can exploit',
       consequenceTab: {
         subtitle:
-          'How severe is the potential impact? ' +
-          'If the scenario can impact more than one category, choose the highest level of consequence.',
+          'How severe is the potential impact? If the scenario can impact more than one category, choose the highest level of consequence.',
       },
       probabilityTab: {
         subtitle:
-          'How likely is it that this scenario will occur? ' +
-          'If you are between two probability values, choose the higher one.',
+          'How likely is it that this scenario will occur? If you are between two probability values, choose the higher one.',
       },
       measureTab: {
         subtitle: 'What actions should be taken to avoid the scenario?',
@@ -232,6 +234,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
         default: {
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
+
           'dictionary.cancel': 'Avbryt',
           'dictionary.close': 'Lukk',
           'dictionary.confirm': 'Bekreft',
@@ -252,25 +255,30 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.risk': 'Risiko',
           'dictionary.save': 'Lagre',
           'dictionary.saveAndClose': 'Lagre og lukk',
+          'dictionary.scenario': 'Scenario',
           'dictionary.scope': 'Omfang',
           'dictionary.status': 'Status',
           'dictionary.threatActors': 'Trusselaktører',
           'dictionary.title': 'Tittel',
           'dictionary.vulnerabilities': 'Sårbarheter',
+
           'rosStatus.statusBadge.missing': 'Venter på godkjenning av risikoeier',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
           'rosStatus.prStatus': 'Avventer godkjenning av PR i Github',
           'rosStatus.approveButton': 'Godkjenn ROS',
+
           'publishDialog.title': 'Godkjenn ROS-analyse',
           'publishDialog.checkboxLabel':
             'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
+
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.columns.measuresCount': 'Antall tiltak',
           'scenarioTable.columns.consequenceChar': 'K',
           'scenarioTable.columns.probabilityChar': 'S',
           'scenarioTable.columns.completed': 'fullførte',
+
           'riskMatrix.title': 'Risikomatrise',
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',
           'riskMatrix.estimatedRisk.suffix.thousand': '{{count}} tusen',
@@ -285,6 +293,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             '{{count}} billioner',
           'riskMatrix.estimatedRisk.unit.nokPerYear': 'kr/år',
           'riskMatrix.tooltip.title': 'Risikoscenarioer',
+
           'infoDialog.title': 'Estimert risiko',
           'infoDialog.description':
             'Den estimerte risikoen er basert på hvor stor risiko de forskjellige scenariene utgjør. Hvis det er stor sannsynlighet for at en alvorlig konsekvens skjer er det høy risiko for at det kan bli en stor kostnad for Kartverket. Kostnaden er med andre ord et forsøk på å konkretisere verdien av risiko og er summen av den estimerte risikoen for alle risikoscenariene i denne ROS-analysen.',
@@ -301,15 +310,21 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.probabilityDescription.4': 'ca daglig',
           'infoDialog.example':
             'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr/hendelse x 50 hendelser/år = 1 500 000 kr/år.',
+
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', //TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
+
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
             'Risikoen er kombinasjonen av konsekvensen av scenarioet og sannsynligheten for at det inntreffer.',
+          'scenarioStepper.initialRiskStep.consequenceSubtitle':
+            'Hvor alvorlig er den potensielle konsekvensen? Hvis konsekvensen gjelder flere kategorier velg det høyeste konsekvensnivået av disse.',
+          'scenarioStepper.initialRiskStep.probabilitySubtitle':
+            'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velg den høyeste.',
           'scenarioStepper.restRiskStep.title': 'Restrisiko',
           'scenarioStepper.restRiskStep.subtitle':
             'Hvordan endrer risikoen seg fra startrisikoen etter alle tiltakene er fullført?',
@@ -317,6 +332,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hva blir konsekvensen etter alle tiltakene er fullført?',
           'scenarioStepper.restRiskStep.probabilitySubtitle':
             'Hva blir sannsynligheten etter alle tiltakene er fullført?',
+
           'scenarioDrawer.title': 'Risikoscenario',
           'scenarioDrawer.subtitle': 'En uønsket hendelse som potensielt kan ramme komponenten',
           'scenarioDrawer.threatActorSubtitle': 'Noen som prøver å få tilgang til eller misbruke systemet',
@@ -336,6 +352,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.deleteScenarioConfirmation':
             'Er du sikker på at du vil slette scenario?',
           'scenarioDrawer.closeConfirmation': 'Vil du lagre endringene dine?',
+
           'consequenceTable.rows.1': 'Ubetydelig',
           'consequenceTable.rows.2': 'Liten',
           'consequenceTable.rows.3': 'Moderat',
@@ -384,6 +401,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Omdømme og tillit kan ikke være mer alvorlig enn 3',
           'consequenceTable.cells.reputation.5':
             'Omdømme og tillit kan ikke være mer alvorlig enn 3',
+
           'probabilityTable.rows.1': 'Svært liten',
           'probabilityTable.rows.2': 'Liten',
           'probabilityTable.rows.3': 'Moderat',

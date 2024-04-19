@@ -3,9 +3,9 @@ import React from 'react';
 import { tabStyles } from '../style';
 import { Typography } from '@material-ui/core';
 import { useFontStyles } from '../../../style';
-import { SannsynlighetTable } from './SannsynlighetTable';
 import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { ProbabilityTable } from './ProbabilityTable';
 
 interface TabPanelSannsynlighetProps {
   selected: number;
@@ -31,10 +31,7 @@ export const TabPanelSannsynlighet = ({
       <Typography className={headerSubtitle}>
         {t('scenarioDrawer.probabilityTab.subtitle')}
       </Typography>
-      <SannsynlighetTable
-        selectedValue={selected}
-        handleChange={handleChange}
-      />
+      <ProbabilityTable selectedValue={selected} handleChange={handleChange} />
     </TabPanel>
   );
 };
