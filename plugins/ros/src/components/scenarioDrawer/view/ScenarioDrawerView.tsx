@@ -20,7 +20,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 
 export const ScenarioDrawerView = () => {
-  const { header, buttons, risikoBadge } = useScenarioDrawerContentStyles();
+  const { header, buttons, risikoBadge, titleAndButton } = useScenarioDrawerContentStyles();
   const { paper } = useInputFieldStyles();
 
   const { h1, h3, body1, body2, label, button } =
@@ -67,18 +67,14 @@ export const ScenarioDrawerView = () => {
       <Paper className={paper} style={{ padding: '1rem' }}>
         <Box className={header}>
           <Grid container>
-            <Grid item xs={12} style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}
+            <Grid item xs={12} className={titleAndButton}
             >
               <Typography variant="h3" className={h3}>
                 {t('scenarioDrawer.title')}
               </Typography>
               <Button
                 className={button}
-                variant="outlined"
+                variant="text"
                 color="primary"
                 onClick={() => editScenario('scenario')}
                 startIcon={<BorderColorOutlinedIcon />}
@@ -134,72 +130,66 @@ export const ScenarioDrawerView = () => {
       >
 
         <Paper className={paper} style={{ padding: '1rem' }}>
-          <Grid item xs={12} style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+          <Grid item xs={12} className={titleAndButton}>
             <Typography className={h3}>
               {t('dictionary.initialRisk')}
             </Typography>
             <Button
               className={button}
-              variant="outlined"
+              variant="text"
               color="primary"
               onClick={() => editScenario('initialRisk')}
               startIcon={<BorderColorOutlinedIcon />}
             />
           </Grid>
 
-          <Grid item xs={12}>
-            <Grid container>
 
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '0.5rem',
+                alignItems: 'center',
+              }}
+            >
+              <Box
+                className={risikoBadge}
+                style={{
+                  backgroundColor: getRiskMatrixColor(scenario.risiko),
+                }}
+              />
               <Grid
                 item
                 xs={12}
                 style={{
                   display: 'flex',
-                  flexDirection: 'row',
-                  gap: '0.5rem',
-                  alignItems: 'center',
+                  flexDirection: 'column',
+                  alignItems: 'start',
                 }}
               >
-                <Box
-                  className={risikoBadge}
-                  style={{
-                    backgroundColor: getRiskMatrixColor(scenario.risiko),
-                  }}
-                />
-                <Grid
-                  item
-                  xs={12}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'start',
-                  }}
-                >
-                  <Typography className={label}>
-                    {t('dictionary.consequence')}: {getKonsekvensLevel(scenario.risiko)}
-                  </Typography>
-                  <Typography className={label}>
-                    {t('dictionary.probability')}: {getSannsynlighetLevel(scenario.risiko)}
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} style={{ paddingBottom: 0 }}>
                 <Typography className={label}>
-                  {t('dictionary.estimatedRisk')}
+                  {t('dictionary.consequence')}: {getKonsekvensLevel(scenario.risiko)}
+                </Typography>
+                <Typography className={label}>
+                  {t('dictionary.probability')}: {getSannsynlighetLevel(scenario.risiko)}
                 </Typography>
               </Grid>
-              <Grid item xs={12} style={{ paddingTop: 0 }}>
-                <Typography className={body1}>
-                  {formatNOK(
-                    scenario.risiko.konsekvens * scenario.risiko.sannsynlighet,
-                  )}{' '}
-                  {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
-                </Typography>
-              </Grid>
+            </Grid>
+            <Grid item xs={12} style={{ paddingBottom: 0 }}>
+              <Typography className={label}>
+                {t('dictionary.estimatedRisk')}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} style={{ paddingTop: 0 }}>
+              <Typography className={body1}>
+                {formatNOK(
+                  scenario.risiko.konsekvens * scenario.risiko.sannsynlighet,
+                )}{' '}
+                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+              </Typography>
             </Grid>
           </Grid>
         </Paper>
@@ -218,73 +208,66 @@ export const ScenarioDrawerView = () => {
         </Grid>
 
         <Paper className={paper} style={{ padding: '1rem' }}>
-          <Grid item xs={12} style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+          <Grid item xs={12} className={titleAndButton}>
             <Typography className={h3}>
               {t('dictionary.restRisk')}
             </Typography>
             <Button
               className={button}
-              variant="outlined"
+              variant="text"
               color="primary"
               onClick={() => editScenario('restRisk')}
               startIcon={<BorderColorOutlinedIcon />}
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '0.5rem',
+                alignItems: 'center',
+              }}
+            >
+              <Box
+                className={risikoBadge}
+                style={{
+                  backgroundColor: getRiskMatrixColor(scenario.restrisiko),
+                }}
+              />
 
-            <Grid container>
               <Grid
                 item
                 xs={12}
                 style={{
                   display: 'flex',
-                  flexDirection: 'row',
-                  gap: '0.5rem',
-                  alignItems: 'center',
+                  flexDirection: 'column',
+                  alignItems: 'start',
                 }}
               >
-                <Box
-                  className={risikoBadge}
-                  style={{
-                    backgroundColor: getRiskMatrixColor(scenario.restrisiko),
-                  }}
-                />
-
-                <Grid
-                  item
-                  xs={12}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'start',
-                  }}
-                >
-                  <Typography className={label}>
-                    {t('dictionary.consequence')}: {getKonsekvensLevel(scenario.restrisiko)}
-                  </Typography>
-                  <Typography className={label}>
-                    {t('dictionary.probability')}: {getSannsynlighetLevel(scenario.restrisiko)}
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} style={{ paddingBottom: 0 }}>
                 <Typography className={label}>
-                  {t('dictionary.estimatedRisk')}
+                  {t('dictionary.consequence')}: {getKonsekvensLevel(scenario.restrisiko)}
+                </Typography>
+                <Typography className={label}>
+                  {t('dictionary.probability')}: {getSannsynlighetLevel(scenario.restrisiko)}
                 </Typography>
               </Grid>
-              <Grid item xs={12} style={{ paddingTop: 0 }}>
-                <Typography className={body1}>
-                  {formatNOK(
-                    scenario.restrisiko.konsekvens * scenario.restrisiko.sannsynlighet,
-                  )}{' '}
-                  {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
-                </Typography>
-              </Grid>
+            </Grid>
+            <Grid item xs={12} style={{ paddingBottom: 0 }}>
+              <Typography className={label}>
+                {t('dictionary.estimatedRisk')}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} style={{ paddingTop: 0 }}>
+              <Typography className={body1}>
+                {formatNOK(
+                  scenario.restrisiko.konsekvens * scenario.restrisiko.sannsynlighet,
+                )}{' '}
+                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+              </Typography>
             </Grid>
           </Grid>
         </Paper>
@@ -292,10 +275,7 @@ export const ScenarioDrawerView = () => {
 
       <Box>
         <Paper className={paper} style={{ padding: '1rem' }}>
-          <Grid item xs={12} style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+          <Grid item xs={12} className={titleAndButton} style={{
             marginBottom: '12px'
           }}>
             <Typography className={h3} gutterBottom>
@@ -303,7 +283,7 @@ export const ScenarioDrawerView = () => {
             </Typography>
             <Button
               className={button}
-              variant="outlined"
+              variant="text"
               color="primary"
               onClick={() => editScenario('measure')}
               startIcon={<BorderColorOutlinedIcon />}
