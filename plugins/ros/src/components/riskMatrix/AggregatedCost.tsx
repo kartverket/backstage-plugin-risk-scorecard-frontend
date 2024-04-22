@@ -6,6 +6,7 @@ import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
 import { formatNOK } from '../utils/utilityfunctions';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { useFontStyles } from '../scenarioDrawer/style';
 
 interface AggregatedCostProps {
   ros: ROS;
@@ -35,12 +36,15 @@ export const AggregatedCost = ({ ros, startRisiko }: AggregatedCostProps) => {
 
   const [showDialog, setShowDialog] = useState(false);
   const { outerBox, innerBox } = useStyles();
+  const { label2, body2 } = useFontStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Box className={outerBox}>
-      <Typography>{t('riskMatrix.estimatedRisk.title')}</Typography>
+      <Typography className={label2}>
+        {t('riskMatrix.estimatedRisk.title')}
+      </Typography>
       <Box className={innerBox}>
-        <Typography variant="h5">
+        <Typography className={body2}>
           {formatNumber(cost, t)}{' '}
           {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
         </Typography>
