@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { Button, CircularProgress, Grid, Typography } from '@material-ui/core';
 import { ContentHeader, SupportButton } from '@backstage/core-components';
-import { useFetchRoses, useScenarioDrawer } from '../utils/hooks';
-import { useLoadingStyles } from './rosPluginStyle';
+import { useFetchRiScs, useScenarioDrawer } from '../utils/hooks';
 import { useFontStyles } from '../scenarioDrawer/style';
 import { useParams } from 'react-router';
-import { ROSDialog, ROSDialogStates } from '../rosDialog/ROSDialog';
 import { Route, Routes } from 'react-router-dom';
-import { rosRouteRef, scenarioRouteRef } from '../../routes';
+import { riScRouteRef, scenarioRouteRef } from '../../routes';
 import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
 import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { ScenarioTable } from '../scenarioTable/ScenarioTable';
-import { ROSInfo } from '../rosInfo/ROSInfo';
 import { ScenarioContext } from './ScenarioContext';
 import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../utils/utilityfunctions';
@@ -20,32 +17,36 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { Dropdown } from '../utils/Dropdown';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
+import { useLoadingStyles } from './riScPluginStyle';
+import { RiScInfo } from '../riScInfo/RiScInfo';
 
 const Plugin = () => {
   const params = useParams();
 
-  const [ROSDialogState, setROSDialogState] = useState<ROSDialogStates>(
-    ROSDialogStates.Closed,
+  const [RiScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
+    RiScDialogStates.Closed,
   );
 
-  const openCreateRosDialog = () => setROSDialogState(ROSDialogStates.Create);
-  const openEditRosDialog = () => setROSDialogState(ROSDialogStates.Edit);
-  const closeRosDialog = () => setROSDialogState(ROSDialogStates.Closed);
+  const openCreateRiScDialog = () =>
+    setRiScDialogState(RiScDialogStates.Create);
+  const openEditRiScDialog = () => setRiScDialogState(RiScDialogStates.Edit);
+  const closeRiScDialog = () => setRiScDialogState(RiScDialogStates.Closed);
 
   const {
-    selectedROS,
-    roses,
-    selectRos,
+    selectedRiSc,
+    riScs,
+    selectRiSc,
     isFetching,
-    createNewROS,
-    updateROS,
-    approveROS,
+    createNewRiSc,
+    updateRiSc,
+    approveRiSc,
     response,
-  } = useFetchRoses(params.rosId);
+  } = useFetchRiScs(params.riScId);
 
   const scenario = useScenarioDrawer(
-    selectedROS ?? null,
-    updateROS,
+    selectedRiSc ?? null,
+    updateRiSc,
     params.scenarioId,
   );
 
@@ -78,7 +79,7 @@ const Plugin = () => {
             )}
 
             <Grid container spacing={4}>
-              {roses !== null && roses.length !== 0 && (
+              {riScs !== null && riScs.length !== 0 && (
                 <Grid
                   item
                   xs={12}
@@ -89,9 +90,9 @@ const Plugin = () => {
                   }}
                 >
                   <Dropdown<string>
-                    options={roses.map(ros => ros.content.tittel) ?? []}
-                    selectedValues={selectedROS?.content.tittel ?? ''}
-                    handleChange={title => selectRos(title)}
+                    options={riScs.map(riSc => riSc.content.title) ?? []}
+                    selectedValues={selectedRiSc?.content.title ?? ''}
+                    handleChange={title => selectRiSc(title)}
                     variant="standard"
                   />
                 </Grid>
@@ -103,7 +104,7 @@ const Plugin = () => {
                     startIcon={<AddCircleOutlineIcon />}
                     variant="text"
                     color="primary"
-                    onClick={openCreateRosDialog}
+                    onClick={openCreateRiScDialog}
                     className={button}
                     style={{
                       minWidth: '205px',
@@ -114,20 +115,20 @@ const Plugin = () => {
                 </Grid>
               )}
 
-              {selectedROS && (
+              {selectedRiSc && (
                 <>
                   <Grid item xs={12}>
-                    <ROSInfo
-                      ros={selectedROS}
-                      approveROS={approveROS}
-                      edit={openEditRosDialog}
+                    <RiScInfo
+                      riSc={selectedRiSc}
+                      approveRiSc={approveRiSc}
+                      edit={openEditRiScDialog}
                     />
                   </Grid>
                   <Grid item xs md={7} lg={8}>
-                    <ScenarioTable ros={selectedROS.content} />
+                    <ScenarioTable riSc={selectedRiSc.content} />
                   </Grid>
                   <Grid item xs md={5} lg={4}>
-                    <RiskMatrix ros={selectedROS.content} />
+                    <RiskMatrix riSc={selectedRiSc.content} />
                   </Grid>
                 </>
               )}
@@ -135,13 +136,13 @@ const Plugin = () => {
           </>
         )}
 
-        {ROSDialogState !== ROSDialogStates.Closed && (
-          <ROSDialog
-            onClose={closeRosDialog}
-            createNewRos={createNewROS}
-            updateRos={updateROS}
-            ros={selectedROS}
-            dialogState={ROSDialogState}
+        {RiScDialogState !== RiScDialogStates.Closed && (
+          <RiScDialog
+            onClose={closeRiScDialog}
+            createNewRiSc={createNewRiSc}
+            updateRiSc={updateRiSc}
+            riSc={selectedRiSc}
+            dialogState={RiScDialogState}
           />
         )}
 
@@ -151,11 +152,11 @@ const Plugin = () => {
   );
 };
 
-export const ROSPlugin = () => {
+export const RiScPlugin = () => {
   return (
     <Routes>
       <Route path="/" element={<Plugin />} />
-      <Route path={rosRouteRef.path} element={<Plugin />} />
+      <Route path={riScRouteRef.path} element={<Plugin />} />
       <Route path={scenarioRouteRef.path} element={<Plugin />} />
     </Routes>
   );

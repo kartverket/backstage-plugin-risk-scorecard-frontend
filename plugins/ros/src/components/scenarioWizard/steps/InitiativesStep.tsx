@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
+import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import { useFontStyles } from '../../scenarioDrawer/style';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -33,7 +33,7 @@ export const InitiativesStep = () => {
         <TextField
           label={t('scenarioDrawer.measureTab.existingMeasure')}
           subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
-          value={scenario.eksisterendeTiltak}
+          value={scenario.existingActions}
           handleChange={setEksisterendeTiltak}
           minRows={3}
         />
@@ -41,7 +41,7 @@ export const InitiativesStep = () => {
       <Typography variant="h6" className={tiltakSubtitle}>
         {t('scenarioDrawer.measureTab.plannedMeasures')}
       </Typography>
-      {scenario.tiltak.map((tiltak, index) => (
+      {scenario.actions.map((tiltak, index) => (
         <TiltakEdit
           tiltak={tiltak}
           index={index + 1}

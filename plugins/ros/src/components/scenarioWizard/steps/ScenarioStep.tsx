@@ -2,13 +2,13 @@ import { Box, Grid, Typography } from '@material-ui/core';
 import { TextField } from '../../utils/Textfield';
 import { Dropdown } from '../../utils/Dropdown';
 import {
-  sårbarheterOptions,
-  trusselaktørerOptions,
+  vulnerabilitiesOptions,
+  threatActorsOptions,
 } from '../../utils/constants';
 import React, { useContext } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
+import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import { useFontStyles } from '../../scenarioDrawer/style';
 
 export const ScenarioStep = () => {
@@ -37,7 +37,7 @@ export const ScenarioStep = () => {
       <Grid item xs={12}>
         <TextField
           label={t('dictionary.title')}
-          value={scenario.tittel}
+          value={scenario.title}
           error={scenarioErrors.tittel}
           required
           minRows={1}
@@ -64,8 +64,8 @@ export const ScenarioStep = () => {
           </Typography>
         </Box>
         <Dropdown<string[]>
-          selectedValues={scenario.trusselaktører}
-          options={trusselaktørerOptions}
+          selectedValues={scenario.threatActors}
+          options={threatActorsOptions}
           handleChange={setTrusselaktører}
         />
       </Grid>
@@ -89,15 +89,15 @@ export const ScenarioStep = () => {
           </Typography>
         </Box>
         <Dropdown<string[]>
-          selectedValues={scenario.sårbarheter}
-          options={sårbarheterOptions}
+          selectedValues={scenario.vulnerabilities}
+          options={vulnerabilitiesOptions}
           handleChange={setSårbarheter}
         />
       </Grid>
       <Grid item xs={12}>
         <TextField
           label={t('dictionary.description')}
-          value={scenario.beskrivelse}
+          value={scenario.description}
           minRows={4}
           handleChange={setBeskrivelse}
         />

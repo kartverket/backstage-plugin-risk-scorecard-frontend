@@ -1,7 +1,6 @@
 import React from 'react';
-import { Tiltak as ITiltak } from '../../../../utils/types';
+import { Action as ITiltak } from '../../../../utils/types';
 import { Dropdown } from '../../../../utils/Dropdown';
-import schema from '../../../../../ros_schema_no_v1_0.json';
 import { TextField } from '../../../../utils/Textfield';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -12,6 +11,7 @@ import { useFontStyles, useInputFieldStyles } from '../../../style';
 import FormControl from '@material-ui/core/FormControl';
 import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { actionStatusOptions } from '../../../../utils/constants';
 
 interface TiltakProps {
   tiltak: ITiltak;
@@ -26,14 +26,10 @@ export const TiltakEdit = ({
   updateTiltak,
   deleteTiltak,
 }: TiltakProps) => {
-  const statusOptions =
-    schema.properties.scenarier.items.properties.tiltak.items.properties.status
-      .enum;
-
   const setBeskrivelse = (beskrivelse: string) => {
     updateTiltak({
       ...tiltak,
-      beskrivelse: beskrivelse,
+      description: beskrivelse,
     });
   };
 
@@ -49,7 +45,7 @@ export const TiltakEdit = ({
       const formattedDate = new Date(newValue).toISOString().split('T')[0];
       updateTiltak({
         ...tiltak,
-        frist: formattedDate,
+        deadline: formattedDate,
       });
     }
   };
@@ -57,7 +53,7 @@ export const TiltakEdit = ({
   const setTiltakseier = (tiltakseier: string) => {
     updateTiltak({
       ...tiltak,
-      tiltakseier: tiltakseier,
+      owner: tiltakseier,
     });
   };
 
@@ -96,7 +92,7 @@ export const TiltakEdit = ({
         <Grid item xs={12}>
           <TextField
             label={t('dictionary.description')}
-            value={tiltak.beskrivelse}
+            value={tiltak.description}
             handleChange={setBeskrivelse}
             minRows={1}
           />
@@ -118,7 +114,7 @@ export const TiltakEdit = ({
             {t('scenarioDrawer.measureTab.measureOwnerDescription')}
           </Typography>
           <TextField
-            value={tiltak.tiltakseier}
+            value={tiltak.owner}
             handleChange={setTiltakseier}
             minRows={1}
           />
@@ -136,7 +132,7 @@ export const TiltakEdit = ({
         >
           <Typography className={label}>{t('dictionary.status')}</Typography>
           <Dropdown<string>
-            options={statusOptions}
+            options={actionStatusOptions}
             selectedValues={tiltak.status}
             handleChange={setStatus}
           />
@@ -155,7 +151,7 @@ export const TiltakEdit = ({
           <Typography className={label}>{t('dictionary.deadline')}</Typography>
           <FormControl className={formControl}>
             <LocalizationProvider dateAdapter={ADF} adapterLocale={nb}>
-              <DatePicker value={tiltak.frist} onChange={setTiltaksfrist} />
+              <DatePicker value={tiltak.deadline} onChange={setTiltaksfrist} />
             </LocalizationProvider>
           </FormControl>
         </Grid>

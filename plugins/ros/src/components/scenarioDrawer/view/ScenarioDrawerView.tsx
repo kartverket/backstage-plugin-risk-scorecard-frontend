@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
-import { useFontStyles, useInputFieldStyles, useScenarioDrawerContentStyles } from '../style';
+import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { CloseConfirmation } from '../edit/CloseConfirmation';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DeleteConfirmation } from '../edit/DeleteConfirmation';
-import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
+import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import { TiltakView } from './TiltakView';
 import { RiskView } from './RiskView';
 import { ScenarioView } from './ScenarioView';
@@ -16,7 +16,6 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 
 export const ScenarioDrawerView = () => {
   const { buttons, titleAndButton, section } = useScenarioDrawerContentStyles();
-  const { paper } = useInputFieldStyles();
 
   const { h3, button } = useFontStyles();
 
@@ -79,8 +78,8 @@ export const ScenarioDrawerView = () => {
             >
             </Button>
           </Grid>
-          {scenario.tiltak.map((tiltak, index) => (
-            <TiltakView tiltak={tiltak} index={index + 1} />
+          {scenario.actions.map((action, index) => (
+            <TiltakView tiltak={action} index={index + 1} />
           ))}
         </Paper>
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { rosPlugin, RosPage } from '../src/plugin';
+import { riScPlugin, RiScPage } from '../src';
 
 createDevApp()
-  .registerPlugin(rosPlugin)
+  .registerPlugin(riScPlugin)
   .addPage({
-    element: <RosPage />,
+    element: <RiScPage />,
     title: 'Root Page',
-    path: '/ros',
+    path: '/risc',
   })
   .render();

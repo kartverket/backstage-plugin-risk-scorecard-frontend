@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tiltak as ITiltak } from '../../utils/types';
+import { Action as ITiltak } from '../../utils/types';
 import { Grid, Paper, Typography } from '@material-ui/core';
 import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
 import { useTiltakViewStyles } from './style';
@@ -44,19 +44,21 @@ export const TiltakView = ({ tiltak, index }: TiltakProps) => {
         </Grid>
 
         <Grid item xs={12}>
-          <Typography className={body2}>{tiltak.beskrivelse}</Typography>
+          <Typography className={body2}>{tiltak.description}</Typography>
         </Grid>
 
         <Grid item xs={4}>
           <Typography className={label}>
             {t('dictionary.measureOwner')}
           </Typography>
-          <Typography className={body2}>{tiltak.tiltakseier}</Typography>
+          <Typography className={body2}>{tiltak.owner}</Typography>
         </Grid>
 
         <Grid item xs={4}>
           <Typography className={label}>{t('dictionary.deadline')}</Typography>
-          <Typography className={body2}>{formatDate(tiltak.frist)}</Typography>
+          <Typography className={body2}>
+            {formatDate(tiltak.deadline)}
+          </Typography>
         </Grid>
 
         <Grid item xs={4} />

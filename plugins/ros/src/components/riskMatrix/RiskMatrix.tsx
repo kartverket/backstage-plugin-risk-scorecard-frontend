@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import { useRiskMatrixStyles } from './style';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
-import { ROS } from '../utils/types';
+import { RiSc } from '../utils/types';
 import TabContext from '@material-ui/lab/TabContext';
 import { Tabs } from './Tabs';
 import { riskMatrix } from '../utils/constants';
@@ -13,7 +13,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useFontStyles } from '../scenarioDrawer/style';
 
-export const RiskMatrix = ({ ros }: { ros: ROS }) => {
+export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
   const indices = [0, 1, 2, 3, 4];
   const {
     riskSummary,
@@ -36,9 +36,9 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
     <InfoCard title={t('riskMatrix.title')}>
       <TabContext value={tab}>
         <Tabs setTab={setTab} />
-        {ros.scenarier.length > 0 && (
+        {riSc.scenarios.length > 0 && (
           <Box className={riskSummary}>
-            <AggregatedCost ros={ros} startRisiko={tab === 'startrisiko'} />
+            <AggregatedCost riSc={riSc} initialRisk={tab === 'startrisiko'} />
           </Box>
         )}
         <Box className={gridWrapper}>
@@ -59,7 +59,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
                     style={{ backgroundColor: riskMatrix[row][col] }}
                   >
                     <RiskMatrixScenarioCount
-                      ros={ros}
+                      riSc={riSc}
                       probability={col}
                       consequence={4 - row}
                       startRisiko={tab === 'startrisiko'}

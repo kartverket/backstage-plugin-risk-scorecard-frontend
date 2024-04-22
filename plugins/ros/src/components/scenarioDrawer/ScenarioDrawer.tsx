@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Drawer } from '@material-ui/core';
 import { useScenarioDrawerStyles } from './style';
-import { ScenarioContext } from '../rosPlugin/ScenarioContext';
+import { ScenarioContext } from '../riScPlugin/ScenarioContext';
 import { ScenarioDrawerEdit } from './edit/ScenarioDrawerEdit';
 import { ScenarioDrawerView } from './view/ScenarioDrawerView';
 import { ScenarioDrawerState } from '../utils/hooks';

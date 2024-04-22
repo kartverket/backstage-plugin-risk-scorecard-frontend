@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { RosStatus } from '../../utils/types';
+import { RiScStatus } from '../../utils/types';
 import { useStatusChipStyles, useStatusTextStyles } from './statusChipStyle';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -15,55 +15,55 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 
 interface ChipProps {
-  currentRosStatus: RosStatus;
+  currentRiScStatus: RiScStatus;
 }
 
-const getChipColor = (status: RosStatus, classes: ClassNameMap): string => {
+const getChipColor = (status: RiScStatus, classes: ClassNameMap): string => {
   switch (status) {
-    case RosStatus.Draft:
-      return classes.rosDraft;
-    case RosStatus.SentForApproval:
-    case RosStatus.Published:
-      return classes.rosPublished;
+    case RiScStatus.Draft:
+      return classes.riScDraft;
+    case RiScStatus.SentForApproval:
+    case RiScStatus.Published:
+      return classes.riScPublished;
     default:
-      return classes.rosDraft;
+      return classes.riScDraft;
   }
 };
 
-const chipText = (status: RosStatus): string => {
+const chipText = (status: RiScStatus): string => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   switch (status) {
-    case RosStatus.Draft:
+    case RiScStatus.Draft:
       return t('rosStatus.statusBadge.missing');
-    case RosStatus.SentForApproval:
-    case RosStatus.Published:
+    case RiScStatus.SentForApproval:
+    case RiScStatus.Published:
       return t('rosStatus.statusBadge.approved');
     default:
       return t('rosStatus.statusBadge.error');
   }
 };
 
-const getChipTextStatus = (status: RosStatus): ReactNode => {
+const getChipTextStatus = (status: RiScStatus): ReactNode => {
   const { statusChipText } = useStatusChipStyles();
   return <span className={statusChipText}>{chipText(status)}</span>;
 };
 
 const getPRStatus = (
-  status: RosStatus,
+  status: RiScStatus,
   classes: ClassNameMap,
 ): ReactComponentElement<any> | null => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   switch (status) {
-    case RosStatus.SentForApproval:
+    case RiScStatus.SentForApproval:
       return (
         <Typography className={classes.prStatus}>
           <GitHubIcon className={classes.prIcon} />
           {t('rosStatus.prStatus')}
         </Typography>
       );
-    case RosStatus.Draft:
-    case RosStatus.Published:
+    case RiScStatus.Draft:
+    case RiScStatus.Published:
     default:
       return (
         <Typography className={classes.prStatus}>
@@ -73,16 +73,16 @@ const getPRStatus = (
       );
   }
 };
-export const StatusChip = ({ currentRosStatus }: ChipProps) => {
+export const StatusChip = ({ currentRiScStatus }: ChipProps) => {
   const chipClasses: ClassNameMap = useStatusChipStyles();
   const textClasses: ClassNameMap = useStatusTextStyles();
 
   const [chipColorClass, setChipColorClass] = useState<string | null>(null);
 
   useEffect(() => {
-    const chipColor = getChipColor(currentRosStatus, chipClasses);
+    const chipColor = getChipColor(currentRiScStatus, chipClasses);
     setChipColorClass(chipColor);
-  }, [currentRosStatus, chipClasses]);
+  }, [currentRiScStatus, chipClasses]);
 
   return (
     <Grid
@@ -96,12 +96,12 @@ export const StatusChip = ({ currentRosStatus }: ChipProps) => {
           color="primary"
           size="medium"
           variant="outlined"
-          label={getChipTextStatus(currentRosStatus)}
+          label={getChipTextStatus(currentRiScStatus)}
           icon={<CircleIcon className={chipClasses.statusIcon} />}
           className={[chipColorClass, chipClasses.statusChip].join(' ')}
         />
       </Grid>
-      <Grid item>{getPRStatus(currentRosStatus, textClasses)}</Grid>
+      <Grid item>{getPRStatus(currentRiScStatus, textClasses)}</Grid>
     </Grid>
   );
 };
