@@ -65,12 +65,7 @@ const getPRStatus = (
     case RiScStatus.Draft:
     case RiScStatus.Published:
     default:
-      return (
-        <Typography className={classes.prStatus}>
-          <GitHubIcon className={classes.prIcon} />
-          {t('rosStatus.prStatus')}
-        </Typography>
-      );
+      return null;
   }
 };
 export const StatusChip = ({ currentRiScStatus }: ChipProps) => {
