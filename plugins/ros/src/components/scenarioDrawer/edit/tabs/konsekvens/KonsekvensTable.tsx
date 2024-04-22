@@ -53,7 +53,6 @@ export const ConsequenceTable = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleChangeRow = (row: number) => () => {
-    console.log('row', row);
     handleChange(row);
   };
 
