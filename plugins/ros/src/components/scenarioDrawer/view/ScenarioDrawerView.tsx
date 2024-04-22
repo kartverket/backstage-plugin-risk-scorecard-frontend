@@ -15,7 +15,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 
 
 export const ScenarioDrawerView = () => {
-  const { buttons, titleAndButton } = useScenarioDrawerContentStyles();
+  const { buttons, titleAndButton, section } = useScenarioDrawerContentStyles();
   const { paper } = useInputFieldStyles();
 
   const { h3, button } = useFontStyles();
@@ -63,7 +63,7 @@ export const ScenarioDrawerView = () => {
 
       {/* Tiltak */}
       <Box>
-        <Paper className={paper} style={{ padding: '1rem' }}>
+        <Paper className={section} style={{ padding: '1rem' }}>
           <Grid item xs={12} className={titleAndButton} style={{
             marginBottom: '12px'
           }}>

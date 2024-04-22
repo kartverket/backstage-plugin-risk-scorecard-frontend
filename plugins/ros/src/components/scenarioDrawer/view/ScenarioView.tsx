@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
-import { useScenarioDrawerContentStyles, useInputFieldStyles, useFontStyles } from '../style';
+import { useScenarioDrawerContentStyles, useFontStyles } from '../style';
 import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import Divider from '@mui/material/Divider';
@@ -10,8 +10,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export const ScenarioView = () => {
 
-    const { header, titleAndButton } = useScenarioDrawerContentStyles();
-    const { paper } = useInputFieldStyles();
+    const { header, titleAndButton, section } = useScenarioDrawerContentStyles();
 
     const { h1, h3, body2, label, button } =
         useFontStyles();
@@ -24,7 +23,7 @@ export const ScenarioView = () => {
 
     return (
 
-        <Paper className={paper} style={{ padding: '1rem' }}>
+        <Paper className={section} style={{ padding: '1rem' }}>
             <Box className={header}>
                 <Grid container>
                     <Grid item xs={12} className={titleAndButton}

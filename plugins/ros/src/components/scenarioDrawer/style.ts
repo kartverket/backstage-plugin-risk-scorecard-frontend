@@ -56,6 +56,11 @@ export const useScenarioDrawerContentStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  section: {
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    backgroundColor: theme.palette.type === 'dark' ? '#333333' : 'rgba(0, 0, 0, 0.1)',
   }
 }));
 

@@ -16,9 +16,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export const RiskView = () => {
 
-    const { risikoBadge, titleAndButton } = useScenarioDrawerContentStyles();
-    const { paper } = useInputFieldStyles();
-
+    const { risikoBadge, titleAndButton, section } = useScenarioDrawerContentStyles();
     const { h3, body1, label, button } = useFontStyles();
 
 
@@ -42,7 +40,7 @@ export const RiskView = () => {
                 }
             >
 
-                <Paper className={paper} style={{ padding: '1rem' }}>
+                <Paper className={section} style={{ padding: '1rem' }}>
                     <Grid item xs={12} className={titleAndButton}>
                         <Typography className={h3}>
                             {t('dictionary.initialRisk')}
@@ -120,7 +118,7 @@ export const RiskView = () => {
                     <KeyboardDoubleArrowRightIcon fontSize="large" />
                 </Grid>
 
-                <Paper className={paper} style={{ padding: '1rem' }}>
+                <Paper className={section} style={{ padding: '1rem' }}>
                     <Grid item xs={12} className={titleAndButton}>
                         <Typography className={h3}>
                             {t('dictionary.restRisk')}
