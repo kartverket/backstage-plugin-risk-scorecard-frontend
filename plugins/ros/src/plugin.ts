@@ -3,21 +3,21 @@ import {
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
 
-import { rootRouteRef, rosRouteRef, scenarioRouteRef } from './routes';
+import { rootRouteRef, riScRouteRef, scenarioRouteRef } from './routes';
 
-export const rosPlugin = createPlugin({
-  id: 'ros',
+export const riScPlugin = createPlugin({
+  id: 'riSc',
   routes: {
     root: rootRouteRef,
     scenario: scenarioRouteRef,
-    ros: rosRouteRef,
+    riSc: riScRouteRef,
   },
 });
 
-export const RosPage = rosPlugin.provide(
+export const RiScPage = riScPlugin.provide(
   createRoutableExtension({
-    name: 'RosPage',
-    component: () => import('./components/rosPlugin').then(m => m.ROSPlugin),
+    name: 'RiScPage',
+    component: () => import('./components/riScPlugin').then(m => m.RiScPlugin),
     mountPoint: rootRouteRef,
   }),
 );

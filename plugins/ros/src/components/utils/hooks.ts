@@ -11,13 +11,13 @@ import {
 import {
   GithubRepoInfo,
   ProcessingStatus,
-  Risiko,
-  ROS,
-  RosStatus,
-  ROSWithMetadata,
+  Risk,
+  RiSc,
+  RiScStatus,
+  RiScWithMetadata,
   Scenario,
   SubmitResponseObject,
-  Tiltak,
+  Action,
 } from './types';
 import {
   emptyScenario,
@@ -25,19 +25,19 @@ import {
   requiresNewApproval,
 } from './utilityfunctions';
 import {
-  konsekvensOptions,
-  sannsynlighetOptions,
+  consequenceOptions,
+  probabilityOptions,
   scenarioTittelError,
 } from './constants';
-import { rosRouteRef, scenarioRouteRef } from '../../routes';
+import { riScRouteRef, scenarioRouteRef } from '../../routes';
 import { useLocation, useNavigate } from 'react-router';
 import {
-  dtoToROS,
-  ProcessROSResultDTO,
-  PublishROSResultDTO,
-  ROSContentResultDTO,
-  ROSDTO,
-  rosToDTOString,
+  dtoToRiSc,
+  ProcessRiScResultDTO,
+  PublishRiScResultDTO,
+  RiScContentResultDTO,
+  RiScDTO,
+  riScToDTOString,
 } from './DTOs';
 import { useEffectOnce } from 'react-use';
 import { ScenarioWizardSteps } from '../scenarioWizard/ScenarioWizard';
@@ -77,11 +77,11 @@ const useFetch = () => {
   const googleApi = useApi(googleAuthApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
   const baseUri = useApi(configApiRef).getString('riskAssessment.baseUrl');
-  const rosUri = `${baseUri}/api/risc/${repoInformation.owner}/${repoInformation.name}`;
-  const uriToFetchAllRoses = () => `${rosUri}/all`;
-  const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
-  const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;
-  const uriToFetchLatestJSONSchema = () => `${baseUri}/api/ros/schemas/latest`;
+  const riScUri = `${baseUri}/api/risc/${repoInformation.owner}/${repoInformation.name}`;
+  const uriToFetchAllRiScs = () => `${riScUri}/all`;
+  const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
+  const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
+  const uriToFetchLatestJSONSchema = () => `${baseUri}/api/risc/schemas/latest`;
 
   const [response, setResponse] = useResponse();
 
@@ -120,17 +120,22 @@ const useFetch = () => {
     });
   };
 
-  const fetchRoses = (
-    onSuccess: (response: ROSContentResultDTO[]) => void,
+  const fetchRiScs = (
+    onSuccess: (response: RiScContentResultDTO[]) => void,
     onError?: () => void,
   ) =>
-    fetch<ROSContentResultDTO[]>(uriToFetchAllRoses(), 'GET', onSuccess, () => {
-      if (onError) onError();
-      setResponse({
-        statusMessage: 'Failed to fetch ROSes',
-        status: ProcessingStatus.ErrorWhenFetchingRiScs,
-      });
-    });
+    fetch<RiScContentResultDTO[]>(
+      uriToFetchAllRiScs(),
+      'GET',
+      onSuccess,
+      () => {
+        if (onError) onError();
+        setResponse({
+          statusMessage: 'Failed to fetch risc scorecards',
+          status: ProcessingStatus.ErrorWhenFetchingRiScs,
+        });
+      },
+    );
 
   const fetchLatestJSONSchema = (
     onSuccess: (response: string) => void,
@@ -145,13 +150,13 @@ const useFetch = () => {
       });
     });
 
-  const postROS = (
-    ros: ROS,
-    onSuccess?: (response: ProcessROSResultDTO) => void,
-    onError?: (error: ProcessROSResultDTO) => void,
+  const postRiSc = (
+    riSc: RiSc,
+    onSuccess?: (response: ProcessRiScResultDTO) => void,
+    onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
-    fetch<ProcessROSResultDTO>(
-      rosUri,
+    fetch<ProcessRiScResultDTO>(
+      riScUri,
       'POST',
       res => {
         setResponse(res);
@@ -161,16 +166,16 @@ const useFetch = () => {
         setResponse(error);
         if (onError) onError(error);
       },
-      rosToDTOString(ros, true),
+      riScToDTOString(riSc, true),
     );
 
-  const putROS = (
-    ros: ROSWithMetadata,
-    onSuccess?: (response: ProcessROSResultDTO) => void,
-    onError?: (error: ProcessROSResultDTO) => void,
+  const putRiSc = (
+    riSc: RiScWithMetadata,
+    onSuccess?: (response: ProcessRiScResultDTO) => void,
+    onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
-    fetch<ProcessROSResultDTO>(
-      uriToFetchRos(ros.id),
+    fetch<ProcessRiScResultDTO>(
+      uriToFetchRiSc(riSc.id),
       'PUT',
       res => {
         setResponse(res);
@@ -180,16 +185,16 @@ const useFetch = () => {
         setResponse(error);
         if (onError) onError(error);
       },
-      rosToDTOString(ros.content, ros.isRequiresNewApproval!!),
+      riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!),
     );
 
-  const publishROS = (
-    rosId: string,
-    onSuccess?: (response: PublishROSResultDTO) => void,
-    onError?: (error: PublishROSResultDTO) => void,
+  const publishRiSc = (
+    riScId: string,
+    onSuccess?: (response: PublishRiScResultDTO) => void,
+    onError?: (error: PublishRiScResultDTO) => void,
   ) =>
-    fetch<PublishROSResultDTO>(
-      uriToPublishROS(rosId),
+    fetch<PublishRiScResultDTO>(
+      uriToPublishRiSc(riScId),
       'POST',
       res => {
         setResponse(res);
@@ -202,10 +207,10 @@ const useFetch = () => {
     );
 
   return {
-    fetchRoses,
-    postROS,
-    putROS,
-    publishROS,
+    fetchRiScs: fetchRiScs,
+    postRiScs: postRiSc,
+    putRiScs: putRiSc,
+    publishRiScs: publishRiSc,
     response,
     setResponse,
     fetchLatestJSONSchema,
@@ -240,9 +245,9 @@ export interface ScenarioDrawerProps {
   setKonsekvens: (konsekvensLevel: number) => void;
   setEksisterendeTiltak: (eksisterendeTiltak: string) => void;
   addTiltak: () => void;
-  updateTiltak: (tiltak: Tiltak) => void;
-  deleteTiltak: (tiltak: Tiltak) => void;
-  updateRestrisiko: (restrisiko: Risiko) => void;
+  updateTiltak: (tiltak: Action) => void;
+  deleteTiltak: (tiltak: Action) => void;
+  updateRestrisiko: (restrisiko: Risk) => void;
   setRestSannsynlighet: (sannsynlighetLevel: number) => void;
   setRestKonsekvens: (konsekvensLevel: number) => void;
 }
@@ -262,8 +267,8 @@ const emptyScenarioErrors = (): ScenarioErrors => ({
 });
 
 export const useScenarioDrawer = (
-  ros: ROSWithMetadata | null,
-  updateRos: (ros: ROS) => void,
+  riSc: RiScWithMetadata | null,
+  updateRiSc: (riSc: RiSc) => void,
   scenarioIdFromParams?: string,
 ): ScenarioDrawerProps => {
   // STATES
@@ -282,11 +287,11 @@ export const useScenarioDrawer = (
   const [scenarioErrors, setScenarioErrors] = useState(emptyScenarioErrors());
   const navigate = useNavigate();
   const getScenarioPath = useRouteRef(scenarioRouteRef);
-  const getRosPath = useRouteRef(rosRouteRef);
+  const getRiScPath = useRouteRef(riScRouteRef);
 
   // Open scenario when url changes
   useEffect(() => {
-    if (ros) {
+    if (riSc) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
         setScenarioDrawerState(ScenarioDrawerState.Closed);
@@ -304,13 +309,13 @@ export const useScenarioDrawer = (
         return;
       }
 
-      const selectedScenario = ros.content.scenarier.find(
+      const selectedScenario = riSc.content.scenarios.find(
         s => s.ID === scenarioIdFromParams,
       );
 
-      // If there is an invalid scenario ID in the URL, navigate to the ROS with error state
+      // If there is an invalid scenario ID in the URL, navigate to the RiSc with error state
       if (!selectedScenario) {
-        navigate(getRosPath({ rosId: ros.id }), {
+        navigate(getRiScPath({ riScId: riSc.id }), {
           state: 'Risikoscenarioet du prøver å åpne eksisterer ikke',
         });
         return;
@@ -320,19 +325,19 @@ export const useScenarioDrawer = (
       setOriginalScenario(selectedScenario);
       setScenarioDrawerState(ScenarioDrawerState.View);
     }
-  }, [ros, scenarioIdFromParams]);
+  }, [riSc, scenarioIdFromParams]);
 
   // SCENARIO DRAWER FUNCTIONS
   const openScenario = (id: string) => {
-    if (ros) {
-      navigate(getScenarioPath({ rosId: ros.id, scenarioId: id }));
+    if (riSc) {
+      navigate(getScenarioPath({ riScId: riSc.id, scenarioId: id }));
     }
   };
 
   const closeScenario = () => {
-    if (ros) {
+    if (riSc) {
       setIsNewScenario(false);
-      navigate(getRosPath({ rosId: ros.id }));
+      navigate(getRiScPath({ riScId: riSc.id }));
     }
   };
 
@@ -342,20 +347,20 @@ export const useScenarioDrawer = (
   };
 
   const saveScenario = () => {
-    if (ros) {
+    if (riSc) {
       setScenarioErrors({
-        tittel: scenario.tittel === '' ? scenarioTittelError : null,
+        tittel: scenario.title === '' ? scenarioTittelError : null,
       });
 
-      if (scenario.tittel !== '') {
-        const updatedScenarios = ros.content.scenarier.some(
+      if (scenario.title !== '') {
+        const updatedScenarios = riSc.content.scenarios.some(
           s => s.ID === scenario.ID,
         )
-          ? ros.content.scenarier.map(s =>
+          ? riSc.content.scenarios.map(s =>
               s.ID === scenario.ID ? scenario : s,
             )
-          : ros.content.scenarier.concat(scenario);
-        updateRos({ ...ros.content, scenarier: updatedScenarios });
+          : riSc.content.scenarios.concat(scenario);
+        updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
         closeScenario();
         return true;
       }
@@ -368,18 +373,18 @@ export const useScenarioDrawer = (
   const abortDeletion = () => setDeleteConfirmationIsOpen(false);
 
   const confirmDeletion = () => {
-    if (ros) {
+    if (riSc) {
       setDeleteConfirmationIsOpen(false);
       closeScenario();
-      const updatedScenarios = ros.content.scenarier.filter(
+      const updatedScenarios = riSc.content.scenarios.filter(
         s => s.ID !== scenario.ID,
       );
-      updateRos({ ...ros.content, scenarier: updatedScenarios });
+      updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
     }
   };
 
   const newScenario = () => {
-    if (ros) {
+    if (riSc) {
       setIsNewScenario(true);
       const s = emptyScenario();
       setScenario(s);
@@ -397,89 +402,89 @@ export const useScenarioDrawer = (
     });
     setScenario({
       ...scenario,
-      tittel: tittel,
+      title: tittel,
     });
   };
 
   const setBeskrivelse = (beskrivelse: string) => {
     setScenario({
       ...scenario,
-      beskrivelse: beskrivelse,
+      description: beskrivelse,
     });
   };
 
   const setTrusselaktører = (trusselaktører: string[]) => {
     setScenario({
       ...scenario,
-      trusselaktører: trusselaktører,
+      threatActors: trusselaktører,
     });
   };
 
   const setSårbarheter = (sårbarheter: string[]) => {
     setScenario({
       ...scenario,
-      sårbarheter: sårbarheter,
+      vulnerabilities: sårbarheter,
     });
   };
 
   const setSannsynlighet = (sannsynlighetLevel: number) =>
     setScenario({
       ...scenario,
-      risiko: {
-        ...scenario.risiko,
-        sannsynlighet: sannsynlighetOptions[sannsynlighetLevel - 1],
+      risk: {
+        ...scenario.risk,
+        probability: probabilityOptions[sannsynlighetLevel - 1],
       },
     });
 
   const setKonsekvens = (konsekvensLevel: number) =>
     setScenario({
       ...scenario,
-      risiko: {
-        ...scenario.risiko,
-        konsekvens: konsekvensOptions[konsekvensLevel - 1],
+      risk: {
+        ...scenario.risk,
+        consequence: consequenceOptions[konsekvensLevel - 1],
       },
     });
 
   const setEksisterendeTiltak = (eksisterendeTiltak: string) => {
     setScenario({
       ...scenario,
-      eksisterendeTiltak: eksisterendeTiltak,
+      existingActions: eksisterendeTiltak,
     });
   };
 
   const addTiltak = () =>
-    setScenario({ ...scenario, tiltak: [...scenario.tiltak, emptyTiltak()] });
+    setScenario({ ...scenario, actions: [...scenario.actions, emptyTiltak()] });
 
-  const updateTiltak = (tiltak: Tiltak) => {
-    const updatedTiltak = scenario.tiltak.some(t => t.ID === tiltak.ID)
-      ? scenario.tiltak.map(t => (t.ID === tiltak.ID ? tiltak : t))
-      : [...scenario.tiltak, tiltak];
-    setScenario({ ...scenario, tiltak: updatedTiltak });
+  const updateTiltak = (tiltak: Action) => {
+    const updatedTiltak = scenario.actions.some(t => t.ID === tiltak.ID)
+      ? scenario.actions.map(t => (t.ID === tiltak.ID ? tiltak : t))
+      : [...scenario.actions, tiltak];
+    setScenario({ ...scenario, actions: updatedTiltak });
   };
 
-  const deleteTiltak = (tiltak: Tiltak) => {
-    const updatedTiltak = scenario.tiltak.filter(t => t.ID !== tiltak.ID);
-    setScenario({ ...scenario, tiltak: updatedTiltak });
+  const deleteTiltak = (tiltak: Action) => {
+    const updatedTiltak = scenario.actions.filter(t => t.ID !== tiltak.ID);
+    setScenario({ ...scenario, actions: updatedTiltak });
   };
 
-  const updateRestrisiko = (restrisiko: Risiko) =>
-    setScenario({ ...scenario, restrisiko });
+  const updateRestrisiko = (restrisiko: Risk) =>
+    setScenario({ ...scenario, remainingRisk: restrisiko });
 
   const setRestSannsynlighet = (sannsynlighetLevel: number) =>
     setScenario({
       ...scenario,
-      restrisiko: {
-        ...scenario.restrisiko,
-        sannsynlighet: sannsynlighetOptions[sannsynlighetLevel - 1],
+      remainingRisk: {
+        ...scenario.remainingRisk,
+        probability: probabilityOptions[sannsynlighetLevel - 1],
       },
     });
 
   const setRestKonsekvens = (konsekvensLevel: number) =>
     setScenario({
       ...scenario,
-      restrisiko: {
-        ...scenario.restrisiko,
-        konsekvens: konsekvensOptions[konsekvensLevel - 1],
+      remainingRisk: {
+        ...scenario.remainingRisk,
+        consequence: consequenceOptions[konsekvensLevel - 1],
       },
     });
 
@@ -519,34 +524,36 @@ export const useScenarioDrawer = (
   };
 };
 
-export const useFetchRoses = (
-  rosIdFromParams?: string,
+export const useFetchRiScs = (
+  riScIdFromParams?: string,
 ): {
-  selectedROS: ROSWithMetadata | null;
-  roses: ROSWithMetadata[] | null;
-  selectRos: (title: string) => void;
+  selectedRiSc: RiScWithMetadata | null;
+  riScs: RiScWithMetadata[] | null;
+  selectRiSc: (title: string) => void;
   isFetching: boolean;
-  createNewROS: (ros: ROS) => void;
-  updateROS: (ros: ROS) => void;
-  approveROS: () => void;
+  createNewRiSc: (riSc: RiSc) => void;
+  updateRiSc: (riSc: RiSc) => void;
+  approveRiSc: () => void;
   response: SubmitResponseObject | null;
 } => {
   const location = useLocation();
   const navigate = useNavigate();
-  const getRosPath = useRouteRef(rosRouteRef);
+  const getRiScPath = useRouteRef(riScRouteRef);
 
   const {
-    fetchRoses,
-    postROS,
-    putROS,
-    publishROS,
+    fetchRiScs,
+    postRiScs,
+    putRiScs,
+    publishRiScs,
     response,
     setResponse,
     fetchLatestJSONSchema,
   } = useFetch();
 
-  const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
-  const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(null);
+  const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
+  const [selectedRiSc, setSelectedRiSc] = useState<RiScWithMetadata | null>(
+    null,
+  );
   const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
@@ -558,39 +565,39 @@ export const useFetchRoses = (
     }
   }, [location]);
 
-  // Initial fetch of ROSes
+  // Initial fetch of RiScs
   useEffectOnce(() => {
-    fetchRoses(
+    fetchRiScs(
       res => {
-        const fetchedRoses: ROSWithMetadata[] = res.map(rosDTO => {
-          const content = dtoToROS(JSON.parse(rosDTO.riScContent) as ROSDTO);
+        const fetchedRiScs: RiScWithMetadata[] = res.map(riScDTO => {
+          const content = dtoToRiSc(JSON.parse(riScDTO.riScContent) as RiScDTO);
           return {
-            id: rosDTO.riScId,
+            id: riScDTO.riScId,
             content: content,
-            status: rosDTO.riScStatus,
+            status: riScDTO.riScStatus,
           };
         });
 
-        setRoses(fetchedRoses);
+        setRiScs(fetchedRiScs);
         setIsFetching(false);
 
-        // If there are no ROSes, don't set a selected ROS
-        if (fetchedRoses.length === 0) {
+        // If there are no RiScs, don't set a selected RiSc
+        if (fetchedRiScs.length === 0) {
           return;
         }
 
-        // If there is no ROS ID in the URL, navigate to the first ROS
-        if (!rosIdFromParams) {
-          navigate(getRosPath({ rosId: fetchedRoses[0].id }));
+        // If there is no RiSc ID in the URL, navigate to the first RiSc
+        if (!riScIdFromParams) {
+          navigate(getRiScPath({ riScId: fetchedRiScs[0].id }));
           return;
         }
 
-        const ros = fetchedRoses.find(r => r.id === rosIdFromParams);
+        const riSc = fetchedRiScs.find(r => r.id === riScIdFromParams);
 
-        // If there is an invalid ROS ID in the URL, navigate to the first ROS with error state
-        if (!ros) {
-          navigate(getRosPath({ rosId: fetchedRoses[0].id }), {
-            state: 'ROS-analysen du prøver å åpne eksisterer ikke',
+        // If there is an invalid RiSc ID in the URL, navigate to the first RiSc with error state
+        if (!riSc) {
+          navigate(getRiScPath({ riScId: fetchedRiScs[0].id }), {
+            state: 'The risk scorecard you are trying to open does not exist',
           });
           return;
         }
@@ -599,26 +606,26 @@ export const useFetchRoses = (
     );
   });
 
-  // Set selected ROS based on URL
+  // Set selected RiSc based on URL
   useEffect(() => {
-    if (rosIdFromParams) {
-      const ros = roses?.find(r => r.id === rosIdFromParams);
-      if (ros) {
-        setSelectedROS(ros);
+    if (riScIdFromParams) {
+      const riSc = riScs?.find(r => r.id === riScIdFromParams);
+      if (riSc) {
+        setSelectedRiSc(riSc);
       }
     }
-  }, [roses, rosIdFromParams]);
+  }, [riScs, riScIdFromParams]);
 
-  const selectRos = (title: string) => {
-    const rosId = roses?.find(ros => ros.content.tittel === title)?.id;
-    if (rosId) {
-      navigate(getRosPath({ rosId }));
+  const selectRiSc = (title: string) => {
+    const riScId = riScs?.find(riSc => riSc.content.title === title)?.id;
+    if (riScId) {
+      navigate(getRiScPath({ riScId: riScId }));
     }
   };
 
-  const createNewROS = (ros: ROS) => {
+  const createNewRiSc = (riSc: RiSc) => {
     setIsFetching(true);
-    setSelectedROS(null);
+    setSelectedRiSc(null);
     fetchLatestJSONSchema(res => {
       const resString = JSON.stringify(res);
       const schema = JSON.parse(resString);
@@ -626,86 +633,86 @@ export const useFetchRoses = (
         /'/g,
         '',
       );
-      const newROS = {
-        ...ros,
-        skjemaVersjon: schemaVersion ? schemaVersion : '3.2',
+      const newRiSc: RiSc = {
+        ...riSc,
+        schemaVersion: schemaVersion ? schemaVersion : '3.2',
       };
 
-      postROS(
-        newROS,
+      postRiScs(
+        newRiSc,
         res2 => {
-          if (!res2.riScId) throw new Error('No ROS ID returned');
+          if (!res2.riScId) throw new Error('No RiSc ID returned');
 
-          const ROSWithLatestSchemaVersion = {
+          const RiScWithLatestSchemaVersion = {
             id: res2.riScId,
-            status: RosStatus.Draft,
-            content: ros,
-            schemaVersion: ros.skjemaVersjon,
+            status: RiScStatus.Draft,
+            content: riSc,
+            schemaVersion: riSc.schemaVersion,
           };
 
-          setRoses(
-            roses
-              ? [...roses, ROSWithLatestSchemaVersion]
-              : [ROSWithLatestSchemaVersion],
+          setRiScs(
+            riScs
+              ? [...riScs, RiScWithLatestSchemaVersion]
+              : [RiScWithLatestSchemaVersion],
           );
-          setSelectedROS(ROSWithLatestSchemaVersion);
+          setSelectedRiSc(RiScWithLatestSchemaVersion);
           setIsFetching(false);
-          navigate(getRosPath({ rosId: res2.riScId }));
+          navigate(getRiScPath({ riScId: res2.riScId }));
         },
         () => {
-          setSelectedROS(selectedROS);
+          setSelectedRiSc(selectedRiSc);
           setIsFetching(false);
         },
       );
     });
   };
 
-  const updateROS = (ros: ROS) => {
-    if (selectedROS && roses) {
+  const updateRiSc = (riSc: RiSc) => {
+    if (selectedRiSc && riScs) {
       const isRequiresNewApproval = requiresNewApproval(
-        selectedROS.content,
-        ros,
+        selectedRiSc.content,
+        riSc,
       );
-      const updatedROS = {
-        ...selectedROS,
-        content: ros,
+      const updatedRiSc = {
+        ...selectedRiSc,
+        content: riSc,
         status:
-          selectedROS.status !== RosStatus.Draft && isRequiresNewApproval
-            ? RosStatus.Draft
-            : selectedROS.status,
+          selectedRiSc.status !== RiScStatus.Draft && isRequiresNewApproval
+            ? RiScStatus.Draft
+            : selectedRiSc.status,
         isRequiresNewApproval: isRequiresNewApproval,
-        schemaVersion: ros.skjemaVersjon,
+        schemaVersion: riSc.schemaVersion,
       };
 
-      putROS(updatedROS, () => {
-        setSelectedROS(updatedROS);
-        setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      putRiScs(updatedRiSc, () => {
+        setSelectedRiSc(updatedRiSc);
+        setRiScs(riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)));
       });
     }
   };
 
-  const approveROS = () => {
-    if (selectedROS && roses) {
-      const updatedROS = {
-        ...selectedROS,
-        status: RosStatus.SentForApproval,
+  const approveRiSc = () => {
+    if (selectedRiSc && riScs) {
+      const updatedRiSc = {
+        ...selectedRiSc,
+        status: RiScStatus.SentForApproval,
       };
 
-      publishROS(selectedROS.id, () => {
-        setSelectedROS(updatedROS);
-        setRoses(roses.map(r => (r.id === selectedROS.id ? updatedROS : r)));
+      publishRiScs(selectedRiSc.id, () => {
+        setSelectedRiSc(updatedRiSc);
+        setRiScs(riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)));
       });
     }
   };
 
   return {
-    selectedROS,
-    roses,
-    selectRos,
+    selectedRiSc: selectedRiSc,
+    riScs: riScs,
+    selectRiSc: selectRiSc,
     isFetching,
-    createNewROS,
-    updateROS,
-    approveROS,
+    createNewRiSc: createNewRiSc,
+    updateRiSc: updateRiSc,
+    approveRiSc: approveRiSc,
     response,
   };
 };

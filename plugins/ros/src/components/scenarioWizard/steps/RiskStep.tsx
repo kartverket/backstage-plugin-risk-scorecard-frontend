@@ -3,7 +3,7 @@ import {
   getKonsekvensLevel,
   getSannsynlighetLevel,
 } from '../../utils/utilityfunctions';
-import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
+import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import Box from '@material-ui/core/Box';
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -37,7 +37,7 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
 
   const resourceKey =
     riskType === 'initial' ? 'initialRiskStep' : 'restRiskStep';
-  const risk = riskType === 'initial' ? scenario.risiko : scenario.restrisiko;
+  const risk = riskType === 'initial' ? scenario.risk : scenario.remainingRisk;
 
   const { box } = useStyles();
 

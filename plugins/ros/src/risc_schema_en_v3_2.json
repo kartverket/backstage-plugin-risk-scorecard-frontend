@@ -107,13 +107,7 @@
           "anyOf": [
             {
               "type": "number",
-              "enum": [
-                0.01,
-                0.1,
-                1,
-                50,
-                300
-              ]
+              "enum": [0.01, 0.1, 1, 50, 300]
             },
             {
               "type": "number",
@@ -126,13 +120,7 @@
           "anyOf": [
             {
               "type": "number",
-              "enum": [
-                1000,
-                30000,
-                1000000,
-                30000000,
-                1000000000
-              ]
+              "enum": [1000, 30000, 1000000, 30000000, 1000000000]
             },
             {
               "type": "number",
@@ -165,7 +153,7 @@
         "url": {
           "$ref": "#/$defs/url"
         },
-        "threatActor": {
+        "threatActors": {
           "type": "array",
           "items": {
             "type": "string",
@@ -200,7 +188,7 @@
         "risk": {
           "$ref": "#/$defs/risk"
         },
-        "eksisterendeTiltak": {
+        "existingActions": {
           "type": "string"
         },
         "actions": {
@@ -211,13 +199,13 @@
               "title": {
                 "type": "string"
               },
-              "task": {
-                "$ref": "#/$defs/task"
+              "action": {
+                "$ref": "#/$defs/action"
               }
             },
             "required": [
               "title",
-              "task"
+              "action"
             ],
             "additionalProperties": false
           }
@@ -237,7 +225,7 @@
       ],
       "additionalProperties": false
     },
-    "actions": {
+    "action": {
       "type": "object",
       "properties": {
         "ID": {
@@ -250,7 +238,7 @@
         "owner": {
           "type": "string"
         },
-        "due": {
+        "deadline": {
           "type": "string",
           "format": "date"
         },
@@ -269,7 +257,7 @@
         "ID",
         "description",
         "owner",
-        "due",
+        "deadline",
         "status"
       ],
       "additionalProperties": false

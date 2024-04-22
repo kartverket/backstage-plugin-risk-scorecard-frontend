@@ -9,26 +9,26 @@ import {
 } from '@material-ui/core';
 import { StatusChip } from './StatusChip';
 import React, { ReactComponentElement, useState } from 'react';
-import { RosStatus, ROSWithMetadata } from '../../utils/types';
-import { useButtonStyles } from '../../rosPlugin/rosPluginStyle';
+import { RiScStatus, RiScWithMetadata } from '../../utils/types';
+import { useButtonStyles } from '../../riScPlugin/riScPluginStyle';
 import Alert from '@mui/material/Alert';
-import { useRosDialogStyles } from '../../rosDialog/rosDialogStyle';
+import { useRiScDialogStyles } from '../../riScDialog/riScDialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 
-interface ROSPublisDialogProps {
+interface RiScPublisDialogProps {
   openDialog: boolean;
   handleCancel: () => void;
   handlePublish: () => void;
 }
 
-const ROSPublishDialog = ({
+const RiScPublishDialog = ({
   openDialog,
   handleCancel,
   handlePublish,
-}: ROSPublisDialogProps): ReactComponentElement<any> => {
-  const classes = useRosDialogStyles();
+}: RiScPublisDialogProps): ReactComponentElement<any> => {
+  const classes = useRiScDialogStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [userIsRisikoEierAndApproves, setUserIsRisikoEierAndApproves] =
     useState<boolean>(false);
@@ -82,30 +82,30 @@ const ROSPublishDialog = ({
   );
 };
 
-interface ROSStatusProps {
-  selectedROS: ROSWithMetadata;
-  publishRosFn: () => void;
+interface RiScStatusProps {
+  selectedRiSc: RiScWithMetadata;
+  publishRiScFn: () => void;
 }
 
-export const ROSStatusComponent = ({
-  selectedROS,
-  publishRosFn,
-}: ROSStatusProps) => {
+export const RiScStatusComponent = ({
+  selectedRiSc,
+  publishRiScFn,
+}: RiScStatusProps) => {
   const statusComponentClasses = useButtonStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const [publishROSDialogIsOpen, setPublishROSDialogIsOpen] =
+  const [publishRiScDialogIsOpen, setPublishRiScDialogIsOpen] =
     useState<boolean>(false);
 
   const handleApproveAndPublish = () => {
-    publishRosFn();
-    setPublishROSDialogIsOpen(false);
+    publishRiScFn();
+    setPublishRiScDialogIsOpen(false);
   };
 
   return (
     <Grid item container xs direction="column" alignItems="flex-end">
       <Grid item xs>
-        <StatusChip currentRosStatus={selectedROS.status} />
+        <StatusChip currentRiScStatus={selectedRiSc.status} />
       </Grid>
 
       <Grid item container spacing={1} justifyContent="flex-end">
@@ -113,10 +113,10 @@ export const ROSStatusComponent = ({
           <Button
             color="primary"
             variant="contained"
-            onClick={() => setPublishROSDialogIsOpen(!publishROSDialogIsOpen)}
+            onClick={() => setPublishRiScDialogIsOpen(!publishRiScDialogIsOpen)}
             className={statusComponentClasses.godkjennButton}
             fullWidth
-            disabled={selectedROS.status !== RosStatus.Draft}
+            disabled={selectedRiSc.status !== RiScStatus.Draft}
           >
             <Typography variant="button">
               {t('rosStatus.approveButton')}
@@ -125,10 +125,10 @@ export const ROSStatusComponent = ({
         </Grid>
       </Grid>
 
-      <ROSPublishDialog
-        openDialog={publishROSDialogIsOpen}
+      <RiScPublishDialog
+        openDialog={publishRiScDialogIsOpen}
         handlePublish={handleApproveAndPublish}
-        handleCancel={() => setPublishROSDialogIsOpen(false)}
+        handleCancel={() => setPublishRiScDialogIsOpen(false)}
       />
     </Grid>
   );

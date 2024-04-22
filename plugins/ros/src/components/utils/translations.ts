@@ -4,7 +4,7 @@ import {
 } from '@backstage/core-plugin-api/alpha';
 
 export const pluginRiScTranslationRef = createTranslationRef({
-  id: 'plugin.ros',
+  id: 'plugin.riSc',
   messages: {
     contentHeader: {
       title: 'Risk scorecard',
@@ -115,7 +115,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
     scenarioStepper: {
       initialRiskStep: {
         title: 'Initial risk',
-        subtitle: 'The initial risk is defined by the consequence of the scenario and the probability of it occurring.',
+        subtitle:
+          'The initial risk is defined by the consequence of the scenario and the probability of it occurring.',
         consequenceSubtitle:
           'How severe is the potential impact? If the scenario can impact more than one category, choose the highest level of consequence.',
         probabilitySubtitle:
@@ -123,14 +124,18 @@ export const pluginRiScTranslationRef = createTranslationRef({
       },
       restRiskStep: {
         title: 'Remaining risk',
-        subtitle: 'What is the risk reduced to when all the planned initiatives have been completed?',
-        consequenceSubtitle: 'How severe is the consequence of this scenario after all initiatives are complete?',
-        probabilitySubtitle: 'What is the likelihood of this scenario after all initiatives are complete?',
+        subtitle:
+          'What is the risk reduced to when all the planned initiatives have been completed?',
+        consequenceSubtitle:
+          'How severe is the consequence of this scenario after all initiatives are complete?',
+        probabilitySubtitle:
+          'What is the likelihood of this scenario after all initiatives are complete?',
       },
     },
     scenarioDrawer: {
       title: 'Risk scenario',
-      subtitle: 'An unwanted incident that could potentially harm the component.', // harm or affect?
+      subtitle:
+        'An unwanted incident that could potentially harm the component.', // harm or affect?
       threatActorSubtitle: 'Someone who attempts to access or abuse the system',
       vulnerabilitySubtitle:
         'Weakness in the system that the threat actor can exploit',
@@ -262,7 +267,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.title': 'Tittel',
           'dictionary.vulnerabilities': 'Sårbarheter',
 
-          'rosStatus.statusBadge.missing': 'Venter på godkjenning av risikoeier',
+          'rosStatus.statusBadge.missing':
+            'Venter på godkjenning av risikoeier',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
           'rosStatus.prStatus': 'Avventer godkjenning av PR i Github',
@@ -334,13 +340,20 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hva blir sannsynligheten etter alle tiltakene er fullført?',
 
           'scenarioDrawer.title': 'Risikoscenario',
-          'scenarioDrawer.subtitle': 'En uønsket hendelse som potensielt kan ramme komponenten',
-          'scenarioDrawer.threatActorSubtitle': 'Noen som prøver å få tilgang til eller misbruke systemet',
-          'scenarioDrawer.vulnerabilitySubtitle': 'Svakhet i systemet som kan utnyttes av trusselaktøren',
-          'scenarioDrawer.consequenceTab.subtitle': 'Hvor alvorlig er den potensielle konsekvensen? Hvis scenarioet kan få konsekvenser i flere kategorier velg det høyeste konsekvensnivået av disse.',
-          'scenarioDrawer.probabilityTab.subtitle': 'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velg den høyeste.',
-          'scenarioDrawer.measureTab.subtitle': 'Hvilke tiltak bør gjøres for å unngå scenarioet?',
-          'scenarioDrawer.measureTab.measureOwnerDescription': 'De eller den som er ansvarlig for at tiltaket blir gjennomført',
+          'scenarioDrawer.subtitle':
+            'En uønsket hendelse som potensielt kan ramme komponenten',
+          'scenarioDrawer.threatActorSubtitle':
+            'Noen som prøver å få tilgang til eller misbruke systemet',
+          'scenarioDrawer.vulnerabilitySubtitle':
+            'Svakhet i systemet som kan utnyttes av trusselaktøren',
+          'scenarioDrawer.consequenceTab.subtitle':
+            'Hvor alvorlig er den potensielle konsekvensen? Hvis scenarioet kan få konsekvenser i flere kategorier velg det høyeste konsekvensnivået av disse.',
+          'scenarioDrawer.probabilityTab.subtitle':
+            'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velg den høyeste.',
+          'scenarioDrawer.measureTab.subtitle':
+            'Hvilke tiltak bør gjøres for å unngå scenarioet?',
+          'scenarioDrawer.measureTab.measureOwnerDescription':
+            'De eller den som er ansvarlig for at tiltaket blir gjennomført',
           'scenarioDrawer.measureTab.addMeasureButton': 'Legg til tiltak',
           'scenarioDrawer.measureTab.plannedMeasures': 'Planlagte tiltak',
           'scenarioDrawer.measureTab.existingMeasure': 'Eksisterende tiltak',

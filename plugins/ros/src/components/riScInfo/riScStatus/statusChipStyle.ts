@@ -10,17 +10,17 @@ export const useStatusChipStyles = makeStyles(() => ({
     maxHeight: '10px',
   },
 
-  rosPublished: {
+  riScPublished: {
     borderColor: '#88e763',
     color: '#88e763',
   },
 
-  rosSentForApproval: {
+  riScSentForApproval: {
     borderColor: '#E7A563FF',
     color: '#E7A563FF',
   },
 
-  rosDraft: {
+  riScDraft: {
     borderColor: '#FBE36A',
     color: '#FBE36A',
   },

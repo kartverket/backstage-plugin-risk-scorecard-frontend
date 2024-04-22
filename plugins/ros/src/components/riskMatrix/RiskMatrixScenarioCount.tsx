@@ -11,20 +11,20 @@ import {
 import React, { useState } from 'react';
 import { useRiskMatrixStyles } from './style';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
-import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
-import { ROS } from '../utils/types';
+import { consequenceOptions, probabilityOptions } from '../utils/constants';
+import { RiSc } from '../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 
 interface ScenarioCountProps {
-  ros: ROS;
+  riSc: RiSc;
   probability: number;
   consequence: number;
   startRisiko: boolean;
 }
 
 export const RiskMatrixScenarioCount = ({
-  ros,
+  riSc,
   probability,
   consequence,
   startRisiko,
@@ -43,17 +43,17 @@ export const RiskMatrixScenarioCount = ({
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const scenarier = ros.scenarier.filter(
+  const scenarier = riSc.scenarios.filter(
     scenario =>
-      sannsynlighetOptions.indexOf(
+      probabilityOptions.indexOf(
         startRisiko
-          ? scenario.risiko.sannsynlighet
-          : scenario.restrisiko.sannsynlighet,
+          ? scenario.risk.probability
+          : scenario.remainingRisk.probability,
       ) === probability &&
-      konsekvensOptions.indexOf(
+      consequenceOptions.indexOf(
         startRisiko
-          ? scenario.risiko.konsekvens
-          : scenario.restrisiko.konsekvens,
+          ? scenario.risk.consequence
+          : scenario.remainingRisk.consequence,
       ) === consequence,
   );
 
@@ -75,7 +75,7 @@ export const RiskMatrixScenarioCount = ({
             className={tooltipText}
             style={{ paddingLeft: '0.6rem' }}
           >
-            <span>{s.tittel}</span>
+            <span>{s.title}</span>
           </ListItemText>
         </ListItem>
       ))}

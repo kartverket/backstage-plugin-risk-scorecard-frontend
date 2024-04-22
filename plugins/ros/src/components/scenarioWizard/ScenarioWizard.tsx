@@ -13,7 +13,7 @@ import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Divider from '@mui/material/Divider';
 import { useFontStyles } from '../scenarioDrawer/style';
-import { ScenarioContext } from '../rosPlugin/ScenarioContext';
+import { ScenarioContext } from '../riScPlugin/ScenarioContext';
 import { CloseConfirmation } from '../scenarioDrawer/edit/CloseConfirmation';
 import { InitiativesStep } from './steps/InitiativesStep';
 import Button from '@mui/material/Button';
