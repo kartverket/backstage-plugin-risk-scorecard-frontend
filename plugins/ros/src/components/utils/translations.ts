@@ -22,7 +22,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       edit: 'Edit',
       estimatedRisk: 'Estimated risk',
       initialRisk: 'Initial risk', // Starting or Initial risk
-      measure: 'Initiative', // Measure, Action or Initiative
+      measure: 'Action', // Measure, Action or Initiative
       measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
       next: 'Next',
       previous: 'Previous',
@@ -55,7 +55,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       title: 'Risk scenarios',
       addScenarioButton: 'Add scenario',
       columns: {
-        measuresCount: 'No. of initiatives',
+        measuresCount: 'Actions',
         consequenceChar: 'C',
         probabilityChar: 'P',
         completed: 'completed',
@@ -118,9 +118,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
       },
       restRiskStep: {
         title: 'Remaining risk',
-        subtitle: 'What is the risk reduced to when all the planned initiatives have been completed?',
-        consequenceSubtitle: 'How severe is the consequence of this scenario after all initiatives are complete?',
-        probabilitySubtitle: 'What is the likelihood of this scenario after all initiatives are complete?',
+        subtitle: 'What is the risk reduced to when all the planned actions have been completed?',
+        consequenceSubtitle: 'How severe is the consequence of this scenario after all actions are complete?',
+        probabilitySubtitle: 'What is the likelihood of this scenario after all actions are complete?',
       },
     },
     scenarioDrawer: {
@@ -141,19 +141,19 @@ export const pluginRiScTranslationRef = createTranslationRef({
           'If you are between two probability values, choose the higher one.',
       },
       measureTab: {
-        subtitle: 'What actions should be taken to avoid the scenario?',
+        subtitle: 'What actions should be taken to avoid or reduce the risk of this scenario?',
         measureOwnerDescription:
-          'Decide who will be responsible for completing the initiative',
-        addMeasureButton: 'Add initiative', // TODO: Initiative or action?
-        plannedMeasures: 'Planned initiatives',
-        existingMeasure: 'Existing initiatives',
+          'Decide who will be responsible for completion of this action',
+        addMeasureButton: 'Add action', 
+        plannedMeasures: 'Planned actions',
+        existingMeasure: 'Existing measures',
         existingMeasureSubtitle:
-          'Brief description of relevant actions that have already been implemented',
+          'Brief description of relevant measures that have already been implemented to reduce the risk of this scenario',
       },
       restRiskTab: {
         subtitle:
           'Define the remaining risk for the scenario. Remaining risk is the consequence and probability for this ' +
-          'scenario after all initiatives have been completed.',
+          'scenario after all planned actions have been completed.',
       },
       deleteScenarioButton: 'Delete scenario',
       deleteScenarioConfirmation:
@@ -162,7 +162,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     consequenceTable: {
       rows: {
-        '1': 'Insignificant', // Insignificant, negligible (ubetydelig)
+        '1': 'Negligible', // Insignificant, negligible (ubetydelig)
         '2': 'Small', // Liten
         '3': 'Moderate',
         '4': 'Severe', // Alvorlig
