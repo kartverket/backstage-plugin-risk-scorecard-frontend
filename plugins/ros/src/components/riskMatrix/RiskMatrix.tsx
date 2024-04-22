@@ -11,6 +11,7 @@ import { Tabs } from './Tabs';
 import { riskMatrix } from '../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { useFontStyles } from '../scenarioDrawer/style';
 
 export const RiskMatrix = ({ ros }: { ros: ROS }) => {
   const indices = [0, 1, 2, 3, 4];
@@ -24,6 +25,8 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
     text,
     centered,
   } = useRiskMatrixStyles();
+
+  const { label2 } = useFontStyles();
 
   const [tab, setTab] = useState('startrisiko');
 
@@ -41,7 +44,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
         <Box className={gridWrapper}>
           <Box className={grid}>
             <Box className={konsekvens}>
-              <Typography className={`${centered} ${text}`}>
+              <Typography className={`${centered} ${text} ${label2}`}>
                 {t('dictionary.consequence')}
               </Typography>
             </Box>
@@ -73,7 +76,7 @@ export const RiskMatrix = ({ ros }: { ros: ROS }) => {
               </Box>
             ))}
             <Box className={sannsynlighet}>
-              <Typography className={`${centered} ${text}`}>
+              <Typography className={`${centered} ${text} ${label2}`}>
                 {t('dictionary.probability')}
               </Typography>
             </Box>

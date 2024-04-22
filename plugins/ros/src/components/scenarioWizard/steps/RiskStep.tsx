@@ -23,8 +23,13 @@ interface RiskStepProps {
 }
 
 export const RiskStep = ({ riskType }: RiskStepProps) => {
-  const { scenario, setKonsekvens, setSannsynlighet } =
-    useContext(ScenarioContext)!!;
+  const {
+    scenario,
+    setKonsekvens,
+    setSannsynlighet,
+    setRestKonsekvens,
+    setRestSannsynlighet,
+  } = useContext(ScenarioContext)!!;
 
   const { h2, h3, subtitle2 } = useFontStyles();
 
@@ -35,6 +40,9 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
   const risk = riskType === 'initial' ? scenario.risiko : scenario.restrisiko;
 
   const { box } = useStyles();
+
+  const setC = riskType === 'initial' ? setKonsekvens : setRestKonsekvens;
+  const setP = riskType === 'initial' ? setSannsynlighet : setRestSannsynlighet;
 
   return (
     <Fragment>
@@ -55,7 +63,7 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
       <Box className={box}>
         <ConsequenceTable
           selectedValue={getKonsekvensLevel(risk)}
-          handleChange={setKonsekvens}
+          handleChange={setC}
         />
       </Box>
       <Box className={box}>
@@ -67,7 +75,7 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
       <Box className={box}>
         <ProbabilityTable
           selectedValue={getSannsynlighetLevel(risk)}
-          handleChange={setSannsynlighet}
+          handleChange={setP}
         />
       </Box>
     </Fragment>
