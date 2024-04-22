@@ -89,7 +89,7 @@ export const emptyTiltak = (): Action => ({
   description: '',
   owner: '',
   deadline: new Date().toISOString().split('T')[0],
-  status: 'Ikke startet',
+  status: 'Not started',
 });
 
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
