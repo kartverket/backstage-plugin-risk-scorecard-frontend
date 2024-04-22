@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { useFontStyles, useInputFieldStyles, useScenarioDrawerContentStyles } from '../style';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
-import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
+import { CloseConfirmation } from '../edit/CloseConfirmation';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { DeleteConfirmation } from '../edit/DeleteConfirmation';
 import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
 import { TiltakView } from './TiltakView';
 import Divider from '@mui/material/Divider';
@@ -21,176 +23,188 @@ export const ScenarioDrawerView = () => {
   const { header, buttons, risikoBadge } = useScenarioDrawerContentStyles();
   const { paper } = useInputFieldStyles();
 
-  const { h1, h3, subtitle1, body1, body2, label, button, risikoLevel } =
+  const { h1, h3, body1, body2, label, button } =
     useFontStyles();
 
-  const { scenario, closeScenario, editScenario } =
+  const { scenario, saveScenario, openDeleteConfirmation, closeScenario, editScenario } =
     useContext(ScenarioContext)!!;
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
+  const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+
+  const close = () => {
+    closeScenario();
+    setShowCloseConfirmation(false);
+  };
+
+  const saveAndClose = () => {
+    if (saveScenario()) {
+      close();
+    }
+  };
+
   return (
     <>
-      <Box className={buttons}>
-        {/* 
-        <Grid item xs={2}>
-       
+      <Box className={buttons}
+        style={{
+          marginBottom: '36px',
+          display: 'flex',
+          flexDirection: 'row',
+          gap: '0.5rem',
+          justifyContent: 'flex-end'
+        }}>
         <Button
-            className={button}
-            variant="contained"
-            color="primary"
-            onClick={() => editScenario('scenario')}
-            startIcon={<BorderColorOutlinedIcon />}
-        >
-          {t('dictionary.edit')}
-        </Button>
-         </Grid>
-        */}
-
-        <Button
-            className={button}
-            variant="outlined"
-            color="primary"
-            onClick={closeScenario}
-            endIcon={<KeyboardTabIcon />}
+          className={button}
+          variant="outlined"
+          color="primary"
+          onClick={closeScenario}
         >
           {t('dictionary.close')}
         </Button>
       </Box>
 
       <Paper className={paper} style={{ padding: '1rem' }}>
-      <Box className={header}>
-        <Grid container>
-          <Grid item xs={9}>
-            <Typography variant="h3" className={h3}>
-              {t('scenarioDrawer.title')}
-            </Typography>
-          </Grid>
-          
-      <Grid item xs={2}>
-       <Button
-           className={button}
-           variant="contained"
-           color="primary"
-           onClick={() => editScenario('scenario')}
-           startIcon={<BorderColorOutlinedIcon />}
-       >
-         {t('dictionary.edit')}
-       </Button>
-      </Grid>
-
-          <Grid item xs={12}>
-            <Typography className={h1}>{scenario.tittel}</Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography className={label}>
-              {t('dictionary.description')}
-            </Typography>
-            <Typography className={body2}>{scenario.beskrivelse}</Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Divider variant="fullWidth" />
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography className={label}>
-              {t('dictionary.threatActors')}
-            </Typography>
-            {scenario.trusselaktører.map(trusselaktør => (
-                <Typography className={body2}>{trusselaktør}</Typography>
-            ))}
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography className={label}>
-              {t('dictionary.vulnerabilities')}
-            </Typography>
-            {scenario.sårbarheter.map(sårbarhet => (
-                <Typography className={body2}>{sårbarhet}</Typography>
-            ))}
-          </Grid>
-        </Grid>
-
-      </Box>
-      </Paper>
-  
-
-    <Paper className={paper} style={{ padding: '1rem' }}>
-      {/* Startrisiko */}
-      <Grid item xs={2}>
-       <Button
-           className={button}
-           variant="contained"
-           color="primary"
-           onClick={() => editScenario('scenario')}
-           startIcon={<BorderColorOutlinedIcon />}
-       >
-         {t('dictionary.edit')}
-       </Button>
-      </Grid>
-      <Grid item xs={4}>
-      {/* TODO: endre retning til column og flytte på hvordan komponentene er satt opp for risiko og sannsynlighet */}
+        <Box className={header}>
           <Grid container>
-            <Grid
-              item
-              xs={12}
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: '0.5rem',
-                alignItems: 'center',
-              }}
+            <Grid item xs={12} style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
             >
-              <Box
-                className={risikoBadge}
-                style={{
-                  backgroundColor: getRiskMatrixColor(scenario.risiko),
-                }}
+              <Typography variant="h3" className={h3}>
+                {t('scenarioDrawer.title')}
+              </Typography>
+              <Button
+                className={button}
+                variant="outlined"
+                color="primary"
+                onClick={() => editScenario('scenario')}
+                startIcon={<BorderColorOutlinedIcon />}
               />
-              <Typography className={body2}>
-                {t('dictionary.initialRisk')}
-              </Typography>
             </Grid>
-            <Grid item xs={6} style={{ paddingBottom: 0 }}>
+
+            <Grid item xs={12}>
+              <Typography className={h1}>{scenario.tittel}</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
               <Typography className={label}>
-                {t('dictionary.consequence')}
+                {t('dictionary.description')}
               </Typography>
+              <Typography className={body2}>{scenario.beskrivelse}</Typography>
             </Grid>
-            <Grid item xs={6} style={{ paddingBottom: 0 }}>
+
+            <Grid item xs={12}>
+              <Divider variant="fullWidth" />
+            </Grid>
+
+            <Grid item xs={6}>
               <Typography className={label}>
-                {t('dictionary.probability')}
+                {t('dictionary.threatActors')}
               </Typography>
+              {scenario.trusselaktører.map(trusselaktør => (
+                <Typography className={body2}>{trusselaktør}</Typography>
+              ))}
             </Grid>
-            <Grid item xs={6} style={{ paddingTop: 0 }}>
-              <Typography className={risikoLevel}>
-                {getKonsekvensLevel(scenario.risiko)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6} style={{ paddingTop: 0 }}>
-              <Typography className={risikoLevel}>
-                {getSannsynlighetLevel(scenario.risiko)}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} style={{ paddingBottom: 0 }}>
+
+            <Grid item xs={6}>
               <Typography className={label}>
-                {t('dictionary.estimatedRisk')}
+                {t('dictionary.vulnerabilities')}
               </Typography>
-            </Grid>
-            <Grid item xs={12} style={{ paddingTop: 0 }}>
-              <Typography className={body1}>
-                {formatNOK(
-                  scenario.risiko.konsekvens * scenario.risiko.sannsynlighet,
-                )}{' '}
-                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
-              </Typography>
+              {scenario.sårbarheter.map(sårbarhet => (
+                <Typography className={body2}>{sårbarhet}</Typography>
+              ))}
             </Grid>
           </Grid>
-        </Grid>
+
+        </Box>
+      </Paper>
+
+      {/* Initial risk -> Rest risk*/}
+      <Grid
+        item
+        xs={12}
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+
+        <Paper className={paper} style={{ padding: '1rem' }}>
+          <Grid item xs={12} style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+            <Typography className={h3}>
+              {t('dictionary.initialRisk')}
+            </Typography>
+            <Button
+              className={button}
+              variant="outlined"
+              color="primary"
+              onClick={() => editScenario('initialRisk')}
+              startIcon={<BorderColorOutlinedIcon />}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Grid container>
+
+              <Grid
+                item
+                xs={12}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: '0.5rem',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  className={risikoBadge}
+                  style={{
+                    backgroundColor: getRiskMatrixColor(scenario.risiko),
+                  }}
+                />
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'start',
+                  }}
+                >
+                  <Typography className={label}>
+                    {t('dictionary.consequence')}: {getKonsekvensLevel(scenario.risiko)}
+                  </Typography>
+                  <Typography className={label}>
+                    {t('dictionary.probability')}: {getSannsynlighetLevel(scenario.risiko)}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} style={{ paddingBottom: 0 }}>
+                <Typography className={label}>
+                  {t('dictionary.estimatedRisk')}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} style={{ paddingTop: 0 }}>
+                <Typography className={body1}>
+                  {formatNOK(
+                    scenario.risiko.konsekvens * scenario.risiko.sannsynlighet,
+                  )}{' '}
+                  {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
         </Paper>
 
-     {/* Pil ikon */}
+        {/* Arrow */}
         <Grid
           item
           xs={2}
@@ -202,127 +216,130 @@ export const ScenarioDrawerView = () => {
         >
           <KeyboardDoubleArrowRightIcon fontSize="large" />
         </Grid>
-        
-    <Paper className={paper} style={{ padding: '1rem' }}>
-     {/* Restrisiko */}
-     <Grid item xs={2}>
-       <Button
-           className={button}
-           variant="contained"
-           color="primary"
-           onClick={() => editScenario('scenario')}
-           startIcon={<BorderColorOutlinedIcon />}
-       >
-         {t('dictionary.edit')}
-       </Button>
-      </Grid>
-        <Grid item xs={4}>
-          <Grid container>
-            <Grid
-              item
-              xs={12}
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: '0.5rem',
-                alignItems: 'center',
-              }}
-            >
-              <Box
-                className={risikoBadge}
+
+        <Paper className={paper} style={{ padding: '1rem' }}>
+          <Grid item xs={12} style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+            <Typography className={h3}>
+              {t('dictionary.restRisk')}
+            </Typography>
+            <Button
+              className={button}
+              variant="outlined"
+              color="primary"
+              onClick={() => editScenario('restRisk')}
+              startIcon={<BorderColorOutlinedIcon />}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+
+            <Grid container>
+              <Grid
+                item
+                xs={12}
                 style={{
-                  backgroundColor: getRiskMatrixColor(scenario.restrisiko),
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: '0.5rem',
+                  alignItems: 'center',
                 }}
-              />
-              <Typography className={body2}>
-                {t('dictionary.restRisk')}
-              </Typography>
-            </Grid>
+              >
+                <Box
+                  className={risikoBadge}
+                  style={{
+                    backgroundColor: getRiskMatrixColor(scenario.restrisiko),
+                  }}
+                />
 
-            <Grid item xs={6} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>
-                {t('dictionary.consequence')}
-              </Typography>
-            </Grid>
-            <Grid item xs={6} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>
-                {t('dictionary.probability')}
-              </Typography>
-            </Grid>
-
-            <Grid item xs={6} style={{ paddingTop: 0 }}>
-              <Typography className={risikoLevel}>
-                {getKonsekvensLevel(scenario.restrisiko)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6} style={{ paddingTop: 0 }}>
-              <Typography className={risikoLevel}>
-                {getSannsynlighetLevel(scenario.restrisiko)}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} style={{ paddingBottom: 0 }}>
-              <Typography className={label}>
-                {t('dictionary.estimatedRisk')}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} style={{ paddingTop: 0 }}>
-              <Typography className={body1}>
-                {formatNOK(
-                  scenario.restrisiko.konsekvens *
-                    scenario.restrisiko.sannsynlighet,
-                )}{' '}
-                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
-              </Typography>
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'start',
+                  }}
+                >
+                  <Typography className={label}>
+                    {t('dictionary.consequence')}: {getKonsekvensLevel(scenario.restrisiko)}
+                  </Typography>
+                  <Typography className={label}>
+                    {t('dictionary.probability')}: {getSannsynlighetLevel(scenario.restrisiko)}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} style={{ paddingBottom: 0 }}>
+                <Typography className={label}>
+                  {t('dictionary.estimatedRisk')}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} style={{ paddingTop: 0 }}>
+                <Typography className={body1}>
+                  {formatNOK(
+                    scenario.restrisiko.konsekvens * scenario.restrisiko.sannsynlighet,
+                  )}{' '}
+                  {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-    </Paper>
+        </Paper>
+      </Grid>
 
-    <Box>
-    <Grid item xs={2} />
+      <Box>
+        <Paper className={paper} style={{ padding: '1rem' }}>
+          <Grid item xs={12} style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: '12px'
+          }}>
+            <Typography className={h3} gutterBottom>
+              {'Tiltak for å oppnå restrisiko'} {/*TODO: oppdater disse til å være dynamiske!*/}
+            </Typography>
+            <Button
+              className={button}
+              variant="outlined"
+              color="primary"
+              onClick={() => editScenario('measure')}
+              startIcon={<BorderColorOutlinedIcon />}
+            >
+            </Button>
+          </Grid>
+          {scenario.tiltak.map((tiltak, index) => (
+            <TiltakView tiltak={tiltak} index={index + 1} />
+          ))}
+        </Paper>
 
-    <Grid item xs={12}>
-      <Divider variant="fullWidth" />
-    </Grid>
-
-    <Paper className={paper} style={{ padding: '1rem' }}>
-
-    <Grid item xs={12}>
-      <Typography className={h3} gutterBottom>
-        {'Tiltak for å oppnå restrisiko'} {/*TODO: oppdater disse til å være dynamiske!*/} 
-      </Typography>
-      <Button
-           className={button}
-           variant="contained"
-           color="primary"
-           onClick={() => editScenario('scenario')}
-           startIcon={<BorderColorOutlinedIcon />}
-       >
-         {t('dictionary.edit')}
-       </Button>
-      {scenario.tiltak.map((tiltak, index) => (
-        <TiltakView tiltak={tiltak} index={index + 1} />
-      ))}
-    </Grid>
-    </Paper>
-
-    </Box>
-    <Box className={buttons}>
-        {/* 
-        TODO: implementer sletting
-        */}
-
+      </Box>
+      <Box className={buttons}
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: '0.5rem',
+          justifyContent: 'flex-start'
+        }}>
         <Button
-            className={button}
-            variant="outlined"
-            color="primary"
-            onClick={closeScenario}
-            endIcon={<KeyboardTabIcon />}
+          startIcon={<DeleteIcon />}
+          variant="text"
+          color="primary"
+          onClick={openDeleteConfirmation}
         >
-          {'Slett'}
+          {t('scenarioDrawer.deleteScenarioButton')}
         </Button>
       </Box>
 
+      <DeleteConfirmation />
+
+      <CloseConfirmation
+        isOpen={showCloseConfirmation}
+        close={close}
+        save={saveAndClose}
+      />
     </>
   );
 };

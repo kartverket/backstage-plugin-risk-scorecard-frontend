@@ -45,7 +45,7 @@ export const useScenarioDrawerContentStyles = makeStyles((theme: Theme) => ({
   },
   risikoBadge: {
     width: '20px',
-    height: '20px',
+    height: '48px',
     borderRadius: '20%',
   },
 }));
