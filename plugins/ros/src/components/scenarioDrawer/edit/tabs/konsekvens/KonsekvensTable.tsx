@@ -53,6 +53,7 @@ export const ConsequenceTable = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleChangeRow = (row: number) => () => {
+    console.log('row', row);
     handleChange(row);
   };
 
@@ -62,7 +63,7 @@ export const ConsequenceTable = ({
         <div className={radio}>
           <Radio
             checked={selectedValue === row}
-            onChange={() => handleChangeRow(row)}
+            onChange={handleChangeRow(row)}
             style={{ padding: 0, color: '#9BC9FE' }}
           />
           {/* @ts-ignore */}
