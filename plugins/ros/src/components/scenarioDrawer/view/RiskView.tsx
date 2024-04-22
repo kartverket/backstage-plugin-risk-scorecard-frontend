@@ -25,9 +25,7 @@ export const RiskView = () => {
   return (
     <>
       {/* Initial risk -> Rest risk*/}
-      <Grid
-        item
-        xs={12}
+      <Box
         style={{
           display: 'flex',
           flexDirection: 'row',
@@ -178,7 +176,7 @@ export const RiskView = () => {
             </Grid>
           </Grid>
         </Paper>
-      </Grid>
+      </Box>
     </>
   );
 };
