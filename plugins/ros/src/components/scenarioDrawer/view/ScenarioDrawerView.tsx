@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
-import { Button, Grid, Typography } from '@material-ui/core';
-import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
+import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { useFontStyles, useInputFieldStyles, useScenarioDrawerContentStyles } from '../style';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
 import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
@@ -19,8 +19,9 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 
 export const ScenarioDrawerView = () => {
   const { header, buttons, risikoBadge } = useScenarioDrawerContentStyles();
+  const { paper } = useInputFieldStyles();
 
-  const { h1, h2, subtitle1, body1, body2, label, button, risikoLevel } =
+  const { h1, h3, subtitle1, body1, body2, label, button, risikoLevel } =
     useFontStyles();
 
   const { scenario, closeScenario, editScenario } =
@@ -30,76 +31,107 @@ export const ScenarioDrawerView = () => {
 
   return (
     <>
-      <Box className={header}>
-        <Typography variant="h1" className={h1}>
-          {t('scenarioDrawer.title')}
-        </Typography>
-        <Box className={buttons}>
-          <Button
+      <Box className={buttons}>
+        {/* 
+        <Grid item xs={2}>
+       
+        <Button
             className={button}
             variant="contained"
             color="primary"
             onClick={() => editScenario('scenario')}
             startIcon={<BorderColorOutlinedIcon />}
-          >
-            {t('dictionary.edit')}
-          </Button>
+        >
+          {t('dictionary.edit')}
+        </Button>
+         </Grid>
+        */}
 
-          <Button
+        <Button
             className={button}
             variant="outlined"
             color="primary"
             onClick={closeScenario}
             endIcon={<KeyboardTabIcon />}
-          >
-            {t('dictionary.close')}
-          </Button>
-        </Box>
+        >
+          {t('dictionary.close')}
+        </Button>
       </Box>
 
-      <Grid container>
-        <Grid item xs={12}>
-          <Typography className={h2}>{scenario.tittel}</Typography>
+      <Paper className={paper} style={{ padding: '1rem' }}>
+      <Box className={header}>
+        <Grid container>
+          <Grid item xs={9}>
+            <Typography variant="h3" className={h3}>
+              {t('scenarioDrawer.title')}
+            </Typography>
+          </Grid>
+          
+      <Grid item xs={2}>
+       <Button
+           className={button}
+           variant="contained"
+           color="primary"
+           onClick={() => editScenario('scenario')}
+           startIcon={<BorderColorOutlinedIcon />}
+       >
+         {t('dictionary.edit')}
+       </Button>
+      </Grid>
+
+          <Grid item xs={12}>
+            <Typography className={h1}>{scenario.tittel}</Typography>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography className={label}>
+              {t('dictionary.description')}
+            </Typography>
+            <Typography className={body2}>{scenario.beskrivelse}</Typography>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Divider variant="fullWidth" />
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography className={label}>
+              {t('dictionary.threatActors')}
+            </Typography>
+            {scenario.trusselaktører.map(trusselaktør => (
+                <Typography className={body2}>{trusselaktør}</Typography>
+            ))}
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography className={label}>
+              {t('dictionary.vulnerabilities')}
+            </Typography>
+            {scenario.sårbarheter.map(sårbarhet => (
+                <Typography className={body2}>{sårbarhet}</Typography>
+            ))}
+          </Grid>
         </Grid>
 
-        <Grid item xs={12}>
-          <Typography className={label}>
-            {t('dictionary.description')}
-          </Typography>
-          <Typography className={body2}>{scenario.beskrivelse}</Typography>
-        </Grid>
+      </Box>
+      </Paper>
+  
 
-        <Grid item xs={12}>
-          <Divider variant="fullWidth" />
-        </Grid>
-
-        <Grid item xs={6}>
-          <Typography className={label}>
-            {t('dictionary.threatActors')}
-          </Typography>
-          {scenario.trusselaktører.map(trusselaktør => (
-            <Typography className={body2}>{trusselaktør}</Typography>
-          ))}
-        </Grid>
-
-        <Grid item xs={6}>
-          <Typography className={label}>
-            {t('dictionary.vulnerabilities')}
-          </Typography>
-          {scenario.sårbarheter.map(sårbarhet => (
-            <Typography className={body2}>{sårbarhet}</Typography>
-          ))}
-        </Grid>
-
-        <Grid item xs={12}>
-          <Divider variant="fullWidth" />
-        </Grid>
-
-        <Grid item xs={12}>
-          <Typography className={subtitle1}>{t('dictionary.risk')}</Typography>
-        </Grid>
-
-        <Grid item xs={4}>
+    <Paper className={paper} style={{ padding: '1rem' }}>
+      {/* Startrisiko */}
+      <Grid item xs={2}>
+       <Button
+           className={button}
+           variant="contained"
+           color="primary"
+           onClick={() => editScenario('scenario')}
+           startIcon={<BorderColorOutlinedIcon />}
+       >
+         {t('dictionary.edit')}
+       </Button>
+      </Grid>
+      <Grid item xs={4}>
+      {/* TODO: endre retning til column og flytte på hvordan komponentene er satt opp for risiko og sannsynlighet */}
           <Grid container>
             <Grid
               item
@@ -156,7 +188,9 @@ export const ScenarioDrawerView = () => {
             </Grid>
           </Grid>
         </Grid>
+        </Paper>
 
+     {/* Pil ikon */}
         <Grid
           item
           xs={2}
@@ -168,7 +202,20 @@ export const ScenarioDrawerView = () => {
         >
           <KeyboardDoubleArrowRightIcon fontSize="large" />
         </Grid>
-
+        
+    <Paper className={paper} style={{ padding: '1rem' }}>
+     {/* Restrisiko */}
+     <Grid item xs={2}>
+       <Button
+           className={button}
+           variant="contained"
+           color="primary"
+           onClick={() => editScenario('scenario')}
+           startIcon={<BorderColorOutlinedIcon />}
+       >
+         {t('dictionary.edit')}
+       </Button>
+      </Grid>
         <Grid item xs={4}>
           <Grid container>
             <Grid
@@ -229,22 +276,53 @@ export const ScenarioDrawerView = () => {
             </Grid>
           </Grid>
         </Grid>
+    </Paper>
 
-        <Grid item xs={2} />
+    <Box>
+    <Grid item xs={2} />
 
-        <Grid item xs={12}>
-          <Divider variant="fullWidth" />
-        </Grid>
+    <Grid item xs={12}>
+      <Divider variant="fullWidth" />
+    </Grid>
 
-        <Grid item xs={12}>
-          <Typography className={body2} gutterBottom>
-            {t('dictionary.measure')}
-          </Typography>
-          {scenario.tiltak.map((tiltak, index) => (
-            <TiltakView tiltak={tiltak} index={index + 1} />
-          ))}
-        </Grid>
-      </Grid>
+    <Paper className={paper} style={{ padding: '1rem' }}>
+
+    <Grid item xs={12}>
+      <Typography className={h3} gutterBottom>
+        {'Tiltak for å oppnå restrisiko'} {/*TODO: oppdater disse til å være dynamiske!*/} 
+      </Typography>
+      <Button
+           className={button}
+           variant="contained"
+           color="primary"
+           onClick={() => editScenario('scenario')}
+           startIcon={<BorderColorOutlinedIcon />}
+       >
+         {t('dictionary.edit')}
+       </Button>
+      {scenario.tiltak.map((tiltak, index) => (
+        <TiltakView tiltak={tiltak} index={index + 1} />
+      ))}
+    </Grid>
+    </Paper>
+
+    </Box>
+    <Box className={buttons}>
+        {/* 
+        TODO: implementer sletting
+        */}
+
+        <Button
+            className={button}
+            variant="outlined"
+            color="primary"
+            onClick={closeScenario}
+            endIcon={<KeyboardTabIcon />}
+        >
+          {'Slett'}
+        </Button>
+      </Box>
+
     </>
   );
 };
