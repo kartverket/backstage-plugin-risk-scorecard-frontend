@@ -29,7 +29,7 @@ export const ScenarioTableRow = ({
     tiltak => tiltak.status === 'Fullført',
   ).length;
 
-  const { riskColor, rowBackground, rowBorder } = useTableStyles();
+  const { riskColor, rowBackground, rowBorder, tableCell } = useTableStyles();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -43,22 +43,22 @@ export const ScenarioTableRow = ({
           alignItems: 'center',
           width: '100%',
           border: 'none',
+          padding: 0,
         }}
       >
-        <TableCell style={{ display: 'flex', width: '40%' }}>
+        <TableCell
+          className={tableCell}
+          style={{
+            width: '40%',
+            minWidth: '200px',
+          }}
+        >
           <Typography color="primary" style={{ fontWeight: 600 }}>
             {scenario.tittel}
           </Typography>
         </TableCell>
 
-        <TableCell
-          style={{
-            display: 'flex',
-            width: '20%',
-            alignItems: 'center',
-            gap: '0.4rem',
-          }}
-        >
+        <TableCell className={tableCell}>
           <Paper
             className={riskColor}
             style={{
@@ -69,15 +69,7 @@ export const ScenarioTableRow = ({
           {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}
         </TableCell>
 
-        <TableCell
-          style={{
-            display: 'flex',
-            width: '20%',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            gap: '0.4rem',
-          }}
-        >
+        <TableCell className={tableCell}>
           <Paper
             className={riskColor}
             style={{
@@ -87,7 +79,7 @@ export const ScenarioTableRow = ({
           {t('scenarioTable.columns.consequenceChar')}:{restKonsekvens}{' '}
           {t('scenarioTable.columns.probabilityChar')}:{restSannsynlighet}
         </TableCell>
-        <TableCell style={{ display: 'flex', width: '20%' }}>
+        <TableCell className={tableCell}>
           {fullførteTiltak}/{scenario.tiltak.length}{' '}
           {t('scenarioTable.columns.completed')}
         </TableCell>

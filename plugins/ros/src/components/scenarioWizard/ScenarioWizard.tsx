@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import {
-  Button,
   makeStyles,
   Step,
   StepLabel,
   Stepper,
+  Theme,
   Typography,
 } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
@@ -15,13 +15,19 @@ import Divider from '@mui/material/Divider';
 import { useFontStyles } from '../scenarioDrawer/style';
 import { ScenarioContext } from '../rosPlugin/ScenarioContext';
 import { CloseConfirmation } from '../scenarioDrawer/edit/CloseConfirmation';
-import { StartRiskStep } from './steps/StartRiskStep';
 import { InitiativesStep } from './steps/InitiativesStep';
-import { RestRiskStep } from './steps/RestRiskStep';
+import Button from '@mui/material/Button';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { RiskStep } from './steps/RiskStep';
 
-const useStyle = makeStyles({
+const useStyle = makeStyles((theme: Theme) => ({
   root: {
-    margin: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  container: {
+    maxWidth: theme.spacing(100),
   },
   header: {
     display: 'flex',
@@ -29,6 +35,7 @@ const useStyle = makeStyles({
   },
   stepper: {
     background: 'transparent',
+    padding: '2rem 0 1rem 0',
   },
   steps: {
     padding: '1rem 0 1rem 0',
@@ -45,15 +52,15 @@ const useStyle = makeStyles({
   },
   saveAndNextButtons: {
     display: 'flex',
-    gap: '1rem',
+    gap: theme.spacing(2),
   },
-});
+}));
 
 const ScenarioWizardSteps = [
   'scenario',
-  'startrisiko',
-  'tiltak',
-  'restrisiko',
+  'initialRisk',
+  'measure',
+  'restRisk',
 ] as const;
 
 export type ScenarioWizardSteps = (typeof ScenarioWizardSteps)[number];
@@ -68,6 +75,7 @@ export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
 
   const {
     root,
+    container,
     header,
     stepper,
     steps,
@@ -131,65 +139,76 @@ export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
     step && (
       <>
         <Box className={root}>
-          <Box className={header}>
-            <Typography className={h1}>{t('scenarioDrawer.title')}</Typography>
-            <Button variant="outlined" onClick={handleCloseStepper}>
-              {t('dictionary.cancel')}
-            </Button>
-          </Box>
-          <Stepper
-            className={stepper}
-            activeStep={ScenarioWizardSteps.indexOf(step)}
-            alternativeLabel
-          >
-            {ScenarioWizardSteps.map(stepLabel => {
-              const stepProps = {
-                completed: false,
-                style: {
-                  backgroundColor: 'transparent',
-                },
-              };
-              const labelProps = {};
-              return (
-                <Step key={stepLabel} {...stepProps}>
-                  <StepLabel {...labelProps}>
-                    <Typography className={label}>
-                      {stepLabel.charAt(0).toUpperCase() + stepLabel.slice(1)}
-                    </Typography>
-                  </StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-          <Divider />
-          <Box className={steps}>
-            {
-              {
-                [ScenarioWizardSteps[0]]: <ScenarioStep />,
-                [ScenarioWizardSteps[1]]: <StartRiskStep />,
-                [ScenarioWizardSteps[2]]: <InitiativesStep />,
-                [ScenarioWizardSteps[3]]: <RestRiskStep />,
-              }[step]
-            }
-          </Box>
-          <Box
-            className={isFirstStep() ? buttonContainerRight : buttonContainer}
-          >
-            {!isFirstStep() && (
-              <Button onClick={previousStep}>{t('dictionary.previous')}</Button>
-            )}
-            <Box className={saveAndNextButtons}>
-              <Button
-                variant={isLastStep() ? 'contained' : 'outlined'}
-                onClick={saveAndClose}
-              >
-                {t('dictionary.saveAndClose')}
+          <Box className={container}>
+            <Box className={header}>
+              <Typography className={h1}>
+                {t('scenarioDrawer.title')}
+              </Typography>
+              <Button variant="outlined" onClick={handleCloseStepper}>
+                {t('dictionary.cancel')}
               </Button>
-              {!isLastStep() && (
-                <Button variant="contained" onClick={nextStep}>
-                  {t('dictionary.next')}
+            </Box>
+            <Stepper
+              className={stepper}
+              activeStep={ScenarioWizardSteps.indexOf(step)}
+              alternativeLabel
+            >
+              {ScenarioWizardSteps.map(stepLabel => {
+                const stepProps = {
+                  key: stepLabel,
+                  completed: false,
+                };
+                const stepLabelProps = {
+                  className: label,
+                };
+                return (
+                  <Step {...stepProps}>
+                    <StepLabel {...stepLabelProps}>
+                      {t(`dictionary.${stepLabel}`)}
+                    </StepLabel>
+                  </Step>
+                );
+              })}
+            </Stepper>
+            <Divider />
+            <Box className={steps}>
+              {
+                {
+                  [ScenarioWizardSteps[0]]: <ScenarioStep />,
+                  [ScenarioWizardSteps[1]]: <RiskStep riskType="initial" />,
+                  [ScenarioWizardSteps[2]]: <InitiativesStep />,
+                  [ScenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
+                }[step]
+              }
+            </Box>
+            <Box
+              className={isFirstStep() ? buttonContainerRight : buttonContainer}
+            >
+              {!isFirstStep() && (
+                <Button
+                  onClick={previousStep}
+                  startIcon={<KeyboardArrowLeft />}
+                >
+                  {t('dictionary.previous')}
                 </Button>
               )}
+              <Box className={saveAndNextButtons}>
+                <Button
+                  variant={isLastStep() ? 'contained' : 'outlined'}
+                  onClick={saveAndClose}
+                >
+                  {t('dictionary.saveAndClose')}
+                </Button>
+                {!isLastStep() && (
+                  <Button
+                    variant="contained"
+                    onClick={nextStep}
+                    endIcon={<KeyboardArrowRight />}
+                  >
+                    {t('dictionary.next')}
+                  </Button>
+                )}
+              </Box>
             </Box>
           </Box>
         </Box>

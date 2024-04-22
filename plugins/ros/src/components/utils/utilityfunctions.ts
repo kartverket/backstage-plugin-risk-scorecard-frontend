@@ -34,8 +34,8 @@ export function getAlertSeverity(
   status: ProcessingStatus,
 ): 'error' | 'warning' | 'info' {
   switch (status) {
-    case ProcessingStatus.UpdatedROS:
-    case ProcessingStatus.CreatedROS:
+    case ProcessingStatus.UpdatedRiSc:
+    case ProcessingStatus.CreatedRiSc:
     case ProcessingStatus.CreatedPullRequest:
       return 'info';
     default:
