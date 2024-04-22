@@ -25,7 +25,7 @@ export const ProbabilityTable = ({
       <div className={radio}>
         <Radio
           checked={selectedValue === row}
-          onChange={() => handleChangeRow(row)}
+          onChange={handleChangeRow(row)}
           style={{ padding: 0, color: '#9BC9FE' }}
         />
         {/* @ts-ignore */}

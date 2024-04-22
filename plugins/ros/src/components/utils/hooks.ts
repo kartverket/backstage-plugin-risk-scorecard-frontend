@@ -243,6 +243,8 @@ export interface ScenarioDrawerProps {
   updateTiltak: (tiltak: Tiltak) => void;
   deleteTiltak: (tiltak: Tiltak) => void;
   updateRestrisiko: (restrisiko: Risiko) => void;
+  setRestSannsynlighet: (sannsynlighetLevel: number) => void;
+  setRestKonsekvens: (konsekvensLevel: number) => void;
 }
 
 export enum ScenarioDrawerState {
@@ -463,6 +465,24 @@ export const useScenarioDrawer = (
   const updateRestrisiko = (restrisiko: Risiko) =>
     setScenario({ ...scenario, restrisiko });
 
+  const setRestSannsynlighet = (sannsynlighetLevel: number) =>
+    setScenario({
+      ...scenario,
+      restrisiko: {
+        ...scenario.restrisiko,
+        sannsynlighet: sannsynlighetOptions[sannsynlighetLevel - 1],
+      },
+    });
+
+  const setRestKonsekvens = (konsekvensLevel: number) =>
+    setScenario({
+      ...scenario,
+      restrisiko: {
+        ...scenario.restrisiko,
+        konsekvens: konsekvensOptions[konsekvensLevel - 1],
+      },
+    });
+
   return {
     scenarioDrawerState,
     scenarioWizardStep,
@@ -494,6 +514,8 @@ export const useScenarioDrawer = (
     updateTiltak,
     deleteTiltak,
     updateRestrisiko,
+    setRestSannsynlighet,
+    setRestKonsekvens,
   };
 };
 
