@@ -1,12 +1,13 @@
-import schema from '../../ros_schema_no_v1_0.json';
+import schema from '../../risc_schema_en_v3_2.json';
 
-export const konsekvensOptions = schema.$defs.risiko.properties.konsekvens.enum;
+export const konsekvensOptions =
+  schema.$defs.risk.properties.consequence.anyOf[0].enum;
 export const sannsynlighetOptions =
-  schema.$defs.risiko.properties.sannsynlighet.enum;
+  schema.$defs.risk.properties.probability.anyOf[0].enum;
 export const trusselaktørerOptions =
-  schema.properties.scenarier.items.properties.trusselaktører.items.enum;
+  schema.$defs.scenario.properties.threatActor.items.enum;
 export const sårbarheterOptions =
-  schema.properties.scenarier.items.properties.sårbarheter.items.enum;
+  schema.$defs.scenario.properties.vulnerabilities.items.enum;
 export const options = ['1', '2', '3', '4', '5'];
 
 export const riskMatrix = [
