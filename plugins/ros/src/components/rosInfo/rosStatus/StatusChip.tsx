@@ -1,5 +1,10 @@
 import Chip from '@material-ui/core/Chip';
-import React, { ReactComponentElement, useEffect, useState } from 'react';
+import React, {
+  ReactComponentElement,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 import { RosStatus } from '../../utils/types';
 import { useStatusChipStyles, useStatusTextStyles } from './statusChipStyle';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
@@ -25,9 +30,8 @@ const getChipColor = (status: RosStatus, classes: ClassNameMap): string => {
   }
 };
 
-const getChipTextStatus = (status: RosStatus): string => {
+const chipText = (status: RosStatus): string => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-
   switch (status) {
     case RosStatus.Draft:
       return t('rosStatus.statusBadge.missing');
@@ -37,6 +41,11 @@ const getChipTextStatus = (status: RosStatus): string => {
     default:
       return t('rosStatus.statusBadge.error');
   }
+};
+
+const getChipTextStatus = (status: RosStatus): ReactNode => {
+  const { statusChipText } = useStatusChipStyles();
+  return <span className={statusChipText}>{chipText(status)}</span>;
 };
 
 const getPRStatus = (
@@ -56,7 +65,12 @@ const getPRStatus = (
     case RosStatus.Draft:
     case RosStatus.Published:
     default:
-      return null;
+      return (
+        <Typography className={classes.prStatus}>
+          <GitHubIcon className={classes.prIcon} />
+          {t('rosStatus.prStatus')}
+        </Typography>
+      );
   }
 };
 export const StatusChip = ({ currentRosStatus }: ChipProps) => {
@@ -71,7 +85,12 @@ export const StatusChip = ({ currentRosStatus }: ChipProps) => {
   }, [currentRosStatus, chipClasses]);
 
   return (
-    <Grid container direction="column" spacing={0}>
+    <Grid
+      container
+      direction="column"
+      spacing={0}
+      style={{ alignItems: 'end' }}
+    >
       <Grid item>
         <Chip
           color="primary"
