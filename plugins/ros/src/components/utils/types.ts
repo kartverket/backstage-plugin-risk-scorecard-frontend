@@ -65,15 +65,16 @@ export enum RosStatus {
 }
 
 export enum ProcessingStatus {
-  ROSNotValid = 'ROSNotValid',
+  RiScNotValid = 'RiScNotValid',
   EncryptionFailed = 'EncryptionFailed',
   CouldNotCreateBranch = 'CouldNotCreateBranch',
-  UpdatedROS = 'UpdatedROS',
-  CreatedROS = 'CreatedROS',
+  UpdatedRiSc = 'UpdatedRiSc',
+  CreatedRiSc = 'CreatedRiSc',
   CreatedPullRequest = 'CreatedPullRequest',
-  ErrorWhenCreatingROS = 'ErrorWhenCreatingROS',
-  ErrorWhenUpdatingROS = 'ErrorWhenUpdatingROS',
-  ErrorWhenPublishingROS = 'ErrorWhenPublishingROS',
-  ErrorWhenFetchingROSes = 'ErrorWhenFetchingROSes',
+  ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
+  ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
+  ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
+  ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
+  ErrorWhenFetchingJSONSchema = 'ErrorWhenFetchingJSONSchema',
 }

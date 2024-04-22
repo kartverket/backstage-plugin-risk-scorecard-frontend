@@ -9,7 +9,7 @@ import {
 } from './types';
 
 export type ProcessROSResultDTO = {
-  rosId: string;
+  riScId: string;
   status: ProcessingStatus;
   statusMessage: string;
 };
@@ -22,8 +22,8 @@ export type PublishROSResultDTO = {
 } & ProcessROSResultDTO;
 
 export type ROSContentResultDTO = {
-  rosStatus: RosStatus;
-  rosContent: string;
+  riScStatus: RosStatus;
+  riScContent: string;
 } & ProcessROSResultDTO;
 
 export type ROSDTO = {
@@ -90,7 +90,7 @@ export function rosToDTOString(
   isRequiresNewApproval: boolean,
 ): string {
   return JSON.stringify({
-    ros: JSON.stringify(rosToDTO(ros)),
+    riSc: JSON.stringify(rosToDTO(ros)),
     isRequiresNewApproval: isRequiresNewApproval,
     schemaVersion: ros.skjemaVersjon,
   });

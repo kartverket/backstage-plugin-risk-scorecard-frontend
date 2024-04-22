@@ -1,45 +1,19 @@
 import React from 'react';
-import { makeStyles, Radio } from '@material-ui/core';
+import { Radio } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { useTableStyles } from '../konsekvens/KonsekvensTable';
 
-const useStyles = makeStyles({
-  grid: {
-    display: 'flex',
-    borderCollapse: 'collapse',
-    width: '100%',
-    justifyContent: 'center',
-    paddingTop: '2rem',
-  },
-  cell: {
-    padding: '8px',
-    border: '1px solid grey',
-  },
-  firstCell: {
-    padding: '8px',
-    border: 'none',
-    width: 'fit-content',
-    whiteSpace: 'nowrap',
-  },
-  label: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '5px',
-    justifyContent: 'flex-end',
-    fontWeight: 'bold',
-  },
-});
-
-interface SannsynlighetTableProps {
+interface ProbabilityTableProps {
   selectedValue: number;
   handleChange: (index: number) => void;
 }
 
-export const SannsynlighetTable = ({
+export const ProbabilityTable = ({
   selectedValue,
   handleChange,
-}: SannsynlighetTableProps) => {
-  const classes = useStyles();
+}: ProbabilityTableProps) => {
+  const { table, cell, radio } = useTableStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleChangeRow = (row: number) => () => {
@@ -47,22 +21,28 @@ export const SannsynlighetTable = ({
   };
 
   const radioCell = (row: number) => (
-    <td className={classes.firstCell}>
-      <Radio checked={selectedValue === row} onChange={handleChangeRow(row)} />
-      {/* @ts-ignore */}
-      {row}: {t(`probabilityTable.rows.${row}`)}
-    </td>
+    <th scope="col">
+      <div className={radio}>
+        <Radio
+          checked={selectedValue === row}
+          onChange={handleChangeRow(row)}
+          style={{ padding: 0, color: '#9BC9FE' }}
+        />
+        {/* @ts-ignore */}
+        {row}: {t(`probabilityTable.rows.${row}`)}
+      </div>
+    </th>
   );
 
   const contentCell = (row: number) => (
-    <td className={classes.cell}>
+    <td className={cell}>
       {/* @ts-ignore */}
       {t(`probabilityTable.cells.${row}`)}
     </td>
   );
 
   return (
-    <table className={classes.grid}>
+    <table className={table}>
       <tbody>
         <tr>
           {radioCell(1)}

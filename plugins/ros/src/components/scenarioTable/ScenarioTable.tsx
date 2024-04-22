@@ -21,7 +21,7 @@ interface ScenarioTableProps {
 
 export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
   const { newScenario, openScenario } = useContext(ScenarioContext)!!;
-  const { titleBox, rowBorder } = useTableStyles();
+  const { titleBox, rowBorder, tableCell } = useTableStyles();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -72,16 +72,15 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
             </Button>
           </Box>
         ) : (
-          <TableContainer component={Paper}>
+          <TableContainer style={{ overflow: 'auto' }} component={Paper}>
             <Table>
               <TableHead>
                 <TableRow className={rowBorder}>
                   <TableCell
+                    className={tableCell}
                     style={{
-                      display: 'flex',
                       width: '40%',
-                      paddingTop: '0.1rem',
-                      paddingBottom: '0.1rem',
+                      minWidth: '200px',
                     }}
                   >
                     <Typography
@@ -91,14 +90,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                       {t('dictionary.title')}
                     </Typography>
                   </TableCell>
-                  <TableCell
-                    style={{
-                      display: 'flex',
-                      width: '20%',
-                      paddingTop: '0.1rem',
-                      paddingBottom: '0.1rem',
-                    }}
-                  >
+                  <TableCell className={tableCell}>
                     <Typography
                       variant="subtitle1"
                       style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
@@ -106,14 +98,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                       {t('dictionary.initialRisk')}
                     </Typography>
                   </TableCell>
-                  <TableCell
-                    style={{
-                      display: 'flex',
-                      width: '20%',
-                      paddingTop: '0.1rem',
-                      paddingBottom: '0.1rem',
-                    }}
-                  >
+                  <TableCell className={tableCell}>
                     <Typography
                       variant="subtitle1"
                       style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
@@ -121,14 +106,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                       {t('dictionary.restRisk')}
                     </Typography>
                   </TableCell>
-                  <TableCell
-                    style={{
-                      display: 'flex',
-                      width: '20%',
-                      paddingTop: '0.1rem',
-                      paddingBottom: '0.1rem',
-                    }}
-                  >
+                  <TableCell className={tableCell}>
                     <Typography
                       variant="subtitle1"
                       style={{ fontWeight: 'bold', textTransform: 'uppercase' }}

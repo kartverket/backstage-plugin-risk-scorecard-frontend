@@ -85,6 +85,13 @@ export const useFontStyles = makeStyles(theme => ({
     paddingBottom: '0.4rem',
     marginTop: '-0.2rem',
   },
+  label2: {
+    fontSize: theme.spacing(2),
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
+  },
+
   subtitle1: {
     fontSize: theme.spacing(2),
     fontWeight: 700,
@@ -118,7 +125,6 @@ export const useFontStyles = makeStyles(theme => ({
 export const useInputFieldStyles = makeStyles((theme: Theme) => ({
   formControl: {
     width: '100%',
-    height: '100%',
   },
   formLabel: {
     fontSize: theme.spacing(1.75),
@@ -131,7 +137,7 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
     backgroundColor:
-      theme.palette.type === 'dark' ? '#333333' : 'rgba(0, 0, 0, 0.1)',
+      theme.palette.type === 'dark' ? '#404040' : 'rgba(0, 0, 0, 0.1)',
   },
   root: {
     '&.Mui-disabled': {

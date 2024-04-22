@@ -3,7 +3,13 @@ import { makeStyles } from '@material-ui/core';
 export const useStatusChipStyles = makeStyles(() => ({
   statusChip: {
     borderRadius: '7px',
-    maxHeight: '25px',
+    maxHeight: 'fit-content',
+    height: 'fit-content',
+    margin: '0px',
+  },
+
+  statusChipText: {
+    whiteSpace: 'normal',
   },
 
   statusIcon: {
@@ -28,7 +34,7 @@ export const useStatusChipStyles = makeStyles(() => ({
 
 export const useStatusTextStyles = makeStyles(() => ({
   prStatus: {
-    fontSize: '12px',
+    fontSize: '14px',
     wrap: 'wrap',
   },
   prIcon: {

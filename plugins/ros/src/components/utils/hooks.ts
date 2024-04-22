@@ -77,10 +77,11 @@ const useFetch = () => {
   const googleApi = useApi(googleAuthApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
   const baseUri = useApi(configApiRef).getString('riskAssessment.baseUrl');
-  const rosUri = `${baseUri}/api/ros/${repoInformation.owner}/${repoInformation.name}`;
+  const rosUri = `${baseUri}/api/risc/${repoInformation.owner}/${repoInformation.name}`;
   const uriToFetchAllRoses = () => `${rosUri}/all`;
   const uriToFetchRos = (id: string) => `${rosUri}/${id}`;
   const uriToPublishROS = (id: string) => `${rosUri}/publish/${id}`;
+  const uriToFetchLatestJSONSchema = () => `${baseUri}/api/ros/schemas/latest`;
 
   const [response, setResponse] = useResponse();
 
@@ -127,7 +128,20 @@ const useFetch = () => {
       if (onError) onError();
       setResponse({
         statusMessage: 'Failed to fetch ROSes',
-        status: ProcessingStatus.ErrorWhenFetchingROSes,
+        status: ProcessingStatus.ErrorWhenFetchingRiScs,
+      });
+    });
+
+  const fetchLatestJSONSchema = (
+    onSuccess: (response: string) => void,
+    onError?: () => void,
+  ) =>
+    fetch<string>(uriToFetchLatestJSONSchema(), 'GET', onSuccess, () => {
+      if (onError) onError();
+      setResponse({
+        statusMessage:
+          'Failed to fetch JSON schema. Fallback value 3.2 for schema version used',
+        status: ProcessingStatus.ErrorWhenFetchingJSONSchema,
       });
     });
 
@@ -187,7 +201,15 @@ const useFetch = () => {
       },
     );
 
-  return { fetchRoses, postROS, putROS, publishROS, response, setResponse };
+  return {
+    fetchRoses,
+    postROS,
+    putROS,
+    publishROS,
+    response,
+    setResponse,
+    fetchLatestJSONSchema,
+  };
 };
 
 export interface ScenarioDrawerProps {
@@ -221,6 +243,8 @@ export interface ScenarioDrawerProps {
   updateTiltak: (tiltak: Tiltak) => void;
   deleteTiltak: (tiltak: Tiltak) => void;
   updateRestrisiko: (restrisiko: Risiko) => void;
+  setRestSannsynlighet: (sannsynlighetLevel: number) => void;
+  setRestKonsekvens: (konsekvensLevel: number) => void;
 }
 
 export enum ScenarioDrawerState {
@@ -265,7 +289,7 @@ export const useScenarioDrawer = (
     if (ros) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
-        // setScenarioDrawerState(ScenarioDrawerState.Closed);
+        setScenarioDrawerState(ScenarioDrawerState.Closed);
         setScenarioWizardStep(null);
         const s = emptyScenario();
         setScenario(s);
@@ -441,6 +465,24 @@ export const useScenarioDrawer = (
   const updateRestrisiko = (restrisiko: Risiko) =>
     setScenario({ ...scenario, restrisiko });
 
+  const setRestSannsynlighet = (sannsynlighetLevel: number) =>
+    setScenario({
+      ...scenario,
+      restrisiko: {
+        ...scenario.restrisiko,
+        sannsynlighet: sannsynlighetOptions[sannsynlighetLevel - 1],
+      },
+    });
+
+  const setRestKonsekvens = (konsekvensLevel: number) =>
+    setScenario({
+      ...scenario,
+      restrisiko: {
+        ...scenario.restrisiko,
+        konsekvens: konsekvensOptions[konsekvensLevel - 1],
+      },
+    });
+
   return {
     scenarioDrawerState,
     scenarioWizardStep,
@@ -472,6 +514,8 @@ export const useScenarioDrawer = (
     updateTiltak,
     deleteTiltak,
     updateRestrisiko,
+    setRestSannsynlighet,
+    setRestKonsekvens,
   };
 };
 
@@ -491,8 +535,15 @@ export const useFetchRoses = (
   const navigate = useNavigate();
   const getRosPath = useRouteRef(rosRouteRef);
 
-  const { fetchRoses, postROS, putROS, publishROS, response, setResponse } =
-    useFetch();
+  const {
+    fetchRoses,
+    postROS,
+    putROS,
+    publishROS,
+    response,
+    setResponse,
+    fetchLatestJSONSchema,
+  } = useFetch();
 
   const [roses, setRoses] = useState<ROSWithMetadata[] | null>(null);
   const [selectedROS, setSelectedROS] = useState<ROSWithMetadata | null>(null);
@@ -502,7 +553,7 @@ export const useFetchRoses = (
     if (location.state) {
       setResponse({
         statusMessage: location.state,
-        status: ProcessingStatus.ErrorWhenFetchingROSes,
+        status: ProcessingStatus.ErrorWhenFetchingRiScs,
       });
     }
   }, [location]);
@@ -512,11 +563,11 @@ export const useFetchRoses = (
     fetchRoses(
       res => {
         const fetchedRoses: ROSWithMetadata[] = res.map(rosDTO => {
-          const content = dtoToROS(JSON.parse(rosDTO.rosContent) as ROSDTO);
+          const content = dtoToROS(JSON.parse(rosDTO.riScContent) as ROSDTO);
           return {
-            id: rosDTO.rosId,
+            id: rosDTO.riScId,
             content: content,
-            status: rosDTO.rosStatus,
+            status: rosDTO.riScStatus,
           };
         });
 
@@ -568,28 +619,45 @@ export const useFetchRoses = (
   const createNewROS = (ros: ROS) => {
     setIsFetching(true);
     setSelectedROS(null);
-    postROS(
-      ros,
-      res => {
-        if (!res.rosId) throw new Error('No ROS ID returned');
+    fetchLatestJSONSchema(res => {
+      const resString = JSON.stringify(res);
+      const schema = JSON.parse(resString);
+      const schemaVersion = schema.properties.schemaVersion.default.replace(
+        /'/g,
+        '',
+      );
+      const newROS = {
+        ...ros,
+        skjemaVersjon: schemaVersion ? schemaVersion : '3.2',
+      };
 
-        const newROS = {
-          id: res.rosId,
-          status: RosStatus.Draft,
-          content: ros,
-          schemaVersion: ros.skjemaVersjon,
-        };
+      postROS(
+        newROS,
+        res2 => {
+          if (!res2.riScId) throw new Error('No ROS ID returned');
 
-        setRoses(roses ? [...roses, newROS] : [newROS]);
-        setSelectedROS(newROS);
-        setIsFetching(false);
-        navigate(getRosPath({ rosId: res.rosId }));
-      },
-      () => {
-        setSelectedROS(selectedROS);
-        setIsFetching(false);
-      },
-    );
+          const ROSWithLatestSchemaVersion = {
+            id: res2.riScId,
+            status: RosStatus.Draft,
+            content: ros,
+            schemaVersion: ros.skjemaVersjon,
+          };
+
+          setRoses(
+            roses
+              ? [...roses, ROSWithLatestSchemaVersion]
+              : [ROSWithLatestSchemaVersion],
+          );
+          setSelectedROS(ROSWithLatestSchemaVersion);
+          setIsFetching(false);
+          navigate(getRosPath({ rosId: res2.riScId }));
+        },
+        () => {
+          setSelectedROS(selectedROS);
+          setIsFetching(false);
+        },
+      );
+    });
   };
 
   const updateROS = (ros: ROS) => {

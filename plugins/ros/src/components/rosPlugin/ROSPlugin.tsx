@@ -21,16 +21,6 @@ import { pluginRiScTranslationRef } from '../utils/translations';
 import { Dropdown } from '../utils/Dropdown';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
-export const ROSPlugin = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<Plugin />} />
-      <Route path={rosRouteRef.path} element={<Plugin />} />
-      <Route path={scenarioRouteRef.path} element={<Plugin />} />
-    </Routes>
-  );
-};
-
 const Plugin = () => {
   const params = useParams();
 
@@ -87,9 +77,17 @@ const Plugin = () => {
               </div>
             )}
 
-            <Grid container spacing={3}>
+            <Grid container spacing={4}>
               {roses !== null && roses.length !== 0 && (
-                <Grid item xs={3}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  style={{
+                    maxWidth: '600px',
+                    minWidth: '300px',
+                  }}
+                >
                   <Dropdown<string>
                     options={roses.map(ros => ros.content.tittel) ?? []}
                     selectedValues={selectedROS?.content.tittel ?? ''}
@@ -107,6 +105,9 @@ const Plugin = () => {
                     color="primary"
                     onClick={openCreateRosDialog}
                     className={button}
+                    style={{
+                      minWidth: '205px',
+                    }}
                   >
                     {t('contentHeader.createNewButton')}
                   </Button>
@@ -122,10 +123,10 @@ const Plugin = () => {
                       edit={openEditRosDialog}
                     />
                   </Grid>
-                  <Grid item xs={6} md={7} lg={8}>
+                  <Grid item xs md={7} lg={8}>
                     <ScenarioTable ros={selectedROS.content} />
                   </Grid>
-                  <Grid item xs={6} md={5} lg={4}>
+                  <Grid item xs md={5} lg={4}>
                     <RiskMatrix ros={selectedROS.content} />
                   </Grid>
                 </>
@@ -147,5 +148,15 @@ const Plugin = () => {
         <ScenarioDrawer />
       </ScenarioContext.Provider>
     </>
+  );
+};
+
+export const ROSPlugin = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<Plugin />} />
+      <Route path={rosRouteRef.path} element={<Plugin />} />
+      <Route path={scenarioRouteRef.path} element={<Plugin />} />
+    </Routes>
   );
 };

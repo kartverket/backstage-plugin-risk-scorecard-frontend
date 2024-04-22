@@ -29,7 +29,7 @@ export const InitiativesStep = () => {
       <Typography className={subtitle2}>
         {t('scenarioDrawer.measureTab.subtitle')}
       </Typography>
-      <Grid item xs={12}>
+      <Grid item xs={12} style={{ paddingTop: '1.5rem' }}>
         <TextField
           label={t('scenarioDrawer.measureTab.existingMeasure')}
           subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
