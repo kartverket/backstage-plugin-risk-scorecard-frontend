@@ -44,7 +44,7 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
         <Box className={gridWrapper}>
           <Box className={grid}>
             <Box className={konsekvens}>
-              <Typography className={`${centered} ${text} ${label2}`}>
+              <Typography className={`${centered} ${label2}`}>
                 {t('dictionary.consequence')}
               </Typography>
             </Box>
@@ -76,7 +76,7 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
               </Box>
             ))}
             <Box className={sannsynlighet}>
-              <Typography className={`${centered} ${text} ${label2}`}>
+              <Typography className={`${centered} ${label2}`}>
                 {t('dictionary.probability')}
               </Typography>
             </Box>

@@ -27,6 +27,10 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
   paperView: {
     padding: theme.spacing(8),
     width: '50%',
+    [theme.breakpoints.down('sm')]: {
+      width: '90%',
+      padding: theme.spacing(2),
+    }
   },
 }));
 
@@ -45,9 +49,19 @@ export const useScenarioDrawerContentStyles = makeStyles((theme: Theme) => ({
   },
   risikoBadge: {
     width: '20px',
-    height: '20px',
+    height: '48px',
     borderRadius: '20%',
   },
+  titleAndButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  section: {
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    backgroundColor: theme.palette.type === 'dark' ? '#333333' : 'rgba(0, 0, 0, 0.1)',
+  }
 }));
 
 export const useFontStyles = makeStyles(theme => ({
