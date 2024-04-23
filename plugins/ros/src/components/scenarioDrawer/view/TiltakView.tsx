@@ -1,7 +1,7 @@
 import React from 'react';
-import { Tiltak as ITiltak } from '../../utils/types';
+import { Action as ITiltak } from '../../utils/types';
 import { Grid, Paper, Typography } from '@material-ui/core';
-import { useFontStyles, useInputFieldStyles } from '../style';
+import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
 import { useTiltakViewStyles } from './style';
 import { formatDate } from '../../utils/utilityfunctions';
 import Chip from '@material-ui/core/Chip';
@@ -14,13 +14,13 @@ interface TiltakProps {
 }
 
 export const TiltakView = ({ tiltak, index }: TiltakProps) => {
-  const { paper } = useInputFieldStyles();
+  const { section } = useScenarioDrawerContentStyles();
   const { alignCenter, justifyEnd } = useTiltakViewStyles();
   const { body2, label } = useFontStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Paper className={paper} style={{ padding: '1rem' }}>
+    <Paper className={section} style={{ padding: '1rem' }}>
       <Grid container>
         <Grid item xs={12} className={alignCenter} style={{ paddingBottom: 0 }}>
           <Grid item xs={6}>
@@ -44,19 +44,21 @@ export const TiltakView = ({ tiltak, index }: TiltakProps) => {
         </Grid>
 
         <Grid item xs={12}>
-          <Typography className={body2}>{tiltak.beskrivelse}</Typography>
+          <Typography className={body2}>{tiltak.description}</Typography>
         </Grid>
 
         <Grid item xs={4}>
           <Typography className={label}>
             {t('dictionary.measureOwner')}
           </Typography>
-          <Typography className={body2}>{tiltak.tiltakseier}</Typography>
+          <Typography className={body2}>{tiltak.owner}</Typography>
         </Grid>
 
         <Grid item xs={4}>
           <Typography className={label}>{t('dictionary.deadline')}</Typography>
-          <Typography className={body2}>{formatDate(tiltak.frist)}</Typography>
+          <Typography className={body2}>
+            {formatDate(tiltak.deadline)}
+          </Typography>
         </Grid>
 
         <Grid item xs={4} />

@@ -1,17 +1,17 @@
 import { createRouteRef, createSubRouteRef } from '@backstage/core-plugin-api';
 
 export const rootRouteRef = createRouteRef({
-  id: 'ros',
+  id: 'riSc',
 });
 
 export const scenarioRouteRef = createSubRouteRef({
   id: 'scenarioId',
   parent: rootRouteRef,
-  path: '/:rosId/:scenarioId',
+  path: '/:riScId/:scenarioId',
 });
 
-export const rosRouteRef = createSubRouteRef({
-  id: 'rosId',
+export const riScRouteRef = createSubRouteRef({
+  id: 'riScId',
   parent: rootRouteRef,
-  path: '/:rosId',
+  path: '/:riScId',
 });

@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { konsekvensOptions, sannsynlighetOptions } from '../utils/constants';
+import { consequenceOptions, probabilityOptions } from '../utils/constants';
 import { formatNOK } from '../utils/utilityfunctions';
 
 export interface EstimatedRiskInfoDialogProps {
@@ -59,7 +59,7 @@ export const EstimatedRiskInfoDialog = ({
             {t('infoDialog.consequenceTitle')}
           </Typography>
           <DialogContentText className={classes.text}>
-            {konsekvensOptions.map((option, index) => (
+            {consequenceOptions.map((option, index) => (
               <>
                 {index + 1}: {formatNOK(option)}
                 <br />
@@ -70,7 +70,7 @@ export const EstimatedRiskInfoDialog = ({
             {t('infoDialog.probabilityTitle')}
           </Typography>
           <DialogContentText className={classes.text}>
-            {sannsynlighetOptions.map((option, index) => (
+            {probabilityOptions.map((option, index) => (
               <>
                 {index + 1}: {option}, {/* @ts-ignore */}
                 {t(`infoDialog.probabilityDescription.${index}`)}

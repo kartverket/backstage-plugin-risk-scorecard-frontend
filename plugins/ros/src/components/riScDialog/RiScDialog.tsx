@@ -7,106 +7,106 @@ import {
   Typography,
 } from '@material-ui/core';
 import { TextField } from '../utils/Textfield';
-import { ROS, ROSWithMetadata } from '../utils/types';
+import { RiSc, RiScWithMetadata } from '../utils/types';
 import { useFontStyles } from '../scenarioDrawer/style';
-import { emptyROS } from '../utils/utilityfunctions';
-import { useRosDialogStyles } from './rosDialogStyle';
+import { emptyRiSc } from '../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { useRiScDialogStyles } from './riScDialogStyle';
 
-export enum ROSDialogStates {
+export enum RiScDialogStates {
   Closed,
   Edit,
   Create,
 }
 
-interface ROSDialogProps {
+interface RiScDialogProps {
   onClose: () => void;
-  dialogState: ROSDialogStates;
-  createNewRos: (newRos: ROS) => void;
-  updateRos: (newRos: ROS) => void;
-  ros: ROSWithMetadata | null;
+  dialogState: RiScDialogStates;
+  createNewRiSc: (newRiSc: RiSc) => void;
+  updateRiSc: (newRiSc: RiSc) => void;
+  riSc: RiScWithMetadata | null;
 }
 
-export const ROSDialog = ({
+export const RiScDialog = ({
   onClose,
   dialogState,
-  createNewRos,
-  updateRos,
-  ros,
+  createNewRiSc,
+  updateRiSc,
+  riSc,
   ...props
-}: ROSDialogProps) => {
-  const [newROS, setNewROS] = useState<ROS>(
-    dialogState === ROSDialogStates.Edit ? ros!!.content : emptyROS(),
+}: RiScDialogProps) => {
+  const [newRiSc, setNewRiSc] = useState<RiSc>(
+    dialogState === RiScDialogStates.Edit ? riSc!!.content : emptyRiSc(),
   );
 
-  const [newROSError, setNewROSError] = useState<{
-    tittel: string | null;
-    omfang: string | null;
+  const [newRiScError, setNewRiScError] = useState<{
+    title: string | null;
+    scope: string | null;
   }>({
-    tittel: null,
-    omfang: null,
+    title: null,
+    scope: null,
   });
 
-  const classes = useRosDialogStyles();
+  const classes = useRiScDialogStyles();
   const { h1 } = useFontStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleCancel = () => {
     onClose();
-    setNewROS(emptyROS());
-    setNewROSError({
-      tittel: null,
-      omfang: null,
+    setNewRiSc(emptyRiSc());
+    setNewRiScError({
+      title: null,
+      scope: null,
     });
   };
 
   const handleSave = () => {
-    setNewROSError({
-      tittel: newROS.tittel === '' ? t('rosDialog.titleError') : null,
-      omfang: newROS.omfang === '' ? t('rosDialog.scopeError') : null,
+    setNewRiScError({
+      title: newRiSc.title === '' ? t('rosDialog.titleError') : null,
+      scope: newRiSc.scope === '' ? t('rosDialog.scopeError') : null,
     });
-    if (!newROS.tittel || !newROS.omfang) return;
+    if (!newRiSc.title || !newRiSc.scope) return;
 
-    if (dialogState === ROSDialogStates.Create) {
-      createNewRos(newROS);
+    if (dialogState === RiScDialogStates.Create) {
+      createNewRiSc(newRiSc);
     } else {
-      updateRos(newROS);
+      updateRiSc(newRiSc);
     }
     handleCancel();
   };
 
   const setTittel = (tittel: string) => {
-    setNewROSError({
-      ...newROSError,
-      tittel: null,
+    setNewRiScError({
+      ...newRiScError,
+      title: null,
     });
-    setNewROS({
-      ...newROS,
-      tittel: tittel,
+    setNewRiSc({
+      ...newRiSc,
+      title: tittel,
     });
   };
 
   const setOmfang = (omfang: string) => {
-    setNewROSError({
-      ...newROSError,
-      omfang: null,
+    setNewRiScError({
+      ...newRiScError,
+      scope: null,
     });
-    setNewROS({
-      ...newROS,
-      omfang: omfang,
+    setNewRiSc({
+      ...newRiSc,
+      scope: omfang,
     });
   };
 
   const header =
-    dialogState === ROSDialogStates.Create
+    dialogState === RiScDialogStates.Create
       ? t('rosDialog.titleNew')
       : t('rosDialog.titleEdit');
 
   return (
     <Dialog
       classes={{ paper: classes.paper }}
-      open={dialogState !== ROSDialogStates.Closed}
+      open={dialogState !== RiScDialogStates.Closed}
       onClose={handleSave}
       {...props}
     >
@@ -115,10 +115,10 @@ export const ROSDialog = ({
         <Box className={classes.content}>
           <TextField
             label={t('dictionary.title')}
-            value={newROS.tittel}
+            value={newRiSc.title}
             minRows={1}
             handleChange={setTittel}
-            error={newROSError.tittel}
+            error={newRiScError.title}
             required
           />
         </Box>
@@ -126,10 +126,10 @@ export const ROSDialog = ({
           <TextField
             label={t('dictionary.scope')}
             subtitle={t('rosDialog.scopeDescription')}
-            value={newROS.omfang}
+            value={newRiSc.scope}
             minRows={4}
             handleChange={setOmfang}
-            error={newROSError.omfang}
+            error={newRiScError.scope}
             required
           />
         </Box>

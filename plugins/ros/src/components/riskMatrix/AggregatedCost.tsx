@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, IconButton, makeStyles, Typography } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
-import { ROS } from '../utils/types';
+import { RiSc } from '../utils/types';
 import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
 import { formatNOK } from '../utils/utilityfunctions';
 import { pluginRiScTranslationRef } from '../utils/translations';
@@ -9,8 +9,8 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useFontStyles } from '../scenarioDrawer/style';
 
 interface AggregatedCostProps {
-  ros: ROS;
-  startRisiko: boolean;
+  riSc: RiSc;
+  initialRisk: boolean;
 }
 
 const useStyles = makeStyles({
@@ -25,12 +25,13 @@ const useStyles = makeStyles({
   },
 });
 
-export const AggregatedCost = ({ ros, startRisiko }: AggregatedCostProps) => {
-  const cost = ros.scenarier
+export const AggregatedCost = ({ riSc, initialRisk }: AggregatedCostProps) => {
+  const cost = riSc.scenarios
     .map(scenario =>
-      startRisiko
-        ? scenario.risiko.sannsynlighet * scenario.risiko.konsekvens
-        : scenario.restrisiko.sannsynlighet * scenario.restrisiko.konsekvens,
+      initialRisk
+        ? scenario.risk.probability * scenario.risk.consequence
+        : scenario.remainingRisk.probability *
+          scenario.remainingRisk.consequence,
     )
     .reduce((a, b) => a + b, 0);
 

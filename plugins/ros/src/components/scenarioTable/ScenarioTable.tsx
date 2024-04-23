@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Box, Button, Paper, Typography } from '@material-ui/core';
-import { ROS } from '../utils/types';
+import { RiSc } from '../utils/types';
 import TableRow from '@mui/material/TableRow';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,17 +9,17 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { ScenarioTableRow } from './ScenarioTableRow';
 import AddCircle from '@material-ui/icons/AddCircle';
-import { ScenarioContext } from '../rosPlugin/ScenarioContext';
+import { ScenarioContext } from '../riScPlugin/ScenarioContext';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { useTableStyles } from './ScenarioTableStyles';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 
 interface ScenarioTableProps {
-  ros: ROS;
+  riSc: RiSc;
 }
 
-export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
+export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
   const { newScenario, openScenario } = useContext(ScenarioContext)!!;
   const { titleBox, rowBorder, tableCell } = useTableStyles();
 
@@ -33,7 +33,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
             {t('scenarioTable.title')}
           </Typography>
 
-          {ros.scenarier.length > 0 && (
+          {riSc.scenarios.length > 0 && (
             <Button
               startIcon={<AddCircle />}
               variant="text"
@@ -49,7 +49,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
             </Button>
           )}
         </Box>
-        {ros.scenarier.length === 0 ? (
+        {riSc.scenarios.length === 0 ? (
           <Box
             style={{
               display: 'flex',
@@ -117,7 +117,7 @@ export const ScenarioTable = ({ ros }: ScenarioTableProps) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {ros.scenarier.map(scenario => (
+                {riSc.scenarios.map(scenario => (
                   <ScenarioTableRow
                     key={scenario.ID}
                     scenario={scenario}

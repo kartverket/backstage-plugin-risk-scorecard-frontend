@@ -4,14 +4,14 @@ import Grid from '@mui/material/Grid';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import TabPanel from '@material-ui/lab/TabPanel';
 import React from 'react';
-import { Risiko, Scenario, Tiltak as ITiltak } from '../../../../utils/types';
+import { Risk, Scenario, Action as ITiltak } from '../../../../utils/types';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { TextField } from '../../../../utils/Textfield';
 import { Dropdown } from '../../../../utils/Dropdown';
 import { tabStyles, useTabsTiltakStyles } from '../style';
 import {
-  konsekvensOptions,
-  sannsynlighetOptions,
+  consequenceOptions,
+  probabilityOptions,
 } from '../../../../utils/constants';
 import {
   getKonsekvensLevel,
@@ -28,7 +28,7 @@ interface TabPanelTiltakProps {
   updateTiltak: (tiltak: ITiltak) => void;
   deleteTiltak: (tiltak: ITiltak) => void;
   addTiltak: () => void;
-  updateRestrisiko: (restrisiko: Risiko) => void;
+  updateRestrisiko: (restrisiko: Risk) => void;
   options: string[];
 }
 
@@ -45,15 +45,15 @@ export const TabPanelTiltak = ({
 
   const setRestKonsekvens = (restKonsekvensLevel: number) => {
     updateRestrisiko({
-      ...scenario.restrisiko,
-      konsekvens: konsekvensOptions[restKonsekvensLevel - 1],
+      ...scenario.remainingRisk,
+      consequence: consequenceOptions[restKonsekvensLevel - 1],
     });
   };
 
   const setRestSannsynlighet = (restSannsynlighetLevel: number) => {
     updateRestrisiko({
-      ...scenario.restrisiko,
-      sannsynlighet: sannsynlighetOptions[restSannsynlighetLevel - 1],
+      ...scenario.remainingRisk,
+      probability: probabilityOptions[restSannsynlighetLevel - 1],
     });
   };
 
@@ -70,15 +70,17 @@ export const TabPanelTiltak = ({
       </Typography>
       <Grid item xs={12}>
         <TextField
-            label={t('scenarioDrawer.measureTab.existingMeasure')}
-            subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
-            value={scenario.eksisterendeTiltak}
-            handleChange={setEksisterendeTiltak}
-            minRows={3}
+          label={t('scenarioDrawer.measureTab.existingMeasure')}
+          subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
+          value={scenario.existingActions}
+          handleChange={setEksisterendeTiltak}
+          minRows={3}
         />
       </Grid>
-      <Typography variant="h6" className={tiltakSubtitle}>{t('scenarioDrawer.measureTab.plannedMeasures')}</Typography>
-      {scenario.tiltak.map((tiltak, index) => (
+      <Typography variant="h6" className={tiltakSubtitle}>
+        {t('scenarioDrawer.measureTab.plannedMeasures')}
+      </Typography>
+      {scenario.actions.map((tiltak, index) => (
         <TiltakEdit
           tiltak={tiltak}
           index={index + 1}
@@ -117,13 +119,13 @@ export const TabPanelTiltak = ({
         <Grid item xs={2}>
           <TextField
             label={t('dictionary.consequence')}
-            value={getKonsekvensLevel(scenario.risiko)}
+            value={getKonsekvensLevel(scenario.risk)}
           />
         </Grid>
         <Grid item xs={2}>
           <TextField
             label={t('dictionary.probability')}
-            value={getSannsynlighetLevel(scenario.risiko)}
+            value={getSannsynlighetLevel(scenario.risk)}
           />
         </Grid>
         <Grid item xs={1} className={arrow}>
@@ -133,7 +135,7 @@ export const TabPanelTiltak = ({
           <Dropdown<number>
             label={t('dictionary.consequence')}
             options={options}
-            selectedValues={getKonsekvensLevel(scenario.restrisiko)}
+            selectedValues={getKonsekvensLevel(scenario.remainingRisk)}
             handleChange={setRestKonsekvens}
           />
         </Grid>
@@ -141,7 +143,7 @@ export const TabPanelTiltak = ({
           <Dropdown<number>
             label={t('dictionary.probability')}
             options={options}
-            selectedValues={getSannsynlighetLevel(scenario.restrisiko)}
+            selectedValues={getSannsynlighetLevel(scenario.remainingRisk)}
             handleChange={setRestSannsynlighet}
           />
         </Grid>

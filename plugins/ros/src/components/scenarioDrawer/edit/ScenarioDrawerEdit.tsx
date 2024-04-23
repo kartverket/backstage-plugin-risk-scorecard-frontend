@@ -5,17 +5,17 @@ import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
 import TabContext from '@material-ui/lab/TabContext';
 import { Tabs } from './tabs/Tabs';
 import {
-  konsekvensOptions,
-  sannsynlighetOptions,
-  sårbarheterOptions,
-  trusselaktørerOptions,
+  consequenceOptions,
+  probabilityOptions,
+  vulnerabilitiesOptions,
+  threatActorsOptions,
 } from '../../utils/constants';
 import { CloseConfirmation } from './CloseConfirmation';
 import {
   getKonsekvensLevel,
   getSannsynlighetLevel,
 } from '../../utils/utilityfunctions';
-import { ScenarioContext } from '../../rosPlugin/ScenarioContext';
+import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TextField } from '../../utils/Textfield';
@@ -98,7 +98,7 @@ export const ScenarioDrawerEdit = () => {
         <Grid item xs={12}>
           <TextField
             label={t('dictionary.title')}
-            value={scenario.tittel}
+            value={scenario.title}
             error={scenarioErrors.tittel}
             required
             minRows={1}
@@ -114,8 +114,8 @@ export const ScenarioDrawerEdit = () => {
             {t('scenarioDrawer.threatActorSubtitle')}
           </Typography>
           <Dropdown<string[]>
-            selectedValues={scenario.trusselaktører}
-            options={trusselaktørerOptions}
+            selectedValues={scenario.threatActors}
+            options={threatActorsOptions}
             handleChange={setTrusselaktører}
           />
         </Grid>
@@ -129,15 +129,15 @@ export const ScenarioDrawerEdit = () => {
           </Typography>
 
           <Dropdown<string[]>
-            selectedValues={scenario.sårbarheter}
-            options={sårbarheterOptions}
+            selectedValues={scenario.vulnerabilities}
+            options={vulnerabilitiesOptions}
             handleChange={setSårbarheter}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             label={t('dictionary.description')}
-            value={scenario.beskrivelse}
+            value={scenario.description}
             minRows={4}
             handleChange={setBeskrivelse}
           />
@@ -147,13 +147,13 @@ export const ScenarioDrawerEdit = () => {
           <TabContext value={tab}>
             <Tabs setTab={setTab} />
             <TabPanelKonsekvens
-              selected={getKonsekvensLevel(scenario.risiko)}
+              selected={getKonsekvensLevel(scenario.risk)}
               setKonsekvens={setKonsekvens}
             />
             <TabPanelSannsynlighet
-              selected={getSannsynlighetLevel(scenario.risiko)}
+              selected={getSannsynlighetLevel(scenario.risk)}
               setSannsynlighet={setSannsynlighet}
-              options={sannsynlighetOptions.map((_, index) =>
+              options={probabilityOptions.map((_, index) =>
                 (index + 1).toString(),
               )}
             />
@@ -164,7 +164,7 @@ export const ScenarioDrawerEdit = () => {
               deleteTiltak={deleteTiltak}
               addTiltak={addTiltak}
               updateRestrisiko={updateRestrisiko}
-              options={konsekvensOptions.map((_, index) =>
+              options={consequenceOptions.map((_, index) =>
                 (index + 1).toString(),
               )}
             />

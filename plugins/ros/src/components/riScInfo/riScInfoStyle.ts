@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 
-export const useRosInfoStyles = makeStyles(() => ({
+export const useRiScInfoStyles = makeStyles(() => ({
   infoCard: {
     maxWidth: '600px',
   },

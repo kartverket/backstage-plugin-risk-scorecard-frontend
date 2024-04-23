@@ -1,1 +1,1 @@
-export { rosPlugin, RosPage } from './plugin';
+export { riScPlugin, RiScPage } from './plugin';

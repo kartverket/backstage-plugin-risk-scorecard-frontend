@@ -1,134 +1,137 @@
 import {
   ProcessingStatus,
-  Risiko,
-  ROS,
-  RosStatus,
+  Risk,
+  RiSc,
+  RiScStatus,
   Scenario,
-  Tiltak,
-  Verdivurdering,
+  Action,
+  Valuations,
 } from './types';
 
-export type ProcessROSResultDTO = {
+export type ProcessRiScResultDTO = {
   riScId: string;
   status: ProcessingStatus;
   statusMessage: string;
 };
 
-export type PublishROSResultDTO = {
+export type PublishRiScResultDTO = {
   pendingApproval?: {
     pullRequestUrl: string;
     pullRequestName: string;
   };
-} & ProcessROSResultDTO;
+} & ProcessRiScResultDTO;
 
-export type ROSContentResultDTO = {
-  riScStatus: RosStatus;
+export type RiScContentResultDTO = {
+  riScStatus: RiScStatus;
   riScContent: string;
-} & ProcessROSResultDTO;
+} & ProcessRiScResultDTO;
 
-export type ROSDTO = {
-  skjemaVersjon: string;
-  tittel: string;
-  omfang: string;
-  verdivurderinger: Verdivurdering[];
-  scenarier: ScenarioDTO[];
+export type RiScDTO = {
+  schemaVersion: string;
+  title: string;
+  scope: string;
+  valuations: Valuations[];
+  scenarios: ScenarioDTO[];
 };
 
 type ScenarioDTO = {
-  tittel: string;
+  title: string;
   scenario: {
     ID: string;
     url?: string;
-    beskrivelse: string;
-    trusselaktører: string[];
-    sårbarheter: string[];
-    risiko: Risiko;
-    eksisterendeTiltak?: string;
-    tiltak: TiltakDTO[];
-    restrisiko: Risiko;
+    description: string;
+    threatActors: string[];
+    vulnerabilities: string[];
+    risk: Risk;
+    existingActions?: string;
+    actions: ActionsDTO[];
+    remainingRisk: Risk;
   };
 };
 
-type TiltakDTO = {
-  tittel: string;
-  oppgave: {
+type ActionsDTO = {
+  title: string;
+  action: {
     ID: string;
-    beskrivelse: string;
-    tiltakseier: string;
-    frist: string;
+    description: string;
+    owner: string;
+    deadline: string;
     status: string;
   };
 };
 
-export function dtoToROS(rosDTO: ROSDTO): ROS {
+export function dtoToRiSc(riScDTO: RiScDTO): RiSc {
   return {
-    ...rosDTO,
-    // TODO implementere løsning for migrering, kan bumpe fra 3.1 til 3.2 på denne måten manuelt ved å åpne og lagre rosen:
+    ...riScDTO,
+    // TODO implementere løsning for migrering, kan bumpe fra 3.1 til 3.2 på denne måten manuelt ved å åpne og lagre riscen:
     // skjemaVersjon: '3.2',
-    scenarier: rosDTO.scenarier.map(dtoToScenario),
+    scenarios: riScDTO.scenarios.map(dtoToScenario),
   };
 }
 
 function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
   return {
     ...scenarioDTO.scenario,
-    tittel: scenarioDTO.tittel,
-    eksisterendeTiltak: scenarioDTO.scenario.eksisterendeTiltak || '',
-    tiltak: scenarioDTO.scenario.tiltak.map(dtoToTiltak),
+    title: scenarioDTO.title,
+    existingActions: scenarioDTO.scenario.existingActions || '',
+    actions: scenarioDTO.scenario.actions.map(dtoToAction),
   };
 }
 
-function dtoToTiltak(tiltakDTO: TiltakDTO): Tiltak {
+function dtoToAction(actionDTO: ActionsDTO): Action {
   return {
-    ...tiltakDTO.oppgave,
-    tittel: tiltakDTO.tittel,
+    ...actionDTO.action,
+    title: actionDTO.title,
   };
 }
 
-export function rosToDTOString(
-  ros: ROS,
+export function riScToDTOString(
+  riSc: RiSc,
   isRequiresNewApproval: boolean,
 ): string {
   return JSON.stringify({
-    riSc: JSON.stringify(rosToDTO(ros)),
+    riSc: JSON.stringify(riScToDTO(riSc)),
     isRequiresNewApproval: isRequiresNewApproval,
-    schemaVersion: ros.skjemaVersjon,
+    schemaVersion: riSc.schemaVersion,
   });
 }
 
-function rosToDTO(ros: ROS): ROSDTO {
+function riScToDTO(riSc: RiSc): RiScDTO {
   return {
-    ...ros,
-    scenarier: ros.scenarier.map(scenarioToDTO),
+    ...riSc,
+    scenarios: riSc.scenarios.map(scenarioToDTO),
   };
 }
 
 function scenarioToDTO(scenario: Scenario): ScenarioDTO {
   return {
-    tittel: scenario.tittel,
+    title: scenario.title,
     scenario: {
       ID: scenario.ID,
       url: scenario.url,
-      beskrivelse: scenario.beskrivelse,
-      trusselaktører: scenario.trusselaktører,
-      sårbarheter: scenario.sårbarheter,
-      risiko: scenario.risiko,
-      eksisterendeTiltak: scenario.eksisterendeTiltak.length === 0 ? undefined : scenario.eksisterendeTiltak,
-      tiltak: scenario.tiltak.map(tiltakToDTO),
-      restrisiko: scenario.restrisiko,
+      description: scenario.description,
+      threatActors: scenario.threatActors,
+      vulnerabilities: scenario.vulnerabilities,
+      risk: scenario.risk,
+      existingActions:
+        scenario.existingActions.length === 0
+          ? undefined
+          : scenario.existingActions,
+      actions: scenario.actions.map(actionToDTO),
+      remainingRisk: scenario.remainingRisk,
     },
   };
 }
 
-function tiltakToDTO(tiltak: Tiltak): TiltakDTO {
+function actionToDTO(action: Action): ActionsDTO {
   return {
-    tittel: tiltak.tittel,
-    oppgave: {
-      ID: tiltak.ID,
-      beskrivelse: tiltak.beskrivelse,
-      tiltakseier: tiltak.tiltakseier,
-      frist: tiltak.frist,
-      status: tiltak.status,
+    title: action.title,
+    action: {
+      ID: action.ID,
+      description: action.description,
+      owner: action.owner,
+      deadline: action.deadline,
+      status: action.status,
     },
   };
 }

@@ -1,50 +1,50 @@
-export type ROSWithMetadata = {
+export type RiScWithMetadata = {
   id: string;
-  status: RosStatus;
-  content: ROS;
+  status: RiScStatus;
+  content: RiSc;
   isRequiresNewApproval?: boolean;
 };
 
-export type ROS = {
-  skjemaVersjon: string;
-  tittel: string;
-  omfang: string;
-  verdivurderinger: Verdivurdering[];
-  scenarier: Scenario[];
+export type RiSc = {
+  schemaVersion: string;
+  title: string;
+  scope: string;
+  valuations: Valuations[];
+  scenarios: Scenario[];
 };
 
-export type Verdivurdering = {
-  beskrivelse: string;
-  konfidensialitet: string;
-  integritet: string;
-  tilgjengelighet: string;
+export type Valuations = {
+  description: string;
+  confidentiality: string;
+  integrity: string;
+  availability: string;
 };
 
 export type Scenario = {
   ID: string;
-  tittel: string;
+  title: string;
   url?: string;
-  beskrivelse: string;
-  trusselaktører: string[];
-  sårbarheter: string[];
-  risiko: Risiko;
-  eksisterendeTiltak: string;
-  tiltak: Tiltak[];
-  restrisiko: Risiko;
+  description: string;
+  threatActors: string[];
+  vulnerabilities: string[];
+  risk: Risk;
+  existingActions: string;
+  actions: Action[];
+  remainingRisk: Risk;
 };
 
-export type Risiko = {
-  oppsummering: string;
-  sannsynlighet: number;
-  konsekvens: number;
+export type Risk = {
+  summary: string;
+  probability: number;
+  consequence: number;
 };
 
-export type Tiltak = {
+export type Action = {
   ID: string;
-  tittel: string;
-  beskrivelse: string;
-  tiltakseier: string;
-  frist: string;
+  title: string;
+  description: string;
+  owner: string;
+  deadline: string;
   status: string;
 };
 
@@ -58,7 +58,7 @@ export type SubmitResponseObject = {
   statusMessage: string;
 };
 
-export enum RosStatus {
+export enum RiScStatus {
   Draft = 'Draft',
   Published = 'Published',
   SentForApproval = 'SentForApproval',
