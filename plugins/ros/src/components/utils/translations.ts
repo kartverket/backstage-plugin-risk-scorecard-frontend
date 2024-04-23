@@ -22,7 +22,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       edit: 'Edit',
       estimatedRisk: 'Estimated risk',
       initialRisk: 'Initial risk', // Starting or Initial risk
-      measure: 'Action', // Measure, Action or Initiative
+      measure: 'Actions', // Measure, Action or Initiative
       measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
       next: 'Next',
       previous: 'Previous',
@@ -59,7 +59,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         measuresCount: 'Actions',
         consequenceChar: 'C',
         probabilityChar: 'P',
-        completed: 'completed',
+        completed: 'complete',
       },
     },
     riskMatrix: {
@@ -94,8 +94,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
       probabilityTitle: 'Probability (incidents/year)',
       probabilityDescription: {
-        '0': 'every 100 years', // TODO 100 year intervals
-        '1': 'every 10 years', // TODO 10 year intervals
+        '0': 'every 100 years', // 100 year intervals?
+        '1': 'every 10 years', // 10 year intervals?
         '2': 'yearly', // almost yearly?
         '3': 'weekly',
         '4': 'daily',
@@ -106,7 +106,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     rosDialog: {
       titleNew: 'New risk scorecard',
-      titleEdit: 'Edit risk scorecard',
+      titleEdit: 'Edit scorecard',
       titleError: 'The scorecard has to have a title',
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
@@ -135,8 +135,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
     scenarioDrawer: {
       title: 'Risk scenario',
       subtitle:
-        'An unwanted incident that could potentially harm the component.', // harm or affect?
-      threatActorSubtitle: 'Someone who attempts to access or abuse the system',
+        'An unwanted incident that could potentially harm the component.', // harm or affect negatively?
+      threatActorSubtitle: 'Someone who attempts to access or abuse the system', // system or component or both?
       vulnerabilitySubtitle:
         'Weakness in the system that the threat actor can exploit',
       consequenceTab: {
@@ -152,8 +152,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
           'What actions should be taken to avoid or reduce the risk of this scenario?',
         measureOwnerDescription:
           'Decide who will be responsible for completion of this action',
-        addMeasureButton: 'Add action', // TODO: Initiative or action?
-        actionsTitle: 'FYLL INN HER',
+        addMeasureButton: 'Add planned action', // 
+        actionsTitle: 'Planned actions',
         plannedMeasures: 'Planned actions',
         existingMeasure: 'Existing measures',
         existingMeasureSubtitle:
@@ -207,7 +207,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         },
         reputation: {
           '1': 'Temporary loss of reputation and little impact on trust',
-          '2': 'Negative attention in national media that can reduce trust', // TODO saker = articles, news, items, publicity, mentions, attention
+          '2': 'Negative attention in national media that can reduce trust', // articles, news, items, publicity, mentions, attention?
           '3': 'Lasting negative attention in national and international media that can reduce trust',
           '4': 'Impact on reputation and trust cannot be rated more severe than 3',
           '5': 'Impact on reputation and trust cannot be rated more severe than 3',
@@ -282,10 +282,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
-          'scenarioTable.columns.measuresCount': 'Antall tiltak',
+          'scenarioTable.columns.measuresCount': 'Tiltak',
           'scenarioTable.columns.consequenceChar': 'K',
           'scenarioTable.columns.probabilityChar': 'S',
-          'scenarioTable.columns.completed': 'fullførte',
+          'scenarioTable.columns.completed': 'fullført',
 
           'riskMatrix.title': 'Risikomatrise',
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',
@@ -354,7 +354,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velg den høyeste.',
           'scenarioDrawer.measureTab.subtitle':
             'Hvilke tiltak bør gjøres for å unngå scenarioet?',
-          'scenarioDrawer.measureTab.actionsTitle': 'FYLL INN HER',
+          'scenarioDrawer.measureTab.actionsTitle': 'Planlagte tiltak',
           'scenarioDrawer.measureTab.measureOwnerDescription':
             'De eller den som er ansvarlig for at tiltaket blir gjennomført',
           'scenarioDrawer.measureTab.addMeasureButton': 'Legg til tiltak',
