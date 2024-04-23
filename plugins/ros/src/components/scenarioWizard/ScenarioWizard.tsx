@@ -27,6 +27,7 @@ const useStyle = makeStyles((theme: Theme) => ({
     width: '100%',
   },
   container: {
+    width: '100%',
     maxWidth: theme.spacing(100),
   },
   header: {
