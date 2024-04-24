@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
-import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
+import { Button, Divider, Grid, Paper, Typography } from '@material-ui/core';
+import { useFontStyles, useInputFieldStyles, useScenarioDrawerContentStyles } from '../style';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { CloseConfirmation } from '../edit/CloseConfirmation';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -15,6 +15,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 
 export const ScenarioDrawerView = () => {
   const { buttons, titleAndButton, section } = useScenarioDrawerContentStyles();
+  const { paper } = useInputFieldStyles();
 
   const { h3, button } = useFontStyles();
 
@@ -46,7 +47,7 @@ export const ScenarioDrawerView = () => {
       <Box
         className={buttons}
         style={{
-          marginBottom: '36px',
+          marginBottom: '8px',
           display: 'flex',
           flexDirection: 'row',
           gap: '0.5rem',
@@ -89,7 +90,10 @@ export const ScenarioDrawerView = () => {
             ></Button>
           </Grid>
           {scenario.actions.map((action, index) => (
-            <TiltakView tiltak={action} index={index + 1} />
+            <>
+              <TiltakView tiltak={action} index={index + 1} />
+              {index !== (scenario.actions.length - 1) && <Divider variant="fullWidth" />}
+            </>
           ))}
         </Paper>
       </Box>

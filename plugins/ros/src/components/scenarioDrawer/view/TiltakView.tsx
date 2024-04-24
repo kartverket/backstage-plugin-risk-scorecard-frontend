@@ -1,6 +1,6 @@
 import React from 'react';
 import { Action as ITiltak } from '../../utils/types';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { Divider, Grid, Paper, Typography } from '@material-ui/core';
 import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
 import { useTiltakViewStyles } from './style';
 import { formatDate } from '../../utils/utilityfunctions';
@@ -20,49 +20,46 @@ export const TiltakView = ({ tiltak, index }: TiltakProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Paper className={section} style={{ padding: '1rem' }}>
-      <Grid container>
-        <Grid item xs={12} className={alignCenter} style={{ paddingBottom: 0 }}>
-          <Grid item xs={6}>
-            <Typography className={label}>
-              {t('dictionary.measure')} {index}
-            </Typography>
-          </Grid>
 
-          <Grid item xs={6} className={justifyEnd}>
-            <Chip
-              label={tiltak.status}
-              size="small"
-              style={{
-                margin: 0,
-                padding: 0,
-                backgroundColor: '#D9D9D9',
-                color: '#000000',
-              }}
-            />
-          </Grid>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Typography className={body2}>{tiltak.description}</Typography>
-        </Grid>
-
-        <Grid item xs={4}>
+    <Grid container className={section}>
+      <Grid item xs={12} className={alignCenter} >
+        <Grid item xs={6}>
           <Typography className={label}>
-            {t('dictionary.measureOwner')}
-          </Typography>
-          <Typography className={body2}>{tiltak.owner}</Typography>
-        </Grid>
-
-        <Grid item xs={4}>
-          <Typography className={label}>{t('dictionary.deadline')}</Typography>
-          <Typography className={body2}>
-            {formatDate(tiltak.deadline)}
+            {t('dictionary.measure')} {index}
           </Typography>
         </Grid>
 
-        <Grid item xs={4} />
+        <Grid item xs={6} className={justifyEnd}>
+          <Chip
+            label={tiltak.status}
+            size="small"
+            style={{
+              margin: 0,
+              padding: 0,
+              backgroundColor: '#D9D9D9',
+              color: '#000000',
+            }}
+          />
+        </Grid>
       </Grid>
-    </Paper>
+
+      <Grid item xs={12}>
+        <Typography className={body2}>{tiltak.description}</Typography>
+      </Grid>
+
+      <Grid item xs={4}>
+        <Typography className={label}>
+          {t('dictionary.measureOwner')}
+        </Typography>
+        <Typography className={body2}>{tiltak.owner}</Typography>
+      </Grid>
+
+      <Grid item xs={4}>
+        <Typography className={label}>{t('dictionary.deadline')}</Typography>
+        <Typography className={body2}>
+          {formatDate(tiltak.deadline)}
+        </Typography>
+      </Grid>
+    </Grid>
   );
 };
