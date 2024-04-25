@@ -68,7 +68,10 @@ export const ScenarioTableRow = ({
           {t('scenarioTable.columns.consequenceChar')}:{konsekvens}{' '}
           {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}
         </TableCell>
-
+        <TableCell className={tableCell}>
+          {fullførteTiltak}/{scenario.actions.length}{' '}
+          {t('scenarioTable.columns.completed')}
+        </TableCell>
         <TableCell className={tableCell}>
           <Paper
             className={riskColor}
@@ -78,10 +81,6 @@ export const ScenarioTableRow = ({
           />
           {t('scenarioTable.columns.consequenceChar')}:{restKonsekvens}{' '}
           {t('scenarioTable.columns.probabilityChar')}:{restSannsynlighet}
-        </TableCell>
-        <TableCell className={tableCell}>
-          {fullførteTiltak}/{scenario.actions.length}{' '}
-          {t('scenarioTable.columns.completed')}
         </TableCell>
       </button>
     </TableRow>

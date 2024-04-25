@@ -98,12 +98,13 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                       {t('dictionary.initialRisk')}
                     </Typography>
                   </TableCell>
+
                   <TableCell className={tableCell}>
                     <Typography
                       variant="subtitle1"
                       style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
                     >
-                      {t('dictionary.restRisk')}
+                      {t('scenarioTable.columns.measuresCount')}
                     </Typography>
                   </TableCell>
                   <TableCell className={tableCell}>
@@ -111,7 +112,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                       variant="subtitle1"
                       style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
                     >
-                      {t('scenarioTable.columns.measuresCount')}
+                      {t('dictionary.restRisk')}
                     </Typography>
                   </TableCell>
                 </TableRow>
