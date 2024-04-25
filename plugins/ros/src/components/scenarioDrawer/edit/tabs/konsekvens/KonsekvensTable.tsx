@@ -5,10 +5,11 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export const useTableStyles = makeStyles((theme: Theme) => ({
   table: {
+    display: 'flex',
     borderCollapse: 'separate',
     borderSpacing: '0.3rem 0',
     width: '100%',
-    tableLayout: 'fixed',
+    overflowX: 'auto',
   },
   labelCell: {
     writingMode: 'vertical-rl',
@@ -22,6 +23,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     border: '1px solid grey',
     textAlign: 'left',
     verticalAlign: 'top',
+    minWidth: '135px',
   },
   voidCell: {
     padding: theme.spacing(1.5),
