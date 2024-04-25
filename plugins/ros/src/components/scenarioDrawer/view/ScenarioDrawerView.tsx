@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { Button, Divider, Grid, Paper, Typography } from '@material-ui/core';
 import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
-import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import EditIcon from '@mui/icons-material/Edit';
 import { CloseConfirmation } from '../edit/CloseConfirmation';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DeleteConfirmation } from '../edit/DeleteConfirmation';
@@ -13,14 +13,18 @@ import { ScenarioView } from './ScenarioView';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 
-
 export const ScenarioDrawerView = () => {
   const { buttons, titleAndButton, section } = useScenarioDrawerContentStyles();
 
   const { h3, button } = useFontStyles();
 
-  const { scenario, saveScenario, openDeleteConfirmation, closeScenario, editScenario } =
-    useContext(ScenarioContext)!!;
+  const {
+    scenario,
+    saveScenario,
+    openDeleteConfirmation,
+    closeScenario,
+    editScenario,
+  } = useContext(ScenarioContext)!!;
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -39,14 +43,17 @@ export const ScenarioDrawerView = () => {
 
   return (
     <>
-      <Box className={buttons}
+      <Box
+        className={buttons}
         style={{
-          marginBottom: '36px',
+          marginBottom: '8px',
+          marginTop: '8px',
           display: 'flex',
           flexDirection: 'row',
           gap: '0.5rem',
-          justifyContent: 'flex-end'
-        }}>
+          justifyContent: 'flex-end',
+        }}
+      >
         <Button
           className={button}
           variant="outlined"
@@ -63,35 +70,43 @@ export const ScenarioDrawerView = () => {
       {/* Tiltak */}
       <Box>
         <Paper className={section} style={{ padding: '1rem' }}>
-          <Grid item xs={12} className={titleAndButton} style={{
-            marginBottom: '12px'
-          }}>
+          <Grid
+            item
+            xs={12}
+            className={titleAndButton}
+            style={{
+              marginBottom: '12px',
+            }}
+          >
             <Typography className={h3} gutterBottom>
-              {'Tiltak for å oppnå restrisiko'} {/*TODO: oppdater disse til å være dynamiske!*/}
+              {t('scenarioDrawer.measureTab.actionsTitle')}
             </Typography>
             <Button
               className={button}
               variant="text"
               color="primary"
               onClick={() => editScenario('measure')}
-              startIcon={<BorderColorOutlinedIcon />}
-            >
-            </Button>
+              startIcon={<EditIcon />}
+            ></Button>
           </Grid>
           {scenario.actions.map((action, index) => (
-            <TiltakView tiltak={action} index={index + 1} />
+            <>
+              <TiltakView tiltak={action} index={index + 1} />
+              {index !== (scenario.actions.length - 1) && <Divider variant="fullWidth" />}
+            </>
           ))}
         </Paper>
-
       </Box>
 
-      <Box className={buttons}
+      <Box
+        className={buttons}
         style={{
           display: 'flex',
           flexDirection: 'row',
           gap: '0.5rem',
-          justifyContent: 'flex-start'
-        }}>
+          justifyContent: 'flex-start',
+        }}
+      >
         <Button
           startIcon={<DeleteIcon />}
           variant="text"

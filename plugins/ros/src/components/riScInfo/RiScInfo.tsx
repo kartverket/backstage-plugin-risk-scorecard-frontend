@@ -4,10 +4,11 @@ import { Box, Grid, IconButton, Typography } from '@material-ui/core';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';
 import { useFontStyles } from '../scenarioDrawer/style';
 import { InfoCard } from '@backstage/core-components';
-import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import EditIcon from '@mui/icons-material/Edit';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useRiScInfoStyles } from './riScInfoStyle';
+
 
 interface RiScInfoProps {
   riSc: RiScWithMetadata;
@@ -26,7 +27,7 @@ export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
       <Grid item xs={12} style={{ display: 'flex' }}>
         <Typography className={h2}>{riSc.content.title}</Typography>
         <IconButton onClick={edit}>
-          <BorderColorOutlinedIcon />
+          <EditIcon />
         </IconButton>
       </Grid>
       <Grid
@@ -52,7 +53,7 @@ export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
               {t('dictionary.scope')}
             </Typography>
             <IconButton onClick={edit} style={{ padding: 0 }}>
-              <BorderColorOutlinedIcon />
+              <EditIcon />
             </IconButton>
           </Box>
           <Typography className={body2}>{riSc.content.scope}</Typography>
