@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
-import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { useScenarioDrawerContentStyles, useFontStyles } from '../style';
 import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import Divider from '@mui/material/Divider';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import EditIcon from '@mui/icons-material/Edit';
 
 export const ScenarioView = () => {
     const { header, titleAndButton, section } = useScenarioDrawerContentStyles();
@@ -30,7 +30,7 @@ export const ScenarioView = () => {
                             variant="text"
                             color="primary"
                             onClick={() => editScenario('scenario')}
-                            startIcon={<BorderColorOutlinedIcon />}
+                            startIcon={<EditIcon />}
                         />
                     </Grid>
 

@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Divider, Grid, Paper, Typography } from '@material-ui/core';
-import { useFontStyles, useInputFieldStyles, useScenarioDrawerContentStyles } from '../style';
-import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
+import EditIcon from '@mui/icons-material/Edit';
 import { CloseConfirmation } from '../edit/CloseConfirmation';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DeleteConfirmation } from '../edit/DeleteConfirmation';
@@ -15,7 +15,6 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 
 export const ScenarioDrawerView = () => {
   const { buttons, titleAndButton, section } = useScenarioDrawerContentStyles();
-  const { paper } = useInputFieldStyles();
 
   const { h3, button } = useFontStyles();
 
@@ -48,6 +47,7 @@ export const ScenarioDrawerView = () => {
         className={buttons}
         style={{
           marginBottom: '8px',
+          marginTop: '8px',
           display: 'flex',
           flexDirection: 'row',
           gap: '0.5rem',
@@ -86,7 +86,7 @@ export const ScenarioDrawerView = () => {
               variant="text"
               color="primary"
               onClick={() => editScenario('measure')}
-              startIcon={<BorderColorOutlinedIcon />}
+              startIcon={<EditIcon />}
             ></Button>
           </Grid>
           {scenario.actions.map((action, index) => (
