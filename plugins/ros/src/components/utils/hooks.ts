@@ -40,6 +40,7 @@ import {
   riScToDTOString,
 } from './DTOs';
 import { useEffectOnce } from 'react-use';
+import { useSearchParams } from 'react-router-dom';
 import { ScenarioWizardSteps } from '../scenarioWizard/ScenarioWizard';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo => {
@@ -219,7 +220,6 @@ const useFetch = () => {
 
 export interface ScenarioDrawerProps {
   scenarioDrawerState: ScenarioDrawerState;
-  scenarioWizardStep: ScenarioWizardSteps | null;
 
   scenario: Scenario;
   originalScenario: Scenario;
@@ -275,14 +275,13 @@ export const useScenarioDrawer = (
   const [scenarioDrawerState, setScenarioDrawerState] = useState(
     ScenarioDrawerState.Closed,
   );
-  const [scenarioWizardStep, setScenarioWizardStep] =
-    useState<ScenarioWizardSteps | null>(null);
 
   const [isNewScenario, setIsNewScenario] = useState(false);
   const [scenario, setScenario] = useState(emptyScenario());
   const [originalScenario, setOriginalScenario] = useState(emptyScenario());
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
+  const [, setSearchParams] = useSearchParams();
 
   const [scenarioErrors, setScenarioErrors] = useState(emptyScenarioErrors());
   const navigate = useNavigate();
@@ -295,7 +294,6 @@ export const useScenarioDrawer = (
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
         setScenarioDrawerState(ScenarioDrawerState.Closed);
-        setScenarioWizardStep(null);
         const s = emptyScenario();
         setScenario(s);
         setOriginalScenario(s);
@@ -305,7 +303,7 @@ export const useScenarioDrawer = (
 
       if (isNewScenario) {
         // setScenarioDrawerState(ScenarioDrawerState.Edit);
-        setScenarioWizardStep('scenario');
+        setSearchParams({ step: 'scenario' });
         return;
       }
 
@@ -343,7 +341,7 @@ export const useScenarioDrawer = (
 
   const editScenario = (step: ScenarioWizardSteps) => {
     setScenarioDrawerState(ScenarioDrawerState.Closed);
-    setScenarioWizardStep(step);
+    setSearchParams({ step: step });
   };
 
   const saveScenario = () => {
@@ -490,7 +488,6 @@ export const useScenarioDrawer = (
 
   return {
     scenarioDrawerState,
-    scenarioWizardStep,
 
     scenario,
     originalScenario,
