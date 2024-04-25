@@ -21,11 +21,11 @@ export const menuProps: Partial<MenuProps> = {
 
 export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
   paperEdit: {
-    padding: theme.spacing(8),
+    padding: theme.spacing(4),
     width: '65%',
   },
   paperView: {
-    padding: theme.spacing(8),
+    padding: theme.spacing(4),
     width: '50%',
     [theme.breakpoints.down('sm')]: {
       width: '90%',
@@ -59,9 +59,13 @@ export const useScenarioDrawerContentStyles = makeStyles((theme: Theme) => ({
   },
   section: {
     padding: theme.spacing(2),
-    marginBottom: theme.palette.type === 'dark' ? theme.spacing(1) : '7px',
+    marginBottom: theme.spacing(2),
     backgroundColor: theme.palette.type === 'dark' ? '#555555' : '#e0e0e0',
-
+  },
+  measure: {
+    padding: theme.spacing(2),
+    marginBottom: theme.palette.type === 'dark' ? theme.spacing(1) : '7px',
+    backgroundColor: theme.palette.type === 'dark' ? '#55555519' : '#e0e0e019',
   }
 }));
 

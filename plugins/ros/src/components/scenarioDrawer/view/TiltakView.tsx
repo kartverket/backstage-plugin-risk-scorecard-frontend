@@ -14,14 +14,14 @@ interface TiltakProps {
 }
 
 export const TiltakView = ({ tiltak, index }: TiltakProps) => {
-  const { section } = useScenarioDrawerContentStyles();
+  const { measure } = useScenarioDrawerContentStyles();
   const { alignCenter, justifyEnd } = useTiltakViewStyles();
   const { body2, label } = useFontStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
 
-    <Grid container className={section}>
+    <Grid container className={measure}>
       <Grid item xs={12} className={alignCenter} >
         <Grid item xs={6}>
           <Typography className={label}>
