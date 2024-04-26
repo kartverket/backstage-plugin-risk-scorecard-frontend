@@ -4,9 +4,12 @@ import { ContentHeader, SupportButton } from '@backstage/core-components';
 import { useFetchRiScs, useScenarioDrawer } from '../utils/hooks';
 import { useFontStyles } from '../scenarioDrawer/style';
 import { useParams } from 'react-router';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useSearchParams } from 'react-router-dom';
 import { riScRouteRef, scenarioRouteRef } from '../../routes';
-import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
+import {
+  ScenarioWizard,
+  ScenarioWizardSteps,
+} from '../scenarioWizard/ScenarioWizard';
 import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { ScenarioTable } from '../scenarioTable/ScenarioTable';
@@ -55,6 +58,10 @@ const Plugin = () => {
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
+  const [searchParams] = useSearchParams();
+  const scenarioWizardStep =
+    (searchParams.get('step') as ScenarioWizardSteps) || null;
+
   return (
     <>
       <ScenarioContext.Provider value={scenario}>
@@ -64,8 +71,8 @@ const Plugin = () => {
           </Alert>
         )}
 
-        {scenario.scenarioWizardStep !== null ? (
-          <ScenarioWizard step={scenario.scenarioWizardStep} />
+        {scenarioWizardStep !== null ? (
+          <ScenarioWizard step={scenarioWizardStep} />
         ) : (
           <>
             <ContentHeader title={t('contentHeader.title')}>
@@ -146,7 +153,7 @@ const Plugin = () => {
           />
         )}
 
-        <ScenarioDrawer />
+        {!scenarioWizardStep && <ScenarioDrawer />}
       </ScenarioContext.Provider>
     </>
   );
