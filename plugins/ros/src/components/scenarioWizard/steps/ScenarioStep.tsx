@@ -38,7 +38,7 @@ export const ScenarioStep = () => {
         <TextField
           label={t('dictionary.title')}
           value={scenario.title}
-          error={scenarioErrors.tittel}
+          error={scenarioErrors.tittel ? t('scenarioDrawer.titleError') : ''}
           required
           minRows={1}
           handleChange={setTittel}

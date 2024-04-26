@@ -134,6 +134,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     scenarioDrawer: {
       title: 'Risk scenario',
+      titleError: 'Scenario title is required',
       subtitle:
         'An unwanted incident that could potentially harm the component.', // harm or affect negatively?
       threatActorSubtitle: 'Someone who attempts to access or abuse the system', // system or component or both?
@@ -152,7 +153,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
           'What actions should be taken to avoid or reduce the risk of this scenario?',
         measureOwnerDescription:
           'Decide who will be responsible for completion of this action',
-        addMeasureButton: 'Add planned action', // 
+        addMeasureButton: 'Add planned action',
         actionsTitle: 'Planned actions',
         plannedMeasures: 'Planned actions',
         existingMeasure: 'Existing measures',
@@ -342,6 +343,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hva blir sannsynligheten etter alle tiltakene er fullført?',
 
           'scenarioDrawer.title': 'Risikoscenario',
+          'scenarioDrawer.titleError': 'Scenarioet må ha en tittel',
           'scenarioDrawer.subtitle':
             'En uønsket hendelse som potensielt kan ramme komponenten',
           'scenarioDrawer.threatActorSubtitle':
