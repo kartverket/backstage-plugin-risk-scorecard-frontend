@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
+  CircularProgress,
   makeStyles,
   Step,
   StepButton,
@@ -19,6 +20,7 @@ import { InitiativesStep } from './steps/InitiativesStep';
 import Button from '@mui/material/Button';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { RiskStep } from './steps/RiskStep';
+import { useLoadingStyles } from '../riScPlugin/riScPluginStyle';
 
 const useStyle = makeStyles((theme: Theme) => ({
   root: {
@@ -68,11 +70,13 @@ export type ScenarioWizardSteps = (typeof ScenarioWizardSteps)[number];
 
 interface ScenarioStepperProps {
   step: ScenarioWizardSteps;
+  isFetching: boolean;
 }
 
-export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
+export const ScenarioWizard = ({ step, isFetching }: ScenarioStepperProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h1, label } = useFontStyles();
+  const classes = useLoadingStyles();
 
   const {
     root,
@@ -171,42 +175,56 @@ export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
             ))}
           </Stepper>
           <Divider />
-          <Box className={steps}>
-            {
-              {
-                [ScenarioWizardSteps[0]]: <ScenarioStep />,
-                [ScenarioWizardSteps[1]]: <RiskStep riskType="initial" />,
-                [ScenarioWizardSteps[2]]: <InitiativesStep />,
-                [ScenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
-              }[step]
-            }
-          </Box>
-          <Box
-            className={isFirstStep() ? buttonContainerRight : buttonContainer}
-          >
-            {!isFirstStep() && (
-              <Button onClick={previousStep} startIcon={<KeyboardArrowLeft />}>
-                {t('dictionary.previous')}
-              </Button>
-            )}
-            <Box className={saveAndNextButtons}>
-              <Button
-                variant={isLastStep() ? 'contained' : 'outlined'}
-                onClick={saveAndClose}
+          {isFetching && (
+            <div className={classes.container}>
+              <CircularProgress className={classes.spinner} size={80} />
+            </div>
+          )}
+          {!isFetching && (
+            <>
+              <Box className={steps}>
+                {
+                  {
+                    [ScenarioWizardSteps[0]]: <ScenarioStep />,
+                    [ScenarioWizardSteps[1]]: <RiskStep riskType="initial" />,
+                    [ScenarioWizardSteps[2]]: <InitiativesStep />,
+                    [ScenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
+                  }[step]
+                }
+              </Box>
+              <Box
+                className={
+                  isFirstStep() ? buttonContainerRight : buttonContainer
+                }
               >
-                {t('dictionary.saveAndClose')}
-              </Button>
-              {!isLastStep() && (
-                <Button
-                  variant="contained"
-                  onClick={nextStep}
-                  endIcon={<KeyboardArrowRight />}
-                >
-                  {t('dictionary.next')}
-                </Button>
-              )}
-            </Box>
-          </Box>
+                {!isFirstStep() && (
+                  <Button
+                    onClick={previousStep}
+                    startIcon={<KeyboardArrowLeft />}
+                  >
+                    {t('dictionary.previous')}
+                  </Button>
+                )}
+                <Box className={saveAndNextButtons}>
+                  <Button
+                    variant={isLastStep() ? 'contained' : 'outlined'}
+                    onClick={saveAndClose}
+                  >
+                    {t('dictionary.saveAndClose')}
+                  </Button>
+                  {!isLastStep() && (
+                    <Button
+                      variant="contained"
+                      onClick={nextStep}
+                      endIcon={<KeyboardArrowRight />}
+                    >
+                      {t('dictionary.next')}
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+            </>
+          )}
         </Box>
       </Box>
       <CloseConfirmation

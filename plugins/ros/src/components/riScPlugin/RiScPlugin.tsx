@@ -72,7 +72,7 @@ const Plugin = () => {
         )}
 
         {scenarioWizardStep !== null ? (
-          <ScenarioWizard step={scenarioWizardStep} />
+          <ScenarioWizard step={scenarioWizardStep} isFetching={isFetching} />
         ) : (
           <>
             <ContentHeader title={t('contentHeader.title')}>
