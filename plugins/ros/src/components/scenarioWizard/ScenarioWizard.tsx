@@ -91,6 +91,7 @@ export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
     saveScenario,
     closeScenario,
     editScenario,
+    validateScenario,
   } = useContext(ScenarioContext)!!;
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
@@ -115,9 +116,12 @@ export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
   };
 
   const nextStep = () => {
-    const currentIndex = ScenarioWizardSteps.indexOf(step);
-    if (currentIndex < ScenarioWizardSteps.length - 1) {
-      editScenario(ScenarioWizardSteps[currentIndex + 1]);
+    const isValidScenario = validateScenario();
+    if (isValidScenario) {
+      const currentIndex = ScenarioWizardSteps.indexOf(step);
+      if (currentIndex < ScenarioWizardSteps.length - 1) {
+        editScenario(ScenarioWizardSteps[currentIndex + 1]);
+      }
     }
   };
 
@@ -158,7 +162,7 @@ export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
                   className={label}
                   color="inherit"
                   onClick={() => {
-                    editScenario(wizardStep);
+                    if (validateScenario()) editScenario(wizardStep);
                   }}
                 >
                   {t(`dictionary.${wizardStep}`)}{' '}

@@ -24,11 +24,7 @@ import {
   emptyTiltak,
   requiresNewApproval,
 } from './utilityfunctions';
-import {
-  consequenceOptions,
-  probabilityOptions,
-  scenarioTittelError,
-} from './constants';
+import { consequenceOptions, probabilityOptions } from './constants';
 import { riScRouteRef, scenarioRouteRef } from '../../routes';
 import { useLocation, useNavigate } from 'react-router';
 import {
@@ -231,6 +227,7 @@ export interface ScenarioDrawerProps {
   closeScenario: () => void;
 
   scenarioErrors: ScenarioErrors;
+  validateScenario: () => boolean;
 
   deleteConfirmationIsOpen: boolean;
   openDeleteConfirmation: () => void;
@@ -259,11 +256,11 @@ export enum ScenarioDrawerState {
 }
 
 type ScenarioErrors = {
-  tittel: string | null;
+  tittel: boolean;
 };
 
 const emptyScenarioErrors = (): ScenarioErrors => ({
-  tittel: null,
+  tittel: false,
 });
 
 export const useScenarioDrawer = (
@@ -346,11 +343,7 @@ export const useScenarioDrawer = (
 
   const saveScenario = () => {
     if (riSc) {
-      setScenarioErrors({
-        tittel: scenario.title === '' ? scenarioTittelError : null,
-      });
-
-      if (scenario.title !== '') {
+      if (validateScenario()) {
         const updatedScenarios = riSc.content.scenarios.some(
           s => s.ID === scenario.ID,
         )
@@ -396,7 +389,7 @@ export const useScenarioDrawer = (
   const setTittel = (tittel: string) => {
     setScenarioErrors({
       ...scenarioErrors,
-      tittel: null,
+      tittel: false,
     });
     setScenario({
       ...scenario,
@@ -486,6 +479,22 @@ export const useScenarioDrawer = (
       },
     });
 
+  const validateScenario = () => {
+    if (scenario.title === '') {
+      setScenarioErrors({
+        ...scenarioErrors,
+        tittel: true,
+      });
+      return false;
+    } else {
+      setScenarioErrors({
+        ...scenarioErrors,
+        tittel: false,
+      });
+    }
+    return true;
+  };
+
   return {
     scenarioDrawerState,
 
@@ -499,6 +508,7 @@ export const useScenarioDrawer = (
     closeScenario,
 
     scenarioErrors,
+    validateScenario,
 
     deleteConfirmationIsOpen,
     openDeleteConfirmation,

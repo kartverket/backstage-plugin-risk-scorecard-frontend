@@ -17,5 +17,3 @@ export const riskMatrix = [
   ['#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A', '#FF8B38'],
   ['#6CC6A4', '#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A'],
 ];
-
-export const scenarioTittelError = 'Scenarioet må ha en tittel';
