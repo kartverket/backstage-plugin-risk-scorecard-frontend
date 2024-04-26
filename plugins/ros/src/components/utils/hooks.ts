@@ -623,45 +623,80 @@ export const useFetchRiScs = (
   const createNewRiSc = (riSc: RiSc) => {
     setIsFetching(true);
     setSelectedRiSc(null);
-    fetchLatestJSONSchema(res => {
-      const resString = JSON.stringify(res);
-      const schema = JSON.parse(resString);
-      const schemaVersion = schema.properties.schemaVersion.default.replace(
-        /'/g,
-        '',
-      );
-      const newRiSc: RiSc = {
-        ...riSc,
-        schemaVersion: schemaVersion ? schemaVersion : '3.2',
-      };
+    fetchLatestJSONSchema(
+      res => {
+        const resString = JSON.stringify(res);
+        const schema = JSON.parse(resString);
+        const schemaVersion = schema.properties.schemaVersion.default.replace(
+          /'/g,
+          '',
+        );
+        const newRiSc: RiSc = {
+          ...riSc,
+          schemaVersion: schemaVersion ? schemaVersion : '3.2',
+        };
 
-      postRiScs(
-        newRiSc,
-        res2 => {
-          if (!res2.riScId) throw new Error('No RiSc ID returned');
+        postRiScs(
+          newRiSc,
+          res2 => {
+            if (!res2.riScId) throw new Error('No RiSc ID returned');
 
-          const RiScWithLatestSchemaVersion = {
-            id: res2.riScId,
-            status: RiScStatus.Draft,
-            content: riSc,
-            schemaVersion: riSc.schemaVersion,
-          };
+            const RiScWithLatestSchemaVersion = {
+              id: res2.riScId,
+              status: RiScStatus.Draft,
+              content: riSc,
+              schemaVersion: riSc.schemaVersion,
+            };
 
-          setRiScs(
-            riScs
-              ? [...riScs, RiScWithLatestSchemaVersion]
-              : [RiScWithLatestSchemaVersion],
-          );
-          setSelectedRiSc(RiScWithLatestSchemaVersion);
-          setIsFetching(false);
-          navigate(getRiScPath({ riScId: res2.riScId }));
-        },
-        () => {
-          setSelectedRiSc(selectedRiSc);
-          setIsFetching(false);
-        },
-      );
-    });
+            setRiScs(
+              riScs
+                ? [...riScs, RiScWithLatestSchemaVersion]
+                : [RiScWithLatestSchemaVersion],
+            );
+            setSelectedRiSc(RiScWithLatestSchemaVersion);
+            setIsFetching(false);
+            navigate(getRiScPath({ riScId: res2.riScId }));
+          },
+          () => {
+            setSelectedRiSc(selectedRiSc);
+            setIsFetching(false);
+          },
+        );
+      },
+      () => {
+        const fallBackSchemaVersion = '3.2';
+        const newRiSc: RiSc = {
+          ...riSc,
+          schemaVersion: fallBackSchemaVersion,
+        };
+        postRiScs(
+          newRiSc,
+          res2 => {
+            if (!res2.riScId) throw new Error('No RiSc ID returned');
+
+            const RiScWithLatestSchemaVersion = {
+              id: res2.riScId,
+              status: RiScStatus.Draft,
+              content: riSc,
+              schemaVersion: riSc.schemaVersion,
+            };
+
+            setRiScs(
+              riScs
+                ? [...riScs, RiScWithLatestSchemaVersion]
+                : [RiScWithLatestSchemaVersion],
+            );
+            setSelectedRiSc(RiScWithLatestSchemaVersion);
+            setIsFetching(false);
+            navigate(getRiScPath({ riScId: res2.riScId }));
+          },
+          () => {
+            setSelectedRiSc(selectedRiSc);
+            setIsFetching(false);
+          },
+        );
+      },
+    );
   };
 
   const updateRiSc = (riSc: RiSc) => {
