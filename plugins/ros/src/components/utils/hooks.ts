@@ -179,7 +179,6 @@ const useFetch = () => {
         if (onSuccess) onSuccess(res);
       },
       error => {
-        setResponse(error);
         if (onError) onError(error);
       },
       riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!),
@@ -352,7 +351,6 @@ export const useScenarioDrawer = (
             )
           : riSc.content.scenarios.concat(scenario);
         updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
-        closeScenario();
         return true;
       }
     }
@@ -540,6 +538,12 @@ export const useFetchRiScs = (
   isFetching: boolean;
   createNewRiSc: (riSc: RiSc) => void;
   updateRiSc: (riSc: RiSc) => void;
+  updateRiScStatus: {
+    isLoading: boolean;
+    isError: boolean;
+    isSuccess: boolean;
+  };
+  resetRiScStatus: () => void;
   approveRiSc: () => void;
   response: SubmitResponseObject | null;
 } => {
@@ -562,6 +566,11 @@ export const useFetchRiScs = (
     null,
   );
   const [isFetching, setIsFetching] = useState(true);
+  const [updateRiScStatus, setUpdateRiScStatus] = useState({
+    isLoading: false,
+    isError: false,
+    isSuccess: false,
+  });
 
   useEffect(() => {
     if (location.state) {
@@ -622,6 +631,13 @@ export const useFetchRiScs = (
       }
     }
   }, [riScs, riScIdFromParams]);
+
+  const resetRiScStatus = () =>
+    setUpdateRiScStatus({
+      isLoading: false,
+      isSuccess: false,
+      isError: false,
+    });
 
   const selectRiSc = (title: string) => {
     const riScId = riScs?.find(riSc => riSc.content.title === title)?.id;
@@ -726,10 +742,32 @@ export const useFetchRiScs = (
         schemaVersion: riSc.schemaVersion,
       };
 
-      putRiScs(updatedRiSc, () => {
-        setSelectedRiSc(updatedRiSc);
-        setRiScs(riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)));
+      setUpdateRiScStatus({
+        isLoading: true,
+        isError: false,
+        isSuccess: false,
       });
+      putRiScs(
+        updatedRiSc,
+        () => {
+          setUpdateRiScStatus({
+            isLoading: false,
+            isError: false,
+            isSuccess: true,
+          });
+          setSelectedRiSc(updatedRiSc);
+          setRiScs(
+            riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
+          );
+        },
+        () => {
+          setUpdateRiScStatus({
+            isLoading: false,
+            isError: true,
+            isSuccess: false,
+          });
+        },
+      );
     }
   };
 
@@ -752,6 +790,8 @@ export const useFetchRiScs = (
     riScs: riScs,
     selectRiSc: selectRiSc,
     isFetching,
+    updateRiScStatus: updateRiScStatus,
+    resetRiScStatus: resetRiScStatus,
     createNewRiSc: createNewRiSc,
     updateRiSc: updateRiSc,
     approveRiSc: approveRiSc,

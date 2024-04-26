@@ -31,6 +31,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       risk: 'Risk',
       save: 'Save',
       saveAndClose: 'Save and close',
+      saveError: 'Could not save scenario. Please try again.',
       scenario: 'Scenario',
       scope: 'Scope',
       status: 'Status',
@@ -263,6 +264,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.risk': 'Risiko',
           'dictionary.save': 'Lagre',
           'dictionary.saveAndClose': 'Lagre og lukk',
+          'dictionary.saveError':
+            'Noe gikk galt ved lagring. Venligst prøv igjen.',
           'dictionary.scenario': 'Scenario',
           'dictionary.scope': 'Omfang',
           'dictionary.status': 'Status',
