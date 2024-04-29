@@ -42,7 +42,7 @@ export const RiskView = () => {
                             variant="text"
                             color="primary"
                             onClick={() => editScenario('initialRisk')}
-                            startIcon={<EditIcon />}
+                            startIcon={<EditIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} aria-label='Edit' />}
                         />
                     </Grid>
 
@@ -119,7 +119,7 @@ export const RiskView = () => {
                             variant="text"
                             color="primary"
                             onClick={() => editScenario('restRisk')}
-                            startIcon={<EditIcon />}
+                            startIcon={<EditIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} aria-label='Edit' />}
                         />
                     </Grid>
 

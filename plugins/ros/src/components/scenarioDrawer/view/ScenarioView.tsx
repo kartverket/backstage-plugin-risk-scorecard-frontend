@@ -30,7 +30,7 @@ export const ScenarioView = () => {
                             variant="text"
                             color="primary"
                             onClick={() => editScenario('scenario')}
-                            startIcon={<EditIcon />}
+                            startIcon={<EditIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} aria-label='Edit' />}
                         />
                     </Grid>
 

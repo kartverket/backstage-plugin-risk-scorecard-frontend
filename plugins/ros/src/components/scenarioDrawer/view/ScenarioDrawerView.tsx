@@ -86,7 +86,7 @@ export const ScenarioDrawerView = () => {
               variant="text"
               color="primary"
               onClick={() => editScenario('measure')}
-              startIcon={<EditIcon />}
+              startIcon={<EditIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} aria-label='Edit' />}
             ></Button>
           </Grid>
           {scenario.actions.map((action, index) => (
