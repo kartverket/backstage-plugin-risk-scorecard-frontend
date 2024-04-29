@@ -4,6 +4,7 @@ import {
   configApiRef,
   fetchApiRef,
   googleAuthApiRef,
+  identityApiRef,
   useApi,
   useRouteRef,
 } from '@backstage/core-plugin-api';
@@ -29,6 +30,7 @@ import { useLocation, useNavigate } from 'react-router';
 import {
   dtoToRiSc,
   ProcessRiScResultDTO,
+  profileInfoToDTOString,
   PublishRiScResultDTO,
   RiScContentResultDTO,
   RiScDTO,
@@ -70,6 +72,7 @@ const useResponse = (): [
 const useFetch = () => {
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
+  const identityApi = useApi(identityApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
   const baseUri = useApi(configApiRef).getString('riskAssessment.baseUrl');
   const riScUri = `${baseUri}/api/risc/${repoInformation.owner}/${repoInformation.name}`;
@@ -143,61 +146,69 @@ const useFetch = () => {
       });
     });
 
+  const publishRiSc = (
+    riScId: string,
+    onSuccess?: (response: PublishRiScResultDTO) => void,
+    onError?: (error: PublishRiScResultDTO) => void,
+  ) =>
+    identityApi.getProfileInfo().then(profile =>
+      fetch<PublishRiScResultDTO>(
+        uriToPublishRiSc(riScId),
+        'POST',
+        res => {
+          setResponse(res);
+          if (onSuccess) onSuccess(res);
+        },
+        error => {
+          setResponse(error);
+          if (onError) onError(error);
+        },
+        profileInfoToDTOString(profile),
+      ),
+    );
+
   const postRiSc = (
     riSc: RiSc,
     onSuccess?: (response: ProcessRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
-    fetch<ProcessRiScResultDTO>(
-      riScUri,
-      'POST',
-      res => {
-        setResponse(res);
-        if (onSuccess) onSuccess(res);
-      },
-      error => {
-        setResponse(error);
-        if (onError) onError(error);
-      },
-      riScToDTOString(riSc, true),
+    identityApi.getProfileInfo().then(profile =>
+      fetch<ProcessRiScResultDTO>(
+        riScUri,
+        'POST',
+        res => {
+          setResponse(res);
+          if (onSuccess) onSuccess(res);
+        },
+        error => {
+          setResponse(error);
+          if (onError) onError(error);
+        },
+        riScToDTOString(riSc, true, profile),
+      ),
     );
 
   const putRiSc = (
     riSc: RiScWithMetadata,
     onSuccess?: (response: ProcessRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
-  ) =>
-    fetch<ProcessRiScResultDTO>(
-      uriToFetchRiSc(riSc.id),
-      'PUT',
-      res => {
-        setResponse(res);
-        if (onSuccess) onSuccess(res);
-      },
-      error => {
-        setResponse(error);
-        if (onError) onError(error);
-      },
-      riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!),
+  ) => {
+    identityApi.getProfileInfo().then(profile =>
+      fetch<ProcessRiScResultDTO>(
+        uriToFetchRiSc(riSc.id),
+        'PUT',
+        res => {
+          setResponse(res);
+          if (onSuccess) onSuccess(res);
+        },
+        error => {
+          setResponse(error);
+          if (onError) onError(error);
+        },
+        riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!, profile),
+      ),
     );
-
-  const publishRiSc = (
-    riScId: string,
-    onSuccess?: (response: PublishRiScResultDTO) => void,
-    onError?: (error: PublishRiScResultDTO) => void,
-  ) =>
-    fetch<PublishRiScResultDTO>(
-      uriToPublishRiSc(riScId),
-      'POST',
-      res => {
-        setResponse(res);
-        if (onSuccess) onSuccess(res);
-      },
-      error => {
-        setResponse(error);
-        if (onError) onError(error);
-      },
-    );
+  };
 
   return {
     fetchRiScs: fetchRiScs,

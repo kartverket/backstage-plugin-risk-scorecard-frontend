@@ -1,12 +1,13 @@
 import {
+  Action,
   ProcessingStatus,
-  Risk,
   RiSc,
   RiScStatus,
+  Risk,
   Scenario,
-  Action,
   Valuations,
 } from './types';
+import { ProfileInfo } from '@backstage/core-plugin-api';
 
 export type ProcessRiScResultDTO = {
   riScId: string;
@@ -85,14 +86,26 @@ function dtoToAction(actionDTO: ActionsDTO): Action {
   };
 }
 
+export function profileInfoToDTOString(profile: ProfileInfo): string {
+  return JSON.stringify({
+    name: profile.displayName!!, // TODO: Fjern !! når vi har løst problemet med at displayName kan være undefined
+    email: profile.email!!,
+  });
+}
+
 export function riScToDTOString(
   riSc: RiSc,
   isRequiresNewApproval: boolean,
+  profile: ProfileInfo,
 ): string {
   return JSON.stringify({
     riSc: JSON.stringify(riScToDTO(riSc)),
     isRequiresNewApproval: isRequiresNewApproval,
     schemaVersion: riSc.schemaVersion,
+    userInfo: {
+      name: profile.displayName!!, // TODO: Fjern !! når vi har løst problemet med at displayName kan være undefined
+      email: profile.email!!,
+    },
   });
 }
 
