@@ -4,20 +4,19 @@ import {
   configApiRef,
   fetchApiRef,
   googleAuthApiRef,
-  microsoftAuthApiRef,
   useApi,
   useRouteRef,
 } from '@backstage/core-plugin-api';
 import {
+  Action,
   GithubRepoInfo,
   ProcessingStatus,
-  Risk,
   RiSc,
   RiScStatus,
   RiScWithMetadata,
+  Risk,
   Scenario,
   SubmitResponseObject,
-  Action,
 } from './types';
 import {
   emptyScenario,
@@ -70,7 +69,6 @@ const useResponse = (): [
 
 const useFetch = () => {
   const repoInformation = useGithubRepositoryInformation();
-  const microsoftAPI = useApi(microsoftAuthApiRef);
   const googleApi = useApi(googleAuthApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
   const baseUri = useApi(configApiRef).getString('riskAssessment.baseUrl');
@@ -89,32 +87,30 @@ const useFetch = () => {
     onError: (error: T) => void,
     body?: string,
   ) => {
-    Promise.all([
-      microsoftAPI.getIdToken(),
-      googleApi.getAccessToken([
+    googleApi
+      .getAccessToken([
         'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/cloudkms',
-      ]),
-    ]).then(([microsoftIdToken, googleAccessToken]) => {
-      fetchApi(uri, {
-        method: method,
-        headers: {
-          Authorization: `Bearer ${microsoftIdToken}`,
-          'GCP-Access-Token': googleAccessToken,
-          'Content-Type': 'application/json',
-        },
-        body: body,
-      })
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(`HTTP error! Status: ${res.status}`);
-          }
-          return res.json();
+      ])
+      .then(googleAccessToken => {
+        fetchApi(uri, {
+          method: method,
+          headers: {
+            'GCP-Access-Token': googleAccessToken,
+            'Content-Type': 'application/json',
+          },
+          body: body,
         })
-        .then(json => json as T)
-        .then(res => onSuccess(res))
-        .catch(error => onError(error));
-    });
+          .then(res => {
+            if (!res.ok) {
+              throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            return res.json();
+          })
+          .then(json => json as T)
+          .then(res => onSuccess(res))
+          .catch(error => onError(error));
+      });
   };
 
   const fetchRiScs = (
