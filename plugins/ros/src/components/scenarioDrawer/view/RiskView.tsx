@@ -15,7 +15,7 @@ import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import EditIcon from '@mui/icons-material/Edit';
 
 export const RiskView = () => {
-    const { risikoBadge, titleAndButton, section } =
+    const { risikoBadge, titleAndButton, section, editIcon } =
         useScenarioDrawerContentStyles();
     const { h3, body1, label, button } = useFontStyles();
 
@@ -42,7 +42,7 @@ export const RiskView = () => {
                             variant="text"
                             color="primary"
                             onClick={() => editScenario('initialRisk')}
-                            startIcon={<EditIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} aria-label='Edit' />}
+                            startIcon={<EditIcon className={editIcon} aria-label='Edit' />}
                         />
                     </Grid>
 
@@ -119,7 +119,7 @@ export const RiskView = () => {
                             variant="text"
                             color="primary"
                             onClick={() => editScenario('restRisk')}
-                            startIcon={<EditIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} aria-label='Edit' />}
+                            startIcon={<EditIcon className={editIcon} aria-label='Edit' />}
                         />
                     </Grid>
 

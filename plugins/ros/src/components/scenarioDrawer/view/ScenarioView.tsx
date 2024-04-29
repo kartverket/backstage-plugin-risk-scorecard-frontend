@@ -9,7 +9,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import EditIcon from '@mui/icons-material/Edit';
 
 export const ScenarioView = () => {
-    const { header, titleAndButton, section } = useScenarioDrawerContentStyles();
+    const { header, titleAndButton, section, editIcon } = useScenarioDrawerContentStyles();
 
     const { h1, h3, body2, label, button } = useFontStyles();
 
@@ -30,7 +30,7 @@ export const ScenarioView = () => {
                             variant="text"
                             color="primary"
                             onClick={() => editScenario('scenario')}
-                            startIcon={<EditIcon style={{ color: 'rgba(0, 0, 0, 0.54)' }} aria-label='Edit' />}
+                            startIcon={<EditIcon className={editIcon} aria-label='Edit' />}
                         />
                     </Grid>
 

@@ -66,6 +66,9 @@ export const useScenarioDrawerContentStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2),
     marginBottom: theme.palette.type === 'dark' ? theme.spacing(1) : '7px',
     backgroundColor: theme.palette.type === 'dark' ? '#55555519' : '#e0e0e019',
+  },
+  editIcon: {
+    color: theme.palette.type === 'dark' ? '#fff' : 'rgba(0, 0, 0, 0.54)'
   }
 }));
 
