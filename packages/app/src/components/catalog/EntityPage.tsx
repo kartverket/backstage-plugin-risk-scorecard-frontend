@@ -57,7 +57,7 @@ import {
 
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
-import { RiScPage } from '@bekk-spire/plugin-ros';
+import { RiScPage } from '@kartverket/backstage-plugin-risk-scorecard';
 
 const techdocsContent = (
   <EntityTechdocsContent>
