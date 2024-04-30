@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   CircularProgress,
   makeStyles,
@@ -21,6 +21,7 @@ import Button from '@mui/material/Button';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { RiskStep } from './steps/RiskStep';
 import { useLoadingStyles } from '../riScPlugin/riScPluginStyle';
+import Alert from '@mui/material/Alert';
 
 const useStyle = makeStyles((theme: Theme) => ({
   root: {
@@ -71,9 +72,15 @@ export type ScenarioWizardSteps = (typeof ScenarioWizardSteps)[number];
 interface ScenarioStepperProps {
   step: ScenarioWizardSteps;
   isFetching: boolean;
+  updateStatus: { isLoading: boolean; isSuccess: boolean; isError: boolean };
 }
 
-export const ScenarioWizard = ({ step, isFetching }: ScenarioStepperProps) => {
+export const ScenarioWizard = ({
+  step,
+  isFetching,
+  updateStatus,
+}: ScenarioStepperProps) => {
+  const wizardRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h1, label } = useFontStyles();
   const classes = useLoadingStyles();
@@ -100,15 +107,22 @@ export const ScenarioWizard = ({ step, isFetching }: ScenarioStepperProps) => {
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
+  useEffect(() => {
+    if (updateStatus.isSuccess) {
+      close();
+    } else if (updateStatus.isError && wizardRef.current) {
+      setShowCloseConfirmation(false);
+      wizardRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [updateStatus]);
+
   const close = () => {
     closeScenario();
     setShowCloseConfirmation(false);
   };
 
   const saveAndClose = () => {
-    if (saveScenario()) {
-      close();
-    }
+    saveScenario();
   };
 
   const handleCloseStepper = () => {
@@ -145,7 +159,7 @@ export const ScenarioWizard = ({ step, isFetching }: ScenarioStepperProps) => {
   };
 
   return (
-    <>
+    <div ref={wizardRef}>
       <Box className={root}>
         <Box className={container}>
           <Box className={header}>
@@ -192,6 +206,11 @@ export const ScenarioWizard = ({ step, isFetching }: ScenarioStepperProps) => {
                   }[step]
                 }
               </Box>
+              {updateStatus.isError && (
+                <Alert style={{ marginBottom: '1rem' }} severity="error">
+                  <Typography>{t('dictionary.saveError')}</Typography>
+                </Alert>
+              )}
               <Box
                 className={
                   isFirstStep() ? buttonContainerRight : buttonContainer
@@ -209,6 +228,7 @@ export const ScenarioWizard = ({ step, isFetching }: ScenarioStepperProps) => {
                   <Button
                     variant={isLastStep() ? 'contained' : 'outlined'}
                     onClick={saveAndClose}
+                    disabled={updateStatus.isLoading}
                   >
                     {t('dictionary.saveAndClose')}
                   </Button>
@@ -232,6 +252,6 @@ export const ScenarioWizard = ({ step, isFetching }: ScenarioStepperProps) => {
         close={close}
         save={saveAndClose}
       />
-    </>
+    </div>
   );
 };

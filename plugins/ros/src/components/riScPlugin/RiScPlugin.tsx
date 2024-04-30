@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, CircularProgress, Grid, Typography } from '@material-ui/core';
 import { ContentHeader, SupportButton } from '@backstage/core-components';
 import { useFetchRiScs, useScenarioDrawer } from '../utils/hooks';
@@ -43,6 +43,8 @@ const Plugin = () => {
     isFetching,
     createNewRiSc,
     updateRiSc,
+    updateRiScStatus,
+    resetRiScStatus,
     approveRiSc,
     response,
   } = useFetchRiScs(params.riScId);
@@ -62,6 +64,10 @@ const Plugin = () => {
   const scenarioWizardStep =
     (searchParams.get('step') as ScenarioWizardSteps) || null;
 
+  useEffect(() => {
+    if (scenarioWizardStep !== null) resetRiScStatus();
+  }, [scenarioWizardStep]);
+
   return (
     <>
       <ScenarioContext.Provider value={scenario}>
@@ -72,7 +78,11 @@ const Plugin = () => {
         )}
 
         {scenarioWizardStep !== null ? (
-          <ScenarioWizard step={scenarioWizardStep} isFetching={isFetching} />
+          <ScenarioWizard
+            step={scenarioWizardStep}
+            isFetching={isFetching}
+            updateStatus={updateRiScStatus}
+          />
         ) : (
           <>
             <ContentHeader title={t('contentHeader.title')}>
