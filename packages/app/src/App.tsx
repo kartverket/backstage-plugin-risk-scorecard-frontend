@@ -38,7 +38,7 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { microsoftAuthApiRef } from '@backstage/core-plugin-api';
-import { pluginRiScNorwegianTranslation } from '@bekk-spire/plugin-ros/src/components/utils/translations';
+import { pluginRiScNorwegianTranslation } from '@kartverket/backstage-plugin-risk-scorecard/src/components/utils/translations';
 
 const app = createApp({
   __experimentalTranslations: {
