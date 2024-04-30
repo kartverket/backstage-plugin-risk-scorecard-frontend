@@ -90,30 +90,32 @@ const useFetch = () => {
     onError: (error: T) => void,
     body?: string,
   ) => {
-    googleApi
-      .getAccessToken([
+    Promise.all([
+      identityApi.getCredentials(),
+      googleApi.getAccessToken([
         'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/cloudkms',
-      ])
-      .then(googleAccessToken => {
-        fetchApi(uri, {
-          method: method,
-          headers: {
-            'GCP-Access-Token': googleAccessToken,
-            'Content-Type': 'application/json',
-          },
-          body: body,
+      ]),
+    ]).then(([idToken, googleAccessToken]) => {
+      fetchApi(uri, {
+        method: method,
+        headers: {
+          Authorization: `Bearer ${idToken.token}`,
+          'GCP-Access-Token': googleAccessToken,
+          'Content-Type': 'application/json',
+        },
+        body: body,
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+          }
+          return res.json();
         })
-          .then(res => {
-            if (!res.ok) {
-              throw new Error(`HTTP error! Status: ${res.status}`);
-            }
-            return res.json();
-          })
-          .then(json => json as T)
-          .then(res => onSuccess(res))
-          .catch(error => onError(error));
-      });
+        .then(json => json as T)
+        .then(res => onSuccess(res))
+        .catch(error => onError(error));
+    });
   };
 
   const fetchRiScs = (
@@ -202,7 +204,6 @@ const useFetch = () => {
           if (onSuccess) onSuccess(res);
         },
         error => {
-
           if (onError) onError(error);
         },
         riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!, profile),
