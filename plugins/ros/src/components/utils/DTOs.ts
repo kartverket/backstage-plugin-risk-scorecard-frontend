@@ -88,8 +88,8 @@ function dtoToAction(actionDTO: ActionsDTO): Action {
 
 export function profileInfoToDTOString(profile: ProfileInfo): string {
   return JSON.stringify({
-    name: profile.displayName!!, // TODO: Fjern !! når vi har løst problemet med at displayName kan være undefined
-    email: profile.email!!,
+    name: profile.displayName ?? '',
+    email: profile.email ?? '',
   });
 }
 
@@ -103,8 +103,8 @@ export function riScToDTOString(
     isRequiresNewApproval: isRequiresNewApproval,
     schemaVersion: riSc.schemaVersion,
     userInfo: {
-      name: profile.displayName!!, // TODO: Fjern !! når vi har løst problemet med at displayName kan være undefined
-      email: profile.email!!,
+      name: profile.displayName ?? '',
+      email: profile.email ?? '',
     },
   });
 }
