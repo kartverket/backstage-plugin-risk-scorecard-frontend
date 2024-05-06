@@ -55,18 +55,6 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
         </Typography>
       </Box>
       <Box className={box}>
-        <Typography className={h3}>{t('dictionary.consequence')}</Typography>
-        <Typography className={subtitle2}>
-          {t(`scenarioStepper.${resourceKey}.consequenceSubtitle`)}
-        </Typography>
-      </Box>
-      <Box className={box}>
-        <ConsequenceTable
-          selectedValue={getKonsekvensLevel(risk)}
-          handleChange={setC}
-        />
-      </Box>
-      <Box className={box}>
         <Typography className={h3}>{t('dictionary.probability')}</Typography>
         <Typography className={subtitle2}>
           {t(`scenarioStepper.${resourceKey}.probabilitySubtitle`)}
@@ -76,6 +64,18 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
         <ProbabilityTable
           selectedValue={getSannsynlighetLevel(risk)}
           handleChange={setP}
+        />
+      </Box>
+      <Box className={box}>
+        <Typography className={h3}>{t('dictionary.consequence')}</Typography>
+        <Typography className={subtitle2}>
+          {t(`scenarioStepper.${resourceKey}.consequenceSubtitle`)}
+        </Typography>
+      </Box>
+      <Box className={box}>
+        <ConsequenceTable
+          selectedValue={getKonsekvensLevel(risk)}
+          handleChange={setC}
         />
       </Box>
     </Fragment>
