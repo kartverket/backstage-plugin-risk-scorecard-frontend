@@ -213,9 +213,7 @@ export const ScenarioWizard = ({
                       />
                     ),
                     [ScenarioWizardSteps[2]]: <InitiativesStep />,
-                    [ScenarioWizardSteps[3]]: (
-                      <RiskStep riskType="rest" restEqualsInitial={false} />
-                    ),
+                    [ScenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
                   }[step]
                 }
               </Box>

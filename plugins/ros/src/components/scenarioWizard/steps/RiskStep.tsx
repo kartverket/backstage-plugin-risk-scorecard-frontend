@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface RiskStepProps {
   riskType: 'initial' | 'rest';
-  restEqualsInitial: boolean;
+  restEqualsInitial?: boolean;
 }
 
 export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
