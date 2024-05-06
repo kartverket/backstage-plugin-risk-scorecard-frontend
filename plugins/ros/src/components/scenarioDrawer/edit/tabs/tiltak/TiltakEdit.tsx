@@ -58,7 +58,7 @@ export const TiltakEdit = ({
   };
 
   const { paper, formControl } = useInputFieldStyles();
-  const { label, labelSubtitle, button } = useFontStyles();
+  const { label, labelSubtitle } = useFontStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -83,7 +83,6 @@ export const TiltakEdit = ({
             title="Slett tiltaket"
             onClick={() => deleteTiltak(tiltak)}
             color="primary"
-            className={button}
           >
             {t('dictionary.delete')}
           </Button>
