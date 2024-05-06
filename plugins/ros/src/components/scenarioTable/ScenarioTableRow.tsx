@@ -25,9 +25,9 @@ export const ScenarioTableRow = ({
     probabilityOptions.indexOf(scenario.remainingRisk.probability) + 1;
   const restKonsekvens =
     consequenceOptions.indexOf(scenario.remainingRisk.consequence) + 1;
-  const fullførteTiltak = scenario.actions.filter(
-    tiltak => tiltak.status === 'Fullført',
-  ).length;
+  const remainingActions = scenario.actions.filter(
+    a => a.status !== 'Completed',
+  );
 
   const { riskColor, rowBackground, rowBorder, tableCell } = useTableStyles();
 
@@ -69,8 +69,13 @@ export const ScenarioTableRow = ({
           {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}
         </TableCell>
         <TableCell className={tableCell}>
-          {fullførteTiltak}/{scenario.actions.length}{' '}
-          {t('scenarioTable.columns.completed')}
+          {remainingActions.length > 0 ? (
+            <>
+              {remainingActions.length} {t('dictionary.planned').toLowerCase()}
+            </>
+          ) : (
+            t('dictionary.completed')
+          )}
         </TableCell>
         <TableCell className={tableCell}>
           <Paper
