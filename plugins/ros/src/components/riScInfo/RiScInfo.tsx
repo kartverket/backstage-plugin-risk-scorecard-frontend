@@ -9,7 +9,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useRiScInfoStyles } from './riScInfoStyle';
 
-
 interface RiScInfoProps {
   riSc: RiScWithMetadata;
   approveRiSc: () => void;
@@ -17,19 +16,13 @@ interface RiScInfoProps {
 }
 
 export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
-  const { h2, subtitle1, body2 } = useFontStyles();
+  const { label, body2 } = useFontStyles();
   const { infoCard } = useRiScInfoStyles();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Grid container>
-      <Grid item xs={12} style={{ display: 'flex' }}>
-        <Typography className={h2}>{riSc.content.title}</Typography>
-        <IconButton onClick={edit}>
-          <EditIcon />
-        </IconButton>
-      </Grid>
       <Grid
         item
         xs={12}
@@ -46,16 +39,14 @@ export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              paddingBottom: '1rem',
             }}
           >
-            <Typography className={subtitle1}>
-              {t('dictionary.scope')}
-            </Typography>
-            <IconButton onClick={edit} style={{ padding: 0 }}>
+            <Typography variant="h5">{riSc.content.title}</Typography>
+            <IconButton onClick={edit}>
               <EditIcon />
             </IconButton>
           </Box>
+          <Typography className={label}>{t('dictionary.scope')}</Typography>
           <Typography className={body2}>{riSc.content.scope}</Typography>
         </InfoCard>
       </Grid>
