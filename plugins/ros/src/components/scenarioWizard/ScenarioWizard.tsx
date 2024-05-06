@@ -15,7 +15,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Divider from '@mui/material/Divider';
 import { useFontStyles } from '../scenarioDrawer/style';
 import { ScenarioContext } from '../riScPlugin/ScenarioContext';
-import { CloseConfirmation } from '../scenarioDrawer/edit/CloseConfirmation';
+import { CloseConfirmation } from '../../../../../../plugins/ros/src/components/scenarioWizard/components/CloseConfirmation';
 import { InitiativesStep } from './steps/InitiativesStep';
 import Button from '@mui/material/Button';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';

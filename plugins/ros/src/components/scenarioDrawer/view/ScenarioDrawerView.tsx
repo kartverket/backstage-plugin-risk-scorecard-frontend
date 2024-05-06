@@ -1,11 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Divider, Grid, Paper, Typography } from '@material-ui/core';
 import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
 import EditIcon from '@mui/icons-material/Edit';
-import { CloseConfirmation } from '../edit/CloseConfirmation';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DeleteConfirmation } from '../edit/DeleteConfirmation';
+import { DeleteConfirmation } from './DeleteConfirmation';
 import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import { TiltakView } from './TiltakView';
 import { RiskView } from './RiskView';
@@ -14,32 +13,15 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 
 export const ScenarioDrawerView = () => {
-  const { buttons, titleAndButton, section, editIcon } = useScenarioDrawerContentStyles();
+  const { buttons, titleAndButton, section, editIcon } =
+    useScenarioDrawerContentStyles();
 
   const { h3, button } = useFontStyles();
 
-  const {
-    scenario,
-    saveScenario,
-    openDeleteConfirmation,
-    closeScenario,
-    editScenario,
-  } = useContext(ScenarioContext)!!;
+  const { scenario, openDeleteConfirmation, closeScenario, editScenario } =
+    useContext(ScenarioContext)!!;
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-
-  const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
-
-  const close = () => {
-    closeScenario();
-    setShowCloseConfirmation(false);
-  };
-
-  const saveAndClose = () => {
-    if (saveScenario()) {
-      close();
-    }
-  };
 
   return (
     <>
@@ -86,13 +68,15 @@ export const ScenarioDrawerView = () => {
               variant="text"
               color="primary"
               onClick={() => editScenario('measure')}
-              startIcon={<EditIcon className={editIcon} aria-label='Edit' />}
+              startIcon={<EditIcon className={editIcon} aria-label="Edit" />}
             ></Button>
           </Grid>
           {scenario.actions.map((action, index) => (
             <>
               <TiltakView tiltak={action} index={index + 1} />
-              {index !== (scenario.actions.length - 1) && <Divider variant="fullWidth" />}
+              {index !== scenario.actions.length - 1 && (
+                <Divider variant="fullWidth" />
+              )}
             </>
           ))}
         </Paper>
@@ -118,12 +102,6 @@ export const ScenarioDrawerView = () => {
       </Box>
 
       <DeleteConfirmation />
-
-      <CloseConfirmation
-        isOpen={showCloseConfirmation}
-        close={close}
-        save={saveAndClose}
-      />
     </>
   );
 };

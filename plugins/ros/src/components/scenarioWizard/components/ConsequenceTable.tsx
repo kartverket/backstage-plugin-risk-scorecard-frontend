@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles, Radio, Theme, Typography } from '@material-ui/core';
-import { pluginRiScTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export const useTableStyles = makeStyles((theme: Theme) => ({

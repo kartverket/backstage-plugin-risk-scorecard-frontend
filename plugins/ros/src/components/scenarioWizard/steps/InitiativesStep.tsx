@@ -7,8 +7,8 @@ import Box from '@material-ui/core/Box';
 import { Button, Typography } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
 import { TextField } from '../../utils/Textfield';
-import { TiltakEdit } from '../../scenarioDrawer/edit/tabs/tiltak/TiltakEdit';
 import AddCircle from '@material-ui/icons/AddCircle';
+import { TiltakEdit } from '../components/TiltakEdit';
 
 export const InitiativesStep = () => {
   const {
