@@ -65,8 +65,8 @@ export const ScenarioTableRow = ({
               backgroundColor: getRiskMatrixColor(scenario.risk),
             }}
           />
-          {t('scenarioTable.columns.consequenceChar')}:{konsekvens}{' '}
-          {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}
+          {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}{' '}
+          {t('scenarioTable.columns.consequenceChar')}:{konsekvens}
         </TableCell>
         <TableCell className={tableCell}>
           {remainingActions.length > 0 ? (
@@ -84,8 +84,8 @@ export const ScenarioTableRow = ({
               backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
             }}
           />
-          {t('scenarioTable.columns.consequenceChar')}:{restKonsekvens}{' '}
-          {t('scenarioTable.columns.probabilityChar')}:{restSannsynlighet}
+          {t('scenarioTable.columns.probabilityChar')}:{restSannsynlighet}{' '}
+          {t('scenarioTable.columns.consequenceChar')}:{restKonsekvens}
         </TableCell>
       </button>
     </TableRow>
