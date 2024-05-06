@@ -12,11 +12,13 @@ import { pluginRiScTranslationRef } from '../utils/translations';
 interface ScenarioTableRowProps {
   scenario: Scenario;
   viewRow: (id: string) => void;
+  isLastRow?: boolean;
 }
 
 export const ScenarioTableRow = ({
   scenario,
   viewRow,
+  isLastRow,
 }: ScenarioTableRowProps) => {
   const sannsynlighet =
     probabilityOptions.indexOf(scenario.risk.probability) + 1;
@@ -34,7 +36,7 @@ export const ScenarioTableRow = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <TableRow className={rowBorder}>
+    <TableRow className={isLastRow ? undefined : rowBorder}>
       <button
         className={rowBackground}
         onClick={() => viewRow(scenario.ID)}
