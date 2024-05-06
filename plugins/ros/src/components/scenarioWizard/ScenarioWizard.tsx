@@ -99,6 +99,7 @@ export const ScenarioWizard = ({
   const {
     scenario,
     originalScenario,
+    isNewScenario,
     saveScenario,
     closeScenario,
     editScenario,
@@ -106,6 +107,11 @@ export const ScenarioWizard = ({
   } = useContext(ScenarioContext)!!;
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+  const [restEqualsInitial, setRestEqualsInitial] = useState(isNewScenario);
+
+  useEffect(() => {
+    if (step === 'restRisk') setRestEqualsInitial(false);
+  }, [step]);
 
   useEffect(() => {
     if (updateStatus.isSuccess) {
@@ -200,9 +206,16 @@ export const ScenarioWizard = ({
                 {
                   {
                     [ScenarioWizardSteps[0]]: <ScenarioStep />,
-                    [ScenarioWizardSteps[1]]: <RiskStep riskType="initial" />,
+                    [ScenarioWizardSteps[1]]: (
+                      <RiskStep
+                        riskType="initial"
+                        restEqualsInitial={restEqualsInitial}
+                      />
+                    ),
                     [ScenarioWizardSteps[2]]: <InitiativesStep />,
-                    [ScenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
+                    [ScenarioWizardSteps[3]]: (
+                      <RiskStep riskType="rest" restEqualsInitial={false} />
+                    ),
                   }[step]
                 }
               </Box>
