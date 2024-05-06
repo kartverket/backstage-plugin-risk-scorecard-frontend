@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button, CircularProgress, Grid, Typography } from '@material-ui/core';
 import { ContentHeader, SupportButton } from '@backstage/core-components';
 import { useFetchRiScs, useScenarioDrawer } from '../utils/hooks';
-import { useFontStyles } from '../scenarioDrawer/style';
 import { useParams } from 'react-router';
 import { Route, Routes, useSearchParams } from 'react-router-dom';
 import { riScRouteRef, scenarioRouteRef } from '../../routes';
@@ -19,10 +18,10 @@ import { getAlertSeverity } from '../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { Dropdown } from '../utils/Dropdown';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
 import { useLoadingStyles } from './riScPluginStyle';
 import { RiScInfo } from '../riScInfo/RiScInfo';
+import AddCircle from '@material-ui/icons/AddCircle';
 
 const Plugin = () => {
   const params = useParams();
@@ -56,7 +55,6 @@ const Plugin = () => {
   );
 
   const classes = useLoadingStyles();
-  const { button } = useFontStyles();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -118,11 +116,10 @@ const Plugin = () => {
               {!isFetching && (
                 <Grid item xs>
                   <Button
-                    startIcon={<AddCircleOutlineIcon />}
+                    startIcon={<AddCircle />}
                     variant="text"
                     color="primary"
                     onClick={openCreateRiScDialog}
-                    className={button}
                     style={{
                       minWidth: '205px',
                     }}

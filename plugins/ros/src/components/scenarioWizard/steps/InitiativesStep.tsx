@@ -8,7 +8,7 @@ import { Button, Typography } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
 import { TextField } from '../../utils/Textfield';
 import { TiltakEdit } from '../../scenarioDrawer/edit/tabs/tiltak/TiltakEdit';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import AddCircle from '@material-ui/icons/AddCircle';
 
 export const InitiativesStep = () => {
   const {
@@ -50,12 +50,7 @@ export const InitiativesStep = () => {
         />
       ))}
 
-      <Button
-        startIcon={<AddCircleOutlineIcon />}
-        color="primary"
-        onClick={addTiltak}
-        style={{ textTransform: 'none' }}
-      >
+      <Button startIcon={<AddCircle />} color="primary" onClick={addTiltak}>
         {t('scenarioDrawer.measureTab.addMeasureButton')}
       </Button>
     </Box>
