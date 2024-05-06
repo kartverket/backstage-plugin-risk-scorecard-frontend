@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useEffect } from 'react';
 import {
   getKonsekvensLevel,
   getSannsynlighetLevel,
@@ -20,9 +20,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface RiskStepProps {
   riskType: 'initial' | 'rest';
+  restEqualsInitial?: boolean;
 }
 
-export const RiskStep = ({ riskType }: RiskStepProps) => {
+export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
   const {
     scenario,
     setKonsekvens,
@@ -40,6 +41,15 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
   const risk = riskType === 'initial' ? scenario.risk : scenario.remainingRisk;
 
   const { box } = useStyles();
+
+  useEffect(() => {
+    if (restEqualsInitial) setRestKonsekvens(getKonsekvensLevel(scenario.risk));
+  }, [scenario.risk.consequence]);
+
+  useEffect(() => {
+    if (restEqualsInitial)
+      setRestSannsynlighet(getSannsynlighetLevel(scenario.risk));
+  }, [scenario.risk.probability]);
 
   const setC = riskType === 'initial' ? setKonsekvens : setRestKonsekvens;
   const setP = riskType === 'initial' ? setSannsynlighet : setRestSannsynlighet;
