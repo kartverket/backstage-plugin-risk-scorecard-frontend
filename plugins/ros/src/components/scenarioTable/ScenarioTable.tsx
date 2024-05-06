@@ -122,11 +122,12 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {riSc.scenarios.map(scenario => (
+                {riSc.scenarios.map((scenario, idx) => (
                   <ScenarioTableRow
                     key={scenario.ID}
                     scenario={scenario}
                     viewRow={openScenario}
+                    isLastRow={idx === riSc.scenarios.length - 1}
                   />
                 ))}
               </TableBody>
