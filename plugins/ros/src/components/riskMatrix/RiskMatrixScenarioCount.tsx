@@ -9,12 +9,12 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { useRiskMatrixStyles } from './style';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
 import { consequenceOptions, probabilityOptions } from '../utils/constants';
 import { RiSc } from '../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { useRiskMatrixStyles } from './riskMatrixStyle';
 
 interface ScenarioCountProps {
   riSc: RiSc;

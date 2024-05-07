@@ -1,64 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import {
-  CircularProgress,
-  makeStyles,
-  Step,
-  StepButton,
-  Stepper,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Step, StepButton, Stepper, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { ScenarioStep } from './steps/ScenarioStep';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Divider from '@mui/material/Divider';
-import { useFontStyles } from '../scenarioDrawer/style';
 import { ScenarioContext } from '../riScPlugin/ScenarioContext';
-import { CloseConfirmation } from '../../../../../../plugins/ros/src/components/scenarioWizard/components/CloseConfirmation';
 import { InitiativesStep } from './steps/InitiativesStep';
 import Button from '@mui/material/Button';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { RiskStep } from './steps/RiskStep';
-import { useLoadingStyles } from '../riScPlugin/riScPluginStyle';
 import Alert from '@mui/material/Alert';
-
-const useStyle = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  container: {
-    width: '100%',
-    maxWidth: theme.spacing(100),
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  stepper: {
-    background: 'transparent',
-    padding: '2rem 0 2.5rem 0',
-  },
-  steps: {
-    padding: '1rem 0 1rem 0',
-  },
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  buttonContainerRight: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  saveAndNextButtons: {
-    display: 'flex',
-    gap: theme.spacing(2),
-  },
-}));
+import { useFontStyles } from '../utils/style';
+import { useWizardStyle } from './scenarioWizardStyle';
+import { Spinner } from '../utils/Spinner';
+import { CloseConfirmation } from './components/CloseConfirmation';
 
 export const ScenarioWizardSteps = [
   'scenario',
@@ -83,7 +39,6 @@ export const ScenarioWizard = ({
   const wizardRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h1, label } = useFontStyles();
-  const classes = useLoadingStyles();
 
   const {
     root,
@@ -94,7 +49,7 @@ export const ScenarioWizard = ({
     buttonContainer,
     buttonContainerRight,
     saveAndNextButtons,
-  } = useStyle();
+  } = useWizardStyle();
 
   const {
     scenario,
@@ -195,12 +150,9 @@ export const ScenarioWizard = ({
             ))}
           </Stepper>
           <Divider />
-          {isFetching && (
-            <div className={classes.container}>
-              <CircularProgress className={classes.spinner} size={80} />
-            </div>
-          )}
-          {!isFetching && (
+          {isFetching ? (
+            <Spinner size={80} />
+          ) : (
             <>
               <Box className={steps}>
                 {

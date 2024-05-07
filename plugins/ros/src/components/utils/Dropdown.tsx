@@ -8,8 +8,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import React, { ChangeEvent } from 'react';
-import { menuProps, useInputFieldStyles } from '../scenarioDrawer/style';
 import { FormHelperText } from '@material-ui/core';
+import { menuProps, useInputFieldStyles } from './style';
 
 interface DropdownProps<T> {
   options: string[];

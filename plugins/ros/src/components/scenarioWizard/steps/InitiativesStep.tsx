@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
-import { useFontStyles } from '../../scenarioDrawer/style';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import Box from '@material-ui/core/Box';

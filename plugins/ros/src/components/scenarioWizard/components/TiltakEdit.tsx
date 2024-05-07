@@ -7,11 +7,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns as ADF } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { nb } from 'date-fns/locale/nb';
-import { useFontStyles, useInputFieldStyles } from '../../scenarioDrawer/style';
 import FormControl from '@material-ui/core/FormControl';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { actionStatusOptions } from '../../utils/constants';
+import { useFontStyles, useInputFieldStyles } from '../../utils/style';
 
 interface TiltakProps {
   tiltak: ITiltak;

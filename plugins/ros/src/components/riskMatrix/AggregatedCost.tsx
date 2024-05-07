@@ -6,7 +6,7 @@ import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
 import { formatNOK } from '../utils/utilityfunctions';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useFontStyles } from '../scenarioDrawer/style';
+import { useFontStyles } from '../utils/style';
 
 interface AggregatedCostProps {
   riSc: RiSc;

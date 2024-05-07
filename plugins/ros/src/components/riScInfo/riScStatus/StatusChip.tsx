@@ -68,6 +68,7 @@ const getPRStatus = (
       return null;
   }
 };
+
 export const StatusChip = ({ currentRiScStatus }: ChipProps) => {
   const chipClasses: ClassNameMap = useStatusChipStyles();
   const textClasses: ClassNameMap = useStatusTextStyles();

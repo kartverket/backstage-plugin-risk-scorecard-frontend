@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import Box from '@mui/material/Box';
-import { useRiskMatrixStyles } from './style';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
 import { RiSc } from '../utils/types';
@@ -11,7 +10,8 @@ import { Tabs } from './Tabs';
 import { riskMatrix } from '../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
-import { useFontStyles } from '../scenarioDrawer/style';
+import { useFontStyles } from '../utils/style';
+import { useRiskMatrixStyles } from './riskMatrixStyle';
 
 export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
   const indices = [0, 1, 2, 3, 4];

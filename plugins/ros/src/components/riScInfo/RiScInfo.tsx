@@ -2,12 +2,12 @@ import React from 'react';
 import { RiScWithMetadata } from '../utils/types';
 import { Box, Grid, IconButton, Typography } from '@material-ui/core';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';
-import { useFontStyles } from '../scenarioDrawer/style';
 import { InfoCard } from '@backstage/core-components';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useRiScInfoStyles } from './riScInfoStyle';
+import { useFontStyles } from '../utils/style';
 
 interface RiScInfoProps {
   riSc: RiScWithMetadata;
@@ -16,10 +16,9 @@ interface RiScInfoProps {
 }
 
 export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label, body2 } = useFontStyles();
   const { infoCard } = useRiScInfoStyles();
-
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Grid container>

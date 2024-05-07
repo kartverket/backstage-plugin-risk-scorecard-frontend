@@ -1,28 +1,28 @@
 import React from 'react';
 import { Action as ITiltak } from '../../utils/types';
-import { Divider, Grid, Paper, Typography } from '@material-ui/core';
-import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
-import { useTiltakViewStyles } from './style';
+import { Grid, Typography } from '@material-ui/core';
+import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
+import { useTiltakViewStyles } from './actionBoxStyle';
 import { formatDate } from '../../utils/utilityfunctions';
 import Chip from '@material-ui/core/Chip';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { useFontStyles } from '../../utils/style';
 
 interface TiltakProps {
   tiltak: ITiltak;
   index: number;
 }
 
-export const TiltakView = ({ tiltak, index }: TiltakProps) => {
-  const { measure } = useScenarioDrawerContentStyles();
+export const ActionBox = ({ tiltak, index }: TiltakProps) => {
+  const { measure } = useScenarioDrawerStyles();
   const { alignCenter, justifyEnd } = useTiltakViewStyles();
   const { body2, label } = useFontStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-
     <Grid container className={measure}>
-      <Grid item xs={12} className={alignCenter} >
+      <Grid item xs={12} className={alignCenter}>
         <Grid item xs={6}>
           <Typography className={label}>
             {t('dictionary.measure')} {index}
@@ -56,9 +56,7 @@ export const TiltakView = ({ tiltak, index }: TiltakProps) => {
 
       <Grid item xs={4}>
         <Typography className={label}>{t('dictionary.deadline')}</Typography>
-        <Typography className={body2}>
-          {formatDate(tiltak.deadline)}
-        </Typography>
+        <Typography className={body2}>{formatDate(tiltak.deadline)}</Typography>
       </Grid>
     </Grid>
   );

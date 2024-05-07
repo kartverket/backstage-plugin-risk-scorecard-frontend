@@ -8,7 +8,6 @@ import Box from '@material-ui/core/Box';
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useFontStyles } from '../../scenarioDrawer/style';
 import { ProbabilityTable } from '../components/ProbabilityTable';
 import { ConsequenceTable } from '../components/ConsequenceTable';
 

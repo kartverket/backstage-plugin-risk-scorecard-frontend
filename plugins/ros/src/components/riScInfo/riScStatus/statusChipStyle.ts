@@ -45,13 +45,3 @@ export const useStatusTextStyles = makeStyles(() => ({
     marginLeft: '2px',
   },
 }));
-
-export const useAlertStyles = makeStyles(() => ({
-  noApprovalBanner: {
-    backgroundColor: '#FCEBCD',
-    color: '#303030',
-  },
-  'MuiAlert-message': {
-    color: '#B2750B',
-  },
-}));

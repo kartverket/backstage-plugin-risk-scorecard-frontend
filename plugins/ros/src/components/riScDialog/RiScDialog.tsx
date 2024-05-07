@@ -8,11 +8,11 @@ import {
 } from '@material-ui/core';
 import { TextField } from '../utils/Textfield';
 import { RiSc, RiScWithMetadata } from '../utils/types';
-import { useFontStyles } from '../scenarioDrawer/style';
 import { emptyRiSc } from '../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useRiScDialogStyles } from './riScDialogStyle';
+import { useFontStyles } from '../utils/style';
 
 export enum RiScDialogStates {
   Closed,
@@ -49,8 +49,8 @@ export const RiScDialog = ({
   });
 
   const classes = useRiScDialogStyles();
-  const { h1 } = useFontStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { h1 } = useFontStyles();
 
   const handleCancel = () => {
     onClose();

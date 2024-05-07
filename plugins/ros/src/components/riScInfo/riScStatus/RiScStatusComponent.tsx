@@ -10,14 +10,14 @@ import {
 import { StatusChip } from './StatusChip';
 import React, { ReactComponentElement, useState } from 'react';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types';
-import { useButtonStyles } from '../../riScPlugin/riScPluginStyle';
 import Alert from '@mui/material/Alert';
 import { useRiScDialogStyles } from '../../riScDialog/riScDialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useButtonStyles } from './riScStatusComponentStyle';
 
-interface RiScPublisDialogProps {
+interface RiScPublishDialogProps {
   openDialog: boolean;
   handleCancel: () => void;
   handlePublish: () => void;
@@ -27,9 +27,10 @@ const RiScPublishDialog = ({
   openDialog,
   handleCancel,
   handlePublish,
-}: RiScPublisDialogProps): ReactComponentElement<any> => {
-  const classes = useRiScDialogStyles();
+}: RiScPublishDialogProps): ReactComponentElement<any> => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { buttons } = useRiScDialogStyles();
+
   const [userIsRisikoEierAndApproves, setUserIsRisikoEierAndApproves] =
     useState<boolean>(false);
 
@@ -64,7 +65,7 @@ const RiScPublishDialog = ({
           alignItems: 'center',
         }}
       >
-        <Box className={classes.buttons}>
+        <Box className={buttons}>
           <Button variant="outlined" color="primary" onClick={handleCancel}>
             {t('dictionary.cancel')}
           </Button>

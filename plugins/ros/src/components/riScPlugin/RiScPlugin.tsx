@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, CircularProgress, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import { ContentHeader, SupportButton } from '@backstage/core-components';
 import { useFetchRiScs, useScenarioDrawer } from '../utils/hooks';
 import { useParams } from 'react-router';
@@ -19,12 +19,13 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { Dropdown } from '../utils/Dropdown';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
-import { useLoadingStyles } from './riScPluginStyle';
 import { RiScInfo } from '../riScInfo/RiScInfo';
 import AddCircle from '@material-ui/icons/AddCircle';
+import { Spinner } from '../utils/Spinner';
 
 const Plugin = () => {
   const params = useParams();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [RiScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
@@ -53,10 +54,6 @@ const Plugin = () => {
     updateRiSc,
     params.scenarioId,
   );
-
-  const classes = useLoadingStyles();
-
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [searchParams] = useSearchParams();
   const scenarioWizardStep =
@@ -87,11 +84,7 @@ const Plugin = () => {
               <SupportButton>Kul plugin ass!</SupportButton>
             </ContentHeader>
 
-            {isFetching && (
-              <div className={classes.container}>
-                <CircularProgress className={classes.spinner} size={80} />
-              </div>
-            )}
+            {isFetching && <Spinner size={80} />}
 
             <Grid container spacing={4}>
               {riScs !== null && riScs.length !== 0 && (
