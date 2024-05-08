@@ -4,7 +4,6 @@ import { useSpinnerStyles } from './style';
 
 export const Spinner = ({ size }: { size?: string | number }) => {
   const { container, spinner } = useSpinnerStyles();
-
   return (
     <div className={container}>
       <CircularProgress className={spinner} size={size} />

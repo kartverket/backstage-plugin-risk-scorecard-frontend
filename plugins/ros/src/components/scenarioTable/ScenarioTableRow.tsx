@@ -2,10 +2,13 @@ import React from 'react';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { Paper, Typography } from '@material-ui/core';
-import { consequenceOptions, probabilityOptions } from '../utils/constants';
 import { Scenario } from '../utils/types';
 import { useTableStyles } from './ScenarioTableStyles';
-import { getRiskMatrixColor } from '../utils/utilityfunctions';
+import {
+  getConsequenceLevel,
+  getProbabilityLevel,
+  getRiskMatrixColor,
+} from '../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 
@@ -20,20 +23,12 @@ export const ScenarioTableRow = ({
   viewRow,
   isLastRow,
 }: ScenarioTableRowProps) => {
-  const sannsynlighet =
-    probabilityOptions.indexOf(scenario.risk.probability) + 1;
-  const konsekvens = consequenceOptions.indexOf(scenario.risk.consequence) + 1;
-  const restSannsynlighet =
-    probabilityOptions.indexOf(scenario.remainingRisk.probability) + 1;
-  const restKonsekvens =
-    consequenceOptions.indexOf(scenario.remainingRisk.consequence) + 1;
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { riskColor, rowBackground, rowBorder, tableCell } = useTableStyles();
+
   const remainingActions = scenario.actions.filter(
     a => a.status !== 'Completed',
   );
-
-  const { riskColor, rowBackground, rowBorder, tableCell } = useTableStyles();
-
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <TableRow className={isLastRow ? undefined : rowBorder}>
@@ -67,8 +62,10 @@ export const ScenarioTableRow = ({
               backgroundColor: getRiskMatrixColor(scenario.risk),
             }}
           />
-          {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}{' '}
-          {t('scenarioTable.columns.consequenceChar')}:{konsekvens}
+          {t('scenarioTable.columns.probabilityChar')}:
+          {getProbabilityLevel(scenario.risk)}{' '}
+          {t('scenarioTable.columns.consequenceChar')}:
+          {getConsequenceLevel(scenario.risk)}
         </TableCell>
         <TableCell className={tableCell}>
           {remainingActions.length > 0 ? (
@@ -86,8 +83,10 @@ export const ScenarioTableRow = ({
               backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
             }}
           />
-          {t('scenarioTable.columns.probabilityChar')}:{restSannsynlighet}{' '}
-          {t('scenarioTable.columns.consequenceChar')}:{restKonsekvens}
+          {t('scenarioTable.columns.probabilityChar')}:
+          {getProbabilityLevel(scenario.remainingRisk)}{' '}
+          {t('scenarioTable.columns.consequenceChar')}:
+          {getConsequenceLevel(scenario.remainingRisk)}
         </TableCell>
       </button>
     </TableRow>

@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 
-export const useTiltakViewStyles = makeStyles(_ => ({
+export const useActionBoxStyles = makeStyles(_ => ({
   alignCenter: {
     display: 'flex',
     alignItems: 'center',

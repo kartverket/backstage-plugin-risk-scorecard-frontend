@@ -15,7 +15,7 @@ import { ScopeSection } from './components/ScopeSection';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { root, buttons } = useScenarioDrawerStyles();
+  const { drawer, buttons } = useScenarioDrawerStyles();
   const { button } = useFontStyles();
   const { scenarioDrawerState, openDeleteConfirmation, closeScenario } =
     useContext(ScenarioContext)!!;
@@ -24,7 +24,7 @@ export const ScenarioDrawer = () => {
 
   return (
     <Drawer
-      classes={{ paper: root }}
+      classes={{ paper: drawer }}
       variant="temporary"
       anchor="right"
       open={isOpen}

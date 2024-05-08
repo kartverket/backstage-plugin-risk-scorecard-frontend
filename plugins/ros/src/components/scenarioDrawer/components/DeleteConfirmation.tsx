@@ -5,10 +5,9 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export const DeleteConfirmation = () => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { deleteConfirmationIsOpen, abortDeletion, confirmDeletion } =
     useContext(ScenarioContext)!!;
-
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Dialog open={deleteConfirmationIsOpen}>

@@ -83,7 +83,7 @@ export const useFontStyles = makeStyles(theme => ({
     fontWeight: 700,
     paddingTop: 0,
   },
-  tiltakSubtitle: {
+  actionSubtitle: {
     fontSize: theme.spacing(2.25),
     fontWeight: 700,
     marginBottom: theme.spacing(2),

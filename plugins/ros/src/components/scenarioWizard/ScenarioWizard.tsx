@@ -6,7 +6,7 @@ import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Divider from '@mui/material/Divider';
 import { ScenarioContext } from '../riScPlugin/ScenarioContext';
-import { InitiativesStep } from './steps/InitiativesStep';
+import { ActionsStep } from './steps/ActionsStep';
 import Button from '@mui/material/Button';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { RiskStep } from './steps/RiskStep';
@@ -164,7 +164,7 @@ export const ScenarioWizard = ({
                         restEqualsInitial={restEqualsInitial}
                       />
                     ),
-                    [ScenarioWizardSteps[2]]: <InitiativesStep />,
+                    [ScenarioWizardSteps[2]]: <ActionsStep />,
                     [ScenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
                   }[step]
                 }

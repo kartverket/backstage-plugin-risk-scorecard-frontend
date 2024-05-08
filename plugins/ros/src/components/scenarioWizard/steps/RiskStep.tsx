@@ -1,21 +1,17 @@
 import React, { Fragment, useContext, useEffect } from 'react';
 import {
-  getKonsekvensLevel,
-  getSannsynlighetLevel,
+  getConsequenceLevel,
+  getProbabilityLevel,
 } from '../../utils/utilityfunctions';
 import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import Box from '@material-ui/core/Box';
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { ProbabilityTable } from '../components/ProbabilityTable';
 import { ConsequenceTable } from '../components/ConsequenceTable';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  box: {
-    paddingBottom: theme.spacing(2),
-  },
-}));
+import { useFontStyles } from '../../utils/style';
+import { useRiskStepStyles } from './riskStepStyles';
 
 interface RiskStepProps {
   riskType: 'initial' | 'rest';
@@ -23,35 +19,35 @@ interface RiskStepProps {
 }
 
 export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { h2, h3, subtitle2 } = useFontStyles();
+  const { box } = useRiskStepStyles();
   const {
     scenario,
-    setKonsekvens,
-    setSannsynlighet,
-    setRestKonsekvens,
-    setRestSannsynlighet,
+    setConsequence,
+    setProbability,
+    setRemainingConsequence,
+    setRemainingProbability,
   } = useContext(ScenarioContext)!!;
-
-  const { h2, h3, subtitle2 } = useFontStyles();
-
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const resourceKey =
     riskType === 'initial' ? 'initialRiskStep' : 'restRiskStep';
   const risk = riskType === 'initial' ? scenario.risk : scenario.remainingRisk;
 
-  const { box } = useStyles();
-
   useEffect(() => {
-    if (restEqualsInitial) setRestKonsekvens(getKonsekvensLevel(scenario.risk));
+    if (restEqualsInitial)
+      setRemainingConsequence(getConsequenceLevel(scenario.risk));
   }, [scenario.risk.consequence]);
 
   useEffect(() => {
     if (restEqualsInitial)
-      setRestSannsynlighet(getSannsynlighetLevel(scenario.risk));
+      setRemainingProbability(getProbabilityLevel(scenario.risk));
   }, [scenario.risk.probability]);
 
-  const setC = riskType === 'initial' ? setKonsekvens : setRestKonsekvens;
-  const setP = riskType === 'initial' ? setSannsynlighet : setRestSannsynlighet;
+  const setC =
+    riskType === 'initial' ? setConsequence : setRemainingConsequence;
+  const setP =
+    riskType === 'initial' ? setProbability : setRemainingProbability;
 
   return (
     <Fragment>
@@ -71,7 +67,7 @@ export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
       </Box>
       <Box className={box}>
         <ProbabilityTable
-          selectedValue={getSannsynlighetLevel(risk)}
+          selectedValue={getProbabilityLevel(risk)}
           handleChange={setP}
         />
       </Box>
@@ -83,7 +79,7 @@ export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
       </Box>
       <Box className={box}>
         <ConsequenceTable
-          selectedValue={getKonsekvensLevel(risk)}
+          selectedValue={getConsequenceLevel(risk)}
           handleChange={setC}
         />
       </Box>

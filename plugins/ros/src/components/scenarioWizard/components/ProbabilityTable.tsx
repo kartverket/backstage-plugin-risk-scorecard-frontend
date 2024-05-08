@@ -2,7 +2,8 @@ import React from 'react';
 import { Radio } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useTableStyles } from './ConsequenceTable';
+
+import { useTableStyles } from './tableStyles';
 
 interface ProbabilityTableProps {
   selectedValue: number;
@@ -13,12 +14,10 @@ export const ProbabilityTable = ({
   selectedValue,
   handleChange,
 }: ProbabilityTableProps) => {
-  const { table, cell, radio } = useTableStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { table, cell, radio } = useTableStyles();
 
-  const handleChangeRow = (row: number) => () => {
-    handleChange(row);
-  };
+  const handleChangeRow = (row: number) => () => handleChange(row);
 
   const radioCell = (row: number) => (
     <th scope="col">

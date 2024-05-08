@@ -1,7 +1,7 @@
 import { makeStyles, Theme } from '@material-ui/core';
 
 export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
-  root: {
+  drawer: {
     padding: theme.spacing(4),
     width: '50%',
     [theme.breakpoints.down('sm')]: {
@@ -36,7 +36,7 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
     backgroundColor: theme.palette.type === 'dark' ? '#555555' : '#e0e0e0',
   },
-  measure: {
+  gridContainer: {
     padding: theme.spacing(2),
     marginBottom: theme.palette.type === 'dark' ? theme.spacing(1) : '7px',
     backgroundColor: theme.palette.type === 'dark' ? '#55555519' : '#e0e0e019',

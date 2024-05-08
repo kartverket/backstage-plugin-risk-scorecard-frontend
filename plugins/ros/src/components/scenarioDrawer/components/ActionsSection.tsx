@@ -10,11 +10,11 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 
 export const ActionsSection = () => {
-  const { titleAndButton, section, editIcon } = useScenarioDrawerStyles();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h3, button } = useFontStyles();
+  const { titleAndButton, section, editIcon } = useScenarioDrawerStyles();
   const { scenario, editScenario } = useContext(ScenarioContext)!!;
 
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Box>
       <Paper className={section} style={{ padding: '1rem' }}>
@@ -39,7 +39,7 @@ export const ActionsSection = () => {
         </Grid>
         {scenario.actions.map((action, index) => (
           <>
-            <ActionBox tiltak={action} index={index + 1} />
+            <ActionBox action={action} index={index + 1} />
             {index !== scenario.actions.length - 1 && (
               <Divider variant="fullWidth" />
             )}

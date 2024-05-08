@@ -1,8 +1,8 @@
-import { RiSc, ProcessingStatus, Scenario, Action, Risk } from './types';
+import { Action, ProcessingStatus, RiSc, Risk, Scenario } from './types';
 import {
   consequenceOptions,
-  riskMatrix,
   probabilityOptions,
+  riskMatrix,
 } from './constants';
 
 export function generateRandomId(): string {
@@ -49,10 +49,10 @@ export function getRiskMatrixColor(risiko: Risk) {
   return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
-export const getSannsynlighetLevel = (risiko: Risk) =>
+export const getProbabilityLevel = (risiko: Risk) =>
   probabilityOptions.indexOf(risiko.probability) + 1;
 
-export const getKonsekvensLevel = (risiko: Risk) =>
+export const getConsequenceLevel = (risiko: Risk) =>
   consequenceOptions.indexOf(risiko.consequence) + 1;
 
 export const emptyRiSc = (): RiSc => ({
@@ -83,7 +83,7 @@ export const emptyScenario = (): Scenario => ({
   },
 });
 
-export const emptyTiltak = (): Action => ({
+export const emptyAction = (): Action => ({
   ID: generateRandomId(),
   title: '',
   description: '',
@@ -128,12 +128,31 @@ export const requiresNewApproval = (
     )
       requiresApproval = true;
 
-    oldScenario.actions.map((oldTiltak, i) => {
-      const updatedTiltak = updatedScenario.actions[i];
+    oldScenario.actions.map((oldAction, i) => {
+      const updatedAction = updatedScenario.actions[i];
 
-      if (oldTiltak.deadline !== updatedTiltak.deadline)
+      if (oldAction.deadline !== updatedAction.deadline)
         requiresApproval = true;
     });
   });
   return requiresApproval;
 };
+
+export function formatNumber(
+  cost: number,
+  t: (s: any, c: any) => string,
+): string {
+  if (cost < 1e4) {
+    return formatNOK(cost);
+  } else {
+    let { threshold, unit } = [
+      { threshold: 1e6, unit: 'thousand' },
+      { threshold: 1e9, unit: 'million' },
+      { threshold: 1e12, unit: 'billion' },
+      { threshold: 1e15, unit: 'trillion' },
+    ].find(({ threshold }) => cost < threshold)!!;
+    return t(`riskMatrix.estimatedRisk.suffix.${unit}`, {
+      count: Number(((cost / threshold) * 1000).toFixed(0)),
+    });
+  }
+}

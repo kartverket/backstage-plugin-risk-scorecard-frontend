@@ -5,19 +5,20 @@ import React from 'react';
 import { useTabsStyle } from './tabsStyle';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { RiskMatrixTabs } from './RiskMatrix';
 
 interface TabsProps {
-  setTab: (tab: string) => void;
+  setTab: (tab: RiskMatrixTabs) => void;
 }
 
 export const Tabs = ({ setTab }: TabsProps) => {
-  const tabsStyle = useTabsStyle();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const tabsStyle = useTabsStyle();
 
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <TabList
-        onChange={(_: any, newValue: string) => setTab(newValue)}
+        onChange={(_: any, newValue: RiskMatrixTabs) => setTab(newValue)}
         variant="fullWidth"
         indicatorColor="primary"
       >
@@ -27,7 +28,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
               {t('dictionary.initialRisk')}
             </Typography>
           }
-          value="startrisiko"
+          value={RiskMatrixTabs.initialRisk}
           className={tabsStyle.tab}
         />
         <Tab
@@ -36,7 +37,7 @@ export const Tabs = ({ setTab }: TabsProps) => {
               {t('dictionary.restRisk')}
             </Typography>
           }
-          value="restrisiko"
+          value={RiskMatrixTabs.remainingRisk}
           className={tabsStyle.tab}
         />
       </TabList>

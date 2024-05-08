@@ -7,20 +7,19 @@ import { Button, Typography } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
 import { TextField } from '../../utils/Textfield';
 import AddCircle from '@material-ui/icons/AddCircle';
-import { TiltakEdit } from '../components/TiltakEdit';
+import { useFontStyles } from '../../utils/style';
+import { ActionEdit } from '../components/ActionEdit';
 
-export const InitiativesStep = () => {
+export const ActionsStep = () => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { h2, subtitle2, actionSubtitle } = useFontStyles();
   const {
     scenario,
-    setEksisterendeTiltak,
-    updateTiltak,
-    deleteTiltak,
-    addTiltak,
+    setExistingActions,
+    updateAction,
+    deleteAction,
+    addAction,
   } = useContext(ScenarioContext)!!;
-
-  const { h2, subtitle2, tiltakSubtitle } = useFontStyles();
-
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Box>
@@ -33,23 +32,23 @@ export const InitiativesStep = () => {
           label={t('scenarioDrawer.measureTab.existingMeasure')}
           subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
           value={scenario.existingActions}
-          handleChange={setEksisterendeTiltak}
+          handleChange={setExistingActions}
           minRows={3}
         />
       </Grid>
-      <Typography variant="h6" className={tiltakSubtitle}>
+      <Typography variant="h6" className={actionSubtitle}>
         {t('scenarioDrawer.measureTab.plannedMeasures')}
       </Typography>
-      {scenario.actions.map((tiltak, index) => (
-        <TiltakEdit
-          tiltak={tiltak}
+      {scenario.actions.map((action, index) => (
+        <ActionEdit
+          action={action}
           index={index + 1}
-          updateTiltak={updateTiltak}
-          deleteTiltak={deleteTiltak}
+          updateAction={updateAction}
+          deleteAction={deleteAction}
         />
       ))}
 
-      <Button startIcon={<AddCircle />} color="primary" onClick={addTiltak}>
+      <Button startIcon={<AddCircle />} color="primary" onClick={addAction}>
         {t('scenarioDrawer.measureTab.addMeasureButton')}
       </Button>
     </Box>

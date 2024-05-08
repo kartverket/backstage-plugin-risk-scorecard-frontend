@@ -5,7 +5,6 @@ import {
   TextField as MUITextField,
 } from '@material-ui/core';
 import React, { ChangeEvent } from 'react';
-
 import { useFontStyles, useInputFieldStyles } from './style';
 
 interface TextFieldProps {

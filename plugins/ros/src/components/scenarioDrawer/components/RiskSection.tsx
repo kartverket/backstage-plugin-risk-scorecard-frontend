@@ -3,9 +3,9 @@ import Box from '@mui/material/Box';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import {
   formatNOK,
-  getKonsekvensLevel,
+  getConsequenceLevel,
   getRiskMatrixColor,
-  getSannsynlighetLevel,
+  getProbabilityLevel,
 } from '../../utils/utilityfunctions';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -112,10 +112,10 @@ const RiskBox = ({ risk, riskType, editScenario }: RiskProps) => {
             }}
           >
             <Typography className={label}>
-              {t('dictionary.probability')}: {getSannsynlighetLevel(risk)}
+              {t('dictionary.probability')}: {getProbabilityLevel(risk)}
             </Typography>
             <Typography className={label}>
-              {t('dictionary.consequence')}: {getKonsekvensLevel(risk)}
+              {t('dictionary.consequence')}: {getConsequenceLevel(risk)}
             </Typography>
           </Grid>
         </Grid>

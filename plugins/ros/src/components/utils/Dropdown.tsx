@@ -34,9 +34,8 @@ export const Dropdown = <T,>({
 
   const multiple = Array.isArray(selectedValues);
 
-  const onChange = (event: ChangeEvent<{ value: unknown }>) => {
+  const onChange = (event: ChangeEvent<{ value: unknown }>) =>
     handleChange(event.target.value as T);
-  };
 
   const renderValue = (selected: any) =>
     multiple ? (
