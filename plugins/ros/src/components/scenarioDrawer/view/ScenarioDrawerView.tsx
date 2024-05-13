@@ -14,7 +14,8 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 
 export const ScenarioDrawerView = () => {
-  const { buttons, titleAndButton, section, editIcon } = useScenarioDrawerContentStyles();
+  const { buttons, titleAndButton, section, editIcon } =
+    useScenarioDrawerContentStyles();
 
   const { h3, button } = useFontStyles();
 
@@ -24,6 +25,7 @@ export const ScenarioDrawerView = () => {
     openDeleteConfirmation,
     closeScenario,
     editScenario,
+    updateTiltak,
   } = useContext(ScenarioContext)!!;
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -86,13 +88,20 @@ export const ScenarioDrawerView = () => {
               variant="text"
               color="primary"
               onClick={() => editScenario('measure')}
-              startIcon={<EditIcon className={editIcon} aria-label='Edit' />}
-            ></Button>
+              startIcon={<EditIcon className={editIcon} aria-label="Edit" />}
+            />
           </Grid>
           {scenario.actions.map((action, index) => (
             <>
-              <TiltakView tiltak={action} index={index + 1} />
-              {index !== (scenario.actions.length - 1) && <Divider variant="fullWidth" />}
+              <TiltakView
+                tiltak={action}
+                index={index + 1}
+                updateTiltak={updateTiltak}
+                saveScenario={saveScenario}
+              />
+              {index !== scenario.actions.length - 1 && (
+                <Divider variant="fullWidth" />
+              )}
             </>
           ))}
         </Paper>
