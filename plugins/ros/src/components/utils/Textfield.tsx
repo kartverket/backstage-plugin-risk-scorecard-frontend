@@ -11,7 +11,7 @@ interface TextFieldProps {
   label?: string;
   subtitle?: string;
   value: string | number;
-  error?: string | null;
+  error?: string | boolean | null;
   required?: boolean;
   minRows?: number;
   handleChange?: (value: string) => void;

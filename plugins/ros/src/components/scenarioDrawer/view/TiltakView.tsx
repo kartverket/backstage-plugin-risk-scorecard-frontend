@@ -1,6 +1,6 @@
 import React from 'react';
 import { Action as ITiltak } from '../../utils/types';
-import { Divider, Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
 import { useTiltakViewStyles } from './style';
 import { formatDate } from '../../utils/utilityfunctions';
@@ -20,9 +20,8 @@ export const TiltakView = ({ tiltak, index }: TiltakProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-
     <Grid container className={measure}>
-      <Grid item xs={12} className={alignCenter} >
+      <Grid item xs={12} className={alignCenter}>
         <Grid item xs={6}>
           <Typography className={label}>
             {t('dictionary.measure')} {index}
@@ -56,9 +55,7 @@ export const TiltakView = ({ tiltak, index }: TiltakProps) => {
 
       <Grid item xs={4}>
         <Typography className={label}>{t('dictionary.deadline')}</Typography>
-        <Typography className={body2}>
-          {formatDate(tiltak.deadline)}
-        </Typography>
+        <Typography className={body2}>{formatDate(tiltak.deadline)}</Typography>
       </Grid>
     </Grid>
   );
