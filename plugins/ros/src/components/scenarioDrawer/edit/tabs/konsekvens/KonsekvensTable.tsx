@@ -84,7 +84,14 @@ export const ConsequenceTable = ({
   const getRow = (resourceKey: string, cellType: string[]) => (
     <tr>
       <th scope="row" className={labelCell}>
-        <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+        <Typography
+          variant="subtitle1"
+          style={{
+            fontWeight: 'bold',
+            paddingBottom: '0.7rem',
+            paddingTop: '0.7rem',
+          }}
+        >
           {/* @ts-ignore */}
           {t(`consequenceTable.columns.${resourceKey}`)}
         </Typography>

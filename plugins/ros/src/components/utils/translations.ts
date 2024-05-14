@@ -13,6 +13,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     dictionary: {
       cancel: 'Cancel',
       close: 'Close',
+      completed: 'Completed',
       confirm: 'Confirm',
       consequence: 'Consequence', // Severity, Impact, Effect or Consequence
       deadline: 'Deadline', // Deadline or Due date
@@ -25,6 +26,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       measure: 'Actions', // Measure, Action or Initiative
       measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
       next: 'Next',
+      planned: 'Planned',
       previous: 'Previous',
       probability: 'Probability', // Likelihood or Probability
       restRisk: 'Remaining risk', // Residual or Remaining risk
@@ -246,6 +248,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'dictionary.cancel': 'Avbryt',
           'dictionary.close': 'Lukk',
+          'dictionary.completed': 'Fullført',
           'dictionary.confirm': 'Bekreft',
           'dictionary.consequence': 'Konsekvens',
           'dictionary.deadline': 'Frist',
@@ -258,6 +261,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.measure': 'Tiltak',
           'dictionary.measureOwner': 'Tiltakseier',
           'dictionary.next': 'Neste',
+          'dictionary.planned': 'Planlagt',
           'dictionary.previous': 'Forrige',
           'dictionary.probability': 'Sannsynlighet',
           'dictionary.restRisk': 'Restrisiko',

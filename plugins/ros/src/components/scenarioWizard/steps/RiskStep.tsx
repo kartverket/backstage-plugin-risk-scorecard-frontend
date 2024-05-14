@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useEffect } from 'react';
 import {
   getKonsekvensLevel,
   getSannsynlighetLevel,
@@ -20,9 +20,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface RiskStepProps {
   riskType: 'initial' | 'rest';
+  restEqualsInitial?: boolean;
 }
 
-export const RiskStep = ({ riskType }: RiskStepProps) => {
+export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
   const {
     scenario,
     setKonsekvens,
@@ -41,6 +42,15 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
 
   const { box } = useStyles();
 
+  useEffect(() => {
+    if (restEqualsInitial) setRestKonsekvens(getKonsekvensLevel(scenario.risk));
+  }, [scenario.risk.consequence]);
+
+  useEffect(() => {
+    if (restEqualsInitial)
+      setRestSannsynlighet(getSannsynlighetLevel(scenario.risk));
+  }, [scenario.risk.probability]);
+
   const setC = riskType === 'initial' ? setKonsekvens : setRestKonsekvens;
   const setP = riskType === 'initial' ? setSannsynlighet : setRestSannsynlighet;
 
@@ -55,18 +65,6 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
         </Typography>
       </Box>
       <Box className={box}>
-        <Typography className={h3}>{t('dictionary.consequence')}</Typography>
-        <Typography className={subtitle2}>
-          {t(`scenarioStepper.${resourceKey}.consequenceSubtitle`)}
-        </Typography>
-      </Box>
-      <Box className={box}>
-        <ConsequenceTable
-          selectedValue={getKonsekvensLevel(risk)}
-          handleChange={setC}
-        />
-      </Box>
-      <Box className={box}>
         <Typography className={h3}>{t('dictionary.probability')}</Typography>
         <Typography className={subtitle2}>
           {t(`scenarioStepper.${resourceKey}.probabilitySubtitle`)}
@@ -76,6 +74,18 @@ export const RiskStep = ({ riskType }: RiskStepProps) => {
         <ProbabilityTable
           selectedValue={getSannsynlighetLevel(risk)}
           handleChange={setP}
+        />
+      </Box>
+      <Box className={box}>
+        <Typography className={h3}>{t('dictionary.consequence')}</Typography>
+        <Typography className={subtitle2}>
+          {t(`scenarioStepper.${resourceKey}.consequenceSubtitle`)}
+        </Typography>
+      </Box>
+      <Box className={box}>
+        <ConsequenceTable
+          selectedValue={getKonsekvensLevel(risk)}
+          handleChange={setC}
         />
       </Box>
     </Fragment>

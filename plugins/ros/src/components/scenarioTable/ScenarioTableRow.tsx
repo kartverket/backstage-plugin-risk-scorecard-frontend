@@ -12,11 +12,13 @@ import { pluginRiScTranslationRef } from '../utils/translations';
 interface ScenarioTableRowProps {
   scenario: Scenario;
   viewRow: (id: string) => void;
+  isLastRow?: boolean;
 }
 
 export const ScenarioTableRow = ({
   scenario,
   viewRow,
+  isLastRow,
 }: ScenarioTableRowProps) => {
   const sannsynlighet =
     probabilityOptions.indexOf(scenario.risk.probability) + 1;
@@ -25,16 +27,16 @@ export const ScenarioTableRow = ({
     probabilityOptions.indexOf(scenario.remainingRisk.probability) + 1;
   const restKonsekvens =
     consequenceOptions.indexOf(scenario.remainingRisk.consequence) + 1;
-  const fullførteTiltak = scenario.actions.filter(
-    tiltak => tiltak.status === 'Fullført',
-  ).length;
+  const remainingActions = scenario.actions.filter(
+    a => a.status !== 'Completed',
+  );
 
   const { riskColor, rowBackground, rowBorder, tableCell } = useTableStyles();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <TableRow className={rowBorder}>
+    <TableRow className={isLastRow ? undefined : rowBorder}>
       <button
         className={rowBackground}
         onClick={() => viewRow(scenario.ID)}
@@ -65,12 +67,17 @@ export const ScenarioTableRow = ({
               backgroundColor: getRiskMatrixColor(scenario.risk),
             }}
           />
-          {t('scenarioTable.columns.consequenceChar')}:{konsekvens}{' '}
-          {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}
+          {t('scenarioTable.columns.probabilityChar')}:{sannsynlighet}{' '}
+          {t('scenarioTable.columns.consequenceChar')}:{konsekvens}
         </TableCell>
         <TableCell className={tableCell}>
-          {fullførteTiltak}/{scenario.actions.length}{' '}
-          {t('scenarioTable.columns.completed')}
+          {remainingActions.length > 0 ? (
+            <>
+              {remainingActions.length} {t('dictionary.planned').toLowerCase()}
+            </>
+          ) : (
+            t('dictionary.completed')
+          )}
         </TableCell>
         <TableCell className={tableCell}>
           <Paper
@@ -79,8 +86,8 @@ export const ScenarioTableRow = ({
               backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
             }}
           />
-          {t('scenarioTable.columns.consequenceChar')}:{restKonsekvens}{' '}
-          {t('scenarioTable.columns.probabilityChar')}:{restSannsynlighet}
+          {t('scenarioTable.columns.probabilityChar')}:{restSannsynlighet}{' '}
+          {t('scenarioTable.columns.consequenceChar')}:{restKonsekvens}
         </TableCell>
       </button>
     </TableRow>

@@ -34,19 +34,23 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
           </Typography>
 
           {riSc.scenarios.length > 0 && (
-            <Button
-              startIcon={<AddCircle />}
-              variant="text"
-              color="primary"
-              onClick={newScenario}
+            <Box
               style={{
                 display: 'flex',
-                padding: '1rem',
                 justifyContent: 'flex-end',
+                alignItems: 'center',
+                paddingRight: '1rem',
               }}
             >
-              {t('scenarioTable.addScenarioButton')}
-            </Button>
+              <Button
+                startIcon={<AddCircle />}
+                variant="text"
+                color="primary"
+                onClick={newScenario}
+              >
+                {t('scenarioTable.addScenarioButton')}
+              </Button>
+            </Box>
           )}
         </Box>
         {riSc.scenarios.length === 0 ? (
@@ -118,11 +122,12 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {riSc.scenarios.map(scenario => (
+                {riSc.scenarios.map((scenario, idx) => (
                   <ScenarioTableRow
                     key={scenario.ID}
                     scenario={scenario}
                     viewRow={openScenario}
+                    isLastRow={idx === riSc.scenarios.length - 1}
                   />
                 ))}
               </TableBody>

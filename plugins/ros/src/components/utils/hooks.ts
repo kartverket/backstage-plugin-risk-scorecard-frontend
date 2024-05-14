@@ -230,6 +230,7 @@ export interface ScenarioDrawerProps {
   newScenario: () => void;
   saveScenario: () => boolean;
   editScenario: (step: ScenarioWizardSteps) => void;
+  isNewScenario: boolean;
 
   openScenario: (id: string) => void;
   closeScenario: () => void;
@@ -514,6 +515,7 @@ export const useScenarioDrawer = (
     newScenario,
     saveScenario,
     editScenario,
+    isNewScenario,
 
     openScenario,
     closeScenario,
