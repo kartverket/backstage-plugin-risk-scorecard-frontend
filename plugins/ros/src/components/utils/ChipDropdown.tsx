@@ -16,6 +16,7 @@ export const ChipDropdown = ({
   handleChange,
 }: ChipDropdownProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLDivElement | null>(null);
   const handleClick = (item: string) => {
     setAnchorEl(null);
     handleChange(item);
@@ -31,13 +32,25 @@ export const ChipDropdown = ({
           color: '#000000',
         }}
         label={selectedValue}
-        onClick={e => setAnchorEl(e.currentTarget)}
+        onClick={e => {
+          setAnchorEl(e.currentTarget);
+          setMenuAnchorEl(e.currentTarget);
+        }}
         icon={<KeyboardArrowDownIcon style={{ color: '#000000' }} />}
       />
       <Menu
-        anchorEl={anchorEl}
+        anchorEl={menuAnchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
       >
         {options.map(item => (
           <MenuItem key={item} onClick={() => handleClick(item)}>
