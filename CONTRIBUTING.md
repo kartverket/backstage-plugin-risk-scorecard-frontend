@@ -8,4 +8,4 @@ We use GitHub issues to track bugs and feature requests.
 
 ## Local development
 
-Follow the steps in in the [README.md](README.md)
+Follow the steps in the [README.md](README.md).
