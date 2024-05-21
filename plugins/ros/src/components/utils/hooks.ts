@@ -350,6 +350,22 @@ export const useScenarioDrawer = (
     setSearchParams({ step: step });
   };
 
+  const validateScenario = () => {
+    if (scenario.title === '') {
+      setScenarioErrors({
+        ...scenarioErrors,
+        tittel: true,
+      });
+      return false;
+    }
+    setScenarioErrors({
+      ...scenarioErrors,
+      tittel: false,
+    });
+
+    return true;
+  };
+
   const saveScenario = () => {
     if (riSc) {
       if (validateScenario()) {
@@ -454,11 +470,15 @@ export const useScenarioDrawer = (
   const addTiltak = () =>
     setScenario({ ...scenario, actions: [...scenario.actions, emptyTiltak()] });
 
-  const updateTiltak = (tiltak: Action) => {
+  const updateTiltak = (tiltak: Action, callback?: () => void) => {
     const updatedTiltak = scenario.actions.some(t => t.ID === tiltak.ID)
       ? scenario.actions.map(t => (t.ID === tiltak.ID ? tiltak : t))
       : [...scenario.actions, tiltak];
     setScenario({ ...scenario, actions: updatedTiltak });
+
+    if (callback !== undefined) {
+      callback();
+    }
   };
 
   const deleteTiltak = (tiltak: Action) => {
@@ -486,22 +506,6 @@ export const useScenarioDrawer = (
         consequence: consequenceOptions[konsekvensLevel - 1],
       },
     });
-
-  const validateScenario = () => {
-    if (scenario.title === '') {
-      setScenarioErrors({
-        ...scenarioErrors,
-        tittel: true,
-      });
-      return false;
-    } else {
-      setScenarioErrors({
-        ...scenarioErrors,
-        tittel: false,
-      });
-    }
-    return true;
-  };
 
   return {
     scenarioDrawerState,
