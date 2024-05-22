@@ -2,28 +2,26 @@ import { Box, Grid, Typography } from '@material-ui/core';
 import { TextField } from '../../utils/Textfield';
 import { Dropdown } from '../../utils/Dropdown';
 import {
-  vulnerabilitiesOptions,
   threatActorsOptions,
+  vulnerabilitiesOptions,
 } from '../../utils/constants';
 import React, { useContext } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
-import { useFontStyles } from '../../scenarioDrawer/style';
+import { useFontStyles } from '../../utils/style';
 
 export const ScenarioStep = () => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { labelSubtitle, label, h2, subtitle2 } = useFontStyles();
   const {
     scenario,
     scenarioErrors,
-    setTittel,
-    setBeskrivelse,
-    setTrusselaktører,
-    setSårbarheter,
+    setTitle,
+    setDescription,
+    setThreatActors,
+    setVulnerabilities,
   } = useContext(ScenarioContext)!!;
-
-  const { labelSubtitle, label, h2, subtitle2 } = useFontStyles();
-
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Grid container>
@@ -38,10 +36,10 @@ export const ScenarioStep = () => {
         <TextField
           label={t('dictionary.title')}
           value={scenario.title}
-          error={scenarioErrors.tittel ? t('scenarioDrawer.titleError') : ''}
+          error={scenarioErrors.title ? t('scenarioDrawer.titleError') : ''}
           required
           minRows={1}
-          handleChange={setTittel}
+          handleChange={setTitle}
         />
       </Grid>
 
@@ -66,7 +64,7 @@ export const ScenarioStep = () => {
         <Dropdown<string[]>
           selectedValues={scenario.threatActors}
           options={threatActorsOptions}
-          handleChange={setTrusselaktører}
+          handleChange={setThreatActors}
         />
       </Grid>
 
@@ -91,7 +89,7 @@ export const ScenarioStep = () => {
         <Dropdown<string[]>
           selectedValues={scenario.vulnerabilities}
           options={vulnerabilitiesOptions}
-          handleChange={setSårbarheter}
+          handleChange={setVulnerabilities}
         />
       </Grid>
       <Grid item xs={12}>
@@ -99,7 +97,7 @@ export const ScenarioStep = () => {
           label={t('dictionary.description')}
           value={scenario.description}
           minRows={4}
-          handleChange={setBeskrivelse}
+          handleChange={setDescription}
         />
       </Grid>
     </Grid>

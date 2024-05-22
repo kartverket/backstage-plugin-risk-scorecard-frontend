@@ -20,8 +20,8 @@ import {
   SubmitResponseObject,
 } from './types';
 import {
+  emptyAction,
   emptyScenario,
-  emptyTiltak,
   requiresNewApproval,
 } from './utilityfunctions';
 import { consequenceOptions, probabilityOptions } from './constants';
@@ -243,19 +243,19 @@ export interface ScenarioDrawerProps {
   abortDeletion: () => void;
   confirmDeletion: () => void;
 
-  setTittel: (tittel: string) => void;
-  setBeskrivelse: (beskrivelse: string) => void;
-  setTrusselaktører: (trusselaktører: string[]) => void;
-  setSårbarheter: (sårbarheter: string[]) => void;
-  setSannsynlighet: (sannsynlighetLevel: number) => void;
-  setKonsekvens: (konsekvensLevel: number) => void;
-  setEksisterendeTiltak: (eksisterendeTiltak: string) => void;
-  addTiltak: () => void;
-  updateTiltak: (tiltak: Action) => void;
-  deleteTiltak: (tiltak: Action) => void;
-  updateRestrisiko: (restrisiko: Risk) => void;
-  setRestSannsynlighet: (sannsynlighetLevel: number) => void;
-  setRestKonsekvens: (konsekvensLevel: number) => void;
+  setTitle: (title: string) => void;
+  setDescription: (description: string) => void;
+  setThreatActors: (threatActors: string[]) => void;
+  setVulnerabilities: (vulnerabilities: string[]) => void;
+  setProbability: (probabilityLevel: number) => void;
+  setConsequence: (consequenceLevel: number) => void;
+  setExistingActions: (existingActions: string) => void;
+  addAction: () => void;
+  updateAction: (action: Action) => void;
+  deleteAction: (action: Action) => void;
+  updateRemainingRisk: (remainingRisk: Risk) => void;
+  setRemainingProbability: (probabilityLevel: number) => void;
+  setRemainingConsequence: (consequenceLevel: number) => void;
 }
 
 export enum ScenarioDrawerState {
@@ -265,11 +265,11 @@ export enum ScenarioDrawerState {
 }
 
 type ScenarioErrors = {
-  tittel: boolean;
+  title: boolean;
 };
 
 const emptyScenarioErrors = (): ScenarioErrors => ({
-  tittel: false,
+  title: false,
 });
 
 export const useScenarioDrawer = (
@@ -354,15 +354,10 @@ export const useScenarioDrawer = (
     if (scenario.title === '') {
       setScenarioErrors({
         ...scenarioErrors,
-        tittel: true,
+        title: true,
       });
       return false;
     }
-    setScenarioErrors({
-      ...scenarioErrors,
-      tittel: false,
-    });
-
     return true;
   };
 
@@ -410,100 +405,96 @@ export const useScenarioDrawer = (
 
   // UPDATE SCENARIO FUNCTIONS
 
-  const setTittel = (tittel: string) => {
+  const setTitle = (title: string) => {
     setScenarioErrors({
       ...scenarioErrors,
-      tittel: false,
+      title: false,
     });
     setScenario({
       ...scenario,
-      title: tittel,
+      title: title,
     });
   };
 
-  const setBeskrivelse = (beskrivelse: string) => {
+  const setDescription = (description: string) => {
     setScenario({
       ...scenario,
-      description: beskrivelse,
+      description: description,
     });
   };
 
-  const setTrusselaktører = (trusselaktører: string[]) => {
+  const setThreatActors = (threatActors: string[]) => {
     setScenario({
       ...scenario,
-      threatActors: trusselaktører,
+      threatActors: threatActors,
     });
   };
 
-  const setSårbarheter = (sårbarheter: string[]) => {
+  const setVulnerabilities = (vulnerabilities: string[]) => {
     setScenario({
       ...scenario,
-      vulnerabilities: sårbarheter,
+      vulnerabilities: vulnerabilities,
     });
   };
 
-  const setSannsynlighet = (sannsynlighetLevel: number) =>
+  const setProbability = (probabilityLevel: number) =>
     setScenario({
       ...scenario,
       risk: {
         ...scenario.risk,
-        probability: probabilityOptions[sannsynlighetLevel - 1],
+        probability: probabilityOptions[probabilityLevel - 1],
       },
     });
 
-  const setKonsekvens = (konsekvensLevel: number) =>
+  const setConsequence = (consequenceLevel: number) =>
     setScenario({
       ...scenario,
       risk: {
         ...scenario.risk,
-        consequence: consequenceOptions[konsekvensLevel - 1],
+        consequence: consequenceOptions[consequenceLevel - 1],
       },
     });
 
-  const setEksisterendeTiltak = (eksisterendeTiltak: string) => {
+  const setExistingActions = (existingActions: string) => {
     setScenario({
       ...scenario,
-      existingActions: eksisterendeTiltak,
+      existingActions: existingActions,
     });
   };
 
-  const addTiltak = () =>
-    setScenario({ ...scenario, actions: [...scenario.actions, emptyTiltak()] });
+  const addAction = () =>
+    setScenario({ ...scenario, actions: [...scenario.actions, emptyAction()] });
 
-  const updateTiltak = (tiltak: Action, callback?: () => void) => {
-    const updatedTiltak = scenario.actions.some(t => t.ID === tiltak.ID)
-      ? scenario.actions.map(t => (t.ID === tiltak.ID ? tiltak : t))
-      : [...scenario.actions, tiltak];
-    setScenario({ ...scenario, actions: updatedTiltak });
-
-    if (callback !== undefined) {
-      callback();
-    }
+  const updateAction = (action: Action) => {
+    const updatedAction = scenario.actions.some(a => a.ID === action.ID)
+      ? scenario.actions.map(a => (a.ID === action.ID ? action : a))
+      : [...scenario.actions, action];
+    setScenario({ ...scenario, actions: updatedAction });
   };
 
-  const deleteTiltak = (tiltak: Action) => {
-    const updatedTiltak = scenario.actions.filter(t => t.ID !== tiltak.ID);
-    setScenario({ ...scenario, actions: updatedTiltak });
+  const deleteAction = (action: Action) => {
+    const updatedAction = scenario.actions.filter(a => a.ID !== action.ID);
+    setScenario({ ...scenario, actions: updatedAction });
   };
 
-  const updateRestrisiko = (restrisiko: Risk) =>
-    setScenario({ ...scenario, remainingRisk: restrisiko });
+  const updateRemainingRisk = (remainingRisk: Risk) =>
+    setScenario({ ...scenario, remainingRisk: remainingRisk });
 
-  const setRestSannsynlighet = (sannsynlighetLevel: number) =>
+  const setRemainingProbability = (probabilityLevel: number) =>
     setScenario({
       ...scenario,
       remainingRisk: {
         ...scenario.remainingRisk,
-        probability: probabilityOptions[sannsynlighetLevel - 1],
+        probability: probabilityOptions[probabilityLevel - 1],
       },
     });
 
-  const setRestKonsekvens = (konsekvensLevel: number) =>
+  const setRemainingConsequence = (consequenceLevel: number) =>
     setScenario({
       ...scenario,
       remainingRisk: {
         ...scenario.remainingRisk,
-        consequence: consequenceOptions[konsekvensLevel - 1],
+        consequence: consequenceOptions[consequenceLevel - 1],
       },
     });
 
@@ -528,19 +519,19 @@ export const useScenarioDrawer = (
     abortDeletion,
     confirmDeletion,
 
-    setTittel,
-    setBeskrivelse,
-    setTrusselaktører,
-    setSårbarheter,
-    setSannsynlighet,
-    setKonsekvens,
-    setEksisterendeTiltak,
-    addTiltak,
-    updateTiltak,
-    deleteTiltak,
-    updateRestrisiko,
-    setRestSannsynlighet,
-    setRestKonsekvens,
+    setTitle,
+    setDescription,
+    setThreatActors,
+    setVulnerabilities,
+    setProbability,
+    setConsequence,
+    setExistingActions,
+    addAction,
+    updateAction,
+    deleteAction,
+    updateRemainingRisk,
+    setRemainingProbability,
+    setRemainingConsequence,
   };
 };
 

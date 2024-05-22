@@ -1,50 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { Action as ITiltak } from '../../utils/types';
+import { Action } from '../../utils/types';
 import { Grid, Typography } from '@material-ui/core';
-import { useFontStyles, useScenarioDrawerContentStyles } from '../style';
-import { useTiltakViewStyles } from './style';
+import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
+import { useActionBoxStyles } from './actionBoxStyle';
 import { formatDate } from '../../utils/utilityfunctions';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-
+import { useFontStyles } from '../../utils/style';
 import { ChipDropdown } from '../../utils/ChipDropdown';
 import { actionStatusOptions } from '../../utils/constants';
 
-interface TiltakProps {
-  tiltak: ITiltak;
+interface ActionBoxProps {
+  action: Action;
   index: number;
-  updateTiltak: (tiltak: ITiltak) => void;
+  updateAction: (action: Action) => void;
   saveScenario: () => void;
 }
 
-export const TiltakView = ({
-  tiltak,
+export const ActionBox = ({
+  action,
   index,
-  updateTiltak,
+  updateAction,
   saveScenario,
-}: TiltakProps) => {
-  const { measure } = useScenarioDrawerContentStyles();
-  const { alignCenter, justifyEnd } = useTiltakViewStyles();
-  const { body2, label } = useFontStyles();
+}: ActionBoxProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const [previousTiltak, setPreviousTiltak] = useState(tiltak);
+  const { body2, label } = useFontStyles();
+  const { gridContainer } = useScenarioDrawerStyles();
+  const { alignCenter, justifyEnd } = useActionBoxStyles();
+  const [previousAction, setPreviousAction] = useState(action);
 
   useEffect(() => {
-    if (previousTiltak !== tiltak) {
+    if (previousAction !== action) {
       saveScenario();
-      setPreviousTiltak(tiltak);
+      setPreviousAction(action);
     }
-  }, [tiltak, saveScenario, previousTiltak]);
+  }, [action, saveScenario, previousAction]);
 
   const setStatus = (status: string) => {
-    updateTiltak({
-      ...tiltak,
+    updateAction({
+      ...action,
       status: status,
     });
   };
 
   return (
-    <Grid container className={measure}>
+    <Grid container className={gridContainer}>
       <Grid item xs={12} className={alignCenter}>
         <Grid item xs={6}>
           <Typography className={label}>
@@ -55,26 +55,26 @@ export const TiltakView = ({
         <Grid item xs={6} className={justifyEnd}>
           <ChipDropdown
             options={actionStatusOptions}
-            selectedValue={tiltak.status}
+            selectedValue={action.status}
             handleChange={setStatus}
           />
         </Grid>
       </Grid>
 
       <Grid item xs={12}>
-        <Typography className={body2}>{tiltak.description}</Typography>
+        <Typography className={body2}>{action.description}</Typography>
       </Grid>
 
       <Grid item xs={4}>
         <Typography className={label}>
           {t('dictionary.measureOwner')}
         </Typography>
-        <Typography className={body2}>{tiltak.owner}</Typography>
+        <Typography className={body2}>{action.owner}</Typography>
       </Grid>
 
       <Grid item xs={4}>
         <Typography className={label}>{t('dictionary.deadline')}</Typography>
-        <Typography className={body2}>{formatDate(tiltak.deadline)}</Typography>
+        <Typography className={body2}>{formatDate(action.deadline)}</Typography>
       </Grid>
     </Grid>
   );

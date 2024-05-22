@@ -1,46 +1,8 @@
 import React from 'react';
-import { makeStyles, Radio, Theme, Typography } from '@material-ui/core';
-import { pluginRiScTranslationRef } from '../../../../utils/translations';
+import { Radio, Typography } from '@material-ui/core';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-
-export const useTableStyles = makeStyles((theme: Theme) => ({
-  table: {
-    display: 'flex',
-    borderCollapse: 'separate',
-    borderSpacing: '0.3rem 0',
-    width: '100%',
-    overflowX: 'auto',
-  },
-  labelCell: {
-    writingMode: 'vertical-rl',
-    transform: 'rotate(180deg)',
-    whiteSpace: 'nowrap',
-    width: '2rem !important',
-    textTransform: 'uppercase',
-  },
-  cell: {
-    padding: theme.spacing(1.5),
-    border: '1px solid grey',
-    textAlign: 'left',
-    verticalAlign: 'top',
-    minWidth: '135px',
-  },
-  voidCell: {
-    padding: theme.spacing(1.5),
-    border: '1px solid grey',
-    color: theme.palette.type === 'dark' ? '#9E9E9E' : '#757575',
-    textAlign: 'left',
-    verticalAlign: 'top',
-  },
-  radio: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: '0.5rem 0',
-    gap: '0.3rem',
-    textTransform: 'uppercase',
-  },
-}));
+import { useTableStyles } from './tableStyles';
 
 interface ConsequenceTableProps {
   selectedValue: number;
@@ -51,12 +13,10 @@ export const ConsequenceTable = ({
   selectedValue,
   handleChange,
 }: ConsequenceTableProps) => {
-  const { table, labelCell, cell, voidCell, radio } = useTableStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { table, labelCell, cell, voidCell, radio } = useTableStyles();
 
-  const handleChangeRow = (row: number) => () => {
-    handleChange(row);
-  };
+  const handleChangeRow = (row: number) => () => handleChange(row);
 
   const getRadioCell = (row: number) => {
     return (

@@ -1,65 +1,62 @@
 import React from 'react';
-import { Action as ITiltak } from '../../../../utils/types';
-import { Dropdown } from '../../../../utils/Dropdown';
-import { TextField } from '../../../../utils/Textfield';
+import { Action } from '../../utils/types';
+import { Dropdown } from '../../utils/Dropdown';
+import { TextField } from '../../utils/Textfield';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns as ADF } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { nb } from 'date-fns/locale/nb';
-import { useFontStyles, useInputFieldStyles } from '../../../style';
 import FormControl from '@material-ui/core/FormControl';
-import { pluginRiScTranslationRef } from '../../../../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { actionStatusOptions } from '../../../../utils/constants';
+import { actionStatusOptions } from '../../utils/constants';
+import { useFontStyles, useInputFieldStyles } from '../../utils/style';
 
-interface TiltakProps {
-  tiltak: ITiltak;
+interface ActionEditProps {
+  action: Action;
   index: number;
-  updateTiltak: (tiltak: ITiltak) => void;
-  deleteTiltak: (tiltak: ITiltak) => void;
+  updateAction: (action: Action) => void;
+  deleteAction: (action: Action) => void;
 }
 
-export const TiltakEdit = ({
-  tiltak,
+export const ActionEdit = ({
+  action,
   index,
-  updateTiltak,
-  deleteTiltak,
-}: TiltakProps) => {
-  const setBeskrivelse = (beskrivelse: string) => {
-    updateTiltak({
-      ...tiltak,
-      description: beskrivelse,
-    });
-  };
+  updateAction,
+  deleteAction,
+}: ActionEditProps) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { paper, formControl } = useInputFieldStyles();
+  const { label, labelSubtitle } = useFontStyles();
 
-  const setStatus = (status: string) => {
-    updateTiltak({
-      ...tiltak,
+  const setDescription = (description: string) =>
+    updateAction({
+      ...action,
+      description: description,
+    });
+
+  const setStatus = (status: string) =>
+    updateAction({
+      ...action,
       status: status,
     });
-  };
 
-  const setTiltaksfrist = (newValue: string | null) => {
-    if (newValue) {
-      const formattedDate = new Date(newValue).toISOString().split('T')[0];
-      updateTiltak({
-        ...tiltak,
-        deadline: formattedDate,
+  const setDeadline = (deadline: string | null) => {
+    if (deadline) {
+      const formattedDeadline = new Date(deadline).toISOString().split('T')[0];
+      updateAction({
+        ...action,
+        deadline: formattedDeadline,
       });
     }
   };
 
-  const setTiltakseier = (tiltakseier: string) => {
-    updateTiltak({
-      ...tiltak,
-      owner: tiltakseier,
+  const setOwner = (owner: string) =>
+    updateAction({
+      ...action,
+      owner: owner,
     });
-  };
-
-  const { paper, formControl } = useInputFieldStyles();
-  const { label, labelSubtitle } = useFontStyles();
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Paper className={paper}>
@@ -80,8 +77,7 @@ export const TiltakEdit = ({
           <Button
             startIcon={<DeleteIcon />}
             key="dismiss"
-            title="Slett tiltaket"
-            onClick={() => deleteTiltak(tiltak)}
+            onClick={() => deleteAction(action)}
             color="primary"
           >
             {t('dictionary.delete')}
@@ -91,8 +87,8 @@ export const TiltakEdit = ({
         <Grid item xs={12}>
           <TextField
             label={t('dictionary.description')}
-            value={tiltak.description}
-            handleChange={setBeskrivelse}
+            value={action.description}
+            handleChange={setDescription}
             minRows={1}
           />
         </Grid>
@@ -112,11 +108,7 @@ export const TiltakEdit = ({
           <Typography className={labelSubtitle}>
             {t('scenarioDrawer.measureTab.measureOwnerDescription')}
           </Typography>
-          <TextField
-            value={tiltak.owner}
-            handleChange={setTiltakseier}
-            minRows={1}
-          />
+          <TextField value={action.owner} handleChange={setOwner} minRows={1} />
         </Grid>
 
         <Grid
@@ -132,7 +124,7 @@ export const TiltakEdit = ({
           <Typography className={label}>{t('dictionary.status')}</Typography>
           <Dropdown<string>
             options={actionStatusOptions}
-            selectedValues={tiltak.status}
+            selectedValues={action.status}
             handleChange={setStatus}
           />
         </Grid>
@@ -150,7 +142,7 @@ export const TiltakEdit = ({
           <Typography className={label}>{t('dictionary.deadline')}</Typography>
           <FormControl className={formControl}>
             <LocalizationProvider dateAdapter={ADF} adapterLocale={nb}>
-              <DatePicker value={tiltak.deadline} onChange={setTiltaksfrist} />
+              <DatePicker value={action.deadline} onChange={setDeadline} />
             </LocalizationProvider>
           </FormControl>
         </Grid>

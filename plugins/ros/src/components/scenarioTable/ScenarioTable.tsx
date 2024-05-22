@@ -20,10 +20,9 @@ interface ScenarioTableProps {
 }
 
 export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
-  const { newScenario, openScenario } = useContext(ScenarioContext)!!;
-  const { titleBox, rowBorder, tableCell } = useTableStyles();
-
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { titleBox, rowBorder, tableCell } = useTableStyles();
+  const { newScenario, openScenario } = useContext(ScenarioContext)!!;
 
   return (
     <>

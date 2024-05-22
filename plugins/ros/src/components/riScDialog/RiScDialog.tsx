@@ -8,11 +8,11 @@ import {
 } from '@material-ui/core';
 import { TextField } from '../utils/Textfield';
 import { RiSc, RiScWithMetadata } from '../utils/types';
-import { useFontStyles } from '../scenarioDrawer/style';
 import { emptyRiSc } from '../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useRiScDialogStyles } from './riScDialogStyle';
+import { useFontStyles } from '../utils/style';
 
 export enum RiScDialogStates {
   Closed,
@@ -28,6 +28,11 @@ interface RiScDialogProps {
   riSc: RiScWithMetadata | null;
 }
 
+interface RiskError {
+  title: string | null;
+  scope: string | null;
+}
+
 export const RiScDialog = ({
   onClose,
   dialogState,
@@ -36,21 +41,18 @@ export const RiScDialog = ({
   riSc,
   ...props
 }: RiScDialogProps) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { paper, content, buttons } = useRiScDialogStyles();
+  const { h1 } = useFontStyles();
+
   const [newRiSc, setNewRiSc] = useState<RiSc>(
     dialogState === RiScDialogStates.Edit ? riSc!!.content : emptyRiSc(),
   );
 
-  const [newRiScError, setNewRiScError] = useState<{
-    title: string | null;
-    scope: string | null;
-  }>({
+  const [newRiScError, setNewRiScError] = useState<RiskError>({
     title: null,
     scope: null,
   });
-
-  const classes = useRiScDialogStyles();
-  const { h1 } = useFontStyles();
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const handleCancel = () => {
     onClose();
@@ -76,25 +78,25 @@ export const RiScDialog = ({
     handleCancel();
   };
 
-  const setTittel = (tittel: string) => {
+  const setTitle = (title: string) => {
     setNewRiScError({
       ...newRiScError,
       title: null,
     });
     setNewRiSc({
       ...newRiSc,
-      title: tittel,
+      title: title,
     });
   };
 
-  const setOmfang = (omfang: string) => {
+  const setScope = (scope: string) => {
     setNewRiScError({
       ...newRiScError,
       scope: null,
     });
     setNewRiSc({
       ...newRiSc,
-      scope: omfang,
+      scope: scope,
     });
   };
 
@@ -105,30 +107,30 @@ export const RiScDialog = ({
 
   return (
     <Dialog
-      classes={{ paper: classes.paper }}
+      classes={{ paper: paper }}
       open={dialogState !== RiScDialogStates.Closed}
       onClose={handleSave}
       {...props}
     >
       <DialogContent>
         <Typography className={h1}>{header}</Typography>
-        <Box className={classes.content}>
+        <Box className={content}>
           <TextField
             label={t('dictionary.title')}
             value={newRiSc.title}
             minRows={1}
-            handleChange={setTittel}
+            handleChange={setTitle}
             error={newRiScError.title}
             required
           />
         </Box>
-        <Box className={classes.content}>
+        <Box className={content}>
           <TextField
             label={t('dictionary.scope')}
             subtitle={t('rosDialog.scopeDescription')}
             value={newRiSc.scope}
             minRows={4}
-            handleChange={setOmfang}
+            handleChange={setScope}
             error={newRiScError.scope}
             required
           />
@@ -142,7 +144,7 @@ export const RiScDialog = ({
           alignItems: 'center',
         }}
       >
-        <Box className={classes.buttons}>
+        <Box className={buttons}>
           <Button variant="contained" color="primary" onClick={handleSave}>
             {t('dictionary.save')}
           </Button>

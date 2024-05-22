@@ -10,14 +10,14 @@ import {
 import { StatusChip } from './StatusChip';
 import React, { ReactComponentElement, useState } from 'react';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types';
-import { useButtonStyles } from '../../riScPlugin/riScPluginStyle';
 import Alert from '@mui/material/Alert';
 import { useRiScDialogStyles } from '../../riScDialog/riScDialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useButtonStyles } from './riScStatusComponentStyle';
 
-interface RiScPublisDialogProps {
+interface RiScPublishDialogProps {
   openDialog: boolean;
   handleCancel: () => void;
   handlePublish: () => void;
@@ -27,14 +27,14 @@ const RiScPublishDialog = ({
   openDialog,
   handleCancel,
   handlePublish,
-}: RiScPublisDialogProps): ReactComponentElement<any> => {
-  const classes = useRiScDialogStyles();
+}: RiScPublishDialogProps): ReactComponentElement<any> => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const [userIsRisikoEierAndApproves, setUserIsRisikoEierAndApproves] =
-    useState<boolean>(false);
+  const { buttons } = useRiScDialogStyles();
+
+  const [riskOwnerApproves, setRiskOwnerApproves] = useState<boolean>(false);
 
   const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserIsRisikoEierAndApproves(event.target.checked);
+    setRiskOwnerApproves(event.target.checked);
   };
 
   return (
@@ -46,7 +46,7 @@ const RiScPublishDialog = ({
             <Grid item xs={1}>
               <Checkbox
                 color="primary"
-                checked={userIsRisikoEierAndApproves}
+                checked={riskOwnerApproves}
                 onChange={handleCheckboxInput}
               />
             </Grid>
@@ -64,7 +64,7 @@ const RiScPublishDialog = ({
           alignItems: 'center',
         }}
       >
-        <Box className={classes.buttons}>
+        <Box className={buttons}>
           <Button variant="outlined" color="primary" onClick={handleCancel}>
             {t('dictionary.cancel')}
           </Button>
@@ -72,7 +72,7 @@ const RiScPublishDialog = ({
             variant="contained"
             color="primary"
             onClick={handlePublish}
-            disabled={!userIsRisikoEierAndApproves}
+            disabled={!riskOwnerApproves}
           >
             {t('dictionary.confirm')}
           </Button>
@@ -91,8 +91,8 @@ export const RiScStatusComponent = ({
   selectedRiSc,
   publishRiScFn,
 }: RiScStatusProps) => {
-  const statusComponentClasses = useButtonStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { approveButton } = useButtonStyles();
 
   const [publishRiScDialogIsOpen, setPublishRiScDialogIsOpen] =
     useState<boolean>(false);
@@ -114,7 +114,7 @@ export const RiScStatusComponent = ({
             color="primary"
             variant="contained"
             onClick={() => setPublishRiScDialogIsOpen(!publishRiScDialogIsOpen)}
-            className={statusComponentClasses.godkjennButton}
+            className={approveButton}
             fullWidth
             disabled={selectedRiSc.status !== RiScStatus.Draft}
           >

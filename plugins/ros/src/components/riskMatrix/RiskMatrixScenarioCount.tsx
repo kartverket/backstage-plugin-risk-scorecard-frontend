@@ -9,26 +9,27 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { useRiskMatrixStyles } from './style';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
 import { consequenceOptions, probabilityOptions } from '../utils/constants';
 import { RiSc } from '../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { useRiskMatrixStyles } from './riskMatrixStyle';
 
 interface ScenarioCountProps {
   riSc: RiSc;
   probability: number;
   consequence: number;
-  startRisiko: boolean;
+  initialRisk: boolean;
 }
 
 export const RiskMatrixScenarioCount = ({
   riSc,
   probability,
   consequence,
-  startRisiko,
+  initialRisk,
 }: ScenarioCountProps) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
     circle,
     centered,
@@ -39,25 +40,23 @@ export const RiskMatrixScenarioCount = ({
     tooltipText,
   } = useRiskMatrixStyles();
 
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const scenarier = riSc.scenarios.filter(
+  const scenarios = riSc.scenarios.filter(
     scenario =>
       probabilityOptions.indexOf(
-        startRisiko
+        initialRisk
           ? scenario.risk.probability
           : scenario.remainingRisk.probability,
       ) === probability &&
       consequenceOptions.indexOf(
-        startRisiko
+        initialRisk
           ? scenario.risk.consequence
           : scenario.remainingRisk.consequence,
       ) === consequence,
   );
 
-  if (scenarier.length === 0) {
+  if (scenarios.length === 0) {
     return null;
   }
 
@@ -68,7 +67,7 @@ export const RiskMatrixScenarioCount = ({
           {t('riskMatrix.tooltip.title')}
         </Typography>
       </ListSubheader>
-      {scenarier.map(s => (
+      {scenarios.map(s => (
         <ListItem button disableGutters className={tooltipText}>
           <CircleIcon className={tooltipText} style={{ width: '10px' }} />
           <ListItemText
@@ -97,7 +96,7 @@ export const RiskMatrixScenarioCount = ({
           onClick={() => setTooltipOpen(!tooltipOpen)}
         >
           <Typography className={`${circleText} ${text}`}>
-            {scenarier.length}
+            {scenarios.length}
           </Typography>
         </Paper>
       </Tooltip>

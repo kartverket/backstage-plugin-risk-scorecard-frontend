@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import Box from '@mui/material/Box';
-import { useRiskMatrixStyles } from './style';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
 import { RiSc } from '../utils/types';
@@ -11,10 +10,17 @@ import { Tabs } from './Tabs';
 import { riskMatrix } from '../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
-import { useFontStyles } from '../scenarioDrawer/style';
+import { useFontStyles } from '../utils/style';
+import { useRiskMatrixStyles } from './riskMatrixStyle';
+
+export enum RiskMatrixTabs {
+  initialRisk = 'initialRisk',
+  remainingRisk = 'remainingRisk',
+}
 
 export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
-  const indices = [0, 1, 2, 3, 4];
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { label2 } = useFontStyles();
   const {
     riskSummary,
     grid,
@@ -26,11 +32,7 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
     centered,
   } = useRiskMatrixStyles();
 
-  const { label2 } = useFontStyles();
-
-  const [tab, setTab] = useState('startrisiko');
-
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const [tab, setTab] = useState<RiskMatrixTabs>(RiskMatrixTabs.initialRisk);
 
   return (
     <InfoCard title={t('riskMatrix.title')}>
@@ -38,7 +40,10 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
         <Tabs setTab={setTab} />
         {riSc.scenarios.length > 0 && (
           <Box className={riskSummary}>
-            <AggregatedCost riSc={riSc} initialRisk={tab === 'startrisiko'} />
+            <AggregatedCost
+              riSc={riSc}
+              initialRisk={tab === RiskMatrixTabs.initialRisk}
+            />
           </Box>
         )}
         <Box className={gridWrapper}>
@@ -48,12 +53,12 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
                 {t('dictionary.consequence')}
               </Typography>
             </Box>
-            {indices.map(row => (
+            {riskMatrix.map((_, row) => (
               <>
                 <Box className={centered}>
                   <Typography className={text}>{5 - row}</Typography>
                 </Box>
-                {indices.map(col => (
+                {riskMatrix[0].map((_, col) => (
                   <Box
                     className={`${square} ${centered}`}
                     style={{ backgroundColor: riskMatrix[row][col] }}
@@ -62,7 +67,7 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
                       riSc={riSc}
                       probability={col}
                       consequence={4 - row}
-                      startRisiko={tab === 'startrisiko'}
+                      initialRisk={tab === RiskMatrixTabs.initialRisk}
                     />
                   </Box>
                 ))}
@@ -70,7 +75,7 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
             ))}
             <Box className={centered} />
             <Box className={centered} />
-            {indices.map(col => (
+            {riskMatrix.map((_, col) => (
               <Box className={centered}>
                 <Typography className={text}>{col + 1}</Typography>
               </Box>
