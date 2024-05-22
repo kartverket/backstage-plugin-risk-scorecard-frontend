@@ -13,7 +13,8 @@ export const ActionsSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h3, button } = useFontStyles();
   const { titleAndButton, section, editIcon } = useScenarioDrawerStyles();
-  const { scenario, editScenario } = useContext(ScenarioContext)!!;
+  const { scenario, editScenario, saveScenario, updateAction } =
+    useContext(ScenarioContext)!!;
 
   return (
     <Box>
@@ -35,11 +36,16 @@ export const ActionsSection = () => {
             color="primary"
             onClick={() => editScenario('measure')}
             startIcon={<EditIcon className={editIcon} aria-label="Edit" />}
-          ></Button>
+          />
         </Grid>
         {scenario.actions.map((action, index) => (
           <>
-            <ActionBox action={action} index={index + 1} />
+            <ActionBox
+              action={action}
+              index={index + 1}
+              updateAction={updateAction}
+              saveScenario={saveScenario}
+            />
             {index !== scenario.actions.length - 1 && (
               <Divider variant="fullWidth" />
             )}

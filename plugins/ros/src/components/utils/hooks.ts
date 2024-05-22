@@ -350,6 +350,17 @@ export const useScenarioDrawer = (
     setSearchParams({ step: step });
   };
 
+  const validateScenario = () => {
+    if (scenario.title === '') {
+      setScenarioErrors({
+        ...scenarioErrors,
+        title: true,
+      });
+      return false;
+    }
+    return true;
+  };
+
   const saveScenario = () => {
     if (riSc) {
       if (validateScenario()) {
@@ -486,17 +497,6 @@ export const useScenarioDrawer = (
         consequence: consequenceOptions[consequenceLevel - 1],
       },
     });
-
-  const validateScenario = () => {
-    if (scenario.title === '') {
-      setScenarioErrors({
-        ...scenarioErrors,
-        title: true,
-      });
-      return false;
-    }
-    return true;
-  };
 
   return {
     scenarioDrawerState,
