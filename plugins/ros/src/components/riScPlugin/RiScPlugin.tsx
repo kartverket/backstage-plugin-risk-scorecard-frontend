@@ -80,9 +80,7 @@ const Plugin = () => {
           />
         ) : (
           <>
-            <ContentHeader title={t('contentHeader.title')}>
-              <SupportButton>Kul plugin ass!</SupportButton>
-            </ContentHeader>
+            <ContentHeader title={t('contentHeader.title')} />
 
             {isFetching && <Spinner size={80} />}
 
