@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
-import { ContentHeader, SupportButton } from '@backstage/core-components';
+import { ContentHeader } from '@backstage/core-components';
 import { useFetchRiScs, useScenarioDrawer } from '../utils/hooks';
 import { useParams } from 'react-router';
 import { Route, Routes, useSearchParams } from 'react-router-dom';
