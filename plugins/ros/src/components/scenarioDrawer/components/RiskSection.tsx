@@ -16,50 +16,6 @@ import { useFontStyles } from '../../utils/style';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { Risk } from '../../utils/types';
 
-export const RiskSection = () => {
-  const { scenario, editScenario } = useContext(ScenarioContext)!!;
-
-  return (
-    <>
-      {/* Initial risk -> Rest risk*/}
-      <Box
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        {/* Initial risk */}
-        <RiskBox
-          risk={scenario.risk}
-          riskType="initialRisk"
-          editScenario={editScenario}
-        />
-
-        {/* Arrow */}
-        <Grid
-          item
-          xs={2}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <KeyboardDoubleArrowRightIcon fontSize="large" />
-        </Grid>
-
-        {/* Rest risk */}
-        <RiskBox
-          risk={scenario.risk}
-          riskType="initialRisk"
-          editScenario={editScenario}
-        />
-      </Box>
-    </>
-  );
-};
-
 interface RiskProps {
   risk: Risk;
   riskType: 'initialRisk' | 'restRisk';
@@ -132,5 +88,49 @@ const RiskBox = ({ risk, riskType, editScenario }: RiskProps) => {
         </Grid>
       </Grid>
     </Paper>
+  );
+};
+
+export const RiskSection = () => {
+  const { scenario, editScenario } = useContext(ScenarioContext)!!;
+
+  return (
+    <>
+      {/* Initial risk -> Rest risk*/}
+      <Box
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        {/* Initial risk */}
+        <RiskBox
+          risk={scenario.risk}
+          riskType="initialRisk"
+          editScenario={editScenario}
+        />
+
+        {/* Arrow */}
+        <Grid
+          item
+          xs={2}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <KeyboardDoubleArrowRightIcon fontSize="large" />
+        </Grid>
+
+        {/* Rest risk */}
+        <RiskBox
+          risk={scenario.remainingRisk}
+          riskType="restRisk"
+          editScenario={editScenario}
+        />
+      </Box>
+    </>
   );
 };
