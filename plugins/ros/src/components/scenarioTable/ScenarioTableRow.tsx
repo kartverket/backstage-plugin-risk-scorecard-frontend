@@ -31,64 +31,55 @@ export const ScenarioTableRow = ({
   );
 
   return (
-    <TableRow className={isLastRow ? undefined : rowBorder}>
-      <button
-        className={rowBackground}
-        onClick={() => viewRow(scenario.ID)}
+    <TableRow
+      className={`${isLastRow ? undefined : rowBorder} ${rowBackground}`}
+      onClick={() => viewRow(scenario.ID)}
+    >
+      <TableCell
+        className={tableCell}
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          width: '100%',
-          border: 'none',
-          padding: 0,
+          width: '40%',
+          minWidth: '200px',
         }}
       >
-        <TableCell
-          className={tableCell}
-          style={{
-            width: '40%',
-            minWidth: '200px',
-          }}
-        >
-          <Typography color="primary" style={{ fontWeight: 600 }}>
-            {scenario.title}
-          </Typography>
-        </TableCell>
+        <Typography color="primary" style={{ fontWeight: 600 }}>
+          {scenario.title}
+        </Typography>
+      </TableCell>
 
-        <TableCell className={tableCell}>
-          <Paper
-            className={riskColor}
-            style={{
-              backgroundColor: getRiskMatrixColor(scenario.risk),
-            }}
-          />
-          {t('scenarioTable.columns.probabilityChar')}:
-          {getProbabilityLevel(scenario.risk)}{' '}
-          {t('scenarioTable.columns.consequenceChar')}:
-          {getConsequenceLevel(scenario.risk)}
-        </TableCell>
-        <TableCell className={tableCell}>
-          {remainingActions.length > 0 ? (
-            <>
-              {remainingActions.length} {t('dictionary.planned').toLowerCase()}
-            </>
-          ) : (
-            t('dictionary.completed')
-          )}
-        </TableCell>
-        <TableCell className={tableCell}>
-          <Paper
-            className={riskColor}
-            style={{
-              backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
-            }}
-          />
-          {t('scenarioTable.columns.probabilityChar')}:
-          {getProbabilityLevel(scenario.remainingRisk)}{' '}
-          {t('scenarioTable.columns.consequenceChar')}:
-          {getConsequenceLevel(scenario.remainingRisk)}
-        </TableCell>
-      </button>
+      <TableCell className={tableCell}>
+        <Paper
+          className={riskColor}
+          style={{
+            backgroundColor: getRiskMatrixColor(scenario.risk),
+          }}
+        />
+        {t('scenarioTable.columns.probabilityChar')}:
+        {getProbabilityLevel(scenario.risk)}{' '}
+        {t('scenarioTable.columns.consequenceChar')}:
+        {getConsequenceLevel(scenario.risk)}
+      </TableCell>
+      <TableCell className={tableCell}>
+        {remainingActions.length > 0 ? (
+          <>
+            {remainingActions.length} {t('dictionary.planned').toLowerCase()}
+          </>
+        ) : (
+          t('dictionary.completed')
+        )}
+      </TableCell>
+      <TableCell className={tableCell}>
+        <Paper
+          className={riskColor}
+          style={{
+            backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
+          }}
+        />
+        {t('scenarioTable.columns.probabilityChar')}:
+        {getProbabilityLevel(scenario.remainingRisk)}{' '}
+        {t('scenarioTable.columns.consequenceChar')}:
+        {getConsequenceLevel(scenario.remainingRisk)}
+      </TableCell>
     </TableRow>
   );
 };

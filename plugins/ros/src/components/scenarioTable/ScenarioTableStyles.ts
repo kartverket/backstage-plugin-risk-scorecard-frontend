@@ -8,7 +8,14 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(1),
   },
   rowBackground: {
-    backgroundColor: theme.palette.type === 'dark' ? '#424242' : 'white',
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    border: 'none',
+    padding: 0,
+    '&.MuiTableRow-root': {
+      backgroundColor: theme.palette.type === 'dark' ? '#424242' : 'white',
+    },
     transition: 'background-color 0.3s',
     '&:hover': {
       backgroundColor: theme.palette.type === 'dark' ? '#616161' : '#f5f5f5',
