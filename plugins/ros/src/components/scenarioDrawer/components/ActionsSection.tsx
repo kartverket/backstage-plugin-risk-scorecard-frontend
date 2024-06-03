@@ -2,7 +2,7 @@ import { Button, Divider, Grid, Paper, Typography } from '@material-ui/core';
 import EditIcon from '@mui/icons-material/Edit';
 import { ActionBox } from './ActionBox';
 import Box from '@mui/material/Box';
-import React, { useContext } from 'react';
+import React, { Fragment, useContext } from 'react';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { useFontStyles } from '../../utils/style';
 import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
@@ -39,7 +39,7 @@ export const ActionsSection = () => {
           />
         </Grid>
         {scenario.actions.map((action, index) => (
-          <>
+          <Fragment key={action.ID}>
             <ActionBox
               action={action}
               index={index + 1}
@@ -49,7 +49,7 @@ export const ActionsSection = () => {
             {index !== scenario.actions.length - 1 && (
               <Divider variant="fullWidth" />
             )}
-          </>
+          </Fragment>
         ))}
       </Paper>
     </Box>
