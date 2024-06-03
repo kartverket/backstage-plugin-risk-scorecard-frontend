@@ -16,7 +16,7 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@kartverket'
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
       - run: yarn tsc
       - run: yarn build
       - run: yarn publish --access public
