@@ -75,7 +75,6 @@ export const RiskMatrixScenarioCount = ({
           {t('riskMatrix.tooltip.title')}
         </Typography>
       </ListSubheader>
-      HEI
       {scenarios.map(s => (
         <ListItem key={s.ID} button disableGutters className={tooltipText} onClick={() => {
           handleScenarioClick(s.ID);
