@@ -8,13 +8,14 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
 import { consequenceOptions, probabilityOptions } from '../utils/constants';
 import { RiSc } from '../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
+import { ScenarioContext } from '../riScPlugin/ScenarioContext';
 
 interface ScenarioCountProps {
   riSc: RiSc;
@@ -41,6 +42,13 @@ export const RiskMatrixScenarioCount = ({
   } = useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const { openScenario } = useContext(ScenarioContext)!!;
+
+  const handleScenarioClick = (ID: string) => {
+    setTooltipOpen(false);
+    openScenario(ID);
+  }
+
 
   const scenarios = riSc.scenarios.filter(
     scenario =>
@@ -67,14 +75,18 @@ export const RiskMatrixScenarioCount = ({
           {t('riskMatrix.tooltip.title')}
         </Typography>
       </ListSubheader>
+      HEI
       {scenarios.map(s => (
-        <ListItem button disableGutters className={tooltipText}>
+        <ListItem key={s.ID} button disableGutters className={tooltipText} onClick={() => {
+          handleScenarioClick(s.ID);
+        }}>
           <CircleIcon className={tooltipText} style={{ width: '10px' }} />
           <ListItemText
+            
             className={tooltipText}
             style={{ paddingLeft: '0.6rem' }}
           >
-            <span>{s.title}</span>
+            <span >{s.title}</span>
           </ListItemText>
         </ListItem>
       ))}
@@ -84,6 +96,7 @@ export const RiskMatrixScenarioCount = ({
   return (
     <ClickAwayListener onClickAway={() => setTooltipOpen(false)}>
       <Tooltip
+        interactive
         classes={{ tooltip: tooltip, arrow: tooltipArrow }}
         title={tooltipList}
         placement="right"

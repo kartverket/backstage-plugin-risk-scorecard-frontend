@@ -53,7 +53,7 @@ export const ScopeSection = () => {
               {t('dictionary.threatActors')}
             </Typography>
             {scenario.threatActors.map(threatActor => (
-              <Typography className={body2}>{threatActor}</Typography>
+              <Typography key={threatActor} className={body2}>{threatActor}</Typography>
             ))}
           </Grid>
 
@@ -62,7 +62,7 @@ export const ScopeSection = () => {
               {t('dictionary.vulnerabilities')}
             </Typography>
             {scenario.vulnerabilities.map(vulnerability => (
-              <Typography className={body2}>{vulnerability}</Typography>
+              <Typography key={vulnerability} className={body2}>{vulnerability}</Typography>
             ))}
           </Grid>
         </Grid>

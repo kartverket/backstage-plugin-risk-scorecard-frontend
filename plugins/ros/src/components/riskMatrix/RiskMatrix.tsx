@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import Box from '@mui/material/Box';
@@ -54,7 +54,7 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
               </Typography>
             </Box>
             {riskMatrix.map((_, row) => (
-              <>
+              <Fragment key={row}>
                 <Box className={centered}>
                   <Typography className={text}>{5 - row}</Typography>
                 </Box>
@@ -62,6 +62,7 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
                   <Box
                     className={`${square} ${centered}`}
                     style={{ backgroundColor: riskMatrix[row][col] }}
+                    key={col}
                   >
                     <RiskMatrixScenarioCount
                       riSc={riSc}
@@ -71,12 +72,12 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
                     />
                   </Box>
                 ))}
-              </>
+              </Fragment>
             ))}
             <Box className={centered} />
             <Box className={centered} />
             {riskMatrix.map((_, col) => (
-              <Box className={centered}>
+              <Box className={centered} key={col}>
                 <Typography className={text}>{col + 1}</Typography>
               </Box>
             ))}

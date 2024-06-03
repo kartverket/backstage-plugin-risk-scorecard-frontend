@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -44,10 +44,10 @@ export const EstimatedRiskInfoDialog = ({
           </Typography>
           <DialogContentText className={text}>
             {consequenceOptions.map((option, index) => (
-              <>
+              <Fragment key={option}>
                 {index + 1}: {formatNOK(option)}
                 <br />
-              </>
+              </Fragment>
             ))}
           </DialogContentText>
           <Typography style={{ fontWeight: 'bold' }}>
@@ -55,11 +55,11 @@ export const EstimatedRiskInfoDialog = ({
           </Typography>
           <DialogContentText className={text}>
             {probabilityOptions.map((option, index) => (
-              <>
+              <Fragment key={option}>
                 {index + 1}: {option}, {/* @ts-ignore */}
                 {t(`infoDialog.probabilityDescription.${index}`)}
                 <br />
-              </>
+              </Fragment>
             ))}
           </DialogContentText>
 
