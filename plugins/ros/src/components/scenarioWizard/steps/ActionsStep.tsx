@@ -41,6 +41,7 @@ export const ActionsStep = () => {
       </Typography>
       {scenario.actions.map((action, index) => (
         <ActionEdit
+          key={action.ID}
           action={action}
           index={index + 1}
           updateAction={updateAction}

@@ -1,5 +1,5 @@
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
@@ -638,12 +638,13 @@ export const useFetchRiScs = (
     }
   }, [riScs, riScIdFromParams]);
 
-  const resetRiScStatus = () =>
+  const resetRiScStatus = useCallback(() => {
     setUpdateRiScStatus({
       isLoading: false,
       isSuccess: false,
       isError: false,
     });
+  }, []);
 
   const selectRiSc = (title: string) => {
     const riScId = riScs?.find(riSc => riSc.content.title === title)?.id;
