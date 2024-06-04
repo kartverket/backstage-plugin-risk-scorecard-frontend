@@ -59,9 +59,7 @@ const Plugin = () => {
   const scenarioWizardStep =
     (searchParams.get('step') as ScenarioWizardSteps) || null;
 
-    useEffect(() => {
-    if (scenarioWizardStep !== null) resetRiScStatus();
-  }, [scenarioWizardStep]);
+  if (scenarioWizardStep !== null) resetRiScStatus();
 
   return (
     <>
