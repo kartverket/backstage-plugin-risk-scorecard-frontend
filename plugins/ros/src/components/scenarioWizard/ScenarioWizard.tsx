@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Step, StepButton, Stepper, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { ScenarioStep } from './steps/ScenarioStep';
@@ -8,22 +8,23 @@ import Divider from '@mui/material/Divider';
 import { ScenarioContext } from '../riScPlugin/ScenarioContext';
 import { ActionsStep } from './steps/ActionsStep';
 import Button from '@mui/material/Button';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { RiskStep } from './steps/RiskStep';
 import Alert from '@mui/material/Alert';
 import { useFontStyles } from '../utils/style';
 import { useWizardStyle } from './scenarioWizardStyle';
 import { Spinner } from '../utils/Spinner';
 import { CloseConfirmation } from './components/CloseConfirmation';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 
-export const ScenarioWizardSteps = [
+const scenarioWizardSteps = [
   'scenario',
   'initialRisk',
   'measure',
   'restRisk',
 ] as const;
 
-export type ScenarioWizardSteps = (typeof ScenarioWizardSteps)[number];
+export type ScenarioWizardSteps = (typeof scenarioWizardSteps)[number];
 
 interface ScenarioStepperProps {
   step: ScenarioWizardSteps;
@@ -67,6 +68,11 @@ export const ScenarioWizard = ({
   useEffect(() => {
     if (step === 'restRisk') setRestEqualsInitial(false);
   }, [step]);
+  
+  const close = useCallback(() => {
+    closeScenario();
+    setShowCloseConfirmation(false);
+  }, [closeScenario]);
 
   useEffect(() => {
     if (updateStatus.isSuccess) {
@@ -75,12 +81,7 @@ export const ScenarioWizard = ({
       setShowCloseConfirmation(false);
       wizardRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [updateStatus]);
-
-  const close = () => {
-    closeScenario();
-    setShowCloseConfirmation(false);
-  };
+  }, [close, updateStatus]);
 
   const saveAndClose = () => {
     saveScenario();
@@ -97,26 +98,26 @@ export const ScenarioWizard = ({
   const nextStep = () => {
     const isValidScenario = validateScenario();
     if (isValidScenario) {
-      const currentIndex = ScenarioWizardSteps.indexOf(step);
-      if (currentIndex < ScenarioWizardSteps.length - 1) {
-        editScenario(ScenarioWizardSteps[currentIndex + 1]);
+      const currentIndex = scenarioWizardSteps.indexOf(step);
+      if (currentIndex < scenarioWizardSteps.length - 1) {
+        editScenario(scenarioWizardSteps[currentIndex + 1]);
       }
     }
   };
 
   const previousStep = () => {
-    const currentIndex = ScenarioWizardSteps.indexOf(step);
+    const currentIndex = scenarioWizardSteps.indexOf(step);
     if (currentIndex > 0) {
-      editScenario(ScenarioWizardSteps[currentIndex - 1]);
+      editScenario(scenarioWizardSteps[currentIndex - 1]);
     }
   };
 
   const isFirstStep = () => {
-    return ScenarioWizardSteps.indexOf(step) === 0;
+    return scenarioWizardSteps.indexOf(step) === 0;
   };
 
   const isLastStep = () => {
-    return ScenarioWizardSteps.indexOf(step) === ScenarioWizardSteps.length - 1;
+    return scenarioWizardSteps.indexOf(step) === scenarioWizardSteps.length - 1;
   };
 
   return (
@@ -131,10 +132,10 @@ export const ScenarioWizard = ({
           </Box>
           <Stepper
             className={stepper}
-            activeStep={ScenarioWizardSteps.indexOf(step)}
+            activeStep={scenarioWizardSteps.indexOf(step)}
             alternativeLabel
           >
-            {ScenarioWizardSteps.map(wizardStep => (
+            {scenarioWizardSteps.map(wizardStep => (
               <Step key={wizardStep} completed={false}>
                 <StepButton
                   disabled={false}
@@ -157,15 +158,15 @@ export const ScenarioWizard = ({
               <Box className={steps}>
                 {
                   {
-                    [ScenarioWizardSteps[0]]: <ScenarioStep />,
-                    [ScenarioWizardSteps[1]]: (
+                    [scenarioWizardSteps[0]]: <ScenarioStep />,
+                    [scenarioWizardSteps[1]]: (
                       <RiskStep
                         riskType="initial"
                         restEqualsInitial={restEqualsInitial}
                       />
                     ),
-                    [ScenarioWizardSteps[2]]: <ActionsStep />,
-                    [ScenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
+                    [scenarioWizardSteps[2]]: <ActionsStep />,
+                    [scenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
                   }[step]
                 }
               </Box>

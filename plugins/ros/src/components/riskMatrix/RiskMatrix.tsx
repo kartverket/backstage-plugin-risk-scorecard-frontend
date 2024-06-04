@@ -53,21 +53,21 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
                 {t('dictionary.consequence')}
               </Typography>
             </Box>
-            {riskMatrix.map((_, row) => (
-              <Fragment key={row}>
+            {riskMatrix.map((row, rowIndex) => (
+              <Fragment key={rowIndex}>
                 <Box className={centered}>
-                  <Typography className={text}>{5 - row}</Typography>
+                  <Typography className={text}>{5 - rowIndex}</Typography>
                 </Box>
-                {riskMatrix[0].map((_, col) => (
+                {row.map((col, colIndex) => (
                   <Box
                     className={`${square} ${centered}`}
-                    style={{ backgroundColor: riskMatrix[row][col] }}
-                    key={col}
+                    style={{ backgroundColor: col }}
+                    key={colIndex}
                   >
                     <RiskMatrixScenarioCount
                       riSc={riSc}
-                      probability={col}
-                      consequence={4 - row}
+                      probability={colIndex}
+                      consequence={4 - rowIndex}
                       initialRisk={tab === RiskMatrixTabs.initialRisk}
                     />
                   </Box>

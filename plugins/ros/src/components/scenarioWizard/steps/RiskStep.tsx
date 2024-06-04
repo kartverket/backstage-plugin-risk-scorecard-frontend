@@ -37,12 +37,12 @@ export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
   useEffect(() => {
     if (restEqualsInitial)
       setRemainingConsequence(getConsequenceLevel(scenario.risk));
-  }, [scenario.risk.consequence]);
+  }, [restEqualsInitial, scenario.risk, scenario.risk.consequence, setRemainingConsequence]);
 
   useEffect(() => {
     if (restEqualsInitial)
       setRemainingProbability(getProbabilityLevel(scenario.risk));
-  }, [scenario.risk.probability]);
+  }, [restEqualsInitial, scenario.risk, scenario.risk.probability, setRemainingProbability]);
 
   const setC =
     riskType === 'initial' ? setConsequence : setRemainingConsequence;

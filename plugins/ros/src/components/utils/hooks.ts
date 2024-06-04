@@ -329,7 +329,7 @@ export const useScenarioDrawer = (
       setOriginalScenario(selectedScenario);
       setScenarioDrawerState(ScenarioDrawerState.View);
     }
-  }, [riSc, scenarioIdFromParams]);
+  }, [getRiScPath, isNewScenario, navigate, riSc, scenarioIdFromParams, setSearchParams]);
 
   // SCENARIO DRAWER FUNCTIONS
   const openScenario = (id: string) => {
@@ -585,7 +585,7 @@ export const useFetchRiScs = (
         status: ProcessingStatus.ErrorWhenFetchingRiScs,
       });
     }
-  }, [location]);
+  }, [location, setResponse]);
 
   // Initial fetch of RiScs
   useEffectOnce(() => {
