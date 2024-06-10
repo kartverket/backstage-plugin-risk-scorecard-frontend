@@ -46,6 +46,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   tableCell: {
     minWidth: '120px',
     padding: '20px 10px 20px 16px',
+    width: '15%',
     gap: '0.4rem',
     '&.MuiTableCell-root': {
       fontSize: theme.spacing(2),
@@ -58,7 +59,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     minWidth: '120px',
     padding: '20px 10px 20px 16px',
     gap: '0.4rem',
-    flexGrow: 1,
+    width: '55%',
     '&.MuiTableCell-root': {
       fontSize: theme.spacing(2),
       color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
