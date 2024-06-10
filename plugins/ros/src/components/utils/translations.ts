@@ -192,15 +192,15 @@ export const pluginRiScTranslationRef = createTranslationRef({
           '1': 'Impact on life and health cannot be rated less severe than 3', // Liv og helse kan ikke være mindre alvorlig enn 3
           '2': 'Impact on life and health cannot be rated less severe than 3',
           '3': 'Temporary or less severe health implications. Temporary or minor damage to local environment.', // implications, effects or consequence? Temporary or minor? Midlertidige eller mindre alvorlige helsemessige konsekvenser. Midlertidig eller mindre skade på miljøet
-          '4': 'Permanent or severe health implications for a few people. Moderate damage to the environment in a limited area.', // Permanent or severe health implications for a few people. Moderate damage to the environment in a limited area
-          '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.', // Death or permanent severe health implications for many people. Severe damage to the environment over large areas
+          '4': 'Permanent or severe health implications for a few people. Moderate damage to the environment in a limited area.',
+          '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.'
         },
         economical: {
-          '1': 'Temporary minor financial loss.\n May be fixed within an hour by one employee', // Temporary minor financial loss. May be fixed within an hour by one employee
-          '2': 'Temporary financial loss.\n May be fixed within three days by one employee', // Temporary financial loss. May be fixed within three days by one employee
-          '3': 'Financial loss of some duration.\n May be fixed within a month by three employees', // Financial loss of some duration. May be fixed within a month by three employees
-          '4': 'Financial loss of considerable duration for the organization and any third parties.\n May be fixed within a year by 10 employees', // Financial loss of considerable duration for the organization and any third parties. May be fixed within a year by 10 employees
-          '5': 'Permanent and severe financial loss.\n May be fixed within three years by 100 employees', // Permanent and severe financial loss. May be fixed within three years by 100 employees
+          '1': 'Temporary minor financial loss.\n May be fixed within an hour by one employee',
+          '2': 'Temporary financial loss.\n May be fixed within three days by one employee',
+          '3': 'Financial loss of some duration.\n May be fixed within a month by three employees',
+          '4': 'Financial loss of considerable duration for the organization and any third parties.\n May be fixed within a year by 10 employees',
+          '5': 'Permanent and severe financial loss.\n May be fixed within three years by 100 employees'
         },
         privacy: {
           '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups.', //særlige kategorier = sensitive kategorier? special/particular/sensitive categories
