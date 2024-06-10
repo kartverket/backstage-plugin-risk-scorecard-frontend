@@ -7,6 +7,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
     padding: theme.spacing(1),
     width: theme.spacing(1),
+    height: theme.spacing(1),
   },
   rowBackground: {
     display: 'flex',
@@ -43,7 +44,6 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     },
   },
   tableCell: {
-    display: 'flex',
     minWidth: '120px',
     padding: '20px 10px 20px 16px',
     gap: '0.4rem',
@@ -64,5 +64,10 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
       color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
       border: 'none',
     },
+  },
+  tableCellContainer: {
+    display: 'flex',
+    gap: theme.spacing(1),
+    alignItems: 'center',
   },
 }));
