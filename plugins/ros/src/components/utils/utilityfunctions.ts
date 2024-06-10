@@ -138,21 +138,29 @@ export const requiresNewApproval = (
   return requiresApproval;
 };
 
+
 export function formatNumber(
   cost: number,
   t: (s: any, c: any) => string,
 ): string {
-  if (cost < 1e4) {
-    return formatNOK(cost);
-  } else {
-    let { threshold, unit } = [
-      { threshold: 1e6, unit: 'thousand' },
-      { threshold: 1e9, unit: 'million' },
-      { threshold: 1e12, unit: 'billion' },
-      { threshold: 1e15, unit: 'trillion' },
-    ].find(({ threshold }) => cost < threshold)!!;
+  
+  function getTranslationWithCorrectUnit(costValue: number, threshold: number, unit: string): string {
     return t(`riskMatrix.estimatedRisk.suffix.${unit}`, {
-      count: Number(((cost / threshold) * 1000).toFixed(0)),
+      count: Number(((costValue / threshold) * 1000).toFixed(0)),
     });
   }
+
+  if (cost < 1e4) {
+    return formatNOK(cost);
+  }
+  if (cost < 1e6) {
+    return getTranslationWithCorrectUnit(cost, 1e6, "thousand");
+  }
+  if (cost < 1e9) {
+    return getTranslationWithCorrectUnit(cost, 1e9, "million");
+  }
+  if (cost < 1e12) {
+    return getTranslationWithCorrectUnit(cost, 1e12, "billion");
+  }
+  return getTranslationWithCorrectUnit(cost, 1e15, "trillion");
 }

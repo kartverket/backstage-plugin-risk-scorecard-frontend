@@ -203,7 +203,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
           '5': 'Permanent and severe financial loss.\n May be fixed within three years by 100 employees'
         },
         privacy: {
-          '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups.', //særlige kategorier = sensitive kategorier? special/particular/sensitive categories
+          '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
           '2': 'The right to privacy is violated for a longer period and involves sensitive categories or vulnerable groups.',
           '3': 'Violations of the rights and freedoms for the registered people.',
           '4': 'Severe violations and breaches of the rights and freedoms for the registered people, as well as violations of the law.',
@@ -331,7 +331,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':
-            'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', //TODO
+            'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',

@@ -1,9 +1,9 @@
 import schema from '../../risc_schema_en_v3_2.json';
 
 export const consequenceOptions =
-  schema.$defs.risk.properties.consequence.anyOf[0].enum!!;
+  schema.$defs.risk.properties.consequence.anyOf[0].enum!;
 export const probabilityOptions =
-  schema.$defs.risk.properties.probability.anyOf[0].enum!!;
+  schema.$defs.risk.properties.probability.anyOf[0].enum!;
 export const threatActorsOptions =
   schema.$defs.scenario.properties.threatActors.items.enum;
 export const vulnerabilitiesOptions =

@@ -1,7 +1,5 @@
 import Chip from '@material-ui/core/Chip';
 import React, {
-  ReactComponentElement,
-  ReactNode,
   useEffect,
   useState,
 } from 'react';
@@ -30,7 +28,7 @@ const getChipColor = (status: RiScStatus, classes: ClassNameMap): string => {
   }
 };
 
-const chipText = (status: RiScStatus): string => {
+const useChipText = (status: RiScStatus): string => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   switch (status) {
     case RiScStatus.Draft:
@@ -43,15 +41,26 @@ const chipText = (status: RiScStatus): string => {
   }
 };
 
-const getChipTextStatus = (status: RiScStatus): ReactNode => {
-  const { statusChipText } = useStatusChipStyles();
-  return <span className={statusChipText}>{chipText(status)}</span>;
-};
+type ChipTextStatusProps = {
+  status: RiScStatus;
+}
 
-const getPRStatus = (
-  status: RiScStatus,
-  classes: ClassNameMap,
-): ReactComponentElement<any> | null => {
+function ChipTextStatus({ status }: ChipTextStatusProps) {
+  const { statusChipText } = useStatusChipStyles();
+  const chipText = useChipText(status);
+
+  return <span className={statusChipText}>{chipText}</span>;
+}
+
+type PRStatusProps = {
+  status: RiScStatus;
+  classes: ClassNameMap;
+}
+
+function PRStatus({
+  status,
+  classes,
+}: PRStatusProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   switch (status) {
@@ -67,7 +76,7 @@ const getPRStatus = (
     default:
       return null;
   }
-};
+}
 
 export const StatusChip = ({ currentRiScStatus }: ChipProps) => {
   const chipClasses: ClassNameMap = useStatusChipStyles();
@@ -92,12 +101,12 @@ export const StatusChip = ({ currentRiScStatus }: ChipProps) => {
           color="primary"
           size="medium"
           variant="outlined"
-          label={getChipTextStatus(currentRiScStatus)}
+          label={<ChipTextStatus status={currentRiScStatus} />}
           icon={<CircleIcon className={chipClasses.statusIcon} />}
           className={[chipColorClass, chipClasses.statusChip].join(' ')}
         />
       </Grid>
-      <Grid item>{getPRStatus(currentRiScStatus, textClasses)}</Grid>
+      <Grid item><PRStatus status={currentRiScStatus} classes={textClasses} /></Grid>
     </Grid>
   );
 };
