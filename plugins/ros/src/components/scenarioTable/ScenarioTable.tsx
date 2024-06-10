@@ -21,7 +21,7 @@ interface ScenarioTableProps {
 
 export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { titleBox, rowBorder, tableCell } = useTableStyles();
+  const { titleBox, rowBorder, tableCell, tableCellTitle } = useTableStyles();
   const { newScenario, openScenario } = useContext(ScenarioContext)!!;
 
   return (
@@ -79,13 +79,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
             <Table>
               <TableHead>
                 <TableRow className={rowBorder}>
-                  <TableCell
-                    className={tableCell}
-                    style={{
-                      width: '40%',
-                      minWidth: '200px',
-                    }}
-                  >
+                  <TableCell className={tableCellTitle}>
                     <Typography
                       variant="subtitle1"
                       style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
@@ -113,7 +107,10 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                   <TableCell className={tableCell}>
                     <Typography
                       variant="subtitle1"
-                      style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
+                      style={{
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase',
+                      }}
                     >
                       {t('dictionary.restRisk')}
                     </Typography>

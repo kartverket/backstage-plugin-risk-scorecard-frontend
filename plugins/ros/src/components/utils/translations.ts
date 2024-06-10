@@ -191,28 +191,28 @@ export const pluginRiScTranslationRef = createTranslationRef({
         health: {
           '1': 'Impact on life and health cannot be rated less severe than 3', // Liv og helse kan ikke være mindre alvorlig enn 3
           '2': 'Impact on life and health cannot be rated less severe than 3',
-          '3': 'Temporary or less severe health implications', // implications, effects or consequence? Midlertidig eller mindre alvorlige helsemessige konsekvenser
-          '4': 'Permanent or severe health implications', // implications, effects or consequence? Lasting or Permanent? Varige eller alvorlige helsemessige konsekvenser
-          '5': 'Death or permanent severe health implications', // implications, effects or consequence? Lasting or permanent? Død eller varige alvorlige helsemssige konsekvenser
+          '3': 'Temporary or less severe health implications. Temporary or minor damage to local environment.', // implications, effects or consequence? Temporary or minor? Midlertidige eller mindre alvorlige helsemessige konsekvenser. Midlertidig eller mindre skade på miljøet
+          '4': 'Permanent or severe health implications for a few people. Moderate damage to the environment in a limited area.',
+          '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.'
         },
         economical: {
-          '1': 'Temporary minor financial loss', // TODO: Hvor kort er forbigående? Forbigående mindre økonomisk tap
-          '2': 'Temporary financial loss', // Forbigående økonomisk tap
-          '3': 'Financial loss of some duration', // Økonomisk tap av noe varighet
-          '4': 'Financial loss of considerable duration for the organization and any third parties', // Økonomisk tap av betydelig varighet for Kartverket og evt. tredjeparter
-          '5': 'Permanent and severe financial loss', // Varig og alvorlig økonomisk tap
+          '1': 'Temporary minor financial loss.\n May be fixed within an hour by one employee',
+          '2': 'Temporary financial loss.\n May be fixed within three days by one employee',
+          '3': 'Financial loss of some duration.\n May be fixed within a month by three employees',
+          '4': 'Financial loss of considerable duration for the organization and any third parties.\n May be fixed within a year by 10 employees',
+          '5': 'Permanent and severe financial loss.\n May be fixed within three years by 100 employees'
         },
         privacy: {
           '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
-          '2': 'The right to privacy is violated for a longer period and involves sensitive categories or vulnerable groups',
-          '3': 'The right to privacy is severely violated for a longer period and involves sensitive categories or vulnerable groups',
-          '4': 'The right to privacy is being violated in a very serious manner', // very severely violated?
+          '2': 'The right to privacy is violated for a longer period and involves sensitive categories or vulnerable groups.',
+          '3': 'Violations of the rights and freedoms for the registered people.',
+          '4': 'Severe violations and breaches of the rights and freedoms for the registered people, as well as violations of the law.',
           '5': 'Impact on privacy cannot be rated more severe than 4',
         },
         reputation: {
           '1': 'Temporary loss of reputation and little impact on trust',
-          '2': 'Negative attention in national media that can reduce trust', // articles, news, items, publicity, mentions, attention?
-          '3': 'Lasting negative attention in national and international media that can reduce trust',
+          '2': 'Negative attention in national media that leads to loss of reputation.\n May reduce trust.',
+          '3': 'Lasting negative attention in national and international media that leads to severe loss of reputation.\n Severe loss of trust from authorities.\n Users who do not dare or want to use the services.', // lasting, severe, severe loss, severe loss of trust, do not dare or want to use the services
           '4': 'Impact on reputation and trust cannot be rated more severe than 3',
           '5': 'Impact on reputation and trust cannot be rated more severe than 3',
         },
@@ -384,7 +384,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.rows.4': 'Alvorlig',
           'consequenceTable.rows.5': 'Kritisk',
           'consequenceTable.columns.health': 'Liv og helse',
-          'consequenceTable.columns.economical': 'Økonomisk',
+          'consequenceTable.columns.economical': 'Økonomi og drift',
           'consequenceTable.columns.privacy': 'Personvern',
           'consequenceTable.columns.reputation': 'Omdømme og tillit',
           'consequenceTable.cells.health.1':
@@ -392,36 +392,36 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.cells.health.2':
             'Liv og helse kan ikke være mindre alvorlig enn 3',
           'consequenceTable.cells.health.3':
-            'Midlertidig eller mindre alvorlige helsemessige konsekvenser',
+            'Lettere skade på personer.\n Noe skade på lokalt miljø.',
           'consequenceTable.cells.health.4':
-            'Varige eller alvorlige helsemessige konsekvenser',
+            'Et fåtall alvorlige personskader.\n Moderat skade på miljø på et begrenset område.',
           'consequenceTable.cells.health.5':
-            'Død eller varige alvorlige helsemssige konsekvenser',
+            'Dødsfall. Svært alvorlig skade på milhø over store områder.',
           'consequenceTable.cells.economical.1':
-            'Forbigående mindre økonomisk tap',
-          'consequenceTable.cells.economical.2': 'Forbigående økonomisk tap',
+            'Ubetydelig økonomisk tap.\n Kan fikses i løpet av en time av én ansatt.',
+          'consequenceTable.cells.economical.2': 'Mindre økonomisk tap.\n Kan fikses i løpet av tre dager av én ansatt.',
           'consequenceTable.cells.economical.3':
-            'Økonomisk tap av noe varighet',
+            'Moderat økonomisk tap.\n Kan fikses i løpet av en måned av tre ansatte.',
           'consequenceTable.cells.economical.4':
-            'Økonomisk tap av betydelig varighet for Kartverket og evt. tredjeparter',
+            'Større økonomisk tap.\n Kan fikses i løpet av et år av 10 ansatte.',
           'consequenceTable.cells.economical.5':
-            'Varig og alvorlig økonomisk tap',
+            'Kritisk økonomisk tap.\n Kan fikses i løpet av tre år av 100 ansatte.',
           'consequenceTable.cells.privacy.1':
-            'Retten til personvern utfordres i en svært kort periode og involverer ikke særlige kategorier/sårbare grupper',
+            'Ingen brudd.',
           'consequenceTable.cells.privacy.2':
-            'Retten til personvern krenkes i en lengre periode eller involverer særlige kategorier/sårbare grupper',
+            'Mindre brudd.',
           'consequenceTable.cells.privacy.3':
-            'Retten til personvern krenkes alvorlig i en lengre periode og involverer særlige kategorier/sårbare grupper',
+            'Brudd på registrertes rettigheter og friheter.',
           'consequenceTable.cells.privacy.4':
-            'Retten til personvern krenkes på en svært alvorlig måte',
+            'Meget alvorlige brudd på registrertes rettigheter og friheter, samt lovbrudd.',
           'consequenceTable.cells.privacy.5':
             'Personvern kan ikke være mer alvorlig enn 4',
           'consequenceTable.cells.reputation.1':
-            'Midlertidig omdømmetap og liten innvirkning på tillit',
+            'Liten fare for omdømmetap og liten innvikrning på tillit',
           'consequenceTable.cells.reputation.2':
-            'Negative saker i nasjonale medier som kan redusere tillit',
+            'Negativ oppmerksomhet i regionale og nasjonale medier som fører til omdømmetap.\n Kan redusere tillit.',
           'consequenceTable.cells.reputation.3':
-            'Varig negativ oppmerksomhet i nasjonale og internasjonale medier som kan redusere tillit',
+            'Negativ oppmerksomhet i nasjonale og internasjonale medier som fører til alvorlig omdømmetap.\n Alvorlig redusert tillit fra myndigheter.\n Brukere som ikke tør / vil bruke tjenestene.',
           'consequenceTable.cells.reputation.4':
             'Omdømme og tillit kan ikke være mer alvorlig enn 3',
           'consequenceTable.cells.reputation.5':
