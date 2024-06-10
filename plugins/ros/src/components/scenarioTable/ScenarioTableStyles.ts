@@ -6,6 +6,8 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing(1),
+    width: theme.spacing(1),
+    height: theme.spacing(1),
   },
   rowBackground: {
     display: 'flex',
@@ -15,6 +17,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     padding: 0,
     '&.MuiTableRow-root': {
       backgroundColor: theme.palette.type === 'dark' ? '#424242' : 'white',
+      border: 'none',
     },
     transition: 'background-color 0.3s',
     '&:hover': {
@@ -33,17 +36,39 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   rowBorder: {
     display: 'flex',
     alignItems: 'center',
-    borderBottom:
-      theme.palette.type === 'dark'
-        ? '1px solid #616161'
-        : '1px solid #0000001f',
+    '&.MuiTableRow-root': {
+      borderBottom:
+        theme.palette.type === 'dark'
+          ? '1px solid #616161'
+          : '1px solid #0000001f',
+    },
   },
   tableCell: {
+    minWidth: '120px',
+    padding: '20px 10px 20px 16px',
+    width: '15%',
+    gap: '0.4rem',
+    '&.MuiTableCell-root': {
+      fontSize: theme.spacing(2),
+      color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
+      border: 'none',
+    },
+  },
+  tableCellTitle: {
     display: 'flex',
-    width: '20%',
     minWidth: '120px',
     padding: '20px 10px 20px 16px',
     gap: '0.4rem',
-    fontSize: theme.spacing(2),
+    width: '55%',
+    '&.MuiTableCell-root': {
+      fontSize: theme.spacing(2),
+      color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
+      border: 'none',
+    },
+  },
+  tableCellContainer: {
+    display: 'flex',
+    gap: theme.spacing(1),
+    alignItems: 'center',
   },
 }));
