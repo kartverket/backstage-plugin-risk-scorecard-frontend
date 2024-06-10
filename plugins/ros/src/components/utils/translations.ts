@@ -384,7 +384,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.rows.4': 'Alvorlig',
           'consequenceTable.rows.5': 'Kritisk',
           'consequenceTable.columns.health': 'Liv og helse',
-          'consequenceTable.columns.economical': 'Økonomisk',
+          'consequenceTable.columns.economical': 'Økonomi og drift',
           'consequenceTable.columns.privacy': 'Personvern',
           'consequenceTable.columns.reputation': 'Omdømme og tillit',
           'consequenceTable.cells.health.1':
@@ -392,36 +392,36 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.cells.health.2':
             'Liv og helse kan ikke være mindre alvorlig enn 3',
           'consequenceTable.cells.health.3':
-            'Midlertidig eller mindre alvorlige helsemessige konsekvenser',
+            'Lettere skade på personer.\n Noe skade på lokalt miljø.',
           'consequenceTable.cells.health.4':
-            'Varige eller alvorlige helsemessige konsekvenser',
+            'Et fåtall alvorlige personskader.\n Moderat skade på miljø på et begrenset område.',
           'consequenceTable.cells.health.5':
-            'Død eller varige alvorlige helsemssige konsekvenser',
+            'Dødsfall. Svært alvorlig skade på milhø over store områder.',
           'consequenceTable.cells.economical.1':
-            'Forbigående mindre økonomisk tap',
-          'consequenceTable.cells.economical.2': 'Forbigående økonomisk tap',
+            'Ubetydelig økonomisk tap.\n Kan fikses i løpet av en time av én ansatt.',
+          'consequenceTable.cells.economical.2': 'Mindre økonomisk tap.\n Kan fikses i løpet av tre dager av én ansatt.',
           'consequenceTable.cells.economical.3':
-            'Økonomisk tap av noe varighet',
+            'Moderat økonomisk tap.\n Kan fikses i løpet av en måned av tre ansatte.',
           'consequenceTable.cells.economical.4':
-            'Økonomisk tap av betydelig varighet for Kartverket og evt. tredjeparter',
+            'Større økonomisk tap.\n Kan fikses i løpet av et år av 10 ansatte.',
           'consequenceTable.cells.economical.5':
-            'Varig og alvorlig økonomisk tap',
+            'Kritisk økonomisk tap.\n Kan fikses i løpet av tre år av 100 ansatte.',
           'consequenceTable.cells.privacy.1':
-            'Retten til personvern utfordres i en svært kort periode og involverer ikke særlige kategorier/sårbare grupper',
+            'Ingen brudd.',
           'consequenceTable.cells.privacy.2':
-            'Retten til personvern krenkes i en lengre periode eller involverer særlige kategorier/sårbare grupper',
+            'Mindre brudd.',
           'consequenceTable.cells.privacy.3':
-            'Retten til personvern krenkes alvorlig i en lengre periode og involverer særlige kategorier/sårbare grupper',
+            'Brudd på registrertes rettigheter og friheter.',
           'consequenceTable.cells.privacy.4':
-            'Retten til personvern krenkes på en svært alvorlig måte',
+            'Meget alvorlige brudd på registrertes rettigheter og friheter, samt lovbrudd.',
           'consequenceTable.cells.privacy.5':
             'Personvern kan ikke være mer alvorlig enn 4',
           'consequenceTable.cells.reputation.1':
-            'Midlertidig omdømmetap og liten innvirkning på tillit',
+            'Liten fare for omdømmetap og liten innvikrning på tillit',
           'consequenceTable.cells.reputation.2':
-            'Negative saker i nasjonale medier som kan redusere tillit',
+            'Negativ oppmerksomhet i regionale og nasjonale medier som fører til omdømmetap.\n Kan redusere tillit.',
           'consequenceTable.cells.reputation.3':
-            'Varig negativ oppmerksomhet i nasjonale og internasjonale medier som kan redusere tillit',
+            'Negativ oppmerksomhet i nasjonale og internasjonale medier som fører til alvorlig omdømmetap.\n Alvorlig redusert tillit fra myndigheter.\n Brukere som ikke tør / vil bruke tjenestene.',
           'consequenceTable.cells.reputation.4':
             'Omdømme og tillit kan ikke være mer alvorlig enn 3',
           'consequenceTable.cells.reputation.5':
