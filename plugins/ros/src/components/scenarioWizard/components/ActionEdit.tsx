@@ -2,7 +2,7 @@ import React from 'react';
 import { Action } from '../../utils/types';
 import { Dropdown } from '../../utils/Dropdown';
 import { TextField } from '../../utils/Textfield';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { Button, Grid, Paper, Typography, useTheme } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns as ADF } from '@mui/x-date-pickers/AdapterDateFnsV3';
@@ -29,6 +29,7 @@ export const ActionEdit = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { paper, formControl } = useInputFieldStyles();
   const { label, labelSubtitle } = useFontStyles();
+  const theme = useTheme();
 
   const setDescription = (description: string) =>
     updateAction({
@@ -142,7 +143,28 @@ export const ActionEdit = ({
           <Typography className={label}>{t('dictionary.deadline')}</Typography>
           <FormControl className={formControl}>
             <LocalizationProvider dateAdapter={ADF} adapterLocale={nb}>
-              <DatePicker value={action.deadline} onChange={setDeadline} />
+              <DatePicker
+                value={action.deadline}
+                onChange={setDeadline}
+                sx={{
+                  '.MuiInputBase-root': {
+                    color: theme.palette.type === 'dark' ? 'white' : 'black',
+                  },
+                  '.MuiOutlinedInput-notchedOutline': {
+                    borderColor:
+                      theme.palette.type === 'dark' ? '#616161' : '#0000001f',
+                  },
+                  '.MuiOutlinedInput-root': {
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor:
+                        theme.palette.type === 'dark' ? 'white' : 'black',
+                    },
+                  },
+                  '.MuiIconButton-root': {
+                    color: theme.palette.type === 'dark' ? 'white' : 'black',
+                  },
+                }}
+              />
             </LocalizationProvider>
           </FormControl>
         </Grid>
