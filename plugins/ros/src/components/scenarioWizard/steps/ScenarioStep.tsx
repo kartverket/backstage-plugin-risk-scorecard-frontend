@@ -50,7 +50,6 @@ export const ScenarioStep = () => {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
         }}
       >
         <Box>
@@ -75,7 +74,6 @@ export const ScenarioStep = () => {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
         }}
       >
         <Box>
