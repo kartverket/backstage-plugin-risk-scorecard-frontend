@@ -1,8 +1,5 @@
 import Chip from '@material-ui/core/Chip';
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { RiScStatus } from '../../utils/types';
 import { useStatusChipStyles, useStatusTextStyles } from './statusChipStyle';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
@@ -43,7 +40,7 @@ const useChipText = (status: RiScStatus): string => {
 
 type ChipTextStatusProps = {
   status: RiScStatus;
-}
+};
 
 function ChipTextStatus({ status }: ChipTextStatusProps) {
   const { statusChipText } = useStatusChipStyles();
@@ -55,19 +52,16 @@ function ChipTextStatus({ status }: ChipTextStatusProps) {
 type PRStatusProps = {
   status: RiScStatus;
   classes: ClassNameMap;
-}
+};
 
-function PRStatus({
-  status,
-  classes,
-}: PRStatusProps) {
+function PRStatus({ status, classes }: PRStatusProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   switch (status) {
     case RiScStatus.SentForApproval:
       return (
         <Typography className={classes.prStatus}>
-          <GitHubIcon className={classes.prIcon} />
+          <GitHubIcon fontSize="inherit" className={classes.prIcon} />
           {t('rosStatus.prStatus')}
         </Typography>
       );
@@ -106,7 +100,9 @@ export const StatusChip = ({ currentRiScStatus }: ChipProps) => {
           className={[chipColorClass, chipClasses.statusChip].join(' ')}
         />
       </Grid>
-      <Grid item><PRStatus status={currentRiScStatus} classes={textClasses} /></Grid>
+      <Grid item>
+        <PRStatus status={currentRiScStatus} classes={textClasses} />
+      </Grid>
     </Grid>
   );
 };
