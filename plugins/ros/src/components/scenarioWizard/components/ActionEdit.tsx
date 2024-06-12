@@ -152,7 +152,7 @@ export const ActionEdit = ({
                   },
                   '.MuiOutlinedInput-notchedOutline': {
                     borderColor:
-                      theme.palette.type === 'dark' ? '#616161' : '#0000001f',
+                      theme.palette.type === 'dark' ? '#616161' : '#0000003b',
                   },
                   '.MuiOutlinedInput-root': {
                     '&:hover .MuiOutlinedInput-notchedOutline': {
