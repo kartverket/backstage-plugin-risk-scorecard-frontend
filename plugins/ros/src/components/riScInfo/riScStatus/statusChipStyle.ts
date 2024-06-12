@@ -38,9 +38,9 @@ export const useStatusTextStyles = makeStyles(() => ({
     wrap: 'wrap',
   },
   prIcon: {
-    fontSize: '12px',
     margin: '0px',
     padding: '0px',
+    marginBottom: '-1px',
     marginRight: '2px',
     marginLeft: '2px',
   },
