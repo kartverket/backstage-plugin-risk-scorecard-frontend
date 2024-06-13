@@ -119,21 +119,56 @@ const useFetch = () => {
   };
 
   const fetchRiScs = (
-    onSuccess: (response: RiScContentResultDTO[]) => void,
-    onError?: () => void,
-  ) =>
+    onSuccess: (response: RiScWithMetadata[]) => void,
+    onError?: (errorMessage?: string) => void,
+  ) => {
     fetch<RiScContentResultDTO[]>(
       uriToFetchAllRiScs(),
       'GET',
-      onSuccess,
-      () => {
-        if (onError) onError();
-        setResponse({
-          statusMessage: 'Failed to fetch risc scorecards',
-          status: ProcessingStatus.ErrorWhenFetchingRiScs,
+      res => {
+        const successfulRiScs: RiScWithMetadata[] = [];
+        const errorIds: string[] = [];
+
+        res.map(riScDTO => {
+          if (riScDTO.status === 'Success') {
+            const content = dtoToRiSc(
+              JSON.parse(riScDTO.riScContent) as RiScDTO,
+            );
+            successfulRiScs.push({
+              id: riScDTO.riScId,
+              content: content,
+              status: riScDTO.riScStatus,
+            });
+          } else {
+            errorIds.push(riScDTO.riScId);
+          }
         });
+
+        if (errorIds.length > 0) {
+          const errorMessage = `Failed to fetch risc scorecards with ids: ${errorIds.join(
+            ', ',
+          )}`;
+          if (onError) {
+            onError(errorMessage);
+          }
+          setResponse({
+            statusMessage: errorMessage,
+            status: ProcessingStatus.ErrorWhenFetchingRiScs,
+          });
+        }
+        onSuccess(successfulRiScs);
+      },
+      () => {
+        if (onError) {
+          onError();
+          setResponse({
+            statusMessage: 'Failed to fetch risc scorecards',
+            status: ProcessingStatus.ErrorWhenFetchingRiScs,
+          });
+        }
       },
     );
+  };
 
   const fetchLatestJSONSchema = (
     onSuccess: (response: string) => void,
@@ -329,7 +364,14 @@ export const useScenarioDrawer = (
       setOriginalScenario(selectedScenario);
       setScenarioDrawerState(ScenarioDrawerState.View);
     }
-  }, [getRiScPath, isNewScenario, navigate, riSc, scenarioIdFromParams, setSearchParams]);
+  }, [
+    getRiScPath,
+    isNewScenario,
+    navigate,
+    riSc,
+    scenarioIdFromParams,
+    setSearchParams,
+  ]);
 
   // SCENARIO DRAWER FUNCTIONS
   const openScenario = (id: string) => {
@@ -587,44 +629,50 @@ export const useFetchRiScs = (
     }
   }, [location, setResponse]);
 
+  useEffect(() => {
+    if (location.state) {
+      setResponse({
+        statusMessage: location.state,
+        status: ProcessingStatus.ErrorWhenFetchingRiScs,
+      });
+    }
+  }, [location, setResponse]);
+
   // Initial fetch of RiScs
   useEffectOnce(() => {
     fetchRiScs(
       res => {
-        const fetchedRiScs: RiScWithMetadata[] = res.map(riScDTO => {
-          const content = dtoToRiSc(JSON.parse(riScDTO.riScContent) as RiScDTO);
-          return {
-            id: riScDTO.riScId,
-            content: content,
-            status: riScDTO.riScStatus,
-          };
-        });
-
-        setRiScs(fetchedRiScs);
+        setRiScs(res);
         setIsFetching(false);
 
         // If there are no RiScs, don't set a selected RiSc
-        if (fetchedRiScs.length === 0) {
+        if (res.length === 0) {
           return;
         }
 
         // If there is no RiSc ID in the URL, navigate to the first RiSc
         if (!riScIdFromParams) {
-          navigate(getRiScPath({ riScId: fetchedRiScs[0].id }));
+          navigate(getRiScPath({ riScId: res[0].id }));
           return;
         }
 
-        const riSc = fetchedRiScs.find(r => r.id === riScIdFromParams);
+        const riSc = res.find(r => r.id === riScIdFromParams);
 
         // If there is an invalid RiSc ID in the URL, navigate to the first RiSc with error state
         if (!riSc) {
-          navigate(getRiScPath({ riScId: fetchedRiScs[0].id }), {
+          navigate(getRiScPath({ riScId: res[0].id }), {
             state: 'The risk scorecard you are trying to open does not exist',
           });
           return;
         }
       },
-      () => setIsFetching(false),
+      errorMessage => {
+        setIsFetching(false);
+        setResponse({
+          statusMessage: errorMessage,
+          status: ProcessingStatus.ErrorWhenFetchingRiScs,
+        });
+      },
     );
   });
 

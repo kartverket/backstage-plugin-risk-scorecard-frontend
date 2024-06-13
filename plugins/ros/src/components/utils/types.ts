@@ -77,4 +77,5 @@ export enum ProcessingStatus {
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
   ErrorWhenFetchingJSONSchema = 'ErrorWhenFetchingJSONSchema',
+  Success = 'Success',
 }
