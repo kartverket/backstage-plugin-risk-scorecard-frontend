@@ -64,6 +64,8 @@ export const ScenarioWizard = ({
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [restEqualsInitial, setRestEqualsInitial] = useState(isNewScenario);
+  // This boolean prevents the wizard from closing when opening it with a newly successfull request.
+  const [canCloseIfSuccessfull, setCanCloseIfSuccessfull] = useState(false);
 
   useEffect(() => {
     if (step === 'restRisk') setRestEqualsInitial(false);
@@ -75,16 +77,17 @@ export const ScenarioWizard = ({
   }, [closeScenario]);
 
   useEffect(() => {
-    if (updateStatus.isSuccess) {
+    if (updateStatus.isSuccess && canCloseIfSuccessfull) {
       close();
     } else if (updateStatus.isError && wizardRef.current) {
       setShowCloseConfirmation(false);
       wizardRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [close, updateStatus]);
+  }, [canCloseIfSuccessfull, close, updateStatus]);
 
   const saveAndClose = () => {
     saveScenario();
+    setCanCloseIfSuccessfull(true);
   };
 
   const handleCloseStepper = () => {
