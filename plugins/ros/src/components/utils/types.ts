@@ -1,3 +1,9 @@
+// Modify takes 3 type arguments.
+// First one takes the original type you want to modify.
+// Second is the specific key you want to modify.
+// Third is the new type for that key.
+export type Modify<O, K extends keyof any, R> = Omit<O, K> & { [P in K]: R };
+
 export type RiScWithMetadata = {
   id: string;
   status: RiScStatus;
@@ -77,4 +83,11 @@ export enum ProcessingStatus {
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
   ErrorWhenFetchingJSONSchema = 'ErrorWhenFetchingJSONSchema',
+}
+
+export enum ContentStatus {
+  Success = 'Success',
+  Failure = 'Failure',
+  FileNotFound = 'FileNotFound',
+  DecryptionFailed = 'DecryptionFailed',
 }

@@ -1,5 +1,7 @@
 import {
   Action,
+  ContentStatus,
+  Modify,
   ProcessingStatus,
   RiSc,
   RiScStatus,
@@ -15,6 +17,9 @@ export type ProcessRiScResultDTO = {
   statusMessage: string;
 };
 
+// Takes a normal ProcessRiScResultDTO and changes status to ContantStatus.
+type ContentRiScResultDTO = Modify<ProcessRiScResultDTO, "status", ContentStatus>;
+
 export type PublishRiScResultDTO = {
   pendingApproval?: {
     pullRequestUrl: string;
@@ -25,7 +30,7 @@ export type PublishRiScResultDTO = {
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;
-} & ProcessRiScResultDTO;
+} & ContentRiScResultDTO;
 
 export type RiScDTO = {
   schemaVersion: string;
