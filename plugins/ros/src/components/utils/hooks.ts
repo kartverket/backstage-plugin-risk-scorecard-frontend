@@ -308,8 +308,7 @@ export const useScenarioDrawer = (
       }
 
       if (isNewScenario) {
-        // setScenarioDrawerState(ScenarioDrawerState.Edit);
-        setSearchParams({ step: 'scenario' });
+        // If this is a new scenario we should not set a "not found" state on path.
         return;
       }
 
@@ -323,18 +322,25 @@ export const useScenarioDrawer = (
           state: 'Risikoscenarioet du prøver å åpne eksisterer ikke',
         });
         return;
-      }
+      }      
 
       setScenario(selectedScenario);
       setOriginalScenario(selectedScenario);
       setScenarioDrawerState(ScenarioDrawerState.View);
     }
-  }, [getRiScPath, isNewScenario, navigate, riSc, scenarioIdFromParams, setSearchParams]);
+  }, [riSc, scenarioIdFromParams, getRiScPath, navigate, isNewScenario]);
 
   // SCENARIO DRAWER FUNCTIONS
   const openScenario = (id: string) => {
     if (riSc) {
       navigate(getScenarioPath({ riScId: riSc.id, scenarioId: id }));
+    }
+  };
+
+  // openNewScenarioWizard is used when opening the wizard with a new scenario. It explisit sets the searchParam to step=scenario.
+  const openNewScenarioWizard = (id: string, step: ScenarioWizardSteps) => {
+    if (riSc) {
+      navigate(`${getScenarioPath({ riScId: riSc.id, scenarioId: id })}?step=${step}`);
     }
   };
 
@@ -399,7 +405,7 @@ export const useScenarioDrawer = (
       const s = emptyScenario();
       setScenario(s);
       setOriginalScenario(s);
-      openScenario(s.ID);
+      openNewScenarioWizard(s.ID, "scenario");
     }
   };
 
