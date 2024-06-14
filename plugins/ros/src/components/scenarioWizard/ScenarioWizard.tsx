@@ -64,6 +64,7 @@ export const ScenarioWizard = ({
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [restEqualsInitial, setRestEqualsInitial] = useState(isNewScenario);
+  const [canClose, setCanClose] = useState(false);
 
   useEffect(() => {
     if (step === 'restRisk') setRestEqualsInitial(false);
@@ -75,16 +76,17 @@ export const ScenarioWizard = ({
   }, [closeScenario]);
 
   useEffect(() => {
-    if (updateStatus.isSuccess) {
+    if (updateStatus.isSuccess && canClose) {
       close();
     } else if (updateStatus.isError && wizardRef.current) {
       setShowCloseConfirmation(false);
       wizardRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [close, updateStatus]);
+  }, [canClose, close, updateStatus]);
 
   const saveAndClose = () => {
     saveScenario();
+    setCanClose(true);
   };
 
   const handleCloseStepper = () => {
