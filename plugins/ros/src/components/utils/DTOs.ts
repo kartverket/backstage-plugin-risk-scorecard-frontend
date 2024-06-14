@@ -1,5 +1,6 @@
 import {
   Action,
+  ContentStatus,
   ProcessingStatus,
   RiSc,
   RiScStatus,
@@ -15,6 +16,15 @@ export type ProcessRiScResultDTO = {
   statusMessage: string;
 };
 
+// Modify takes 3 type arguments.
+// First one takes the original type you want to modify.
+// Second is the specific key you want to modify.
+// Third is the new type for that key.
+type Modify<O, K extends keyof any, R> = Omit<O, K> & { [P in K]: R };
+
+// Takes a normal ProcessRiScResultDTO and changes status to ContantStatus.
+type ContentRiScResultDTO = Modify<ProcessRiScResultDTO, "status", ContentStatus>;
+
 export type PublishRiScResultDTO = {
   pendingApproval?: {
     pullRequestUrl: string;
@@ -25,7 +35,7 @@ export type PublishRiScResultDTO = {
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;
-} & ProcessRiScResultDTO;
+} & ContentRiScResultDTO;
 
 export type RiScDTO = {
   schemaVersion: string;

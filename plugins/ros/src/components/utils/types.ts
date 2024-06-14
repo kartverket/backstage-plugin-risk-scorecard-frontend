@@ -78,3 +78,10 @@ export enum ProcessingStatus {
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
   ErrorWhenFetchingJSONSchema = 'ErrorWhenFetchingJSONSchema',
 }
+
+export enum ContentStatus {
+  Success = 'Success',
+  Failure = 'Failure',
+  FileNotFound = 'FileNotFound',
+  DecryptionFailed = 'DecryptionFailed',
+}

@@ -10,6 +10,7 @@ import {
 } from '@backstage/core-plugin-api';
 import {
   Action,
+  ContentStatus,
   GithubRepoInfo,
   ProcessingStatus,
   RiSc,
@@ -596,18 +597,36 @@ export const useFetchRiScs = (
   // Initial fetch of RiScs
   useEffectOnce(() => {
     fetchRiScs(
-      res => {
-        const fetchedRiScs: RiScWithMetadata[] = res.map(riScDTO => {
-          const content = dtoToRiSc(JSON.parse(riScDTO.riScContent) as RiScDTO);
+      res => {        
+        const fetchedRiScs: RiScWithMetadata[] = res
+          .filter(risk => risk.status === ContentStatus.Success)
+          .map(riScDTO => {
+          
+          // This action can throw a runtime error if content is not parsable by JSON library.
+          // If that happens, it is catched by the fetch onError catch.
+          const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
+          
+          const content = dtoToRiSc(json);
           return {
             id: riScDTO.riScId,
             content: content,
             status: riScDTO.riScStatus,
           };
         });
-
         setRiScs(fetchedRiScs);
         setIsFetching(false);
+
+        const errorRiScs: string[] = res.filter(risk => risk.status !== ContentStatus.Success).map(risk => risk.riScId);
+
+        if (errorRiScs.length > 0) {
+          const errorMessage = `Failed to fetch risc scorecards with ids: ${errorRiScs.join(
+            ', ',
+          )}`;
+          setResponse({
+            statusMessage: errorMessage,
+            status: ProcessingStatus.ErrorWhenFetchingRiScs,
+          });
+        }
 
         // If there are no RiScs, don't set a selected RiSc
         if (fetchedRiScs.length === 0) {
