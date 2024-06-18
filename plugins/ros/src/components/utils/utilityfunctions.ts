@@ -102,6 +102,9 @@ export const requiresNewApproval = (
   }
   let requiresApproval = false;
 
+  console.log('old', oldRiSc.scenarios);
+  console.log('new', updatedRiSc.scenarios);
+
   oldRiSc.scenarios.map((oldScenario, index) => {
     const updatedScenario = updatedRiSc.scenarios[index];
 
@@ -129,22 +132,28 @@ export const requiresNewApproval = (
       requiresApproval = true;
 
     oldScenario.actions.map((oldAction, i) => {
-      const updatedAction = updatedScenario.actions[i];
+      if (updatedScenario.actions[i] !== undefined) {
+        const updatedAction = updatedScenario.actions[i];
 
-      if (oldAction.deadline !== updatedAction.deadline)
+        if (oldAction.deadline !== updatedAction.deadline)
+          requiresApproval = true;
+      } else {
         requiresApproval = true;
+      }
     });
   });
   return requiresApproval;
 };
 
-
 export function formatNumber(
   cost: number,
   t: (s: any, c: any) => string,
 ): string {
-  
-  function getTranslationWithCorrectUnit(costValue: number, threshold: number, unit: string): string {
+  function getTranslationWithCorrectUnit(
+    costValue: number,
+    threshold: number,
+    unit: string,
+  ): string {
     return t(`riskMatrix.estimatedRisk.suffix.${unit}`, {
       count: Number(((costValue / threshold) * 1000).toFixed(0)),
     });
@@ -154,13 +163,13 @@ export function formatNumber(
     return formatNOK(cost);
   }
   if (cost < 1e6) {
-    return getTranslationWithCorrectUnit(cost, 1e6, "thousand");
+    return getTranslationWithCorrectUnit(cost, 1e6, 'thousand');
   }
   if (cost < 1e9) {
-    return getTranslationWithCorrectUnit(cost, 1e9, "million");
+    return getTranslationWithCorrectUnit(cost, 1e9, 'million');
   }
   if (cost < 1e12) {
-    return getTranslationWithCorrectUnit(cost, 1e12, "billion");
+    return getTranslationWithCorrectUnit(cost, 1e12, 'billion');
   }
-  return getTranslationWithCorrectUnit(cost, 1e15, "trillion");
+  return getTranslationWithCorrectUnit(cost, 1e15, 'trillion');
 }
