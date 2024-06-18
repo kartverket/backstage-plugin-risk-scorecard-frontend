@@ -4,11 +4,14 @@ This is a plugin for Backstage that helps you and your team when working continu
 The plugin is dependent on a backend service in order to decrypt and communicate with GitHub, and some configuration is
 necessary for them to communicate.
 
-Add the root url to your running backend service to the app-config:
+Add the following configuration to the proxy-block in your app-config. Modify the `target` to the root url of your running backend service.
 
-``` yaml
-app:
-  backendUrl: http://localhost:8080
+```yaml
+proxy:
+  endpoints:
+    '/risc-proxy':
+      target: http://localhost:8080
+      allowedHeaders: ['Authorization', 'GCP-Access-Token']
 ```
 
 The backend uses EntraID id-tokens to validate the user, and GCP access tokens to federate access to the GCP KMS.
