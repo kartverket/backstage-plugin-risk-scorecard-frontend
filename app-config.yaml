@@ -10,11 +10,14 @@ app:
           - url: https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/issues
             title: 'Github Issues'
 
-riskAssessment:
-  baseUrl: http://localhost:8080
-
 organization:
   name: Rosene
+
+proxy:
+  endpoints:
+    '/risc-proxy':
+      target: http://localhost:8080
+      allowedHeaders: ['Authorization', 'GCP-Access-Token']
 
 backend:
   baseUrl: http://localhost:7007
