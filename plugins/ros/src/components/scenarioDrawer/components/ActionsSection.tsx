@@ -27,7 +27,7 @@ export const ActionsSection = () => {
             marginBottom: '12px',
           }}
         >
-          <Typography className={h3} gutterBottom>
+          <Typography className={h3}>
             {t('scenarioDrawer.measureTab.actionsTitle')}
           </Typography>
           <Button
