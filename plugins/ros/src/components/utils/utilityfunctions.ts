@@ -102,9 +102,6 @@ export const requiresNewApproval = (
   }
   let requiresApproval = false;
 
-  console.log('old', oldRiSc.scenarios);
-  console.log('new', updatedRiSc.scenarios);
-
   oldRiSc.scenarios.map((oldScenario, index) => {
     const updatedScenario = updatedRiSc.scenarios[index];
 
