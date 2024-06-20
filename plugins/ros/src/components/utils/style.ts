@@ -105,7 +105,7 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
   paper: {
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
-    backgroundColor: theme.palette.type === 'dark' ? '#404040' : '#e0e0e0',
+    backgroundColor: theme.palette.type === 'dark' ? '#404040' : '#FFFFFF',
   },
   root: {
     '&.Mui-disabled': {

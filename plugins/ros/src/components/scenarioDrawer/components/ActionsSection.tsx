@@ -20,8 +20,15 @@ export const ActionsSection = () => {
   return (
     <Box>
       <Paper className={section} style={{ padding: '1rem' }}>
-        <Grid item xs={12} className={titleAndButton}>
-          <Typography className={h3} gutterBottom>
+        <Grid
+          item
+          xs={12}
+          className={titleAndButton}
+          style={{
+            marginBottom: '12px',
+          }}
+        >
+          <Typography className={h3}>
             {t('scenarioDrawer.measureTab.actionsTitle')}
           </Typography>
           <Button
