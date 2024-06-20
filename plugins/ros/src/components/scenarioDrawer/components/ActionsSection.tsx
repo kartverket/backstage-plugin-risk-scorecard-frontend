@@ -8,10 +8,11 @@ import { useFontStyles } from '../../utils/style';
 import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
+import { ExistingActionBox } from './ExistingActionBox';
 
 export const ActionsSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { h3, button } = useFontStyles();
+  const { h3, button, label } = useFontStyles();
   const { titleAndButton, section, editIcon } = useScenarioDrawerStyles();
   const { scenario, editScenario, saveScenario, updateAction } =
     useContext(ScenarioContext)!!;
@@ -38,6 +39,16 @@ export const ActionsSection = () => {
             startIcon={<EditIcon className={editIcon} aria-label="Edit" />}
           />
         </Grid>
+        {scenario.existingActions && (
+          <>
+            <Typography className={label}>
+              {t('scenarioDrawer.measureTab.existingMeasure')}
+            </Typography>
+            <ExistingActionBox existingAction={scenario.existingActions} />
+            {scenario.actions.length > 0 && <Divider variant="fullWidth" />}
+          </>
+        )}
+
         {scenario.actions.map((action, index) => (
           <Fragment key={action.ID}>
             <ActionBox

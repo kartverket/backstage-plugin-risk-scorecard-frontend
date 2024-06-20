@@ -157,7 +157,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         measureOwnerDescription:
           'Decide who will be responsible for completion of this action',
         addMeasureButton: 'Add planned action',
-        actionsTitle: 'Planned actions',
+        actionsTitle: 'Actions',
         plannedMeasures: 'Planned actions',
         existingMeasure: 'Existing measures',
         existingMeasureSubtitle:
@@ -193,14 +193,14 @@ export const pluginRiScTranslationRef = createTranslationRef({
           '2': 'Impact on life and health cannot be rated less severe than 3',
           '3': 'Temporary or less severe health implications. Temporary or minor damage to local environment.', // implications, effects or consequence? Temporary or minor? Midlertidige eller mindre alvorlige helsemessige konsekvenser. Midlertidig eller mindre skade på miljøet
           '4': 'Permanent or severe health implications for a few people. Moderate damage to the environment in a limited area.',
-          '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.'
+          '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.',
         },
         economical: {
           '1': 'Temporary minor financial loss.\n May be fixed within an hour by one employee',
           '2': 'Temporary financial loss.\n May be fixed within three days by one employee',
           '3': 'Financial loss of some duration.\n May be fixed within a month by three employees',
           '4': 'Financial loss of considerable duration for the organization and any third parties.\n May be fixed within a year by 10 employees',
-          '5': 'Permanent and severe financial loss.\n May be fixed within three years by 100 employees'
+          '5': 'Permanent and severe financial loss.\n May be fixed within three years by 100 employees',
         },
         privacy: {
           '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
@@ -363,7 +363,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velg den høyeste.',
           'scenarioDrawer.measureTab.subtitle':
             'Hvilke tiltak bør gjøres for å unngå scenarioet?',
-          'scenarioDrawer.measureTab.actionsTitle': 'Planlagte tiltak',
+          'scenarioDrawer.measureTab.actionsTitle': 'Tiltak',
           'scenarioDrawer.measureTab.measureOwnerDescription':
             'De eller den som er ansvarlig for at tiltaket blir gjennomført',
           'scenarioDrawer.measureTab.addMeasureButton': 'Legg til tiltak',
@@ -399,17 +399,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Dødsfall. Svært alvorlig skade på milhø over store områder.',
           'consequenceTable.cells.economical.1':
             'Ubetydelig økonomisk tap.\n Kan fikses i løpet av en time av én ansatt.',
-          'consequenceTable.cells.economical.2': 'Mindre økonomisk tap.\n Kan fikses i løpet av tre dager av én ansatt.',
+          'consequenceTable.cells.economical.2':
+            'Mindre økonomisk tap.\n Kan fikses i løpet av tre dager av én ansatt.',
           'consequenceTable.cells.economical.3':
             'Moderat økonomisk tap.\n Kan fikses i løpet av en måned av tre ansatte.',
           'consequenceTable.cells.economical.4':
             'Større økonomisk tap.\n Kan fikses i løpet av et år av 10 ansatte.',
           'consequenceTable.cells.economical.5':
             'Kritisk økonomisk tap.\n Kan fikses i løpet av tre år av 100 ansatte.',
-          'consequenceTable.cells.privacy.1':
-            'Ingen brudd.',
-          'consequenceTable.cells.privacy.2':
-            'Mindre brudd.',
+          'consequenceTable.cells.privacy.1': 'Ingen brudd.',
+          'consequenceTable.cells.privacy.2': 'Mindre brudd.',
           'consequenceTable.cells.privacy.3':
             'Brudd på registrertes rettigheter og friheter.',
           'consequenceTable.cells.privacy.4':

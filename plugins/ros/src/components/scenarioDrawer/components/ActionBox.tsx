@@ -26,7 +26,14 @@ export const ActionBox = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { body2, label } = useFontStyles();
   const { gridContainer } = useScenarioDrawerStyles();
-  const { alignCenter, justifyEnd } = useActionBoxStyles();
+  const {
+    alignCenter,
+    row,
+    paddingTop,
+    actionDescription,
+    column,
+    chipDropdown,
+  } = useActionBoxStyles();
   const [previousAction, setPreviousAction] = useState(action);
 
   useEffect(() => {
@@ -46,35 +53,39 @@ export const ActionBox = ({
   return (
     <Grid container className={gridContainer}>
       <Grid item xs={12} className={alignCenter}>
-        <Grid item xs={6}>
+        <Grid item xs={6} className={paddingTop}>
           <Typography className={label}>
             {t('dictionary.measure')} {index}
           </Typography>
         </Grid>
+      </Grid>
 
-        <Grid item xs={6} className={justifyEnd}>
+      <Grid item xs={12} className={actionDescription}>
+        <Typography className={body2}>{action.description}</Typography>
+      </Grid>
+
+      <Grid container xs={12} className={row}>
+        <Grid item xs={4}>
+          <Typography className={label}>
+            {t('dictionary.measureOwner')}
+          </Typography>
+          <Typography className={body2}>{action.owner}</Typography>
+        </Grid>
+
+        <Grid container xs={4} className={column}>
+          <Typography className={label}>{t('dictionary.deadline')}</Typography>
+          <Typography className={body2}>
+            {formatDate(action.deadline)}
+          </Typography>
+        </Grid>
+
+        <Grid item xs={3} className={chipDropdown}>
           <ChipDropdown
             options={actionStatusOptions}
             selectedValue={action.status}
             handleChange={setStatus}
           />
         </Grid>
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography className={body2}>{action.description}</Typography>
-      </Grid>
-
-      <Grid item xs={4}>
-        <Typography className={label}>
-          {t('dictionary.measureOwner')}
-        </Typography>
-        <Typography className={body2}>{action.owner}</Typography>
-      </Grid>
-
-      <Grid item xs={4}>
-        <Typography className={label}>{t('dictionary.deadline')}</Typography>
-        <Typography className={body2}>{formatDate(action.deadline)}</Typography>
       </Grid>
     </Grid>
   );

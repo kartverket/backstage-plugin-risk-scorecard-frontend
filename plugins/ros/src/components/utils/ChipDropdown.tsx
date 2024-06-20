@@ -28,7 +28,8 @@ export const ChipDropdown = ({
         style={{
           margin: 0,
           padding: 0,
-          backgroundColor: '#D9D9D9',
+          backgroundColor:
+            selectedValue === 'Completed' ? '#6BC6A4' : '#D9D9D9',
           color: '#000000',
         }}
         label={selectedValue}

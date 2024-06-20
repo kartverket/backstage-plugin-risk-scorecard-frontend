@@ -75,12 +75,13 @@ const useFetch = () => {
   const googleApi = useApi(googleAuthApiRef);
   const identityApi = useApi(identityApiRef);
   const { fetch: fetchApi } = useApi(fetchApiRef);
-  const baseUri = useApi(configApiRef).getString('riskAssessment.baseUrl');
-  const riScUri = `${baseUri}/api/risc/${repoInformation.owner}/${repoInformation.name}`;
+  const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
+  const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
   const uriToFetchAllRiScs = () => `${riScUri}/all`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
-  const uriToFetchLatestJSONSchema = () => `${baseUri}/api/risc/schemas/latest`;
+  const uriToFetchLatestJSONSchema = () =>
+    `${backendUrl}/api/proxy/risc-proxy/api/risc/schemas/latest`;
 
   const [response, setResponse] = useResponse();
 
