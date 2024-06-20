@@ -560,10 +560,12 @@ export const useFetchRiScs = (
   resetRiScStatus: () => void;
   approveRiSc: () => void;
   response: SubmitResponseObject | null;
+  isRequesting: boolean;
 } => {
   const location = useLocation();
   const navigate = useNavigate();
   const getRiScPath = useRouteRef(riScRouteRef);
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
 
   const {
     fetchRiScs,
@@ -780,6 +782,7 @@ export const useFetchRiScs = (
         isError: false,
         isSuccess: false,
       });
+      setIsRequesting(true);
       putRiScs(
         updatedRiSc,
         () => {
@@ -792,6 +795,7 @@ export const useFetchRiScs = (
           setRiScs(
             riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
           );
+          setIsRequesting(false);
         },
         () => {
           setUpdateRiScStatus({
@@ -799,6 +803,7 @@ export const useFetchRiScs = (
             isError: true,
             isSuccess: false,
           });
+          setIsRequesting(false);
         },
       );
     }
@@ -829,5 +834,6 @@ export const useFetchRiScs = (
     updateRiSc: updateRiSc,
     approveRiSc: approveRiSc,
     response,
+    isRequesting: isRequesting,
   };
 };
