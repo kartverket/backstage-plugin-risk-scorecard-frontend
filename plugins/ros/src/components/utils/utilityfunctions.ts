@@ -102,7 +102,7 @@ export const requiresNewApproval = (
   }
   let requiresApproval = false;
 
-  oldRiSc.scenarios.map((oldScenario, index) => {
+  oldRiSc.scenarios.forEach((oldScenario, index) => {
     const updatedScenario = updatedRiSc.scenarios[index];
 
     if (oldScenario.threatActors !== updatedScenario.threatActors)
@@ -128,7 +128,7 @@ export const requiresNewApproval = (
     )
       requiresApproval = true;
 
-    oldScenario.actions.map((oldAction, i) => {
+    oldScenario.actions.forEach((oldAction, i) => {
       if (updatedScenario.actions[i] !== undefined) {
         const updatedAction = updatedScenario.actions[i];
 
