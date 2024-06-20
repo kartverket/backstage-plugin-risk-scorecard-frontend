@@ -37,7 +37,6 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.type === 'dark' ? '#555555' : '#e0e0e0',
   },
   gridContainer: {
-    padding: theme.spacing(2),
     marginBottom: theme.palette.type === 'dark' ? theme.spacing(1) : '7px',
     backgroundColor: theme.palette.type === 'dark' ? '#55555519' : '#e0e0e019',
   },
