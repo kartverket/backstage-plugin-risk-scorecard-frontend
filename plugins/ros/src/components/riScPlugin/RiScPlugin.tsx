@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, LinearProgress, Typography } from '@material-ui/core';
 import { ContentHeader, SupportButton } from '@backstage/core-components';
 import { useFetchRiScs, useScenarioDrawer } from '../utils/hooks';
 import { useParams } from 'react-router';
@@ -22,10 +22,12 @@ import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
 import { RiScInfo } from '../riScInfo/RiScInfo';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { Spinner } from '../utils/Spinner';
+import { useLinearProgressStyle } from './linearProgressStyle';
 
 const Plugin = () => {
   const params = useParams();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { linearProgress } = useLinearProgressStyle();
 
   const [RiScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
@@ -47,6 +49,7 @@ const Plugin = () => {
     resetRiScStatus,
     approveRiSc,
     response,
+    isRequesting,
   } = useFetchRiScs(params.riScId);
 
   const scenario = useScenarioDrawer(
@@ -54,6 +57,7 @@ const Plugin = () => {
     updateRiSc,
     params.scenarioId,
   );
+
 
   const [searchParams] = useSearchParams();
   const scenarioWizardStep =
@@ -70,6 +74,9 @@ const Plugin = () => {
           <Alert severity={getAlertSeverity(response.status)}>
             <Typography>{response.statusMessage}</Typography>
           </Alert>
+        )}
+        {isRequesting && (
+          <LinearProgress className={linearProgress} />
         )}
 
         {scenarioWizardStep !== null ? (
