@@ -1,5 +1,5 @@
 import React from 'react';
-import { Radio, Typography } from '@material-ui/core';
+import { Radio, Typography, useTheme } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useTableStyles } from './tableStyles';
@@ -13,6 +13,7 @@ export const ConsequenceTable = ({
   selectedValue,
   handleChange,
 }: ConsequenceTableProps) => {
+  const theme = useTheme();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { table, labelCell, cell, voidCell, radio } = useTableStyles();
 
@@ -25,7 +26,13 @@ export const ConsequenceTable = ({
           <Radio
             checked={selectedValue === row}
             onChange={handleChangeRow(row)}
-            style={{ padding: 0, color: '#9BC9FE' }}
+            style={{
+              padding: 0,
+              color:
+                theme.palette.type === 'dark'
+                  ? theme.palette.primary.light
+                  : theme.palette.primary.main,
+            }}
           />
           {/* @ts-ignore */}
           {row}: {t(`consequenceTable.rows.${row}`)}
