@@ -35,4 +35,14 @@ export const useWizardStyle = makeStyles((theme: Theme) => ({
     display: 'flex',
     gap: theme.spacing(2),
   },
+  button: {
+    '&.MuiButton-outlined': {
+      color: theme.palette.type === 'dark' ? '#9CC9FF' : theme.palette.link,
+      borderr: '1px solid rgba(25, 118, 210, 0.5)',
+      '&:hover': {
+        borderColor:
+          theme.palette.type === 'dark' ? '#9CC9FF' : theme.palette.linkHover,
+      },
+    },
+  },
 }));

@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Step, StepButton, Stepper, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { ScenarioStep } from './steps/ScenarioStep';
@@ -47,6 +53,7 @@ export const ScenarioWizard = ({
     header,
     stepper,
     steps,
+    button,
     buttonContainer,
     buttonContainerRight,
     saveAndNextButtons,
@@ -70,7 +77,7 @@ export const ScenarioWizard = ({
   useEffect(() => {
     if (step === 'restRisk') setRestEqualsInitial(false);
   }, [step]);
-  
+
   const close = useCallback(() => {
     closeScenario();
     setShowCloseConfirmation(false);
@@ -129,7 +136,11 @@ export const ScenarioWizard = ({
         <Box className={container}>
           <Box className={header}>
             <Typography className={h1}>{t('scenarioDrawer.title')}</Typography>
-            <Button variant="outlined" onClick={handleCloseStepper}>
+            <Button
+              variant="outlined"
+              className={button}
+              onClick={handleCloseStepper}
+            >
               {t('dictionary.cancel')}
             </Button>
           </Box>
@@ -193,6 +204,7 @@ export const ScenarioWizard = ({
                 )}
                 <Box className={saveAndNextButtons}>
                   <Button
+                    className={button}
                     variant={isLastStep() ? 'contained' : 'outlined'}
                     onClick={saveAndClose}
                     disabled={updateStatus.isLoading}

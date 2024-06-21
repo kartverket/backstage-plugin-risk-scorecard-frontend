@@ -1,5 +1,5 @@
 import React from 'react';
-import { Radio } from '@material-ui/core';
+import { Radio, useTheme } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
@@ -14,6 +14,7 @@ export const ProbabilityTable = ({
   selectedValue,
   handleChange,
 }: ProbabilityTableProps) => {
+  const theme = useTheme();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { table, cell, radio } = useTableStyles();
 
@@ -25,7 +26,13 @@ export const ProbabilityTable = ({
         <Radio
           checked={selectedValue === row}
           onChange={handleChangeRow(row)}
-          style={{ padding: 0, color: '#9BC9FE' }}
+          style={{
+            padding: 0,
+            color:
+              theme.palette.type === 'dark'
+                ? '#9BC9FE'
+                : theme.palette.primary.main,
+          }}
         />
         {/* @ts-ignore */}
         {row}: {t(`probabilityTable.rows.${row}`)}
