@@ -1,12 +1,19 @@
 # [Backstage](https://backstage.io)
 
-To run Backstage locally, run these commands:
+To run Backstage locally, you only need to run these commands:
+
 ```sh
 yarn install
 yarn dev
 ```
 
-### Docker
+---
+
+### Docker (Alternative)
+
+> [!WARNING]  
+> Simply running `yarn dev` should be sufficient for local development, but some may prefer to run applications through Docker.
+> As this is less frequently used, these instructions may be outdated and no longer function properply.
 
 To build the Docker image, run this command:
 
