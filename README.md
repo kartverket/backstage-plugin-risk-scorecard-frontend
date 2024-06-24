@@ -15,7 +15,7 @@ Backstage should now be running on http://localhost:3000/, and you may set up [t
 
 > [!WARNING]  
 > Simply running `yarn dev` should be sufficient for local development, but some may prefer to run applications through Docker.
-> As this is less frequently used, these instructions may be outdated and no longer function properly.
+> As this is less frequently used, these instructions may be outdated and may no longer function properly.
 
 To build the Docker image, run this command:
 
