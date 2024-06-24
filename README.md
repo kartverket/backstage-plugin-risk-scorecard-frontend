@@ -7,13 +7,15 @@ yarn install
 yarn dev
 ```
 
+Backstage should now be running on http://localhost:3000/, and you may set up [the plugin backend](https://github.com/kartverket/backstage-plugin-risk-scorecard-backend).
+
 ---
 
-### Docker (Alternative)
+### Docker (alternative)
 
 > [!WARNING]  
 > Simply running `yarn dev` should be sufficient for local development, but some may prefer to run applications through Docker.
-> As this is less frequently used, these instructions may be outdated and no longer function properply.
+> As this is less frequently used, these instructions may be outdated and no longer function properly.
 
 To build the Docker image, run this command:
 
