@@ -7,7 +7,9 @@ yarn install
 yarn dev
 ```
 
-Backstage should now be running on http://localhost:3000/, and you may set up [the plugin backend](https://github.com/kartverket/backstage-plugin-risk-scorecard-backend).
+The Backstage frontend should now be running on http://localhost:3000/, while the Backstage backend should be running on http://localhost:7007/.
+
+You may now set up [the plugin backend](https://github.com/kartverket/backstage-plugin-risk-scorecard-backend). Keep in mind that Backstage needs to be running for the plugin backend to run.
 
 ---
 
