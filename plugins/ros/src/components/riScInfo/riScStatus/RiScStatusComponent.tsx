@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  Link,
   Typography,
 } from '@material-ui/core';
 import React, { ReactComponentElement, useState } from 'react';
@@ -129,7 +130,7 @@ export const RiScStatusComponent = ({
       <Typography variant="h5">Status</Typography>
 
       <RosAcceptance status={selectedRiSc.status} />
-      {selectedRiSc.status === RiScStatus.SentForApproval && (<Typography style={{ fontWeight: 700 }} paragraph variant='subtitle1'><PullRequestSvg /> {t('rosStatus.prStatus')}</Typography>)}
+      {selectedRiSc.status === RiScStatus.SentForApproval && (<Typography style={{ fontWeight: 700 }} paragraph variant='subtitle1'><PullRequestSvg /> {t('rosStatus.prStatus')}<Link target='_blank' href={selectedRiSc.pullRequestUrl}>Github</Link></Typography>)}
 
       <Grid item container xs direction="row" alignItems="flex-end" justifyContent='space-between'>
         <Grid item>
