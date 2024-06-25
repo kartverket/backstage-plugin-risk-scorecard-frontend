@@ -39,6 +39,7 @@ export const useFontStyles = makeStyles(theme => ({
   body2: {
     fontSize: theme.spacing(2),
     fontWeight: 400,
+    whiteSpace: 'pre-line',
   },
   label: {
     fontSize: theme.spacing(1.75),
