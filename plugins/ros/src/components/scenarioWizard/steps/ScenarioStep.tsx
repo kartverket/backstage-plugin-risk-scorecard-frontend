@@ -23,6 +23,21 @@ export const ScenarioStep = () => {
     setVulnerabilities,
   } = useContext(ScenarioContext)!!;
 
+  const translatedThreatActors = threatActorsOptions.map(threatActor => {
+    return {
+      value: threatActor,
+      /* @ts-ignore Because ts can't typecheck strings agains our keys */
+      renderedValue: t(`threatActors.${threatActor}`)
+    };
+  });
+  const translatedVulnerabilities = vulnerabilitiesOptions.map(vulnerability => {
+    return {
+      value: vulnerability,
+      /* @ts-ignore Because ts can't typecheck strings agains our keys */
+      renderedValue: t(`vulnerabilities.${vulnerability}`),
+    };
+  });
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -62,8 +77,12 @@ export const ScenarioStep = () => {
         </Box>
         <Dropdown<string[]>
           selectedValues={scenario.threatActors}
-          options={threatActorsOptions}
+          options={translatedThreatActors}
           handleChange={setThreatActors}
+          renderSelectedValue={(value => {
+            /* @ts-ignore */
+            return t(`threatActors.${value}`);
+          })}
         />
       </Grid>
 
@@ -86,8 +105,12 @@ export const ScenarioStep = () => {
         </Box>
         <Dropdown<string[]>
           selectedValues={scenario.vulnerabilities}
-          options={vulnerabilitiesOptions}
+          options={translatedVulnerabilities}
           handleChange={setVulnerabilities}
+          renderSelectedValue={(value => {
+            /* @ts-ignore */
+            return t(`vulnerabilities.${value}`);
+          })}
         />
       </Grid>
       <Grid item xs={12}>
