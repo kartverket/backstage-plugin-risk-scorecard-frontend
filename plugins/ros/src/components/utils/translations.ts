@@ -47,7 +47,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
       },
-      prStatus: 'Pending PR approval in Github ', // Avventer godkjenning av PR i Github
+      prStatus: 'Pending pull request in Github ', // Avventer godkjenning av PR i Github
       approveButton: 'Accept risks', // Godkjenn ROS
     },
     publishDialog: {
