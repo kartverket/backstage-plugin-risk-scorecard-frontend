@@ -17,7 +17,7 @@ const EditButton = (props: IconButtonProps) => {
   const { icon } = useEditButtonStyle();
 
   return (
-    <IconButton {...props}>
+    <IconButton size="small" {...props}>
       <EditIcon className={icon} aria-label="Edit" />
     </IconButton>
   );

@@ -34,7 +34,7 @@ export const useFontStyles = makeStyles(theme => ({
   },
   body1: {
     fontSize: theme.spacing(2),
-    fontWeight: 700,
+    fontWeight: 500,
   },
   body2: {
     fontSize: theme.spacing(2),

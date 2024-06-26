@@ -29,7 +29,12 @@ const RiskBox = ({ risk, riskType, editScenario }: RiskProps) => {
 
   return (
     <Paper className={section} style={{ padding: '1rem' }}>
-      <Grid item xs={12} className={titleAndButton}>
+      <Grid
+        item
+        xs={12}
+        className={titleAndButton}
+        style={{ marginBottom: '0.5rem' }}
+      >
         <Typography className={h3}>{t(`dictionary.${riskType}`)}</Typography>
         <EditButton onClick={() => editScenario(riskType)} />
       </Grid>
@@ -58,12 +63,13 @@ const RiskBox = ({ risk, riskType, editScenario }: RiskProps) => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'start',
+              gap: '4px',
             }}
           >
-            <Typography className={label}>
+            <Typography className={label} style={{ paddingBottom: 0 }}>
               {t('dictionary.probability')}: {getProbabilityLevel(risk)}
             </Typography>
-            <Typography className={label}>
+            <Typography className={label} style={{ paddingBottom: 0 }}>
               {t('dictionary.consequence')}: {getConsequenceLevel(risk)}
             </Typography>
           </Grid>
@@ -90,12 +96,12 @@ export const RiskSection = () => {
   return (
     <>
       {/* Initial risk -> Rest risk*/}
-      <Box
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
+      <Grid
+        container
+        wrap="nowrap"
+        alignItems="center"
+        spacing={0}
+        style={{ gap: '8px' }}
       >
         {/* Initial risk */}
         <RiskBox
@@ -105,16 +111,8 @@ export const RiskSection = () => {
         />
 
         {/* Arrow */}
-        <Grid
-          item
-          xs={2}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <KeyboardDoubleArrowRightIcon fontSize="large" />
+        <Grid item style={{}}>
+          <KeyboardDoubleArrowRightIcon style={{ fontSize: '48px' }} />
         </Grid>
 
         {/* Rest risk */}
@@ -123,7 +121,7 @@ export const RiskSection = () => {
           riskType="restRisk"
           editScenario={editScenario}
         />
-      </Box>
+      </Grid>
     </>
   );
 };
