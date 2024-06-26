@@ -47,7 +47,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
       },
-      prStatus: 'Pending PR approval in Github ', // Avventer godkjenning av PR i Github
+      prStatus: ' Pending pull request in ', // Avventer godkjenning av PR i Github
       approveButton: 'Accept risks', // Godkjenn ROS
     },
     publishDialog: {
@@ -234,6 +234,26 @@ export const pluginRiScTranslationRef = createTranslationRef({
         '5': 'The scenario is almost guaranteed to occur. It can occur almost daily',
       },
     },
+    threatActors: {
+      'Script kiddie': 'Script kiddie',
+      'Hacktivist': 'Hacktivist',
+      'Reckless employee': 'Reckless employee',
+      'Insider': 'Insider',
+      'Organised crime': 'Organised crime',
+      'Terrorist organisation': 'Terrorist organisation',
+      'Nation/government': 'Nation/government',
+    },
+    vulnerabilities: {
+      'Compromised admin user': 'Compromised admin user',
+      'Dependency vulnerability': 'Dependency vulnerability',
+      'Disclosed secret': 'Disclosed secret',
+      'Misconfiguration': 'Misconfiguration',
+      'Input tampering': 'Input tampering',
+      'User repudiation': 'User repudiation',
+      'Information leak': 'Information leak',
+      'Denial of service': 'Denial of service',
+      'Escalation of rights': 'Escalation of rights',
+    },
   },
 });
 
@@ -281,7 +301,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Venter på godkjenning av risikoeier',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
-          'rosStatus.prStatus': 'Avventer godkjenning av PR i Github',
+          'rosStatus.prStatus': ' Avventer godkjenning av pull request i ',
           'rosStatus.approveButton': 'Godkjenn ROS',
 
           'publishDialog.title': 'Godkjenn ROS-analyse',
@@ -441,6 +461,22 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Scenarioet vil med stor sannsynlighet inntreffe. Det kan inntreffe nærmest ukentlig',
           'probabilityTable.cells.5':
             'Scenarioet er nesten garantert å inntreffe. Det kan inntreffe nærmest daglig',
+          'threatActors.Script kiddie': 'Datasnok',
+          'threatActors.Hacktivist': 'Hacktivist',
+          'threatActors.Reckless employee': 'Uheldig ansatt',
+          'threatActors.Insider': 'Innside-aktør',
+          'threatActors.Organised crime': 'Organiserte kriminelle',
+          'threatActors.Terrorist organisation': 'Terroristorganisasjon',
+          'threatActors.Nation/government': 'Nasjon/stat',
+          'vulnerabilities.Compromised admin user': 'Kompromittert adminbruker',
+          'vulnerabilities.Dependency vulnerability': 'Sårbarhet i avhengighet',
+          'vulnerabilities.Disclosed secret': 'Lekket hemmelighet',
+          'vulnerabilities.Misconfiguration': 'Feilkonfigurering',
+          'vulnerabilities.Input tampering': 'Klussing med input',
+          'vulnerabilities.User repudiation': 'Benekte brukerhandling',
+          'vulnerabilities.Information leak': 'Informasjonslekkasje',
+          'vulnerabilities.Denial of service': 'Tjenestenekt',
+          'vulnerabilities.Escalation of rights': 'Rettighetseskalering',
         },
       }),
   },

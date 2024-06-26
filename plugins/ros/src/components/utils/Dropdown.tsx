@@ -11,14 +11,19 @@ import React, { ChangeEvent } from 'react';
 import { FormHelperText } from '@material-ui/core';
 import { menuProps, useInputFieldStyles } from './style';
 
+type OptionsObject = {
+  value: string,
+  renderedValue: string,
+}
 interface DropdownProps<T> {
-  options: string[];
+  options: string[] | OptionsObject[];
   selectedValues: T;
   handleChange: (value: T) => void;
   error?: string | null;
   required?: boolean;
   label?: string;
   variant?: 'standard' | 'outlined' | 'filled';
+  renderSelectedValue?: (selectedValue: string) => string;
 }
 
 export const Dropdown = <T,>({
@@ -29,10 +34,26 @@ export const Dropdown = <T,>({
   error,
   required,
   variant = 'outlined',
+  renderSelectedValue,
 }: DropdownProps<T>) => {
   const { formLabel, formControl } = useInputFieldStyles();
 
   const multiple = Array.isArray(selectedValues);
+
+  function getOptionsValue(option: DropdownProps<T>['options'][0]): string {
+    return typeof option === 'string' ? option : option.value;
+  }
+
+  function getOptionsRenderValue(option: DropdownProps<T>['options'][0]): string {
+    return typeof option === 'string' ? option : option.renderedValue;
+  }
+
+  function renderSelectedValueHandler(value: string): string {
+    if (renderSelectedValue) {
+      return renderSelectedValue(value);
+    }
+    return value;
+  }
 
   const onChange = (event: ChangeEvent<{ value: unknown }>) =>
     handleChange(event.target.value as T);
@@ -48,7 +69,7 @@ export const Dropdown = <T,>({
         }}
       >
         {selected.map((value: string) => (
-          <Chip key={value} label={value} />
+          <Chip key={value} label={renderSelectedValueHandler(value)} />
         ))}
       </Box>
     ) : (
@@ -83,13 +104,13 @@ export const Dropdown = <T,>({
         }
       >
         {options.map(name => (
-          <MenuItem key={name} value={name}>
+          <MenuItem key={getOptionsValue(name)} value={getOptionsValue(name)}>
             {multiple && (
               <ListItemIcon>
-                <Checkbox checked={selectedValues.indexOf(name) > -1} />
+                <Checkbox checked={selectedValues.indexOf(getOptionsValue(name)) > -1} />
               </ListItemIcon>
             )}
-            <ListItemText primary={name} />
+            <ListItemText primary={getOptionsRenderValue(name)} />
           </MenuItem>
         ))}
       </Select>

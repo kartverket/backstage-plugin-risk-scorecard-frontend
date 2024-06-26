@@ -614,6 +614,7 @@ export const useFetchRiScs = (
             id: riScDTO.riScId,
             content: content,
             status: riScDTO.riScStatus,
+            pullRequestUrl: riScDTO.pullRequestUrl,
           };
         });
         setRiScs(fetchedRiScs);

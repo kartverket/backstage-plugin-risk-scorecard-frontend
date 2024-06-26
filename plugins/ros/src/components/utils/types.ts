@@ -1,7 +1,9 @@
-// Modify takes 3 type arguments.
-// First one takes the original type you want to modify.
-// Second is the specific key you want to modify.
-// Third is the new type for that key.
+/**
+ * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.
+ * @template {object} O Which object type to use as basis
+ * @template {string} K Key of field in object to modify
+ * @template R New type to set field of key to
+ */
 export type Modify<O, K extends keyof any, R> = Omit<O, K> & { [P in K]: R };
 
 export type RiScWithMetadata = {
@@ -9,6 +11,7 @@ export type RiScWithMetadata = {
   status: RiScStatus;
   content: RiSc;
   isRequiresNewApproval?: boolean;
+  pullRequestUrl: string;
 };
 
 export type RiSc = {
