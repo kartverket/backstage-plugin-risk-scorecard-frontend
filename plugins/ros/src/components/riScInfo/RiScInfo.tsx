@@ -6,7 +6,6 @@ import { InfoCard } from '@backstage/core-components';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
-import { useRiScInfoStyles } from './riScInfoStyle';
 import { useFontStyles } from '../utils/style';
 
 interface RiScInfoProps {
@@ -18,7 +17,6 @@ interface RiScInfoProps {
 export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label, body2 } = useFontStyles();
-  const { infoCard } = useRiScInfoStyles();
 
   return (
     <Grid container>
@@ -26,13 +24,13 @@ export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
         item
         xs={12}
         sm={6}
-        md={8}
+        md={6}
         style={{
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        <InfoCard className={infoCard}>
+        <InfoCard>
           <Box
             style={{
               display: 'flex',
@@ -49,8 +47,10 @@ export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
           <Typography className={body2}>{riSc.content.scope}</Typography>
         </InfoCard>
       </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <RiScStatusComponent selectedRiSc={riSc} publishRiScFn={approveRiSc} />
+      <Grid item xs={12} sm={6} md={6}>
+        <InfoCard>
+          <RiScStatusComponent selectedRiSc={riSc} publishRiScFn={approveRiSc} />
+        </InfoCard>
       </Grid>
     </Grid>
   );
