@@ -47,7 +47,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
       },
-      prStatus: 'Pending pull request in ', // Avventer godkjenning av PR i Github
+      prStatus: ' Pending pull request in ', // Avventer godkjenning av PR i Github
       approveButton: 'Accept risks', // Godkjenn ROS
     },
     publishDialog: {
@@ -301,7 +301,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Venter på godkjenning av risikoeier',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
-          'rosStatus.prStatus': 'Avventer godkjenning av PR i ',
+          'rosStatus.prStatus': ' Avventer godkjenning av pull request i ',
           'rosStatus.approveButton': 'Godkjenn ROS',
 
           'publishDialog.title': 'Godkjenn ROS-analyse',

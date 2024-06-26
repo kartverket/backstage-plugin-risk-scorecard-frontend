@@ -17,7 +17,7 @@ export type ProcessRiScResultDTO = {
   statusMessage: string;
 };
 
-// Takes a normal ProcessRiScResultDTO and changes status to ContantStatus.
+// Takes a normal ProcessRiScResultDTO and changes status to ContentStatus.
 type ContentRiScResultDTO = Modify<ProcessRiScResultDTO, "status", ContentStatus> & { pullRequestUrl: string };
 
 export type PublishRiScResultDTO = {

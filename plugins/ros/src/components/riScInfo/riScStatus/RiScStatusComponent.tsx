@@ -162,10 +162,8 @@ export const RiScStatusComponent = ({
       {selectedRiSc.status === RiScStatus.SentForApproval && (
         <Typography style={{ fontWeight: 700 }} paragraph variant="subtitle1">
             <PullRequestSvg /> 
-            {' '}
             {t('rosStatus.prStatus')}
             <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
-            {' '}
             Github
             </Link>
         </Typography>
