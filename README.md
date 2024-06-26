@@ -1,12 +1,23 @@
 # [Backstage](https://backstage.io)
 
-To run Backstage locally, run these commands:
+To run Backstage locally, you only need to run these commands:
+
 ```sh
 yarn install
 yarn dev
 ```
 
-### Docker
+The Backstage frontend should now be running on http://localhost:3000/, while the Backstage backend should be running on http://localhost:7007/.
+
+You may now set up [the plugin backend](https://github.com/kartverket/backstage-plugin-risk-scorecard-backend). Keep in mind that Backstage needs to be running for the plugin backend to run.
+
+---
+
+### Docker (alternative)
+
+> [!WARNING]  
+> Simply running `yarn dev` should be sufficient for local development, but some may prefer to run applications through Docker.
+> As this is less frequently used, these instructions may be outdated and may no longer function properly.
 
 To build the Docker image, run this command:
 
