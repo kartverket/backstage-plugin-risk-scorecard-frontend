@@ -34,7 +34,7 @@ export const useStatusChipStyles = makeStyles(() => ({
 
 export const useStatusTextStyles = makeStyles(() => ({
   prStatus: {
-    fontSize: '14px',
+    fontSize: '16px',
     wrap: 'wrap',
   },
   prIcon: {

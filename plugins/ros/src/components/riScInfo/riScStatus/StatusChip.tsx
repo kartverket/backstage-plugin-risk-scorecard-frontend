@@ -1,10 +1,9 @@
-import Chip from '@material-ui/core/Chip';
 import React, { useEffect, useState } from 'react';
 import { RiScStatus } from '../../utils/types';
 import { useStatusChipStyles, useStatusTextStyles } from './statusChipStyle';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 import CircleIcon from '@mui/icons-material/Circle';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, Chip } from '@material-ui/core';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -88,7 +87,7 @@ export const StatusChip = ({ currentRiScStatus }: ChipProps) => {
       container
       direction="column"
       spacing={0}
-      style={{ alignItems: 'end' }}
+      style={{ gap: '8px', alignItems: 'end' }}
     >
       <Grid item>
         <Chip

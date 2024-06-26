@@ -14,6 +14,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { useTableStyles } from './ScenarioTableStyles';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { useFontStyles } from '../utils/style';
 
 interface ScenarioTableProps {
   riSc: RiSc;
@@ -21,6 +22,7 @@ interface ScenarioTableProps {
 
 export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { label } = useFontStyles();
   const { titleBox, rowBorder, tableCell, tableCellTitle } = useTableStyles();
   const { newScenario, openScenario } = useContext(ScenarioContext)!!;
 
@@ -28,7 +30,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
     <>
       <Paper>
         <Box className={titleBox}>
-          <Typography variant="h5" style={{ padding: '1rem' }}>
+          <Typography variant="h5" style={{ padding: '1rem', marginBottom: 0 }}>
             {t('scenarioTable.title')}
           </Typography>
 
@@ -77,41 +79,26 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
         ) : (
           <TableContainer style={{ overflow: 'auto' }} component={Paper}>
             <Table>
-              <TableHead>
+              <TableHead style={{ whiteSpace: 'nowrap' }}>
                 <TableRow className={rowBorder}>
                   <TableCell className={tableCellTitle}>
-                    <Typography
-                      variant="subtitle1"
-                      style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
-                    >
+                    <Typography className={label} style={{ paddingBottom: 0 }}>
                       {t('dictionary.title')}
                     </Typography>
                   </TableCell>
                   <TableCell className={tableCell}>
-                    <Typography
-                      variant="subtitle1"
-                      style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
-                    >
+                    <Typography className={label} style={{ paddingBottom: 0 }}>
                       {t('dictionary.initialRisk')}
                     </Typography>
                   </TableCell>
 
                   <TableCell className={tableCell}>
-                    <Typography
-                      variant="subtitle1"
-                      style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
-                    >
+                    <Typography className={label} style={{ paddingBottom: 0 }}>
                       {t('scenarioTable.columns.measuresCount')}
                     </Typography>
                   </TableCell>
                   <TableCell className={tableCell}>
-                    <Typography
-                      variant="subtitle1"
-                      style={{
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                      }}
-                    >
+                    <Typography className={label} style={{ paddingBottom: 0 }}>
                       {t('dictionary.restRisk')}
                     </Typography>
                   </TableCell>
