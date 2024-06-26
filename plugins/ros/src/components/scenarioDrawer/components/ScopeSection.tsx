@@ -1,19 +1,18 @@
 import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import Divider from '@mui/material/Divider';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import EditIcon from '@mui/icons-material/Edit';
 import { useFontStyles } from '../../utils/style';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
+import EditButton from '../../utils/EditButton';
 
 export const ScopeSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { h1, h3, body2, label, button } = useFontStyles();
-  const { header, titleAndButton, section, editIcon } =
-    useScenarioDrawerStyles();
+  const { h1, h3, body2, label } = useFontStyles();
+  const { header, titleAndButton, section } = useScenarioDrawerStyles();
   const { scenario, editScenario } = useContext(ScenarioContext)!!;
 
   return (
@@ -21,16 +20,10 @@ export const ScopeSection = () => {
       <Box className={header}>
         <Grid container>
           <Grid item xs={12} className={titleAndButton}>
-            <Typography variant="h3" className={h3}>
+            <Typography variant="h3" className={h3} style={{ marginBottom: 0 }}>
               {t('scenarioDrawer.title')}
             </Typography>
-            <Button
-              className={button}
-              variant="text"
-              color="primary"
-              onClick={() => editScenario('scenario')}
-              startIcon={<EditIcon className={editIcon} aria-label="Edit" />}
-            />
+            <EditButton onClick={() => editScenario('scenario')} />
           </Grid>
 
           <Grid item xs={12}>
@@ -53,7 +46,9 @@ export const ScopeSection = () => {
               {t('dictionary.threatActors')}
             </Typography>
             {scenario.threatActors.map(threatActor => (
-              <Typography key={threatActor} className={body2}>{threatActor}</Typography>
+              <Typography key={threatActor} className={body2}>
+                {threatActor}
+              </Typography>
             ))}
           </Grid>
 
@@ -62,7 +57,9 @@ export const ScopeSection = () => {
               {t('dictionary.vulnerabilities')}
             </Typography>
             {scenario.vulnerabilities.map(vulnerability => (
-              <Typography key={vulnerability} className={body2}>{vulnerability}</Typography>
+              <Typography key={vulnerability} className={body2}>
+                {vulnerability}
+              </Typography>
             ))}
           </Grid>
         </Grid>

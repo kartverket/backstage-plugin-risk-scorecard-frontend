@@ -1,13 +1,13 @@
 import React from 'react';
 import { RiScWithMetadata } from '../utils/types';
-import { Box, Grid, IconButton, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';
 import { InfoCard } from '@backstage/core-components';
-import EditIcon from '@mui/icons-material/Edit';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 import { useRiScInfoStyles } from './riScInfoStyle';
 import { useFontStyles } from '../utils/style';
+import EditButton from '../utils/EditButton';
 
 interface RiScInfoProps {
   riSc: RiScWithMetadata;
@@ -41,9 +41,7 @@ export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
             }}
           >
             <Typography variant="h5">{riSc.content.title}</Typography>
-            <IconButton onClick={edit}>
-              <EditIcon />
-            </IconButton>
+            <EditButton onClick={edit} />
           </Box>
           <Typography className={label}>{t('dictionary.scope')}</Typography>
           <Typography className={body2}>{riSc.content.scope}</Typography>

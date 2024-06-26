@@ -30,6 +30,8 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: theme.spacing(1),
   },
   section: {
     padding: theme.spacing(2),
@@ -39,8 +41,5 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
   gridContainer: {
     marginBottom: theme.palette.type === 'dark' ? theme.spacing(1) : '7px',
     backgroundColor: theme.palette.type === 'dark' ? '#55555519' : '#e0e0e019',
-  },
-  editIcon: {
-    color: theme.palette.type === 'dark' ? '#fff' : 'rgba(0, 0, 0, 0.54)',
   },
 }));

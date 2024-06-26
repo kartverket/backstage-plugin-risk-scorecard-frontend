@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import {
   formatNOK,
   getConsequenceLevel,
@@ -11,10 +11,10 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
-import EditIcon from '@mui/icons-material/Edit';
 import { useFontStyles } from '../../utils/style';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { Risk } from '../../utils/types';
+import EditButton from '../../utils/EditButton';
 
 interface RiskProps {
   risk: Risk;
@@ -23,22 +23,15 @@ interface RiskProps {
 }
 
 const RiskBox = ({ risk, riskType, editScenario }: RiskProps) => {
-  const { risikoBadge, titleAndButton, section, editIcon } =
-    useScenarioDrawerStyles();
-  const { h3, body1, label, button } = useFontStyles();
+  const { risikoBadge, titleAndButton, section } = useScenarioDrawerStyles();
+  const { h3, body1, label } = useFontStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Paper className={section} style={{ padding: '1rem' }}>
       <Grid item xs={12} className={titleAndButton}>
         <Typography className={h3}>{t(`dictionary.${riskType}`)}</Typography>
-        <Button
-          className={button}
-          variant="text"
-          color="primary"
-          onClick={() => editScenario(riskType)}
-          startIcon={<EditIcon className={editIcon} aria-label="Edit" />}
-        />
+        <EditButton onClick={() => editScenario(riskType)} />
       </Grid>
 
       <Grid container>
