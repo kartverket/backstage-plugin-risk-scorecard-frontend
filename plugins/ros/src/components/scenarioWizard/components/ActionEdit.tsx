@@ -71,7 +71,6 @@ export const ActionEdit = ({
             value={action.url}
             handleChange={value => setActionField('url', value)}
             minRows={1}
-            required
           />
         </Grid>
 
