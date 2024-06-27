@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://kartverket.github.io/backstage-plugin-risk-scorecard-backend/risc_schema_en_v3_2.json",
+  "$id": "https://kartverket.github.io/backstage-plugin-risk-scorecard-backend/risc_schema_en_v3_3.json",
   "title": "Risk Scorecard (RiSc)",
   "description": "Schema for risk scorecard",
   "type": "object",
@@ -8,7 +8,7 @@
     "schemaVersion": {
       "description": "Schema version",
       "type": "string",
-      "default": "'3.2'"
+      "default": "'3.3'"
     },
     "title": {
       "description": "Title of the risk scorecard",
@@ -37,21 +37,11 @@
           },
           "integrity": {
             "type": "string",
-            "enum": [
-              "Insignificant",
-              "Expected",
-              "Dependent",
-              "Critical"
-            ]
+            "enum": ["Insignificant", "Expected", "Dependent", "Critical"]
           },
           "availability": {
             "type": "string",
-            "enum": [
-              "Insignificant",
-              "2 days",
-              "4 hours",
-              "Immediate"
-            ]
+            "enum": ["Insignificant", "2 days", "4 hours", "Immediate"]
           }
         },
         "required": [
@@ -76,10 +66,7 @@
             "$ref": "#/$defs/scenario"
           }
         },
-        "required": [
-          "title",
-          "scenario"
-        ],
+        "required": ["title", "scenario"],
         "additionalProperties": false
       }
     },
@@ -87,12 +74,7 @@
       "type": "object"
     }
   },
-  "required": [
-    "schemaVersion",
-    "title",
-    "scope",
-    "scenarios"
-  ],
+  "required": ["schemaVersion", "title", "scope", "scenarios"],
   "additionalProperties": false,
   "$defs": {
     "risk": {
@@ -129,10 +111,7 @@
           ]
         }
       },
-      "required": [
-        "probability",
-        "consequence"
-      ],
+      "required": ["probability", "consequence"],
       "additionalProperties": false
     },
     "url": {
@@ -203,10 +182,7 @@
                 "$ref": "#/$defs/action"
               }
             },
-            "required": [
-              "title",
-              "action"
-            ],
+            "required": ["title", "action"],
             "additionalProperties": false
           }
         },
@@ -253,13 +229,7 @@
           ]
         }
       },
-      "required": [
-        "ID",
-        "description",
-        "owner",
-        "deadline",
-        "status"
-      ],
+      "required": ["ID", "description", "owner", "deadline", "status"],
       "additionalProperties": false
     }
   }
