@@ -18,14 +18,12 @@ export const ProbabilityTable = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { table, cell, radio } = useTableStyles();
 
-  const handleChangeRow = (row: number) => () => handleChange(row);
-
   const radioCell = (row: number) => (
     <th scope="col">
       <div className={radio}>
         <Radio
           checked={selectedValue === row}
-          onChange={handleChangeRow(row)}
+          onChange={() => handleChange(row)}
           style={{
             padding: 0,
             color:

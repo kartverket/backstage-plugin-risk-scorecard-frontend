@@ -17,15 +17,13 @@ export const ConsequenceTable = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { table, labelCell, cell, voidCell, radio } = useTableStyles();
 
-  const handleChangeRow = (row: number) => () => handleChange(row);
-
   const getRadioCell = (row: number) => {
     return (
       <th scope="col">
         <div className={radio}>
           <Radio
             checked={selectedValue === row}
-            onChange={handleChangeRow(row)}
+            onChange={() => handleChange(row)}
             style={{
               padding: 0,
               color:

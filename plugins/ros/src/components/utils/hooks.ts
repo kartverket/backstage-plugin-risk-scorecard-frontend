@@ -258,6 +258,8 @@ export interface ScenarioDrawerProps {
   updateRemainingRisk: (remainingRisk: Risk) => void;
   setRemainingProbability: (probabilityLevel: number) => void;
   setRemainingConsequence: (consequenceLevel: number) => void;
+  setProbabilityAndRemainingProbability: (probabilityLevel: number) => void;
+  setConsequenceAndRemainingConsequence: (consequenceLevel: number) => void;
 }
 
 export enum ScenarioDrawerState {
@@ -506,6 +508,32 @@ export const useScenarioDrawer = (
       },
     });
 
+  const setProbabilityAndRemainingProbability = (probabilityLevel: number) =>
+    setScenario({
+      ...scenario,
+      risk: {
+        ...scenario.risk,
+        probability: probabilityOptions[probabilityLevel - 1],
+      },
+      remainingRisk: {
+        ...scenario.remainingRisk,
+        probability: probabilityOptions[probabilityLevel - 1],
+      },
+    });
+
+  const setConsequenceAndRemainingConsequence = (consequenceLevel: number) =>
+    setScenario({
+      ...scenario,
+      risk: {
+        ...scenario.risk,
+        consequence: consequenceOptions[consequenceLevel - 1],
+      },
+      remainingRisk: {
+        ...scenario.remainingRisk,
+        consequence: consequenceOptions[consequenceLevel - 1],
+      },
+    });
+
   return {
     scenarioDrawerState,
 
@@ -540,6 +568,8 @@ export const useScenarioDrawer = (
     updateRemainingRisk,
     setRemainingProbability,
     setRemainingConsequence,
+    setProbabilityAndRemainingProbability,
+    setConsequenceAndRemainingConsequence,
   };
 };
 

@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect } from 'react';
+import React, { Fragment, useContext } from 'react';
 import {
   getConsequenceLevel,
   getProbabilityLevel,
@@ -28,36 +28,37 @@ export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
     setProbability,
     setRemainingConsequence,
     setRemainingProbability,
+    setProbabilityAndRemainingProbability,
+    setConsequenceAndRemainingConsequence,
   } = useContext(ScenarioContext)!!;
 
   const resourceKey =
     riskType === 'initial' ? 'initialRiskStep' : 'restRiskStep';
   const risk = riskType === 'initial' ? scenario.risk : scenario.remainingRisk;
 
-  useEffect(() => {
-    if (restEqualsInitial)
-      setRemainingConsequence(getConsequenceLevel(scenario.risk));
-  }, [
-    restEqualsInitial,
-    scenario.risk,
-    scenario.risk.consequence,
-    setRemainingConsequence,
-  ]);
+  const handleProbabilityChange = (probabilityLevel: number) => {
+    if (riskType === 'initial') {
+      if (restEqualsInitial) {
+        setProbabilityAndRemainingProbability(probabilityLevel);
+      } else {
+        setProbability(probabilityLevel);
+      }
+    } else {
+      setRemainingProbability(probabilityLevel);
+    }
+  };
 
-  useEffect(() => {
-    if (restEqualsInitial)
-      setRemainingProbability(getProbabilityLevel(scenario.risk));
-  }, [
-    restEqualsInitial,
-    scenario.risk,
-    scenario.risk.probability,
-    setRemainingProbability,
-  ]);
-
-  const setC =
-    riskType === 'initial' ? setConsequence : setRemainingConsequence;
-  const setP =
-    riskType === 'initial' ? setProbability : setRemainingProbability;
+  const handleConsequenceChange = (consequenceLevel: number) => {
+    if (riskType === 'initial') {
+      if (restEqualsInitial) {
+        setConsequenceAndRemainingConsequence(consequenceLevel);
+      } else {
+        setConsequence(consequenceLevel);
+      }
+    } else {
+      setRemainingConsequence(consequenceLevel);
+    }
+  };
 
   return (
     <Fragment>
@@ -78,7 +79,7 @@ export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
       <Box className={box}>
         <ProbabilityTable
           selectedValue={getProbabilityLevel(risk)}
-          handleChange={setP}
+          handleChange={handleProbabilityChange}
         />
       </Box>
       <Box className={box}>
@@ -90,7 +91,7 @@ export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
       <Box className={box}>
         <ConsequenceTable
           selectedValue={getConsequenceLevel(risk)}
-          handleChange={setC}
+          handleChange={handleConsequenceChange}
         />
       </Box>
     </Fragment>
