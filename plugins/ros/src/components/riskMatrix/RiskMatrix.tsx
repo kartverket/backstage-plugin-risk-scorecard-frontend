@@ -35,7 +35,10 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
   const [tab, setTab] = useState<RiskMatrixTabs>(RiskMatrixTabs.initialRisk);
 
   return (
-    <InfoCard title={t('riskMatrix.title')}>
+    <InfoCard
+      title={t('riskMatrix.title')}
+      titleTypographyProps={{ style: { marginBottom: 0 } }}
+    >
       <TabContext value={tab}>
         <Tabs setTab={setTab} />
         {riSc.scenarios.length > 0 && (

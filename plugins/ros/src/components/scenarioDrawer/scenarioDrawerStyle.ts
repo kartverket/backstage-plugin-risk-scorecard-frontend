@@ -4,6 +4,7 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
   drawer: {
     padding: theme.spacing(4),
     width: '50%',
+    gap: theme.spacing(3),
     [theme.breakpoints.down('sm')]: {
       width: '90%',
       padding: theme.spacing(2),
@@ -14,33 +15,23 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  buttons: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing(2),
-    marginTop: theme.spacing(4),
-  },
   risikoBadge: {
     width: '20px',
     height: '48px',
-    borderRadius: '20%',
+    borderRadius: '4px',
   },
   titleAndButton: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   section: {
     padding: theme.spacing(2),
-    marginBottom: theme.spacing(2),
     backgroundColor: theme.palette.type === 'dark' ? '#555555' : '#e0e0e0',
   },
   gridContainer: {
     marginBottom: theme.palette.type === 'dark' ? theme.spacing(1) : '7px',
     backgroundColor: theme.palette.type === 'dark' ? '#55555519' : '#e0e0e019',
-  },
-  editIcon: {
-    color: theme.palette.type === 'dark' ? '#fff' : 'rgba(0, 0, 0, 0.54)',
   },
 }));

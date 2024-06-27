@@ -34,21 +34,22 @@ export const useFontStyles = makeStyles(theme => ({
   },
   body1: {
     fontSize: theme.spacing(2),
-    fontWeight: 700,
+    fontWeight: 500,
   },
   body2: {
     fontSize: theme.spacing(2),
     fontWeight: 400,
+    whiteSpace: 'pre-line',
   },
   label: {
     fontSize: theme.spacing(1.75),
-    fontWeight: 500,
+    fontWeight: 700,
     textTransform: 'uppercase',
     color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
     paddingBottom: '0.4rem',
   },
   labelSubtitle: {
-    fontSize: theme.spacing(1.5),
+    fontSize: theme.spacing(1.75),
     fontWeight: 400,
     color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
     paddingBottom: '0.4rem',
