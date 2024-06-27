@@ -39,6 +39,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       status: 'Status',
       threatActors: 'Threat actors',
       title: 'Title',
+      url: 'URL',
       vulnerabilities: 'Vulnerabilities',
     },
     rosStatus: {
@@ -236,9 +237,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     threatActors: {
       'Script kiddie': 'Script kiddie',
-      'Hacktivist': 'Hacktivist',
+      Hacktivist: 'Hacktivist',
       'Reckless employee': 'Reckless employee',
-      'Insider': 'Insider',
+      Insider: 'Insider',
       'Organised crime': 'Organised crime',
       'Terrorist organisation': 'Terrorist organisation',
       'Nation/government': 'Nation/government',
@@ -247,7 +248,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       'Compromised admin user': 'Compromised admin user',
       'Dependency vulnerability': 'Dependency vulnerability',
       'Disclosed secret': 'Disclosed secret',
-      'Misconfiguration': 'Misconfiguration',
+      Misconfiguration: 'Misconfiguration',
       'Input tampering': 'Input tampering',
       'User repudiation': 'User repudiation',
       'Information leak': 'Information leak',
@@ -295,6 +296,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.status': 'Status',
           'dictionary.threatActors': 'Trusselaktører',
           'dictionary.title': 'Tittel',
+          'dictionary.url': 'URL',
           'dictionary.vulnerabilities': 'Sårbarheter',
 
           'rosStatus.statusBadge.missing':

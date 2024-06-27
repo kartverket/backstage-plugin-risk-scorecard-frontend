@@ -55,6 +55,7 @@ export type Action = {
   owner: string;
   deadline: string;
   status: string;
+  url: string;
 };
 
 export type GithubRepoInfo = {
