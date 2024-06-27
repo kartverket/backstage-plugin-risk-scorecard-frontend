@@ -122,7 +122,11 @@ const RosAcceptance = ({
     case RiScStatus.Published:
       return (
         <Typography paragraph style={{ fontWeight: 700 }} variant="subtitle1">
-          <CheckIcon fontSize='medium' style={{ transform: 'translateY(5px)' }}/> {t('rosStatus.statusBadge.approved')}
+          <CheckIcon
+            fontSize="medium"
+            style={{ transform: 'translateY(5px)' }}
+          />{' '}
+          {t('rosStatus.statusBadge.approved')}
         </Typography>
       );
     default:
@@ -161,13 +165,12 @@ export const RiScStatusComponent = ({
       <RosAcceptance status={selectedRiSc.status} />
       {selectedRiSc.status === RiScStatus.SentForApproval && (
         <Typography style={{ fontWeight: 700 }} paragraph variant="subtitle1">
-            <PullRequestSvg /> 
-            {t('rosStatus.prStatus')}
-            <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
+          <PullRequestSvg />
+          {t('rosStatus.prStatus')}
+          <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
             Github
-            </Link>
+          </Link>
         </Typography>
-
       )}
 
       <Grid

@@ -47,8 +47,7 @@ export const RiskMatrixScenarioCount = ({
   const handleScenarioClick = (ID: string) => {
     setTooltipOpen(false);
     openScenario(ID);
-  }
-
+  };
 
   const scenarios = riSc.scenarios.filter(
     scenario =>
@@ -76,16 +75,21 @@ export const RiskMatrixScenarioCount = ({
         </Typography>
       </ListSubheader>
       {scenarios.map(s => (
-        <ListItem key={s.ID} button disableGutters className={tooltipText} onClick={() => {
-          handleScenarioClick(s.ID);
-        }}>
+        <ListItem
+          key={s.ID}
+          button
+          disableGutters
+          className={tooltipText}
+          onClick={() => {
+            handleScenarioClick(s.ID);
+          }}
+        >
           <CircleIcon className={tooltipText} style={{ width: '10px' }} />
           <ListItemText
-            
             className={tooltipText}
             style={{ paddingLeft: '0.6rem' }}
           >
-            <span >{s.title}</span>
+            <span>{s.title}</span>
           </ListItemText>
         </ListItem>
       ))}

@@ -27,16 +27,18 @@ export const ScenarioStep = () => {
     return {
       value: threatActor,
       /* @ts-ignore Because ts can't typecheck strings agains our keys */
-      renderedValue: t(`threatActors.${threatActor}`)
+      renderedValue: t(`threatActors.${threatActor}`),
     };
   });
-  const translatedVulnerabilities = vulnerabilitiesOptions.map(vulnerability => {
-    return {
-      value: vulnerability,
-      /* @ts-ignore Because ts can't typecheck strings agains our keys */
-      renderedValue: t(`vulnerabilities.${vulnerability}`),
-    };
-  });
+  const translatedVulnerabilities = vulnerabilitiesOptions.map(
+    vulnerability => {
+      return {
+        value: vulnerability,
+        /* @ts-ignore Because ts can't typecheck strings agains our keys */
+        renderedValue: t(`vulnerabilities.${vulnerability}`),
+      };
+    },
+  );
 
   return (
     <Grid container>
@@ -79,10 +81,10 @@ export const ScenarioStep = () => {
           selectedValues={scenario.threatActors}
           options={translatedThreatActors}
           handleChange={setThreatActors}
-          renderSelectedValue={(value => {
+          renderSelectedValue={value => {
             /* @ts-ignore */
             return t(`threatActors.${value}`);
-          })}
+          }}
         />
       </Grid>
 
@@ -107,10 +109,10 @@ export const ScenarioStep = () => {
           selectedValues={scenario.vulnerabilities}
           options={translatedVulnerabilities}
           handleChange={setVulnerabilities}
-          renderSelectedValue={(value => {
+          renderSelectedValue={value => {
             /* @ts-ignore */
             return t(`vulnerabilities.${value}`);
-          })}
+          }}
         />
       </Grid>
       <Grid item xs={12}>

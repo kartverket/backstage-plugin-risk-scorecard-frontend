@@ -12,9 +12,9 @@ import { FormHelperText } from '@material-ui/core';
 import { menuProps, useInputFieldStyles } from './style';
 
 type OptionsObject = {
-  value: string,
-  renderedValue: string,
-}
+  value: string;
+  renderedValue: string;
+};
 interface DropdownProps<T> {
   options: string[] | OptionsObject[];
   selectedValues: T;
@@ -44,7 +44,9 @@ export const Dropdown = <T,>({
     return typeof option === 'string' ? option : option.value;
   }
 
-  function getOptionsRenderValue(option: DropdownProps<T>['options'][0]): string {
+  function getOptionsRenderValue(
+    option: DropdownProps<T>['options'][0],
+  ): string {
     return typeof option === 'string' ? option : option.renderedValue;
   }
 
@@ -107,7 +109,9 @@ export const Dropdown = <T,>({
           <MenuItem key={getOptionsValue(name)} value={getOptionsValue(name)}>
             {multiple && (
               <ListItemIcon>
-                <Checkbox checked={selectedValues.indexOf(getOptionsValue(name)) > -1} />
+                <Checkbox
+                  checked={selectedValues.indexOf(getOptionsValue(name)) > -1}
+                />
               </ListItemIcon>
             )}
             <ListItemText primary={getOptionsRenderValue(name)} />
