@@ -18,7 +18,11 @@ export type ProcessRiScResultDTO = {
 };
 
 // Takes a normal ProcessRiScResultDTO and changes status to ContentStatus.
-type ContentRiScResultDTO = Modify<ProcessRiScResultDTO, "status", ContentStatus> & { pullRequestUrl: string };
+type ContentRiScResultDTO = Modify<
+  ProcessRiScResultDTO,
+  'status',
+  ContentStatus
+> & { pullRequestUrl: string };
 
 export type PublishRiScResultDTO = {
   pendingApproval?: {

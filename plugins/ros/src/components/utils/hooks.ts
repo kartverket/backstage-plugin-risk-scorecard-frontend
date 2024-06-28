@@ -326,7 +326,7 @@ export const useScenarioDrawer = (
           state: 'Risikoscenarioet du prøver å åpne eksisterer ikke',
         });
         return;
-      }      
+      }
 
       setScenario(selectedScenario);
       setOriginalScenario(selectedScenario);
@@ -344,7 +344,9 @@ export const useScenarioDrawer = (
   // openNewScenarioWizard is used when opening the wizard with a new scenario. It explisit sets the searchParam to step=scenario.
   const openNewScenarioWizard = (id: string, step: ScenarioWizardSteps) => {
     if (riSc) {
-      navigate(`${getScenarioPath({ riScId: riSc.id, scenarioId: id })}?step=${step}`);
+      navigate(
+        `${getScenarioPath({ riScId: riSc.id, scenarioId: id })}?step=${step}`,
+      );
     }
   };
 
@@ -409,7 +411,7 @@ export const useScenarioDrawer = (
       const s = emptyScenario();
       setScenario(s);
       setOriginalScenario(s);
-      openNewScenarioWizard(s.ID, "scenario");
+      openNewScenarioWizard(s.ID, 'scenario');
     }
   };
 
@@ -630,27 +632,28 @@ export const useFetchRiScs = (
   // Initial fetch of RiScs
   useEffectOnce(() => {
     fetchRiScs(
-      res => {        
+      res => {
         const fetchedRiScs: RiScWithMetadata[] = res
           .filter(risk => risk.status === ContentStatus.Success)
           .map(riScDTO => {
-          
-          // This action can throw a runtime error if content is not parsable by JSON library.
-          // If that happens, it is catched by the fetch onError catch.
-          const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
-          
-          const content = dtoToRiSc(json);
-          return {
-            id: riScDTO.riScId,
-            content: content,
-            status: riScDTO.riScStatus,
-            pullRequestUrl: riScDTO.pullRequestUrl,
-          };
-        });
+            // This action can throw a runtime error if content is not parsable by JSON library.
+            // If that happens, it is catched by the fetch onError catch.
+            const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
+
+            const content = dtoToRiSc(json);
+            return {
+              id: riScDTO.riScId,
+              content: content,
+              status: riScDTO.riScStatus,
+              pullRequestUrl: riScDTO.pullRequestUrl,
+            };
+          });
         setRiScs(fetchedRiScs);
         setIsFetching(false);
 
-        const errorRiScs: string[] = res.filter(risk => risk.status !== ContentStatus.Success).map(risk => risk.riScId);
+        const errorRiScs: string[] = res
+          .filter(risk => risk.status !== ContentStatus.Success)
+          .map(risk => risk.riScId);
 
         if (errorRiScs.length > 0) {
           const errorMessage = `Failed to fetch risc scorecards with ids: ${errorRiScs.join(
