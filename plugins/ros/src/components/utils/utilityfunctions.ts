@@ -56,7 +56,7 @@ export const getConsequenceLevel = (risiko: Risk) =>
   consequenceOptions.indexOf(risiko.consequence) + 1;
 
 export const emptyRiSc = (): RiSc => ({
-  schemaVersion: '3.2',
+  schemaVersion: '3.3',
   title: '',
   scope: '',
   valuations: [],
@@ -90,6 +90,7 @@ export const emptyAction = (): Action => ({
   owner: '',
   deadline: new Date().toISOString().split('T')[0],
   status: 'Not started',
+  url: '',
 });
 
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status

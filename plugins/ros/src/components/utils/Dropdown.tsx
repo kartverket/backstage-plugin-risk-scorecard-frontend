@@ -38,8 +38,6 @@ export const Dropdown = <T,>({
 }: DropdownProps<T>) => {
   const { formLabel, formControl } = useInputFieldStyles();
 
-  console.log('dropdown requires', required, label);
-
   const multiple = Array.isArray(selectedValues);
 
   function getOptionsValue(option: DropdownProps<T>['options'][0]): string {

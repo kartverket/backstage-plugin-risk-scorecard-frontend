@@ -13,6 +13,7 @@ export const useActionBoxStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'end',
     padding: theme.spacing(1),
   },
   column: {

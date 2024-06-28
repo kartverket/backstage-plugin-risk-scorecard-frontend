@@ -67,14 +67,15 @@ type ActionsDTO = {
     owner: string;
     deadline: string;
     status: string;
+    url: string;
   };
 };
 
 export function dtoToRiSc(riScDTO: RiScDTO): RiSc {
   return {
     ...riScDTO,
-    // TODO implementere løsning for migrering, kan bumpe fra 3.1 til 3.2 på denne måten manuelt ved å åpne og lagre riscen:
-    // skjemaVersjon: '3.2',
+    // TODO implementere løsning for migrering, kan bumpe fra 3.2 til 3.3 på denne måten manuelt ved å åpne og lagre riscen:
+    // skjemaVersjon: '3.3',
     scenarios: riScDTO.scenarios.map(dtoToScenario),
   };
 }
@@ -154,6 +155,7 @@ function actionToDTO(action: Action): ActionsDTO {
       owner: action.owner,
       deadline: action.deadline,
       status: action.status,
+      url: action.url,
     },
   };
 }

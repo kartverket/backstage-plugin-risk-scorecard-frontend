@@ -11,7 +11,8 @@ export type RiScWithMetadata = {
   status: RiScStatus;
   content: RiSc;
   isRequiresNewApproval?: boolean;
-  pullRequestUrl: string;
+  pullRequestUrl?: string;
+  schemaVersion?: string;
 };
 
 export type RiSc = {

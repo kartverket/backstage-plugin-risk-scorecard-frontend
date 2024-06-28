@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Action } from '../../utils/types';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Link, Typography } from '@material-ui/core';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { useActionBoxStyles } from './actionBoxStyle';
-import { formatDate } from '../../utils/utilityfunctions';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useFontStyles } from '../../utils/style';
@@ -26,14 +25,8 @@ export const ActionBox = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { body2, label } = useFontStyles();
   const { gridContainer } = useScenarioDrawerStyles();
-  const {
-    alignCenter,
-    row,
-    paddingTop,
-    actionDescription,
-    column,
-    chipDropdown,
-  } = useActionBoxStyles();
+  const { alignCenter, row, paddingTop, actionDescription, chipDropdown } =
+    useActionBoxStyles();
   const [previousAction, setPreviousAction] = useState(action);
 
   useEffect(() => {
@@ -64,19 +57,25 @@ export const ActionBox = ({
         <Typography className={body2}>{action.description}</Typography>
       </Grid>
 
-      <Grid container xs={12} className={row}>
-        <Grid item xs={4}>
-          <Typography className={label}>
-            {t('dictionary.measureOwner')}
-          </Typography>
-          <Typography className={body2}>{action.owner}</Typography>
-        </Grid>
-
-        <Grid container xs={4} className={column}>
-          <Typography className={label}>{t('dictionary.deadline')}</Typography>
-          <Typography className={body2}>
-            {formatDate(action.deadline)}
-          </Typography>
+      <Grid item xs={12} className={row}>
+        <Grid item xs={8}>
+          <Typography className={label}>{t('dictionary.url')}</Typography>
+          {action.url ? (
+            <Link
+              className={body2}
+              target="_blank"
+              rel="noreferrer"
+              href={
+                action.url.startsWith('http') ? action.url : `//${action.url}`
+              }
+            >
+              {action.url}
+            </Link>
+          ) : (
+            <Typography className={body2}>
+              {t('dictionary.emptyUrl')}
+            </Typography>
+          )}
         </Grid>
 
         <Grid item xs={3} className={chipDropdown}>
