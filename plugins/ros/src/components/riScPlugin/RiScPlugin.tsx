@@ -58,7 +58,6 @@ const Plugin = () => {
     params.scenarioId,
   );
 
-
   const [searchParams] = useSearchParams();
   const scenarioWizardStep =
     (searchParams.get('step') as ScenarioWizardSteps | null) || null;
@@ -75,9 +74,7 @@ const Plugin = () => {
             <Typography>{response.statusMessage}</Typography>
           </Alert>
         )}
-        {isRequesting && (
-          <LinearProgress className={linearProgress} />
-        )}
+        {isRequesting && <LinearProgress className={linearProgress} />}
 
         {scenarioWizardStep !== null ? (
           <ScenarioWizard
