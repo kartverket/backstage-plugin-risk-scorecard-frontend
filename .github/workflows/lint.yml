@@ -1,9 +1,9 @@
-name: Compile and lint TypeScript
+name: Lint and compile plugin
 
 on:
   push:
     paths:
-      - 'plugins/ros'
+      - 'plugins/ros/**'
 
 jobs:
   compile_and_lint:
@@ -17,6 +17,6 @@ jobs:
         with:
           node-version: '20.x'
       - run: yarn install --frozen-lockfile
-      - run: yarn tsc
-      - run: yarn lint
       - run: yarn prettier:check
+      - run: yarn lint
+      - run: yarn tsc
