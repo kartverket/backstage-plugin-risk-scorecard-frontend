@@ -109,7 +109,7 @@ export const RiScDialog = ({
     <Dialog
       classes={{ paper: paper }}
       open={dialogState !== RiScDialogStates.Closed}
-      onClose={handleSave}
+      onClose={handleCancel}
       {...props}
     >
       <DialogContent>
