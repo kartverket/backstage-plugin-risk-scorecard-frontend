@@ -11,7 +11,8 @@ export type RiScWithMetadata = {
   status: RiScStatus;
   content: RiSc;
   isRequiresNewApproval?: boolean;
-  pullRequestUrl: string;
+  pullRequestUrl?: string;
+  schemaVersion?: string;
 };
 
 export type RiSc = {
@@ -55,6 +56,7 @@ export type Action = {
   owner: string;
   deadline: string;
   status: string;
+  url: string;
 };
 
 export type GithubRepoInfo = {

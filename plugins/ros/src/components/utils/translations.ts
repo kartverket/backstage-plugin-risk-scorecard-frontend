@@ -39,6 +39,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       status: 'Status',
       threatActors: 'Threat actors',
       title: 'Title',
+      url: 'URL',
+      emptyUrl: 'No URL specified',
       vulnerabilities: 'Vulnerabilities',
     },
     rosStatus: {
@@ -295,6 +297,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.status': 'Status',
           'dictionary.threatActors': 'Trusselaktører',
           'dictionary.title': 'Tittel',
+          'dictionary.url': 'URL',
+          'dictionary.emptyUrl': 'Ingen URL spesifisert',
           'dictionary.vulnerabilities': 'Sårbarheter',
 
           'rosStatus.statusBadge.missing':

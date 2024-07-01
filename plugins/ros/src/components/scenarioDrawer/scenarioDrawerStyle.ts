@@ -27,6 +27,7 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
   },
   section: {
+    width: '100%',
     padding: theme.spacing(2),
     backgroundColor: theme.palette.type === 'dark' ? '#555555' : '#e0e0e0',
   },

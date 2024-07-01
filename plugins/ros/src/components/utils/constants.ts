@@ -1,4 +1,4 @@
-import schema from '../../risc_schema_en_v3_2.json';
+import schema from '../../risc_schema_en_v3_3.json';
 
 export const consequenceOptions =
   schema.$defs.risk.properties.consequence.anyOf[0].enum!;

@@ -145,7 +145,7 @@ const useFetch = () => {
       if (onError) onError();
       setResponse({
         statusMessage:
-          'Failed to fetch JSON schema. Fallback value 3.2 for schema version used',
+          'Failed to fetch JSON schema. Fallback value 3.3 for schema version used',
         status: ProcessingStatus.ErrorWhenFetchingJSONSchema,
       });
     });
@@ -726,9 +726,10 @@ export const useFetchRiScs = (
           /'/g,
           '',
         );
+
         const newRiSc: RiSc = {
           ...riSc,
-          schemaVersion: schemaVersion ? schemaVersion : '3.2',
+          schemaVersion: schemaVersion ? schemaVersion : '3.3',
         };
 
         postRiScs(
@@ -736,7 +737,7 @@ export const useFetchRiScs = (
           res2 => {
             if (!res2.riScId) throw new Error('No RiSc ID returned');
 
-            const RiScWithLatestSchemaVersion = {
+            const RiScWithLatestSchemaVersion: RiScWithMetadata = {
               id: res2.riScId,
               status: RiScStatus.Draft,
               content: riSc,
@@ -759,7 +760,7 @@ export const useFetchRiScs = (
         );
       },
       () => {
-        const fallBackSchemaVersion = '3.2';
+        const fallBackSchemaVersion = '3.3';
         const newRiSc: RiSc = {
           ...riSc,
           schemaVersion: fallBackSchemaVersion,
@@ -769,7 +770,7 @@ export const useFetchRiScs = (
           res2 => {
             if (!res2.riScId) throw new Error('No RiSc ID returned');
 
-            const RiScWithLatestSchemaVersion = {
+            const RiScWithLatestSchemaVersion: RiScWithMetadata = {
               id: res2.riScId,
               status: RiScStatus.Draft,
               content: riSc,
