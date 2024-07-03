@@ -67,6 +67,7 @@ export const ScenarioWizard = ({
     closeScenario,
     editScenario,
     validateScenario,
+    hasFormErrors,
   } = useContext(ScenarioContext)!!;
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
@@ -93,6 +94,10 @@ export const ScenarioWizard = ({
   }, [canCloseIfSuccessfull, close, updateStatus]);
 
   const saveAndClose = () => {
+    if (hasFormErrors()) {
+      return;
+    }
+
     saveScenario();
     setCanCloseIfSuccessfull(true);
   };

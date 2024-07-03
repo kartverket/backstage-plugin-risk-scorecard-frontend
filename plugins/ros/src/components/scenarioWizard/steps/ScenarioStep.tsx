@@ -16,7 +16,6 @@ export const ScenarioStep = () => {
   const { labelSubtitle, label, h2, subtitle2 } = useFontStyles();
   const {
     scenario,
-    scenarioErrors,
     setTitle,
     setDescription,
     setThreatActors,
@@ -53,7 +52,8 @@ export const ScenarioStep = () => {
         <TextField
           label={t('dictionary.title')}
           value={scenario.title}
-          error={scenarioErrors.title ? t('scenarioDrawer.titleError') : ''}
+          errorMessage={t('scenarioDrawer.titleError')}
+          errorKey="scenario-title"
           required
           minRows={1}
           handleChange={setTitle}
