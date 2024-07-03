@@ -11,7 +11,7 @@ import { ScenarioContext } from '../riScPlugin/ScenarioContext';
 type ErrorProps = {
   errorKey?: string;
   errorMessage?: string;
-}
+};
 
 type TextFieldProps = {
   label?: string;
@@ -21,19 +21,19 @@ type TextFieldProps = {
   minRows?: number;
   handleChange?: (value: string) => void;
 } & (
-    | {
+  | ({
       validateInput: (value: string) => boolean;
       required?: boolean;
-    } & ErrorProps
-    | {
+    } & ErrorProps)
+  | ({
       required?: undefined;
       validateInput?: undefined;
-    } & ErrorProps
-    | {
+    } & ErrorProps)
+  | ({
       required: boolean;
       validateInput?: (value: string) => boolean;
-    } & ErrorProps
-  );
+    } & ErrorProps)
+);
 
 export const TextField = ({
   label,
@@ -66,7 +66,7 @@ export const TextField = ({
     const isValid = validateInput ? validateInput(event.target.value) : true;
     const requiredValid = required ? event.target.value.length > 0 : true;
 
-    const validationResult = isValid && requiredValid
+    const validationResult = isValid && requiredValid;
     setHasError(!validationResult);
 
     if (!errorKey) {
