@@ -107,7 +107,7 @@ export const TextField = ({
         onBlur={onBlur}
         InputProps={{ className: root }}
       />
-      {fieldError && <FormHelperText>{errorMessage}</FormHelperText>}
+      {fieldError && <FormHelperText error>{errorMessage}</FormHelperText>}
     </FormControl>
   );
 };
