@@ -29,6 +29,11 @@ export const ActionEdit = ({
   const setActionField = (field: keyof Action, value: string) =>
     updateAction({ ...action, [field]: value });
 
+  const validateUrl = (value: string) => {
+    const urlRegex = /^https?:\/\/[a-z\d.-]+\.[a-z]{2,6}(\/[\w .-]*)*\/?$/;
+    return urlRegex.test(value);
+  };
+
   return (
     <Paper className={paper}>
       <Grid container style={{ display: 'flex', rowGap: '0.7rem' }}>
@@ -60,6 +65,8 @@ export const ActionEdit = ({
             label={t('dictionary.description')}
             value={action.description}
             handleChange={value => setActionField('description', value)}
+            errorMessage={t('scenarioDrawer.action.descriptionError')}
+            errorKey={`${index}-action-description`}
             minRows={1}
             required
           />
@@ -70,7 +77,10 @@ export const ActionEdit = ({
             label={t('dictionary.url')}
             value={action.url}
             handleChange={value => setActionField('url', value)}
+            validateInput={validateUrl}
+            errorMessage={t('scenarioDrawer.action.urlError')}
             minRows={1}
+            errorKey={`${index}-action-url`}
           />
         </Grid>
 
@@ -81,7 +91,6 @@ export const ActionEdit = ({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'flex-end',
           }}
         >
           <Dropdown<string>

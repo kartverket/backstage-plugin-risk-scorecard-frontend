@@ -260,6 +260,11 @@ export interface ScenarioDrawerProps {
   setRemainingConsequence: (consequenceLevel: number) => void;
   setProbabilityAndRemainingProbability: (probabilityLevel: number) => void;
   setConsequenceAndRemainingConsequence: (consequenceLevel: number) => void;
+
+  setFormError: (key: string) => void;
+  removeFormError: (key: string) => void;
+  hasFormErrors: () => boolean;
+  formFieldHasErrors: (key: string) => boolean;
 }
 
 export enum ScenarioDrawerState {
@@ -287,6 +292,7 @@ export const useScenarioDrawer = (
   );
 
   const [isNewScenario, setIsNewScenario] = useState(false);
+  const [formErrors, _setFormErrors] = useState<{ [key: string]: boolean }>({});
   const [scenario, setScenario] = useState(emptyScenario());
   const [originalScenario, setOriginalScenario] = useState(emptyScenario());
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
@@ -536,6 +542,20 @@ export const useScenarioDrawer = (
       },
     });
 
+  const setFormError = (key: string) => {
+    _setFormErrors({ ...formErrors, [key]: true });
+  };
+
+  const removeFormError = (key: string) => {
+    delete formErrors[key];
+    _setFormErrors({ ...formErrors });
+  };
+
+  const formFieldHasErrors = (key: string) =>
+    Object.keys(formErrors).includes(key);
+
+  const hasFormErrors = () => Object.keys(formErrors).length > 0;
+
   return {
     scenarioDrawerState,
 
@@ -572,6 +592,11 @@ export const useScenarioDrawer = (
     setRemainingConsequence,
     setProbabilityAndRemainingProbability,
     setConsequenceAndRemainingConsequence,
+
+    setFormError,
+    hasFormErrors,
+    removeFormError,
+    formFieldHasErrors,
   };
 };
 

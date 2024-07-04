@@ -138,6 +138,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
       },
     },
     scenarioDrawer: {
+      action: {
+        requiredError: 'Field is required',
+        descriptionError: 'Description cannot be empty',
+        urlError: 'Invalid url',
+      },
       title: 'Risk scenario',
       titleError: 'Scenario title is required',
       subtitle:
@@ -300,6 +305,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.url': 'URL',
           'dictionary.emptyUrl': 'Ingen URL spesifisert',
           'dictionary.vulnerabilities': 'Sårbarheter',
+
+          'scenarioDrawer.action.descriptionError':
+            'Beskrivelse kan ikke være tom',
+          'scenarioDrawer.action.urlError': 'Ugyldig URL',
+          'scenarioDrawer.action.requiredError': 'Feltet er påkrevd',
 
           'rosStatus.statusBadge.missing':
             'Venter på godkjenning av risikoeier',
