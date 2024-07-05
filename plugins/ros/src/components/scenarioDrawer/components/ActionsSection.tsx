@@ -1,21 +1,20 @@
 import { Divider, Grid, Paper, Typography } from '@material-ui/core';
 import { ActionBox } from './ActionBox';
 import Box from '@mui/material/Box';
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment } from 'react';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
-import { useFontStyles } from '../../utils/style';
-import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
+import { useFontStyles } from '../../../utils/style';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { ExistingActionBox } from './ExistingActionBox';
-import EditButton from '../../utils/EditButton';
+import EditButton from '../../common/EditButton';
+import { useScenario } from '../../../ScenarioContext';
 
 export const ActionsSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h3, label } = useFontStyles();
   const { titleAndButton, section } = useScenarioDrawerStyles();
-  const { scenario, editScenario, saveScenario, updateAction } =
-    useContext(ScenarioContext)!!;
+  const { scenario, editScenario, saveScenario, updateAction } = useScenario();
 
   return (
     <Box>

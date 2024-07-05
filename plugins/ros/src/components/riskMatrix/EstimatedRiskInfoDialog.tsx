@@ -7,10 +7,10 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import { pluginRiScTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { consequenceOptions, probabilityOptions } from '../utils/constants';
-import { formatNOK } from '../utils/utilityfunctions';
+import { consequenceOptions, probabilityOptions } from '../../utils/constants';
+import { formatNOK } from '../../utils/utilityfunctions';
 import { useEstimatedRiskInfoDialogStyles } from './estimatedRiskInfoDialogStyle';
 
 export interface EstimatedRiskInfoDialogProps {

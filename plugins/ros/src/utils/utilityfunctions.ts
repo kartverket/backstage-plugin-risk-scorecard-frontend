@@ -1,4 +1,4 @@
-import { Action, ProcessingStatus, RiSc, Risk, Scenario } from './types';
+import { ProcessingStatus, RiSc, Risk } from './types';
 import {
   consequenceOptions,
   probabilityOptions,
@@ -61,36 +61,6 @@ export const emptyRiSc = (): RiSc => ({
   scope: '',
   valuations: [],
   scenarios: [],
-});
-
-export const emptyScenario = (): Scenario => ({
-  ID: generateRandomId(),
-  title: '',
-  description: '',
-  threatActors: [],
-  vulnerabilities: [],
-  risk: {
-    summary: '',
-    probability: 0.01,
-    consequence: 1000,
-  },
-  existingActions: '',
-  actions: [],
-  remainingRisk: {
-    summary: '',
-    probability: 0.01,
-    consequence: 1000,
-  },
-});
-
-export const emptyAction = (): Action => ({
-  ID: generateRandomId(),
-  title: '',
-  description: '',
-  owner: '',
-  deadline: new Date().toISOString().split('T')[0],
-  status: 'Not started',
-  url: '',
 });
 
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status

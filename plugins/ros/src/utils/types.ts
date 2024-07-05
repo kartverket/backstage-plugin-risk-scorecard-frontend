@@ -43,6 +43,10 @@ export type Scenario = {
   remainingRisk: Risk;
 };
 
+export type ScenarioErrors = {
+  title: boolean;
+};
+
 export type Risk = {
   summary: string;
   probability: number;

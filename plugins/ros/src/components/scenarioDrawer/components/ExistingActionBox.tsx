@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { useActionBoxStyles } from './actionBoxStyle';
-import { useFontStyles } from '../../utils/style';
+import { useFontStyles } from '../../../utils/style';
 
 interface ExistingActionBoxProps {
   existingAction: string;

@@ -2,15 +2,15 @@ import React from 'react';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { Paper, Typography } from '@material-ui/core';
-import { Scenario } from '../utils/types';
+import { Scenario } from '../../utils/types';
 import { useTableStyles } from './ScenarioTableStyles';
 import {
   getConsequenceLevel,
   getProbabilityLevel,
   getRiskMatrixColor,
-} from '../utils/utilityfunctions';
+} from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;

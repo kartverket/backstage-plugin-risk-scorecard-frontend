@@ -8,14 +8,14 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
-import { consequenceOptions, probabilityOptions } from '../utils/constants';
-import { RiSc } from '../utils/types';
+import { consequenceOptions, probabilityOptions } from '../../utils/constants';
+import { RiSc } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
-import { ScenarioContext } from '../riScPlugin/ScenarioContext';
+import { useScenario } from '../../ScenarioContext';
 
 interface ScenarioCountProps {
   riSc: RiSc;
@@ -42,7 +42,7 @@ export const RiskMatrixScenarioCount = ({
   } = useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const { openScenario } = useContext(ScenarioContext)!!;
+  const { openScenario } = useScenario();
 
   const handleScenarioClick = (ID: string) => {
     setTooltipOpen(false);

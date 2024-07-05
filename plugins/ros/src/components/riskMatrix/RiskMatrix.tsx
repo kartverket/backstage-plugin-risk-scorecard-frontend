@@ -4,13 +4,13 @@ import { InfoCard } from '@backstage/core-components';
 import Box from '@mui/material/Box';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
-import { RiSc } from '../utils/types';
+import { RiSc } from '../../utils/types';
 import TabContext from '@material-ui/lab/TabContext';
 import { Tabs } from './Tabs';
-import { riskMatrix } from '../utils/constants';
+import { riskMatrix } from '../../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../utils/translations';
-import { useFontStyles } from '../utils/style';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useFontStyles } from '../../utils/style';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
 
 export enum RiskMatrixTabs {

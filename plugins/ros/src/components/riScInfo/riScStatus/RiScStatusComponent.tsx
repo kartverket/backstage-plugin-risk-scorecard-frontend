@@ -10,12 +10,12 @@ import {
   useTheme,
 } from '@material-ui/core';
 import React, { ReactComponentElement, useState } from 'react';
-import { RiScStatus, RiScWithMetadata } from '../../utils/types';
+import { RiScStatus, RiScWithMetadata } from '../../../utils/types';
 import Alert from '@mui/material/Alert';
 import { useRiScDialogStyles } from '../../riScDialog/riScDialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useButtonStyles } from './riScStatusComponentStyle';
 import CheckIcon from '@mui/icons-material/Check';
 

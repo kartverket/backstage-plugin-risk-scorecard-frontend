@@ -4,9 +4,9 @@ import {
   FormLabel,
   TextField as MUITextField,
 } from '@material-ui/core';
-import React, { ChangeEvent, useContext, useState } from 'react';
-import { useFontStyles, useInputFieldStyles } from './style';
-import { ScenarioContext } from '../riScPlugin/ScenarioContext';
+import React, { ChangeEvent, useState } from 'react';
+import { useScenario } from '../../ScenarioContext';
+import { useFontStyles, useInputFieldStyles } from '../../utils/style';
 
 type ErrorProps = {
   errorKey?: string;
@@ -47,8 +47,7 @@ export const TextField = ({
   errorKey,
 }: TextFieldProps) => {
   const [hasError, setHasError] = useState(false);
-  const { setFormError, removeFormError, formFieldHasErrors } =
-    useContext(ScenarioContext)!!;
+  const { setFormError, removeFormError, formFieldHasErrors } = useScenario();
   const { formLabel, formControl, root } = useInputFieldStyles();
   const { labelSubtitle } = useFontStyles();
 
