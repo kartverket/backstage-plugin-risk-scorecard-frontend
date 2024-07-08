@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 import React from 'react';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 interface CloseConfirmationProps {

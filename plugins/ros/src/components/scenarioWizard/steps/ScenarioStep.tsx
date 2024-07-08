@@ -1,15 +1,15 @@
 import { Box, Grid, Typography } from '@material-ui/core';
-import { TextField } from '../../utils/Textfield';
-import { Dropdown } from '../../utils/Dropdown';
+import { TextField } from '../../common/Textfield';
+import { Dropdown } from '../../common/Dropdown';
 import {
   threatActorsOptions,
   vulnerabilitiesOptions,
-} from '../../utils/constants';
-import React, { useContext } from 'react';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+} from '../../../utils/constants';
+import React from 'react';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
-import { useFontStyles } from '../../utils/style';
+import { useFontStyles } from '../../../utils/style';
+import { useScenario } from '../../../ScenarioContext';
 
 export const ScenarioStep = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -20,7 +20,7 @@ export const ScenarioStep = () => {
     setDescription,
     setThreatActors,
     setVulnerabilities,
-  } = useContext(ScenarioContext)!!;
+  } = useScenario();
 
   const translatedThreatActors = threatActorsOptions.map(threatActor => {
     return {

@@ -6,13 +6,13 @@ import {
   DialogContent,
   Typography,
 } from '@material-ui/core';
-import { TextField } from '../utils/Textfield';
-import { RiSc, RiScWithMetadata } from '../utils/types';
-import { emptyRiSc } from '../utils/utilityfunctions';
+import { TextField } from '../common/Textfield';
+import { RiSc, RiScWithMetadata } from '../../utils/types';
+import { emptyRiSc } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiScDialogStyles } from './riScDialogStyle';
-import { useFontStyles } from '../utils/style';
+import { useFontStyles } from '../../utils/style';
 
 export enum RiScDialogStates {
   Closed,

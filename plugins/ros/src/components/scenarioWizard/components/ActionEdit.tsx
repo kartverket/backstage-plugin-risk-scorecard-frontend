@@ -1,13 +1,13 @@
 import React from 'react';
-import { Action } from '../../utils/types';
-import { Dropdown } from '../../utils/Dropdown';
-import { TextField } from '../../utils/Textfield';
+import { Action } from '../../../utils/types';
+import { Dropdown } from '../../common/Dropdown';
+import { TextField } from '../../common/Textfield';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { actionStatusOptions } from '../../utils/constants';
-import { useFontStyles, useInputFieldStyles } from '../../utils/style';
+import { actionStatusOptions } from '../../../utils/constants';
+import { useFontStyles, useInputFieldStyles } from '../../../utils/style';
 
 interface ActionEditProps {
   action: Action;

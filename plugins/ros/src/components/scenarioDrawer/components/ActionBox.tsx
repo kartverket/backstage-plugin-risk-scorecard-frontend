@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Action } from '../../utils/types';
+import { Action } from '../../../utils/types';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { useActionBoxStyles } from './actionBoxStyle';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useFontStyles } from '../../utils/style';
-import { ChipDropdown } from '../../utils/ChipDropdown';
-import { actionStatusOptions } from '../../utils/constants';
+import { useFontStyles } from '../../../utils/style';
+import { ChipDropdown } from '../../common/ChipDropdown';
+import { actionStatusOptions } from '../../../utils/constants';
 
 interface ActionBoxProps {
   action: Action;

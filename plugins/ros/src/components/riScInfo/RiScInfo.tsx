@@ -1,12 +1,12 @@
 import React from 'react';
-import { RiScWithMetadata } from '../utils/types';
+import { RiScWithMetadata } from '../../utils/types';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';
 import { InfoCard } from '@backstage/core-components';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../utils/translations';
-import { useFontStyles } from '../utils/style';
-import EditButton from '../utils/EditButton';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useFontStyles } from '../../utils/style';
+import EditButton from '../common/EditButton';
 
 interface RiScInfoProps {
   riSc: RiScWithMetadata;

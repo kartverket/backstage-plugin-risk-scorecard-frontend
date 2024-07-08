@@ -1,27 +1,21 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Step, StepButton, Stepper, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { ScenarioStep } from './steps/ScenarioStep';
-import { pluginRiScTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Divider from '@mui/material/Divider';
-import { ScenarioContext } from '../riScPlugin/ScenarioContext';
 import { ActionsStep } from './steps/ActionsStep';
 import Button from '@mui/material/Button';
 import { RiskStep } from './steps/RiskStep';
 import Alert from '@mui/material/Alert';
-import { useFontStyles } from '../utils/style';
+import { useFontStyles } from '../../utils/style';
 import { useWizardStyle } from './scenarioWizardStyle';
-import { Spinner } from '../utils/Spinner';
+import { Spinner } from '../common/Spinner';
 import { CloseConfirmation } from './components/CloseConfirmation';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import { useScenario } from '../../ScenarioContext';
 
 const scenarioWizardSteps = [
   'scenario',
@@ -68,7 +62,7 @@ export const ScenarioWizard = ({
     editScenario,
     validateScenario,
     hasFormErrors,
-  } = useContext(ScenarioContext)!!;
+  } = useScenario();
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [restEqualsInitial, setRestEqualsInitial] = useState(isNewScenario);

@@ -1,17 +1,17 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment } from 'react';
 import {
   getConsequenceLevel,
   getProbabilityLevel,
-} from '../../utils/utilityfunctions';
-import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
+} from '../../../utils/utilityfunctions';
 import Box from '@material-ui/core/Box';
 import { Typography } from '@material-ui/core';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { ProbabilityTable } from '../components/ProbabilityTable';
 import { ConsequenceTable } from '../components/ConsequenceTable';
-import { useFontStyles } from '../../utils/style';
+import { useFontStyles } from '../../../utils/style';
 import { useRiskStepStyles } from './riskStepStyles';
+import { useScenario } from '../../../ScenarioContext';
 
 interface RiskStepProps {
   riskType: 'initial' | 'rest';
@@ -30,7 +30,7 @@ export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
     setRemainingProbability,
     setProbabilityAndRemainingProbability,
     setConsequenceAndRemainingConsequence,
-  } = useContext(ScenarioContext)!!;
+  } = useScenario();
 
   const resourceKey =
     riskType === 'initial' ? 'initialRiskStep' : 'restRiskStep';

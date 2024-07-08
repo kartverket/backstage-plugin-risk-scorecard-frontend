@@ -3,7 +3,7 @@ import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import React from 'react';
 import { useTabsStyle } from './tabsStyle';
-import { pluginRiScTranslationRef } from '../utils/translations';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { RiskMatrixTabs } from './RiskMatrix';
 

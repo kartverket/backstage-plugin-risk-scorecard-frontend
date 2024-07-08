@@ -1,19 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import { Grid, Paper, Typography } from '@material-ui/core';
-import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Divider from '@mui/material/Divider';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useFontStyles } from '../../utils/style';
+import { useFontStyles } from '../../../utils/style';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
-import EditButton from '../../utils/EditButton';
+import { useScenario } from '../../../ScenarioContext';
+import EditButton from '../../common/EditButton';
 
 export const ScopeSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h1, h3, body2, label } = useFontStyles();
   const { header, titleAndButton, section } = useScenarioDrawerStyles();
-  const { scenario, editScenario } = useContext(ScenarioContext)!!;
+  const { scenario, editScenario } = useScenario();
 
   return (
     <Paper className={section} style={{ padding: '1rem' }}>

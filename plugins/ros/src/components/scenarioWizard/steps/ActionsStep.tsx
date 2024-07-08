@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
-import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
+import React from 'react';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Box from '@material-ui/core/Box';
 import { Button, Typography } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
-import { TextField } from '../../utils/Textfield';
+import { TextField } from '../../common/Textfield';
 import AddCircle from '@material-ui/icons/AddCircle';
-import { useFontStyles } from '../../utils/style';
+import { useFontStyles } from '../../../utils/style';
 import { ActionEdit } from '../components/ActionEdit';
+import { useScenario } from '../../../ScenarioContext';
 
 export const ActionsStep = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -19,7 +19,7 @@ export const ActionsStep = () => {
     updateAction,
     deleteAction,
     addAction,
-  } = useContext(ScenarioContext)!!;
+  } = useScenario();
 
   return (
     <Box>

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import { Grid, Paper, Typography } from '@material-ui/core';
 import {
@@ -6,15 +6,15 @@ import {
   getConsequenceLevel,
   getRiskMatrixColor,
   getProbabilityLevel,
-} from '../../utils/utilityfunctions';
+} from '../../../utils/utilityfunctions';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { ScenarioContext } from '../../riScPlugin/ScenarioContext';
-import { useFontStyles } from '../../utils/style';
+import { useScenario } from '../../../ScenarioContext';
+import { useFontStyles } from '../../../utils/style';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
-import { Risk } from '../../utils/types';
-import EditButton from '../../utils/EditButton';
+import { Risk } from '../../../utils/types';
+import EditButton from '../../common/EditButton';
 
 interface RiskProps {
   risk: Risk;
@@ -91,7 +91,7 @@ const RiskBox = ({ risk, riskType, editScenario }: RiskProps) => {
 };
 
 export const RiskSection = () => {
-  const { scenario, editScenario } = useContext(ScenarioContext)!!;
+  const { scenario, editScenario } = useScenario();
 
   return (
     <>

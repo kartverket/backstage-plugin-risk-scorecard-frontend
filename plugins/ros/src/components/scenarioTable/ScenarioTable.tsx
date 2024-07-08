@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Box, Button, Paper, Typography } from '@material-ui/core';
-import { RiSc } from '../utils/types';
+import { RiSc } from '../../utils/types';
 import TableRow from '@mui/material/TableRow';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,12 +9,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { ScenarioTableRow } from './ScenarioTableRow';
 import AddCircle from '@material-ui/icons/AddCircle';
-import { ScenarioContext } from '../riScPlugin/ScenarioContext';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { useTableStyles } from './ScenarioTableStyles';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../utils/translations';
-import { useFontStyles } from '../utils/style';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useFontStyles } from '../../utils/style';
+import { useScenario } from '../../ScenarioContext';
 
 interface ScenarioTableProps {
   riSc: RiSc;
@@ -24,7 +24,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label } = useFontStyles();
   const { titleBox, rowBorder, tableCell, tableCellTitle } = useTableStyles();
-  const { newScenario, openScenario } = useContext(ScenarioContext)!!;
+  const { newScenario, openScenario } = useScenario();
 
   return (
     <>

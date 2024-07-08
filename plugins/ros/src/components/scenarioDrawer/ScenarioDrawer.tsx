@@ -1,23 +1,24 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Button, Drawer } from '@material-ui/core';
 import { useScenarioDrawerStyles } from './scenarioDrawerStyle';
-import { ScenarioContext } from '../riScPlugin/ScenarioContext';
-import { ScenarioDrawerState } from '../utils/hooks';
+import { useScenario } from '../../ScenarioContext';
+import { ScenarioDrawerState } from '../../utils/hooks';
 import { RiskSection } from './components/RiskSection';
 import { ActionsSection } from './components/ActionsSection';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DeleteConfirmation } from './components/DeleteConfirmation';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../utils/translations';
-import { useFontStyles } from '../utils/style';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useFontStyles } from '../../utils/style';
 import { ScopeSection } from './components/ScopeSection';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { drawer } = useScenarioDrawerStyles();
   const { button } = useFontStyles();
+
   const { scenarioDrawerState, openDeleteConfirmation, closeScenario } =
-    useContext(ScenarioContext)!!;
+    useScenario();
 
   const isOpen = scenarioDrawerState !== ScenarioDrawerState.Closed;
 

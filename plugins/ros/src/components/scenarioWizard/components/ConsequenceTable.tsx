@@ -1,6 +1,6 @@
 import React from 'react';
 import { Radio, Typography, useTheme } from '@material-ui/core';
-import { pluginRiScTranslationRef } from '../../utils/translations';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useTableStyles } from './tableStyles';
 

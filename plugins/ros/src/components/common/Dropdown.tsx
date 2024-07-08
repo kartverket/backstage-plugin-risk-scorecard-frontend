@@ -9,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import React, { ChangeEvent } from 'react';
 import { FormHelperText } from '@material-ui/core';
-import { menuProps, useInputFieldStyles } from './style';
+import { menuProps, useInputFieldStyles } from '../../utils/style';
 
 type OptionsObject = {
   value: string;
