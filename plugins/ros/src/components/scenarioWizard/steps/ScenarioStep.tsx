@@ -14,13 +14,7 @@ import { useScenario } from '../../../ScenarioContext';
 export const ScenarioStep = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { labelSubtitle, label, h2, subtitle2 } = useFontStyles();
-  const {
-    scenario,
-    setTitle,
-    setDescription,
-    setThreatActors,
-    setVulnerabilities,
-  } = useScenario();
+  const { scenario, setScenarioValue } = useScenario();
 
   const translatedThreatActors = threatActorsOptions.map(threatActor => {
     return {
@@ -56,7 +50,7 @@ export const ScenarioStep = () => {
           errorKey="scenario-title"
           required
           minRows={1}
-          handleChange={setTitle}
+          handleChange={value => setScenarioValue('title', value)}
         />
       </Grid>
 
@@ -80,7 +74,7 @@ export const ScenarioStep = () => {
         <Dropdown<string[]>
           selectedValues={scenario.threatActors}
           options={translatedThreatActors}
-          handleChange={setThreatActors}
+          handleChange={value => setScenarioValue('threatActors', value)}
           renderSelectedValue={value => {
             /* @ts-ignore */
             return t(`threatActors.${value}`);
@@ -108,7 +102,7 @@ export const ScenarioStep = () => {
         <Dropdown<string[]>
           selectedValues={scenario.vulnerabilities}
           options={translatedVulnerabilities}
-          handleChange={setVulnerabilities}
+          handleChange={value => setScenarioValue('vulnerabilities', value)}
           renderSelectedValue={value => {
             /* @ts-ignore */
             return t(`vulnerabilities.${value}`);
@@ -120,7 +114,7 @@ export const ScenarioStep = () => {
           label={t('dictionary.description')}
           value={scenario.description}
           minRows={4}
-          handleChange={setDescription}
+          handleChange={value => setScenarioValue('description', value)}
         />
       </Grid>
     </Grid>

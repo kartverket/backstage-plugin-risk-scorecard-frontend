@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import { Action, RiSc, RiScWithMetadata, Risk, Scenario } from './utils/types';
+import { Action, RiSc, RiScWithMetadata, Scenario } from './utils/types';
 import { consequenceOptions, probabilityOptions } from './utils/constants';
 import { riScRouteRef, scenarioRouteRef } from './routes';
 import { useNavigate } from 'react-router';
@@ -9,15 +9,7 @@ import { ScenarioWizardSteps } from './components/scenarioWizard/ScenarioWizard'
 import { generateRandomId } from './utils/utilityfunctions';
 import { ScenarioDrawerState } from './utils/hooks';
 
-type ScenarioErrors = {
-  title: boolean;
-};
-
-const emptyScenarioErrors = (): ScenarioErrors => ({
-  title: false,
-});
-
-export const emptyAction = (): Action => ({
+const emptyAction = (): Action => ({
   ID: generateRandomId(),
   title: '',
   description: '',
@@ -27,7 +19,7 @@ export const emptyAction = (): Action => ({
   url: '',
 });
 
-export const emptyScenario = (): Scenario => ({
+const emptyScenario = (): Scenario => ({
   ID: generateRandomId(),
   title: '',
   description: '',
@@ -47,7 +39,7 @@ export const emptyScenario = (): Scenario => ({
   },
 });
 
-export interface ScenarioDrawerProps {
+type ScenarioDrawerProps = {
   scenarioDrawerState: ScenarioDrawerState;
 
   scenario: Scenario;
@@ -59,8 +51,6 @@ export interface ScenarioDrawerProps {
 
   openScenario: (id: string) => void;
   closeScenario: () => void;
-
-  scenarioErrors: ScenarioErrors;
   validateScenario: () => boolean;
 
   deleteConfirmationIsOpen: boolean;
@@ -68,17 +58,17 @@ export interface ScenarioDrawerProps {
   abortDeletion: () => void;
   confirmDeletion: () => void;
 
-  setTitle: (title: string) => void;
-  setDescription: (description: string) => void;
-  setThreatActors: (threatActors: string[]) => void;
-  setVulnerabilities: (vulnerabilities: string[]) => void;
-  setProbability: (probabilityLevel: number) => void;
-  setConsequence: (consequenceLevel: number) => void;
-  setExistingActions: (existingActions: string) => void;
+  setScenarioValue: <T extends keyof Scenario>(
+    key: T,
+    value: Scenario[T],
+  ) => void;
+
   addAction: () => void;
   updateAction: (action: Action) => void;
   deleteAction: (action: Action) => void;
-  updateRemainingRisk: (remainingRisk: Risk) => void;
+
+  setProbability: (probabilityLevel: number) => void;
+  setConsequence: (consequenceLevel: number) => void;
   setRemainingProbability: (probabilityLevel: number) => void;
   setRemainingConsequence: (consequenceLevel: number) => void;
   setProbabilityAndRemainingProbability: (probabilityLevel: number) => void;
@@ -88,7 +78,7 @@ export interface ScenarioDrawerProps {
   removeFormError: (key: string) => void;
   hasFormErrors: () => boolean;
   formFieldHasErrors: (key: string) => boolean;
-}
+};
 
 const ScenarioContext = React.createContext<ScenarioDrawerProps | undefined>(
   undefined,
@@ -118,7 +108,6 @@ const ScenarioProvider = ({
     useState(false);
   const [, setSearchParams] = useSearchParams();
 
-  const [scenarioErrors, setScenarioErrors] = useState(emptyScenarioErrors());
   const navigate = useNavigate();
   const getScenarioPath = useRouteRef(scenarioRouteRef);
   const getRiScPath = useRouteRef(riScRouteRef);
@@ -132,7 +121,6 @@ const ScenarioProvider = ({
         const s = emptyScenario();
         setScenario(s);
         setOriginalScenario(s);
-        setScenarioErrors(emptyScenarioErrors());
         return;
       }
 
@@ -187,12 +175,9 @@ const ScenarioProvider = ({
     setSearchParams({ step: step });
   };
 
+  // TODO: håndter med form i stedet
   const validateScenario = () => {
     if (scenario.title === '') {
-      setScenarioErrors({
-        ...scenarioErrors,
-        title: true,
-      });
       return false;
     }
     return true;
@@ -215,8 +200,8 @@ const ScenarioProvider = ({
     return false;
   };
 
+  // TODO: har material en useDisclosure-sak man kan bruke her?
   const openDeleteConfirmation = () => setDeleteConfirmationIsOpen(true);
-
   const abortDeletion = () => setDeleteConfirmationIsOpen(false);
 
   const confirmDeletion = () => {
@@ -241,37 +226,29 @@ const ScenarioProvider = ({
   };
 
   // UPDATE SCENARIO FUNCTIONS
-
-  const setTitle = (title: string) => {
-    setScenarioErrors({
-      ...scenarioErrors,
-      title: false,
-    });
+  const setScenarioValue = <T extends keyof Scenario>(
+    key: T,
+    value: Scenario[T],
+  ) => {
     setScenario({
       ...scenario,
-      title: title,
+      [key]: value,
     });
   };
 
-  const setDescription = (description: string) => {
-    setScenario({
-      ...scenario,
-      description: description,
-    });
+  const addAction = () =>
+    setScenario({ ...scenario, actions: [...scenario.actions, emptyAction()] });
+
+  const updateAction = (action: Action) => {
+    const updatedAction = scenario.actions.some(a => a.ID === action.ID)
+      ? scenario.actions.map(a => (a.ID === action.ID ? action : a))
+      : [...scenario.actions, action];
+    setScenario({ ...scenario, actions: updatedAction });
   };
 
-  const setThreatActors = (threatActors: string[]) => {
-    setScenario({
-      ...scenario,
-      threatActors: threatActors,
-    });
-  };
-
-  const setVulnerabilities = (vulnerabilities: string[]) => {
-    setScenario({
-      ...scenario,
-      vulnerabilities: vulnerabilities,
-    });
+  const deleteAction = (action: Action) => {
+    const updatedAction = scenario.actions.filter(a => a.ID !== action.ID);
+    setScenario({ ...scenario, actions: updatedAction });
   };
 
   const setProbability = (probabilityLevel: number) =>
@@ -291,31 +268,6 @@ const ScenarioProvider = ({
         consequence: consequenceOptions[consequenceLevel - 1],
       },
     });
-
-  const setExistingActions = (existingActions: string) => {
-    setScenario({
-      ...scenario,
-      existingActions: existingActions,
-    });
-  };
-
-  const addAction = () =>
-    setScenario({ ...scenario, actions: [...scenario.actions, emptyAction()] });
-
-  const updateAction = (action: Action) => {
-    const updatedAction = scenario.actions.some(a => a.ID === action.ID)
-      ? scenario.actions.map(a => (a.ID === action.ID ? action : a))
-      : [...scenario.actions, action];
-    setScenario({ ...scenario, actions: updatedAction });
-  };
-
-  const deleteAction = (action: Action) => {
-    const updatedAction = scenario.actions.filter(a => a.ID !== action.ID);
-    setScenario({ ...scenario, actions: updatedAction });
-  };
-
-  const updateRemainingRisk = (remainingRisk: Risk) =>
-    setScenario({ ...scenario, remainingRisk: remainingRisk });
 
   const setRemainingProbability = (probabilityLevel: number) =>
     setScenario({
@@ -389,7 +341,6 @@ const ScenarioProvider = ({
     openScenario,
     closeScenario,
 
-    scenarioErrors,
     validateScenario,
 
     deleteConfirmationIsOpen,
@@ -397,17 +348,14 @@ const ScenarioProvider = ({
     abortDeletion,
     confirmDeletion,
 
-    setTitle,
-    setDescription,
-    setThreatActors,
-    setVulnerabilities,
-    setProbability,
-    setConsequence,
-    setExistingActions,
+    setScenarioValue,
+
     addAction,
     updateAction,
     deleteAction,
-    updateRemainingRisk,
+
+    setProbability,
+    setConsequence,
     setRemainingProbability,
     setRemainingConsequence,
     setProbabilityAndRemainingProbability,
