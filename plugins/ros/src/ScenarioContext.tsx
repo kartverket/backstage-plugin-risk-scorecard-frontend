@@ -47,6 +47,7 @@ type ScenarioDrawerProps = {
   saveScenario: () => boolean;
   editScenario: (step: ScenarioWizardSteps) => void;
   isNewScenario: boolean;
+  submitEditedScenarioToRiSc: (editedScenario: Scenario) => void;
 
   openScenario: (id: string) => void;
   closeScenario: () => void;
@@ -199,6 +200,17 @@ const ScenarioProvider = ({
     return false;
   };
 
+  const submitEditedScenarioToRiSc = (editedScenario: Scenario) => {
+    if (riSc) {
+      updateRiSc({
+        ...riSc.content,
+        scenarios: riSc.content.scenarios.map(s =>
+          s.ID === editedScenario.ID ? editedScenario : s,
+        ),
+      });
+    }
+  };
+
   const openDeleteConfirmation = () => setDeleteConfirmationIsOpen(true);
   const abortDeletion = () => setDeleteConfirmationIsOpen(false);
 
@@ -335,6 +347,7 @@ const ScenarioProvider = ({
     saveScenario,
     editScenario,
     isNewScenario,
+    submitEditedScenarioToRiSc,
 
     openScenario,
     closeScenario,

@@ -17,16 +17,28 @@ export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { drawer, buttons } = useScenarioDrawerStyles();
   const [isEditing, setIsEditing] = useState(false);
-
   const { scenario, isDrawerOpen, openDeleteConfirmation, closeScenario } =
     useScenario();
 
-  const handleClose = () => {
+  const formMethods = useForm<Scenario>({ defaultValues: scenario });
+
+  const onCancel = () => {
+    formMethods.reset(scenario);
+    setIsEditing(false);
+  };
+
+  const onClose = () => {
     closeScenario();
     setIsEditing(false);
   };
 
-  const formMethods = useForm<Scenario>({ defaultValues: scenario });
+  // TODO: bør være noe loading elns? så man ser at endringer kommer
+  const onSubmit = formMethods.handleSubmit((data: Scenario) => {
+    // TODO: bytt log med submit når alt er i boks
+    console.log('submit form data?', data);
+    // submitEditedScenarioToRiSc(data);
+    setIsEditing(false);
+  });
 
   useEffect(() => {
     formMethods.reset(scenario);
@@ -38,36 +50,49 @@ export const ScenarioDrawer = () => {
       variant="temporary"
       anchor="right"
       open={isDrawerOpen}
-      onClose={handleClose}
+      onClose={onClose}
     >
       <Box className={buttons}>
-        {!isEditing ? (
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={() => setIsEditing(true)}
-            style={{ marginLeft: 'auto' }}
-          >
-            {t('dictionary.edit')}
-          </Button>
+        {isEditing ? (
+          <>
+            <Button
+              type="submit"
+              onClick={onSubmit}
+              color="primary"
+              variant="contained"
+              style={{ marginLeft: 'auto' }}
+            >
+              {t('dictionary.save')}
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={onCancel}
+              style={{ marginLeft: 'auto' }}
+            >
+              {t('dictionary.cancel')}
+            </Button>
+          </>
         ) : (
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={() => setIsEditing(false)}
-            style={{ marginLeft: 'auto' }}
-          >
-            {t('dictionary.save')}
-          </Button>
+          <>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => setIsEditing(true)}
+              style={{ marginLeft: 'auto' }}
+            >
+              {t('dictionary.edit')}
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={onClose}
+              style={{ marginLeft: 'auto' }}
+            >
+              {t('dictionary.close')}
+            </Button>
+          </>
         )}
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={handleClose}
-          style={{ marginLeft: 'auto' }}
-        >
-          {t('dictionary.close')}
-        </Button>
       </Box>
 
       {isEditing ? (
