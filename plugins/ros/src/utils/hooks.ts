@@ -214,12 +214,6 @@ const useFetch = () => {
   };
 };
 
-export enum ScenarioDrawerState {
-  Closed,
-  Edit,
-  View,
-}
-
 export const useFetchRiScs = (
   riScIdFromParams?: string,
 ): {

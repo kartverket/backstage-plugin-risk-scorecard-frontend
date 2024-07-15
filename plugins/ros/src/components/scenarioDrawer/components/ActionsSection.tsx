@@ -7,14 +7,13 @@ import { useFontStyles } from '../../../utils/style';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { ExistingActionBox } from './ExistingActionBox';
-import EditButton from '../../common/EditButton';
 import { useScenario } from '../../../ScenarioContext';
 
 export const ActionsSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h3, label } = useFontStyles();
-  const { titleAndButton, section } = useScenarioDrawerStyles();
-  const { scenario, editScenario, saveScenario, updateAction } = useScenario();
+  const { section } = useScenarioDrawerStyles();
+  const { scenario, saveScenario, updateAction } = useScenario();
 
   return (
     <Box>
@@ -22,7 +21,6 @@ export const ActionsSection = () => {
         <Grid
           item
           xs={12}
-          className={titleAndButton}
           style={{
             marginBottom: '12px',
           }}
@@ -30,7 +28,6 @@ export const ActionsSection = () => {
           <Typography className={h3}>
             {t('scenarioDrawer.measureTab.actionsTitle')}
           </Typography>
-          <EditButton onClick={() => editScenario('measure')} />
         </Grid>
         {scenario.existingActions && (
           <>

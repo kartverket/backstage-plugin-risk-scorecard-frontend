@@ -20,12 +20,6 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
     height: '48px',
     borderRadius: '4px',
   },
-  titleAndButton: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   section: {
     width: '100%',
     padding: theme.spacing(2),

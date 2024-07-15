@@ -14,7 +14,6 @@ import { useScenario } from '../../../ScenarioContext';
 import { useFontStyles } from '../../../utils/style';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { Risk } from '../../../utils/types';
-import EditButton from '../../common/EditButton';
 
 interface RiskProps {
   risk: Risk;
@@ -22,21 +21,15 @@ interface RiskProps {
   editScenario: (step: 'initialRisk' | 'restRisk') => void;
 }
 
-const RiskBox = ({ risk, riskType, editScenario }: RiskProps) => {
-  const { risikoBadge, titleAndButton, section } = useScenarioDrawerStyles();
+const RiskBox = ({ risk, riskType }: RiskProps) => {
+  const { risikoBadge, section } = useScenarioDrawerStyles();
   const { h3, body1, label } = useFontStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Paper className={section} style={{ padding: '1rem' }}>
-      <Grid
-        item
-        xs={12}
-        className={titleAndButton}
-        style={{ marginBottom: '0.5rem' }}
-      >
+      <Grid item xs={12} style={{ marginBottom: '0.5rem' }}>
         <Typography className={h3}>{t(`dictionary.${riskType}`)}</Typography>
-        <EditButton onClick={() => editScenario(riskType)} />
       </Grid>
 
       <Grid container>

@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { ScenarioWizardSteps } from './components/scenarioWizard/ScenarioWizard';
 import { generateRandomId } from './utils/utilityfunctions';
-import { ScenarioDrawerState } from './utils/hooks';
 
 const emptyAction = (): Action => ({
   ID: generateRandomId(),
@@ -40,7 +39,7 @@ const emptyScenario = (): Scenario => ({
 });
 
 type ScenarioDrawerProps = {
-  scenarioDrawerState: ScenarioDrawerState;
+  isDrawerOpen: boolean;
 
   scenario: Scenario;
   originalScenario: Scenario;
@@ -96,9 +95,7 @@ const ScenarioProvider = ({
   scenarioIdFromParams?: string;
 }) => {
   // STATES
-  const [scenarioDrawerState, setScenarioDrawerState] = useState(
-    ScenarioDrawerState.Closed,
-  );
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [isNewScenario, setIsNewScenario] = useState(false);
   const [formErrors, _setFormErrors] = useState<{ [key: string]: boolean }>({});
@@ -119,7 +116,7 @@ const ScenarioProvider = ({
     if (riSc) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
-        setScenarioDrawerState(ScenarioDrawerState.Closed);
+        setIsDrawerOpen(false);
         const s = emptyScenario();
 
         setScenario(s);
@@ -146,7 +143,7 @@ const ScenarioProvider = ({
 
       setScenario(selectedScenario);
       setOriginalScenario(selectedScenario);
-      setScenarioDrawerState(ScenarioDrawerState.View);
+      setIsDrawerOpen(true);
     }
   }, [riSc, scenarioIdFromParams, getRiScPath, navigate, isNewScenario]);
 
@@ -174,7 +171,6 @@ const ScenarioProvider = ({
   };
 
   const editScenario = (step: ScenarioWizardSteps) => {
-    setScenarioDrawerState(ScenarioDrawerState.Closed);
     setSearchParams({ step: step });
   };
 
@@ -331,7 +327,7 @@ const ScenarioProvider = ({
 
   // TODO: vurder memoisering
   const value = {
-    scenarioDrawerState,
+    isDrawerOpen,
 
     scenario,
     originalScenario,

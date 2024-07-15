@@ -7,23 +7,21 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useFontStyles } from '../../../utils/style';
 import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { useScenario } from '../../../ScenarioContext';
-import EditButton from '../../common/EditButton';
 
 export const ScopeSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h1, h3, body2, label } = useFontStyles();
-  const { header, titleAndButton, section } = useScenarioDrawerStyles();
-  const { scenario, editScenario } = useScenario();
+  const { header, section } = useScenarioDrawerStyles();
+  const { scenario } = useScenario();
 
   return (
     <Paper className={section} style={{ padding: '1rem' }}>
       <Box className={header}>
         <Grid container>
-          <Grid item xs={12} className={titleAndButton}>
+          <Grid item xs={12}>
             <Typography variant="h3" className={h3} style={{ marginBottom: 0 }}>
               {t('scenarioDrawer.title')}
             </Typography>
-            <EditButton onClick={() => editScenario('scenario')} />
           </Grid>
 
           <Grid item xs={12}>

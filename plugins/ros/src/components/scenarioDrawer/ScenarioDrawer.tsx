@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Drawer } from '@material-ui/core';
 import { useScenarioDrawerStyles } from './scenarioDrawerStyle';
 import { useScenario } from '../../ScenarioContext';
-import { ScenarioDrawerState } from '../../utils/hooks';
 import { RiskSection } from './components/RiskSection';
 import { ActionsSection } from './components/ActionsSection';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,19 +18,13 @@ export const ScenarioDrawer = () => {
   const { drawer, buttons } = useScenarioDrawerStyles();
   const [isEditing, setIsEditing] = useState(false);
 
-  const {
-    scenario,
-    scenarioDrawerState,
-    openDeleteConfirmation,
-    closeScenario,
-  } = useScenario();
+  const { scenario, isDrawerOpen, openDeleteConfirmation, closeScenario } =
+    useScenario();
 
   const handleClose = () => {
     closeScenario();
     setIsEditing(false);
   };
-
-  const isOpen = scenarioDrawerState !== ScenarioDrawerState.Closed;
 
   const formMethods = useForm<Scenario>({ defaultValues: scenario });
 
@@ -44,7 +37,7 @@ export const ScenarioDrawer = () => {
       classes={{ paper: drawer }}
       variant="temporary"
       anchor="right"
-      open={isOpen}
+      open={isDrawerOpen}
       onClose={handleClose}
     >
       <Box className={buttons}>
