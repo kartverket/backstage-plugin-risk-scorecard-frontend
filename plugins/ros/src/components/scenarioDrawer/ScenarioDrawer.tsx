@@ -44,6 +44,8 @@ export const ScenarioDrawer = () => {
     formMethods.reset(scenario);
   }, [scenario, formMethods]);
 
+  console.log('scenario', scenario);
+
   return (
     <Drawer
       classes={{ paper: drawer }}

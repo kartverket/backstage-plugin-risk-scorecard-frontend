@@ -10,11 +10,6 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
       padding: theme.spacing(2),
     },
   },
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
   risikoBadge: {
     width: '20px',
     height: '48px',

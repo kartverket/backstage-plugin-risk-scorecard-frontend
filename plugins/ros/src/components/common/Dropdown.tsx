@@ -60,6 +60,7 @@ export const Dropdown = <T,>({
   const onChange = (event: ChangeEvent<{ value: unknown }>) =>
     handleChange(event.target.value as T);
 
+  // TODO: må portes over til nye Select
   const renderValue = (selected: any) =>
     multiple ? (
       <Box
