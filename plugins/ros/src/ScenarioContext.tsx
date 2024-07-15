@@ -103,6 +103,8 @@ const ScenarioProvider = ({
   const [isNewScenario, setIsNewScenario] = useState(false);
   const [formErrors, _setFormErrors] = useState<{ [key: string]: boolean }>({});
   const [scenario, setScenario] = useState(emptyScenario());
+
+  // TODO: sløyf denne når vi har egen redigeringsflyt
   const [originalScenario, setOriginalScenario] = useState(emptyScenario());
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
@@ -119,6 +121,7 @@ const ScenarioProvider = ({
       if (!scenarioIdFromParams) {
         setScenarioDrawerState(ScenarioDrawerState.Closed);
         const s = emptyScenario();
+
         setScenario(s);
         setOriginalScenario(s);
         return;
@@ -200,7 +203,6 @@ const ScenarioProvider = ({
     return false;
   };
 
-  // TODO: har material en useDisclosure-sak man kan bruke her?
   const openDeleteConfirmation = () => setDeleteConfirmationIsOpen(true);
   const abortDeletion = () => setDeleteConfirmationIsOpen(false);
 

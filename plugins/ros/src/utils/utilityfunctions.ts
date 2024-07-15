@@ -22,14 +22,6 @@ export function formatNOK(amount: number): string {
   return formatter.format(amount);
 }
 
-export function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString('nb-NO', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });
-}
-
 export function getAlertSeverity(
   status: ProcessingStatus,
 ): 'error' | 'warning' | 'info' {

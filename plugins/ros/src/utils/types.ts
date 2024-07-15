@@ -43,10 +43,6 @@ export type Scenario = {
   actions: Action[];
 };
 
-export type ScenarioErrors = {
-  title: boolean;
-};
-
 export type Risk = {
   summary: string;
   probability: number;
