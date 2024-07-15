@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Drawer } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Drawer } from '@material-ui/core';
 import { useScenarioDrawerStyles } from './scenarioDrawerStyle';
 import { useScenario } from '../../ScenarioContext';
 import { ScenarioDrawerState } from '../../utils/hooks';
@@ -9,18 +9,35 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { DeleteConfirmation } from './components/DeleteConfirmation';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useFontStyles } from '../../utils/style';
 import { ScopeSection } from './components/ScopeSection';
+import { useForm } from 'react-hook-form';
+import ScenarioForm from './components/ScenarioForm';
+import { Scenario } from '../../utils/types';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { drawer } = useScenarioDrawerStyles();
-  const { button } = useFontStyles();
+  const { drawer, buttons } = useScenarioDrawerStyles();
+  const [isEditing, setIsEditing] = useState(false);
 
-  const { scenarioDrawerState, openDeleteConfirmation, closeScenario } =
-    useScenario();
+  const {
+    scenario,
+    scenarioDrawerState,
+    openDeleteConfirmation,
+    closeScenario,
+  } = useScenario();
+
+  const handleClose = () => {
+    closeScenario();
+    setIsEditing(false);
+  };
 
   const isOpen = scenarioDrawerState !== ScenarioDrawerState.Closed;
+
+  const formMethods = useForm<Scenario>({ defaultValues: scenario });
+
+  useEffect(() => {
+    formMethods.reset(scenario);
+  }, [scenario, formMethods]);
 
   return (
     <Drawer
@@ -28,21 +45,47 @@ export const ScenarioDrawer = () => {
       variant="temporary"
       anchor="right"
       open={isOpen}
-      onClose={closeScenario}
+      onClose={handleClose}
     >
-      <Button
-        className={button}
-        variant="outlined"
-        color="primary"
-        onClick={closeScenario}
-        style={{ marginLeft: 'auto' }}
-      >
-        {t('dictionary.close')}
-      </Button>
+      <Box className={buttons}>
+        {!isEditing ? (
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setIsEditing(true)}
+            style={{ marginLeft: 'auto' }}
+          >
+            {t('dictionary.edit')}
+          </Button>
+        ) : (
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setIsEditing(false)}
+            style={{ marginLeft: 'auto' }}
+          >
+            {t('dictionary.save')}
+          </Button>
+        )}
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={handleClose}
+          style={{ marginLeft: 'auto' }}
+        >
+          {t('dictionary.close')}
+        </Button>
+      </Box>
 
-      <ScopeSection />
-      <RiskSection />
-      <ActionsSection />
+      {isEditing ? (
+        <ScenarioForm formMethods={formMethods} />
+      ) : (
+        <>
+          <ScopeSection />
+          <RiskSection />
+          <ActionsSection />
+        </>
+      )}
 
       <Button
         startIcon={<DeleteIcon />}

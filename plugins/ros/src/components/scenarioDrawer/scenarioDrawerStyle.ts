@@ -35,4 +35,9 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.palette.type === 'dark' ? theme.spacing(1) : '7px',
     backgroundColor: theme.palette.type === 'dark' ? '#55555519' : '#e0e0e019',
   },
+  buttons: {
+    display: 'flex',
+    gap: '16px',
+    marginLeft: 'auto',
+  },
 }));
