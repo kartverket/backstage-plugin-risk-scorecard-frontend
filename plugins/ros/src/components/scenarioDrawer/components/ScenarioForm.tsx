@@ -6,8 +6,8 @@ import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Input } from '../../common/Input';
-import { Select } from '../../common/Select';
 import { threatActorsOptions } from '../../../utils/constants';
+import { Select } from '../../common/Select';
 
 const ScenarioForm = ({
   formMethods,
@@ -24,8 +24,6 @@ const ScenarioForm = ({
     renderedValue: t(`threatActors.${threatActor}`),
   }));
 
-  console.log('translatedThreatActors', JSON.stringify(translatedThreatActors));
-
   return (
     <>
       <Paper className={section} style={{ padding: '1rem' }}>
@@ -35,17 +33,9 @@ const ScenarioForm = ({
           control={control}
           name="threatActors"
           label={t('dictionary.threatActors')}
-          renderValue={value => {
-            /* @ts-ignore */
-            return t(`threatActors.${value}`);
-          }}
-        >
-          {translatedThreatActors.map(threatActor => (
-            <option key={threatActor.value} value={threatActor.value}>
-              {threatActor.renderedValue}
-            </option>
-          ))}
-        </Select>
+          labelTranslationKey="threatActors"
+          options={translatedThreatActors}
+        />
       </Paper>
     </>
   );
