@@ -23,6 +23,17 @@ import { useLinearProgressStyle } from './linearProgressStyle';
 import { Spinner } from '../common/Spinner';
 import { Dropdown } from '../common/Dropdown';
 import { ScenarioProvider } from '../../ScenarioContext';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+
+const emotionInsertionPoint = document.createElement('meta');
+emotionInsertionPoint.setAttribute('name', 'emotion-insertion-point');
+document.querySelector('head')?.appendChild(emotionInsertionPoint);
+
+const cache = createCache({
+  key: 'css',
+  insertionPoint: emotionInsertionPoint,
+});
 
 const Plugin = () => {
   const params = useParams();
@@ -61,101 +72,103 @@ const Plugin = () => {
   }, [resetRiScStatus, scenarioWizardStep]);
 
   return (
-    <ScenarioProvider
-      riSc={selectedRiSc ?? null}
-      updateRiSc={updateRiSc}
-      scenarioIdFromParams={params.scenarioId}
-    >
-      {response && (
-        <Alert severity={getAlertSeverity(response.status)}>
-          <Typography>{response.statusMessage}</Typography>
-        </Alert>
-      )}
-      {isRequesting && <LinearProgress className={linearProgress} />}
+    <CacheProvider value={cache}>
+      <ScenarioProvider
+        riSc={selectedRiSc ?? null}
+        updateRiSc={updateRiSc}
+        scenarioIdFromParams={params.scenarioId}
+      >
+        {response && (
+          <Alert severity={getAlertSeverity(response.status)}>
+            <Typography>{response.statusMessage}</Typography>
+          </Alert>
+        )}
+        {isRequesting && <LinearProgress className={linearProgress} />}
 
-      {scenarioWizardStep !== null ? (
-        <ScenarioWizard
-          step={scenarioWizardStep}
-          isFetching={isFetching}
-          updateStatus={updateRiScStatus}
-        />
-      ) : (
-        <>
-          <ContentHeader title={t('contentHeader.title')}>
-            <SupportButton />
-          </ContentHeader>
+        {scenarioWizardStep !== null ? (
+          <ScenarioWizard
+            step={scenarioWizardStep}
+            isFetching={isFetching}
+            updateStatus={updateRiScStatus}
+          />
+        ) : (
+          <>
+            <ContentHeader title={t('contentHeader.title')}>
+              <SupportButton />
+            </ContentHeader>
 
-          {isFetching && <Spinner size={80} />}
+            {isFetching && <Spinner size={80} />}
 
-          <Grid container spacing={4}>
-            {riScs !== null && riScs.length !== 0 && (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                style={{
-                  maxWidth: '600px',
-                  minWidth: '300px',
-                }}
-              >
-                <Dropdown<string>
-                  options={riScs.map(riSc => riSc.content.title) ?? []}
-                  selectedValues={selectedRiSc?.content.title ?? ''}
-                  handleChange={title => selectRiSc(title)}
-                  variant="standard"
-                />
-              </Grid>
-            )}
-
-            {!isFetching && (
-              <Grid item xs>
-                <Button
-                  startIcon={<AddCircle />}
-                  variant="text"
-                  color="primary"
-                  onClick={openCreateRiScDialog}
+            <Grid container spacing={4}>
+              {riScs !== null && riScs.length !== 0 && (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
                   style={{
-                    minWidth: '205px',
+                    maxWidth: '600px',
+                    minWidth: '300px',
                   }}
                 >
-                  {t('contentHeader.createNewButton')}
-                </Button>
-              </Grid>
-            )}
-
-            {selectedRiSc && (
-              <>
-                <Grid item xs={12}>
-                  <RiScInfo
-                    riSc={selectedRiSc}
-                    approveRiSc={approveRiSc}
-                    edit={openEditRiScDialog}
+                  <Dropdown<string>
+                    options={riScs.map(riSc => riSc.content.title) ?? []}
+                    selectedValues={selectedRiSc?.content.title ?? ''}
+                    handleChange={title => selectRiSc(title)}
+                    variant="standard"
                   />
                 </Grid>
-                <Grid item xs md={7} lg={8}>
-                  <ScenarioTable riSc={selectedRiSc.content} />
-                </Grid>
-                <Grid item xs md={5} lg={4}>
-                  <RiskMatrix riSc={selectedRiSc.content} />
-                </Grid>
-              </>
-            )}
-          </Grid>
-        </>
-      )}
+              )}
 
-      {RiScDialogState !== RiScDialogStates.Closed && (
-        <RiScDialog
-          onClose={closeRiScDialog}
-          createNewRiSc={createNewRiSc}
-          updateRiSc={updateRiSc}
-          riSc={selectedRiSc}
-          dialogState={RiScDialogState}
-        />
-      )}
+              {!isFetching && (
+                <Grid item xs>
+                  <Button
+                    startIcon={<AddCircle />}
+                    variant="text"
+                    color="primary"
+                    onClick={openCreateRiScDialog}
+                    style={{
+                      minWidth: '205px',
+                    }}
+                  >
+                    {t('contentHeader.createNewButton')}
+                  </Button>
+                </Grid>
+              )}
 
-      {!scenarioWizardStep && <ScenarioDrawer />}
-    </ScenarioProvider>
+              {selectedRiSc && (
+                <>
+                  <Grid item xs={12}>
+                    <RiScInfo
+                      riSc={selectedRiSc}
+                      approveRiSc={approveRiSc}
+                      edit={openEditRiScDialog}
+                    />
+                  </Grid>
+                  <Grid item xs md={7} lg={8}>
+                    <ScenarioTable riSc={selectedRiSc.content} />
+                  </Grid>
+                  <Grid item xs md={5} lg={4}>
+                    <RiskMatrix riSc={selectedRiSc.content} />
+                  </Grid>
+                </>
+              )}
+            </Grid>
+          </>
+        )}
+
+        {RiScDialogState !== RiScDialogStates.Closed && (
+          <RiScDialog
+            onClose={closeRiScDialog}
+            createNewRiSc={createNewRiSc}
+            updateRiSc={updateRiSc}
+            riSc={selectedRiSc}
+            dialogState={RiScDialogState}
+          />
+        )}
+
+        {!scenarioWizardStep && <ScenarioDrawer />}
+      </ScenarioProvider>
+    </CacheProvider>
   );
 };
 
