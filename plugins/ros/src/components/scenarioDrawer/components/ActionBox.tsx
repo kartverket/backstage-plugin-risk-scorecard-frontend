@@ -1,32 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Action } from '../../../utils/types';
-import { Grid, Link, Typography } from '@material-ui/core';
-import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
-import { useActionBoxStyles } from './actionBoxStyle';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useFontStyles } from '../../../utils/style';
-import { ChipDropdown } from '../../common/ChipDropdown';
-import { actionStatusOptions } from '../../../utils/constants';
+import Chip from '@mui/material/Chip';
+import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
+import Typography from '@mui/material/Typography';
+import { body2, label } from '../../common/typography';
 
 interface ActionBoxProps {
   action: Action;
   index: number;
-  updateAction: (action: Action) => void;
   saveScenario: () => void;
 }
 
-export const ActionBox = ({
-  action,
-  index,
-  updateAction,
-  saveScenario,
-}: ActionBoxProps) => {
+export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { body2, label } = useFontStyles();
-  const { gridContainer } = useScenarioDrawerStyles();
-  const { alignCenter, row, paddingTop, actionDescription, chipDropdown } =
-    useActionBoxStyles();
   const [previousAction, setPreviousAction] = useState(action);
 
   useEffect(() => {
@@ -36,33 +25,27 @@ export const ActionBox = ({
     }
   }, [action, saveScenario, previousAction]);
 
-  const setStatus = (status: string) => {
-    updateAction({
-      ...action,
-      status: status,
-    });
-  };
-
   return (
-    <Grid container className={gridContainer}>
-      <Grid item xs={12} className={alignCenter}>
-        <Grid item xs={6} className={paddingTop}>
-          <Typography className={label}>
-            {t('dictionary.measure')} {index}
-          </Typography>
-        </Grid>
-      </Grid>
+    <>
+      <Box>
+        <Typography sx={label}>
+          {t('dictionary.measure')} {index}
+        </Typography>
+        <Typography sx={body2}>{action.description}</Typography>
+      </Box>
 
-      <Grid item xs={12} className={actionDescription}>
-        <Typography className={body2}>{action.description}</Typography>
-      </Grid>
-
-      <Grid item xs={12} className={row}>
-        <Grid item xs={8}>
-          <Typography className={label}>{t('dictionary.url')}</Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'end',
+        }}
+      >
+        <Box>
+          <Typography sx={label}>{t('dictionary.url')}</Typography>
           {action.url ? (
             <Link
-              className={body2}
+              sx={body2}
               target="_blank"
               rel="noreferrer"
               href={
@@ -72,20 +55,21 @@ export const ActionBox = ({
               {action.url}
             </Link>
           ) : (
-            <Typography className={body2}>
-              {t('dictionary.emptyUrl')}
-            </Typography>
+            <Typography sx={body2}>{t('dictionary.emptyUrl')}</Typography>
           )}
-        </Grid>
+        </Box>
 
-        <Grid item xs={3} className={chipDropdown}>
-          <ChipDropdown
-            options={actionStatusOptions}
-            selectedValue={action.status}
-            handleChange={setStatus}
-          />
-        </Grid>
-      </Grid>
-    </Grid>
+        <Chip
+          label={action.status}
+          sx={{
+            margin: 0,
+            backgroundColor:
+              action.status === 'Completed'
+                ? { backgroundColor: '#6BC6A4' }
+                : undefined,
+          }}
+        />
+      </Box>
+    </>
   );
 };

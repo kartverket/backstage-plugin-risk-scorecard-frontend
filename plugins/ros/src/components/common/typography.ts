@@ -51,7 +51,7 @@ export const labelSubtitle: SxProps<Theme> = theme => ({
 });
 
 export const label2: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(2),
+  fontSize: theme.spacing(1.75),
   fontWeight: 700,
   textTransform: 'uppercase',
   color: theme.palette.mode === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',

@@ -15,7 +15,8 @@ import Button from '@mui/material/Button';
 import { emptyAction } from '../../../ScenarioContext';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FormSection from './FormSection';
+import { section } from '../scenarioDrawerComponents';
+import Paper from '@mui/material/Paper';
 
 const ActionFormSection = ({
   formMethods,
@@ -24,14 +25,13 @@ const ActionFormSection = ({
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control, register } = formMethods;
-
   const { fields, append, remove } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: 'actions', // unique name for your Field Array
+    control,
+    name: 'actions',
   });
 
   return (
-    <FormSection>
+    <Paper sx={section}>
       <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
       <Input
         {...register('existingActions')}
@@ -43,14 +43,18 @@ const ActionFormSection = ({
           <Divider variant="fullWidth" />
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
+              display: 'grid',
               gap: '24px',
-              width: '100%',
               padding: 0,
             }}
           >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
               <Typography sx={heading3}>
                 {t('scenarioDrawer.measureTab.title')} {index}
               </Typography>
@@ -93,7 +97,7 @@ const ActionFormSection = ({
       >
         {t('scenarioDrawer.measureTab.addMeasureButton')}
       </Button>
-    </FormSection>
+    </Paper>
   );
 };
 

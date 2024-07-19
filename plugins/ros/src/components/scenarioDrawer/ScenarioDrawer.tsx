@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Drawer } from '@material-ui/core';
-import { useScenarioDrawerStyles } from './scenarioDrawerStyle';
+import Box from '@mui/material/Box';
 import { useScenario } from '../../ScenarioContext';
 import { RiskSection } from './components/RiskSection';
 import { ActionsSection } from './components/ActionsSection';
@@ -14,10 +13,11 @@ import { Scenario } from '../../utils/types';
 import RiskFormSection from './components/RiskFormSection';
 import ActionFormSection from './components/ActionFormSection';
 import ScenarioFormSection from './components/ScenarioFormSection';
+import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { drawer, buttons } = useScenarioDrawerStyles();
   const [isEditing, setIsEditing] = useState(false);
   const {
     scenario,
@@ -50,53 +50,45 @@ export const ScenarioDrawer = () => {
 
   return (
     <Drawer
-      classes={{ paper: drawer }}
+      PaperProps={{
+        sx: theme => ({
+          padding: theme.spacing(4),
+          width: '50%',
+          gap: theme.spacing(3),
+          [theme.breakpoints.down('sm')]: {
+            width: '90%',
+            padding: theme.spacing(2),
+          },
+          backgroundColor:
+            theme.palette.mode === 'dark' ? '#333333' : '#f8f8f8',
+        }),
+      }}
       variant="temporary"
       anchor="right"
       open={isDrawerOpen}
       onClose={onClose}
     >
-      <Box className={buttons}>
-        {isEditing ? (
-          <>
-            <Button
-              type="submit"
-              onClick={onSubmit}
-              color="primary"
-              variant="contained"
-              style={{ marginLeft: 'auto' }}
-            >
-              {t('dictionary.save')}
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={onCancel}
-              style={{ marginLeft: 'auto' }}
-            >
-              {t('dictionary.cancel')}
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => setIsEditing(true)}
-              style={{ marginLeft: 'auto' }}
-            >
-              {t('dictionary.edit')}
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={onClose}
-              style={{ marginLeft: 'auto' }}
-            >
-              {t('dictionary.close')}
-            </Button>
-          </>
-        )}
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '16px',
+          marginLeft: 'auto',
+        }}
+      >
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={isEditing ? onSubmit : () => setIsEditing(true)}
+        >
+          {t(isEditing ? 'dictionary.save' : 'dictionary.edit')}
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={isEditing ? onCancel : onClose}
+        >
+          {t(isEditing ? 'dictionary.cancel' : 'dictionary.close')}
+        </Button>
       </Box>
 
       {isEditing ? (
@@ -118,7 +110,7 @@ export const ScenarioDrawer = () => {
         variant="text"
         color="primary"
         onClick={openDeleteConfirmation}
-        style={{ marginRight: 'auto' }}
+        sx={{ marginRight: 'auto' }}
       >
         {t('scenarioDrawer.deleteScenarioButton')}
       </Button>

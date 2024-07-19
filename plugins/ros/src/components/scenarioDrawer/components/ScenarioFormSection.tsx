@@ -11,7 +11,8 @@ import {
 import { Select } from '../../common/Select';
 import Typography from '@mui/material/Typography';
 import { heading3 } from '../../common/typography';
-import FormSection from './FormSection';
+import Paper from '@mui/material/Paper';
+import { section } from '../scenarioDrawerComponents';
 
 const ScenarioFormSection = ({
   formMethods,
@@ -36,7 +37,7 @@ const ScenarioFormSection = ({
   );
 
   return (
-    <FormSection>
+    <Paper sx={section}>
       <Typography sx={heading3}>{t('scenarioDrawer.title')}</Typography>
       <Input {...register('title')} label={t('dictionary.title')} />
       <Select<Scenario>
@@ -60,7 +61,7 @@ const ScenarioFormSection = ({
         label={t('dictionary.description')}
         minRows={4}
       />
-    </FormSection>
+    </Paper>
   );
 };
 

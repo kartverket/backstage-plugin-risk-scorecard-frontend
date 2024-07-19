@@ -9,9 +9,10 @@ import {
 } from '../../../utils/constants';
 import { Select } from '../../common/Select';
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { heading3 } from '../../common/typography';
-import FormSection from './FormSection';
+import { section } from '../scenarioDrawerComponents';
 
 const ScenarioForm = ({
   formMethods,
@@ -40,7 +41,7 @@ const ScenarioForm = ({
         gap: '24px',
       }}
     >
-      <FormSection>
+      <Paper sx={section}>
         <Typography sx={heading3}>{t('dictionary.initialRisk')}</Typography>
         <Select<Scenario>
           control={control}
@@ -54,8 +55,8 @@ const ScenarioForm = ({
           label={t('dictionary.consequence')}
           options={consequenceValues}
         />
-      </FormSection>
-      <FormSection>
+      </Paper>
+      <Paper sx={section}>
         <Typography sx={heading3}>{t('dictionary.restRisk')}</Typography>
         <Select<Scenario>
           control={control}
@@ -69,7 +70,7 @@ const ScenarioForm = ({
           label={t('dictionary.consequence')}
           options={consequenceValues}
         />
-      </FormSection>
+      </Paper>
     </Box>
   );
 };
