@@ -10,8 +10,10 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { ScopeSection } from './components/ScopeSection';
 import { useForm } from 'react-hook-form';
-import ScenarioForm from './components/ScenarioForm';
 import { Scenario } from '../../utils/types';
+import RiskFormSection from './components/RiskFormSection';
+import ActionFormSection from './components/ActionFormSection';
+import ScenarioFormSection from './components/ScenarioFormSection';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -98,7 +100,11 @@ export const ScenarioDrawer = () => {
       </Box>
 
       {isEditing ? (
-        <ScenarioForm formMethods={formMethods} />
+        <>
+          <ScenarioFormSection formMethods={formMethods} />
+          <RiskFormSection formMethods={formMethods} />
+          <ActionFormSection formMethods={formMethods} />
+        </>
       ) : (
         <>
           <ScopeSection />
