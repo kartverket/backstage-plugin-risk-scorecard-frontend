@@ -20,6 +20,9 @@ import { heading3 } from '../../common/typography';
 import { AddCircle } from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
+import { emptyAction } from '../../../ScenarioContext';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const section: SxProps<Theme> = {
   display: 'flex',
@@ -37,7 +40,7 @@ const ScenarioForm = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control, register } = formMethods;
 
-  const { fields, append } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormProvider)
     name: 'actions', // unique name for your Field Array
   });
@@ -143,10 +146,15 @@ const ScenarioForm = ({
         {fields.map((field, index) => (
           <Fragment key={field.ID}>
             <Divider variant="fullWidth" />
-            <Box sx={section}>
-              <Typography sx={heading3}>
-                {t('scenarioDrawer.measureTab.title')} {index}
-              </Typography>
+            <Box sx={{ ...section, padding: 0 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography sx={heading3}>
+                  {t('scenarioDrawer.measureTab.title')} {index}
+                </Typography>
+                <IconButton onClick={() => remove(index)} color="primary">
+                  <DeleteIcon aria-label="Edit" />
+                </IconButton>
+              </Box>
               <Input
                 {...register(`actions.${index}.description`)}
                 label={t('dictionary.description')}
@@ -178,17 +186,7 @@ const ScenarioForm = ({
         <Button
           startIcon={<AddCircle />}
           color="primary"
-          onClick={() =>
-            append({
-              ID: '',
-              title: '',
-              description: '',
-              owner: '',
-              deadline: '',
-              status: '',
-              url: '',
-            })
-          }
+          onClick={() => append(emptyAction())}
         >
           {t('scenarioDrawer.measureTab.addMeasureButton')}
         </Button>

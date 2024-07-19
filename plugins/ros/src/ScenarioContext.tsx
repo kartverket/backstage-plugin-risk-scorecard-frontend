@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { ScenarioWizardSteps } from './components/scenarioWizard/ScenarioWizard';
 import { generateRandomId } from './utils/utilityfunctions';
 
-const emptyAction = (): Action => ({
+export const emptyAction = (): Action => ({
   ID: generateRandomId(),
   title: '',
   description: '',

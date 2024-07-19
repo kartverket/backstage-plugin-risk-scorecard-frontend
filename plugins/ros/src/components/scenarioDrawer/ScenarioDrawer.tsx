@@ -17,8 +17,13 @@ export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { drawer, buttons } = useScenarioDrawerStyles();
   const [isEditing, setIsEditing] = useState(false);
-  const { scenario, isDrawerOpen, openDeleteConfirmation, closeScenario } =
-    useScenario();
+  const {
+    scenario,
+    isDrawerOpen,
+    openDeleteConfirmation,
+    closeScenario,
+    submitEditedScenarioToRiSc,
+  } = useScenario();
 
   const formMethods = useForm<Scenario>({ defaultValues: scenario });
 
@@ -32,19 +37,14 @@ export const ScenarioDrawer = () => {
     setIsEditing(false);
   };
 
-  // TODO: bør være noe loading elns? så man ser at endringer kommer
   const onSubmit = formMethods.handleSubmit((data: Scenario) => {
-    // TODO: bytt log med submit når alt er i boks
-    console.log('submit form data?', data);
-    // submitEditedScenarioToRiSc(data);
+    submitEditedScenarioToRiSc(data);
     setIsEditing(false);
   });
 
   useEffect(() => {
     formMethods.reset(scenario);
   }, [scenario, formMethods]);
-
-  console.log('scenario', scenario);
 
   return (
     <Drawer
