@@ -94,7 +94,7 @@ export const Select = <T extends FieldValues>({
 
       <MUISelect
         MenuProps={{
-          disableEnforceFocus: true,
+          disablePortal: true,
         }}
         variant="outlined"
         renderValue={renderValue}
