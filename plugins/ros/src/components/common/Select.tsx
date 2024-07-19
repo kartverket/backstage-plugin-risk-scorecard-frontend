@@ -1,5 +1,11 @@
 import React from 'react';
-import { Control, FieldValues, Path, useController } from 'react-hook-form';
+import {
+  Control,
+  FieldValues,
+  Path,
+  PathValue,
+  useController,
+} from 'react-hook-form';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import Box from '@mui/material/Box';
@@ -19,7 +25,7 @@ type Props<T extends FieldValues> = SelectProps & {
   control?: Control<T, any>;
   name: Path<T>;
   labelTranslationKey?: string;
-  options: { value: string; renderedValue: string }[];
+  options: { value: string | number; renderedValue: string | number }[];
 };
 
 export const Select = <T extends FieldValues>({
@@ -57,15 +63,23 @@ export const Select = <T extends FieldValues>({
           <Chip
             key={value}
             label={
-              /* @ts-ignore Because ts can't typecheck strings agains our keys */
+              /* @ts-ignore Because ts can't typecheck strings against our keys */
               labelTranslationKey ? t(`${labelTranslationKey}.${value}`) : value
             }
           />
         ))}
       </Box>
     ) : (
-      values
+      options.find(option => option.value === values)?.renderedValue
     );
+
+  const handleChecked = (
+    fieldValue: PathValue<T, (string | undefined) & Path<T>>,
+    optionValue: Props<T>['options'][0]['value'],
+  ) => {
+    if (Array.isArray(fieldValue)) return fieldValue.includes(optionValue);
+    return fieldValue === optionValue;
+  };
 
   return (
     <FormControl sx={{ width: '100%' }}>
@@ -102,7 +116,9 @@ export const Select = <T extends FieldValues>({
       >
         {options.map(option => (
           <MenuItem key={option.value} value={option.value}>
-            <Checkbox checked={field.value.includes(option.value)} />
+            {multiple && (
+              <Checkbox checked={handleChecked(field.value, option.value)} />
+            )}
             <ListItemText primary={option.renderedValue} />
           </MenuItem>
         ))}
