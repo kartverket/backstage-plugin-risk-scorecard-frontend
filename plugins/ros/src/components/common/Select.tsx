@@ -45,7 +45,7 @@ export const Select = <T extends FieldValues>({
   const { field } = useController({
     name,
     control,
-    rules: { required: true },
+    rules: { required },
   });
 
   // values er strengt tatt unknown, men da må vi bruke mye ts-ignore for å komme i mål

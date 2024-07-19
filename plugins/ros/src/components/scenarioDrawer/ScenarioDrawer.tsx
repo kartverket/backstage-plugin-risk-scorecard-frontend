@@ -48,6 +48,8 @@ export const ScenarioDrawer = () => {
     formMethods.reset(scenario);
   }, [scenario, formMethods]);
 
+  // TODO: legg til isSubmitting på knappen basert på submitEditedScenarioToRiSc
+
   return (
     <Drawer
       PaperProps={{
@@ -79,6 +81,7 @@ export const ScenarioDrawer = () => {
           color="primary"
           variant="contained"
           onClick={isEditing ? onSubmit : () => setIsEditing(true)}
+          disabled={isEditing && !formMethods.formState.isDirty}
         >
           {t(isEditing ? 'dictionary.save' : 'dictionary.edit')}
         </Button>

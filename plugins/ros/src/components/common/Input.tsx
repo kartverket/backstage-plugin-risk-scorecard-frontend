@@ -12,9 +12,9 @@ type Props = TextFieldProps & {
 export const Input = forwardRef<HTMLInputElement, Props>(
   ({ label, sublabel, error, helperText, required, ...props }, ref) => {
     return (
-      <FormControl sx={{ width: '100%' }}>
+      <FormControl sx={{ width: '100%' }} error={error} required={required}>
         {label && (
-          <FormLabel sx={formLabel} required={required}>
+          <FormLabel required={required} sx={formLabel}>
             {label}
           </FormLabel>
         )}
@@ -23,6 +23,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
         )}
         <TextField
           id="filled-multiline-static"
+          error={error}
           multiline
           fullWidth
           variant="outlined"
@@ -36,7 +37,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
           }}
           {...props}
         />
-        {error && <FormHelperText error>{helperText}</FormHelperText>}
+        {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
     );
   },

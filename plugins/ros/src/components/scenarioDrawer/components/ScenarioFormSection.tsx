@@ -20,7 +20,11 @@ const ScenarioFormSection = ({
   formMethods: UseFormReturn<Scenario>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { control, register } = formMethods;
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = formMethods;
 
   const translatedThreatActors = threatActorsOptions.map(threatActor => ({
     value: threatActor,
@@ -39,7 +43,12 @@ const ScenarioFormSection = ({
   return (
     <Paper sx={section}>
       <Typography sx={heading3}>{t('scenarioDrawer.title')}</Typography>
-      <Input {...register('title')} label={t('dictionary.title')} />
+      <Input
+        required
+        {...register('title', { required: true })}
+        error={errors.title !== undefined}
+        label={t('dictionary.title')}
+      />
       <Select<Scenario>
         multiple
         control={control}
