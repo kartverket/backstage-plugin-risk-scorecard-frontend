@@ -1,5 +1,4 @@
 import React from 'react';
-import { useFontStyles, useInputFieldStyles } from '../../utils/style';
 import { Control, useController } from 'react-hook-form';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -12,6 +11,7 @@ import MUISelect, { SelectProps } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
+import { formLabel, labelSubtitle } from './typography';
 
 type Props = SelectProps & {
   sublabel?: string;
@@ -36,9 +36,6 @@ export const Select = ({
   ...props
 }: Props) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { formLabel, formControl } = useInputFieldStyles();
-  const { labelSubtitle } = useFontStyles();
-
   const { field } = useController({
     name,
     control,
@@ -71,14 +68,14 @@ export const Select = ({
     );
 
   return (
-    <FormControl className={formControl}>
+    <FormControl sx={{ width: '100%' }}>
       {label && (
-        <FormLabel className={formLabel} required={required}>
+        <FormLabel sx={formLabel} required={required}>
           {label}
         </FormLabel>
       )}
       {sublabel && (
-        <FormHelperText className={labelSubtitle}>{sublabel}</FormHelperText>
+        <FormHelperText sx={labelSubtitle}>{sublabel}</FormHelperText>
       )}
 
       <MUISelect

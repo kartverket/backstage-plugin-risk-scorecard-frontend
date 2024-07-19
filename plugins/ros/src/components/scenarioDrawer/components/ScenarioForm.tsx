@@ -2,7 +2,6 @@ import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { Scenario } from '../../../utils/types';
 import { Paper } from '@material-ui/core';
-import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Input } from '../../common/Input';
@@ -15,7 +14,6 @@ const ScenarioForm = ({
   formMethods: UseFormReturn<Scenario>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { section } = useScenarioDrawerStyles();
   const { control, register } = formMethods;
 
   const translatedThreatActors = threatActorsOptions.map(threatActor => ({
@@ -26,7 +24,15 @@ const ScenarioForm = ({
 
   return (
     <>
-      <Paper className={section} style={{ padding: '1rem' }}>
+      <Paper
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          padding: '1rem',
+        }}
+        elevation={2}
+      >
         <Input {...register('title')} label={t('scenarioDrawer.title')} />
         <Select
           multiple
