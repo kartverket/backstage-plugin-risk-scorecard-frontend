@@ -1,11 +1,12 @@
-import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import React, { Fragment } from 'react';
+import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Scenario } from '../../../utils/types';
 import Paper from '@mui/material/Paper';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Input } from '../../common/Input';
 import {
+  actionStatusOptions,
   consequenceOptions,
   probabilityOptions,
   threatActorsOptions,
@@ -16,6 +17,9 @@ import Box from '@mui/material/Box';
 import { SxProps, Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { heading3 } from '../../common/typography';
+import { AddCircle } from '@mui/icons-material';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
 
 const section: SxProps<Theme> = {
   display: 'flex',
@@ -32,6 +36,11 @@ const ScenarioForm = ({
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control, register } = formMethods;
+
+  const { fields, append } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormProvider)
+    name: 'actions', // unique name for your Field Array
+  });
 
   const translatedThreatActors = threatActorsOptions.map(threatActor => ({
     value: threatActor,
@@ -62,7 +71,8 @@ const ScenarioForm = ({
   return (
     <>
       <Paper sx={section}>
-        <Input {...register('title')} label={t('scenarioDrawer.title')} />
+        <Typography sx={heading3}>{t('scenarioDrawer.title')}</Typography>
+        <Input {...register('title')} label={t('dictionary.title')} />
         <Select<Scenario>
           multiple
           control={control}
@@ -123,6 +133,66 @@ const ScenarioForm = ({
           />
         </Paper>
       </Box>
+      <Paper sx={section}>
+        <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
+        <Input
+          {...register('existingActions')}
+          label={t('scenarioDrawer.measureTab.existingMeasure')}
+          minRows={3}
+        />
+        {fields.map((field, index) => (
+          <Fragment key={field.ID}>
+            <Divider variant="fullWidth" />
+            <Box sx={section}>
+              <Typography sx={heading3}>
+                {t('scenarioDrawer.measureTab.title')} {index}
+              </Typography>
+              <Input
+                {...register(`actions.${index}.description`)}
+                label={t('dictionary.description')}
+              />
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: '2fr 1fr',
+                  gap: '24px',
+                }}
+              >
+                <Input
+                  {...register(`actions.${index}.url`)}
+                  label={t('dictionary.url')}
+                />
+                <Select<Scenario>
+                  control={control}
+                  name={`actions.${index}.status`}
+                  label={t('dictionary.status')}
+                  options={actionStatusOptions.map(value => ({
+                    value,
+                    renderedValue: value,
+                  }))}
+                />
+              </Box>
+            </Box>
+          </Fragment>
+        ))}
+        <Button
+          startIcon={<AddCircle />}
+          color="primary"
+          onClick={() =>
+            append({
+              ID: '',
+              title: '',
+              description: '',
+              owner: '',
+              deadline: '',
+              status: '',
+              url: '',
+            })
+          }
+        >
+          {t('scenarioDrawer.measureTab.addMeasureButton')}
+        </Button>
+      </Paper>
     </>
   );
 };

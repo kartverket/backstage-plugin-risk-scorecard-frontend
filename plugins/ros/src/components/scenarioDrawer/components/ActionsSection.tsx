@@ -26,7 +26,7 @@ export const ActionsSection = () => {
           }}
         >
           <Typography className={h3}>
-            {t('scenarioDrawer.measureTab.actionsTitle')}
+            {t('scenarioDrawer.measureTab.title')}
           </Typography>
         </Grid>
         {scenario.existingActions && (

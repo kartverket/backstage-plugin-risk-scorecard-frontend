@@ -23,7 +23,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       edit: 'Edit',
       estimatedRisk: 'Estimated risk',
       initialRisk: 'Initial risk', // Starting or Initial risk
-      measure: 'Actions', // Measure, Action or Initiative
+      measure: 'Action', // Measure, Action or Initiative
       measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
       next: 'Next',
       planned: 'Planned',
@@ -164,7 +164,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         measureOwnerDescription:
           'Decide who will be responsible for completion of this action',
         addMeasureButton: 'Add planned action',
-        actionsTitle: 'Actions',
+        title: 'Actions',
         plannedMeasures: 'Planned actions',
         existingMeasure: 'Existing measures',
         existingMeasureSubtitle:
@@ -286,6 +286,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.estimatedRisk': 'Estimert risiko',
           'dictionary.initialRisk': 'Startrisiko',
           'dictionary.measure': 'Tiltak',
+          'dictionary.measures': 'Tiltak',
           'dictionary.measureOwner': 'Tiltakseier',
           'dictionary.next': 'Neste',
           'dictionary.planned': 'Planlagt',
@@ -397,7 +398,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velg den høyeste.',
           'scenarioDrawer.measureTab.subtitle':
             'Hvilke tiltak bør gjøres for å unngå scenarioet?',
-          'scenarioDrawer.measureTab.actionsTitle': 'Tiltak',
+          'scenarioDrawer.measureTab.title': 'Tiltak',
           'scenarioDrawer.measureTab.measureOwnerDescription':
             'De eller den som er ansvarlig for at tiltaket blir gjennomført',
           'scenarioDrawer.measureTab.addMeasureButton': 'Legg til tiltak',
