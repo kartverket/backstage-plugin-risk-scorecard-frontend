@@ -9,6 +9,7 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
       width: '90%',
       padding: theme.spacing(2),
     },
+    backgroundColor: theme.palette.type === 'dark' ? '#333333' : '#f8f8f8',
   },
   risikoBadge: {
     width: '20px',
@@ -18,11 +19,9 @@ export const useScenarioDrawerStyles = makeStyles((theme: Theme) => ({
   section: {
     width: '100%',
     padding: theme.spacing(2),
-    backgroundColor: theme.palette.type === 'dark' ? '#555555' : '#e0e0e0',
   },
   gridContainer: {
-    marginBottom: theme.palette.type === 'dark' ? theme.spacing(1) : '7px',
-    backgroundColor: theme.palette.type === 'dark' ? '#55555519' : '#e0e0e019',
+    marginBottom: theme.spacing(1),
   },
   buttons: {
     display: 'flex',

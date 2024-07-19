@@ -31,7 +31,6 @@ const ScenarioForm = ({
           gap: '16px',
           padding: '1rem',
         }}
-        elevation={2}
       >
         <Input {...register('title')} label={t('scenarioDrawer.title')} />
         <Select
