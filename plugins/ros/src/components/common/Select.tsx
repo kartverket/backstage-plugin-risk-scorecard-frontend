@@ -1,5 +1,5 @@
 import React from 'react';
-import { Control, useController } from 'react-hook-form';
+import { Control, FieldValues, Path, useController } from 'react-hook-form';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import Box from '@mui/material/Box';
@@ -13,16 +13,16 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { formLabel, labelSubtitle } from './typography';
 
-type Props = SelectProps & {
+type Props<T extends FieldValues> = SelectProps & {
   sublabel?: string;
   helperText?: string;
-  control?: Control<any, any>;
-  name: string;
+  control?: Control<T, any>;
+  name: Path<T>;
   labelTranslationKey?: string;
   options: { value: string; renderedValue: string }[];
 };
 
-export const Select = ({
+export const Select = <T extends FieldValues>({
   label,
   sublabel,
   error,
@@ -34,7 +34,7 @@ export const Select = ({
   labelTranslationKey,
   options,
   ...props
-}: Props) => {
+}: Props<T>) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { field } = useController({
     name,
