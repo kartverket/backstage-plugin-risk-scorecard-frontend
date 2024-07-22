@@ -1,55 +1,117 @@
-import React from 'react';
-import { Button, Drawer } from '@material-ui/core';
-import { useScenarioDrawerStyles } from './scenarioDrawerStyle';
+import React, { useEffect, useState } from 'react';
+import Box from '@mui/material/Box';
 import { useScenario } from '../../ScenarioContext';
-import { ScenarioDrawerState } from '../../utils/hooks';
 import { RiskSection } from './components/RiskSection';
 import { ActionsSection } from './components/ActionsSection';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DeleteConfirmation } from './components/DeleteConfirmation';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useFontStyles } from '../../utils/style';
 import { ScopeSection } from './components/ScopeSection';
+import { useForm } from 'react-hook-form';
+import { Scenario } from '../../utils/types';
+import RiskFormSection from './components/RiskFormSection';
+import ActionFormSection from './components/ActionFormSection';
+import ScenarioFormSection from './components/ScenarioFormSection';
+import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { drawer } = useScenarioDrawerStyles();
-  const { button } = useFontStyles();
+  const [isEditing, setIsEditing] = useState(false);
+  const {
+    scenario,
+    isDrawerOpen,
+    openDeleteConfirmation,
+    closeScenario,
+    submitEditedScenarioToRiSc,
+  } = useScenario();
 
-  const { scenarioDrawerState, openDeleteConfirmation, closeScenario } =
-    useScenario();
+  const formMethods = useForm<Scenario>({ defaultValues: scenario });
 
-  const isOpen = scenarioDrawerState !== ScenarioDrawerState.Closed;
+  const onCancel = () => {
+    formMethods.reset(scenario);
+    setIsEditing(false);
+  };
+
+  const onClose = () => {
+    closeScenario();
+    setIsEditing(false);
+  };
+
+  const onSubmit = formMethods.handleSubmit((data: Scenario) => {
+    submitEditedScenarioToRiSc(data);
+    setIsEditing(false);
+  });
+
+  useEffect(() => {
+    formMethods.reset(scenario);
+  }, [scenario, formMethods]);
 
   return (
     <Drawer
-      classes={{ paper: drawer }}
+      PaperProps={{
+        sx: theme => ({
+          padding: theme.spacing(4),
+          width: '50%',
+          gap: theme.spacing(3),
+          [theme.breakpoints.down('sm')]: {
+            width: '90%',
+            padding: theme.spacing(2),
+          },
+          backgroundColor:
+            theme.palette.mode === 'dark' ? '#333333' : '#f8f8f8',
+        }),
+      }}
       variant="temporary"
       anchor="right"
-      open={isOpen}
-      onClose={closeScenario}
+      open={isDrawerOpen}
+      onClose={onClose}
     >
-      <Button
-        className={button}
-        variant="outlined"
-        color="primary"
-        onClick={closeScenario}
-        style={{ marginLeft: 'auto' }}
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '16px',
+          marginLeft: 'auto',
+        }}
       >
-        {t('dictionary.close')}
-      </Button>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={isEditing ? onSubmit : () => setIsEditing(true)}
+          disabled={isEditing && !formMethods.formState.isDirty}
+        >
+          {t(isEditing ? 'dictionary.save' : 'dictionary.edit')}
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={isEditing ? onCancel : onClose}
+        >
+          {t(isEditing ? 'dictionary.cancel' : 'dictionary.close')}
+        </Button>
+      </Box>
 
-      <ScopeSection />
-      <RiskSection />
-      <ActionsSection />
+      {isEditing ? (
+        <>
+          <ScenarioFormSection formMethods={formMethods} />
+          <RiskFormSection formMethods={formMethods} />
+          <ActionFormSection formMethods={formMethods} />
+        </>
+      ) : (
+        <>
+          <ScopeSection />
+          <RiskSection />
+          <ActionsSection />
+        </>
+      )}
 
       <Button
         startIcon={<DeleteIcon />}
         variant="text"
         color="primary"
         onClick={openDeleteConfirmation}
-        style={{ marginRight: 'auto' }}
+        sx={{ marginRight: 'auto' }}
       >
         {t('scenarioDrawer.deleteScenarioButton')}
       </Button>

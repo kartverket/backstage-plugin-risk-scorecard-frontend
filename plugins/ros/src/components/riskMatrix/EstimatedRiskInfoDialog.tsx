@@ -13,7 +13,7 @@ import { consequenceOptions, probabilityOptions } from '../../utils/constants';
 import { formatNOK } from '../../utils/utilityfunctions';
 import { useEstimatedRiskInfoDialogStyles } from './estimatedRiskInfoDialogStyle';
 
-export interface EstimatedRiskInfoDialogProps {
+interface EstimatedRiskInfoDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }

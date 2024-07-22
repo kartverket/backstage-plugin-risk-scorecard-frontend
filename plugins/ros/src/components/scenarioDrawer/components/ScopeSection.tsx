@@ -1,68 +1,49 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import { Grid, Paper, Typography } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useFontStyles } from '../../../utils/style';
-import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { useScenario } from '../../../ScenarioContext';
-import EditButton from '../../common/EditButton';
+import { section } from '../scenarioDrawerComponents';
+import { body2, heading1, heading3, label } from '../../common/typography';
 
 export const ScopeSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { h1, h3, body2, label } = useFontStyles();
-  const { header, titleAndButton, section } = useScenarioDrawerStyles();
-  const { scenario, editScenario } = useScenario();
+  const { scenario } = useScenario();
 
   return (
-    <Paper className={section} style={{ padding: '1rem' }}>
-      <Box className={header}>
-        <Grid container>
-          <Grid item xs={12} className={titleAndButton}>
-            <Typography variant="h3" className={h3} style={{ marginBottom: 0 }}>
-              {t('scenarioDrawer.title')}
+    <Paper sx={section}>
+      <Typography sx={heading3}>{t('scenarioDrawer.title')}</Typography>
+
+      <Typography sx={heading1}>{scenario.title}</Typography>
+
+      <Box>
+        <Typography sx={label}>{t('dictionary.description')}</Typography>
+        <Typography sx={body2}>{scenario.description}</Typography>
+      </Box>
+
+      <Divider />
+
+      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+        <Box>
+          <Typography sx={label}>{t('dictionary.threatActors')}</Typography>
+          {scenario.threatActors.map(threatActor => (
+            <Typography key={threatActor} sx={body2}>
+              {threatActor}
             </Typography>
-            <EditButton onClick={() => editScenario('scenario')} />
-          </Grid>
+          ))}
+        </Box>
 
-          <Grid item xs={12}>
-            <Typography className={h1}>{scenario.title}</Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography className={label}>
-              {t('dictionary.description')}
+        <Box>
+          <Typography sx={label}>{t('dictionary.vulnerabilities')}</Typography>
+          {scenario.vulnerabilities.map(vulnerability => (
+            <Typography key={vulnerability} sx={body2}>
+              {vulnerability}
             </Typography>
-            <Typography className={body2}>{scenario.description}</Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Divider variant="fullWidth" />
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography className={label}>
-              {t('dictionary.threatActors')}
-            </Typography>
-            {scenario.threatActors.map(threatActor => (
-              <Typography key={threatActor} className={body2}>
-                {threatActor}
-              </Typography>
-            ))}
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography className={label}>
-              {t('dictionary.vulnerabilities')}
-            </Typography>
-            {scenario.vulnerabilities.map(vulnerability => (
-              <Typography key={vulnerability} className={body2}>
-                {vulnerability}
-              </Typography>
-            ))}
-          </Grid>
-        </Grid>
+          ))}
+        </Box>
       </Box>
     </Paper>
   );

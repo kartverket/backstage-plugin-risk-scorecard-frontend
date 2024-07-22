@@ -13,13 +13,8 @@ import { useScenario } from '../../../ScenarioContext';
 export const ActionsStep = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h2, subtitle2, actionSubtitle } = useFontStyles();
-  const {
-    scenario,
-    setExistingActions,
-    updateAction,
-    deleteAction,
-    addAction,
-  } = useScenario();
+  const { scenario, setScenarioValue, updateAction, deleteAction, addAction } =
+    useScenario();
 
   return (
     <Box>
@@ -32,7 +27,7 @@ export const ActionsStep = () => {
           label={t('scenarioDrawer.measureTab.existingMeasure')}
           subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
           value={scenario.existingActions}
-          handleChange={setExistingActions}
+          handleChange={value => setScenarioValue('existingActions', value)}
           minRows={3}
         />
       </Grid>

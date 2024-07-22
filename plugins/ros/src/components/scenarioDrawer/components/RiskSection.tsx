@@ -1,6 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import {
   formatNOK,
   getConsequenceLevel,
@@ -11,117 +12,74 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useScenario } from '../../../ScenarioContext';
-import { useFontStyles } from '../../../utils/style';
-import { useScenarioDrawerStyles } from '../scenarioDrawerStyle';
 import { Risk } from '../../../utils/types';
-import EditButton from '../../common/EditButton';
+import { section } from '../scenarioDrawerComponents';
+import { body1, heading3, label, label2 } from '../../common/typography';
 
 interface RiskProps {
   risk: Risk;
   riskType: 'initialRisk' | 'restRisk';
-  editScenario: (step: 'initialRisk' | 'restRisk') => void;
 }
 
-const RiskBox = ({ risk, riskType, editScenario }: RiskProps) => {
-  const { risikoBadge, titleAndButton, section } = useScenarioDrawerStyles();
-  const { h3, body1, label } = useFontStyles();
+const RiskBox = ({ risk, riskType }: RiskProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Paper className={section} style={{ padding: '1rem' }}>
-      <Grid
-        item
-        xs={12}
-        className={titleAndButton}
-        style={{ marginBottom: '0.5rem' }}
-      >
-        <Typography className={h3}>{t(`dictionary.${riskType}`)}</Typography>
-        <EditButton onClick={() => editScenario(riskType)} />
-      </Grid>
+    <Paper sx={section}>
+      <Typography sx={heading3}>{t(`dictionary.${riskType}`)}</Typography>
 
-      <Grid container>
-        <Grid
-          item
-          xs={12}
-          style={{
+      <Box>
+        <Box
+          sx={{
             display: 'flex',
-            flexDirection: 'row',
-            gap: '0.5rem',
             alignItems: 'center',
+            gap: 1,
           }}
         >
           <Box
-            className={risikoBadge}
-            style={{
+            sx={{
+              width: '20px',
+              height: '48px',
+              borderRadius: 1,
               backgroundColor: getRiskMatrixColor(risk),
             }}
           />
-          <Grid
-            item
-            xs={12}
-            style={{
+          <Box
+            sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'start',
-              gap: '4px',
+              gap: 0.5,
             }}
           >
-            <Typography className={label} style={{ paddingBottom: 0 }}>
+            <Typography sx={label2}>
               {t('dictionary.probability')}: {getProbabilityLevel(risk)}
             </Typography>
-            <Typography className={label} style={{ paddingBottom: 0 }}>
+            <Typography sx={label2}>
               {t('dictionary.consequence')}: {getConsequenceLevel(risk)}
             </Typography>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} style={{ paddingBottom: 0 }}>
-          <Typography className={label}>
-            {t('dictionary.estimatedRisk')}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} style={{ paddingTop: 0 }}>
-          <Typography className={body1}>
-            {formatNOK(risk.consequence * risk.probability)}{' '}
-            {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
-          </Typography>
-        </Grid>
-      </Grid>
+          </Box>
+        </Box>
+      </Box>
+      <Box>
+        <Typography sx={label}>{t('dictionary.estimatedRisk')}</Typography>
+        <Typography sx={body1}>
+          {formatNOK(risk.consequence * risk.probability)}{' '}
+          {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+        </Typography>
+      </Box>
     </Paper>
   );
 };
 
 export const RiskSection = () => {
-  const { scenario, editScenario } = useScenario();
+  const { scenario } = useScenario();
 
   return (
-    <>
-      {/* Initial risk -> Rest risk*/}
-      <Grid
-        container
-        wrap="nowrap"
-        alignItems="center"
-        spacing={0}
-        style={{ gap: '8px' }}
-      >
-        {/* Initial risk */}
-        <RiskBox
-          risk={scenario.risk}
-          riskType="initialRisk"
-          editScenario={editScenario}
-        />
-
-        {/* Arrow */}
-        <Grid item style={{}}>
-          <KeyboardDoubleArrowRightIcon style={{ fontSize: '48px' }} />
-        </Grid>
-
-        {/* Rest risk */}
-        <RiskBox
-          risk={scenario.remainingRisk}
-          riskType="restRisk"
-          editScenario={editScenario}
-        />
-      </Grid>
-    </>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <RiskBox risk={scenario.risk} riskType="initialRisk" />
+      <KeyboardDoubleArrowRightIcon sx={{ fontSize: '48px' }} />
+      <RiskBox risk={scenario.remainingRisk} riskType="restRisk" />
+    </Box>
   );
 };

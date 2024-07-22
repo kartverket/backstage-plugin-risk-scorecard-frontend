@@ -76,9 +76,6 @@ export const useFontStyles = makeStyles(theme => ({
     paddingBottom: '1rem',
     marginTop: '-0.2rem',
   },
-  button: {
-    textTransform: 'none',
-  },
   risikoLevel: {
     fontSize: theme.spacing(2.25),
     fontWeight: 700,

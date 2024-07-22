@@ -38,13 +38,9 @@ export type Scenario = {
   threatActors: string[];
   vulnerabilities: string[];
   risk: Risk;
+  remainingRisk: Risk;
   existingActions: string;
   actions: Action[];
-  remainingRisk: Risk;
-};
-
-export type ScenarioErrors = {
-  title: boolean;
 };
 
 export type Risk = {
