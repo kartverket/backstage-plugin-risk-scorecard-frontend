@@ -83,8 +83,8 @@ const ActionFormSection = ({
                   })
                 }
                 label={t('dictionary.url')}
-                helperText={formState.errors.actions?.[0]?.url?.message}
-                error={!!formState.errors.actions?.[0]?.url?.message}
+                helperText={formState.errors.actions?.[index]?.url?.message}
+                error={!!formState.errors.actions?.[index]?.url?.message}
               />
               <Select<Scenario>
                 required
