@@ -41,6 +41,20 @@ docker run -it -p 3000:7007 \
 backstage
 ```
 
+# Publish new version of plugin package
+
+When you want to publish a new version of the plugin, you need to update the version of the package in plugins/ros/package.json. Try to follow [semantic verison](https://semver.org/) conventions.
+
+When the new version is updated on the `main`-branch, you may add a new version tag to the GitHub repository.
+
+To make a new tag, run the following in your terminal of choice:
+```sh
+git tag -a v1.2.3 -m "A message explaining the new version"
+git push origin --tags
+```
+
+When the tag is pushed, a GitHub Action workflow will build the plugin and publish it to npm. After that, users of the package may bump their version to get the latest changes.
+
 # Spire Risk Catalog
 
 We have set up a catalog of entities for this project, which fetches:
@@ -122,18 +136,6 @@ solution set up as GCP has today. That means that if you have a Github user acco
 
 [Here](https://console.cloud.google.com/security/secret-manager?project=spire-ros-5lmr) you can find all the secrets that are used in Backstage.
 
-
-
-# Build Plugin package
-
-```sh
-cd plugins/ros
-yarn install
-yarn tsc
-yarn build
-yarn publish # remember to set the new version
-```
-
-## Configuration
+# Configuration
 Crete the file `app-config.local.yaml` at root level. 
 Paste the content from the GCP secret called [backstage-app-config-local](https://console.cloud.google.com/security/secret-manager/secret/backstage-app-config-local/versions?project=spire-ros-5lmr).
