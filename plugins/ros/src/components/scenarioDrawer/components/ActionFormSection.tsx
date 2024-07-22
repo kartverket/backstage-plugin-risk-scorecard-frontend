@@ -24,7 +24,7 @@ const ActionFormSection = ({
   formMethods: UseFormReturn<Scenario>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { control, register } = formMethods;
+  const { control, register, formState } = formMethods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'actions',
@@ -83,6 +83,8 @@ const ActionFormSection = ({
                   })
                 }
                 label={t('dictionary.url')}
+                helperText={formState.errors.actions?.[0]?.url?.message}
+                error={!!formState.errors.actions?.[0]?.url?.message}
               />
               <Select<Scenario>
                 required
