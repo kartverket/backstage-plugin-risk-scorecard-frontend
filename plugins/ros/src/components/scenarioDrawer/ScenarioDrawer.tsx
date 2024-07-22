@@ -48,8 +48,6 @@ export const ScenarioDrawer = () => {
     formMethods.reset(scenario);
   }, [scenario, formMethods]);
 
-  // TODO: legg til isSubmitting på knappen basert på submitEditedScenarioToRiSc
-
   return (
     <Drawer
       PaperProps={{

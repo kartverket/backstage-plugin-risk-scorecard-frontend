@@ -102,7 +102,6 @@ const ScenarioProvider = ({
   const [formErrors, _setFormErrors] = useState<{ [key: string]: boolean }>({});
   const [scenario, setScenario] = useState(emptyScenario());
 
-  // TODO: sløyf denne når vi har egen redigeringsflyt
   const [originalScenario, setOriginalScenario] = useState(emptyScenario());
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
@@ -175,7 +174,6 @@ const ScenarioProvider = ({
     setSearchParams({ step: step });
   };
 
-  // TODO: håndter med form i stedet
   const validateScenario = () => {
     if (scenario.title === '') {
       return false;
@@ -337,7 +335,6 @@ const ScenarioProvider = ({
 
   const hasFormErrors = () => Object.keys(formErrors).length > 0;
 
-  // TODO: vurder memoisering
   const value = {
     isDrawerOpen,
 

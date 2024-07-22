@@ -79,7 +79,6 @@ export const TextField = ({
     }
   };
 
-  // TODO: bør kunne håndteres bedre
   const fieldError =
     hasError || (errorKey ? formFieldHasErrors(errorKey) : false);
 
