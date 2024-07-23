@@ -75,13 +75,13 @@ const ActionFormSection = ({
               }}
             >
               <Input
-                {...register(`actions.${index}.url`, { 
+                {...register(`actions.${index}.url`, {
                   pattern: {
-                    value: /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
+                    value:
+                      /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
                     message: t('scenarioDrawer.action.urlError'),
-                    }
-                  })
-                }
+                  },
+                })}
                 label={t('dictionary.url')}
                 helperText={formState.errors.actions?.[index]?.url?.message}
                 error={!!formState.errors.actions?.[index]?.url?.message}
