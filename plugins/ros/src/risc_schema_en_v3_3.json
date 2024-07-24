@@ -117,7 +117,7 @@
     "url": {
       "type": "string",
       "format": "uri",
-      "pattern": "^https?://"
+      "pattern": "^(?:(https?|s?ftp):\\/\\/)?(?:([\\w-]+)\\.)?([\\w-]+)\\.([\\w]+)\\/?(?:([^?#$]+))?(?:\\?([^#$]+))?(?:#(.*))?$"
     },
     "scenario": {
       "type": "object",
@@ -211,6 +211,15 @@
         "description": {
           "type": "string"
         },
+        "url": {
+          "anyOf": [
+            { "$ref": "#/$defs/url" },
+            {
+              "type": "string",
+              "maxLength": 0
+            }
+          ]
+        },
         "owner": {
           "type": "string"
         },
@@ -229,7 +238,7 @@
           ]
         }
       },
-      "required": ["ID", "description", "owner", "deadline", "status"],
+      "required": ["ID", "description", "status"],
       "additionalProperties": false
     }
   }

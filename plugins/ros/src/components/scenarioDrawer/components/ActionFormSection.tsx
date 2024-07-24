@@ -24,7 +24,7 @@ const ActionFormSection = ({
   formMethods: UseFormReturn<Scenario>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { control, register } = formMethods;
+  const { control, register, formState } = formMethods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'actions',
@@ -56,7 +56,7 @@ const ActionFormSection = ({
               }}
             >
               <Typography sx={heading3}>
-                {t('scenarioDrawer.measureTab.title')} {index}
+                {t('scenarioDrawer.measureTab.title')} {index + 1}
               </Typography>
               <IconButton onClick={() => remove(index)} color="primary">
                 <DeleteIcon aria-label="Edit" />
@@ -75,9 +75,16 @@ const ActionFormSection = ({
               }}
             >
               <Input
-                required
-                {...register(`actions.${index}.url`, { required: true })}
+                {...register(`actions.${index}.url`, {
+                  pattern: {
+                    value:
+                      /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
+                    message: t('scenarioDrawer.action.urlError'),
+                  },
+                })}
                 label={t('dictionary.url')}
+                helperText={formState.errors.actions?.[index]?.url?.message}
+                error={!!formState.errors.actions?.[index]?.url?.message}
               />
               <Select<Scenario>
                 required
