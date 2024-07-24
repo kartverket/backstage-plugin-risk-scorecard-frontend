@@ -6,10 +6,10 @@ backend:
   listen:
     port: 7007
   csp:
-    connect-src: [ "'self'", 'http:', 'https:' ]
+    connect-src: ["'self'", 'http:', 'https:']
   cors:
-    origin: [ 'https://kv-ros-backstage-245zlcbrnq-lz.a.run.app/' ]
-    methods: [ GET, HEAD, PATCH, POST, PUT, DELETE ]
+    origin: ['https://kv-ros-backstage-245zlcbrnq-lz.a.run.app/']
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   database:
     client: better-sqlite3
@@ -33,14 +33,12 @@ auth:
         clientSecret: ${AZURE_CLIENT_SECRET}
         tenantId: ${AZURE_TENANT_ID}
         domainHint: ${AZURE_TENANT_ID}
-        additionalScopes:
-          - Mail.Send
         signIn:
           resolvers:
             - resolver: emailMatchingUserEntityAnnotation
             - resolver: emailMatchingUserEntityProfileEmail
             - resolver: emailLocalPartMatchingUserEntityName
-    
+
     google:
       development:
         clientId: ${GOOGLE_CLIENT_ID}
@@ -58,7 +56,7 @@ catalog:
         schedule:
           frequency: { minutes: 1440 }
           timeout: { minutes: 3 }
-    
+
     microsoftGraphOrg:
       development:
         tenantId: ${AZURE_TENANT_ID}
