@@ -62,6 +62,14 @@ export const ActionEdit = ({
 
         <Grid item xs={12}>
           <TextField
+            label={t('dictionary.title')}
+            value={action.title}
+            handleChange={value => setActionField('title', value)}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <TextField
             label={t('dictionary.description')}
             value={action.description}
             handleChange={value => setActionField('description', value)}

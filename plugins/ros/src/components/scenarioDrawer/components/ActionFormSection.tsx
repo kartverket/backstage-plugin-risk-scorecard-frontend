@@ -63,6 +63,10 @@ const ActionFormSection = ({
               </IconButton>
             </Box>
             <Input
+              {...register(`actions.${index}.title`)}
+              label={t('dictionary.title')}
+            />
+            <Input
               required
               {...register(`actions.${index}.description`, { required: true })}
               label={t('dictionary.description')}
