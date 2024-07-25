@@ -28,7 +28,7 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
       setPreviousAction(action);
     }
   }, [action, saveScenario, previousAction]);
-  const isActionTitlePresent = action.title !== null && action.title !== "";
+  const isActionTitlePresent = action.title !== null && action.title !== '';
 
   return (
     <>
@@ -39,7 +39,9 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
           onClick={() => setIsExpanded(!isExpanded)}
           variant="text"
         >
-          {isActionTitlePresent ? action.title : `${t('dictionary.measure')} ${index}`}
+          {isActionTitlePresent
+            ? action.title
+            : `${t('dictionary.measure')} ${index}`}
         </Button>
       </Box>
       <Collapse in={isExpanded}>
