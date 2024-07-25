@@ -28,18 +28,19 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
       setPreviousAction(action);
     }
   }, [action, saveScenario, previousAction]);
+  const isActionTitlePresent = action.title !== null && action.title !== "";
 
   return (
     <>
       <Box>
         <Button
+          sx={label}
           startIcon={isExpanded ? <ExpandLess /> : <ExpandMore />}
           onClick={() => setIsExpanded(!isExpanded)}
           variant="text"
         >
-          {action.title || t('dictionary.measure') + ' ' + index}
+          {isActionTitlePresent ? action.title : `${t('dictionary.measure')} ${index}`}
         </Button>
-        <Typography sx={label}></Typography>
       </Box>
       <Collapse in={isExpanded}>
         <Typography sx={body2}>{action.description}</Typography>
