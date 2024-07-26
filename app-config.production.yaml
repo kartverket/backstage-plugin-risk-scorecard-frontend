@@ -33,8 +33,6 @@ auth:
         clientSecret: ${AZURE_CLIENT_SECRET}
         tenantId: ${AZURE_TENANT_ID}
         domainHint: ${AZURE_TENANT_ID}
-        additionalScopes:
-          - Mail.Send
         signIn:
           resolvers:
             - resolver: emailMatchingUserEntityAnnotation
