@@ -31,19 +31,22 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
   return (
-    <>
-      <Box>
-        <Button
-          sx={label}
-          startIcon={isExpanded ? <ExpandLess /> : <ExpandMore />}
-          onClick={() => setIsExpanded(!isExpanded)}
-          variant="text"
-        >
-          {isActionTitlePresent
-            ? action.title
-            : `${t('dictionary.measure')} ${index}`}
-        </Button>
-      </Box>
+    <Box>
+      <Button
+        sx={{
+          color: 'inherit',
+          width: '100%',
+          justifyContent: 'start',
+          textAlign: 'left',
+        }}
+        startIcon={isExpanded ? <ExpandLess /> : <ExpandMore />}
+        onClick={() => setIsExpanded(!isExpanded)}
+        variant="text"
+      >
+        {isActionTitlePresent
+          ? action.title
+          : `${t('dictionary.measure')} ${index}`}
+      </Button>
       <Collapse in={isExpanded}>
         <Typography sx={body2}>{action.description}</Typography>
 
@@ -52,6 +55,7 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'end',
+            marginTop: '16px',
           }}
         >
           <Box>
@@ -84,6 +88,6 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
           />
         </Box>
       </Collapse>
-    </>
+    </Box>
   );
 };
