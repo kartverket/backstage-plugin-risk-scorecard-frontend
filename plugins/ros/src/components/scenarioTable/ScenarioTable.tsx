@@ -94,7 +94,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
 
                   <TableCell className={tableCell}>
                     <Typography className={label} style={{ paddingBottom: 0 }}>
-                      {t('scenarioTable.columns.measuresCount')}
+                      {t('dictionary.measures')}
                     </Typography>
                   </TableCell>
                   <TableCell className={tableCell}>

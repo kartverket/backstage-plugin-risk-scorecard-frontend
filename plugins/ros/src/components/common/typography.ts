@@ -57,6 +57,10 @@ export const label2: SxProps<Theme> = theme => ({
   color: theme.palette.mode === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
 });
 
+export const emptyState: SxProps<Theme> = {
+  fontStyle: 'italic',
+};
+
 export const subtitle1: SxProps<Theme> = theme => ({
   fontSize: theme.spacing(2),
   fontWeight: 700,

@@ -6,7 +6,7 @@ import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import { body2, label } from '../../common/typography';
+import { body2, emptyState, label } from '../../common/typography';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
@@ -38,6 +38,8 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
           width: '100%',
           justifyContent: 'start',
           textAlign: 'left',
+          textTransform: 'initial',
+          fontSize: '16px',
         }}
         startIcon={isExpanded ? <ExpandLess /> : <ExpandMore />}
         onClick={() => setIsExpanded(!isExpanded)}
@@ -47,7 +49,11 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
           ? action.title
           : `${t('dictionary.measure')} ${index}`}
       </Button>
-      <Collapse in={isExpanded}>
+      <Collapse
+        in={isExpanded}
+        sx={{ '.MuiCollapse-wrapperInner': { paddingTop: '8px' } }}
+      >
+        <Typography sx={label}>{t('dictionary.description')}</Typography>
         <Typography sx={body2}>{action.description}</Typography>
 
         <Box
@@ -72,7 +78,11 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
                 {action.url}
               </Link>
             ) : (
-              <Typography sx={body2}>{t('dictionary.emptyUrl')}</Typography>
+              <Typography sx={emptyState}>
+                {t('dictionary.emptyField', {
+                  field: t('dictionary.url').toLowerCase(),
+                })}
+              </Typography>
             )}
           </Box>
 

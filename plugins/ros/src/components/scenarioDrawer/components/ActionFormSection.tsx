@@ -56,7 +56,7 @@ const ActionFormSection = ({
               }}
             >
               <Typography sx={heading3}>
-                {t('scenarioDrawer.measureTab.title')} {index + 1}
+                {t('dictionary.measure')} {index + 1}
               </Typography>
               <IconButton onClick={() => remove(index)} color="primary">
                 <DeleteIcon aria-label="Edit" />
