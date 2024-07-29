@@ -75,14 +75,15 @@ export const ScenarioDrawer = () => {
           marginLeft: 'auto',
         }}
       >
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={isEditing ? onSubmit : () => setIsEditing(true)}
-          disabled={isEditing && !formMethods.formState.isDirty}
-        >
-          {t(isEditing ? 'dictionary.save' : 'dictionary.edit')}
-        </Button>
+        {!isEditing && (
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setIsEditing(true)}
+          >
+            {t('dictionary.edit')}
+          </Button>
+        )}
         <Button
           variant="outlined"
           color="primary"
@@ -105,16 +106,32 @@ export const ScenarioDrawer = () => {
           <ActionsSection />
         </>
       )}
-
-      <Button
-        startIcon={<DeleteIcon />}
-        variant="text"
-        color="primary"
-        onClick={openDeleteConfirmation}
-        sx={{ marginRight: 'auto' }}
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '16px',
+        }}
       >
-        {t('scenarioDrawer.deleteScenarioButton')}
-      </Button>
+        {isEditing && (
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={onSubmit}
+            disabled={!formMethods.formState.isDirty}
+          >
+            {t('dictionary.save')}
+          </Button>
+        )}
+        <Button
+          startIcon={<DeleteIcon />}
+          variant="text"
+          color="primary"
+          onClick={openDeleteConfirmation}
+          sx={{ marginLeft: 'auto' }}
+        >
+          {t('scenarioDrawer.deleteScenarioButton')}
+        </Button>
+      </Box>
 
       <DeleteConfirmation />
     </Drawer>
