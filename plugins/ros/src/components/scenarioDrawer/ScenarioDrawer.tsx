@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { Scenario } from '../../utils/types';
 import RiskFormSection from './components/RiskFormSection';
 import ActionFormSection from './components/ActionFormSection';
-import ScenarioFormSection from './components/ScenarioFormSection';
+import ScopeFormSection from './components/ScopeFormSection';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 
@@ -95,7 +95,7 @@ export const ScenarioDrawer = () => {
 
       {isEditing ? (
         <>
-          <ScenarioFormSection formMethods={formMethods} />
+          <ScopeFormSection formMethods={formMethods} />
           <RiskFormSection formMethods={formMethods} />
           <ActionFormSection formMethods={formMethods} />
         </>
