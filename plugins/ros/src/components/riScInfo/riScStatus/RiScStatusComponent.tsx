@@ -13,11 +13,12 @@ import React, { ReactComponentElement, useState } from 'react';
 import { RiScStatus, RiScWithMetadata } from '../../../utils/types';
 import Alert from '@mui/material/Alert';
 import { useRiScDialogStyles } from '../../riScDialog/riScDialogStyle';
-import Checkbox from '@material-ui/core/Checkbox';
+import Checkbox from '@mui/material/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useButtonStyles } from './riScStatusComponentStyle';
 import CheckIcon from '@mui/icons-material/Check';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 interface RiScPublishDialogProps {
   openDialog: boolean;
@@ -44,18 +45,16 @@ const RiScPublishDialog = ({
       <DialogTitle>{t('publishDialog.title')}</DialogTitle>
       <DialogContent>
         <Alert severity="info" icon={false}>
-          <Grid container>
-            <Grid item xs={1}>
+          <FormControlLabel
+            control={
               <Checkbox
                 color="primary"
                 checked={riskOwnerApproves}
                 onChange={handleCheckboxInput}
               />
-            </Grid>
-            <Grid item xs={8}>
-              {t('publishDialog.checkboxLabel')}
-            </Grid>
-          </Grid>
+            }
+            label={t('publishDialog.checkboxLabel')}
+          />
         </Alert>
       </DialogContent>
       <div
