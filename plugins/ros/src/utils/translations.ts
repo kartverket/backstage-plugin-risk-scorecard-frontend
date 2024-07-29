@@ -261,6 +261,13 @@ export const pluginRiScTranslationRef = createTranslationRef({
       'Denial of service': 'Denial of service',
       'Escalation of rights': 'Escalation of rights',
     },
+    actionStatus: {
+      'Not started': 'Not started',
+      'In progress': 'In progress',
+      'On hold': 'On hold',
+      Completed: 'Completed',
+      Aborted: 'Aborted',
+    },
   },
 });
 
@@ -492,6 +499,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'vulnerabilities.Information leak': 'Informasjonslekkasje',
           'vulnerabilities.Denial of service': 'Tjenestenekt',
           'vulnerabilities.Escalation of rights': 'Rettighetseskalering',
+          'actionStatus.Not started': 'Ikke startet',
+          'actionStatus.In progress': 'Startet',
+          'actionStatus.On hold': 'På vent',
+          'actionStatus.Completed': 'Fullført',
+          'actionStatus.Aborted': 'Avbrutt',
         },
       }),
   },

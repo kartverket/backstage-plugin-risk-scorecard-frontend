@@ -1,92 +1,89 @@
 import { SxProps, Theme } from '@mui/material/styles';
 
-export const formLabel: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(1.75),
+export const formLabel: SxProps<Theme> = {
+  fontSize: '0.875rem',
   fontWeight: 700,
   textTransform: 'uppercase',
-  marginBottom: theme.spacing(1),
-  color: theme.palette.mode === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
-});
+  marginBottom: '8px',
+};
 
-export const heading1: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(4),
+export const heading1: SxProps<Theme> = {
+  fontSize: '2rem',
   fontWeight: 700,
-});
+};
 
-export const heading2: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(3.5),
+export const heading2: SxProps<Theme> = {
+  fontSize: '1.75rem',
   fontWeight: 500,
-});
+};
 
-export const heading3: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(2.5),
+export const heading3: SxProps<Theme> = {
+  fontSize: '1.25rem',
   fontWeight: 500,
-});
+};
 
-export const body1: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(2),
+export const body1: SxProps<Theme> = {
+  fontSize: '1rem',
   fontWeight: 500,
-});
+};
 
-export const body2: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(2),
+export const body2: SxProps<Theme> = {
+  fontSize: '1rem',
   fontWeight: 400,
   whiteSpace: 'pre-line',
-});
+};
 
-export const label: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(1.75),
+export const label: SxProps<Theme> = {
+  fontSize: '0.875rem',
   fontWeight: 700,
   textTransform: 'uppercase',
-  color: theme.palette.mode === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
   paddingBottom: '0.4rem',
-});
+};
 
-export const labelSubtitle: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(1.75),
+export const labelSubtitle: SxProps<Theme> = {
+  fontSize: '0.875rem',
   fontWeight: 400,
-  color: theme.palette.mode === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
   paddingBottom: '0.4rem',
   marginTop: '-0.2rem',
-});
+};
 
-export const label2: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(1.75),
+export const label2: SxProps<Theme> = {
+  fontSize: '0.875rem',
   fontWeight: 700,
   textTransform: 'uppercase',
-  color: theme.palette.mode === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
-});
+};
 
 export const emptyState: SxProps<Theme> = {
+  fontSize: '1rem',
   fontStyle: 'italic',
 };
 
-export const subtitle1: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(2),
+export const subtitle1: SxProps<Theme> = {
+  fontSize: '1rem',
   fontWeight: 700,
-});
+};
 
-export const subtitle2: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(2),
+export const subtitle2: SxProps<Theme> = {
+  fontSize: '1rem',
   fontWeight: 400,
-});
+};
 
-export const headerSubtitle: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(2),
+export const headerSubtitle: SxProps<Theme> = {
+  fontSize: '1rem',
   fontWeight: 500,
   paddingBottom: '1rem',
   marginTop: '-0.2rem',
-});
+};
 
-export const risikoLevel: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(2.25),
+export const risikoLevel: SxProps<Theme> = {
+  fontSize: '1.125rem',
   fontWeight: 700,
   paddingTop: 0,
-});
+};
 
-export const actionSubtitle: SxProps<Theme> = theme => ({
-  fontSize: theme.spacing(2.25),
+export const actionSubtitle: SxProps<Theme> = {
+  fontSize: '1.125rem',
   fontWeight: 700,
-  marginBottom: theme.spacing(2),
-  marginTop: theme.spacing(2),
-});
+  marginBottom: '16px',
+  marginTop: '16px',
+};

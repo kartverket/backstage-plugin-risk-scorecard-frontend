@@ -30,16 +30,19 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
   }, [action, saveScenario, previousAction]);
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
+  /* @ts-ignore Because ts can't typecheck strings against our keys */
+  const translatedActionStatus = t(`actionStatus.${action.status}`);
+
   return (
     <Box>
       <Button
         sx={{
-          color: 'inherit',
           width: '100%',
-          justifyContent: 'start',
-          textAlign: 'left',
-          textTransform: 'initial',
           fontSize: '16px',
+          color: 'inherit',
+          textAlign: 'left',
+          justifyContent: 'start',
+          textTransform: 'initial',
         }}
         startIcon={isExpanded ? <ExpandLess /> : <ExpandMore />}
         onClick={() => setIsExpanded(!isExpanded)}
@@ -49,11 +52,10 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
           ? action.title
           : `${t('dictionary.measure')} ${index}`}
       </Button>
-      <Collapse
-        in={isExpanded}
-        sx={{ '.MuiCollapse-wrapperInner': { paddingTop: '8px' } }}
-      >
-        <Typography sx={label}>{t('dictionary.description')}</Typography>
+      <Collapse in={isExpanded}>
+        <Typography sx={{ ...label, marginTop: 1 }}>
+          {t('dictionary.description')}
+        </Typography>
         <Typography sx={body2}>{action.description}</Typography>
 
         <Box
@@ -87,7 +89,7 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
           </Box>
 
           <Chip
-            label={action.status}
+            label={translatedActionStatus}
             sx={{
               margin: 0,
               backgroundColor:

@@ -30,6 +30,12 @@ const ActionFormSection = ({
     name: 'actions',
   });
 
+  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
+    value: actionStatus,
+    /* @ts-ignore Because ts can't typecheck strings against our keys */
+    renderedValue: t(`actionStatus.${actionStatus}`),
+  }));
+
   return (
     <Paper sx={section}>
       <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
@@ -95,10 +101,7 @@ const ActionFormSection = ({
                 control={control}
                 name={`actions.${index}.status`}
                 label={t('dictionary.status')}
-                options={actionStatusOptions.map(value => ({
-                  value,
-                  renderedValue: value,
-                }))}
+                options={translatedActionStatuses}
               />
             </Box>
           </Box>

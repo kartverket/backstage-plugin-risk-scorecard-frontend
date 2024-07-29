@@ -44,11 +44,15 @@ export const ScopeSection = () => {
         <Box>
           <Typography sx={label}>{t('dictionary.threatActors')}</Typography>
           {scenario.threatActors.length > 0 ? (
-            scenario.threatActors.map(threatActor => (
-              <Typography key={threatActor} sx={body2}>
-                {threatActor}
-              </Typography>
-            ))
+            scenario.threatActors.map(threatActor => {
+              /* @ts-ignore Because ts can't typecheck strings against our keys */
+              const translatedThreatActor = t(`threatActors.${threatActor}`);
+              return (
+                <Typography key={threatActor} sx={body2}>
+                  {translatedThreatActor}
+                </Typography>
+              );
+            })
           ) : (
             <Typography sx={emptyState}>
               {t('dictionary.emptyField', {
@@ -61,11 +65,17 @@ export const ScopeSection = () => {
         <Box>
           <Typography sx={label}>{t('dictionary.vulnerabilities')}</Typography>
           {scenario.vulnerabilities.length > 0 ? (
-            scenario.vulnerabilities.map(vulnerability => (
-              <Typography key={vulnerability} sx={body2}>
-                {vulnerability}
-              </Typography>
-            ))
+            scenario.vulnerabilities.map(vulnerability => {
+              /* @ts-ignore Because ts can't typecheck strings against our keys */
+              const translatedVulnerability = t(
+                `vulnerabilities.${vulnerability}`,
+              );
+              return (
+                <Typography key={vulnerability} sx={body2}>
+                  {translatedVulnerability}
+                </Typography>
+              );
+            })
           ) : (
             <Typography sx={emptyState}>
               {t('dictionary.emptyField', {
