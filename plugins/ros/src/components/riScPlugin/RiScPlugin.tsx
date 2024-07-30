@@ -36,7 +36,7 @@ const cache = createCache({
 });
 
 const Plugin = () => {
-  const { riScId, scenarioId} = useParams();
+  const { riScId, scenarioId } = useParams();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { linearProgress } = useLinearProgressStyle();
 

@@ -111,7 +111,9 @@ const ScenarioProvider = ({
 
   // Open scenario when url changes
   useEffect(() => {
-    const scenarioWizardStep = (searchParams.get('step') as ScenarioWizardSteps | null);
+    const scenarioWizardStep = searchParams.get(
+      'step',
+    ) as ScenarioWizardSteps | null;
 
     if (riSc) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
