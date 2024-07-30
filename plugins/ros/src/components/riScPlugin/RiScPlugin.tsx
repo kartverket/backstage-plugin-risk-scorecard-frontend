@@ -55,7 +55,10 @@ export const RiScPlugin = () => {
   return (
     <>
       {response && (
-        <Alert severity={getAlertSeverity(response.status)}>
+        <Alert
+          severity={getAlertSeverity(response.status)}
+          sx={{ marginBottom: 2 }}
+        >
           <Typography>{response.statusMessage}</Typography>
         </Alert>
       )}
@@ -87,7 +90,7 @@ export const RiScPlugin = () => {
                 <Dropdown<string>
                   options={riScs.map(riSc => riSc.content.title) ?? []}
                   selectedValues={selectedRiSc?.content.title ?? ''}
-                  handleChange={selectRiSc}
+                  handleChange={title => selectRiSc(title)}
                   variant="standard"
                 />
               </Grid>

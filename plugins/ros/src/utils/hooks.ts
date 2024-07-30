@@ -131,7 +131,7 @@ export const useFetch = () => {
       });
     });
 
-  const publishRiSc = (
+  const publishRiScs = (
     riScId: string,
     onSuccess?: (response: PublishRiScResultDTO) => void,
     onError?: (error: PublishRiScResultDTO) => void,
@@ -152,7 +152,7 @@ export const useFetch = () => {
       ),
     );
 
-  const postRiSc = (
+  const postRiScs = (
     riSc: RiSc,
     onSuccess?: (response: ProcessRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
@@ -173,7 +173,7 @@ export const useFetch = () => {
       ),
     );
 
-  const putRiSc = (
+  const putRiScs = (
     riSc: RiScWithMetadata,
     onSuccess?: (response: ProcessRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
@@ -195,10 +195,10 @@ export const useFetch = () => {
   };
 
   return {
-    fetchRiScs: fetchRiScs,
-    postRiScs: postRiSc,
-    putRiScs: putRiSc,
-    publishRiScs: publishRiSc,
+    fetchRiScs,
+    postRiScs,
+    putRiScs,
+    publishRiScs,
     response,
     setResponse,
     fetchLatestJSONSchema,

@@ -28,6 +28,9 @@ const ActionFormSection = ({
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'actions',
+    rules: {
+      required: true,
+    },
   });
 
   const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
@@ -75,6 +78,9 @@ const ActionFormSection = ({
             <Input
               required
               {...register(`actions.${index}.description`, { required: true })}
+              error={
+                formState.errors?.actions?.[index]?.description !== undefined
+              }
               label={t('dictionary.description')}
             />
             <Box

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRoutes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import { RiScPlugin } from './components/riScPlugin/RiScPlugin';
@@ -16,19 +16,20 @@ const cache = createCache({
   insertionPoint: emotionInsertionPoint,
 });
 
-export const PluginRoot = () => {
-  const pluginRoutes = useRoutes(
-    ['/home', riScRouteRef.path, scenarioRouteRef.path].map(path => ({
-      path,
-      element: <RiScPlugin />,
-    })),
-  );
+const ProvidedPlugin = () => (
+  <CacheProvider value={cache}>
+    <RiScProvider>
+      <ScenarioProvider>
+        <RiScPlugin />
+      </ScenarioProvider>
+    </RiScProvider>
+  </CacheProvider>
+);
 
-  return (
-    <CacheProvider value={cache}>
-      <RiScProvider>
-        <ScenarioProvider>{pluginRoutes}</ScenarioProvider>
-      </RiScProvider>
-    </CacheProvider>
-  );
-};
+export const PluginRoot = () => (
+  <Routes>
+    <Route path="/" element={<ProvidedPlugin />} />
+    <Route path={riScRouteRef.path} element={<ProvidedPlugin />} />
+    <Route path={scenarioRouteRef.path} element={<ProvidedPlugin />} />
+  </Routes>
+);
