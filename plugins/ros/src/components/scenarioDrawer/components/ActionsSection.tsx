@@ -6,8 +6,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useScenario } from '../../../ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
-import Box from '@mui/material/Box';
-import { body2, heading3, label } from '../../common/typography';
+import { heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
 
 export const ActionsSection = () => {
@@ -19,14 +18,6 @@ export const ActionsSection = () => {
       <Typography sx={heading3}>
         {t('scenarioDrawer.measureTab.title')}
       </Typography>
-      {scenario.existingActions && (
-        <Box>
-          <Typography sx={label}>
-            {t('scenarioDrawer.measureTab.existingMeasure')}
-          </Typography>
-          <Typography sx={body2}>{scenario.existingActions}</Typography>
-        </Box>
-      )}
 
       {scenario.actions.map((action, index) => (
         <Fragment key={action.ID}>

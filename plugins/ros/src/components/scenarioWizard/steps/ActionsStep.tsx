@@ -4,7 +4,6 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Box from '@material-ui/core/Box';
 import { Button, Typography } from '@material-ui/core';
 import Grid from '@mui/material/Grid';
-import { TextField } from '../../common/Textfield';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { useFontStyles } from '../../../utils/style';
 import { ActionEdit } from '../components/ActionEdit';
@@ -13,8 +12,7 @@ import { useScenario } from '../../../ScenarioContext';
 export const ActionsStep = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h2, subtitle2, actionSubtitle } = useFontStyles();
-  const { scenario, setScenarioValue, updateAction, deleteAction, addAction } =
-    useScenario();
+  const { scenario, updateAction, deleteAction, addAction } = useScenario();
 
   return (
     <Box>
@@ -22,15 +20,7 @@ export const ActionsStep = () => {
       <Typography className={subtitle2}>
         {t('scenarioDrawer.measureTab.subtitle')}
       </Typography>
-      <Grid item xs={12} style={{ paddingTop: '1.5rem' }}>
-        <TextField
-          label={t('scenarioDrawer.measureTab.existingMeasure')}
-          subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
-          value={scenario.existingActions}
-          handleChange={value => setScenarioValue('existingActions', value)}
-          minRows={3}
-        />
-      </Grid>
+      <Grid item xs={12} style={{ paddingTop: '1.5rem' }}></Grid>
       <Typography variant="h6" className={actionSubtitle}>
         {t('scenarioDrawer.measureTab.plannedMeasures')}
       </Typography>

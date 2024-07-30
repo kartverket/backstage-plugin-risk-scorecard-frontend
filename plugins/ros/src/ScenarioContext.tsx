@@ -12,8 +12,6 @@ export const emptyAction = (): Action => ({
   ID: generateRandomId(),
   title: '',
   description: '',
-  owner: '',
-  deadline: new Date().toISOString().split('T')[0],
   status: 'Not started',
   url: '',
 });

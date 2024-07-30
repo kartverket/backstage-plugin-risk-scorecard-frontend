@@ -90,17 +90,6 @@ export const requiresNewApproval = (
       updatedScenario.remainingRisk.consequence
     )
       requiresApproval = true;
-
-    oldScenario.actions.forEach((oldAction, i) => {
-      if (updatedScenario.actions[i] !== undefined) {
-        const updatedAction = updatedScenario.actions[i];
-
-        if (oldAction.deadline !== updatedAction.deadline)
-          requiresApproval = true;
-      } else {
-        requiresApproval = true;
-      }
-    });
   });
   return requiresApproval;
 };
