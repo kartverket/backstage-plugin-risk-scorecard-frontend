@@ -3,7 +3,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Box from '@material-ui/core/Box';
 import { Button, Typography } from '@material-ui/core';
-import Grid from '@mui/material/Grid';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { useFontStyles } from '../../../utils/style';
 import { ActionEdit } from '../components/ActionEdit';
@@ -20,7 +19,6 @@ export const ActionsStep = () => {
       <Typography className={subtitle2}>
         {t('scenarioDrawer.measureTab.subtitle')}
       </Typography>
-      <Grid item xs={12} style={{ paddingTop: '1.5rem' }}></Grid>
       <Typography variant="h6" className={actionSubtitle}>
         {t('scenarioDrawer.measureTab.plannedMeasures')}
       </Typography>
