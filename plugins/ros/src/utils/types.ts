@@ -39,7 +39,6 @@ export type Scenario = {
   vulnerabilities: string[];
   risk: Risk;
   remainingRisk: Risk;
-  existingActions?: string;
   actions: Action[];
 };
 

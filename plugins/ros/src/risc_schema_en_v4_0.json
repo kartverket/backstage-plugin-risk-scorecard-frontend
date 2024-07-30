@@ -116,7 +116,6 @@
     },
     "url": {
       "type": "string",
-      "format": "uri",
       "pattern": "^(?:(https?|s?ftp):\\/\\/)?(?:([\\w-]+)\\.)?([\\w-]+)\\.([\\w]+)\\/?(?:([^?#$]+))?(?:\\?([^#$]+))?(?:#(.*))?$"
     },
     "scenario": {
@@ -165,9 +164,6 @@
         },
         "risk": {
           "$ref": "#/$defs/risk"
-        },
-        "existingActions": {
-          "type": "string"
         },
         "actions": {
           "type": "array",

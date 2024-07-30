@@ -27,7 +27,6 @@ const emptyScenario = (): Scenario => ({
     probability: 0.01,
     consequence: 1000,
   },
-  existingActions: '',
   actions: [],
   remainingRisk: {
     summary: '',

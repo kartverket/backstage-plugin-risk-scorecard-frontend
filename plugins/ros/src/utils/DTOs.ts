@@ -53,7 +53,6 @@ type ScenarioDTO = {
     threatActors: string[];
     vulnerabilities: string[];
     risk: Risk;
-    existingActions?: string;
     actions: ActionsDTO[];
     remainingRisk: Risk;
   };
@@ -82,7 +81,6 @@ function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
   return {
     ...scenarioDTO.scenario,
     title: scenarioDTO.title,
-    existingActions: scenarioDTO.scenario.existingActions || '',
     actions: scenarioDTO.scenario.actions.map(dtoToAction),
   };
 }
@@ -134,10 +132,6 @@ function scenarioToDTO(scenario: Scenario): ScenarioDTO {
       threatActors: scenario.threatActors,
       vulnerabilities: scenario.vulnerabilities,
       risk: scenario.risk,
-      existingActions:
-        scenario.existingActions === undefined
-          ? undefined
-          : scenario.existingActions,
       actions: scenario.actions.map(actionToDTO),
       remainingRisk: scenario.remainingRisk,
     },
