@@ -56,7 +56,6 @@ export const ScenarioWizard = ({
   const {
     scenario,
     originalScenario,
-    isNewScenario,
     saveScenario,
     closeScenario,
     editScenario,
@@ -65,7 +64,7 @@ export const ScenarioWizard = ({
   } = useScenario();
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
-  const [restEqualsInitial, setRestEqualsInitial] = useState(isNewScenario);
+  const [restEqualsInitial, setRestEqualsInitial] = useState(true);
   // This boolean prevents the wizard from closing when opening it with a newly successfull request.
   const [canCloseIfSuccessfull, setCanCloseIfSuccessfull] = useState(false);
 
