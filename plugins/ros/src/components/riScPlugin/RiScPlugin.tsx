@@ -25,7 +25,7 @@ export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { linearProgress } = useLinearProgressStyle();
 
-  const [RiScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
+  const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
   );
 
@@ -39,13 +39,9 @@ export const RiScPlugin = () => {
     riScs,
     selectRiSc,
     isFetching,
-    createNewRiSc,
-    updateRiSc,
-    updateRiScStatus,
     resetRiScStatus,
-    approveRiSc,
     response,
-    isRequesting,
+    riScUpdateStatus,
   } = useRiScs();
 
   const [searchParams] = useSearchParams();
@@ -63,14 +59,12 @@ export const RiScPlugin = () => {
           <Typography>{response.statusMessage}</Typography>
         </Alert>
       )}
-      {isRequesting && <LinearProgress className={linearProgress} />}
+      {riScUpdateStatus.isLoading && (
+        <LinearProgress className={linearProgress} />
+      )}
 
       {scenarioWizardStep !== null ? (
-        <ScenarioWizard
-          step={scenarioWizardStep}
-          isFetching={isFetching}
-          updateStatus={updateRiScStatus}
-        />
+        <ScenarioWizard step={scenarioWizardStep} />
       ) : (
         <>
           <ContentHeader title={t('contentHeader.title')}>
@@ -93,7 +87,7 @@ export const RiScPlugin = () => {
                 <Dropdown<string>
                   options={riScs.map(riSc => riSc.content.title) ?? []}
                   selectedValues={selectedRiSc?.content.title ?? ''}
-                  handleChange={title => selectRiSc(title)}
+                  handleChange={selectRiSc}
                   variant="standard"
                 />
               </Grid>
@@ -118,11 +112,7 @@ export const RiScPlugin = () => {
             {selectedRiSc && (
               <>
                 <Grid item xs={12}>
-                  <RiScInfo
-                    riSc={selectedRiSc}
-                    approveRiSc={approveRiSc}
-                    edit={openEditRiScDialog}
-                  />
+                  <RiScInfo riSc={selectedRiSc} edit={openEditRiScDialog} />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
                   <ScenarioTable riSc={selectedRiSc.content} />
@@ -136,14 +126,8 @@ export const RiScPlugin = () => {
         </>
       )}
 
-      {RiScDialogState !== RiScDialogStates.Closed && (
-        <RiScDialog
-          onClose={closeRiScDialog}
-          createNewRiSc={createNewRiSc}
-          updateRiSc={updateRiSc}
-          riSc={selectedRiSc}
-          dialogState={RiScDialogState}
-        />
+      {riScDialogState !== RiScDialogStates.Closed && (
+        <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
 
       {!scenarioWizardStep && <ScenarioDrawer />}

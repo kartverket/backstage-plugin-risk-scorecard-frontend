@@ -16,22 +16,23 @@ import { dtoToRiSc, RiScDTO } from '../utils/DTOs';
 import { useEffectOnce } from 'react-use';
 import { useFetch } from '../utils/hooks';
 
+type RiScUpdateStatus = {
+  isLoading: boolean;
+  isError: boolean;
+  isSuccess: boolean;
+};
+
 type RiScDrawerProps = {
-  selectedRiSc: RiScWithMetadata | null;
   riScs: RiScWithMetadata[] | null;
   selectRiSc: (title: string) => void;
-  isFetching: boolean;
+  selectedRiSc: RiScWithMetadata | null;
   createNewRiSc: (riSc: RiSc) => void;
   updateRiSc: (riSc: RiSc) => void;
-  updateRiScStatus: {
-    isLoading: boolean;
-    isError: boolean;
-    isSuccess: boolean;
-  };
-  resetRiScStatus: () => void;
   approveRiSc: () => void;
+  riScUpdateStatus: RiScUpdateStatus;
+  resetRiScStatus: () => void;
+  isFetching: boolean;
   response: SubmitResponseObject | null;
-  isRequesting: boolean;
 };
 
 const RiScContext = React.createContext<RiScDrawerProps | undefined>(undefined);
@@ -60,7 +61,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     null,
   );
   const [isFetching, setIsFetching] = useState(true);
-  const [updateRiScStatus, setUpdateRiScStatus] = useState({
+  const [riScUpdateStatus, setRiScUpdateStatus] = useState({
     isLoading: false,
     isError: false,
     isSuccess: false,
@@ -147,7 +148,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
   }, [riScs, riScIdFromParams]);
 
   const resetRiScStatus = useCallback(() => {
-    setUpdateRiScStatus({
+    setRiScUpdateStatus({
       isLoading: false,
       isSuccess: false,
       isError: false,
@@ -258,16 +259,15 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         schemaVersion: riSc.schemaVersion,
       };
 
-      setUpdateRiScStatus({
+      setRiScUpdateStatus({
         isLoading: true,
         isError: false,
         isSuccess: false,
       });
-      setIsRequesting(true);
       putRiScs(
         updatedRiSc,
         () => {
-          setUpdateRiScStatus({
+          setRiScUpdateStatus({
             isLoading: false,
             isError: false,
             isSuccess: true,
@@ -279,7 +279,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           setIsRequesting(false);
         },
         () => {
-          setUpdateRiScStatus({
+          setRiScUpdateStatus({
             isLoading: false,
             isError: true,
             isSuccess: false,
@@ -305,17 +305,17 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const value = {
-    selectedRiSc: selectedRiSc,
-    riScs: riScs,
-    selectRiSc: selectRiSc,
+    riScs,
+    selectRiSc,
+    selectedRiSc,
+    createNewRiSc,
+    updateRiSc,
+    approveRiSc,
+    riScUpdateStatus,
+    resetRiScStatus,
+    isRequesting,
     isFetching,
-    updateRiScStatus: updateRiScStatus,
-    resetRiScStatus: resetRiScStatus,
-    createNewRiSc: createNewRiSc,
-    updateRiSc: updateRiSc,
-    approveRiSc: approveRiSc,
     response,
-    isRequesting: isRequesting,
   };
 
   return <RiScContext.Provider value={value}>{children}</RiScContext.Provider>;

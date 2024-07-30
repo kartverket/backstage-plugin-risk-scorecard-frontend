@@ -7,12 +7,13 @@ import {
   Typography,
 } from '@material-ui/core';
 import { TextField } from '../common/Textfield';
-import { RiSc, RiScWithMetadata } from '../../utils/types';
+import { RiSc } from '../../utils/types';
 import { emptyRiSc } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiScDialogStyles } from './riScDialogStyle';
 import { useFontStyles } from '../../utils/style';
+import { useRiScs } from '../../contexts/RiScContext';
 
 export enum RiScDialogStates {
   Closed,
@@ -23,9 +24,6 @@ export enum RiScDialogStates {
 interface RiScDialogProps {
   onClose: () => void;
   dialogState: RiScDialogStates;
-  createNewRiSc: (newRiSc: RiSc) => void;
-  updateRiSc: (newRiSc: RiSc) => void;
-  riSc: RiScWithMetadata | null;
 }
 
 interface RiskError {
@@ -33,20 +31,16 @@ interface RiskError {
   scope: string | null;
 }
 
-export const RiScDialog = ({
-  onClose,
-  dialogState,
-  createNewRiSc,
-  updateRiSc,
-  riSc,
-  ...props
-}: RiScDialogProps) => {
+export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { paper, content, buttons } = useRiScDialogStyles();
   const { h1 } = useFontStyles();
+  const { selectedRiSc, createNewRiSc, updateRiSc } = useRiScs();
 
   const [newRiSc, setNewRiSc] = useState<RiSc>(
-    dialogState === RiScDialogStates.Edit ? riSc!!.content : emptyRiSc(),
+    dialogState === RiScDialogStates.Edit
+      ? selectedRiSc!!.content
+      : emptyRiSc(),
   );
 
   const [newRiScError, setNewRiScError] = useState<RiskError>({
@@ -110,7 +104,6 @@ export const RiScDialog = ({
       classes={{ paper: paper }}
       open={dialogState !== RiScDialogStates.Closed}
       onClose={handleCancel}
-      {...props}
     >
       <DialogContent>
         <Typography className={h1}>{header}</Typography>

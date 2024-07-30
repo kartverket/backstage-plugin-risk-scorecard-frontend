@@ -16,6 +16,7 @@ import { CloseConfirmation } from './components/CloseConfirmation';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import { useScenario } from '../../contexts/ScenarioContext';
+import { useRiScs } from '../../contexts/RiScContext';
 
 const scenarioWizardSteps = [
   'scenario',
@@ -28,18 +29,13 @@ export type ScenarioWizardSteps = (typeof scenarioWizardSteps)[number];
 
 interface ScenarioStepperProps {
   step: ScenarioWizardSteps;
-  isFetching: boolean;
-  updateStatus: { isLoading: boolean; isSuccess: boolean; isError: boolean };
 }
 
-export const ScenarioWizard = ({
-  step,
-  isFetching,
-  updateStatus,
-}: ScenarioStepperProps) => {
+export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
   const wizardRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { h1, label } = useFontStyles();
+  const { isFetching, riScUpdateStatus } = useRiScs();
 
   const {
     root,
@@ -79,13 +75,13 @@ export const ScenarioWizard = ({
   }, [closeScenario]);
 
   useEffect(() => {
-    if (updateStatus.isSuccess && canCloseIfSuccessfull) {
+    if (riScUpdateStatus.isSuccess && canCloseIfSuccessfull) {
       close();
-    } else if (updateStatus.isError && wizardRef.current) {
+    } else if (riScUpdateStatus.isError && wizardRef.current) {
       setShowCloseConfirmation(false);
       wizardRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [canCloseIfSuccessfull, close, updateStatus]);
+  }, [canCloseIfSuccessfull, close, riScUpdateStatus]);
 
   const saveAndClose = () => {
     if (hasFormErrors()) {
@@ -183,7 +179,7 @@ export const ScenarioWizard = ({
                   }[step]
                 }
               </Box>
-              {updateStatus.isError && (
+              {riScUpdateStatus.isError && (
                 <Alert style={{ marginBottom: '1rem' }} severity="error">
                   <Typography>{t('dictionary.saveError')}</Typography>
                 </Alert>
@@ -206,7 +202,7 @@ export const ScenarioWizard = ({
                     className={button}
                     variant={isLastStep() ? 'contained' : 'outlined'}
                     onClick={saveAndClose}
-                    disabled={updateStatus.isLoading}
+                    disabled={riScUpdateStatus.isLoading}
                   >
                     {t('dictionary.saveAndClose')}
                   </Button>
