@@ -36,7 +36,7 @@ const cache = createCache({
 });
 
 const Plugin = () => {
-  const params = useParams();
+  const { riScId, scenarioId} = useParams();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { linearProgress } = useLinearProgressStyle();
 
@@ -61,7 +61,7 @@ const Plugin = () => {
     approveRiSc,
     response,
     isRequesting,
-  } = useFetchRiScs(params.riScId);
+  } = useFetchRiScs(riScId);
 
   const [searchParams] = useSearchParams();
   const scenarioWizardStep =
@@ -76,7 +76,7 @@ const Plugin = () => {
       <ScenarioProvider
         riSc={selectedRiSc ?? null}
         updateRiSc={updateRiSc}
-        scenarioIdFromParams={params.scenarioId}
+        scenarioIdFromParams={scenarioId}
       >
         {response && (
           <Alert severity={getAlertSeverity(response.status)}>
