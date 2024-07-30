@@ -147,7 +147,7 @@ const ScenarioProvider = ({
       setOriginalScenario(selectedScenario);
       setIsDrawerOpen(true);
     }
-  }, [riSc, scenarioIdFromParams, getRiScPath, navigate, scenarioWizardStep]);
+  }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams]);
 
   // SCENARIO DRAWER FUNCTIONS
   const openScenario = (id: string) => {
