@@ -15,7 +15,7 @@ import { Spinner } from '../common/Spinner';
 import { CloseConfirmation } from './components/CloseConfirmation';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import { useScenario } from '../../ScenarioContext';
+import { useScenario } from '../../contexts/ScenarioContext';
 
 const scenarioWizardSteps = [
   'scenario',

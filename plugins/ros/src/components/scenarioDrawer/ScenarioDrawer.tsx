@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import { useScenario } from '../../ScenarioContext';
+import { useScenario } from '../../contexts/ScenarioContext';
 import { RiskSection } from './components/RiskSection';
 import { ActionsSection } from './components/ActionsSection';
 import DeleteIcon from '@mui/icons-material/Delete';

@@ -15,7 +15,7 @@ import { RiSc } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
-import { useScenario } from '../../ScenarioContext';
+import { useScenario } from '../../contexts/ScenarioContext';
 
 interface ScenarioCountProps {
   riSc: RiSc;

@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useScenario } from '../../../ScenarioContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
 import {
   body2,

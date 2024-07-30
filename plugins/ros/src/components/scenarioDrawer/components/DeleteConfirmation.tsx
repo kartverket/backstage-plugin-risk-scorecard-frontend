@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useScenario } from '../../../ScenarioContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';

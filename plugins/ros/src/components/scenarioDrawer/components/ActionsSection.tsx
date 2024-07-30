@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { useScenario } from '../../../ScenarioContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
 import Box from '@mui/material/Box';
 import { body2, emptyState, heading3, label } from '../../common/typography';

@@ -1,12 +1,13 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import { Action, RiSc, RiScWithMetadata, Scenario } from './utils/types';
-import { consequenceOptions, probabilityOptions } from './utils/constants';
-import { riScRouteRef, scenarioRouteRef } from './routes';
-import { useNavigate } from 'react-router';
+import { Action, Scenario } from '../utils/types';
+import { consequenceOptions, probabilityOptions } from '../utils/constants';
+import { riScRouteRef, scenarioRouteRef } from '../routes';
+import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { ScenarioWizardSteps } from './components/scenarioWizard/ScenarioWizard';
-import { generateRandomId } from './utils/utilityfunctions';
+import { ScenarioWizardSteps } from '../components/scenarioWizard/ScenarioWizard';
+import { generateRandomId } from '../utils/utilityfunctions';
+import { useRiScs } from './RiScContext';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
@@ -84,17 +85,13 @@ const ScenarioContext = React.createContext<ScenarioDrawerProps | undefined>(
   undefined,
 );
 
-const ScenarioProvider = ({
-  riSc,
-  updateRiSc,
-  scenarioIdFromParams,
-  children,
-}: {
-  children: ReactNode;
-  riSc: RiScWithMetadata | null;
-  updateRiSc: (riSc: RiSc) => void;
-  scenarioIdFromParams?: string;
-}) => {
+const ScenarioProvider = ({ children }: { children: ReactNode }) => {
+  const params = useParams();
+  const scenarioIdFromParams = params.scenarioId;
+  const { selectedRiSc, updateRiSc } = useRiScs();
+
+  const riSc = selectedRiSc ?? null;
+
   // STATES
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 

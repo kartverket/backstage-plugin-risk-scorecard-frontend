@@ -11,7 +11,7 @@ import {
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useScenario } from '../../../ScenarioContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
 import { Risk } from '../../../utils/types';
 import { section } from '../scenarioDrawerComponents';
 import { body1, heading3, label, label2 } from '../../common/typography';

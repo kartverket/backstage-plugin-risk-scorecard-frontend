@@ -12,7 +12,7 @@ import { heading3 } from '../../common/typography';
 import { AddCircle } from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
-import { emptyAction } from '../../../ScenarioContext';
+import { emptyAction } from '../../../contexts/ScenarioContext';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { section } from '../scenarioDrawerComponents';

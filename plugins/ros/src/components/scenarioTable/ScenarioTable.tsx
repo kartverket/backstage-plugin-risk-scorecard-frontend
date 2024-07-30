@@ -14,7 +14,7 @@ import { useTableStyles } from './ScenarioTableStyles';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useFontStyles } from '../../utils/style';
-import { useScenario } from '../../ScenarioContext';
+import { useScenario } from '../../contexts/ScenarioContext';
 
 interface ScenarioTableProps {
   riSc: RiSc;
