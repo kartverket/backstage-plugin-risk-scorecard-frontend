@@ -42,13 +42,11 @@ type RiScDrawerProps = {
 const RiScContext = React.createContext<RiScDrawerProps | undefined>(undefined);
 
 const RiScProvider = ({ children }: { children: ReactNode }) => {
-  const params = useParams();
+  const { riScId: riScIdFromParams } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const getRiScPath = useRouteRef(riScRouteRef);
   const [isRequesting, setIsRequesting] = useState<boolean>(false);
-
-  const riScIdFromParams = params.riScId;
 
   const {
     fetchRiScs,
@@ -160,9 +158,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const selectRiSc = (title: string) => {
-    const riScId = riScs?.find(riSc => riSc.content.title === title)?.id;
-    if (riScId) {
-      navigate(getRiScPath({ riScId: riScId }));
+    const selectedRiScId = riScs?.find(
+      riSc => riSc.content.title === title,
+    )?.id;
+    if (selectedRiScId) {
+      navigate(getRiScPath({ riScId: selectedRiScId }));
     }
   };
 

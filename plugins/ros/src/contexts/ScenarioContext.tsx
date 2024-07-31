@@ -47,7 +47,6 @@ type ScenarioDrawerProps = {
   newScenario: () => void;
   saveScenario: () => boolean;
   editScenario: (step: ScenarioWizardSteps) => void;
-  isNewScenario: boolean;
   submitEditedScenarioToRiSc: (
     editedScenario: Scenario,
     onSuccess?: () => void,
@@ -90,23 +89,19 @@ const ScenarioContext = React.createContext<ScenarioDrawerProps | undefined>(
 );
 
 const ScenarioProvider = ({ children }: { children: ReactNode }) => {
-  const params = useParams();
-  const scenarioIdFromParams = params.scenarioId;
+  const { scenarioId: scenarioIdFromParams } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { selectedRiSc, updateRiSc } = useRiScs();
-
   const riSc = selectedRiSc ?? null;
 
-  // STATES
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const [isNewScenario, setIsNewScenario] = useState(false);
   const [formErrors, _setFormErrors] = useState<{ [key: string]: boolean }>({});
   const [scenario, setScenario] = useState(emptyScenario());
 
   const [originalScenario, setOriginalScenario] = useState(emptyScenario());
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
-  const [, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
   const getScenarioPath = useRouteRef(scenarioRouteRef);
@@ -114,6 +109,10 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
 
   // Open scenario when url changes
   useEffect(() => {
+    const scenarioWizardStep = searchParams.get(
+      'step',
+    ) as ScenarioWizardSteps | null;
+
     if (riSc) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
@@ -125,8 +124,8 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
-      if (isNewScenario) {
-        // If this is a new scenario we should not set a "not found" state on path.
+      if (scenarioWizardStep) {
+        // If step query param exists in url then we are creating a new scenario with the wizard.
         return;
       }
 
@@ -146,7 +145,7 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       setOriginalScenario(selectedScenario);
       setIsDrawerOpen(true);
     }
-  }, [riSc, scenarioIdFromParams, getRiScPath, navigate, isNewScenario]);
+  }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams]);
 
   // SCENARIO DRAWER FUNCTIONS
   const openScenario = (id: string) => {
@@ -166,7 +165,6 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
 
   const closeScenario = () => {
     if (riSc) {
-      setIsNewScenario(false);
       navigate(getRiScPath({ riScId: riSc.id }));
     }
   };
@@ -234,7 +232,6 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
 
   const newScenario = () => {
     if (riSc) {
-      setIsNewScenario(true);
       const s = emptyScenario();
       setScenario(s);
       setOriginalScenario(s);
@@ -352,7 +349,6 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     newScenario,
     saveScenario,
     editScenario,
-    isNewScenario,
     submitEditedScenarioToRiSc,
 
     openScenario,
