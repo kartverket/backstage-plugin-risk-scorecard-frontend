@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, LinearProgress, Typography } from '@material-ui/core';
 import { ContentHeader, SupportButton } from '@backstage/core-components';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -10,20 +9,24 @@ import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { ScenarioTable } from '../scenarioTable/ScenarioTable';
 import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import LinearProgress from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
 import { RiScInfo } from '../riScInfo/RiScInfo';
-import AddCircle from '@material-ui/icons/AddCircle';
-import { useLinearProgressStyle } from './linearProgressStyle';
+import AddCircle from '@mui/icons-material/AddCircle';
 import { Spinner } from '../common/Spinner';
-import { Dropdown } from '../common/Dropdown';
 import { useRiScs } from '../../contexts/RiScContext';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemText from '@mui/material/ListItemText';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { linearProgress } = useLinearProgressStyle();
 
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
@@ -63,7 +66,13 @@ export const RiScPlugin = () => {
         </Alert>
       )}
       {riScUpdateStatus.isLoading && (
-        <LinearProgress className={linearProgress} />
+        <LinearProgress
+          sx={{
+            position: 'sticky',
+            top: 0,
+            margin: 2,
+          }}
+        />
       )}
 
       {scenarioWizardStep !== null ? (
@@ -82,17 +91,23 @@ export const RiScPlugin = () => {
                 item
                 xs={12}
                 sm={6}
-                style={{
+                sx={{
                   maxWidth: '600px',
                   minWidth: '300px',
                 }}
               >
-                <Dropdown<string>
-                  options={riScs.map(riSc => riSc.content.title) ?? []}
-                  selectedValues={selectedRiSc?.content.title ?? ''}
-                  handleChange={title => selectRiSc(title)}
+                <Select
                   variant="standard"
-                />
+                  value={selectedRiSc?.content.title ?? ''}
+                  onChange={e => selectRiSc(e.target.value)}
+                  sx={{ width: '100%' }}
+                >
+                  {riScs.map(riSc => (
+                    <MenuItem key={riSc.id} value={riSc.content.title}>
+                      <ListItemText primary={riSc.content.title} />
+                    </MenuItem>
+                  )) ?? []}
+                </Select>
               </Grid>
             )}
 
@@ -103,7 +118,7 @@ export const RiScPlugin = () => {
                   variant="text"
                   color="primary"
                   onClick={openCreateRiScDialog}
-                  style={{
+                  sx={{
                     minWidth: '205px',
                   }}
                 >

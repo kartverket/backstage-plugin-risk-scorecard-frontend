@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogContent,
-  Typography,
-} from '@material-ui/core';
-import { TextField } from '../common/Textfield';
+import React from 'react';
 import { RiSc } from '../../utils/types';
 import { emptyRiSc } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useRiScDialogStyles } from './riScDialogStyle';
-import { useFontStyles } from '../../utils/style';
 import { useRiScs } from '../../contexts/RiScContext';
+import { useForm } from 'react-hook-form';
+import { Input } from '../common/Input';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
+import { dialogActions } from '../common/mixins';
 
 export enum RiScDialogStates {
   Closed,
@@ -26,126 +24,67 @@ interface RiScDialogProps {
   dialogState: RiScDialogStates;
 }
 
-interface RiskError {
-  title: string | null;
-  scope: string | null;
-}
-
 export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { paper, content, buttons } = useRiScDialogStyles();
-  const { h1 } = useFontStyles();
   const { selectedRiSc, createNewRiSc, updateRiSc } = useRiScs();
 
-  const [newRiSc, setNewRiSc] = useState<RiSc>(
-    dialogState === RiScDialogStates.Edit
-      ? selectedRiSc!!.content
-      : emptyRiSc(),
-  );
-
-  const [newRiScError, setNewRiScError] = useState<RiskError>({
-    title: null,
-    scope: null,
+  const {
+    register,
+    handleSubmit,
+    formState: { isDirty, errors },
+  } = useForm<RiSc>({
+    defaultValues:
+      dialogState === RiScDialogStates.Edit
+        ? selectedRiSc!.content
+        : emptyRiSc(),
+    mode: 'onBlur',
   });
 
-  const handleCancel = () => {
-    onClose();
-    setNewRiSc(emptyRiSc());
-    setNewRiScError({
-      title: null,
-      scope: null,
-    });
-  };
-
-  const handleSave = () => {
-    setNewRiScError({
-      title: newRiSc.title === '' ? t('rosDialog.titleError') : null,
-      scope: newRiSc.scope === '' ? t('rosDialog.scopeError') : null,
-    });
-    if (!newRiSc.title || !newRiSc.scope) return;
-
-    if (dialogState === RiScDialogStates.Create) {
-      createNewRiSc(newRiSc);
-    } else {
-      updateRiSc(newRiSc);
-    }
-    handleCancel();
-  };
-
-  const setTitle = (title: string) => {
-    setNewRiScError({
-      ...newRiScError,
-      title: null,
-    });
-    setNewRiSc({
-      ...newRiSc,
-      title: title,
-    });
-  };
-
-  const setScope = (scope: string) => {
-    setNewRiScError({
-      ...newRiScError,
-      scope: null,
-    });
-    setNewRiSc({
-      ...newRiSc,
-      scope: scope,
-    });
-  };
-
-  const header =
+  const titleTranslation =
     dialogState === RiScDialogStates.Create
       ? t('rosDialog.titleNew')
       : t('rosDialog.titleEdit');
 
+  const onSubmit = handleSubmit((data: RiSc) => {
+    if (dialogState === RiScDialogStates.Create) {
+      createNewRiSc(data);
+    } else {
+      updateRiSc(data);
+    }
+    onClose();
+  });
+
   return (
-    <Dialog
-      classes={{ paper: paper }}
-      open={dialogState !== RiScDialogStates.Closed}
-      onClose={handleCancel}
-    >
-      <DialogContent>
-        <Typography className={h1}>{header}</Typography>
-        <Box className={content}>
-          <TextField
-            label={t('dictionary.title')}
-            value={newRiSc.title}
-            minRows={1}
-            handleChange={setTitle}
-            error={newRiScError.title}
-            required
-          />
-        </Box>
-        <Box className={content}>
-          <TextField
-            label={t('dictionary.scope')}
-            subtitle={t('rosDialog.scopeDescription')}
-            value={newRiSc.scope}
-            minRows={4}
-            handleChange={setScope}
-            error={newRiScError.scope}
-            required
-          />
-        </Box>
-      </DialogContent>
-      <div
-        style={{
-          padding: '20px',
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-        }}
+    <Dialog open={dialogState !== RiScDialogStates.Closed} onClose={onClose}>
+      <DialogTitle>{titleTranslation}</DialogTitle>
+
+      <DialogContent
+        sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
       >
-        <Box className={buttons}>
-          <Button variant="contained" color="primary" onClick={handleSave}>
-            {t('dictionary.save')}
-          </Button>
-          <Button variant="outlined" color="primary" onClick={handleCancel}>
-            {t('dictionary.cancel')}
-          </Button>
-        </Box>
-      </div>
+        <Input
+          required
+          {...register('title', { required: true })}
+          error={errors.title !== undefined}
+          label={t('dictionary.title')}
+        />
+        <Input
+          required
+          {...register('scope', { required: true })}
+          label={t('dictionary.scope')}
+          sublabel={t('rosDialog.scopeDescription')}
+          error={errors.scope !== undefined}
+          minRows={4}
+        />
+      </DialogContent>
+
+      <DialogActions sx={dialogActions}>
+        <Button variant="contained" onClick={onSubmit} disabled={!isDirty}>
+          {t('dictionary.save')}
+        </Button>
+        <Button variant="outlined" onClick={onClose}>
+          {t('dictionary.cancel')}
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
