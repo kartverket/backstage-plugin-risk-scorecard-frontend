@@ -27,7 +27,11 @@ type RiScDrawerProps = {
   selectRiSc: (title: string) => void;
   selectedRiSc: RiScWithMetadata | null;
   createNewRiSc: (riSc: RiSc) => void;
-  updateRiSc: (riSc: RiSc) => void;
+  updateRiSc: (
+    riSc: RiSc,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => void;
   approveRiSc: () => void;
   riScUpdateStatus: RiScUpdateStatus;
   resetRiScStatus: () => void;
@@ -242,7 +246,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const updateRiSc = (riSc: RiSc) => {
+  const updateRiSc = (
+    riSc: RiSc,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => {
     if (selectedRiSc && riScs) {
       const isRequiresNewApproval = requiresNewApproval(
         selectedRiSc.content,
@@ -277,6 +285,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
           );
           setIsRequesting(false);
+          if (onSuccess) onSuccess();
         },
         () => {
           setRiScUpdateStatus({
@@ -285,6 +294,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             isSuccess: false,
           });
           setIsRequesting(false);
+          if (onError) onError();
         },
       );
     }

@@ -50,14 +50,8 @@ export const ScenarioDrawer = () => {
   };
 
   const onSubmit = formMethods.handleSubmit((data: Scenario) => {
-    submitEditedScenarioToRiSc(data);
+    submitEditedScenarioToRiSc(data, () => setIsEditing(false));
   });
-
-  useEffect(() => {
-    if (riScUpdateStatus.isSuccess) {
-      setIsEditing(false);
-    }
-  }, [riScUpdateStatus.isSuccess]);
 
   useEffect(() => {
     formMethods.reset(scenario);

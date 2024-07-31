@@ -48,7 +48,11 @@ type ScenarioDrawerProps = {
   saveScenario: () => boolean;
   editScenario: (step: ScenarioWizardSteps) => void;
   isNewScenario: boolean;
-  submitEditedScenarioToRiSc: (editedScenario: Scenario) => void;
+  submitEditedScenarioToRiSc: (
+    editedScenario: Scenario,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => void;
 
   openScenario: (id: string) => void;
   closeScenario: () => void;
@@ -195,14 +199,22 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     return false;
   };
 
-  const submitEditedScenarioToRiSc = (editedScenario: Scenario) => {
+  const submitEditedScenarioToRiSc = (
+    editedScenario: Scenario,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => {
     if (riSc) {
-      updateRiSc({
-        ...riSc.content,
-        scenarios: riSc.content.scenarios.map(s =>
-          s.ID === editedScenario.ID ? editedScenario : s,
-        ),
-      });
+      updateRiSc(
+        {
+          ...riSc.content,
+          scenarios: riSc.content.scenarios.map(s =>
+            s.ID === editedScenario.ID ? editedScenario : s,
+          ),
+        },
+        onSuccess,
+        onError,
+      );
     }
   };
 
