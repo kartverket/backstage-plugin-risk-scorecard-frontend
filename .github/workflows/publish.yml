@@ -1,5 +1,6 @@
 name: Publish Package to npmjs
 on:
+  workflow-dispatch:
   push:
     tags:
       - 'v*'
