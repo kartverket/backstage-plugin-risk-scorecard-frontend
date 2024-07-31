@@ -11,6 +11,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
+import { dialogActions } from '../common/mixins';
 
 export enum RiScDialogStates {
   Closed,
@@ -76,9 +77,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
         />
       </DialogContent>
 
-      <DialogActions
-        sx={{ gap: 1, paddingTop: 0, paddingX: 3, paddingBottom: 2 }}
-      >
+      <DialogActions sx={dialogActions}>
         <Button variant="contained" onClick={onSubmit} disabled={!isDirty}>
           {t('dictionary.save')}
         </Button>

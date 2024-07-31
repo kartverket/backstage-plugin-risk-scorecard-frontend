@@ -48,12 +48,7 @@ export const RiScInfo = ({ riSc, edit }: RiScInfoProps) => {
         </InfoCard>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
-        <InfoCard>
-          <RiScStatusComponent
-            selectedRiSc={riSc}
-            publishRiScFn={approveRiSc}
-          />
-        </InfoCard>
+        <RiScStatusComponent selectedRiSc={riSc} publishRiScFn={approveRiSc} />
       </Grid>
     </Grid>
   );
