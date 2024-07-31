@@ -5,7 +5,7 @@ import {
   TextField as MUITextField,
 } from '@material-ui/core';
 import React, { ChangeEvent, useState } from 'react';
-import { useScenario } from '../../ScenarioContext';
+import { useScenario } from '../../contexts/ScenarioContext';
 import { useFontStyles, useInputFieldStyles } from '../../utils/style';
 
 type ErrorProps = {

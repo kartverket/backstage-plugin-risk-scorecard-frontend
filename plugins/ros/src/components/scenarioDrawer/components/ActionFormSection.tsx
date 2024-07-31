@@ -12,7 +12,7 @@ import { heading3 } from '../../common/typography';
 import { AddCircle } from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
-import { emptyAction } from '../../../ScenarioContext';
+import { emptyAction } from '../../../contexts/ScenarioContext';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { section } from '../scenarioDrawerComponents';
@@ -28,7 +28,16 @@ const ActionFormSection = ({
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'actions',
+    rules: {
+      required: true,
+    },
   });
+
+  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
+    value: actionStatus,
+    /* @ts-ignore Because ts can't typecheck strings against our keys */
+    renderedValue: t(`actionStatus.${actionStatus}`),
+  }));
 
   return (
     <Paper sx={section}>
@@ -56,7 +65,7 @@ const ActionFormSection = ({
               }}
             >
               <Typography sx={heading3}>
-                {t('scenarioDrawer.measureTab.title')} {index + 1}
+                {t('dictionary.measure')} {index + 1}
               </Typography>
               <IconButton onClick={() => remove(index)} color="primary">
                 <DeleteIcon aria-label="Edit" />
@@ -69,6 +78,9 @@ const ActionFormSection = ({
             <Input
               required
               {...register(`actions.${index}.description`, { required: true })}
+              error={
+                formState.errors?.actions?.[index]?.description !== undefined
+              }
               label={t('dictionary.description')}
             />
             <Box
@@ -95,10 +107,7 @@ const ActionFormSection = ({
                 control={control}
                 name={`actions.${index}.status`}
                 label={t('dictionary.status')}
-                options={actionStatusOptions.map(value => ({
-                  value,
-                  renderedValue: value,
-                }))}
+                options={translatedActionStatuses}
               />
             </Box>
           </Box>

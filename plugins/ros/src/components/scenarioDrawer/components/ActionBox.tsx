@@ -6,7 +6,7 @@ import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import { body2, label } from '../../common/typography';
+import { body2, emptyState, label } from '../../common/typography';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
@@ -30,14 +30,19 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
   }, [action, saveScenario, previousAction]);
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
+  /* @ts-ignore Because ts can't typecheck strings against our keys */
+  const translatedActionStatus = t(`actionStatus.${action.status}`);
+
   return (
     <Box>
       <Button
         sx={{
-          color: 'inherit',
           width: '100%',
-          justifyContent: 'start',
+          fontSize: '16px',
+          color: 'inherit',
           textAlign: 'left',
+          justifyContent: 'start',
+          textTransform: 'initial',
         }}
         startIcon={isExpanded ? <ExpandLess /> : <ExpandMore />}
         onClick={() => setIsExpanded(!isExpanded)}
@@ -48,6 +53,9 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
           : `${t('dictionary.measure')} ${index}`}
       </Button>
       <Collapse in={isExpanded}>
+        <Typography sx={{ ...label, marginTop: 1 }}>
+          {t('dictionary.description')}
+        </Typography>
         <Typography sx={body2}>{action.description}</Typography>
 
         <Box
@@ -72,12 +80,16 @@ export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
                 {action.url}
               </Link>
             ) : (
-              <Typography sx={body2}>{t('dictionary.emptyUrl')}</Typography>
+              <Typography sx={emptyState}>
+                {t('dictionary.emptyField', {
+                  field: t('dictionary.url').toLowerCase(),
+                })}
+              </Typography>
             )}
           </Box>
 
           <Chip
-            label={action.status}
+            label={translatedActionStatus}
             sx={{
               margin: 0,
               backgroundColor:

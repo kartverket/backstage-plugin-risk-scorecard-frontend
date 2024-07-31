@@ -24,6 +24,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       estimatedRisk: 'Estimated risk',
       initialRisk: 'Initial risk', // Starting or Initial risk
       measure: 'Action', // Measure, Action or Initiative
+      measures: 'Actions', // Measure, Action or Initiative
       measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
       next: 'Next',
       planned: 'Planned',
@@ -40,7 +41,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       threatActors: 'Threat actors',
       title: 'Title',
       url: 'URL',
-      emptyUrl: 'No URL specified',
+      emptyField: 'No {{field}} specified',
       vulnerabilities: 'Vulnerabilities',
     },
     rosStatus: {
@@ -61,7 +62,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
       title: 'Risk scenarios',
       addScenarioButton: 'Add scenario',
       columns: {
-        measuresCount: 'Actions',
         consequenceChar: 'C',
         probabilityChar: 'P',
         completed: 'complete',
@@ -142,6 +142,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         requiredError: 'Field is required',
         descriptionError: 'Description cannot be empty',
         urlError: 'Invalid url',
+        emptyState: 'This scenario has no defined actions',
       },
       title: 'Risk scenario',
       titleError: 'Scenario title is required',
@@ -164,7 +165,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
         measureOwnerDescription:
           'Decide who will be responsible for completion of this action',
         addMeasureButton: 'Add planned action',
-        title: 'Actions',
         plannedMeasures: 'Planned actions',
         existingMeasure: 'Existing measures',
         existingMeasureSubtitle:
@@ -261,6 +261,13 @@ export const pluginRiScTranslationRef = createTranslationRef({
       'Denial of service': 'Denial of service',
       'Escalation of rights': 'Escalation of rights',
     },
+    actionStatus: {
+      'Not started': 'Not started',
+      'In progress': 'In progress',
+      'On hold': 'On hold',
+      Completed: 'Completed',
+      Aborted: 'Aborted',
+    },
   },
 });
 
@@ -304,13 +311,15 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.threatActors': 'Trusselaktører',
           'dictionary.title': 'Tittel',
           'dictionary.url': 'URL',
-          'dictionary.emptyUrl': 'Ingen URL spesifisert',
+          'dictionary.emptyField': 'Ingen {{field}} spesifisert',
           'dictionary.vulnerabilities': 'Sårbarheter',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
           'scenarioDrawer.action.urlError': 'Ugyldig URL',
           'scenarioDrawer.action.requiredError': 'Feltet er påkrevd',
+          'scenarioDrawer.action.emptyState':
+            'Scenariet har ingen definerte tiltak',
 
           'rosStatus.statusBadge.missing':
             'Venter på godkjenning av risikoeier',
@@ -325,7 +334,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
-          'scenarioTable.columns.measuresCount': 'Tiltak',
           'scenarioTable.columns.consequenceChar': 'K',
           'scenarioTable.columns.probabilityChar': 'S',
           'scenarioTable.columns.completed': 'fullført',
@@ -398,7 +406,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hvor stor sannsynlighet er det for at dette scenarioet vil forekomme. Dersom du er mellom to sannsynlighetsverdier velg den høyeste.',
           'scenarioDrawer.measureTab.subtitle':
             'Hvilke tiltak bør gjøres for å unngå scenarioet?',
-          'scenarioDrawer.measureTab.title': 'Tiltak',
           'scenarioDrawer.measureTab.measureOwnerDescription':
             'De eller den som er ansvarlig for at tiltaket blir gjennomført',
           'scenarioDrawer.measureTab.addMeasureButton': 'Legg til tiltak',
@@ -492,6 +499,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'vulnerabilities.Information leak': 'Informasjonslekkasje',
           'vulnerabilities.Denial of service': 'Tjenestenekt',
           'vulnerabilities.Escalation of rights': 'Rettighetseskalering',
+          'actionStatus.Not started': 'Ikke startet',
+          'actionStatus.In progress': 'Startet',
+          'actionStatus.On hold': 'På vent',
+          'actionStatus.Completed': 'Fullført',
+          'actionStatus.Aborted': 'Avbrutt',
         },
       }),
   },

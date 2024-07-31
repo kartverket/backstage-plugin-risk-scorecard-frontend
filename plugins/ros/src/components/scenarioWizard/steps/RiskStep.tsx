@@ -11,7 +11,7 @@ import { ProbabilityTable } from '../components/ProbabilityTable';
 import { ConsequenceTable } from '../components/ConsequenceTable';
 import { useFontStyles } from '../../../utils/style';
 import { useRiskStepStyles } from './riskStepStyles';
-import { useScenario } from '../../../ScenarioContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
 
 interface RiskStepProps {
   riskType: 'initial' | 'rest';

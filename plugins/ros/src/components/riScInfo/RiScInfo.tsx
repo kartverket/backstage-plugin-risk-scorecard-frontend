@@ -7,16 +7,18 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useFontStyles } from '../../utils/style';
 import EditButton from '../common/EditButton';
+import { useRiScs } from '../../contexts/RiScContext';
 
 interface RiScInfoProps {
   riSc: RiScWithMetadata;
-  approveRiSc: () => void;
   edit: () => void;
 }
 
-export const RiScInfo = ({ riSc, approveRiSc, edit }: RiScInfoProps) => {
+export const RiScInfo = ({ riSc, edit }: RiScInfoProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label, body2 } = useFontStyles();
+
+  const { approveRiSc } = useRiScs();
 
   return (
     <Grid container>
