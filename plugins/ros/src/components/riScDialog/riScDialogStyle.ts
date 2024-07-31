@@ -1,5 +1,6 @@
 import { Theme, makeStyles } from '@material-ui/core';
 
+// TODO: kutt denne
 export const useRiScDialogStyles = makeStyles((theme: Theme) => ({
   paper: {
     width: '80%',
@@ -10,15 +11,8 @@ export const useRiScDialogStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-  },
   buttons: {
     display: 'flex',
-    flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing(2),
   },

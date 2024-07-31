@@ -14,12 +14,17 @@ export const Input = forwardRef<HTMLInputElement, Props>(
     return (
       <FormControl sx={{ width: '100%' }} error={error} required={required}>
         {label && (
-          <FormLabel required={required} sx={formLabel}>
+          <FormLabel
+            required={required}
+            sx={{ ...formLabel, color: 'inherit' }}
+          >
             {label}
           </FormLabel>
         )}
         {sublabel && (
-          <FormHelperText sx={labelSubtitle}>{sublabel}</FormHelperText>
+          <FormHelperText sx={{ ...labelSubtitle, color: 'inherit', mx: 0 }}>
+            {sublabel}
+          </FormHelperText>
         )}
         <TextField
           id="filled-multiline-static"

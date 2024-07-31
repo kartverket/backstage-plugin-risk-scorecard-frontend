@@ -17,7 +17,9 @@ export const DeleteConfirmation = () => {
       <DialogTitle>
         {t('scenarioDrawer.deleteScenarioConfirmation')}
       </DialogTitle>
-      <DialogActions sx={{ gap: 1, paddingX: 3, paddingY: 2 }}>
+      <DialogActions
+        sx={{ gap: 1, paddingTop: 0, paddingX: 3, paddingBottom: 2 }}
+      >
         <Button onClick={abortDeletion}>{t('dictionary.cancel')}</Button>
         <Button onClick={confirmDeletion} variant="contained" color="error">
           {t('scenarioDrawer.deleteScenarioButton')}
