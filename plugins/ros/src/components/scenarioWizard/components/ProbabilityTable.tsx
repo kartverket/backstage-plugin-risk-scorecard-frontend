@@ -1,9 +1,12 @@
 import React from 'react';
-import { Radio, useTheme } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-
-import { useTableStyles } from './tableStyles';
+import Radio from '@mui/material/Radio';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { formLabel } from '../../common/typography';
+import TableCell from '@mui/material/TableCell';
+import { riskCell, riskTable } from '../wizardStyles';
+import Table from '@mui/material/Table';
 
 interface ProbabilityTableProps {
   selectedValue: number;
@@ -14,55 +17,57 @@ export const ProbabilityTable = ({
   selectedValue,
   handleChange,
 }: ProbabilityTableProps) => {
-  const theme = useTheme();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { table, cell, radio } = useTableStyles();
 
-  const radioCell = (row: number) => (
+  const getRadioLabel = (row: number) => {
+    /* @ts-ignore Because ts can't typecheck strings agains our keys */
+    return `${row}: ${t(`probabilityTable.rows.${row}`)}`;
+  };
+
+  const getRadioCell = (row: number) => (
     <th scope="col">
-      <div className={radio}>
-        <Radio
-          checked={selectedValue === row}
-          onChange={() => handleChange(row)}
-          style={{
-            padding: 0,
-            color:
-              theme.palette.type === 'dark'
-                ? '#9BC9FE'
-                : theme.palette.primary.main,
-          }}
-        />
-        {/* @ts-ignore */}
-        {row}: {t(`probabilityTable.rows.${row}`)}
-      </div>
+      <FormControlLabel
+        sx={{
+          width: '100%',
+        }}
+        control={
+          <Radio
+            checked={selectedValue === row}
+            onChange={() => handleChange(row)}
+            sx={{ marginRight: -0.5 }}
+          />
+        }
+        label={getRadioLabel(row)}
+        componentsProps={{ typography: { sx: formLabel } }}
+      />
     </th>
   );
 
-  const contentCell = (row: number) => (
-    <td className={cell}>
+  const getContentCell = (row: number) => (
+    <TableCell sx={riskCell}>
       {/* @ts-ignore */}
       {t(`probabilityTable.cells.${row}`)}
-    </td>
+    </TableCell>
   );
 
   return (
-    <table className={table}>
+    <Table sx={riskTable}>
       <tbody>
         <tr>
-          {radioCell(1)}
-          {radioCell(2)}
-          {radioCell(3)}
-          {radioCell(4)}
-          {radioCell(5)}
+          {getRadioCell(1)}
+          {getRadioCell(2)}
+          {getRadioCell(3)}
+          {getRadioCell(4)}
+          {getRadioCell(5)}
         </tr>
         <tr>
-          {contentCell(1)}
-          {contentCell(2)}
-          {contentCell(3)}
-          {contentCell(4)}
-          {contentCell(5)}
+          {getContentCell(1)}
+          {getContentCell(2)}
+          {getContentCell(3)}
+          {getContentCell(4)}
+          {getContentCell(5)}
         </tr>
       </tbody>
-    </table>
+    </Table>
   );
 };

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ContentHeader, SupportButton } from '@backstage/core-components';
 import { useSearchParams } from 'react-router-dom';
-import {
-  ScenarioWizard,
-  ScenarioWizardSteps,
-} from '../scenarioWizard/ScenarioWizard';
+import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
 import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import { ScenarioTable } from '../scenarioTable/ScenarioTable';
@@ -24,6 +21,7 @@ import { useRiScs } from '../../contexts/RiScContext';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
+import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -48,8 +46,9 @@ export const RiScPlugin = () => {
   } = useRiScs();
 
   const [searchParams] = useSearchParams();
-  const scenarioWizardStep =
-    (searchParams.get('step') as ScenarioWizardSteps | null) || null;
+  const scenarioWizardStep = searchParams.get(
+    'step',
+  ) as ScenarioWizardSteps | null;
 
   useEffect(() => {
     if (scenarioWizardStep !== null) resetRiScStatus();
