@@ -135,7 +135,7 @@ const useFetch = () => {
       if (onError) onError();
       setResponse({
         statusMessage:
-          'Failed to fetch JSON schema. Fallback value 3.3 for schema version used',
+          'Failed to fetch JSON schema. Fallback value 4.0 for schema version used',
         status: ProcessingStatus.ErrorWhenFetchingJSONSchema,
       });
     });
@@ -278,13 +278,13 @@ export const useFetchRiScs = (
             // This action can throw a runtime error if content is not parsable by JSON library.
             // If that happens, it is catched by the fetch onError catch.
             const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
-
             const content = dtoToRiSc(json);
             return {
               id: riScDTO.riScId,
               content: content,
               status: riScDTO.riScStatus,
               pullRequestUrl: riScDTO.pullRequestUrl,
+              migrationChanges: riScDTO.migrationChanges ? true : false,
             };
           });
         setRiScs(fetchedRiScs);
@@ -368,7 +368,7 @@ export const useFetchRiScs = (
 
         const newRiSc: RiSc = {
           ...riSc,
-          schemaVersion: schemaVersion ? schemaVersion : '3.3',
+          schemaVersion: schemaVersion ? schemaVersion : '4.0',
         };
 
         postRiScs(
@@ -399,7 +399,7 @@ export const useFetchRiScs = (
         );
       },
       () => {
-        const fallBackSchemaVersion = '3.3';
+        const fallBackSchemaVersion = '4.0';
         const newRiSc: RiSc = {
           ...riSc,
           schemaVersion: fallBackSchemaVersion,
@@ -449,6 +449,7 @@ export const useFetchRiScs = (
             : selectedRiSc.status,
         isRequiresNewApproval: isRequiresNewApproval,
         schemaVersion: riSc.schemaVersion,
+        migrationChanges: false,
       };
 
       setUpdateRiScStatus({

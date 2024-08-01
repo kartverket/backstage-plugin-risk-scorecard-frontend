@@ -134,7 +134,6 @@ const Plugin = () => {
                   </Button>
                 </Grid>
               )}
-
               {selectedRiSc && (
                 <>
                   <Grid item xs={12}>
@@ -142,6 +141,7 @@ const Plugin = () => {
                       riSc={selectedRiSc}
                       approveRiSc={approveRiSc}
                       edit={openEditRiScDialog}
+                      updateRiSc={updateRiSc}
                     />
                   </Grid>
                   <Grid item xs md={7} lg={8}>

@@ -34,6 +34,7 @@ export type PublishRiScResultDTO = {
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;
+  migrationChanges?: boolean;
 } & ContentRiScResultDTO;
 
 export type RiScDTO = {

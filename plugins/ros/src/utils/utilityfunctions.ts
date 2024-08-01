@@ -48,7 +48,7 @@ export const getConsequenceLevel = (risiko: Risk) =>
   consequenceOptions.indexOf(risiko.consequence) + 1;
 
 export const emptyRiSc = (): RiSc => ({
-  schemaVersion: '3.3',
+  schemaVersion: '4.0',
   title: '',
   scope: '',
   valuations: [],

@@ -48,14 +48,22 @@ export const pluginRiScTranslationRef = createTranslationRef({
         missing: 'Awaiting acceptance from risk owner', // Mangler godkjenning av risikoeier
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
+        migration:
+          'There has been done changes to the RiSc, as a result of a migration to the newest version. The changes can be both deletion and modification of information. If you want to keep the changes and update to the newest version, click "Save changes". Note that if you make other changes and save, this will also save the changes from the migration.', // Automatisk migrering av ROS
       },
       prStatus: ' Pending pull request in ', // Avventer godkjenning av PR i Github
       approveButton: 'Accept risks', // Godkjenn ROS
+      saveButton: 'Save changes', // Lagre ROS migrering
     },
     publishDialog: {
       title: 'Accept risks', // Godkjenn ROS
       checkboxLabel:
         'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
+    },
+    migrationDialog: {
+      title: 'Save changes', // Lagre ROS migrering
+      checkboxLabel:
+        'I confirm that I have reviewed and wish to save the changes made during the migration.',
     },
     scenarioTable: {
       title: 'Risk scenarios',
@@ -312,12 +320,19 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Venter på godkjenning av risikoeier',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
+          'rosStatus.statusBadge.migration':
+            'Det har blitt gjort endringer i ROSen, som følge av en migrering til nyeste versjon. Endringene kan våre både sletting og endring av informsasjon. Hvis du vil beholde endringene og oppdatere til nyeste versjon, klikk "Lagre endringer". Merk at dersom du gjør andre endringer og lagrer, vil dette føre til at endringene gjort i forbindelse med migreringen blir lagret.',
           'rosStatus.prStatus': ' Avventer godkjenning av pull request i ',
           'rosStatus.approveButton': 'Godkjenn ROS',
+          'rosStatus.saveButton': 'Lagre endringer',
 
           'publishDialog.title': 'Godkjenn ROS-analyse',
           'publishDialog.checkboxLabel':
             'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
+
+          'migrationDialog.title': 'Lagre endringer',
+          'migrationDialog.checkboxLabel':
+            'Jeg bekrefter at jeg har gjennomgått og ønsker å lagre endringene som er gjort under migreringen.',
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',

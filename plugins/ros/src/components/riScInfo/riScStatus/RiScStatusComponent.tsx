@@ -10,7 +10,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import React, { ReactComponentElement, useState } from 'react';
-import { RiScStatus, RiScWithMetadata } from '../../../utils/types';
+import { RiSc, RiScStatus, RiScWithMetadata } from '../../../utils/types';
 import Alert from '@mui/material/Alert';
 import { useRiScDialogStyles } from '../../riScDialog/riScDialogStyle';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -84,6 +84,71 @@ const RiScPublishDialog = ({
   );
 };
 
+interface RiScMigrationDialogProps {
+  openDialog: boolean;
+  handleCancel: () => void;
+  handleUpdate: () => void;
+}
+
+const RiScMigrationDialog = ({
+  openDialog,
+  handleCancel,
+  handleUpdate,
+}: RiScMigrationDialogProps): ReactComponentElement<any> => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { buttons } = useRiScDialogStyles();
+
+  const [saveMigration, setSaveMigration] = useState<boolean>(false);
+
+  const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSaveMigration(event.target.checked);
+  };
+
+  return (
+    <Dialog open={openDialog}>
+      <DialogTitle>{t('migrationDialog.title')}</DialogTitle>
+      <DialogContent>
+        <Alert severity="info" icon={false}>
+          <Grid container>
+            <Grid item xs={1}>
+              <Checkbox
+                color="primary"
+                checked={saveMigration}
+                onChange={handleCheckboxInput}
+              />
+            </Grid>
+            <Grid item xs={8}>
+              {t('migrationDialog.checkboxLabel')}
+            </Grid>
+          </Grid>
+        </Alert>
+      </DialogContent>
+      <div
+        style={{
+          padding: '20px',
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+        }}
+      >
+        <Box className={buttons}>
+          <Button variant="outlined" color="primary" onClick={handleCancel}>
+            {t('dictionary.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleUpdate}
+            disabled={!saveMigration}
+          >
+            {t('dictionary.confirm')}
+          </Button>
+        </Box>
+      </div>
+    </Dialog>
+  );
+};
+
 function PullRequestSvg() {
   const theme = useTheme();
   return (
@@ -107,10 +172,19 @@ function PullRequestSvg() {
 
 const RosAcceptance = ({
   status,
+  migration,
 }: {
   status: RiScStatus;
+  migration?: boolean;
 }): React.JSX.Element => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  if (migration) {
+    return (
+      <Typography paragraph style={{ fontWeight: 700 }} variant="subtitle1">
+        {t('rosStatus.statusBadge.migration')}
+      </Typography>
+    );
+  }
   switch (status) {
     case RiScStatus.Draft:
       return (
@@ -141,11 +215,13 @@ const RosAcceptance = ({
 interface RiScStatusProps {
   selectedRiSc: RiScWithMetadata;
   publishRiScFn: () => void;
+  updateRiSc: (selectedRiSc: RiSc) => void;
 }
 
 export const RiScStatusComponent = ({
   selectedRiSc,
   publishRiScFn,
+  updateRiSc,
 }: RiScStatusProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { approveButton } = useButtonStyles();
@@ -153,16 +229,27 @@ export const RiScStatusComponent = ({
   const [publishRiScDialogIsOpen, setPublishRiScDialogIsOpen] =
     useState<boolean>(false);
 
+  const [migrationDialogIsOpen, setMigrationDialogIsOpen] =
+    useState<boolean>(false);
+
   const handleApproveAndPublish = () => {
     publishRiScFn();
     setPublishRiScDialogIsOpen(false);
+  };
+
+  const handleUpdate = () => {
+    updateRiSc(selectedRiSc.content);
+    setMigrationDialogIsOpen(false);
   };
 
   return (
     <>
       <Typography variant="h5">Status</Typography>
 
-      <RosAcceptance status={selectedRiSc.status} />
+      <RosAcceptance
+        status={selectedRiSc.status}
+        migration={selectedRiSc.migrationChanges}
+      />
       {selectedRiSc.status === RiScStatus.SentForApproval && (
         <Typography style={{ fontWeight: 700 }} paragraph variant="subtitle1">
           <PullRequestSvg />
@@ -185,28 +272,49 @@ export const RiScStatusComponent = ({
           <Typography variant="body2" />
         </Grid>
 
-        <Grid item>
-          {selectedRiSc.status === RiScStatus.Draft && (
+        {selectedRiSc.status === RiScStatus.Draft &&
+          !selectedRiSc.migrationChanges && (
+            <Grid item>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() =>
+                  setPublishRiScDialogIsOpen(!publishRiScDialogIsOpen)
+                }
+                className={approveButton}
+                fullWidth
+                disabled={selectedRiSc.status !== RiScStatus.Draft}
+              >
+                <Typography variant="button">
+                  {t('rosStatus.approveButton')}
+                </Typography>
+              </Button>
+            </Grid>
+          )}
+        {selectedRiSc.migrationChanges && (
+          <Grid item>
             <Button
               color="primary"
               variant="contained"
-              onClick={() =>
-                setPublishRiScDialogIsOpen(!publishRiScDialogIsOpen)
-              }
+              onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
               className={approveButton}
               fullWidth
-              disabled={selectedRiSc.status !== RiScStatus.Draft}
             >
               <Typography variant="button">
-                {t('rosStatus.approveButton')}
+                {t('rosStatus.saveButton')}
               </Typography>
             </Button>
-          )}
-        </Grid>
+          </Grid>
+        )}
         <RiScPublishDialog
           openDialog={publishRiScDialogIsOpen}
           handlePublish={handleApproveAndPublish}
           handleCancel={() => setPublishRiScDialogIsOpen(false)}
+        />
+        <RiScMigrationDialog
+          openDialog={migrationDialogIsOpen}
+          handleUpdate={handleUpdate}
+          handleCancel={() => setMigrationDialogIsOpen(false)}
         />
       </Grid>
     </>
