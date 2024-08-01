@@ -9,7 +9,7 @@ import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useFontStyles } from '../../../utils/style';
-import { useScenario } from '../../../ScenarioContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
 
 export const ScenarioStep = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);

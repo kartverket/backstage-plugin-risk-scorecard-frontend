@@ -14,7 +14,7 @@ import { useTableStyles } from './ScenarioTableStyles';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useFontStyles } from '../../utils/style';
-import { useScenario } from '../../ScenarioContext';
+import { useScenario } from '../../contexts/ScenarioContext';
 
 interface ScenarioTableProps {
   riSc: RiSc;
@@ -94,7 +94,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
 
                   <TableCell className={tableCell}>
                     <Typography className={label} style={{ paddingBottom: 0 }}>
-                      {t('scenarioTable.columns.measuresCount')}
+                      {t('dictionary.measures')}
                     </Typography>
                   </TableCell>
                   <TableCell className={tableCell}>

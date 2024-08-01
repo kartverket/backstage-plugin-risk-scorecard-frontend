@@ -17,7 +17,7 @@ export const riScPlugin = createPlugin({
 export const RiScPage = riScPlugin.provide(
   createRoutableExtension({
     name: 'RiScPage',
-    component: () => import('./components/riScPlugin').then(m => m.RiScPlugin),
+    component: () => import('./PluginRoot').then(m => m.PluginRoot),
     mountPoint: rootRouteRef,
   }),
 );

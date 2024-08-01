@@ -5,9 +5,15 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useScenario } from '../../../ScenarioContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
-import { body2, heading1, heading3, label } from '../../common/typography';
+import {
+  body2,
+  emptyState,
+  heading1,
+  heading3,
+  label,
+} from '../../common/typography';
 
 export const ScopeSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -21,7 +27,15 @@ export const ScopeSection = () => {
 
       <Box>
         <Typography sx={label}>{t('dictionary.description')}</Typography>
-        <Typography sx={body2}>{scenario.description}</Typography>
+        {scenario.description ? (
+          <Typography sx={body2}>{scenario.description}</Typography>
+        ) : (
+          <Typography sx={emptyState}>
+            {t('dictionary.emptyField', {
+              field: t('dictionary.description').toLowerCase(),
+            })}
+          </Typography>
+        )}
       </Box>
 
       <Divider />
@@ -29,20 +43,46 @@ export const ScopeSection = () => {
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
         <Box>
           <Typography sx={label}>{t('dictionary.threatActors')}</Typography>
-          {scenario.threatActors.map(threatActor => (
-            <Typography key={threatActor} sx={body2}>
-              {threatActor}
+          {scenario.threatActors.length > 0 ? (
+            scenario.threatActors.map(threatActor => {
+              /* @ts-ignore Because ts can't typecheck strings against our keys */
+              const translatedThreatActor = t(`threatActors.${threatActor}`);
+              return (
+                <Typography key={threatActor} sx={body2}>
+                  {translatedThreatActor}
+                </Typography>
+              );
+            })
+          ) : (
+            <Typography sx={emptyState}>
+              {t('dictionary.emptyField', {
+                field: t('dictionary.threatActors').toLowerCase(),
+              })}
             </Typography>
-          ))}
+          )}
         </Box>
 
         <Box>
           <Typography sx={label}>{t('dictionary.vulnerabilities')}</Typography>
-          {scenario.vulnerabilities.map(vulnerability => (
-            <Typography key={vulnerability} sx={body2}>
-              {vulnerability}
+          {scenario.vulnerabilities.length > 0 ? (
+            scenario.vulnerabilities.map(vulnerability => {
+              /* @ts-ignore Because ts can't typecheck strings against our keys */
+              const translatedVulnerability = t(
+                `vulnerabilities.${vulnerability}`,
+              );
+              return (
+                <Typography key={vulnerability} sx={body2}>
+                  {translatedVulnerability}
+                </Typography>
+              );
+            })
+          ) : (
+            <Typography sx={emptyState}>
+              {t('dictionary.emptyField', {
+                field: t('dictionary.vulnerabilities').toLowerCase(),
+              })}
             </Typography>
-          ))}
+          )}
         </Box>
       </Box>
     </Paper>

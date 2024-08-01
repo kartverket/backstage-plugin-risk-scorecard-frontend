@@ -1,12 +1,13 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import { Action, RiSc, RiScWithMetadata, Scenario } from './utils/types';
-import { consequenceOptions, probabilityOptions } from './utils/constants';
-import { riScRouteRef, scenarioRouteRef } from './routes';
-import { useNavigate } from 'react-router';
+import { Action, Scenario } from '../utils/types';
+import { consequenceOptions, probabilityOptions } from '../utils/constants';
+import { riScRouteRef, scenarioRouteRef } from '../routes';
+import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { ScenarioWizardSteps } from './components/scenarioWizard/ScenarioWizard';
-import { generateRandomId } from './utils/utilityfunctions';
+import { ScenarioWizardSteps } from '../components/scenarioWizard/ScenarioWizard';
+import { generateRandomId } from '../utils/utilityfunctions';
+import { useRiScs } from './RiScContext';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
@@ -43,8 +44,11 @@ type ScenarioDrawerProps = {
   newScenario: () => void;
   saveScenario: () => boolean;
   editScenario: (step: ScenarioWizardSteps) => void;
-  isNewScenario: boolean;
-  submitEditedScenarioToRiSc: (editedScenario: Scenario) => void;
+  submitEditedScenarioToRiSc: (
+    editedScenario: Scenario,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => void;
 
   openScenario: (id: string) => void;
   closeScenario: () => void;
@@ -81,28 +85,20 @@ const ScenarioContext = React.createContext<ScenarioDrawerProps | undefined>(
   undefined,
 );
 
-const ScenarioProvider = ({
-  riSc,
-  updateRiSc,
-  scenarioIdFromParams,
-  children,
-}: {
-  children: ReactNode;
-  riSc: RiScWithMetadata | null;
-  updateRiSc: (riSc: RiSc) => void;
-  scenarioIdFromParams?: string;
-}) => {
-  // STATES
+const ScenarioProvider = ({ children }: { children: ReactNode }) => {
+  const { scenarioId: scenarioIdFromParams } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { selectedRiSc, updateRiSc } = useRiScs();
+  const riSc = selectedRiSc ?? null;
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const [isNewScenario, setIsNewScenario] = useState(false);
   const [formErrors, _setFormErrors] = useState<{ [key: string]: boolean }>({});
   const [scenario, setScenario] = useState(emptyScenario());
 
   const [originalScenario, setOriginalScenario] = useState(emptyScenario());
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
-  const [, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
   const getScenarioPath = useRouteRef(scenarioRouteRef);
@@ -110,6 +106,10 @@ const ScenarioProvider = ({
 
   // Open scenario when url changes
   useEffect(() => {
+    const scenarioWizardStep = searchParams.get(
+      'step',
+    ) as ScenarioWizardSteps | null;
+
     if (riSc) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
@@ -121,8 +121,8 @@ const ScenarioProvider = ({
         return;
       }
 
-      if (isNewScenario) {
-        // If this is a new scenario we should not set a "not found" state on path.
+      if (scenarioWizardStep) {
+        // If step query param exists in url then we are creating a new scenario with the wizard.
         return;
       }
 
@@ -142,7 +142,7 @@ const ScenarioProvider = ({
       setOriginalScenario(selectedScenario);
       setIsDrawerOpen(true);
     }
-  }, [riSc, scenarioIdFromParams, getRiScPath, navigate, isNewScenario]);
+  }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams]);
 
   // SCENARIO DRAWER FUNCTIONS
   const openScenario = (id: string) => {
@@ -162,7 +162,6 @@ const ScenarioProvider = ({
 
   const closeScenario = () => {
     if (riSc) {
-      setIsNewScenario(false);
       navigate(getRiScPath({ riScId: riSc.id }));
     }
   };
@@ -195,14 +194,22 @@ const ScenarioProvider = ({
     return false;
   };
 
-  const submitEditedScenarioToRiSc = (editedScenario: Scenario) => {
+  const submitEditedScenarioToRiSc = (
+    editedScenario: Scenario,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => {
     if (riSc) {
-      updateRiSc({
-        ...riSc.content,
-        scenarios: riSc.content.scenarios.map(s =>
-          s.ID === editedScenario.ID ? editedScenario : s,
-        ),
-      });
+      updateRiSc(
+        {
+          ...riSc.content,
+          scenarios: riSc.content.scenarios.map(s =>
+            s.ID === editedScenario.ID ? editedScenario : s,
+          ),
+        },
+        onSuccess,
+        onError,
+      );
     }
   };
 
@@ -222,7 +229,6 @@ const ScenarioProvider = ({
 
   const newScenario = () => {
     if (riSc) {
-      setIsNewScenario(true);
       const s = emptyScenario();
       setScenario(s);
       setOriginalScenario(s);
@@ -340,7 +346,6 @@ const ScenarioProvider = ({
     newScenario,
     saveScenario,
     editScenario,
-    isNewScenario,
     submitEditedScenarioToRiSc,
 
     openScenario,

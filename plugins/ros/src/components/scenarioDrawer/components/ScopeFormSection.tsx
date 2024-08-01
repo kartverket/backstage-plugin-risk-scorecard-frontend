@@ -14,7 +14,7 @@ import { heading3 } from '../../common/typography';
 import Paper from '@mui/material/Paper';
 import { section } from '../scenarioDrawerComponents';
 
-const ScenarioFormSection = ({
+const ScopeFormSection = ({
   formMethods,
 }: {
   formMethods: UseFormReturn<Scenario>;
@@ -74,4 +74,4 @@ const ScenarioFormSection = ({
   );
 };
 
-export default ScenarioFormSection;
+export default ScopeFormSection;

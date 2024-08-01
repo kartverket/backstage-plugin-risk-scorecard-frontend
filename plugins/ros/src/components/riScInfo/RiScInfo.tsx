@@ -7,22 +7,19 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useFontStyles } from '../../utils/style';
 import EditButton from '../common/EditButton';
+import { useRiScs } from '../../contexts/RiScContext';
 
 interface RiScInfoProps {
   riSc: RiScWithMetadata;
-  approveRiSc: () => void;
   edit: () => void;
   updateRiSc: (selectedRiSc: RiSc) => void;
 }
 
-export const RiScInfo = ({
-  riSc,
-  approveRiSc,
-  edit,
-  updateRiSc,
-}: RiScInfoProps) => {
+export const RiScInfo = ({ riSc, edit, updateRiSc }: RiScInfoProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label, body2 } = useFontStyles();
+
+  const { approveRiSc } = useRiScs();
 
   return (
     <Grid container>
@@ -52,13 +49,11 @@ export const RiScInfo = ({
         </InfoCard>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
-        <InfoCard>
-          <RiScStatusComponent
-            selectedRiSc={riSc}
-            publishRiScFn={approveRiSc}
-            updateRiSc={updateRiSc}
-          />
-        </InfoCard>
+        <RiScStatusComponent
+          selectedRiSc={riSc}
+          publishRiScFn={approveRiSc}
+          updateRiSc={updateRiSc}
+        />
       </Grid>
     </Grid>
   );

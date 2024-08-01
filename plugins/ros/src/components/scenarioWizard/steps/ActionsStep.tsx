@@ -6,7 +6,7 @@ import { Button, Typography } from '@material-ui/core';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { useFontStyles } from '../../../utils/style';
 import { ActionEdit } from '../components/ActionEdit';
-import { useScenario } from '../../../ScenarioContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
 
 export const ActionsStep = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
