@@ -131,7 +131,6 @@ const RosAcceptance = ({
   migration?: boolean;
 }): React.JSX.Element => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  console.log('migration', migration);
   if (migration) {
     return (
       <Typography paragraph style={{ fontWeight: 700 }} variant="subtitle1">
