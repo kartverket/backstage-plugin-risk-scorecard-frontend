@@ -38,7 +38,7 @@ export const ConsequenceTableInfo = () => {
   );
 
   const getRow = (resourceKey: string, cellType: SxProps<Theme>[]) => (
-    <Box sx={consequenceRow}>
+    <>
       <Box sx={riskLabelCell}>
         <Typography sx={{ ...subtitle1, lineHeight: 1 }}>
           {/* @ts-ignore */}
@@ -50,11 +50,18 @@ export const ConsequenceTableInfo = () => {
       {getTextCell(resourceKey, 2, cellType[2])}
       {getTextCell(resourceKey, 3, cellType[3])}
       {getTextCell(resourceKey, 4, cellType[4])}
-    </Box>
+    </>
   );
 
   return (
-    <Box sx={riskTable}>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'auto repeat(5, 1fr)',
+        gap: '4px',
+        overflow: 'auto',
+      }}
+    >
       {getRow('economical', [riskCell, riskCell, riskCell, riskCell, riskCell])}
       {getRow('privacy', [
         riskCell,

@@ -12,6 +12,7 @@ export const RiskRadioButton = forwardRef<HTMLSelectElement, Props>(
     <FormControlLabel
       sx={{
         width: '100%',
+        whiteSpace: 'nowrap',
       }}
       control={
         <MUIRadio inputRef={ref} sx={{ marginRight: -0.5 }} {...props} />
