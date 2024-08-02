@@ -304,12 +304,13 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 
   const approveRiSc = () => {
     if (selectedRiSc && riScs) {
-      const updatedRiSc = {
-        ...selectedRiSc,
-        status: RiScStatus.SentForApproval,
-      };
-
-      publishRiScs(selectedRiSc.id, () => {
+      publishRiScs(selectedRiSc.id, res => {
+        const prUrl = res.pendingApproval?.pullRequestUrl;
+        const updatedRiSc = {
+          ...selectedRiSc,
+          status: RiScStatus.SentForApproval,
+          pullRequestUrl: prUrl,
+        };
         setSelectedRiSc(updatedRiSc);
         setRiScs(riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)));
       });
