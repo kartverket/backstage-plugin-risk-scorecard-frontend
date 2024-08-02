@@ -95,6 +95,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
               content: content,
               status: riScDTO.riScStatus,
               pullRequestUrl: riScDTO.pullRequestUrl,
+              migrationChanges: riScDTO.migrationChanges ? true : false,
             };
           });
         setRiScs(fetchedRiScs);
@@ -180,7 +181,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 
         const newRiSc: RiSc = {
           ...riSc,
-          schemaVersion: schemaVersion ? schemaVersion : '3.3',
+          schemaVersion: schemaVersion ? schemaVersion : '4.0',
         };
 
         postRiScs(
@@ -211,7 +212,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         );
       },
       () => {
-        const fallBackSchemaVersion = '3.3';
+        const fallBackSchemaVersion = '4.0';
         const newRiSc: RiSc = {
           ...riSc,
           schemaVersion: fallBackSchemaVersion,
@@ -265,6 +266,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             : selectedRiSc.status,
         isRequiresNewApproval: isRequiresNewApproval,
         schemaVersion: riSc.schemaVersion,
+        migrationChanges: false,
       };
 
       setRiScUpdateStatus({

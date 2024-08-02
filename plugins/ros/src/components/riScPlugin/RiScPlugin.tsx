@@ -125,7 +125,6 @@ export const RiScPlugin = () => {
                 </Button>
               </Grid>
             )}
-
             {selectedRiSc && (
               <>
                 <Grid item xs={12}>

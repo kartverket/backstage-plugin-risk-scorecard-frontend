@@ -48,7 +48,7 @@ export const getConsequenceLevel = (risiko: Risk) =>
   consequenceOptions.indexOf(risiko.consequence) + 1;
 
 export const emptyRiSc = (): RiSc => ({
-  schemaVersion: '3.3',
+  schemaVersion: '4.0',
   title: '',
   scope: '',
   valuations: [],
@@ -90,17 +90,6 @@ export const requiresNewApproval = (
       updatedScenario.remainingRisk.consequence
     )
       requiresApproval = true;
-
-    oldScenario.actions.forEach((oldAction, i) => {
-      if (updatedScenario.actions[i] !== undefined) {
-        const updatedAction = updatedScenario.actions[i];
-
-        if (oldAction.deadline !== updatedAction.deadline)
-          requiresApproval = true;
-      } else {
-        requiresApproval = true;
-      }
-    });
   });
   return requiresApproval;
 };

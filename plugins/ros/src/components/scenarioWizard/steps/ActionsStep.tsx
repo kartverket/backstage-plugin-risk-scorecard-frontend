@@ -4,7 +4,6 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { TextField } from '../../common/Textfield';
 import AddCircle from '@mui/icons-material/AddCircle';
 import { ActionEdit } from '../components/ActionEdit';
 import { useScenario } from '../../../contexts/ScenarioContext';
@@ -13,8 +12,7 @@ import Box from '@mui/material/Box';
 
 export const ActionsStep = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { scenario, setScenarioValue, updateAction, deleteAction, addAction } =
-    useScenario();
+  const { scenario, updateAction, deleteAction, addAction } = useScenario();
 
   return (
     <Stack spacing={3}>
@@ -24,13 +22,6 @@ export const ActionsStep = () => {
           {t('scenarioDrawer.measureTab.subtitle')}
         </Typography>
       </Box>
-      <TextField
-        label={t('scenarioDrawer.measureTab.existingMeasure')}
-        subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
-        value={scenario.existingActions}
-        handleChange={value => setScenarioValue('existingActions', value)}
-        minRows={3}
-      />
       <Stack spacing={1}>
         <Typography sx={heading3}>
           {t('scenarioDrawer.measureTab.plannedMeasures')}
