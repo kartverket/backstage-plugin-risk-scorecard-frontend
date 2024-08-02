@@ -1,5 +1,5 @@
 import React from 'react';
-import { RiSc, RiScWithMetadata } from '../../utils/types';
+import { RiScWithMetadata } from '../../utils/types';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';
 import { InfoCard } from '@backstage/core-components';
@@ -12,10 +12,9 @@ import { useRiScs } from '../../contexts/RiScContext';
 interface RiScInfoProps {
   riSc: RiScWithMetadata;
   edit: () => void;
-  updateRiSc: (selectedRiSc: RiSc) => void;
 }
 
-export const RiScInfo = ({ riSc, edit, updateRiSc }: RiScInfoProps) => {
+export const RiScInfo = ({ riSc, edit }: RiScInfoProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label, body2 } = useFontStyles();
 
@@ -49,11 +48,7 @@ export const RiScInfo = ({ riSc, edit, updateRiSc }: RiScInfoProps) => {
         </InfoCard>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
-        <RiScStatusComponent
-          selectedRiSc={riSc}
-          publishRiScFn={approveRiSc}
-          updateRiSc={updateRiSc}
-        />
+        <RiScStatusComponent selectedRiSc={riSc} publishRiScFn={approveRiSc} />
       </Grid>
     </Grid>
   );

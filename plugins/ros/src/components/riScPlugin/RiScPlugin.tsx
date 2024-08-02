@@ -43,7 +43,6 @@ export const RiScPlugin = () => {
     resetRiScStatus,
     response,
     riScUpdateStatus,
-    updateRiSc,
   } = useRiScs();
 
   const [searchParams] = useSearchParams();
@@ -129,11 +128,7 @@ export const RiScPlugin = () => {
             {selectedRiSc && (
               <>
                 <Grid item xs={12}>
-                  <RiScInfo
-                    riSc={selectedRiSc}
-                    edit={openEditRiScDialog}
-                    updateRiSc={updateRiSc}
-                  />
+                  <RiScInfo riSc={selectedRiSc} edit={openEditRiScDialog} />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
                   <ScenarioTable riSc={selectedRiSc.content} />
