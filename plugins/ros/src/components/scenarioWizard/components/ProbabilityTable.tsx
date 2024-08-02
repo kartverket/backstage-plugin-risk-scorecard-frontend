@@ -9,6 +9,26 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Box from '@mui/material/Box';
 import { probabilityOptions } from '../../../utils/constants';
 
+export const ProbabilityTableInfo = () => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const getContentCell = (row: number) => (
+    <Box sx={riskCell}>
+      {/* @ts-ignore */}
+      {t(`probabilityTable.cells.${row + 1}`)}
+    </Box>
+  );
+
+  return (
+    <Box sx={riskRow}>
+      {getContentCell(1)}
+      {getContentCell(0)}
+      {getContentCell(2)}
+      {getContentCell(3)}
+      {getContentCell(4)}
+    </Box>
+  );
+};
+
 export const ProbabilityTable = ({
   formMethods,
   riskType,
@@ -36,13 +56,6 @@ export const ProbabilityTable = ({
     />
   );
 
-  const getContentCell = (row: number) => (
-    <Box sx={riskCell}>
-      {/* @ts-ignore */}
-      {t(`probabilityTable.cells.${row + 1}`)}
-    </Box>
-  );
-
   return (
     <Box sx={riskTable}>
       <RadioGroup {...field} sx={riskRow}>
@@ -52,13 +65,7 @@ export const ProbabilityTable = ({
         {getRadioCell(3)}
         {getRadioCell(4)}
       </RadioGroup>
-      <Box sx={riskRow}>
-        {getContentCell(1)}
-        {getContentCell(0)}
-        {getContentCell(2)}
-        {getContentCell(3)}
-        {getContentCell(4)}
-      </Box>
+      <ProbabilityTableInfo />
     </Box>
   );
 };

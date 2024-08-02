@@ -23,32 +23,8 @@ const consequenceRow: SxProps<Theme> = {
   gridTemplateColumns: 'auto repeat(5, 1fr)',
 };
 
-export const ConsequenceTable = ({
-  formMethods,
-  riskType,
-}: {
-  formMethods: UseFormReturn<Scenario>;
-  riskType: keyof Pick<Scenario, 'risk' | 'remainingRisk'>;
-}) => {
+export const ConsequenceTableInfo = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-
-  const { field } = useController({
-    name: `${riskType}.consequence`,
-    control: formMethods.control,
-  });
-
-  const getRadioLabel = (row: number) => {
-    /* @ts-ignore Because ts can't typecheck strings agains our keys */
-    return `${row}: ${t(`consequenceTable.rows.${row}`)}`;
-  };
-
-  const getRadioCell = (row: number) => (
-    <RiskRadioButton
-      value={consequenceOptions[row]}
-      ref={field.ref}
-      label={getRadioLabel(row + 1)}
-    />
-  );
 
   const getTextCell = (
     resourceKey: string,
@@ -79,14 +55,6 @@ export const ConsequenceTable = ({
 
   return (
     <Box sx={riskTable}>
-      <RadioGroup {...field} sx={consequenceRow}>
-        <Box sx={riskLabelCell} />
-        {getRadioCell(0)}
-        {getRadioCell(1)}
-        {getRadioCell(2)}
-        {getRadioCell(3)}
-        {getRadioCell(4)}
-      </RadioGroup>
       {getRow('economical', [riskCell, riskCell, riskCell, riskCell, riskCell])}
       {getRow('privacy', [
         riskCell,
@@ -109,6 +77,48 @@ export const ConsequenceTable = ({
         riskCell,
         riskCell,
       ])}
+    </Box>
+  );
+};
+
+export const ConsequenceTable = ({
+  formMethods,
+  riskType,
+}: {
+  formMethods: UseFormReturn<Scenario>;
+  riskType: keyof Pick<Scenario, 'risk' | 'remainingRisk'>;
+}) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const { field } = useController({
+    name: `${riskType}.consequence`,
+    control: formMethods.control,
+  });
+
+  const getRadioLabel = (row: number) => {
+    /* @ts-ignore Because ts can't typecheck strings agains our keys */
+    return `${row}: ${t(`consequenceTable.rows.${row}`)}`;
+  };
+
+  const getRadioCell = (row: number) => (
+    <RiskRadioButton
+      value={consequenceOptions[row]}
+      ref={field.ref}
+      label={getRadioLabel(row + 1)}
+    />
+  );
+
+  return (
+    <Box sx={riskTable}>
+      <RadioGroup {...field} sx={consequenceRow}>
+        <Box sx={riskLabelCell} />
+        {getRadioCell(0)}
+        {getRadioCell(1)}
+        {getRadioCell(2)}
+        {getRadioCell(3)}
+        {getRadioCell(4)}
+      </RadioGroup>
+      <ConsequenceTableInfo />
     </Box>
   );
 };
