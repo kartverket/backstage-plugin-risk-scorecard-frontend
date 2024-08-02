@@ -4,7 +4,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { riskTable, riskCell, riskRow } from '../wizardStyles';
 import { useController, UseFormReturn } from 'react-hook-form';
 import { Scenario } from '../../../utils/types';
-import { Radio } from '../../common/Radio';
+import { RiskRadioButton } from './RiskRadioButton';
 import RadioGroup from '@mui/material/RadioGroup';
 import Box from '@mui/material/Box';
 import { probabilityOptions } from '../../../utils/constants';
@@ -29,7 +29,7 @@ export const ProbabilityTable = ({
   };
 
   const getRadioCell = (row: number) => (
-    <Radio
+    <RiskRadioButton
       value={probabilityOptions[row]}
       ref={field.ref}
       label={getRadioLabel(row + 1)}

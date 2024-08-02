@@ -30,7 +30,7 @@ import { useSearchParams } from 'react-router-dom';
 
 export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { isFetching, riScUpdateStatus } = useRiScs();
+  const { isFetching, response, riScUpdateStatus } = useRiScs();
   const [, setSearchParams] = useSearchParams();
 
   const { scenario, closeScenarioForm, submitNewScenario } = useScenario();
@@ -132,9 +132,11 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
       ) : (
         <>
           {stepComponents[step]}
-          {riScUpdateStatus.isError && (
+
+          {response && riScUpdateStatus.isError && (
             <Alert severity="error">
               <Typography>{t('dictionary.saveError')}</Typography>
+              <Typography>{response.statusMessage}</Typography>
             </Alert>
           )}
           <Box

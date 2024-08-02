@@ -13,7 +13,7 @@ import {
 import { SxProps, Theme } from '@mui/material/styles';
 import { useController, UseFormReturn } from 'react-hook-form';
 import { Scenario } from '../../../utils/types';
-import Radio from '../../common/Radio';
+import { RiskRadioButton } from './RiskRadioButton';
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';
 import { consequenceOptions } from '../../../utils/constants';
@@ -43,7 +43,7 @@ export const ConsequenceTable = ({
   };
 
   const getRadioCell = (row: number) => (
-    <Radio
+    <RiskRadioButton
       value={consequenceOptions[row]}
       ref={field.ref}
       label={getRadioLabel(row + 1)}
