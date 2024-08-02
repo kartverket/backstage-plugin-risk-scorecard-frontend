@@ -12,7 +12,7 @@ import Divider from '@mui/material/Divider';
 
 export const ActionsSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { scenario, saveScenario } = useScenario();
+  const { scenario } = useScenario();
 
   return (
     <Paper sx={section}>
@@ -30,11 +30,7 @@ export const ActionsSection = () => {
         scenario.actions.map((action, index) => (
           <Fragment key={action.ID}>
             <Divider />
-            <ActionBox
-              action={action}
-              index={index + 1}
-              saveScenario={saveScenario}
-            />
+            <ActionBox action={action} index={index + 1} />
           </Fragment>
         ))
       ) : (

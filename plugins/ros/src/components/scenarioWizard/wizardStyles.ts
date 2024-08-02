@@ -1,10 +1,13 @@
 import { SxProps, Theme } from '@mui/material/styles';
 
 export const riskTable: SxProps<Theme> = {
-  display: 'flex',
-  borderCollapse: 'separate',
-  borderSpacing: '0.3rem 0',
-  overflowX: 'auto',
+  overflow: 'auto',
+};
+
+export const riskRow: SxProps<Theme> = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(5, 1fr)',
+  gap: '4px',
 };
 
 export const riskLabelCell: SxProps<Theme> = {
@@ -14,6 +17,7 @@ export const riskLabelCell: SxProps<Theme> = {
   textTransform: 'uppercase',
   paddingRight: 0,
   paddingLeft: 1,
+  width: '1.5rem',
 };
 
 export const riskCell: SxProps<Theme> = theme => ({

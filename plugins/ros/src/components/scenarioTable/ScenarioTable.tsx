@@ -24,7 +24,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label } = useFontStyles();
   const { titleBox, rowBorder, tableCell, tableCellTitle } = useTableStyles();
-  const { newScenario, openScenario } = useScenario();
+  const { openNewScenarioWizard, openScenarioDrawer } = useScenario();
 
   return (
     <>
@@ -47,7 +47,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                 startIcon={<AddCircle />}
                 variant="text"
                 color="primary"
-                onClick={newScenario}
+                onClick={openNewScenarioWizard}
               >
                 {t('scenarioTable.addScenarioButton')}
               </Button>
@@ -66,7 +66,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
               startIcon={<AddCircleOutlineIcon />}
               variant="contained"
               color="primary"
-              onClick={newScenario}
+              onClick={openNewScenarioWizard}
               style={{
                 display: 'flex',
                 padding: '0.5rem 1rem 0.5rem 1rem',
@@ -109,7 +109,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                   <ScenarioTableRow
                     key={scenario.ID}
                     scenario={scenario}
-                    viewRow={openScenario}
+                    viewRow={openScenarioDrawer}
                     isLastRow={idx === riSc.scenarios.length - 1}
                   />
                 ))}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Action } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -14,20 +14,12 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 interface ActionBoxProps {
   action: Action;
   index: number;
-  saveScenario: () => void;
 }
 
-export const ActionBox = ({ action, index, saveScenario }: ActionBoxProps) => {
+export const ActionBox = ({ action, index }: ActionBoxProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const [previousAction, setPreviousAction] = useState(action);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (previousAction !== action) {
-      saveScenario();
-      setPreviousAction(action);
-    }
-  }, [action, saveScenario, previousAction]);
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
   /* @ts-ignore Because ts can't typecheck strings against our keys */

@@ -1,12 +1,23 @@
-import { CircularProgress } from '@material-ui/core';
 import React from 'react';
-import { useSpinnerStyles } from '../../utils/style';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
-export const Spinner = ({ size }: { size?: string | number }) => {
-  const { container, spinner } = useSpinnerStyles();
-  return (
-    <div className={container}>
-      <CircularProgress className={spinner} size={size} />
-    </div>
-  );
-};
+export const Spinner = ({ size }: { size?: string | number }) => (
+  <Box
+    sx={{
+      display: 'flex',
+      minWidth: '100wh',
+      height: '100vh',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+    }}
+  >
+    <CircularProgress
+      size={size}
+      sx={{
+        display: 'flex',
+        marginTop: '200px',
+      }}
+    />
+  </Box>
+);

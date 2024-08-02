@@ -4,17 +4,40 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { TextField } from '../../common/Textfield';
 import AddCircle from '@mui/icons-material/AddCircle';
-import { ActionEdit } from '../components/ActionEdit';
-import { useScenario } from '../../../contexts/ScenarioContext';
-import { heading2, heading3, subtitle2 } from '../../common/typography';
+import { emptyAction } from '../../../contexts/ScenarioContext';
+import { heading2, heading3, label, subtitle2 } from '../../common/typography';
 import Box from '@mui/material/Box';
+import { useFieldArray, UseFormReturn } from 'react-hook-form';
+import { Scenario } from '../../../utils/types';
+import { Input } from '../../common/Input';
+import Paper from '@mui/material/Paper';
+import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  actionStatusOptions,
+  urlRegExpPattern,
+} from '../../../utils/constants';
+import IconButton from '@mui/material/IconButton';
+import { Select } from '../../common/Select';
 
-export const ActionsStep = () => {
+export const ActionsStep = ({
+  formMethods,
+}: {
+  formMethods: UseFormReturn<Scenario>;
+}) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { scenario, setScenarioValue, updateAction, deleteAction, addAction } =
-    useScenario();
+
+  const { control, register, formState } = formMethods;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'actions',
+  });
+
+  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
+    value: actionStatus,
+    /* @ts-ignore Because ts can't typecheck strings against our keys */
+    renderedValue: t(`actionStatus.${actionStatus}`),
+  }));
 
   return (
     <Stack spacing={3}>
@@ -24,29 +47,93 @@ export const ActionsStep = () => {
           {t('scenarioDrawer.measureTab.subtitle')}
         </Typography>
       </Box>
-      <TextField
+
+      <Input
+        {...register('existingActions')}
         label={t('scenarioDrawer.measureTab.existingMeasure')}
-        subtitle={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
-        value={scenario.existingActions}
-        handleChange={value => setScenarioValue('existingActions', value)}
+        sublabel={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
         minRows={3}
       />
+
       <Stack spacing={1}>
         <Typography sx={heading3}>
           {t('scenarioDrawer.measureTab.plannedMeasures')}
         </Typography>
-        {scenario.actions.map((action, index) => (
-          <ActionEdit
-            key={action.ID}
-            action={action}
-            index={index + 1}
-            updateAction={updateAction}
-            deleteAction={deleteAction}
-          />
+
+        {fields.map((field, index) => (
+          <Paper
+            key={field.ID}
+            sx={{
+              padding: 2,
+              marginBottom: 2,
+            }}
+          >
+            <Stack spacing={1}>
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Typography sx={label}>
+                  {t('dictionary.measure')} {index + 1}
+                </Typography>
+
+                <IconButton onClick={() => remove(index)} color="primary">
+                  <DeleteIcon aria-label="Edit" />
+                </IconButton>
+              </Box>
+
+              <Input
+                {...register(`actions.${index}.title`)}
+                label={t('dictionary.title')}
+              />
+
+              <Input
+                required
+                {...register(`actions.${index}.description`, {
+                  required: true,
+                })}
+                error={
+                  formState.errors?.actions?.[index]?.description !== undefined
+                }
+                label={t('dictionary.description')}
+              />
+
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: '2fr 1fr',
+                  gap: '24px',
+                }}
+              >
+                <Input
+                  {...register(`actions.${index}.url`, {
+                    pattern: {
+                      value: urlRegExpPattern,
+                      message: t('scenarioDrawer.action.urlError'),
+                    },
+                  })}
+                  label={t('dictionary.url')}
+                  helperText={formState.errors.actions?.[index]?.url?.message}
+                  error={!!formState.errors.actions?.[index]?.url?.message}
+                />
+                <Select<Scenario>
+                  required
+                  control={control}
+                  name={`actions.${index}.status`}
+                  label={t('dictionary.status')}
+                  options={translatedActionStatuses}
+                />
+              </Box>
+            </Stack>
+          </Paper>
         ))}
+
         <Button
           startIcon={<AddCircle />}
-          onClick={addAction}
+          onClick={() => append(emptyAction())}
           sx={{ width: 'fit-content' }}
         >
           {t('scenarioDrawer.measureTab.addMeasureButton')}

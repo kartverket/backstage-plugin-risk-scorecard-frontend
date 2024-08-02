@@ -1,7 +1,6 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { Action, Scenario } from '../utils/types';
-import { consequenceOptions, probabilityOptions } from '../utils/constants';
 import { riScRouteRef, scenarioRouteRef } from '../routes';
 import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
@@ -42,45 +41,20 @@ type ScenarioDrawerProps = {
   isDrawerOpen: boolean;
 
   scenario: Scenario;
-  originalScenario: Scenario;
-  newScenario: () => void;
-  saveScenario: () => boolean;
-  editScenario: (step: ScenarioWizardSteps) => void;
+  submitNewScenario: (
+    newScenario: Scenario,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => void;
   submitEditedScenarioToRiSc: (
     editedScenario: Scenario,
     onSuccess?: () => void,
     onError?: () => void,
   ) => void;
 
-  openScenario: (id: string) => void;
-  closeScenario: () => void;
-  validateScenario: () => boolean;
-
-  deleteConfirmationIsOpen: boolean;
-  openDeleteConfirmation: () => void;
-  abortDeletion: () => void;
-  confirmDeletion: () => void;
-
-  setScenarioValue: <T extends keyof Scenario>(
-    key: T,
-    value: Scenario[T],
-  ) => void;
-
-  addAction: () => void;
-  updateAction: (action: Action) => void;
-  deleteAction: (action: Action) => void;
-
-  setProbability: (probabilityLevel: number) => void;
-  setConsequence: (consequenceLevel: number) => void;
-  setRemainingProbability: (probabilityLevel: number) => void;
-  setRemainingConsequence: (consequenceLevel: number) => void;
-  setProbabilityAndRemainingProbability: (probabilityLevel: number) => void;
-  setConsequenceAndRemainingConsequence: (consequenceLevel: number) => void;
-
-  setFormError: (key: string) => void;
-  removeFormError: (key: string) => void;
-  hasFormErrors: () => boolean;
-  formFieldHasErrors: (key: string) => boolean;
+  openScenarioDrawer: (id: string) => void;
+  openNewScenarioWizard: () => void;
+  closeScenarioForm: () => void;
 };
 
 export type ScenarioWizardSteps = (typeof scenarioWizardSteps)[number];
@@ -96,23 +70,18 @@ const ScenarioContext = React.createContext<ScenarioDrawerProps | undefined>(
 );
 
 const ScenarioProvider = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const getRiScPath = useRouteRef(riScRouteRef);
+  const getScenarioPath = useRouteRef(scenarioRouteRef);
   const { scenarioId: scenarioIdFromParams } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+
   const { selectedRiSc, updateRiSc } = useRiScs();
   const riSc = selectedRiSc ?? null;
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const [formErrors, _setFormErrors] = useState<{ [key: string]: boolean }>({});
   const [scenario, setScenario] = useState(emptyScenario());
 
-  const [originalScenario, setOriginalScenario] = useState(emptyScenario());
-  const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
-    useState(false);
-
-  const navigate = useNavigate();
-  const getScenarioPath = useRouteRef(scenarioRouteRef);
-  const getRiScPath = useRouteRef(riScRouteRef);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Open scenario when url changes
   useEffect(() => {
@@ -127,7 +96,6 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
         const s = emptyScenario();
 
         setScenario(s);
-        setOriginalScenario(s);
         return;
       }
 
@@ -149,59 +117,38 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setScenario(selectedScenario);
-      setOriginalScenario(selectedScenario);
       setIsDrawerOpen(true);
     }
   }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams]);
 
   // SCENARIO DRAWER FUNCTIONS
-  const openScenario = (id: string) => {
+  const openScenarioDrawer = (id: string) => {
     if (riSc) {
       navigate(getScenarioPath({ riScId: riSc.id, scenarioId: id }));
     }
   };
 
-  // openNewScenarioWizard is used when opening the wizard with a new scenario. It explisit sets the searchParam to step=scenario.
-  const openNewScenarioWizard = (id: string, step: ScenarioWizardSteps) => {
-    if (riSc) {
-      navigate(
-        `${getScenarioPath({ riScId: riSc.id, scenarioId: id })}?step=${step}`,
-      );
-    }
-  };
-
-  const closeScenario = () => {
+  const closeScenarioForm = () => {
     if (riSc) {
       navigate(getRiScPath({ riScId: riSc.id }));
     }
   };
 
-  const editScenario = (step: ScenarioWizardSteps) => {
-    setSearchParams({ step: step });
-  };
-
-  const validateScenario = () => {
-    if (scenario.title === '') {
-      return false;
-    }
-    return true;
-  };
-
-  const saveScenario = () => {
+  const submitNewScenario = (
+    newScenario: Scenario,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => {
     if (riSc) {
-      if (validateScenario()) {
-        const updatedScenarios = riSc.content.scenarios.some(
-          s => s.ID === scenario.ID,
-        )
-          ? riSc.content.scenarios.map(s =>
-              s.ID === scenario.ID ? scenario : s,
-            )
-          : riSc.content.scenarios.concat(scenario);
-        updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
-        return true;
-      }
+      updateRiSc(
+        {
+          ...riSc.content,
+          scenarios: riSc.content.scenarios.concat(newScenario),
+        },
+        onSuccess,
+        onError,
+      );
     }
-    return false;
   };
 
   const submitEditedScenarioToRiSc = (
@@ -223,168 +170,30 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const openDeleteConfirmation = () => setDeleteConfirmationIsOpen(true);
-  const abortDeletion = () => setDeleteConfirmationIsOpen(false);
-
-  const confirmDeletion = () => {
-    if (riSc) {
-      setDeleteConfirmationIsOpen(false);
-      closeScenario();
-      const updatedScenarios = riSc.content.scenarios.filter(
-        s => s.ID !== scenario.ID,
-      );
-      updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
-    }
-  };
-
-  const newScenario = () => {
+  const openNewScenarioWizard = () => {
     if (riSc) {
       const s = emptyScenario();
       setScenario(s);
-      setOriginalScenario(s);
-      openNewScenarioWizard(s.ID, 'scenario');
+
+      navigate(
+        `${getScenarioPath({
+          riScId: riSc.id,
+          scenarioId: s.ID,
+        })}?step=scenario`,
+      );
     }
   };
-
-  // UPDATE SCENARIO FUNCTIONS
-  const setScenarioValue = <T extends keyof Scenario>(
-    key: T,
-    value: Scenario[T],
-  ) => {
-    setScenario({
-      ...scenario,
-      [key]: value,
-    });
-  };
-
-  const addAction = () =>
-    setScenario({ ...scenario, actions: [...scenario.actions, emptyAction()] });
-
-  const updateAction = (action: Action) => {
-    const updatedAction = scenario.actions.some(a => a.ID === action.ID)
-      ? scenario.actions.map(a => (a.ID === action.ID ? action : a))
-      : [...scenario.actions, action];
-    setScenario({ ...scenario, actions: updatedAction });
-  };
-
-  const deleteAction = (action: Action) => {
-    const updatedAction = scenario.actions.filter(a => a.ID !== action.ID);
-    setScenario({ ...scenario, actions: updatedAction });
-  };
-
-  const setProbability = (probabilityLevel: number) =>
-    setScenario({
-      ...scenario,
-      risk: {
-        ...scenario.risk,
-        probability: probabilityOptions[probabilityLevel - 1],
-      },
-    });
-
-  const setConsequence = (consequenceLevel: number) =>
-    setScenario({
-      ...scenario,
-      risk: {
-        ...scenario.risk,
-        consequence: consequenceOptions[consequenceLevel - 1],
-      },
-    });
-
-  const setRemainingProbability = (probabilityLevel: number) =>
-    setScenario({
-      ...scenario,
-      remainingRisk: {
-        ...scenario.remainingRisk,
-        probability: probabilityOptions[probabilityLevel - 1],
-      },
-    });
-
-  const setRemainingConsequence = (consequenceLevel: number) =>
-    setScenario({
-      ...scenario,
-      remainingRisk: {
-        ...scenario.remainingRisk,
-        consequence: consequenceOptions[consequenceLevel - 1],
-      },
-    });
-
-  const setProbabilityAndRemainingProbability = (probabilityLevel: number) =>
-    setScenario({
-      ...scenario,
-      risk: {
-        ...scenario.risk,
-        probability: probabilityOptions[probabilityLevel - 1],
-      },
-      remainingRisk: {
-        ...scenario.remainingRisk,
-        probability: probabilityOptions[probabilityLevel - 1],
-      },
-    });
-
-  const setConsequenceAndRemainingConsequence = (consequenceLevel: number) =>
-    setScenario({
-      ...scenario,
-      risk: {
-        ...scenario.risk,
-        consequence: consequenceOptions[consequenceLevel - 1],
-      },
-      remainingRisk: {
-        ...scenario.remainingRisk,
-        consequence: consequenceOptions[consequenceLevel - 1],
-      },
-    });
-
-  const setFormError = (key: string) => {
-    _setFormErrors({ ...formErrors, [key]: true });
-  };
-
-  const removeFormError = (key: string) => {
-    delete formErrors[key];
-    _setFormErrors({ ...formErrors });
-  };
-
-  const formFieldHasErrors = (key: string) =>
-    Object.keys(formErrors).includes(key);
-
-  const hasFormErrors = () => Object.keys(formErrors).length > 0;
 
   const value = {
     isDrawerOpen,
 
     scenario,
-    originalScenario,
-    newScenario,
-    saveScenario,
-    editScenario,
+    submitNewScenario,
     submitEditedScenarioToRiSc,
 
-    openScenario,
-    closeScenario,
-
-    validateScenario,
-
-    deleteConfirmationIsOpen,
-    openDeleteConfirmation,
-    abortDeletion,
-    confirmDeletion,
-
-    setScenarioValue,
-
-    addAction,
-    updateAction,
-    deleteAction,
-
-    setProbability,
-    setConsequence,
-    setRemainingProbability,
-    setRemainingConsequence,
-    setProbabilityAndRemainingProbability,
-    setConsequenceAndRemainingConsequence,
-
-    setFormError,
-    hasFormErrors,
-    removeFormError,
-    formFieldHasErrors,
+    openScenarioDrawer,
+    openNewScenarioWizard,
+    closeScenarioForm,
   };
 
   return (

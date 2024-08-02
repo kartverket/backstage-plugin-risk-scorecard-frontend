@@ -27,10 +27,12 @@ export const ScenarioDrawer = () => {
   const {
     scenario,
     isDrawerOpen,
-    openDeleteConfirmation,
-    closeScenario,
+    closeScenarioForm,
     submitEditedScenarioToRiSc,
   } = useScenario();
+
+  const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
+    useState(false);
 
   const { riScUpdateStatus, response } = useRiScs();
 
@@ -45,7 +47,7 @@ export const ScenarioDrawer = () => {
   };
 
   const onClose = () => {
-    closeScenario();
+    closeScenarioForm();
     setIsEditing(false);
   };
 
@@ -143,7 +145,7 @@ export const ScenarioDrawer = () => {
           startIcon={<DeleteIcon />}
           variant="text"
           color="primary"
-          onClick={openDeleteConfirmation}
+          onClick={() => setDeleteConfirmationIsOpen(true)}
           sx={{ marginLeft: 'auto' }}
         >
           {t('scenarioDrawer.deleteScenarioButton')}
@@ -157,7 +159,10 @@ export const ScenarioDrawer = () => {
           </Alert>
         )}
 
-      <DeleteConfirmation />
+      <DeleteConfirmation
+        deleteConfirmationIsOpen={deleteConfirmationIsOpen}
+        setDeleteConfirmationIsOpen={setDeleteConfirmationIsOpen}
+      />
     </Drawer>
   );
 };
