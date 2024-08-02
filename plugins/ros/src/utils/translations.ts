@@ -208,11 +208,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
           '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.',
         },
         economical: {
-          '1': 'Temporary minor financial loss.\n May be fixed within an hour by one employee',
-          '2': 'Temporary financial loss.\n May be fixed within three days by one employee',
-          '3': 'Financial loss of some duration.\n May be fixed within a month by three employees',
-          '4': 'Financial loss of considerable duration for the organization and any third parties.\n May be fixed within a year by 10 employees',
-          '5': 'Permanent and severe financial loss.\n May be fixed within three years by 100 employees',
+          '1': 'Temporary minor financial loss.\n\nMay be fixed within an hour by one employee',
+          '2': 'Temporary financial loss.\n\nMay be fixed within three days by one employee',
+          '3': 'Financial loss of some duration.\n\nMay be fixed within a month by three employees',
+          '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed within a year by 10 employees',
+          '5': 'Permanent and severe financial loss.\n\nMay be fixed within three years by 100 employees',
         },
         privacy: {
           '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
@@ -223,8 +223,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
         },
         reputation: {
           '1': 'Temporary loss of reputation and little impact on trust',
-          '2': 'Negative attention in national media that leads to loss of reputation.\n May reduce trust.',
-          '3': 'Lasting negative attention in national and international media that leads to severe loss of reputation.\n Severe loss of trust from authorities.\n Users who do not dare or want to use the services.', // lasting, severe, severe loss, severe loss of trust, do not dare or want to use the services
+          '2': 'Negative attention in national media that leads to loss of reputation.\n\nMay reduce trust.',
+          '3': 'Lasting negative attention in national and international media that leads to severe loss of reputation.\n\nSevere loss of trust from authorities.\n\nUsers who do not dare or want to use the services.', // lasting, severe, severe loss, severe loss of trust, do not dare or want to use the services
           '4': 'Impact on reputation and trust cannot be rated more severe than 3',
           '5': 'Impact on reputation and trust cannot be rated more severe than 3',
         },
@@ -239,11 +239,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
         '5': 'Very high', // svært stor
       },
       cells: {
-        '1': 'The scenario is unlikely to occur. It occurs less often than every 100 years',
-        '2': 'The scenario is unlikely to occur. It can occur every 10 years',
-        '3': 'The scenario can occur. It can occur almost every year',
-        '4': 'The scenario will very likely occur. It can occur almost weekly',
-        '5': 'The scenario is almost guaranteed to occur. It can occur almost daily',
+        '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 100 years',
+        '2': 'The scenario is unlikely to occur.\n\nIt can occur every 10 years',
+        '3': 'The scenario can occur.\n\nIt can occur almost every year',
+        '4': 'The scenario will very likely occur.\n\nIt can occur almost weekly',
+        '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur almost daily',
       },
     },
     threatActors: {
@@ -442,21 +442,21 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.cells.health.2':
             'Liv og helse kan ikke være mindre alvorlig enn 3',
           'consequenceTable.cells.health.3':
-            'Lettere skade på personer.\n Noe skade på lokalt miljø.',
+            'Lettere skade på personer.\n\nNoe skade på lokalt miljø.',
           'consequenceTable.cells.health.4':
-            'Et fåtall alvorlige personskader.\n Moderat skade på miljø på et begrenset område.',
+            'Et fåtall alvorlige personskader.\n\nModerat skade på miljø på et begrenset område.',
           'consequenceTable.cells.health.5':
             'Dødsfall. Svært alvorlig skade på milhø over store områder.',
           'consequenceTable.cells.economical.1':
-            'Ubetydelig økonomisk tap.\n Kan fikses i løpet av en time av én ansatt.',
+            'Ubetydelig økonomisk tap.\n\nKan fikses i løpet av en time av én ansatt.',
           'consequenceTable.cells.economical.2':
-            'Mindre økonomisk tap.\n Kan fikses i løpet av tre dager av én ansatt.',
+            'Mindre økonomisk tap.\n\nKan fikses i løpet av tre dager av én ansatt.',
           'consequenceTable.cells.economical.3':
-            'Moderat økonomisk tap.\n Kan fikses i løpet av en måned av tre ansatte.',
+            'Moderat økonomisk tap.\n\nKan fikses i løpet av en måned av tre ansatte.',
           'consequenceTable.cells.economical.4':
-            'Større økonomisk tap.\n Kan fikses i løpet av et år av 10 ansatte.',
+            'Større økonomisk tap.\n\nKan fikses i løpet av et år av 10 ansatte.',
           'consequenceTable.cells.economical.5':
-            'Kritisk økonomisk tap.\n Kan fikses i løpet av tre år av 100 ansatte.',
+            'Kritisk økonomisk tap.\n\nKan fikses i løpet av tre år av 100 ansatte.',
           'consequenceTable.cells.privacy.1': 'Ingen brudd.',
           'consequenceTable.cells.privacy.2': 'Mindre brudd.',
           'consequenceTable.cells.privacy.3':
@@ -468,9 +468,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.cells.reputation.1':
             'Liten fare for omdømmetap og liten innvikrning på tillit',
           'consequenceTable.cells.reputation.2':
-            'Negativ oppmerksomhet i regionale og nasjonale medier som fører til omdømmetap.\n Kan redusere tillit.',
+            'Negativ oppmerksomhet i regionale og nasjonale medier som fører til omdømmetap.\n\nKan redusere tillit.',
           'consequenceTable.cells.reputation.3':
-            'Negativ oppmerksomhet i nasjonale og internasjonale medier som fører til alvorlig omdømmetap.\n Alvorlig redusert tillit fra myndigheter.\n Brukere som ikke tør / vil bruke tjenestene.',
+            'Negativ oppmerksomhet i nasjonale og internasjonale medier som fører til alvorlig omdømmetap.\n\nAlvorlig redusert tillit fra myndigheter.\n\nBrukere som ikke tør / vil bruke tjenestene.',
           'consequenceTable.cells.reputation.4':
             'Omdømme og tillit kan ikke være mer alvorlig enn 3',
           'consequenceTable.cells.reputation.5':
@@ -482,15 +482,15 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'probabilityTable.rows.4': 'Stor',
           'probabilityTable.rows.5': 'Svært stor',
           'probabilityTable.cells.1':
-            'Scenarioet er usannsynlig å inntreffe. Det inntreffer sjeldnere enn hvert 100. år',
+            'Scenarioet er usannsynlig å inntreffe.\n\nDet inntreffer sjeldnere enn hvert 100. år',
           'probabilityTable.cells.2':
-            'Scenarioet er lite sannsynlig å inntreffe. Det kan inntreffe hvert 10. år',
+            'Scenarioet er lite sannsynlig å inntreffe.\n\nDet kan inntreffe hvert 10. år',
           'probabilityTable.cells.3':
-            'Scenarioet kan inntreffe. Det kan inntreffe nærmest årlig',
+            'Scenarioet kan inntreffe.\n\nDet kan inntreffe nærmest årlig',
           'probabilityTable.cells.4':
-            'Scenarioet vil med stor sannsynlighet inntreffe. Det kan inntreffe nærmest ukentlig',
+            'Scenarioet vil med stor sannsynlighet inntreffe.\n\nDet kan inntreffe nærmest ukentlig',
           'probabilityTable.cells.5':
-            'Scenarioet er nesten garantert å inntreffe. Det kan inntreffe nærmest daglig',
+            'Scenarioet er nesten garantert å inntreffe.\n\nDet kan inntreffe nærmest daglig',
           'threatActors.Script kiddie': 'Datasnok',
           'threatActors.Hacktivist': 'Hacktivist',
           'threatActors.Reckless employee': 'Uheldig ansatt',

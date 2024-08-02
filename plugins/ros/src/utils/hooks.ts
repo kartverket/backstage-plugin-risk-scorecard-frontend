@@ -51,11 +51,11 @@ const useResponse = (): [
   return [submitResponse, displaySubmitResponse];
 };
 
-export const useFetch = () => {
+export const useAuthenticatedFetch = () => {
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
   const identityApi = useApi(identityApiRef);
-  const { fetch: fetchApi } = useApi(fetchApiRef);
+  const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
   const uriToFetchAllRiScs = () => `${riScUri}/all`;
@@ -66,7 +66,7 @@ export const useFetch = () => {
 
   const [response, setResponse] = useResponse();
 
-  const fetch = <T>(
+  const authenticatedFetch = <T>(
     uri: string,
     method: 'GET' | 'POST' | 'PUT',
     onSuccess: (response: T) => void,
@@ -80,7 +80,7 @@ export const useFetch = () => {
         'https://www.googleapis.com/auth/cloudkms',
       ]),
     ]).then(([idToken, googleAccessToken]) => {
-      fetchApi(uri, {
+      fetch(uri, {
         method: method,
         headers: {
           Authorization: `Bearer ${idToken.token}`,
@@ -105,7 +105,7 @@ export const useFetch = () => {
     onSuccess: (response: RiScContentResultDTO[]) => void,
     onError?: () => void,
   ) =>
-    fetch<RiScContentResultDTO[]>(
+    authenticatedFetch<RiScContentResultDTO[]>(
       uriToFetchAllRiScs(),
       'GET',
       onSuccess,
@@ -122,14 +122,20 @@ export const useFetch = () => {
     onSuccess: (response: string) => void,
     onError?: () => void,
   ) =>
-    fetch<string>(uriToFetchLatestJSONSchema(), 'GET', onSuccess, () => {
-      if (onError) onError();
-      setResponse({
-        statusMessage:
-          'Failed to fetch JSON schema. Fallback value 4.0 for schema version used',
-        status: ProcessingStatus.ErrorWhenFetchingJSONSchema,
-      });
-    });
+    authenticatedFetch<string>(
+      uriToFetchLatestJSONSchema(),
+      'GET',
+      onSuccess,
+      () => {
+        if (onError) onError();
+
+        setResponse({
+          statusMessage:
+            'Failed to fetch JSON schema. Fallback value 4.0 for schema version used',
+          status: ProcessingStatus.ErrorWhenFetchingJSONSchema,
+        });
+      },
+    );
 
   const publishRiScs = (
     riScId: string,
@@ -137,7 +143,7 @@ export const useFetch = () => {
     onError?: (error: PublishRiScResultDTO) => void,
   ) =>
     identityApi.getProfileInfo().then(profile =>
-      fetch<PublishRiScResultDTO>(
+      authenticatedFetch<PublishRiScResultDTO>(
         uriToPublishRiSc(riScId),
         'POST',
         res => {
@@ -158,7 +164,7 @@ export const useFetch = () => {
     onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
     identityApi.getProfileInfo().then(profile =>
-      fetch<ProcessRiScResultDTO>(
+      authenticatedFetch<ProcessRiScResultDTO>(
         riScUri,
         'POST',
         res => {
@@ -179,7 +185,7 @@ export const useFetch = () => {
     onError?: (error: ProcessRiScResultDTO) => void,
   ) => {
     identityApi.getProfileInfo().then(profile =>
-      fetch<ProcessRiScResultDTO>(
+      authenticatedFetch<ProcessRiScResultDTO>(
         uriToFetchRiSc(riSc.id),
         'PUT',
         res => {

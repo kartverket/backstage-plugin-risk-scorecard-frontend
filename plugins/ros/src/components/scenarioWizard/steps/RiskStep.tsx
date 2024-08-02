@@ -1,17 +1,17 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import {
   getConsequenceLevel,
   getProbabilityLevel,
 } from '../../../utils/utilityfunctions';
-import Box from '@material-ui/core/Box';
-import { Typography } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { ProbabilityTable } from '../components/ProbabilityTable';
 import { ConsequenceTable } from '../components/ConsequenceTable';
-import { useFontStyles } from '../../../utils/style';
-import { useRiskStepStyles } from './riskStepStyles';
 import { useScenario } from '../../../contexts/ScenarioContext';
+import { heading2, heading3, subtitle2 } from '../../common/typography';
+import Stack from '@mui/material/Stack';
 
 interface RiskStepProps {
   riskType: 'initial' | 'rest';
@@ -20,8 +20,6 @@ interface RiskStepProps {
 
 export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { h2, h3, subtitle2 } = useFontStyles();
-  const { box } = useRiskStepStyles();
   const {
     scenario,
     setConsequence,
@@ -61,39 +59,35 @@ export const RiskStep = ({ riskType, restEqualsInitial }: RiskStepProps) => {
   };
 
   return (
-    <Fragment>
-      <Box className={box}>
-        <Typography className={h2}>
+    <Stack spacing={2}>
+      <Box>
+        <Typography sx={heading2}>
           {t(`scenarioStepper.${resourceKey}.title`)}
         </Typography>
-        <Typography className={subtitle2}>
+        <Typography sx={subtitle2}>
           {t(`scenarioStepper.${resourceKey}.subtitle`)}
         </Typography>
       </Box>
-      <Box className={box}>
-        <Typography className={h3}>{t('dictionary.probability')}</Typography>
-        <Typography className={subtitle2}>
+      <Box>
+        <Typography sx={heading3}>{t('dictionary.probability')}</Typography>
+        <Typography sx={subtitle2}>
           {t(`scenarioStepper.${resourceKey}.probabilitySubtitle`)}
         </Typography>
       </Box>
-      <Box className={box}>
-        <ProbabilityTable
-          selectedValue={getProbabilityLevel(risk)}
-          handleChange={handleProbabilityChange}
-        />
-      </Box>
-      <Box className={box}>
-        <Typography className={h3}>{t('dictionary.consequence')}</Typography>
-        <Typography className={subtitle2}>
+      <ProbabilityTable
+        selectedValue={getProbabilityLevel(risk)}
+        handleChange={handleProbabilityChange}
+      />
+      <Box>
+        <Typography sx={heading3}>{t('dictionary.consequence')}</Typography>
+        <Typography sx={subtitle2}>
           {t(`scenarioStepper.${resourceKey}.consequenceSubtitle`)}
         </Typography>
       </Box>
-      <Box className={box}>
-        <ConsequenceTable
-          selectedValue={getConsequenceLevel(risk)}
-          handleChange={handleConsequenceChange}
-        />
-      </Box>
-    </Fragment>
+      <ConsequenceTable
+        selectedValue={getConsequenceLevel(risk)}
+        handleChange={handleConsequenceChange}
+      />
+    </Stack>
   );
 };

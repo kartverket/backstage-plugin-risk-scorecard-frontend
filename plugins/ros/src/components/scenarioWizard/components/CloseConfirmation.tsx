@@ -1,7 +1,11 @@
-import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
+import { dialogActions } from '../../common/mixins';
 
 interface CloseConfirmationProps {
   isOpen: boolean;
@@ -18,12 +22,12 @@ export const CloseConfirmation = ({
   return (
     <Dialog open={isOpen}>
       <DialogTitle>{t('scenarioDrawer.closeConfirmation')}</DialogTitle>
-      <DialogActions>
-        <Button style={{ textTransform: 'none' }} onClick={close}>
+      <DialogActions sx={dialogActions}>
+        <Button variant="outlined" onClick={close}>
           {t('dictionary.discardChanges')}
         </Button>
 
-        <Button style={{ textTransform: 'none' }} onClick={save}>
+        <Button variant="outlined" onClick={save}>
           {t('dictionary.save')}
         </Button>
       </DialogActions>

@@ -5,7 +5,6 @@ import { consequenceOptions, probabilityOptions } from '../utils/constants';
 import { riScRouteRef, scenarioRouteRef } from '../routes';
 import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { ScenarioWizardSteps } from '../components/scenarioWizard/ScenarioWizard';
 import { generateRandomId } from '../utils/utilityfunctions';
 import { useRiScs } from './RiScContext';
 
@@ -80,6 +79,14 @@ type ScenarioDrawerProps = {
   hasFormErrors: () => boolean;
   formFieldHasErrors: (key: string) => boolean;
 };
+
+export type ScenarioWizardSteps = (typeof scenarioWizardSteps)[number];
+export const scenarioWizardSteps = [
+  'scenario',
+  'initialRisk',
+  'measure',
+  'restRisk',
+] as const;
 
 const ScenarioContext = React.createContext<ScenarioDrawerProps | undefined>(
   undefined,

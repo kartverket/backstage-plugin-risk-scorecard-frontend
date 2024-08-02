@@ -76,17 +76,6 @@ export const useFontStyles = makeStyles(theme => ({
     paddingBottom: '1rem',
     marginTop: '-0.2rem',
   },
-  risikoLevel: {
-    fontSize: theme.spacing(2.25),
-    fontWeight: 700,
-    paddingTop: 0,
-  },
-  actionSubtitle: {
-    fontSize: theme.spacing(2.25),
-    fontWeight: 700,
-    marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  },
 }));
 
 export const useInputFieldStyles = makeStyles((theme: Theme) => ({
@@ -99,11 +88,6 @@ export const useInputFieldStyles = makeStyles((theme: Theme) => ({
     textTransform: 'uppercase',
     marginBottom: theme.spacing(1),
     color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
-  },
-  paper: {
-    padding: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-    backgroundColor: theme.palette.type === 'dark' ? '#404040' : '#FFFFFF',
   },
   root: {
     '&.Mui-disabled': {
