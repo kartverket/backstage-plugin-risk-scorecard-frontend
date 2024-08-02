@@ -1,12 +1,5 @@
 import { SxProps, Theme } from '@mui/material/styles';
 
-export const formLabel: SxProps<Theme> = {
-  fontSize: '0.875rem',
-  fontWeight: 700,
-  textTransform: 'uppercase',
-  marginBottom: '8px',
-};
-
 export const heading1: SxProps<Theme> = {
   fontSize: '2rem',
   fontWeight: 700,
@@ -40,17 +33,24 @@ export const label: SxProps<Theme> = {
   paddingBottom: '0.4rem',
 };
 
-export const labelSubtitle: SxProps<Theme> = {
-  fontSize: '0.875rem',
-  fontWeight: 400,
-  paddingBottom: '0.4rem',
-  marginTop: '-0.2rem',
-};
-
 export const label2: SxProps<Theme> = {
   fontSize: '0.875rem',
   fontWeight: 700,
   textTransform: 'uppercase',
+};
+
+export const formLabel: SxProps<Theme> = {
+  fontSize: '0.875rem',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  color: 'inherit',
+};
+
+export const formHelperText: SxProps<Theme> = {
+  fontSize: '0.875rem',
+  fontWeight: 400,
+  color: 'inherit',
+  margin: 0,
 };
 
 export const emptyState: SxProps<Theme> = {
@@ -73,17 +73,4 @@ export const headerSubtitle: SxProps<Theme> = {
   fontWeight: 500,
   paddingBottom: '1rem',
   marginTop: '-0.2rem',
-};
-
-export const risikoLevel: SxProps<Theme> = {
-  fontSize: '1.125rem',
-  fontWeight: 700,
-  paddingTop: 0,
-};
-
-export const actionSubtitle: SxProps<Theme> = {
-  fontSize: '1.125rem',
-  fontWeight: 700,
-  marginBottom: '16px',
-  marginTop: '16px',
 };

@@ -17,7 +17,7 @@ import MUISelect, { SelectProps } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
-import { formLabel, labelSubtitle } from './typography';
+import { formHelperText, formLabel } from './typography';
 
 type Props<T extends FieldValues> = SelectProps & {
   sublabel?: string;
@@ -82,14 +82,14 @@ export const Select = <T extends FieldValues>({
   };
 
   return (
-    <FormControl sx={{ width: '100%' }}>
+    <FormControl sx={{ width: '100%', gap: '4px' }}>
       {label && (
         <FormLabel sx={formLabel} required={required}>
           {label}
         </FormLabel>
       )}
       {sublabel && (
-        <FormHelperText sx={labelSubtitle}>{sublabel}</FormHelperText>
+        <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
       )}
 
       <MUISelect

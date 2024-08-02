@@ -2,12 +2,15 @@ import React from 'react';
 import { Action } from '../../../utils/types';
 import { Dropdown } from '../../common/Dropdown';
 import { TextField } from '../../common/Textfield';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { actionStatusOptions } from '../../../utils/constants';
-import { useFontStyles, useInputFieldStyles } from '../../../utils/style';
+import { label } from '../../common/typography';
 
 interface ActionEditProps {
   action: Action;
@@ -23,8 +26,6 @@ export const ActionEdit = ({
   deleteAction,
 }: ActionEditProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { paper } = useInputFieldStyles();
-  const { label } = useFontStyles();
 
   const setActionField = (field: keyof Action, value: string) =>
     updateAction({ ...action, [field]: value });
@@ -35,7 +36,12 @@ export const ActionEdit = ({
   };
 
   return (
-    <Paper className={paper}>
+    <Paper
+      sx={{
+        padding: 2,
+        marginBottom: 2,
+      }}
+    >
       <Grid container style={{ display: 'flex', rowGap: '0.7rem' }}>
         <Grid
           item
@@ -46,7 +52,7 @@ export const ActionEdit = ({
             justifyContent: 'space-between',
           }}
         >
-          <Typography className={label}>
+          <Typography sx={label}>
             {t('dictionary.measure')} {index}
           </Typography>
 

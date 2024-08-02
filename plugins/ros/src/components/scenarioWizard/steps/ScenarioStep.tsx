@@ -1,4 +1,3 @@
-import { Box, Grid, Typography } from '@material-ui/core';
 import { TextField } from '../../common/Textfield';
 import { Dropdown } from '../../common/Dropdown';
 import {
@@ -8,12 +7,19 @@ import {
 import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useFontStyles } from '../../../utils/style';
 import { useScenario } from '../../../contexts/ScenarioContext';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import {
+  formHelperText,
+  formLabel,
+  heading2,
+  subtitle2,
+} from '../../common/typography';
 
 export const ScenarioStep = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { labelSubtitle, label, h2, subtitle2 } = useFontStyles();
   const { scenario, setScenarioValue } = useScenario();
 
   const translatedThreatActors = threatActorsOptions.map(threatActor => {
@@ -34,89 +40,64 @@ export const ScenarioStep = () => {
   );
 
   return (
-    <Grid container>
-      <Grid item xs={12}>
-        <Typography className={h2}>{t('scenarioDrawer.title')}</Typography>
-        <Typography className={subtitle2}>
-          {t('scenarioDrawer.subtitle')}
-        </Typography>
-      </Grid>
+    <Stack spacing={3}>
+      <Box>
+        <Typography sx={heading2}>{t('scenarioDrawer.title')}</Typography>
+        <Typography sx={subtitle2}>{t('scenarioDrawer.subtitle')}</Typography>
+      </Box>
 
-      <Grid item xs={12}>
-        <TextField
-          label={t('dictionary.title')}
-          value={scenario.title}
-          errorMessage={t('scenarioDrawer.titleError')}
-          errorKey="scenario-title"
-          required
-          minRows={1}
-          handleChange={value => setScenarioValue('title', value)}
-        />
-      </Grid>
+      <TextField
+        label={t('dictionary.title')}
+        value={scenario.title}
+        errorMessage={t('scenarioDrawer.titleError')}
+        errorKey="scenario-title"
+        required
+        minRows={1}
+        handleChange={value => setScenarioValue('title', value)}
+      />
 
-      <Grid
-        item
-        md={6}
-        xs={12}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Box>
-          <Typography className={label}>
-            {t('dictionary.threatActors')}
-          </Typography>
-          <Typography className={labelSubtitle}>
+      <Stack direction="row" spacing={2}>
+        <Stack sx={{ width: '100%' }}>
+          <Typography sx={formLabel}>{t('dictionary.threatActors')}</Typography>
+          <Typography sx={formHelperText}>
             {t('scenarioDrawer.threatActorSubtitle')}
           </Typography>
-        </Box>
-        <Dropdown<string[]>
-          selectedValues={scenario.threatActors}
-          options={translatedThreatActors}
-          handleChange={value => setScenarioValue('threatActors', value)}
-          renderSelectedValue={value => {
-            /* @ts-ignore */
-            return t(`threatActors.${value}`);
-          }}
-        />
-      </Grid>
+          <Dropdown<string[]>
+            selectedValues={scenario.threatActors}
+            options={translatedThreatActors}
+            handleChange={value => setScenarioValue('threatActors', value)}
+            renderSelectedValue={value => {
+              /* @ts-ignore */
+              return t(`threatActors.${value}`);
+            }}
+          />
+        </Stack>
 
-      <Grid
-        item
-        md={6}
-        xs={12}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Box>
-          <Typography className={label}>
+        <Stack sx={{ width: '100%' }}>
+          <Typography sx={formLabel}>
             {t('dictionary.vulnerabilities')}
           </Typography>
-          <Typography className={labelSubtitle}>
+          <Typography sx={formHelperText}>
             {t('scenarioDrawer.vulnerabilitySubtitle')}
           </Typography>
-        </Box>
-        <Dropdown<string[]>
-          selectedValues={scenario.vulnerabilities}
-          options={translatedVulnerabilities}
-          handleChange={value => setScenarioValue('vulnerabilities', value)}
-          renderSelectedValue={value => {
-            /* @ts-ignore */
-            return t(`vulnerabilities.${value}`);
-          }}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          label={t('dictionary.description')}
-          value={scenario.description}
-          minRows={4}
-          handleChange={value => setScenarioValue('description', value)}
-        />
-      </Grid>
-    </Grid>
+          <Dropdown<string[]>
+            selectedValues={scenario.vulnerabilities}
+            options={translatedVulnerabilities}
+            handleChange={value => setScenarioValue('vulnerabilities', value)}
+            renderSelectedValue={value => {
+              /* @ts-ignore */
+              return t(`vulnerabilities.${value}`);
+            }}
+          />
+        </Stack>
+      </Stack>
+
+      <TextField
+        label={t('dictionary.description')}
+        value={scenario.description}
+        minRows={4}
+        handleChange={value => setScenarioValue('description', value)}
+      />
+    </Stack>
   );
 };

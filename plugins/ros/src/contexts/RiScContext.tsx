@@ -14,7 +14,7 @@ import { riScRouteRef } from '../routes';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { dtoToRiSc, RiScDTO } from '../utils/DTOs';
 import { useEffectOnce } from 'react-use';
-import { useFetch } from '../utils/hooks';
+import { useAuthenticatedFetch } from '../utils/hooks';
 
 type RiScUpdateStatus = {
   isLoading: boolean;
@@ -56,7 +56,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     response,
     setResponse,
     fetchLatestJSONSchema,
-  } = useFetch();
+  } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
   const [selectedRiSc, setSelectedRiSc] = useState<RiScWithMetadata | null>(

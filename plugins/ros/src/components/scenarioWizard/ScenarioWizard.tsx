@@ -1,6 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Step, StepButton, Stepper, Typography } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import Box from '@mui/material/Box';
+import Step from '@mui/material/Step';
+import StepButton from '@mui/material/StepButton';
+import Stepper from '@mui/material/Stepper';
+import Typography from '@mui/material/Typography';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import { ScenarioStep } from './steps/ScenarioStep';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -9,45 +20,21 @@ import { ActionsStep } from './steps/ActionsStep';
 import Button from '@mui/material/Button';
 import { RiskStep } from './steps/RiskStep';
 import Alert from '@mui/material/Alert';
-import { useFontStyles } from '../../utils/style';
-import { useWizardStyle } from './scenarioWizardStyle';
 import { Spinner } from '../common/Spinner';
 import { CloseConfirmation } from './components/CloseConfirmation';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import { useScenario } from '../../contexts/ScenarioContext';
+import {
+  scenarioWizardSteps,
+  ScenarioWizardSteps,
+  useScenario,
+} from '../../contexts/ScenarioContext';
 import { useRiScs } from '../../contexts/RiScContext';
+import Container from '@mui/material/Container';
+import { heading1, label } from '../common/typography';
 
-const scenarioWizardSteps = [
-  'scenario',
-  'initialRisk',
-  'measure',
-  'restRisk',
-] as const;
-
-export type ScenarioWizardSteps = (typeof scenarioWizardSteps)[number];
-
-interface ScenarioStepperProps {
-  step: ScenarioWizardSteps;
-}
-
-export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
+export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
   const wizardRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { h1, label } = useFontStyles();
   const { isFetching, riScUpdateStatus } = useRiScs();
-
-  const {
-    root,
-    container,
-    header,
-    stepper,
-    steps,
-    button,
-    buttonContainer,
-    buttonContainerRight,
-    saveAndNextButtons,
-  } = useWizardStyle();
 
   const {
     scenario,
@@ -116,115 +103,107 @@ export const ScenarioWizard = ({ step }: ScenarioStepperProps) => {
     }
   };
 
-  const isFirstStep = () => {
-    return scenarioWizardSteps.indexOf(step) === 0;
-  };
+  const isFirstStep = step === scenarioWizardSteps.at(0);
+  const isLastStep = step === scenarioWizardSteps.at(-1);
 
-  const isLastStep = () => {
-    return scenarioWizardSteps.indexOf(step) === scenarioWizardSteps.length - 1;
+  const stepComponents: Record<ScenarioWizardSteps, ReactNode> = {
+    scenario: <ScenarioStep />,
+    initialRisk: (
+      <RiskStep riskType="initial" restEqualsInitial={restEqualsInitial} />
+    ),
+    measure: <ActionsStep />,
+    restRisk: <RiskStep riskType="rest" />,
   };
 
   return (
-    <div ref={wizardRef}>
-      <Box className={root}>
-        <Box className={container}>
-          <Box className={header}>
-            <Typography className={h1}>{t('scenarioDrawer.title')}</Typography>
-            <Button
-              variant="outlined"
-              className={button}
-              onClick={handleCloseStepper}
-            >
-              {t('dictionary.cancel')}
-            </Button>
-          </Box>
-          <Stepper
-            className={stepper}
-            activeStep={scenarioWizardSteps.indexOf(step)}
-            alternativeLabel
-          >
-            {scenarioWizardSteps.map(wizardStep => (
-              <Step key={wizardStep} completed={false}>
-                <StepButton
-                  disabled={false}
-                  className={label}
-                  color="inherit"
-                  onClick={() => {
-                    if (validateScenario()) editScenario(wizardStep);
-                  }}
-                >
-                  {t(`dictionary.${wizardStep}`)}{' '}
-                </StepButton>
-              </Step>
-            ))}
-          </Stepper>
-          <Divider />
-          {isFetching ? (
-            <Spinner size={80} />
-          ) : (
-            <>
-              <Box className={steps}>
-                {
-                  {
-                    [scenarioWizardSteps[0]]: <ScenarioStep />,
-                    [scenarioWizardSteps[1]]: (
-                      <RiskStep
-                        riskType="initial"
-                        restEqualsInitial={restEqualsInitial}
-                      />
-                    ),
-                    [scenarioWizardSteps[2]]: <ActionsStep />,
-                    [scenarioWizardSteps[3]]: <RiskStep riskType="rest" />,
-                  }[step]
-                }
-              </Box>
-              {riScUpdateStatus.isError && (
-                <Alert style={{ marginBottom: '1rem' }} severity="error">
-                  <Typography>{t('dictionary.saveError')}</Typography>
-                </Alert>
-              )}
-              <Box
-                className={
-                  isFirstStep() ? buttonContainerRight : buttonContainer
-                }
-              >
-                {!isFirstStep() && (
-                  <Button
-                    onClick={previousStep}
-                    startIcon={<KeyboardArrowLeft />}
-                  >
-                    {t('dictionary.previous')}
-                  </Button>
-                )}
-                <Box className={saveAndNextButtons}>
-                  <Button
-                    className={button}
-                    variant={isLastStep() ? 'contained' : 'outlined'}
-                    onClick={saveAndClose}
-                    disabled={riScUpdateStatus.isLoading}
-                  >
-                    {t('dictionary.saveAndClose')}
-                  </Button>
-                  {!isLastStep() && (
-                    <Button
-                      variant="contained"
-                      onClick={nextStep}
-                      endIcon={<KeyboardArrowRight />}
-                    >
-                      {t('dictionary.next')}
-                    </Button>
-                  )}
-                </Box>
-              </Box>
-            </>
-          )}
-        </Box>
+    <Container
+      ref={wizardRef}
+      maxWidth="md"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '32px',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography sx={heading1}>{t('scenarioDrawer.title')}</Typography>
+        <Button variant="outlined" onClick={handleCloseStepper}>
+          {t('dictionary.cancel')}
+        </Button>
       </Box>
+      <Stepper
+        activeStep={scenarioWizardSteps.indexOf(step)}
+        alternativeLabel
+        nonLinear
+      >
+        {scenarioWizardSteps.map(wizardStep => (
+          <Step key={wizardStep} completed={false}>
+            <StepButton
+              disabled={false}
+              sx={label}
+              color="inherit"
+              onClick={() => {
+                if (validateScenario()) editScenario(wizardStep);
+              }}
+            >
+              {t(`dictionary.${wizardStep}`)}
+            </StepButton>
+          </Step>
+        ))}
+      </Stepper>
+      <Divider />
+      {isFetching ? (
+        <Spinner size={80} />
+      ) : (
+        <>
+          {stepComponents[step]}
+          {riScUpdateStatus.isError && (
+            <Alert severity="error">
+              <Typography>{t('dictionary.saveError')}</Typography>
+            </Alert>
+          )}
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '16px',
+            }}
+          >
+            {!isFirstStep && (
+              <Button onClick={previousStep} startIcon={<KeyboardArrowLeft />}>
+                {t('dictionary.previous')}
+              </Button>
+            )}
+
+            <Button
+              variant={isLastStep ? 'contained' : 'outlined'}
+              onClick={saveAndClose}
+              disabled={riScUpdateStatus.isLoading}
+              sx={{ marginLeft: 'auto' }}
+            >
+              {t('dictionary.saveAndClose')}
+            </Button>
+            {!isLastStep && (
+              <Button
+                variant="contained"
+                onClick={nextStep}
+                endIcon={<KeyboardArrowRight />}
+              >
+                {t('dictionary.next')}
+              </Button>
+            )}
+          </Box>
+        </>
+      )}
       <CloseConfirmation
         isOpen={showCloseConfirmation}
         close={close}
         save={saveAndClose}
       />
-    </div>
+    </Container>
   );
 };

@@ -1,8 +1,19 @@
 import React from 'react';
-import { Radio, Typography, useTheme } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useTableStyles } from './tableStyles';
+import Typography from '@mui/material/Typography';
+import Radio from '@mui/material/Radio';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { formLabel, subtitle1 } from '../../common/typography';
+import {
+  riskCell,
+  riskLabelCell,
+  riskTable,
+  riskVoidCell,
+} from '../wizardStyles';
+import Table from '@mui/material/Table';
+import TableCell from '@mui/material/TableCell';
+import { SxProps, Theme } from '@mui/material/styles';
 
 interface ConsequenceTableProps {
   selectedValue: number;
@@ -13,54 +24,53 @@ export const ConsequenceTable = ({
   selectedValue,
   handleChange,
 }: ConsequenceTableProps) => {
-  const theme = useTheme();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { table, labelCell, cell, voidCell, radio } = useTableStyles();
+
+  const getRadioLabel = (row: number) => {
+    /* @ts-ignore Because ts can't typecheck strings agains our keys */
+    return `${row}: ${t(`consequenceTable.rows.${row}`)}`;
+  };
 
   const getRadioCell = (row: number) => {
     return (
       <th scope="col">
-        <div className={radio}>
-          <Radio
-            checked={selectedValue === row}
-            onChange={() => handleChange(row)}
-            style={{
-              padding: 0,
-              color:
-                theme.palette.type === 'dark'
-                  ? theme.palette.primary.light
-                  : theme.palette.primary.main,
-            }}
-          />
-          {/* @ts-ignore */}
-          {row}: {t(`consequenceTable.rows.${row}`)}
-        </div>
+        <FormControlLabel
+          sx={{
+            width: '100%',
+          }}
+          control={
+            <Radio
+              checked={selectedValue === row}
+              onChange={() => handleChange(row)}
+              sx={{ marginRight: -0.5 }}
+            />
+          }
+          label={getRadioLabel(row)}
+          componentsProps={{ typography: { sx: formLabel } }}
+        />
       </th>
     );
   };
 
-  const getTextCell = (resourceKey: string, row: number, className: string) => (
-    <td className={className}>
+  const getTextCell = (
+    resourceKey: string,
+    row: number,
+    cellType: SxProps<Theme>,
+  ) => (
+    <TableCell sx={cellType}>
       {/* @ts-ignore */}
       {t(`consequenceTable.cells.${resourceKey}.${row}`)}
-    </td>
+    </TableCell>
   );
 
-  const getRow = (resourceKey: string, cellType: string[]) => (
+  const getRow = (resourceKey: string, cellType: SxProps<Theme>[]) => (
     <tr>
-      <th scope="row" className={labelCell}>
-        <Typography
-          variant="subtitle1"
-          style={{
-            fontWeight: 'bold',
-            paddingBottom: '0.7rem',
-            paddingTop: '0.7rem',
-          }}
-        >
+      <TableCell scope="row" sx={riskLabelCell}>
+        <Typography sx={{ ...subtitle1, lineHeight: 1 }}>
           {/* @ts-ignore */}
           {t(`consequenceTable.columns.${resourceKey}`)}
         </Typography>
-      </th>
+      </TableCell>
       {getTextCell(resourceKey, 1, cellType[0])}
       {getTextCell(resourceKey, 2, cellType[1])}
       {getTextCell(resourceKey, 3, cellType[2])}
@@ -70,21 +80,45 @@ export const ConsequenceTable = ({
   );
 
   return (
-    <table className={table}>
+    <Table sx={riskTable}>
       <tbody>
         <tr>
-          <td className={labelCell} />
+          <td />
           {getRadioCell(1)}
           {getRadioCell(2)}
           {getRadioCell(3)}
           {getRadioCell(4)}
           {getRadioCell(5)}
         </tr>
-        {getRow('economical', [cell, cell, cell, cell, cell])}
-        {getRow('privacy', [cell, cell, cell, cell, voidCell])}
-        {getRow('reputation', [cell, cell, cell, voidCell, voidCell])}
-        {getRow('health', [voidCell, voidCell, cell, cell, cell])}
+        {getRow('economical', [
+          riskCell,
+          riskCell,
+          riskCell,
+          riskCell,
+          riskCell,
+        ])}
+        {getRow('privacy', [
+          riskCell,
+          riskCell,
+          riskCell,
+          riskCell,
+          riskVoidCell,
+        ])}
+        {getRow('reputation', [
+          riskCell,
+          riskCell,
+          riskCell,
+          riskVoidCell,
+          riskVoidCell,
+        ])}
+        {getRow('health', [
+          riskVoidCell,
+          riskVoidCell,
+          riskCell,
+          riskCell,
+          riskCell,
+        ])}
       </tbody>
-    </table>
+    </Table>
   );
 };
