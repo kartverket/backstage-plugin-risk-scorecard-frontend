@@ -21,6 +21,7 @@ import {
   RiScContentResultDTO,
   riScToDTOString,
 } from './DTOs';
+import { latestSupportedVersion } from './constants';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo => {
   const [, org, repo] =
@@ -58,12 +59,9 @@ export const useAuthenticatedFetch = () => {
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
-  const uriToFetchAllRiScs = () => `${riScUri}/all`;
+  const uriToFetchAllRiScs = () => `${riScUri}/${latestSupportedVersion}/all`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
-  const uriToFetchLatestJSONSchema = () =>
-    `${backendUrl}/api/proxy/risc-proxy/api/risc/schemas/latest`;
-
   const [response, setResponse] = useResponse();
 
   const authenticatedFetch = <T>(
@@ -114,25 +112,6 @@ export const useAuthenticatedFetch = () => {
         setResponse({
           statusMessage: 'Failed to fetch risc scorecards',
           status: ProcessingStatus.ErrorWhenFetchingRiScs,
-        });
-      },
-    );
-
-  const fetchLatestJSONSchema = (
-    onSuccess: (response: string) => void,
-    onError?: () => void,
-  ) =>
-    authenticatedFetch<string>(
-      uriToFetchLatestJSONSchema(),
-      'GET',
-      onSuccess,
-      () => {
-        if (onError) onError();
-
-        setResponse({
-          statusMessage:
-            'Failed to fetch JSON schema. Fallback value 4.0 for schema version used',
-          status: ProcessingStatus.ErrorWhenFetchingJSONSchema,
         });
       },
     );
@@ -207,6 +186,5 @@ export const useAuthenticatedFetch = () => {
     publishRiScs,
     response,
     setResponse,
-    fetchLatestJSONSchema,
   };
 };

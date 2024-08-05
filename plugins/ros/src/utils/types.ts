@@ -85,7 +85,6 @@ export enum ProcessingStatus {
   ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
-  ErrorWhenFetchingJSONSchema = 'ErrorWhenFetchingJSONSchema',
 }
 
 export enum ContentStatus {
