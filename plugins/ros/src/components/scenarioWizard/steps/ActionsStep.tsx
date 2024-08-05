@@ -27,7 +27,6 @@ export const ActionsStep = ({
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-
   const { control, register, formState } = formMethods;
   const { fields, append, remove } = useFieldArray({
     control,
@@ -39,7 +38,6 @@ export const ActionsStep = ({
     /* @ts-ignore Because ts can't typecheck strings against our keys */
     renderedValue: t(`actionStatus.${actionStatus}`),
   }));
-
 
   return (
     <Stack spacing={3}>
