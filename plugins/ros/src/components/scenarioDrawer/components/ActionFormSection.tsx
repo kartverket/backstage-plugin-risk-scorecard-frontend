@@ -45,11 +45,6 @@ const ActionFormSection = ({
   return (
     <Paper sx={section}>
       <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
-      <Input
-        {...register('existingActions')}
-        label={t('scenarioDrawer.measureTab.existingMeasure')}
-        minRows={3}
-      />
       {fields.map((field, index) => (
         <Fragment key={field.ID}>
           <Divider variant="fullWidth" />

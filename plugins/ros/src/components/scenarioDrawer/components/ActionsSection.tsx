@@ -6,8 +6,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
-import Box from '@mui/material/Box';
-import { body2, emptyState, heading3, label } from '../../common/typography';
+import { emptyState, heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
 
 export const ActionsSection = () => {
@@ -16,15 +15,7 @@ export const ActionsSection = () => {
 
   return (
     <Paper sx={section}>
-      <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
-      {scenario.existingActions && (
-        <Box>
-          <Typography sx={label}>
-            {t('scenarioDrawer.measureTab.existingMeasure')}
-          </Typography>
-          <Typography sx={body2}>{scenario.existingActions}</Typography>
-        </Box>
-      )}
+      <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
 
       {scenario.actions.length > 0 ? (
         scenario.actions.map((action, index) => (

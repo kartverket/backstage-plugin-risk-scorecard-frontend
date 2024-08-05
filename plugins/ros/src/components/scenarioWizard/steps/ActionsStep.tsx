@@ -27,6 +27,7 @@ export const ActionsStep = ({
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
+
   const { control, register, formState } = formMethods;
   const { fields, append, remove } = useFieldArray({
     control,
@@ -39,6 +40,7 @@ export const ActionsStep = ({
     renderedValue: t(`actionStatus.${actionStatus}`),
   }));
 
+
   return (
     <Stack spacing={3}>
       <Box>
@@ -47,13 +49,6 @@ export const ActionsStep = ({
           {t('scenarioDrawer.measureTab.subtitle')}
         </Typography>
       </Box>
-
-      <Input
-        {...register('existingActions')}
-        label={t('scenarioDrawer.measureTab.existingMeasure')}
-        sublabel={t('scenarioDrawer.measureTab.existingMeasureSubtitle')}
-        minRows={3}
-      />
 
       <Stack spacing={1}>
         <Typography sx={heading3}>

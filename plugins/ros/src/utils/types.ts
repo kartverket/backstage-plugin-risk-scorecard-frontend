@@ -13,6 +13,7 @@ export type RiScWithMetadata = {
   isRequiresNewApproval?: boolean;
   pullRequestUrl?: string;
   schemaVersion?: string;
+  migrationChanges?: boolean;
 };
 
 export type RiSc = {
@@ -39,7 +40,6 @@ export type Scenario = {
   vulnerabilities: string[];
   risk: Risk;
   remainingRisk: Risk;
-  existingActions: string;
   actions: Action[];
 };
 
@@ -53,8 +53,6 @@ export type Action = {
   ID: string;
   title: string;
   description: string;
-  owner: string;
-  deadline: string;
   status: string;
   url: string;
 };

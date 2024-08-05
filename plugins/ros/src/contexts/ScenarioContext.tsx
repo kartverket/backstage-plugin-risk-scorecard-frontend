@@ -11,8 +11,6 @@ export const emptyAction = (): Action => ({
   ID: generateRandomId(),
   title: '',
   description: '',
-  owner: '',
-  deadline: new Date().toISOString().split('T')[0],
   status: 'Not started',
   url: '',
 });
@@ -28,7 +26,6 @@ const emptyScenario = (): Scenario => ({
     probability: 0.01,
     consequence: 1000,
   },
-  existingActions: '',
   actions: [],
   remainingRisk: {
     summary: '',
