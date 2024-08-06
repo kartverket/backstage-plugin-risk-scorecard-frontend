@@ -75,10 +75,7 @@ export const useAuthenticatedFetch = () => {
   ) => {
     Promise.all([
       identityApi.getCredentials(),
-      googleApi.getAccessToken([
-        'https://www.googleapis.com/auth/cloud-platform',
-        'https://www.googleapis.com/auth/cloudkms',
-      ]),
+      googleApi.getAccessToken(['https://www.googleapis.com/auth/cloudkms']),
     ]).then(([idToken, googleAccessToken]) => {
       fetch(uri, {
         method: method,
