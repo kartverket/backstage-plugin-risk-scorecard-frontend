@@ -34,29 +34,10 @@ const emptyScenario = (): Scenario => ({
   },
 });
 
-const emptyFormScenario = (): FormScenario => ({
-  ID: generateRandomId(),
-  title: '',
-  description: '',
-  threatActors: [],
-  vulnerabilities: [],
-  risk: {
-    summary: '',
-    probability: '0.01',
-    consequence: '1000',
-  },
-  actions: [],
-  remainingRisk: {
-    summary: '',
-    probability: '0.01',
-    consequence: '1000',
-  },
-});
-
 type ScenarioDrawerProps = {
   isDrawerOpen: boolean;
 
-  formScenario: FormScenario;
+  emptyFormScenario: (scenario: Scenario) => FormScenario;
   scenario: Scenario;
   submitNewScenario: (
     newScenario: Scenario,
@@ -96,11 +77,23 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
   const { selectedRiSc, updateRiSc } = useRiScs();
   const riSc = selectedRiSc ?? null;
 
-  const [formScenario, _] = useState(emptyFormScenario());
-
   const [scenario, setScenario] = useState(emptyScenario());
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const emptyFormScenario = (initialScenario: Scenario): FormScenario => ({
+    ...initialScenario,
+    risk: {
+      summary: '',
+      probability: '0.01',
+      consequence: '1000',
+    },
+    remainingRisk: {
+      summary: '',
+      probability: '0.01',
+      consequence: '1000',
+    },
+  });
 
   // Open scenario when url changes
   useEffect(() => {
@@ -192,7 +185,7 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
   const openNewScenarioWizard = () => {
     if (riSc) {
       const s = emptyScenario();
-      setScenario(s); // TODO: With react-hook-form this should not be neccessary
+      setScenario(s);
 
       navigate(
         `${getScenarioPath({
@@ -206,7 +199,7 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
   const value = {
     isDrawerOpen,
 
-    formScenario,
+    emptyFormScenario,
     scenario,
     submitNewScenario,
     submitEditedScenarioToRiSc,

@@ -33,12 +33,13 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
   const { isFetching, response, riScUpdateStatus } = useRiScs();
   const [, setSearchParams] = useSearchParams();
 
-  const { formScenario, closeScenarioForm, submitNewScenario } = useScenario();
+  const { scenario, emptyFormScenario, closeScenarioForm, submitNewScenario } =
+    useScenario();
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
   const formMethods = useForm<FormScenario>({
-    defaultValues: formScenario,
+    defaultValues: emptyFormScenario(scenario),
     mode: 'onBlur',
   });
 
