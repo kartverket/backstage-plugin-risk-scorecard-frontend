@@ -1,23 +1,47 @@
 import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import Radio from '@mui/material/Radio';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { formLabel } from '../../common/typography';
-import TableCell from '@mui/material/TableCell';
-import { riskCell, riskTable } from '../wizardStyles';
-import Table from '@mui/material/Table';
+import { riskTable, riskCell, riskRow } from '../wizardStyles';
+import { useController, UseFormReturn } from 'react-hook-form';
+import { FormScenario } from '../../../utils/types';
+import { RiskRadioButton } from './RiskRadioButton';
+import RadioGroup from '@mui/material/RadioGroup';
+import Box from '@mui/material/Box';
+import { probabilityOptions } from '../../../utils/constants';
 
-interface ProbabilityTableProps {
-  selectedValue: number;
-  handleChange: (index: number) => void;
-}
+export const ProbabilityTableInfo = () => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const getContentCell = (row: number) => (
+    <Box sx={riskCell}>
+      {/* @ts-ignore */}
+      {t(`probabilityTable.cells.${row + 1}`)}
+    </Box>
+  );
+
+  return (
+    <Box sx={riskRow}>
+      {getContentCell(1)}
+      {getContentCell(0)}
+      {getContentCell(2)}
+      {getContentCell(3)}
+      {getContentCell(4)}
+    </Box>
+  );
+};
 
 export const ProbabilityTable = ({
-  selectedValue,
-  handleChange,
-}: ProbabilityTableProps) => {
+  formMethods,
+  riskType,
+}: {
+  formMethods: UseFormReturn<FormScenario>;
+  riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
+}) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const { field } = useController({
+    name: `${riskType}.probability`,
+    control: formMethods.control,
+  });
 
   const getRadioLabel = (row: number) => {
     /* @ts-ignore Because ts can't typecheck strings agains our keys */
@@ -25,49 +49,23 @@ export const ProbabilityTable = ({
   };
 
   const getRadioCell = (row: number) => (
-    <th scope="col">
-      <FormControlLabel
-        sx={{
-          width: '100%',
-        }}
-        control={
-          <Radio
-            checked={selectedValue === row}
-            onChange={() => handleChange(row)}
-            sx={{ marginRight: -0.5 }}
-          />
-        }
-        label={getRadioLabel(row)}
-        componentsProps={{ typography: { sx: formLabel } }}
-      />
-    </th>
-  );
-
-  const getContentCell = (row: number) => (
-    <TableCell sx={riskCell}>
-      {/* @ts-ignore */}
-      {t(`probabilityTable.cells.${row}`)}
-    </TableCell>
+    <RiskRadioButton
+      value={probabilityOptions[row]}
+      ref={field.ref}
+      label={getRadioLabel(row + 1)}
+    />
   );
 
   return (
-    <Table sx={riskTable}>
-      <tbody>
-        <tr>
-          {getRadioCell(1)}
-          {getRadioCell(2)}
-          {getRadioCell(3)}
-          {getRadioCell(4)}
-          {getRadioCell(5)}
-        </tr>
-        <tr>
-          {getContentCell(1)}
-          {getContentCell(2)}
-          {getContentCell(3)}
-          {getContentCell(4)}
-          {getContentCell(5)}
-        </tr>
-      </tbody>
-    </Table>
+    <Box sx={riskTable}>
+      <RadioGroup {...field} sx={riskRow}>
+        {getRadioCell(0)}
+        {getRadioCell(1)}
+        {getRadioCell(2)}
+        {getRadioCell(3)}
+        {getRadioCell(4)}
+      </RadioGroup>
+      <ProbabilityTableInfo />
+    </Box>
   );
 };

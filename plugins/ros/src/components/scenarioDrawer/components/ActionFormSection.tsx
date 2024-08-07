@@ -4,7 +4,10 @@ import { Scenario } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Input } from '../../common/Input';
-import { actionStatusOptions } from '../../../utils/constants';
+import {
+  actionStatusOptions,
+  urlRegExpPattern,
+} from '../../../utils/constants';
 import { Select } from '../../common/Select';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -88,8 +91,7 @@ const ActionFormSection = ({
               <Input
                 {...register(`actions.${index}.url`, {
                   pattern: {
-                    value:
-                      /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
+                    value: urlRegExpPattern,
                     message: t('scenarioDrawer.action.urlError'),
                   },
                 })}
