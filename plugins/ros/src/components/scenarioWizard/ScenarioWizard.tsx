@@ -25,7 +25,7 @@ import { useRiScs } from '../../contexts/RiScContext';
 import Container from '@mui/material/Container';
 import { heading1, label } from '../common/typography';
 import { useForm } from 'react-hook-form';
-import { Scenario } from '../../utils/types';
+import { FormScenario, Scenario } from '../../utils/types';
 import { useSearchParams } from 'react-router-dom';
 
 export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
@@ -33,19 +33,40 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
   const { isFetching, response, riScUpdateStatus } = useRiScs();
   const [, setSearchParams] = useSearchParams();
 
-  const { scenario, closeScenarioForm, submitNewScenario } = useScenario();
+  const { formScenario, closeScenarioForm, submitNewScenario } = useScenario();
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
-  const formMethods = useForm<Scenario>({
-    defaultValues: scenario,
+  const formMethods = useForm<FormScenario>({
+    defaultValues: formScenario,
     mode: 'onBlur',
   });
 
   const { isDirty, isValid } = formMethods.formState;
 
-  const onSubmit = formMethods.handleSubmit((data: Scenario) => {
-    submitNewScenario(data, () => closeScenarioForm());
+  const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
+    const submitScenario: Scenario = {
+      ...data,
+      risk: {
+        ...data.risk,
+        probability: Number(data.risk.probability),
+        consequence: Number(data.risk.consequence),
+      },
+      remainingRisk: {
+        ...data.remainingRisk,
+        probability: Number(data.remainingRisk.probability),
+        consequence: Number(data.remainingRisk.consequence),
+      },
+    };
+
+    formMethods.trigger();
+
+    if (isValid) {
+      // submitNewScenario(submitScenario, () => closeScenarioForm());
+      console.log('Lagret');
+    } else {
+      // formMethods.trigger();
+    }
   });
 
   const close = useCallback(() => {

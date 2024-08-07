@@ -12,7 +12,7 @@ import {
 } from '../wizardStyles';
 import { SxProps, Theme } from '@mui/material/styles';
 import { useController, UseFormReturn } from 'react-hook-form';
-import { Scenario } from '../../../utils/types';
+import { FormScenario, Scenario } from '../../../utils/types';
 import { RiskRadioButton } from './RiskRadioButton';
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -92,8 +92,8 @@ export const ConsequenceTable = ({
   formMethods,
   riskType,
 }: {
-  formMethods: UseFormReturn<Scenario>;
-  riskType: keyof Pick<Scenario, 'risk' | 'remainingRisk'>;
+  formMethods: UseFormReturn<FormScenario>;
+  riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 

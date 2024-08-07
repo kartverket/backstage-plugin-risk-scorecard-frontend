@@ -3,7 +3,7 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { riskTable, riskCell, riskRow } from '../wizardStyles';
 import { useController, UseFormReturn } from 'react-hook-form';
-import { Scenario } from '../../../utils/types';
+import { FormScenario, Scenario } from '../../../utils/types';
 import { RiskRadioButton } from './RiskRadioButton';
 import RadioGroup from '@mui/material/RadioGroup';
 import Box from '@mui/material/Box';
@@ -33,8 +33,8 @@ export const ProbabilityTable = ({
   formMethods,
   riskType,
 }: {
-  formMethods: UseFormReturn<Scenario>;
-  riskType: keyof Pick<Scenario, 'risk' | 'remainingRisk'>;
+  formMethods: UseFormReturn<FormScenario>;
+  riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 

@@ -10,14 +10,14 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { heading2, subtitle2 } from '../../common/typography';
 import { UseFormReturn } from 'react-hook-form';
-import { Scenario } from '../../../utils/types';
+import { FormScenario, Scenario } from '../../../utils/types';
 import { Input } from '../../common/Input';
 import { Select } from '../../common/Select';
 
 export const ScenarioStep = ({
   formMethods,
 }: {
-  formMethods: UseFormReturn<Scenario>;
+  formMethods: UseFormReturn<FormScenario>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -56,7 +56,7 @@ export const ScenarioStep = ({
       />
 
       <Stack direction="row" spacing={2}>
-        <Select<Scenario>
+        <Select<FormScenario>
           multiple
           control={control}
           name="threatActors"
@@ -66,7 +66,7 @@ export const ScenarioStep = ({
           options={translatedThreatActors}
         />
 
-        <Select<Scenario>
+        <Select<FormScenario>
           multiple
           control={control}
           name="vulnerabilities"

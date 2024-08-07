@@ -9,7 +9,7 @@ import { emptyAction } from '../../../contexts/ScenarioContext';
 import { heading2, heading3, label, subtitle2 } from '../../common/typography';
 import Box from '@mui/material/Box';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import { Scenario } from '../../../utils/types';
+import { FormScenario, Scenario } from '../../../utils/types';
 import { Input } from '../../common/Input';
 import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -23,7 +23,7 @@ import { Select } from '../../common/Select';
 export const ActionsStep = ({
   formMethods,
 }: {
-  formMethods: UseFormReturn<Scenario>;
+  formMethods: UseFormReturn<FormScenario>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -112,7 +112,7 @@ export const ActionsStep = ({
                   helperText={formState.errors.actions?.[index]?.url?.message}
                   error={!!formState.errors.actions?.[index]?.url?.message}
                 />
-                <Select<Scenario>
+                <Select<FormScenario>
                   required
                   control={control}
                   name={`actions.${index}.status`}

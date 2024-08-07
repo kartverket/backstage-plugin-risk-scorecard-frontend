@@ -8,11 +8,11 @@ import { ConsequenceTable } from '../components/ConsequenceTable';
 import { heading2, heading3, subtitle2 } from '../../common/typography';
 import Stack from '@mui/material/Stack';
 import { UseFormReturn } from 'react-hook-form';
-import { Scenario } from '../../../utils/types';
+import { FormScenario } from '../../../utils/types';
 
 interface RiskStepProps {
-  riskType: keyof Pick<Scenario, 'risk' | 'remainingRisk'>;
-  formMethods: UseFormReturn<Scenario>;
+  riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
+  formMethods: UseFormReturn<FormScenario>;
 }
 
 export const RiskStep = ({ formMethods, riskType }: RiskStepProps) => {

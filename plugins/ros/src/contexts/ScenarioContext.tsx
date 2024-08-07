@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import { Action, Scenario } from '../utils/types';
+import { Action, FormScenario, Scenario } from '../utils/types';
 import { riScRouteRef, scenarioRouteRef } from '../routes';
 import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
@@ -34,9 +34,29 @@ const emptyScenario = (): Scenario => ({
   },
 });
 
+const emptyFormScenario = (): FormScenario => ({
+  ID: generateRandomId(),
+  title: '',
+  description: '',
+  threatActors: [],
+  vulnerabilities: [],
+  risk: {
+    summary: '',
+    probability: '0.01',
+    consequence: '1000',
+  },
+  actions: [],
+  remainingRisk: {
+    summary: '',
+    probability: '0.01',
+    consequence: '1000',
+  },
+});
+
 type ScenarioDrawerProps = {
   isDrawerOpen: boolean;
 
+  formScenario: FormScenario;
   scenario: Scenario;
   submitNewScenario: (
     newScenario: Scenario,
@@ -75,6 +95,8 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
 
   const { selectedRiSc, updateRiSc } = useRiScs();
   const riSc = selectedRiSc ?? null;
+
+  const [formScenario, _] = useState(emptyFormScenario());
 
   const [scenario, setScenario] = useState(emptyScenario());
 
@@ -170,7 +192,7 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
   const openNewScenarioWizard = () => {
     if (riSc) {
       const s = emptyScenario();
-      setScenario(s);
+      setScenario(s); // TODO: With react-hook-form this should not be neccessary
 
       navigate(
         `${getScenarioPath({
@@ -184,6 +206,7 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
   const value = {
     isDrawerOpen,
 
+    formScenario,
     scenario,
     submitNewScenario,
     submitEditedScenarioToRiSc,
