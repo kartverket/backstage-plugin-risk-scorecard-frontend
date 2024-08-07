@@ -59,7 +59,7 @@ export const useAuthenticatedFetch = () => {
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
-  const uriToFetchAllRiScs = () => `${riScUri}/${latestSupportedVersion}/all`;
+  const uriToFetchAllRiScs = `${riScUri}/all?latestSupportedVersion=${latestSupportedVersion}`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
   const [response, setResponse] = useResponse();
@@ -104,7 +104,7 @@ export const useAuthenticatedFetch = () => {
     onError?: () => void,
   ) =>
     authenticatedFetch<RiScContentResultDTO[]>(
-      uriToFetchAllRiScs(),
+      uriToFetchAllRiScs,
       'GET',
       onSuccess,
       () => {
