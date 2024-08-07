@@ -1,23 +1,4 @@
-import { MenuProps } from '@material-ui/core/Menu';
-import { makeStyles, Theme } from '@material-ui/core';
-
-export const menuProps: Partial<MenuProps> = {
-  PaperProps: {
-    style: {
-      maxHeight: 255,
-    },
-  },
-  getContentAnchorEl: null,
-  anchorOrigin: {
-    vertical: 'bottom',
-    horizontal: 'center',
-  },
-  transformOrigin: {
-    vertical: 'top',
-    horizontal: 'center',
-  },
-  variant: 'menu',
-};
+import { makeStyles } from '@material-ui/core';
 
 export const useFontStyles = makeStyles(theme => ({
   h1: {
@@ -77,35 +58,3 @@ export const useFontStyles = makeStyles(theme => ({
     marginTop: '-0.2rem',
   },
 }));
-
-export const useInputFieldStyles = makeStyles((theme: Theme) => ({
-  formControl: {
-    width: '100%',
-  },
-  formLabel: {
-    fontSize: theme.spacing(1.75),
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    marginBottom: theme.spacing(1),
-    color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
-  },
-  root: {
-    '&.Mui-disabled': {
-      color: theme.palette.type === 'dark' ? '#FFFFFF80' : '#757575',
-    },
-  },
-}));
-
-export const useSpinnerStyles = makeStyles({
-  container: {
-    display: 'flex',
-    minWidth: '100wh',
-    height: '100vh',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  spinner: {
-    display: 'flex',
-    marginTop: '200px',
-  },
-});
