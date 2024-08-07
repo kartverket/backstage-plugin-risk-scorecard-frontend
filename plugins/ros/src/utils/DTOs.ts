@@ -34,6 +34,7 @@ export type PublishRiScResultDTO = {
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;
+  migrationChanges?: boolean;
 } & ContentRiScResultDTO;
 
 export type RiScDTO = {
@@ -53,7 +54,6 @@ type ScenarioDTO = {
     threatActors: string[];
     vulnerabilities: string[];
     risk: Risk;
-    existingActions?: string;
     actions: ActionsDTO[];
     remainingRisk: Risk;
   };
@@ -64,8 +64,6 @@ type ActionsDTO = {
   action: {
     ID: string;
     description: string;
-    owner: string;
-    deadline: string;
     status: string;
     url: string;
   };
@@ -84,7 +82,6 @@ function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
   return {
     ...scenarioDTO.scenario,
     title: scenarioDTO.title,
-    existingActions: scenarioDTO.scenario.existingActions || '',
     actions: scenarioDTO.scenario.actions.map(dtoToAction),
   };
 }
@@ -136,10 +133,6 @@ function scenarioToDTO(scenario: Scenario): ScenarioDTO {
       threatActors: scenario.threatActors,
       vulnerabilities: scenario.vulnerabilities,
       risk: scenario.risk,
-      existingActions:
-        scenario.existingActions.length === 0
-          ? undefined
-          : scenario.existingActions,
       actions: scenario.actions.map(actionToDTO),
       remainingRisk: scenario.remainingRisk,
     },
@@ -152,8 +145,6 @@ function actionToDTO(action: Action): ActionsDTO {
     action: {
       ID: action.ID,
       description: action.description,
-      owner: action.owner,
-      deadline: action.deadline,
       status: action.status,
       url: action.url,
     },

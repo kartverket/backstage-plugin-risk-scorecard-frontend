@@ -75,10 +75,7 @@ export const useAuthenticatedFetch = () => {
   ) => {
     Promise.all([
       identityApi.getCredentials(),
-      googleApi.getAccessToken([
-        'https://www.googleapis.com/auth/cloud-platform',
-        'https://www.googleapis.com/auth/cloudkms',
-      ]),
+      googleApi.getAccessToken(['https://www.googleapis.com/auth/cloudkms']),
     ]).then(([idToken, googleAccessToken]) => {
       fetch(uri, {
         method: method,
@@ -128,9 +125,10 @@ export const useAuthenticatedFetch = () => {
       onSuccess,
       () => {
         if (onError) onError();
+
         setResponse({
           statusMessage:
-            'Failed to fetch JSON schema. Fallback value 3.3 for schema version used',
+            'Failed to fetch JSON schema. Fallback value 4.0 for schema version used',
           status: ProcessingStatus.ErrorWhenFetchingJSONSchema,
         });
       },

@@ -16,6 +16,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { dialogActions } from '../../common/mixins';
 import { InfoCard } from '@backstage/core-components';
 import { PullRequestSvg } from '../../common/Icons';
+import { useRiScs } from '../../../contexts/RiScContext';
+import { subtitle1 } from '../../common/typography';
 
 interface RiScPublishDialogProps {
   openDialog: boolean;
@@ -70,30 +72,90 @@ const RiScPublishDialog = ({
   );
 };
 
+interface RiScMigrationDialogProps {
+  openDialog: boolean;
+  handleCancel: () => void;
+  handleUpdate: () => void;
+}
+
+const RiScMigrationDialog = ({
+  openDialog,
+  handleCancel,
+  handleUpdate,
+}: RiScMigrationDialogProps): ReactComponentElement<any> => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const [saveMigration, setSaveMigration] = useState<boolean>(false);
+
+  const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSaveMigration(event.target.checked);
+  };
+
+  return (
+    <Dialog open={openDialog}>
+      <DialogTitle>{t('migrationDialog.title')}</DialogTitle>
+      <DialogContent>
+        <Alert severity="info" icon={false}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={saveMigration}
+                onChange={handleCheckboxInput}
+              />
+            }
+            label={t('migrationDialog.checkboxLabel')}
+          />
+        </Alert>
+      </DialogContent>
+      <DialogActions sx={dialogActions}>
+        <Button
+          variant="contained"
+          onClick={handleUpdate}
+          disabled={!saveMigration}
+        >
+          {t('dictionary.confirm')}
+        </Button>
+        <Button variant="outlined" color="primary" onClick={handleCancel}>
+          {t('dictionary.cancel')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 const RosAcceptance = ({
   status,
+  migration,
 }: {
   status: RiScStatus;
+  migration?: boolean;
 }): React.JSX.Element => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  if (migration) {
+    return (
+      <Typography paragraph sx={subtitle1}>
+        {t('rosStatus.statusBadge.migration')}
+      </Typography>
+    );
+  }
   switch (status) {
     case RiScStatus.Draft:
       return (
-        <Typography paragraph sx={{ fontWeight: 700 }} variant="subtitle1">
+        <Typography paragraph sx={subtitle1}>
           {t('rosStatus.statusBadge.missing')}
         </Typography>
       );
     case RiScStatus.SentForApproval:
     case RiScStatus.Published:
       return (
-        <Typography paragraph sx={{ fontWeight: 700 }} variant="subtitle1">
+        <Typography paragraph sx={subtitle1}>
           <CheckIcon fontSize="medium" sx={{ transform: 'translateY(5px)' }} />{' '}
           {t('rosStatus.statusBadge.approved')}
         </Typography>
       );
     default:
       return (
-        <Typography paragraph variant="subtitle1">
+        <Typography paragraph sx={subtitle1}>
           {t('rosStatus.statusBadge.error')}
         </Typography>
       );
@@ -114,41 +176,70 @@ export const RiScStatusComponent = ({
   const [publishRiScDialogIsOpen, setPublishRiScDialogIsOpen] =
     useState<boolean>(false);
 
+  const [migrationDialogIsOpen, setMigrationDialogIsOpen] =
+    useState<boolean>(false);
+
+  const { updateRiSc } = useRiScs();
+
   const handleApproveAndPublish = () => {
     publishRiScFn();
     setPublishRiScDialogIsOpen(false);
+  };
+
+  const handleUpdate = () => {
+    updateRiSc(selectedRiSc.content);
+    setMigrationDialogIsOpen(false);
   };
 
   return (
     <InfoCard>
       <Typography variant="h5">Status</Typography>
 
-      <RosAcceptance status={selectedRiSc.status} />
-      {selectedRiSc.status === RiScStatus.SentForApproval && (
-        <Typography sx={{ fontWeight: 700 }} paragraph variant="subtitle1">
-          <PullRequestSvg />
-          {t('rosStatus.prStatus')}
-          <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
-            Github
-          </Link>
-        </Typography>
-      )}
-
-      {selectedRiSc.status === RiScStatus.Draft && (
+      <RosAcceptance
+        status={selectedRiSc.status}
+        migration={selectedRiSc.migrationChanges}
+      />
+      {selectedRiSc.status === RiScStatus.SentForApproval &&
+        !selectedRiSc.migrationChanges && (
+          <Typography sx={{ fontWeight: 700 }} paragraph variant="subtitle1">
+            <PullRequestSvg />
+            {t('rosStatus.prStatus')}
+            <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
+              Github
+            </Link>
+          </Typography>
+        )}
+      {selectedRiSc.status === RiScStatus.Draft &&
+        !selectedRiSc.migrationChanges && (
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setPublishRiScDialogIsOpen(!publishRiScDialogIsOpen)}
+            disabled={selectedRiSc.status !== RiScStatus.Draft}
+            sx={{ display: 'block', marginLeft: 'auto' }}
+          >
+            {t('rosStatus.approveButton')}
+          </Button>
+        )}
+      {selectedRiSc.migrationChanges && (
         <Button
           color="primary"
           variant="contained"
-          onClick={() => setPublishRiScDialogIsOpen(!publishRiScDialogIsOpen)}
-          disabled={selectedRiSc.status !== RiScStatus.Draft}
+          onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
           sx={{ display: 'block', marginLeft: 'auto' }}
         >
-          {t('rosStatus.approveButton')}
+          <Typography variant="button">{t('rosStatus.saveButton')}</Typography>
         </Button>
       )}
       <RiScPublishDialog
         openDialog={publishRiScDialogIsOpen}
         handlePublish={handleApproveAndPublish}
         handleCancel={() => setPublishRiScDialogIsOpen(false)}
+      />
+      <RiScMigrationDialog
+        openDialog={migrationDialogIsOpen}
+        handleUpdate={handleUpdate}
+        handleCancel={() => setMigrationDialogIsOpen(false)}
       />
     </InfoCard>
   );
