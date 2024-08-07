@@ -9,7 +9,7 @@ import { emptyAction } from '../../../contexts/ScenarioContext';
 import { heading2, heading3, label, subtitle2 } from '../../common/typography';
 import Box from '@mui/material/Box';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import { FormScenario, Scenario } from '../../../utils/types';
+import { FormScenario } from '../../../utils/types';
 import { Input } from '../../common/Input';
 import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';

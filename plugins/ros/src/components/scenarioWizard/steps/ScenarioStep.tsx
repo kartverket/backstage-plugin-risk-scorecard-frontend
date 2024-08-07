@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { heading2, subtitle2 } from '../../common/typography';
 import { UseFormReturn } from 'react-hook-form';
-import { FormScenario, Scenario } from '../../../utils/types';
+import { FormScenario } from '../../../utils/types';
 import { Input } from '../../common/Input';
 import { Select } from '../../common/Select';
 

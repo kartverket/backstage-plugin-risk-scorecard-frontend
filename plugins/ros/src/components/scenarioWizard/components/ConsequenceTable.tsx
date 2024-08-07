@@ -12,7 +12,7 @@ import {
 } from '../wizardStyles';
 import { SxProps, Theme } from '@mui/material/styles';
 import { useController, UseFormReturn } from 'react-hook-form';
-import { FormScenario, Scenario } from '../../../utils/types';
+import { FormScenario } from '../../../utils/types';
 import { RiskRadioButton } from './RiskRadioButton';
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';

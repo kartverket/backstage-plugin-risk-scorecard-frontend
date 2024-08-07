@@ -62,10 +62,9 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
     formMethods.trigger();
 
     if (isValid) {
-      // submitNewScenario(submitScenario, () => closeScenarioForm());
-      console.log('Lagret');
+      submitNewScenario(submitScenario, () => closeScenarioForm());
     } else {
-      // formMethods.trigger();
+      formMethods.trigger();
     }
   });
 
