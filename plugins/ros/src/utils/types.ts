@@ -101,4 +101,8 @@ type FormRisk = Modify<
   string
 >;
 
-export type FormScenario = Modify<Modify<Scenario, 'risk', FormRisk>, 'remainingRisk', FormRisk>;
+export type FormScenario = Modify<
+  Modify<Scenario, 'risk', FormRisk>,
+  'remainingRisk',
+  FormRisk
+>;
