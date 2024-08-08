@@ -1,5 +1,3 @@
-import { TextField } from '../../common/Textfield';
-import { Dropdown } from '../../common/Dropdown';
 import {
   threatActorsOptions,
   vulnerabilitiesOptions,
@@ -7,36 +5,40 @@ import {
 import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useScenario } from '../../../contexts/ScenarioContext';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import {
-  formHelperText,
-  formLabel,
-  heading2,
-  subtitle2,
-} from '../../common/typography';
+import { heading2, subtitle2 } from '../../common/typography';
+import { UseFormReturn } from 'react-hook-form';
+import { FormScenario } from '../../../utils/types';
+import { Input } from '../../common/Input';
+import { Select } from '../../common/Select';
 
-export const ScenarioStep = () => {
+export const ScenarioStep = ({
+  formMethods,
+}: {
+  formMethods: UseFormReturn<FormScenario>;
+}) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { scenario, setScenarioValue } = useScenario();
 
-  const translatedThreatActors = threatActorsOptions.map(threatActor => {
-    return {
-      value: threatActor,
-      /* @ts-ignore Because ts can't typecheck strings agains our keys */
-      renderedValue: t(`threatActors.${threatActor}`),
-    };
-  });
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = formMethods;
+
+  const translatedThreatActors = threatActorsOptions.map(threatActor => ({
+    value: threatActor,
+    /* @ts-ignore Because ts can't typecheck strings against our keys */
+    renderedValue: t(`threatActors.${threatActor}`),
+  }));
+
   const translatedVulnerabilities = vulnerabilitiesOptions.map(
-    vulnerability => {
-      return {
-        value: vulnerability,
-        /* @ts-ignore Because ts can't typecheck strings agains our keys */
-        renderedValue: t(`vulnerabilities.${vulnerability}`),
-      };
-    },
+    vulnerability => ({
+      value: vulnerability,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(`vulnerabilities.${vulnerability}`),
+    }),
   );
 
   return (
@@ -46,57 +48,39 @@ export const ScenarioStep = () => {
         <Typography sx={subtitle2}>{t('scenarioDrawer.subtitle')}</Typography>
       </Box>
 
-      <TextField
-        label={t('dictionary.title')}
-        value={scenario.title}
-        errorMessage={t('scenarioDrawer.titleError')}
-        errorKey="scenario-title"
+      <Input
         required
-        minRows={1}
-        handleChange={value => setScenarioValue('title', value)}
+        {...register('title', { required: true })}
+        error={errors.title !== undefined}
+        label={t('dictionary.title')}
       />
 
       <Stack direction="row" spacing={2}>
-        <Stack sx={{ width: '100%' }}>
-          <Typography sx={formLabel}>{t('dictionary.threatActors')}</Typography>
-          <Typography sx={formHelperText}>
-            {t('scenarioDrawer.threatActorSubtitle')}
-          </Typography>
-          <Dropdown<string[]>
-            selectedValues={scenario.threatActors}
-            options={translatedThreatActors}
-            handleChange={value => setScenarioValue('threatActors', value)}
-            renderSelectedValue={value => {
-              /* @ts-ignore */
-              return t(`threatActors.${value}`);
-            }}
-          />
-        </Stack>
+        <Select<FormScenario>
+          multiple
+          control={control}
+          name="threatActors"
+          label={t('dictionary.threatActors')}
+          sublabel={t('scenarioDrawer.threatActorSubtitle')}
+          labelTranslationKey="threatActors"
+          options={translatedThreatActors}
+        />
 
-        <Stack sx={{ width: '100%' }}>
-          <Typography sx={formLabel}>
-            {t('dictionary.vulnerabilities')}
-          </Typography>
-          <Typography sx={formHelperText}>
-            {t('scenarioDrawer.vulnerabilitySubtitle')}
-          </Typography>
-          <Dropdown<string[]>
-            selectedValues={scenario.vulnerabilities}
-            options={translatedVulnerabilities}
-            handleChange={value => setScenarioValue('vulnerabilities', value)}
-            renderSelectedValue={value => {
-              /* @ts-ignore */
-              return t(`vulnerabilities.${value}`);
-            }}
-          />
-        </Stack>
+        <Select<FormScenario>
+          multiple
+          control={control}
+          name="vulnerabilities"
+          label={t('dictionary.vulnerabilities')}
+          sublabel={t('scenarioDrawer.vulnerabilitySubtitle')}
+          labelTranslationKey="vulnerabilities"
+          options={translatedVulnerabilities}
+        />
       </Stack>
 
-      <TextField
+      <Input
+        {...register('description')}
         label={t('dictionary.description')}
-        value={scenario.description}
         minRows={4}
-        handleChange={value => setScenarioValue('description', value)}
       />
     </Stack>
   );

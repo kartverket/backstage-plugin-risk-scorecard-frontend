@@ -42,11 +42,11 @@ export const RiskMatrixScenarioCount = ({
   } = useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const { openScenario } = useScenario();
+  const { openScenarioDrawer } = useScenario();
 
   const handleScenarioClick = (ID: string) => {
     setTooltipOpen(false);
-    openScenario(ID);
+    openScenarioDrawer(ID);
   };
 
   const scenarios = riSc.scenarios.filter(

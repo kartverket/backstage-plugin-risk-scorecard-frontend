@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import Box from '@mui/material/Box';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
@@ -30,76 +24,83 @@ import {
 import { useRiScs } from '../../contexts/RiScContext';
 import Container from '@mui/material/Container';
 import { heading1, label } from '../common/typography';
+import { useForm } from 'react-hook-form';
+import { FormScenario, Scenario } from '../../utils/types';
+import { useSearchParams } from 'react-router-dom';
 
 export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
-  const wizardRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { isFetching, riScUpdateStatus } = useRiScs();
+  const { isFetching, response, riScUpdateStatus } = useRiScs();
+  const [, setSearchParams] = useSearchParams();
 
-  const {
-    scenario,
-    originalScenario,
-    saveScenario,
-    closeScenario,
-    editScenario,
-    validateScenario,
-    hasFormErrors,
-  } = useScenario();
+  const { scenario, emptyFormScenario, closeScenarioForm, submitNewScenario } =
+    useScenario();
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
-  const [restEqualsInitial, setRestEqualsInitial] = useState(true);
-  // This boolean prevents the wizard from closing when opening it with a newly successfull request.
-  const [canCloseIfSuccessfull, setCanCloseIfSuccessfull] = useState(false);
 
-  useEffect(() => {
-    if (step === 'restRisk') setRestEqualsInitial(false);
-  }, [step]);
+  const formMethods = useForm<FormScenario>({
+    defaultValues: emptyFormScenario(scenario),
+    mode: 'onBlur',
+  });
+
+  const { isDirty, isValid } = formMethods.formState;
+
+  const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
+    const submitScenario: Scenario = {
+      ...data,
+      risk: {
+        ...data.risk,
+        probability: Number(data.risk.probability),
+        consequence: Number(data.risk.consequence),
+      },
+      remainingRisk: {
+        ...data.remainingRisk,
+        probability: Number(data.remainingRisk.probability),
+        consequence: Number(data.remainingRisk.consequence),
+      },
+    };
+
+    formMethods.trigger();
+
+    if (isValid) {
+      submitNewScenario(submitScenario, () => closeScenarioForm());
+    } else {
+      formMethods.trigger();
+    }
+  });
 
   const close = useCallback(() => {
-    closeScenario();
+    closeScenarioForm();
     setShowCloseConfirmation(false);
-  }, [closeScenario]);
-
-  useEffect(() => {
-    if (riScUpdateStatus.isSuccess && canCloseIfSuccessfull) {
-      close();
-    } else if (riScUpdateStatus.isError && wizardRef.current) {
-      setShowCloseConfirmation(false);
-      wizardRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
-  }, [canCloseIfSuccessfull, close, riScUpdateStatus]);
-
-  const saveAndClose = () => {
-    if (hasFormErrors()) {
-      return;
-    }
-
-    saveScenario();
-    setCanCloseIfSuccessfull(true);
-  };
+  }, [closeScenarioForm]);
 
   const handleCloseStepper = () => {
-    if (JSON.stringify(scenario) !== JSON.stringify(originalScenario)) {
+    if (isDirty) {
       setShowCloseConfirmation(true);
     } else {
       close();
     }
   };
 
+  const selectStep = (newStep: ScenarioWizardSteps) => {
+    if (isValid) {
+      setSearchParams({ step: newStep });
+    } else {
+      formMethods.trigger();
+    }
+  };
+
   const nextStep = () => {
-    const isValidScenario = validateScenario();
-    if (isValidScenario) {
-      const currentIndex = scenarioWizardSteps.indexOf(step);
-      if (currentIndex < scenarioWizardSteps.length - 1) {
-        editScenario(scenarioWizardSteps[currentIndex + 1]);
-      }
+    const currentIndex = scenarioWizardSteps.indexOf(step);
+    if (currentIndex < scenarioWizardSteps.length - 1) {
+      selectStep(scenarioWizardSteps[currentIndex + 1]);
     }
   };
 
   const previousStep = () => {
     const currentIndex = scenarioWizardSteps.indexOf(step);
     if (currentIndex > 0) {
-      editScenario(scenarioWizardSteps[currentIndex - 1]);
+      selectStep(scenarioWizardSteps[currentIndex - 1]);
     }
   };
 
@@ -107,17 +108,14 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
   const isLastStep = step === scenarioWizardSteps.at(-1);
 
   const stepComponents: Record<ScenarioWizardSteps, ReactNode> = {
-    scenario: <ScenarioStep />,
-    initialRisk: (
-      <RiskStep riskType="initial" restEqualsInitial={restEqualsInitial} />
-    ),
-    measure: <ActionsStep />,
-    restRisk: <RiskStep riskType="rest" />,
+    scenario: <ScenarioStep formMethods={formMethods} />,
+    initialRisk: <RiskStep formMethods={formMethods} riskType="risk" />,
+    measure: <ActionsStep formMethods={formMethods} />,
+    restRisk: <RiskStep formMethods={formMethods} riskType="remainingRisk" />,
   };
 
   return (
     <Container
-      ref={wizardRef}
       maxWidth="md"
       sx={{
         display: 'flex',
@@ -143,14 +141,7 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
       >
         {scenarioWizardSteps.map(wizardStep => (
           <Step key={wizardStep} completed={false}>
-            <StepButton
-              disabled={false}
-              sx={label}
-              color="inherit"
-              onClick={() => {
-                if (validateScenario()) editScenario(wizardStep);
-              }}
-            >
+            <StepButton sx={label} onClick={() => selectStep(wizardStep)}>
               {t(`dictionary.${wizardStep}`)}
             </StepButton>
           </Step>
@@ -162,9 +153,11 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
       ) : (
         <>
           {stepComponents[step]}
-          {riScUpdateStatus.isError && (
+
+          {response && riScUpdateStatus.isError && (
             <Alert severity="error">
               <Typography>{t('dictionary.saveError')}</Typography>
+              <Typography>{response.statusMessage}</Typography>
             </Alert>
           )}
           <Box
@@ -181,8 +174,8 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
 
             <Button
               variant={isLastStep ? 'contained' : 'outlined'}
-              onClick={saveAndClose}
-              disabled={riScUpdateStatus.isLoading}
+              onClick={onSubmit}
+              disabled={!isDirty || riScUpdateStatus.isLoading}
               sx={{ marginLeft: 'auto' }}
             >
               {t('dictionary.saveAndClose')}
@@ -202,7 +195,7 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
       <CloseConfirmation
         isOpen={showCloseConfirmation}
         close={close}
-        save={saveAndClose}
+        save={onSubmit}
       />
     </Container>
   );

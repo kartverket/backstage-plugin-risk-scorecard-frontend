@@ -50,7 +50,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
         migration:
-          'There has been done changes to the RiSc, as a result of a migration to the newest version. The changes can be both deletion and modification of information. If you want to keep the changes and update to the newest version, click "Save changes". Note that if you make other changes and save, this will also save the changes from the migration.', // Automatisk migrering av ROS
+          'There has been done changes to the risk scorecard, as a result of a migration to the newest version. The changes can be both deletion and modification of information. If you want to keep the changes and update to the newest version, click "Save changes". Note that if you make other changes and save, this will also save the changes from the migration.', // Automatisk migrering av ROS
       },
       prStatus: ' Pending pull request in ', // Avventer godkjenning av PR i Github
       approveButton: 'Accept risks', // Godkjenn ROS
@@ -330,7 +330,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
           'rosStatus.statusBadge.migration':
-            'Det har blitt gjort endringer i ROSen, som følge av en migrering til nyeste versjon. Endringene kan våre både sletting og endring av informsasjon. Hvis du vil beholde endringene og oppdatere til nyeste versjon, klikk "Lagre endringer". Merk at dersom du gjør andre endringer og lagrer, vil dette føre til at endringene gjort i forbindelse med migreringen blir lagret.',
+            'Det har blitt gjort endringer i risiko- og sårbarhetsanalysen, som følge av en migrering til nyeste versjon. Endringene kan være både sletting og endring av informsasjon. Hvis du vil beholde endringene og oppdatere til nyeste versjon, klikk "Lagre endringer". Merk at dersom du gjør andre endringer og lagrer, vil dette føre til at endringene gjort i forbindelse med migreringen blir lagret.',
           'rosStatus.prStatus': ' Avventer godkjenning av pull request i ',
           'rosStatus.approveButton': 'Godkjenn ROS',
           'rosStatus.saveButton': 'Lagre endringer',

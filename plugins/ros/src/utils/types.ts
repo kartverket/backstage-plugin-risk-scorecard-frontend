@@ -93,3 +93,15 @@ export enum ContentStatus {
   FileNotFound = 'FileNotFound',
   DecryptionFailed = 'DecryptionFailed',
 }
+
+type FormRisk = Modify<
+  Modify<Risk, 'probability', string>,
+  'consequence',
+  string
+>;
+
+export type FormScenario = Modify<
+  Modify<Scenario, 'risk', FormRisk>,
+  'remainingRisk',
+  FormRisk
+>;
