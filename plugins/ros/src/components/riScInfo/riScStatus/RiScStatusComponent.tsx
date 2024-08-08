@@ -197,10 +197,10 @@ export const RiScStatusComponent = ({
 
       <RosAcceptance
         status={selectedRiSc.status}
-        migration={selectedRiSc.migrationChanges}
+        migration={selectedRiSc.migrationStatus?.migrationChanges}
       />
       {selectedRiSc.status === RiScStatus.SentForApproval &&
-        !selectedRiSc.migrationChanges && (
+        !selectedRiSc.migrationStatus?.migrationChanges && (
           <Typography sx={{ fontWeight: 700 }} paragraph variant="subtitle1">
             <PullRequestSvg />
             {t('rosStatus.prStatus')}
@@ -210,7 +210,7 @@ export const RiScStatusComponent = ({
           </Typography>
         )}
       {selectedRiSc.status === RiScStatus.Draft &&
-        !selectedRiSc.migrationChanges && (
+        !selectedRiSc.migrationStatus?.migrationChanges && (
           <Button
             color="primary"
             variant="contained"
@@ -221,7 +221,7 @@ export const RiScStatusComponent = ({
             {t('rosStatus.approveButton')}
           </Button>
         )}
-      {selectedRiSc.migrationChanges && (
+      {selectedRiSc.migrationStatus?.migrationChanges && (
         <Button
           color="primary"
           variant="contained"

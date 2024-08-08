@@ -13,7 +13,12 @@ export type RiScWithMetadata = {
   isRequiresNewApproval?: boolean;
   pullRequestUrl?: string;
   schemaVersion?: string;
+  migrationStatus?: MigrationStatus;
+};
+
+export type MigrationStatus = {
   migrationChanges?: boolean;
+  migrationRequiresNewApproval?: boolean;
 };
 
 export type RiSc = {

@@ -95,7 +95,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
               content: content,
               status: riScDTO.riScStatus,
               pullRequestUrl: riScDTO.pullRequestUrl,
-              migrationChanges: riScDTO.migrationChanges ? true : false,
+              migrationStatus: riScDTO.migrationStatus,
             };
           });
         setRiScs(fetchedRiScs);
@@ -199,16 +199,16 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  // TODO: ta inn risc with metadata, bruk den
   const updateRiSc = (
     riSc: RiSc,
     onSuccess?: () => void,
     onError?: () => void,
   ) => {
     if (selectedRiSc && riScs) {
-      const isRequiresNewApproval = requiresNewApproval(
-        selectedRiSc.content,
-        riSc,
-      );
+      const isRequiresNewApproval =
+        selectedRiSc.migrationStatus?.migrationRequiresNewApproval ??
+        requiresNewApproval(selectedRiSc.content, riSc);
       const updatedRiSc = {
         ...selectedRiSc,
         content: riSc,
@@ -218,7 +218,10 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             : selectedRiSc.status,
         isRequiresNewApproval: isRequiresNewApproval,
         schemaVersion: riSc.schemaVersion,
-        migrationChanges: false,
+        migrationStatus: {
+          migrationChanges: false,
+          migrationRequiresNewApproval: isRequiresNewApproval,
+        },
       };
 
       setRiScUpdateStatus({
