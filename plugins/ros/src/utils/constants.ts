@@ -18,5 +18,7 @@ export const riskMatrix = [
   ['#6CC6A4', '#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A'],
 ];
 
+export const latestSupportedVersion = '4.0';
+
 export const urlRegExpPattern: RegExp =
   /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;

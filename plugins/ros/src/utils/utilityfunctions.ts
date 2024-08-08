@@ -1,6 +1,7 @@
 import { ProcessingStatus, RiSc, Risk } from './types';
 import {
   consequenceOptions,
+  latestSupportedVersion,
   probabilityOptions,
   riskMatrix,
 } from './constants';
@@ -48,7 +49,7 @@ export const getConsequenceLevel = (risiko: Risk) =>
   consequenceOptions.indexOf(risiko.consequence) + 1;
 
 export const emptyRiSc = (): RiSc => ({
-  schemaVersion: '4.0',
+  schemaVersion: latestSupportedVersion,
   title: '',
   scope: '',
   valuations: [],
