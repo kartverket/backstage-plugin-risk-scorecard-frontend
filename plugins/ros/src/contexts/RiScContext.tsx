@@ -199,7 +199,6 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  // TODO: ta inn risc with metadata, bruk den
   const updateRiSc = (
     riSc: RiSc,
     onSuccess?: () => void,
