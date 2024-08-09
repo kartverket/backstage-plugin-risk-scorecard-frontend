@@ -1,6 +1,7 @@
 import {
   Action,
   ContentStatus,
+  MigrationStatus,
   Modify,
   ProcessingStatus,
   RiSc,
@@ -34,7 +35,7 @@ export type PublishRiScResultDTO = {
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;
-  migrationChanges?: boolean;
+  migrationStatus: MigrationStatus;
 } & ContentRiScResultDTO;
 
 export type RiScDTO = {
