@@ -159,8 +159,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
       threatActorSubtitle: 'Someone who attempts to access or abuse the system', // system or component or both?
       vulnerabilitySubtitle:
         'Weakness in the system that the threat actor can exploit',
-      riskMatrixeModal: {
-        subtitle: 'What is the risk before any planned actions are completed?',
+      riskMatrixModal: {
+        startRisk: 'What is the risk before any mitigating actions are taken?',
+        restRisk: 'What is the risk after all planned actions are completed?',
         title: 'Risk matrixes',
       },
       consequenceTab: {
@@ -367,9 +368,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             '{{count}} billioner',
           'riskMatrix.estimatedRisk.unit.nokPerYear': 'kr/år',
           'riskMatrix.tooltip.title': 'Risikoscenarioer',
-          'scenarioDrawer.riskMatrixeModal.title': 'Risikomatriser',
-          'scenarioDrawer.riskMatrixeModal.subtitle':
-            'Hvordan ser risikoen ut før man utfører noen tiltak?',
 
           'infoDialog.title': 'Estimert risiko',
           'infoDialog.description':
@@ -414,6 +412,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.titleError': 'Scenarioet må ha en tittel',
           'scenarioDrawer.subtitle':
             'En uønsket hendelse som potensielt kan ramme komponenten',
+          'scenarioDrawer.riskMatrixModal.title': 'Risikomatriser',
+          'scenarioDrawer.riskMatrixModal.startRisk':
+            'Hvor stor er risikoen før man utfører noen tiltak?',
+          'scenarioDrawer.riskMatrixModal.restRisk':
+            'Hvor stor er risikoen etter at alle tiltakene er fullført?',
+
           'scenarioDrawer.threatActorSubtitle':
             'Noen som prøver å få tilgang til eller misbruke systemet',
           'scenarioDrawer.vulnerabilitySubtitle':

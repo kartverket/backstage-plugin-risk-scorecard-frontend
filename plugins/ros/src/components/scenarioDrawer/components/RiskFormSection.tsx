@@ -57,7 +57,7 @@ const ScenarioForm = ({
               {t('dictionary.initialRisk')}
             </Typography>
             <Typography>
-              {t('scenarioDrawer.riskMatrixeModal.subtitle')}
+              {t('scenarioDrawer.riskMatrixModal.startRisk')}
             </Typography>
           </Box>
           <Box sx={selectSection}>
@@ -81,7 +81,7 @@ const ScenarioForm = ({
               {t('dictionary.restRisk')}
             </Typography>
             <Typography>
-              {t('scenarioStepper.restRiskStep.subtitle')}
+              {t('scenarioDrawer.riskMatrixModal.restRisk')}
             </Typography>
           </Box>
           <Box sx={selectSection}>
