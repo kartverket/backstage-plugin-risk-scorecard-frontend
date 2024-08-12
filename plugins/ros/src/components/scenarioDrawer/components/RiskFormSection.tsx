@@ -56,7 +56,9 @@ const ScenarioForm = ({
             <Typography sx={{ ...heading3, justifySelf: 'start' }}>
               {t('dictionary.initialRisk')}
             </Typography>
-            <Typography>{t('scenarioStepper.riskModalSubtitle')}</Typography>
+            <Typography>
+              {t('scenarioDrawer.riskMatrixeModal.subtitle')}
+            </Typography>
           </Box>
           <Box sx={selectSection}>
             <Select<Scenario>

@@ -126,8 +126,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
       scopeError: 'The scorecard has to have a description of the scope',
     },
     scenarioStepper: {
-      riskModalSubtitle:
-        'What is the risk before any planned actions are completed?',
       initialRiskStep: {
         title: 'Initial risk',
         subtitle:
@@ -161,6 +159,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
       threatActorSubtitle: 'Someone who attempts to access or abuse the system', // system or component or both?
       vulnerabilitySubtitle:
         'Weakness in the system that the threat actor can exploit',
+      riskMatrixeModal: {
+        subtitle: 'What is the risk before any planned actions are completed?',
+        title: 'Risk matrixes',
+      },
       consequenceTab: {
         subtitle:
           'How severe is the potential impact? If the scenario can impact more than one category, choose the highest level of consequence.',
@@ -365,6 +367,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             '{{count}} billioner',
           'riskMatrix.estimatedRisk.unit.nokPerYear': 'kr/år',
           'riskMatrix.tooltip.title': 'Risikoscenarioer',
+          'scenarioDrawer.riskMatrixeModal.title': 'Risikomatriser',
+          'scenarioDrawer.riskMatrixeModal.subtitle': 'Hvordan ser risikoen ut før man utfører noen tiltak?',
 
           'infoDialog.title': 'Estimert risiko',
           'infoDialog.description':
@@ -389,9 +393,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeDescription':
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
-
-          'scenarioStepper.riskModalSubtitle':
-            'Hvordan ser risikoen ut før man utfører noen tiltak?',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
