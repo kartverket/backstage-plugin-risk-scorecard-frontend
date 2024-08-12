@@ -129,3 +129,36 @@ export const ConsequenceTable = ({
     </Box>
   );
 };
+
+export const ConsequenceTableInfoWithHeaders = () => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const getRadioLabel = (row: number) => {
+    return (
+      /* @ts-ignore Because ts can't typecheck strings agains our keys */
+      <Typography fontWeight={500}>{`${row}: ${t(
+        `consequenceTable.rows.${row}`,
+      )}`}</Typography>
+    );
+  };
+  return (
+    <Box sx={riskTable}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'auto repeat(5, 1fr)',
+          gap: '4px',
+          overflow: 'auto',
+        }}
+      >
+        <Box sx={riskLabelCell}></Box>
+        {getRadioLabel(1)}
+        {getRadioLabel(2)}
+        {getRadioLabel(3)}
+        {getRadioLabel(4)}
+        {getRadioLabel(5)}
+      </Box>
+      <ConsequenceTableInfo />
+    </Box>
+  );
+};

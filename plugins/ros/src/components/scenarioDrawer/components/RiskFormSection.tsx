@@ -12,12 +12,23 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { heading3 } from '../../common/typography';
-import { section } from '../scenarioDrawerComponents';
+import {
+  headerSection,
+  riscSection,
+  section,
+  selectSection,
+} from '../scenarioDrawerComponents';
+import { IconButton } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 
 const ScenarioForm = ({
   formMethods,
+  setMatrixDialogState,
 }: {
   formMethods: UseFormReturn<Scenario>;
+  setMatrixDialogState: React.Dispatch<
+    React.SetStateAction<'risk' | 'remainingRisk' | 'closed'>
+  >;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control } = formMethods;
@@ -35,43 +46,72 @@ const ScenarioForm = ({
   }));
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        gap: '24px',
-      }}
-    >
-      <Paper sx={section}>
-        <Typography sx={heading3}>{t('dictionary.initialRisk')}</Typography>
-        <Select<Scenario>
-          control={control}
-          name="risk.probability"
-          label={t('dictionary.probability')}
-          options={probabilityValues}
-        />
-        <Select<Scenario>
-          control={control}
-          name="risk.consequence"
-          label={t('dictionary.consequence')}
-          options={consequenceValues}
-        />
-      </Paper>
-      <Paper sx={section}>
-        <Typography sx={heading3}>{t('dictionary.restRisk')}</Typography>
-        <Select<Scenario>
-          control={control}
-          name="remainingRisk.probability"
-          label={t('dictionary.probability')}
-          options={probabilityValues}
-        />
-        <Select<Scenario>
-          control={control}
-          name="remainingRisk.consequence"
-          label={t('dictionary.consequence')}
-          options={consequenceValues}
-        />
-      </Paper>
-    </Box>
+    <Paper sx={section}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '24px',
+        }}
+      >
+        <Paper sx={riscSection}>
+          <Box sx={headerSection}>
+            <Typography sx={{ ...heading3, justifySelf: 'start' }}>
+              {t('dictionary.initialRisk')}
+            </Typography>
+            <Typography>{t('scenarioStepper.riskModalSubtitle')}</Typography>
+          </Box>
+          <Box sx={selectSection}>
+            <Select<Scenario>
+              control={control}
+              name="risk.probability"
+              label={t('dictionary.probability')}
+              options={probabilityValues}
+            />
+            <Select<Scenario>
+              control={control}
+              name="risk.consequence"
+              label={t('dictionary.consequence')}
+              options={consequenceValues}
+            />
+          </Box>
+        </Paper>
+        <Paper sx={riscSection}>
+          <Box sx={headerSection}>
+            <Typography sx={{ ...heading3, justifySelf: 'flex-start' }}>
+              {t('dictionary.restRisk')}
+            </Typography>
+            <Typography>
+              {t('scenarioStepper.restRiskStep.subtitle')}
+            </Typography>
+          </Box>
+          <Box sx={selectSection}>
+            <Select<Scenario>
+              control={control}
+              name="remainingRisk.probability"
+              label={t('dictionary.probability')}
+              options={probabilityValues}
+            />
+            <Select<Scenario>
+              control={control}
+              name="remainingRisk.consequence"
+              label={t('dictionary.consequence')}
+              options={consequenceValues}
+            />
+          </Box>
+        </Paper>
+      </Box>
+      <IconButton
+        sx={{
+          position: 'absolute',
+          top: 10,
+          right: 10,
+        }}
+        onClick={() => setMatrixDialogState('risk')}
+        color="primary"
+      >
+        <InfoIcon />
+      </IconButton>
+    </Paper>
   );
 };
 

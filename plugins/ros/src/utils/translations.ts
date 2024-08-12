@@ -126,6 +126,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       scopeError: 'The scorecard has to have a description of the scope',
     },
     scenarioStepper: {
+      riskModalSubtitle: 'What is the risk before any planned actions are completed?',
       initialRiskStep: {
         title: 'Initial risk',
         subtitle:
@@ -387,6 +388,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeDescription':
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
+
+          'scenarioStepper.riskModalSubtitle': 'Hvordan ser risikoen ut før man utfører noen tiltak?',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':

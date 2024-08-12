@@ -20,6 +20,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
 import Typography from '@mui/material/Typography';
+import { MatrixDialog } from '../riScDialog/MatrixDialog';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -33,6 +34,10 @@ export const ScenarioDrawer = () => {
 
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
+
+  const [matrixDialogState, setMatrixDialogState] = useState<
+    keyof Pick<Scenario, 'risk' | 'remainingRisk'> | 'closed'
+  >('closed');
 
   const { riScUpdateStatus, response } = useRiScs();
 
@@ -107,7 +112,10 @@ export const ScenarioDrawer = () => {
       {isEditing ? (
         <>
           <ScopeFormSection formMethods={formMethods} />
-          <RiskFormSection formMethods={formMethods} />
+          <RiskFormSection
+            formMethods={formMethods}
+            setMatrixDialogState={setMatrixDialogState}
+          />
           <ActionFormSection formMethods={formMethods} />
         </>
       ) : (
@@ -162,6 +170,10 @@ export const ScenarioDrawer = () => {
       <DeleteConfirmation
         deleteConfirmationIsOpen={deleteConfirmationIsOpen}
         setDeleteConfirmationIsOpen={setDeleteConfirmationIsOpen}
+      />
+      <MatrixDialog
+        open={matrixDialogState !== 'closed'}
+        close={() => setMatrixDialogState('closed')}
       />
     </Drawer>
   );
