@@ -368,7 +368,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'riskMatrix.estimatedRisk.unit.nokPerYear': 'kr/år',
           'riskMatrix.tooltip.title': 'Risikoscenarioer',
           'scenarioDrawer.riskMatrixeModal.title': 'Risikomatriser',
-          'scenarioDrawer.riskMatrixeModal.subtitle': 'Hvordan ser risikoen ut før man utfører noen tiltak?',
+          'scenarioDrawer.riskMatrixeModal.subtitle':
+            'Hvordan ser risikoen ut før man utfører noen tiltak?',
 
           'infoDialog.title': 'Estimert risiko',
           'infoDialog.description':

@@ -25,7 +25,7 @@ export const MatrixDialog = ({
 
   return (
     <Dialog maxWidth="lg" open={open} onClose={close}>
-      <DialogTitle>Risikomatriser</DialogTitle>
+      <DialogTitle>{t('scenarioDrawer.riskMatrixeModal.title')}</DialogTitle>
       <IconButton
         aria-label="close"
         onClick={close}
