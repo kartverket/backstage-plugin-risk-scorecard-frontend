@@ -35,9 +35,7 @@ export const ScenarioDrawer = () => {
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
 
-  const [matrixDialogState, setMatrixDialogState] = useState<
-    keyof Pick<Scenario, 'risk' | 'remainingRisk'> | 'closed'
-  >('closed');
+  const [isMatrixDialogOpen, setIsMatrixDialogOpen] = useState<boolean>(false);
 
   const { riScUpdateStatus, response } = useRiScs();
 
@@ -114,7 +112,7 @@ export const ScenarioDrawer = () => {
           <ScopeFormSection formMethods={formMethods} />
           <RiskFormSection
             formMethods={formMethods}
-            setMatrixDialogState={setMatrixDialogState}
+            setIsMatrixDialogOpen={setIsMatrixDialogOpen}
           />
           <ActionFormSection formMethods={formMethods} />
         </>
@@ -172,8 +170,8 @@ export const ScenarioDrawer = () => {
         setDeleteConfirmationIsOpen={setDeleteConfirmationIsOpen}
       />
       <MatrixDialog
-        open={matrixDialogState !== 'closed'}
-        close={() => setMatrixDialogState('closed')}
+        open={isMatrixDialogOpen}
+        close={() => setIsMatrixDialogOpen(false)}
       />
     </Drawer>
   );

@@ -23,12 +23,10 @@ import InfoIcon from '@mui/icons-material/Info';
 
 const ScenarioForm = ({
   formMethods,
-  setMatrixDialogState,
+  setIsMatrixDialogOpen,
 }: {
   formMethods: UseFormReturn<Scenario>;
-  setMatrixDialogState: React.Dispatch<
-    React.SetStateAction<'risk' | 'remainingRisk' | 'closed'>
-  >;
+  setIsMatrixDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control } = formMethods;
@@ -106,7 +104,7 @@ const ScenarioForm = ({
           top: 10,
           right: 10,
         }}
-        onClick={() => setMatrixDialogState('risk')}
+        onClick={() => setIsMatrixDialogOpen(true)}
         color="primary"
       >
         <InfoIcon />
