@@ -18,7 +18,7 @@ import {
   section,
   selectSection,
 } from '../scenarioDrawerComponents';
-import { IconButton } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 
 const ScenarioForm = ({

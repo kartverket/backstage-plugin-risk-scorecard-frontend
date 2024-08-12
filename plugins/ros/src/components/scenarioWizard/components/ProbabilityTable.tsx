@@ -8,7 +8,7 @@ import { RiskRadioButton } from './RiskRadioButton';
 import RadioGroup from '@mui/material/RadioGroup';
 import Box from '@mui/material/Box';
 import { probabilityOptions } from '../../../utils/constants';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 export const ProbabilityTableInfo = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -92,7 +92,7 @@ export const ProbabilityTableInfoWithHeaders = () => {
           overflow: 'auto',
         }}
       >
-        <Box sx={riskLabelCell}></Box>
+        <Box sx={riskLabelCell} />
         {getRadioLabel(1)}
         {getRadioLabel(2)}
         {getRadioLabel(3)}

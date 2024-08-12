@@ -1,20 +1,18 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography,
-} from '@mui/material';
 import React from 'react';
 import { ConsequenceTableInfoWithHeaders } from '../scenarioWizard/components/ConsequenceTable';
 import CloseIcon from '@mui/icons-material/Close';
 import { ProbabilityTableInfoWithHeaders } from '../scenarioWizard/components/ProbabilityTable';
-import { Box } from '@material-ui/core';
 import { heading3 } from '../common/typography';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import DialogContent from '@mui/material/DialogContent';
+import Typography from '@mui/material/Typography';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
 export const MatrixDialog = ({
   open,
@@ -64,9 +62,7 @@ export const MatrixDialog = ({
         <ConsequenceTableInfoWithHeaders />
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={close}>
-          {t('dictionary.close')}
-        </Button>
+        <Button onClick={close}>{t('dictionary.close')}</Button>
       </DialogActions>
     </Dialog>
   );

@@ -6,9 +6,8 @@ export const section: SxProps<Theme> = {
   gap: '16px',
   width: '100%',
   padding: 2,
-  position: 'relative'
+  position: 'relative',
 };
-
 
 export const riscSection: SxProps<Theme> = {
   display: 'flex',
@@ -18,7 +17,7 @@ export const riscSection: SxProps<Theme> = {
   width: '100%',
   padding: 2,
   position: 'relative',
-  boxShadow: 'none'
+  boxShadow: 'none',
 };
 
 export const headerSection: SxProps<Theme> = {
@@ -26,7 +25,7 @@ export const headerSection: SxProps<Theme> = {
   flexDirection: 'column',
   gap: '4px',
   width: '100%',
-}
+};
 
 export const selectSection: SxProps<Theme> = {
   display: 'flex',
@@ -34,4 +33,3 @@ export const selectSection: SxProps<Theme> = {
   gap: '16px',
   width: '100%',
 };
-

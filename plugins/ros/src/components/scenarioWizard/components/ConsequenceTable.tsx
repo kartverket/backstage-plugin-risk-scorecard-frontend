@@ -151,7 +151,7 @@ export const ConsequenceTableInfoWithHeaders = () => {
           overflow: 'auto',
         }}
       >
-        <Box sx={riskLabelCell}></Box>
+        <Box sx={riskLabelCell} />
         {getRadioLabel(1)}
         {getRadioLabel(2)}
         {getRadioLabel(3)}
