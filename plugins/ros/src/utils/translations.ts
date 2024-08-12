@@ -159,6 +159,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
       threatActorSubtitle: 'Someone who attempts to access or abuse the system', // system or component or both?
       vulnerabilitySubtitle:
         'Weakness in the system that the threat actor can exploit',
+      riskMatrixModal: {
+        startRisk: 'What is the risk before any mitigating actions are taken?',
+        restRisk: 'What is the risk after all planned actions are completed?',
+        title: 'Risk matrixes',
+      },
       consequenceTab: {
         subtitle:
           'How severe is the potential impact? If the scenario can impact more than one category, choose the highest level of consequence.',
@@ -407,6 +412,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.titleError': 'Scenarioet må ha en tittel',
           'scenarioDrawer.subtitle':
             'En uønsket hendelse som potensielt kan ramme komponenten',
+          'scenarioDrawer.riskMatrixModal.title': 'Risikomatriser',
+          'scenarioDrawer.riskMatrixModal.startRisk':
+            'Hvor stor er risikoen før man utfører noen tiltak?',
+          'scenarioDrawer.riskMatrixModal.restRisk':
+            'Hvor stor er risikoen etter at alle tiltakene er fullført?',
+
           'scenarioDrawer.threatActorSubtitle':
             'Noen som prøver å få tilgang til eller misbruke systemet',
           'scenarioDrawer.vulnerabilitySubtitle':
