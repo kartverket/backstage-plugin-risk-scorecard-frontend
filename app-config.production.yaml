@@ -38,11 +38,6 @@ auth:
             - resolver: emailMatchingUserEntityAnnotation
             - resolver: emailMatchingUserEntityProfileEmail
             - resolver: emailLocalPartMatchingUserEntityName
-    
-    google:
-      development:
-        clientId: ${GOOGLE_CLIENT_ID}
-        clientSecret: ${GOOGLE_CLIENT_SECRET}
 
 catalog:
   providers:
