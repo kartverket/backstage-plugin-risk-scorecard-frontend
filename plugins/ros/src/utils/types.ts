@@ -19,6 +19,12 @@ export type RiScWithMetadata = {
 export type MigrationStatus = {
   migrationChanges: boolean;
   migrationRequiresNewApproval: boolean;
+  migrationVersions?: MigrationVersions;
+};
+
+export type MigrationVersions = {
+  fromVersion: string;
+  toVersion: string;
 };
 
 export type RiSc = {
