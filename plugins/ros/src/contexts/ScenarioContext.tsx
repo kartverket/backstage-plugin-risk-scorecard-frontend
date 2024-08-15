@@ -215,18 +215,18 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     return returnScenario;
   };
 
-  const mapScenarioToFormScenario = (scenario: Scenario): FormScenario => {
+  const mapScenarioToFormScenario = (apiScenario: Scenario): FormScenario => {
     const returnFormScenario: FormScenario = {
-      ...scenario,
+      ...apiScenario,
       risk: {
-        ...scenario.risk,
-        probability: scenario.risk.probability + '',
-        consequence: scenario.risk.consequence + '',
+        ...apiScenario.risk,
+        probability: `${apiScenario.risk.probability}`,
+        consequence: `${apiScenario.risk.consequence}`,
       },
       remainingRisk: {
-        ...scenario.remainingRisk,
-        probability: scenario.remainingRisk.probability + '',
-        consequence: scenario.remainingRisk.consequence + '',
+        ...apiScenario.remainingRisk,
+        probability: `${apiScenario.remainingRisk.probability}`,
+        consequence: `${apiScenario.remainingRisk.consequence}`,
       },
     };
     return returnFormScenario;

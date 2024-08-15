@@ -16,7 +16,7 @@ import {
 import { Input } from '../../common/Input';
 import { Select } from '../../common/Select';
 
-type ActionFormItem = {
+type ActionFormItemProps = {
   formMethods: UseFormReturn<FormScenario>;
   index: number;
   remove: UseFieldArrayRemove;
@@ -28,7 +28,7 @@ export function ActionFormItem({
   index,
   remove,
   showTitleNumber = true,
-}: ActionFormItem) {
+}: ActionFormItemProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { control, register, formState } = formMethods;
