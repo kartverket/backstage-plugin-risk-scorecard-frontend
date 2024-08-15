@@ -1,6 +1,6 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { Scenario } from '../../../utils/types';
+import { FormScenario } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import {
@@ -25,20 +25,20 @@ const ScenarioForm = ({
   formMethods,
   setIsMatrixDialogOpen,
 }: {
-  formMethods: UseFormReturn<Scenario>;
+  formMethods: UseFormReturn<FormScenario>;
   setIsMatrixDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control } = formMethods;
 
   const probabilityValues = probabilityOptions.map((value, index) => ({
-    value,
+    value: value + '',
     /* @ts-ignore Because ts can't typecheck strings against our keys */
     renderedValue: `${index + 1}: ${t(`probabilityTable.rows.${index + 1}`)}`,
   }));
 
   const consequenceValues = consequenceOptions.map((value, index) => ({
-    value,
+    value: value + '',
     /* @ts-ignore Because ts can't typecheck strings against our keys */
     renderedValue: `${index + 1}: ${t(`consequenceTable.rows.${index + 1}`)}`,
   }));
@@ -61,13 +61,13 @@ const ScenarioForm = ({
             </Typography>
           </Box>
           <Box sx={selectSection}>
-            <Select<Scenario>
+            <Select<FormScenario>
               control={control}
               name="risk.probability"
               label={t('dictionary.probability')}
               options={probabilityValues}
             />
-            <Select<Scenario>
+            <Select<FormScenario>
               control={control}
               name="risk.consequence"
               label={t('dictionary.consequence')}
@@ -85,13 +85,13 @@ const ScenarioForm = ({
             </Typography>
           </Box>
           <Box sx={selectSection}>
-            <Select<Scenario>
+            <Select<FormScenario>
               control={control}
               name="remainingRisk.probability"
               label={t('dictionary.probability')}
               options={probabilityValues}
             />
-            <Select<Scenario>
+            <Select<FormScenario>
               control={control}
               name="remainingRisk.consequence"
               label={t('dictionary.consequence')}

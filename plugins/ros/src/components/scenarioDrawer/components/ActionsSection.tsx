@@ -4,24 +4,76 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { useScenario } from '../../../contexts/ScenarioContext';
+import { emptyAction } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
 import { emptyState, heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
+import { useFieldArray, UseFormReturn } from 'react-hook-form';
+import { FormScenario } from '../../../utils/types';
+import { ActionFormItem } from './ActionFormItem';
+import Button from '@mui/material/Button';
+import { AddCircle } from '@mui/icons-material';
 
-export const ActionsSection = () => {
+type ActionSectionProps = {
+  formMethods: UseFormReturn<FormScenario>;
+  isEditing: boolean;
+};
+
+export const ActionsSection = ({
+  formMethods,
+  isEditing,
+}: ActionSectionProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { scenario } = useScenario();
+
+  const { control } = formMethods;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'actions',
+    rules: {
+      required: true,
+    },
+  });
+
+  if (isEditing) {
+    return (
+      <Paper sx={section}>
+        <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
+        {fields.map((field, index) => (
+          <Fragment key={field.id}>
+            <Divider variant="fullWidth" />
+            <ActionFormItem
+              key={index}
+              formMethods={formMethods}
+              index={index}
+              remove={remove}
+            />
+          </Fragment>
+        ))}
+        <Button
+          startIcon={<AddCircle />}
+          color="primary"
+          onClick={() => append(emptyAction())}
+        >
+          {t('scenarioDrawer.measureTab.addMeasureButton')}
+        </Button>
+      </Paper>
+    );
+  }
 
   return (
     <Paper sx={section}>
       <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
 
-      {scenario.actions.length > 0 ? (
-        scenario.actions.map((action, index) => (
-          <Fragment key={action.ID}>
+      {fields.length > 0 ? (
+        fields.map((field, index) => (
+          <Fragment key={field.id}>
             <Divider />
-            <ActionBox action={action} index={index + 1} />
+            <ActionBox
+              action={field}
+              index={index}
+              formMethods={formMethods}
+              remove={remove}
+            />
           </Fragment>
         ))
       ) : (

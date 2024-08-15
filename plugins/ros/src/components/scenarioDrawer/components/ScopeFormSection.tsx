@@ -1,6 +1,6 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { Scenario } from '../../../utils/types';
+import { FormScenario } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Input } from '../../common/Input';
@@ -17,7 +17,7 @@ import { section } from '../scenarioDrawerComponents';
 const ScopeFormSection = ({
   formMethods,
 }: {
-  formMethods: UseFormReturn<Scenario>;
+  formMethods: UseFormReturn<FormScenario>;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
@@ -49,7 +49,7 @@ const ScopeFormSection = ({
         error={errors.title !== undefined}
         label={t('dictionary.title')}
       />
-      <Select<Scenario>
+      <Select<FormScenario>
         multiple
         control={control}
         name="threatActors"
@@ -57,7 +57,7 @@ const ScopeFormSection = ({
         labelTranslationKey="threatActors"
         options={translatedThreatActors}
       />
-      <Select<Scenario>
+      <Select<FormScenario>
         multiple
         control={control}
         name="vulnerabilities"
