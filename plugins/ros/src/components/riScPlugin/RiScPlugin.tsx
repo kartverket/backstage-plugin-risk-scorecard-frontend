@@ -4,7 +4,6 @@ import { useSearchParams } from 'react-router-dom';
 import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
 import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
-import { ScenarioTable } from '../scenarioTable/ScenarioTable';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -22,6 +21,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
+import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -132,7 +132,7 @@ export const RiScPlugin = () => {
                   <RiScInfo riSc={selectedRiSc} edit={openEditRiScDialog} />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
-                  <ScenarioTable riSc={selectedRiSc.content} />
+                  <ScenarioTableWrapper riSc={selectedRiSc.content} />
                 </Grid>
                 <Grid item xs md={5} lg={4}>
                   <RiskMatrix riSc={selectedRiSc.content} />
