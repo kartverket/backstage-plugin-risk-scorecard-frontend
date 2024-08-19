@@ -53,6 +53,8 @@ type ScenarioDrawerProps = {
   openScenarioDrawer: (id: string) => void;
   openNewScenarioWizard: () => void;
   closeScenarioForm: () => void;
+  mapFormScenarioToScenario: (formScenario: FormScenario) => Scenario;
+  mapScenarioToFormScenario: (scenario: Scenario) => FormScenario;
 };
 
 export type ScenarioWizardSteps = (typeof scenarioWizardSteps)[number];
@@ -196,6 +198,40 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const mapFormScenarioToScenario = (formScenario: FormScenario): Scenario => {
+    const returnScenario: Scenario = {
+      ...formScenario,
+      risk: {
+        ...formScenario.risk,
+        probability: Number(formScenario.risk.probability),
+        consequence: Number(formScenario.risk.consequence),
+      },
+      remainingRisk: {
+        ...formScenario.remainingRisk,
+        probability: Number(formScenario.remainingRisk.probability),
+        consequence: Number(formScenario.remainingRisk.consequence),
+      },
+    };
+    return returnScenario;
+  };
+
+  const mapScenarioToFormScenario = (apiScenario: Scenario): FormScenario => {
+    const returnFormScenario: FormScenario = {
+      ...apiScenario,
+      risk: {
+        ...apiScenario.risk,
+        probability: `${apiScenario.risk.probability}`,
+        consequence: `${apiScenario.risk.consequence}`,
+      },
+      remainingRisk: {
+        ...apiScenario.remainingRisk,
+        probability: `${apiScenario.remainingRisk.probability}`,
+        consequence: `${apiScenario.remainingRisk.consequence}`,
+      },
+    };
+    return returnFormScenario;
+  };
+
   const value = {
     isDrawerOpen,
 
@@ -207,6 +243,8 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     openScenarioDrawer,
     openNewScenarioWizard,
     closeScenarioForm,
+    mapFormScenarioToScenario,
+    mapScenarioToFormScenario,
   };
 
   return (

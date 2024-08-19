@@ -9,9 +9,8 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { ScopeSection } from './components/ScopeSection';
 import { useForm } from 'react-hook-form';
-import { ProcessingStatus, Scenario } from '../../utils/types';
+import { FormScenario, ProcessingStatus } from '../../utils/types';
 import RiskFormSection from './components/RiskFormSection';
-import ActionFormSection from './components/ActionFormSection';
 import ScopeFormSection from './components/ScopeFormSection';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -30,6 +29,8 @@ export const ScenarioDrawer = () => {
     isDrawerOpen,
     closeScenarioForm,
     submitEditedScenarioToRiSc,
+    mapScenarioToFormScenario,
+    mapFormScenarioToScenario,
   } = useScenario();
 
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
@@ -39,13 +40,13 @@ export const ScenarioDrawer = () => {
 
   const { riScUpdateStatus, response } = useRiScs();
 
-  const formMethods = useForm<Scenario>({
-    defaultValues: scenario,
+  const formMethods = useForm<FormScenario>({
+    defaultValues: mapScenarioToFormScenario(scenario),
     mode: 'onBlur',
   });
 
   const onCancel = () => {
-    formMethods.reset(scenario);
+    formMethods.reset(mapScenarioToFormScenario(scenario));
     setIsEditing(false);
   };
 
@@ -54,13 +55,15 @@ export const ScenarioDrawer = () => {
     setIsEditing(false);
   };
 
-  const onSubmit = formMethods.handleSubmit((data: Scenario) => {
-    submitEditedScenarioToRiSc(data, () => setIsEditing(false));
+  const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
+    submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), () =>
+      setIsEditing(false),
+    );
   });
 
   useEffect(() => {
-    formMethods.reset(scenario);
-  }, [scenario, formMethods]);
+    formMethods.reset(mapScenarioToFormScenario(scenario));
+  }, [scenario, formMethods, mapScenarioToFormScenario]);
 
   return (
     <Drawer
@@ -114,15 +117,14 @@ export const ScenarioDrawer = () => {
             formMethods={formMethods}
             setIsMatrixDialogOpen={setIsMatrixDialogOpen}
           />
-          <ActionFormSection formMethods={formMethods} />
         </>
       ) : (
         <>
           <ScopeSection />
           <RiskSection />
-          <ActionsSection />
         </>
       )}
+      <ActionsSection formMethods={formMethods} isEditing={isEditing} />
       <Box
         sx={{
           display: 'flex',
