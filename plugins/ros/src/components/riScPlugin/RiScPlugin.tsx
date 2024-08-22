@@ -21,7 +21,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
-import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper';
+import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -132,7 +132,7 @@ export const RiScPlugin = () => {
                   <RiScInfo riSc={selectedRiSc} edit={openEditRiScDialog} />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
-                  <ScenarioTableWrapper riSc={selectedRiSc.content} />
+                  <ScenarioTableWrapper riSc={selectedRiSc} />
                 </Grid>
                 <Grid item xs md={5} lg={4}>
                   <RiskMatrix riSc={selectedRiSc.content} />

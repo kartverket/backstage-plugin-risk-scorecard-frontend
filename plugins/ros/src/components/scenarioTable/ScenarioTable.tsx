@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Paper, Typography } from '@material-ui/core';
 import TableRow from '@mui/material/TableRow';
 import Table from '@mui/material/Table';
@@ -13,36 +13,69 @@ import { useTableStyles } from './ScenarioTableStyles';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useScenario } from '../../contexts/ScenarioContext';
-import update from 'immutability-helper';
-import { RiSc } from '../../utils/types';
+import { RiSc, RiScWithMetadata } from '../../utils/types';
 import { useFontStyles } from '../../utils/style';
+import { useRiScs } from '../../contexts/RiScContext';
+import { arrayNotEquals } from '../../utils/utilityfunctions';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-export interface ScenarioTableProps {
+interface ScenarioTableProps {
   riSc: RiSc;
 }
 
 export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label } = useFontStyles();
-  const { titleBox, rowBorder, tableCell, tableCellTitle } = useTableStyles();
+  const { titleBox, rowBorder, tableCell, tableCellTitle, tableCellDragIcon } =
+    useTableStyles();
   const { openNewScenarioWizard, openScenarioDrawer } = useScenario();
-  const [scenarios, setScenarios] = useState(riSc.scenarios);
+  const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
+  const { updateRiSc, riScUpdateStatus } = useRiScs();
+  const [isOrderChanged, setIsOrderChanged] = useState(false);
+
+  useEffect(() => {
+    if (!riScUpdateStatus.isSuccess) {
+      return;
+    }
+    const updatedScenarios = tempScenarios
+      .map(scenario => {
+        const ordered = riSc.scenarios.find(s => s.ID === scenario.ID);
+        return ordered ? ordered : null;
+      })
+      .filter(scenario => scenario !== null) as RiSc['scenarios'];
+
+    const scenariosNotInTemp = riSc.scenarios.filter(
+      scenario => !updatedScenarios.find(s => s.ID === scenario.ID),
+    );
+
+    setTempScenarios([...updatedScenarios, ...scenariosNotInTemp]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [riSc.scenarios, riScUpdateStatus.isSuccess]);
 
   const moveRow = (dragIndex: number, hoverIndex: number) => {
-    const draggedRow = scenarios[dragIndex];
-    setScenarios(
-      update(scenarios, {
-        $splice: [
-          [dragIndex, 1],
-          [hoverIndex, 0, draggedRow],
-        ],
-      }),
+    const updatedScenarios = [...tempScenarios];
+    const [removed] = updatedScenarios.splice(dragIndex, 1);
+    updatedScenarios.splice(hoverIndex, 0, removed);
+    setTempScenarios(updatedScenarios);
+    const updatedOrder = updatedScenarios.map(scenario => scenario.ID);
+    setIsOrderChanged(
+      arrayNotEquals(
+        riSc.scenarios.map(scenario => scenario.ID),
+        updatedOrder,
+      ),
     );
   };
 
   const saveOrder = () => {
-    // Implement your save logic here
-    console.log('New order saved', scenarios);
+    const updatedRiSc = {
+      ...riSc,
+      scenarios: tempScenarios,
+    };
+
+    updateRiSc(updatedRiSc, () => {
+      setIsOrderChanged(false);
+    });
   };
 
   return (
@@ -53,7 +86,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
             {t('scenarioTable.title')}
           </Typography>
 
-          {scenarios.length > 0 && (
+          {riSc.scenarios.length > 0 && (
             <Box
               style={{
                 display: 'flex',
@@ -73,7 +106,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
             </Box>
           )}
         </Box>
-        {scenarios.length === 0 ? (
+        {riSc.scenarios.length === 0 ? (
           <Box
             style={{
               display: 'flex',
@@ -101,6 +134,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
               <Table>
                 <TableHead style={{ whiteSpace: 'nowrap' }}>
                   <TableRow className={rowBorder}>
+                    <TableCell className={tableCellDragIcon} />
                     <TableCell className={tableCellTitle}>
                       <Typography
                         className={label}
@@ -137,30 +171,46 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {scenarios.map((scenario, idx) => (
+                  {tempScenarios.map((scenario, idx) => (
                     <ScenarioTableRow
                       key={scenario.ID}
                       index={idx}
                       scenario={scenario}
                       viewRow={openScenarioDrawer}
                       moveRow={moveRow}
-                      isLastRow={idx === scenarios.length - 1}
+                      isLastRow={idx === riSc.scenarios.length - 1}
                     />
                   ))}
                 </TableBody>
               </Table>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={saveOrder}
+                style={{
+                  margin: '1rem',
+                  float: 'right',
+                }}
+                disabled={!isOrderChanged}
+              >
+                Save Order
+              </Button>
             </TableContainer>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={saveOrder}
-              style={{ margin: '1rem' }}
-            >
-              Save Order
-            </Button>
           </>
         )}
       </Paper>
     </>
+  );
+};
+
+interface ScenarioTableWrapperProps {
+  riSc: RiScWithMetadata;
+}
+
+export const ScenarioTableWrapper = ({ riSc }: ScenarioTableWrapperProps) => {
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <ScenarioTable key={riSc.id} riSc={riSc.content} />
+    </DndProvider>
   );
 };

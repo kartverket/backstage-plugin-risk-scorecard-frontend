@@ -206,8 +206,9 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
   ) => {
     if (selectedRiSc && riScs) {
       const isRequiresNewApproval =
-        selectedRiSc.migrationStatus?.migrationRequiresNewApproval ??
+        selectedRiSc.migrationStatus?.migrationRequiresNewApproval ||
         requiresNewApproval(selectedRiSc.content, riSc);
+
       const updatedRiSc = {
         ...selectedRiSc,
         content: riSc,
@@ -219,7 +220,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         schemaVersion: riSc.schemaVersion,
         migrationStatus: {
           migrationChanges: false,
-          migrationRequiresNewApproval: isRequiresNewApproval,
+          migrationRequiresNewApproval: false,
         },
       };
 

@@ -43,6 +43,17 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
           : '1px solid #0000001f',
     },
   },
+
+  tableCellDragIcon: {
+    minWidth: '1px0px',
+    padding: '',
+    width: '2%',
+    '&.MuiTableCell-root': {
+      color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
+      border: 'none',
+    },
+  },
+
   tableCell: {
     minWidth: '120px',
     padding: '20px 10px 20px 16px',

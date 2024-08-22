@@ -2,7 +2,8 @@ import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
-import { Paper, Typography } from '@material-ui/core';
+import { IconButton, Paper, Typography } from '@material-ui/core';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Scenario } from '../../utils/types';
 import { useTableStyles } from './ScenarioTableStyles';
 import {
@@ -72,7 +73,7 @@ export const ScenarioTableRow = ({
     },
   });
 
-  const [{ isDragging }, drag] = useDrag({
+  const [{ isDragging }, drag, preview] = useDrag({
     type: 'row',
     item: { index },
     collect: monitor => ({
@@ -80,7 +81,7 @@ export const ScenarioTableRow = ({
     }),
   });
 
-  drag(drop(ref));
+  preview(drop(ref));
 
   const remainingActions = scenario.actions.filter(
     a => a.status !== 'Completed',
@@ -91,8 +92,16 @@ export const ScenarioTableRow = ({
       ref={ref}
       className={`${isLastRow ? undefined : rowBorder} ${rowBackground}`}
       onClick={() => viewRow(scenario.ID)}
-      style={{ opacity: isDragging ? 0.5 : 1, cursor: 'move' }}
+      style={{ opacity: isDragging ? 0.5 : 1 }}
     >
+      <TableCell>
+        <IconButton size="small" ref={drag}>
+          <DragIndicatorIcon
+            aria-label="Drag"
+            sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+          />
+        </IconButton>
+      </TableCell>
       <TableCell className={tableCellTitle}>
         <Typography color="primary" style={{ fontWeight: 600 }}>
           {scenario.title}
