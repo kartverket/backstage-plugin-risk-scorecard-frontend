@@ -49,12 +49,15 @@ export const pluginRiScTranslationRef = createTranslationRef({
         missing: 'Awaiting acceptance from risk owner', // Mangler godkjenning av risikoeier
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
-        migration:
-          'There has been done changes to the risk scorecard, as a result of a migration to the newest version. The changes can be both deletion and modification of information. If you want to keep the changes and update to the newest version, click "Save changes". Note that if you make other changes and save, this will also save the changes from the migration.', // Automatisk migrering av ROS
+        migration: {
+          title: 'You are required to review and save changes',
+          description:
+            'There has been done changes to the risk scorecard, as a result of a migration to the newest version. The changes may include deletion and modification of information. It will not be possible to save edits of the scorecard without including and accepting the changes.', // Automatisk migrering av ROS
+        },
       },
       prStatus: ' Pending pull request in ', // Avventer godkjenning av PR i Github
       approveButton: 'Accept risks', // Godkjenn ROS
-      saveButton: 'Save changes', // Lagre ROS migrering
+      moreInformationButton: 'More information', // Lagre ROS migrering
     },
     publishDialog: {
       title: 'Accept risks', // Godkjenn ROS
@@ -62,6 +65,12 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
     },
     migrationDialog: {
+      description:
+        'The changes have been done to adhere to the latest schema version. In this case, the RiSc was update to ',
+      description2: 'from',
+      description3: '. Review the ',
+      description4: 'for more information.',
+      changelog: 'schema changelog',
       title: 'Save changes', // Lagre ROS migrering
       checkboxLabel:
         'I confirm that I have reviewed and wish to save the changes made during the migration.',
@@ -334,17 +343,26 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Venter på godkjenning av risikoeier',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
-          'rosStatus.statusBadge.migration':
-            'Det har blitt gjort endringer i risiko- og sårbarhetsanalysen, som følge av en migrering til nyeste versjon. Endringene kan være både sletting og endring av informsasjon. Hvis du vil beholde endringene og oppdatere til nyeste versjon, klikk "Lagre endringer". Merk at dersom du gjør andre endringer og lagrer, vil dette føre til at endringene gjort i forbindelse med migreringen blir lagret.',
+          'rosStatus.statusBadge.migration.title':
+            'Gjennomgang og lagring av endringer kreves',
+          'rosStatus.statusBadge.migration.description':
+            'Det har blitt gjort endringer i risiko- og sårbarhetsanalysen, som følge av en migrering til nyeste versjon. Endringene kan være både sletting og endring av informsasjon. Det vil ikke være mulig å lagre endringer av analysen uten å inkludere og godta endringene.',
           'rosStatus.prStatus': ' Avventer godkjenning av pull request i ',
           'rosStatus.approveButton': 'Godkjenn ROS',
-          'rosStatus.saveButton': 'Lagre endringer',
+          'rosStatus.moreInformationButton': 'Mer informasjon',
 
           'publishDialog.title': 'Godkjenn ROS-analyse',
           'publishDialog.checkboxLabel':
             'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
 
           'migrationDialog.title': 'Lagre endringer',
+          'migrationDialog.description':
+            'Endringene er gjort for å følge den nyeste skjema versjonen. I dette tilfellet ble ROS-analysen oppdatert til ',
+          'migrationDialog.description2': 'fra',
+          'migrationDialog.description3': '. Se ',
+          'migrationDialog.description4': 'for mer informasjon.',
+          'migrationDialog.changelog': 'endringslogg for skjema',
+
           'migrationDialog.checkboxLabel':
             'Jeg bekrefter at jeg har gjennomgått og ønsker å lagre endringene som er gjort under migreringen.',
 

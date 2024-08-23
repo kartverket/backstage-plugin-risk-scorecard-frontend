@@ -1,5 +1,9 @@
 import React, { ReactComponentElement, useState } from 'react';
-import { RiScStatus, RiScWithMetadata } from '../../../utils/types';
+import {
+  MigrationVersions,
+  RiScStatus,
+  RiScWithMetadata,
+} from '../../../utils/types';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -18,6 +22,8 @@ import { InfoCard } from '@backstage/core-components';
 import { PullRequestSvg } from '../../common/Icons';
 import { useRiScs } from '../../../contexts/RiScContext';
 import { subtitle1 } from '../../common/typography';
+import { Box } from '@material-ui/core';
+import { WarningAmberOutlined } from '@mui/icons-material';
 
 interface RiScPublishDialogProps {
   openDialog: boolean;
@@ -76,12 +82,14 @@ interface RiScMigrationDialogProps {
   openDialog: boolean;
   handleCancel: () => void;
   handleUpdate: () => void;
+  migrationVersions?: MigrationVersions;
 }
 
 const RiScMigrationDialog = ({
   openDialog,
   handleCancel,
   handleUpdate,
+  migrationVersions,
 }: RiScMigrationDialogProps): ReactComponentElement<any> => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -95,6 +103,22 @@ const RiScMigrationDialog = ({
     <Dialog open={openDialog}>
       <DialogTitle>{t('migrationDialog.title')}</DialogTitle>
       <DialogContent>
+        <Box sx={{ marginBottom: '16px' }}>
+          <Typography>
+            {t('migrationDialog.description')}
+            {migrationVersions?.toVersion} {t('migrationDialog.description2')}{' '}
+            {migrationVersions?.fromVersion}
+            {t('migrationDialog.description3')}
+            <Link
+              underline="always"
+              target="_blank"
+              href="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md"
+            >
+              {t('migrationDialog.changelog')}
+            </Link>{' '}
+            {t('migrationDialog.description4')}
+          </Typography>
+        </Box>
         <Alert severity="info" icon={false}>
           <FormControlLabel
             control={
@@ -133,9 +157,18 @@ const RosAcceptance = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   if (migration) {
     return (
-      <Typography paragraph sx={subtitle1}>
-        {t('rosStatus.statusBadge.migration')}
-      </Typography>
+      <>
+        <Typography paragraph sx={subtitle1}>
+          <WarningAmberOutlined
+            fontSize="medium"
+            sx={{ transform: 'translateY(5px)', marginTop: '5px' }}
+          />{' '}
+          {t('rosStatus.statusBadge.migration.title')}
+        </Typography>
+        <Typography>
+          {t('rosStatus.statusBadge.migration.description')}
+        </Typography>
+      </>
     );
   }
   switch (status) {
@@ -222,24 +255,29 @@ export const RiScStatusComponent = ({
           </Button>
         )}
       {selectedRiSc.migrationStatus?.migrationChanges && (
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
-          sx={{ display: 'block', marginLeft: 'auto' }}
-        >
-          <Typography variant="button">{t('rosStatus.saveButton')}</Typography>
-        </Button>
+        <>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
+            sx={{ display: 'block', marginLeft: 'auto' }}
+          >
+            <Typography variant="button">
+              {t('rosStatus.moreInformationButton')}
+            </Typography>
+          </Button>
+          <RiScMigrationDialog
+            openDialog={migrationDialogIsOpen}
+            handleUpdate={handleUpdate}
+            handleCancel={() => setMigrationDialogIsOpen(false)}
+            migrationVersions={selectedRiSc.migrationStatus?.migrationVersions}
+          />
+        </>
       )}
       <RiScPublishDialog
         openDialog={publishRiScDialogIsOpen}
         handlePublish={handleApproveAndPublish}
         handleCancel={() => setPublishRiScDialogIsOpen(false)}
-      />
-      <RiScMigrationDialog
-        openDialog={migrationDialogIsOpen}
-        handleUpdate={handleUpdate}
-        handleCancel={() => setMigrationDialogIsOpen(false)}
       />
     </InfoCard>
   );
