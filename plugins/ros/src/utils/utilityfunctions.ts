@@ -1,4 +1,4 @@
-import { ProcessingStatus, RiSc, Risk } from './types';
+import { ProcessingStatus, RiSc, Risk, Scenario } from './types';
 import {
   consequenceOptions,
   latestSupportedVersion,
@@ -56,6 +56,18 @@ export const emptyRiSc = (): RiSc => ({
   scenarios: [],
 });
 
+export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
+  if (array1.length !== array2.length) {
+    return true;
+  }
+  return array1.reduce((returnValue, currentElement, index) => {
+    if (currentElement !== array2[index]) {
+      return true;
+    }
+    return returnValue;
+  }, false);
+}
+
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
 export const requiresNewApproval = (
   oldRiSc: RiSc,
@@ -66,31 +78,56 @@ export const requiresNewApproval = (
   }
   let requiresApproval = false;
 
-  oldRiSc.scenarios.forEach((oldScenario, index) => {
-    const updatedScenario = updatedRiSc.scenarios[index];
+  const updatedScenarioMap = new Map<string, Scenario>(
+    updatedRiSc.scenarios.map(scenario => [scenario.ID, scenario]),
+  );
 
-    if (oldScenario.threatActors !== updatedScenario.threatActors)
-      requiresApproval = true;
-    if (oldScenario.vulnerabilities !== updatedScenario.vulnerabilities)
-      requiresApproval = true;
+  oldRiSc.scenarios.forEach(oldScenario => {
+    const updatedScenario = updatedScenarioMap.get(oldScenario.ID);
 
-    if (oldScenario.risk.probability !== updatedScenario.risk.probability)
+    if (!updatedScenario) {
       requiresApproval = true;
-    if (oldScenario.risk.consequence !== updatedScenario.risk.consequence)
-      requiresApproval = true;
-    if (oldScenario.actions.length !== updatedScenario.actions.length)
-      requiresApproval = true;
+      return;
+    }
 
+    if (
+      arrayNotEquals(oldScenario.threatActors, updatedScenario.threatActors)
+    ) {
+      requiresApproval = true;
+    }
+
+    if (
+      arrayNotEquals(
+        oldScenario.vulnerabilities,
+        updatedScenario.vulnerabilities,
+      )
+    ) {
+      requiresApproval = true;
+    }
+
+    if (oldScenario.risk.probability !== updatedScenario.risk.probability) {
+      requiresApproval = true;
+    }
+
+    if (oldScenario.risk.consequence !== updatedScenario.risk.consequence) {
+      requiresApproval = true;
+    }
+
+    if (oldScenario.actions.length !== updatedScenario.actions.length) {
+      requiresApproval = true;
+    }
     if (
       oldScenario.remainingRisk.probability !==
       updatedScenario.remainingRisk.probability
-    )
+    ) {
       requiresApproval = true;
+    }
     if (
       oldScenario.remainingRisk.consequence !==
       updatedScenario.remainingRisk.consequence
-    )
+    ) {
       requiresApproval = true;
+    }
   });
   return requiresApproval;
 };
