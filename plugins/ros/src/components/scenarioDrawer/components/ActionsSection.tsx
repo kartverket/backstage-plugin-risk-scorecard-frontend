@@ -29,9 +29,6 @@ export const ActionsSection = ({
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'actions',
-    rules: {
-      required: true,
-    },
   });
 
   if (isEditing) {
