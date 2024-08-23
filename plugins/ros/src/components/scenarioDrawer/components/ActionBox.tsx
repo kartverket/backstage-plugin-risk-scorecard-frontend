@@ -131,7 +131,14 @@ export const ActionBox = ({
         <Typography sx={{ ...label, marginTop: 1 }}>
           {t('dictionary.description')}
         </Typography>
-        <Typography sx={body2}>{action.description}</Typography>
+        <Typography
+          sx={{
+            ...body2,
+            wordBreak: 'break-all',
+          }}
+        >
+          {action.description}
+        </Typography>
 
         <Box
           sx={{
@@ -145,7 +152,10 @@ export const ActionBox = ({
             <Typography sx={label}>{t('dictionary.url')}</Typography>
             {action.url ? (
               <Link
-                sx={body2}
+                sx={{
+                  ...body2,
+                  wordBreak: 'break-all',
+                }}
                 target="_blank"
                 rel="noreferrer"
                 href={
