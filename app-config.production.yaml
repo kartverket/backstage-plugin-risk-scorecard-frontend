@@ -70,7 +70,7 @@ catalog:
 #            displayName eq 'Spire-ros'
         user:
           filter: >
-            userPrincipalName in ('didrik.sather@bekk.no', 'frida.stovern@bekk.no', 'sara.eriksen@bekk.no', 'oscar.hafstad@bekk.no', 'julie.rossvold@bekk.no', 'ola.hoklie@bekk.no', 'maren.sofie.ringsby@bekk.no', 'jorn.ola.birkeland@bekk.no', 'havard.tollefsen@bekk.no', 'hans.sande@bekk.no', 'brage.fosso@bekk.nos')
+            userPrincipalName in ('didrik.sather@bekk.no', 'frida.stovern@bekk.no', 'sara.eriksen@bekk.no', 'oscar.hafstad@bekk.no', 'julie.rossvold@bekk.no', 'ola.hoklie@bekk.no', 'maren.sofie.ringsby@bekk.no', 'jorn.ola.birkeland@bekk.no', 'havard.tollefsen@bekk.no', 'hans.sande@bekk.no', 'brage.fosso@bekk.no')
         schedule:
           frequency: PT1H
           timeout: PT50M
