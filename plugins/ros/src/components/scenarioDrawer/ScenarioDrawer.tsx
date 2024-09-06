@@ -162,7 +162,7 @@ export const ScenarioDrawer = () => {
 
       {response &&
         response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
-          <Alert severity={getAlertSeverity(response.status)}>
+          <Alert severity={getAlertSeverity(riScUpdateStatus)}>
             <Typography>{response.statusMessage}</Typography>
           </Alert>
         )}

@@ -89,6 +89,7 @@ export enum ProcessingStatus {
   EncryptionFailed = 'EncryptionFailed',
   CouldNotCreateBranch = 'CouldNotCreateBranch',
   UpdatedRiSc = 'UpdatedRiSc',
+  UpdatedRiScRequiresNewApproval = 'UpdatedRiScRequiresNewApproval',
   CreatedRiSc = 'CreatedRiSc',
   CreatedPullRequest = 'CreatedPullRequest',
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',

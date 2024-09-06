@@ -1,5 +1,5 @@
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
@@ -22,6 +22,8 @@ import {
   riScToDTOString,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
+import { pluginRiScTranslationRef } from './translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 const useGithubRepositoryInformation = (): GithubRepoInfo => {
   const [, org, repo] =
@@ -35,23 +37,6 @@ const useGithubRepositoryInformation = (): GithubRepoInfo => {
   };
 };
 
-const useResponse = (): [
-  SubmitResponseObject | null,
-  (submitStatus: SubmitResponseObject) => void,
-] => {
-  const [submitResponse, setSubmitResponse] =
-    useState<SubmitResponseObject | null>(null);
-
-  const displaySubmitResponse = (submitStatus: SubmitResponseObject) => {
-    setSubmitResponse(submitStatus);
-    setTimeout(() => {
-      setSubmitResponse(null);
-    }, 10000);
-  };
-
-  return [submitResponse, displaySubmitResponse];
-};
-
 export const useAuthenticatedFetch = () => {
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
@@ -62,13 +47,36 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
+
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const useResponse = (): [
+    SubmitResponseObject | null,
+    (submitStatus: SubmitResponseObject | null) => void,
+  ] => {
+    const [submitResponse, setSubmitResponse] =
+      useState<SubmitResponseObject | null>(null);
+
+    const displaySubmitResponse = useCallback(
+      (submitStatus: SubmitResponseObject | null) => {
+        setSubmitResponse(submitStatus);
+        setTimeout(() => {
+          setSubmitResponse(null);
+        }, 10000);
+      },
+      [],
+    );
+
+    return [submitResponse, displaySubmitResponse];
+  };
+
   const [response, setResponse] = useResponse();
 
-  const authenticatedFetch = <T>(
+  const authenticatedFetch = <T, K>(
     uri: string,
     method: 'GET' | 'POST' | 'PUT',
     onSuccess: (response: T) => void,
-    onError: (error: T) => void,
+    onError: (error: K) => void,
     body?: string,
   ) => {
     Promise.all([
@@ -83,16 +91,19 @@ export const useAuthenticatedFetch = () => {
           'Content-Type': 'application/json',
         },
         body: body,
-      })
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(`HTTP error! Status: ${res.status}`);
-          }
-          return res.json();
-        })
-        .then(json => json as T)
-        .then(res => onSuccess(res))
-        .catch(error => onError(error));
+      }).then(res => {
+        if (!res.ok) {
+          return res
+            .json()
+            .then(json => json as K)
+            .then(typedJson => onError(typedJson))
+            .catch(error => onError(error));
+        }
+        return res
+          .json()
+          .then(json => json as T)
+          .then(typedJson => onSuccess(typedJson));
+      });
     });
   };
 
@@ -100,14 +111,14 @@ export const useAuthenticatedFetch = () => {
     onSuccess: (response: RiScContentResultDTO[]) => void,
     onError?: () => void,
   ) =>
-    authenticatedFetch<RiScContentResultDTO[]>(
+    authenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
       uriToFetchAllRiScs,
       'GET',
       onSuccess,
       () => {
         if (onError) onError();
         setResponse({
-          statusMessage: 'Failed to fetch risc scorecards',
+          statusMessage: t('errorMessages.FailedToFetchRiScs'),
           status: ProcessingStatus.ErrorWhenFetchingRiScs,
         });
       },
@@ -116,10 +127,10 @@ export const useAuthenticatedFetch = () => {
   const publishRiScs = (
     riScId: string,
     onSuccess?: (response: PublishRiScResultDTO) => void,
-    onError?: (error: PublishRiScResultDTO) => void,
+    onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
     identityApi.getProfileInfo().then(profile =>
-      authenticatedFetch<PublishRiScResultDTO>(
+      authenticatedFetch<PublishRiScResultDTO, ProcessRiScResultDTO>(
         uriToPublishRiSc(riScId),
         'POST',
         res => {
@@ -140,7 +151,7 @@ export const useAuthenticatedFetch = () => {
     onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
     identityApi.getProfileInfo().then(profile =>
-      authenticatedFetch<ProcessRiScResultDTO>(
+      authenticatedFetch<ProcessRiScResultDTO, ProcessRiScResultDTO>(
         riScUri,
         'POST',
         res => {
@@ -161,7 +172,7 @@ export const useAuthenticatedFetch = () => {
     onError?: (error: ProcessRiScResultDTO) => void,
   ) => {
     identityApi.getProfileInfo().then(profile =>
-      authenticatedFetch<ProcessRiScResultDTO>(
+      authenticatedFetch<ProcessRiScResultDTO, ProcessRiScResultDTO>(
         uriToFetchRiSc(riSc.id),
         'PUT',
         res => {
@@ -169,6 +180,7 @@ export const useAuthenticatedFetch = () => {
           if (onSuccess) onSuccess(res);
         },
         error => {
+          setResponse(error);
           if (onError) onError(error);
         },
         riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!, profile),

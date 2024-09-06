@@ -9,15 +9,20 @@ import {
 } from '../utils/types';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import { requiresNewApproval } from '../utils/utilityfunctions';
+import {
+  getTranslationKey,
+  requiresNewApproval,
+} from '../utils/utilityfunctions';
 import { riScRouteRef } from '../routes';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { dtoToRiSc, RiScDTO } from '../utils/DTOs';
 import { useEffectOnce } from 'react-use';
 import { useAuthenticatedFetch } from '../utils/hooks';
 import { latestSupportedVersion } from '../utils/constants';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
-type RiScUpdateStatus = {
+export type RiScUpdateStatus = {
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;
@@ -36,6 +41,7 @@ type RiScDrawerProps = {
   approveRiSc: () => void;
   riScUpdateStatus: RiScUpdateStatus;
   resetRiScStatus: () => void;
+  resetResponse: () => void;
   isFetching: boolean;
   response: SubmitResponseObject | null;
 };
@@ -48,6 +54,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const getRiScPath = useRouteRef(riScRouteRef);
   const [isRequesting, setIsRequesting] = useState<boolean>(false);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const {
     fetchRiScs,
@@ -106,11 +113,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           .map(risk => risk.riScId);
 
         if (errorRiScs.length > 0) {
-          const errorMessage = `Failed to fetch risc scorecards with ids: ${errorRiScs.join(
-            ', ',
-          )}`;
+          const errorRiScIds = errorRiScs.join(', ');
           setResponse({
-            statusMessage: errorMessage,
+            statusMessage: t('errorMessages.ErrorWhenFetchingRiScs').concat(
+              errorRiScIds,
+            ),
             status: ProcessingStatus.ErrorWhenFetchingRiScs,
           });
         }
@@ -131,12 +138,14 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         // If there is an invalid RiSc ID in the URL, navigate to the first RiSc with error state
         if (!riSc) {
           navigate(getRiScPath({ riScId: fetchedRiScs[0].id }), {
-            state: 'The risk scorecard you are trying to open does not exist',
+            state: t('errorMessages.RiScDoesNotExist'),
           });
           return;
         }
       },
-      () => setIsFetching(false),
+      () => {
+        setIsFetching(false);
+      },
     );
   });
 
@@ -158,6 +167,10 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
+  const resetResponse = useCallback(() => {
+    setResponse(null);
+  }, [setResponse]);
+
   const selectRiSc = (title: string) => {
     const selectedRiScId = riScs?.find(
       riSc => riSc.content.title === title,
@@ -177,11 +190,10 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     };
     postRiScs(
       newRiSc,
-      res2 => {
-        if (!res2.riScId) throw new Error('No RiSc ID returned');
-
+      res => {
+        if (!res.riScId) throw new Error('No RiSc ID returned');
         const riScWithMetaData: RiScWithMetadata = {
-          id: res2.riScId,
+          id: res.riScId,
           status: RiScStatus.Draft,
           content: riSc,
           schemaVersion: riSc.schemaVersion,
@@ -190,20 +202,35 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         setRiScs(riScs ? [...riScs, riScWithMetaData] : [riScWithMetaData]);
         setSelectedRiSc(riScWithMetaData);
         setIsFetching(false);
-        navigate(getRiScPath({ riScId: res2.riScId }));
+        navigate(getRiScPath({ riScId: res.riScId }));
+        setResponse({
+          ...res,
+          statusMessage: getTranslationKey('info', res.status, t),
+        });
+        setRiScUpdateStatus({
+          isLoading: false,
+          isError: false,
+          isSuccess: true,
+        });
       },
-      () => {
+      error => {
         setSelectedRiSc(selectedRiSc);
         setIsFetching(false);
+        setRiScUpdateStatus({
+          isLoading: false,
+          isError: true,
+          isSuccess: false,
+        });
+
+        setResponse({
+          ...error,
+          statusMessage: getTranslationKey('error', error.status, t),
+        });
       },
     );
   };
 
-  const updateRiSc = (
-    riSc: RiSc,
-    onSuccess?: () => void,
-    onError?: () => void,
-  ) => {
+  const updateRiSc = (riSc: RiSc) => {
     if (selectedRiSc && riScs) {
       const isRequiresNewApproval =
         selectedRiSc.migrationStatus?.migrationRequiresNewApproval ||
@@ -231,7 +258,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       });
       putRiScs(
         updatedRiSc,
-        () => {
+        res => {
           setRiScUpdateStatus({
             isLoading: false,
             isError: false,
@@ -242,16 +269,23 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
           );
           setIsRequesting(false);
-          if (onSuccess) onSuccess();
+          setResponse({
+            ...res,
+            statusMessage: getTranslationKey('info', res.status, t),
+          });
         },
-        () => {
+        error => {
           setRiScUpdateStatus({
             isLoading: false,
             isError: true,
             isSuccess: false,
           });
           setIsRequesting(false);
-          if (onError) onError();
+
+          setResponse({
+            ...error,
+            statusMessage: getTranslationKey('error', error.status, t),
+          });
         },
       );
     }
@@ -259,16 +293,46 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 
   const approveRiSc = () => {
     if (selectedRiSc && riScs) {
-      publishRiScs(selectedRiSc.id, res => {
-        const prUrl = res.pendingApproval?.pullRequestUrl;
-        const updatedRiSc = {
-          ...selectedRiSc,
-          status: RiScStatus.SentForApproval,
-          pullRequestUrl: prUrl,
-        };
-        setSelectedRiSc(updatedRiSc);
-        setRiScs(riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)));
+      setRiScUpdateStatus({
+        isLoading: true,
+        isError: false,
+        isSuccess: false,
       });
+      publishRiScs(
+        selectedRiSc.id,
+        res => {
+          const prUrl = res.pendingApproval?.pullRequestUrl;
+          const updatedRiSc = {
+            ...selectedRiSc,
+            status: RiScStatus.SentForApproval,
+            pullRequestUrl: prUrl,
+          };
+          setSelectedRiSc(updatedRiSc);
+          setRiScs(
+            riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
+          );
+          setRiScUpdateStatus({
+            isLoading: false,
+            isError: false,
+            isSuccess: true,
+          });
+          setResponse({
+            ...res,
+            statusMessage: getTranslationKey('info', res.status, t),
+          });
+        },
+        error => {
+          setRiScUpdateStatus({
+            isLoading: false,
+            isError: true,
+            isSuccess: false,
+          });
+          setResponse({
+            ...error,
+            statusMessage: getTranslationKey('error', error.status, t),
+          });
+        },
+      );
     }
   };
 
@@ -281,6 +345,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     approveRiSc,
     riScUpdateStatus,
     resetRiScStatus,
+    resetResponse,
     isRequesting,
     isFetching,
     response,
