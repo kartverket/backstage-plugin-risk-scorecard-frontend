@@ -21,6 +21,10 @@ type ActionFormItemProps = {
   index: number;
   remove: UseFieldArrayRemove;
   showTitleNumber?: boolean;
+  setDeleteActionConfirmationIsOpen?: (
+    deleteActionConfirmationIsOpen: boolean,
+  ) => void;
+  handleDelete?: () => void;
 };
 
 export function ActionFormItem({
@@ -28,6 +32,7 @@ export function ActionFormItem({
   index,
   remove,
   showTitleNumber = true,
+  handleDelete,
 }: ActionFormItemProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -52,7 +57,6 @@ export function ActionFormItem({
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
-
             alignItems: 'center',
           }}
         >
@@ -61,10 +65,13 @@ export function ActionFormItem({
               {t('dictionary.measure')} {index + 1}
             </Typography>
           ) : (
-            <Typography sx={heading3}>Rediger</Typography>
+            <Typography sx={heading3}>{t('dictionary.edit')}</Typography>
           )}
-          <IconButton onClick={() => remove(index)} color="primary">
-            <DeleteIcon aria-label="Edit" />
+          <IconButton
+            onClick={() => (handleDelete ? handleDelete() : remove(index))}
+            color="primary"
+          >
+            <DeleteIcon aria-label="Delete" />
           </IconButton>
         </Box>
         <Input

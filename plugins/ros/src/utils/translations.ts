@@ -197,6 +197,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       deleteScenarioButton: 'Delete scenario',
       deleteScenarioConfirmation:
         'Are you sure you want to delete this scenario?',
+      deleteActionButton: 'Delete action',
+      deleteActionConfirmation: 'Are you sure you want to delete this action?',
       closeConfirmation: 'Do you want to save your changes?',
     },
     consequenceTable: {
@@ -455,6 +457,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.deleteScenarioButton': 'Slett scenario',
           'scenarioDrawer.deleteScenarioConfirmation':
             'Er du sikker på at du vil slette scenario?',
+          'scenarioDrawer.deleteActionButton': 'Slett tiltak',
+          'scenarioDrawer.deleteActionConfirmation':
+            'Er du sikker på at du vil slette tiltak?',
           'scenarioDrawer.closeConfirmation': 'Vil du lagre endringene dine?',
 
           'consequenceTable.rows.1': 'Ubetydelig',
