@@ -39,7 +39,7 @@ export const RiScDifferenceDialog = ({
       >
         {parsedDateString &&
           t('rosStatus.difference.publishDate', {
-            date: parsedDateString,
+            date: parsedDateString.toUTCString(),
           })}
       </Typography>
       <Box>
