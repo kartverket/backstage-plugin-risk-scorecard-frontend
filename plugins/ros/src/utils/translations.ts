@@ -389,7 +389,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'infoDialog.title': 'Estimert risiko',
           'infoDialog.description':
-            'Den estimerte risikoen er basert på hvor stor risiko de forskjellige scenariene utgjør. Hvis det er stor sannsynlighet for at en alvorlig konsekvens skjer er det høy risiko for at det kan bli en stor kostnad for Kartverket. Kostnaden er med andre ord et forsøk på å konkretisere verdien av risiko og er summen av den estimerte risikoen for alle risikoscenariene i denne ROS-analysen.',
+            'Den estimerte risikoen er basert på hvor stor risiko de forskjellige scenariene utgjør. Hvis det er stor sannsynlighet for at en alvorlig konsekvens skjer er det høy risiko for at det kan bli en stor kostnad for organisasjonen. Kostnaden er med andre ord et forsøk på å konkretisere verdien av risiko og er summen av den estimerte risikoen for alle risikoscenariene i denne ROS-analysen.',
           'infoDialog.calculatedHowTitle':
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
