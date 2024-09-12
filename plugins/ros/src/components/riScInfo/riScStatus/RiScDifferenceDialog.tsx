@@ -25,7 +25,7 @@ export const RiScDifferenceDialog = ({
   );
 
   const parsedDateString = formatedDateString
-    ? parseISO(formatedDateString)
+    ? parseISO(formatedDateString).toLocaleDateString()
     : null;
   return (
     <Box>
@@ -39,11 +39,18 @@ export const RiScDifferenceDialog = ({
       >
         {parsedDateString &&
           t('rosStatus.difference.publishDate', {
-            date: parsedDateString.toUTCString(),
+            date: parsedDateString,
           })}
       </Typography>
       <Box>
-        <Typography variant="h3">Endringer</Typography>
+        <Typography
+          variant="h3"
+          sx={{
+            fontSize: 18,
+          }}
+        >
+          {'Endringer'.toUpperCase()}
+        </Typography>
         <Card
           sx={{
             backgroundColor: 'rgb(51, 51, 51)',

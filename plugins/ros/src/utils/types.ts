@@ -124,15 +124,14 @@ export type Difference = {
 };
 
 export type DifferenceDTO = {
-  status: "Success" | "GithubFailure" | "JsonFailure" | "DecryptionFailure";
+  status: 'Success' | 'GithubFailure' | 'JsonFailure' | 'DecryptionFailure';
   differenceState: Difference;
   errorMessage?: string;
   defaultLastModifiedDateString: string;
-}
+};
 
 export type DifferenceFetchState = Modify<
   DifferenceDTO,
   'status',
   DifferenceDTO['status'] | null
 > & { isLoading: boolean; currentDifferenceId: string };
-

@@ -56,19 +56,20 @@ export const pluginRiScTranslationRef = createTranslationRef({
         },
       },
       difference: {
-        description: "Summary of changes that will be approved.",
-        publishDate: "ROS was published {{date}}",
-        fetching: "Fetching changes",
-        error: "Error while fetching changes",
-        newROS: "No published Risk scorecards to compare with",
+        description: 'Summary of changes that will be approved by risk owner.',
+        publishDate: 'Last published changes {{date}}',
+        fetching: 'Fetching changes',
+        error: 'Error while fetching changes',
+        newROS: 'No published Risk scorecards to compare with',
         differences: {
-          noneRemoved: "Nothing is removed",
-          titleRemoved: "REMOVED FROM ROS-ANALYSIS",
-          titleExisting: "CHANGED EXISTING ROS-ANALYSIS",
-          noneExisting: "Nothing is changed",
-          titleAdded: "ADDED TO ROS-ANALYSIS",
-          noneAdded: "Nothing is added"
-        }
+          title: 'Changes',
+          noneRemoved: 'Nothing is removed',
+          titleRemoved: 'Removed from ROS-analysis',
+          titleExisting: 'Changed existing ROS-analysis',
+          noneExisting: 'Nothing is changed',
+          titleAdded: 'Added to ROS-analysis',
+          noneAdded: 'Nothing is added',
+        },
       },
       prStatus: ' Pending pull request in ', // Avventer godkjenning av PR i Github
       approveButton: 'Accept risks', // Godkjenn ROS
@@ -365,16 +366,25 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.prStatus': ' Avventer godkjenning av pull request i ',
           'rosStatus.approveButton': 'Godkjenn ROS',
           'rosStatus.moreInformationButton': 'Mer informasjon',
-          'rosStatus.difference.description': 'Oppsummering av endringer som må godkjennes.',
-          'rosStatus.difference.publishDate': 'Ros publisert {{date}}',
+          'rosStatus.difference.description':
+            'Oppsummering av endringer som må godkjennes av risikoeier.',
+          'rosStatus.difference.publishDate':
+            'Siste publiserte endringer {{date}}',
           'rosStatus.difference.fetching': 'Henter endringer',
           'rosStatus.difference.error': 'Feil med uthenting av endringer',
-          'rosStatus.difference.newROS': 'Ingen publiserte ROS-analyser å sammenligne med',
-          'rosStatus.difference.differences.titleRemoved': 'FJERNET FRA ROS-ANALYSE',
-          'rosStatus.difference.differences.noneRemoved': 'Ingenting er fjernet',
-          'rosStatus.difference.differences.titleExisting': 'ENDRET EKSISTERENDE ROS-ANALYSE',
-          'rosStatus.difference.differences.noneExisting': 'Ingenting er endret',
-          'rosStatus.difference.differences.titleAdded': 'LAGT TIL I ROS-ANALYSE',
+          'rosStatus.difference.newROS':
+            'Ingen publiserte ROS-analyser å sammenligne med',
+          'rosStatus.difference.differences.title': 'ENDRINGER',
+          'rosStatus.difference.differences.titleRemoved':
+            'Fjernet fra ROS-analyse',
+          'rosStatus.difference.differences.noneRemoved':
+            'Ingenting er fjernet',
+          'rosStatus.difference.differences.titleExisting':
+            'Endret eksisterende ROS-analyse',
+          'rosStatus.difference.differences.noneExisting':
+            'Ingenting er endret',
+          'rosStatus.difference.differences.titleAdded':
+            'Lagt til i ROS-analyse',
           'rosStatus.difference.differences.noneAdded': 'Ingenting er lagt til',
 
           'publishDialog.title': 'Godkjenn ROS-analyse',

@@ -20,17 +20,21 @@ export const DifferenceText = ({
       <Typography
         sx={{
           fontWeight: 700,
-          paddingBottom: '10px',
+          paddingBottom: '4px',
         }}
       >
         {t('rosStatus.difference.differences.titleRemoved')}
       </Typography>
-      <List sx={{ paddingBottom: '40px', listStyleType: 'disc' }}>
+      <List
+        sx={{ paddingBottom: '40px', paddingTop: 0, listStyleType: 'disc' }}
+      >
         {differenceFetchState.differenceState.entriesOnLeft.length === 0 && (
           <ListItem
             sx={{
               display: 'list-item',
               marginLeft: '26px',
+              paddingTop: '4px',
+              paddingBottom: '4px',
             }}
           >
             <Typography>
@@ -44,6 +48,8 @@ export const DifferenceText = ({
             sx={{
               display: 'list-item',
               marginLeft: '26px',
+              paddingTop: '4px',
+              paddingBottom: '4px',
             }}
           >
             <Typography>{item}</Typography>
@@ -54,17 +60,21 @@ export const DifferenceText = ({
       <Typography
         sx={{
           fontWeight: 700,
-          paddingBottom: '10px',
+          paddingBottom: '4px',
         }}
       >
         {t('rosStatus.difference.differences.titleExisting')}
       </Typography>
-      <List sx={{ paddingBottom: '40px', listStyleType: 'disc' }}>
+      <List
+        sx={{ paddingBottom: '40px', paddingTop: 0, listStyleType: 'disc' }}
+      >
         {differenceFetchState.differenceState.difference.length === 0 && (
           <ListItem
             sx={{
               display: 'list-item',
               marginLeft: '26px',
+              paddingTop: '4px',
+              paddingBottom: '4px',
             }}
           >
             <Typography>
@@ -78,6 +88,8 @@ export const DifferenceText = ({
             sx={{
               display: 'list-item',
               marginLeft: '26px',
+              paddingTop: '4px',
+              paddingBottom: '4px',
             }}
           >
             <Typography>{item}</Typography>
@@ -88,17 +100,19 @@ export const DifferenceText = ({
       <Typography
         sx={{
           fontWeight: 700,
-          paddingBottom: '10px',
+          paddingBottom: '4px',
         }}
       >
         {t('rosStatus.difference.differences.titleAdded')}
       </Typography>
-      <List sx={{ listStyleType: 'disc' }}>
+      <List sx={{ listStyleType: 'disc', paddingTop: 0 }}>
         {differenceFetchState.differenceState.entriesOnRight.length === 0 && (
           <ListItem
             sx={{
               display: 'list-item',
               marginLeft: '26px',
+              paddingTop: '4px',
+              paddingBottom: '4px',
             }}
           >
             <Typography>
@@ -112,6 +126,8 @@ export const DifferenceText = ({
             sx={{
               display: 'list-item',
               marginLeft: '26px',
+              paddingTop: '4px',
+              paddingBottom: '4px',
             }}
           >
             <Typography>{item}</Typography>
