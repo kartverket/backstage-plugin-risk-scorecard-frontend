@@ -29,7 +29,7 @@ export const RiScDifferenceDialog = ({
     : null;
   return (
     <Box>
-      <Typography sx={{}}>{t('rosStatus.difference.description')}</Typography>
+      <Typography>{t('rosStatus.difference.description')}</Typography>
       <Typography
         sx={{
           fontWeight: 700,
@@ -49,7 +49,7 @@ export const RiScDifferenceDialog = ({
             fontSize: 18,
           }}
         >
-          {'Endringer'.toUpperCase()}
+          {t('rosStatus.difference.differences.title')}
         </Typography>
         <Card
           sx={{

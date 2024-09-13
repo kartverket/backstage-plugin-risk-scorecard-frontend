@@ -62,7 +62,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         error: 'Error while fetching changes',
         newROS: 'No published Risk scorecards to compare with',
         differences: {
-          title: 'Changes',
+          title: 'CHANGES',
           noneRemoved: 'Nothing is removed',
           titleRemoved: 'Removed from ROS-analysis',
           titleExisting: 'Changed existing ROS-analysis',
