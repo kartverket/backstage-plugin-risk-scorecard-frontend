@@ -51,17 +51,13 @@ export const ActionBox = ({
   const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
     useState(false);
 
-  const handleDelete = () => {
-    setDeleteActionConfirmationIsOpen(true);
-  };
-
   if (isEditing) {
     return (
       <>
         <ActionFormItem
           formMethods={formMethods}
           index={index}
-          handleDelete={handleDelete}
+          handleDelete={() => setDeleteActionConfirmationIsOpen(true)}
           showTitleNumber={false}
           remove={remove}
         />
