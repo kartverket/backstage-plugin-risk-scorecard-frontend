@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { RiskSection } from './components/RiskSection';
@@ -43,6 +43,8 @@ export const ScenarioDrawer = () => {
 
   const { riScUpdateStatus, response } = useRiScs();
 
+  const deleteScenarioRef = useRef<HTMLDivElement>(null);
+
   const formMethods = useForm<FormScenario>({
     defaultValues: mapScenarioToFormScenario(scenario),
     mode: 'onBlur',
@@ -77,6 +79,10 @@ export const ScenarioDrawer = () => {
   const onSubmitAndCloseDialog = () => {
     onSubmit();
     setShowCloseConfirmation(false);
+
+    if (deleteScenarioRef.current) {
+      deleteScenarioRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
@@ -171,15 +177,17 @@ export const ScenarioDrawer = () => {
             )}
           </Button>
         )}
-        <Button
-          startIcon={<DeleteIcon />}
-          variant="text"
-          color="primary"
-          onClick={() => setDeleteConfirmationIsOpen(true)}
-          sx={{ marginLeft: 'auto' }}
-        >
-          {t('scenarioDrawer.deleteScenarioButton')}
-        </Button>
+        <div ref={deleteScenarioRef}>
+          <Button
+            startIcon={<DeleteIcon />}
+            variant="text"
+            color="primary"
+            onClick={() => setDeleteConfirmationIsOpen(true)}
+            sx={{ marginLeft: 'auto' }}
+          >
+            {t('scenarioDrawer.deleteScenarioButton')}
+          </Button>
+        </div>
       </Box>
 
       {response &&
