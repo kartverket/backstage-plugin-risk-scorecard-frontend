@@ -124,7 +124,11 @@ export const ScenarioDrawer = () => {
           <RiskSection />
         </>
       )}
-      <ActionsSection formMethods={formMethods} isEditing={isEditing} />
+      <ActionsSection
+        formMethods={formMethods}
+        isEditing={isEditing}
+        onSubmit={onSubmit}
+      />
       <Box
         sx={{
           display: 'flex',
