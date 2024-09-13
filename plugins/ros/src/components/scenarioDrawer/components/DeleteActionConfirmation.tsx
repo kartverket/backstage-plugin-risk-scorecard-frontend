@@ -12,7 +12,6 @@ import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 export const DeleteActionConfirmation = ({
   deleteActionConfirmationIsOpen,
   setDeleteActionConfirmationIsOpen,
-
   remove,
   index,
   onSubmit,
@@ -27,19 +26,10 @@ export const DeleteActionConfirmation = ({
   onSubmit: () => void;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  // const { selectedRiSc: riSc } = useRiScs();
-  // const { scenario } = useScenario();
-  // const { submitEditedScenarioToRiSc } = useScenario();
 
   const confirmDeletion = () => {
-    // riSc.content.scenarios.forEach(s => {
-    //   if (s.ID === scenario.ID) {
-    //     const updatedActions = s.actions.filter(action => action.ID !== id);
-    //     const updatedScenario = { ...s, actions: updatedActions };
-
     remove(index);
     onSubmit();
-    // submitEditedScenarioToRiSc(updatedScenario);
     setDeleteActionConfirmationIsOpen(false);
   };
 
