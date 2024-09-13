@@ -20,6 +20,7 @@ import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
 import Typography from '@mui/material/Typography';
 import { MatrixDialog } from '../riScDialog/MatrixDialog';
+import { CloseConfirmation } from '../scenarioWizard/components/CloseConfirmation';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -36,6 +37,8 @@ export const ScenarioDrawer = () => {
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
 
+  const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+
   const [isMatrixDialogOpen, setIsMatrixDialogOpen] = useState<boolean>(false);
 
   const { riScUpdateStatus, response } = useRiScs();
@@ -50,9 +53,19 @@ export const ScenarioDrawer = () => {
     setIsEditing(false);
   };
 
-  const onClose = () => {
+  const handleClose = () => {
     closeScenarioForm();
     setIsEditing(false);
+    setShowCloseConfirmation(false);
+  };
+
+  const onClose = () => {
+    if (formMethods.formState.isDirty) {
+      setShowCloseConfirmation(true);
+    } else {
+      closeScenarioForm();
+      setIsEditing(false);
+    }
   };
 
   const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
@@ -60,6 +73,11 @@ export const ScenarioDrawer = () => {
       setIsEditing(false),
     );
   });
+
+  const onSubmitAndCloseDialog = () => {
+    onSubmit();
+    setShowCloseConfirmation(false);
+  };
 
   useEffect(() => {
     formMethods.reset(mapScenarioToFormScenario(scenario));
@@ -174,6 +192,11 @@ export const ScenarioDrawer = () => {
       <MatrixDialog
         open={isMatrixDialogOpen}
         close={() => setIsMatrixDialogOpen(false)}
+      />
+      <CloseConfirmation
+        isOpen={showCloseConfirmation}
+        close={handleClose}
+        save={onSubmitAndCloseDialog}
       />
     </Drawer>
   );
