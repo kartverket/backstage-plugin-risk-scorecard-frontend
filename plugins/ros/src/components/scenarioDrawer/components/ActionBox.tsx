@@ -17,12 +17,14 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
 import CircularProgress from '@mui/material/CircularProgress';
+import { DeleteActionConfirmation } from './DeleteActionConfirmation';
 
 interface ActionBoxProps {
   action: Action;
   index: number;
   formMethods: UseFormReturn<FormScenario>;
   remove: () => void;
+  onSubmit: () => void;
 }
 
 export const ActionBox = ({
@@ -30,6 +32,7 @@ export const ActionBox = ({
   index,
   formMethods,
   remove,
+  onSubmit,
 }: ActionBoxProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -44,14 +47,19 @@ export const ActionBox = ({
 
   /* @ts-ignore Because ts can't typecheck strings against our keys */
   const translatedActionStatus = t(`actionStatus.${action.status}`);
+
+  const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
+    useState(false);
+
   if (isEditing) {
     return (
       <>
         <ActionFormItem
           formMethods={formMethods}
           index={index}
-          remove={remove}
+          handleDelete={() => setDeleteActionConfirmationIsOpen(true)}
           showTitleNumber={false}
+          remove={remove}
         />
         <ButtonGroup fullWidth>
           <Button
@@ -75,6 +83,14 @@ export const ActionBox = ({
 
           <Button onClick={() => setIsEditing(false)}>Avbryt</Button>
         </ButtonGroup>
+        <DeleteActionConfirmation
+          deleteActionConfirmationIsOpen={deleteActionConfirmationIsOpen}
+          setDeleteActionConfirmationIsOpen={setDeleteActionConfirmationIsOpen}
+          formMethods={formMethods}
+          index={index}
+          remove={remove}
+          onSubmit={onSubmit}
+        />
       </>
     );
   }
