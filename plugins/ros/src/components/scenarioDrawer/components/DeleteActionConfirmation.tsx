@@ -6,45 +6,41 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../../common/mixins';
-import { useRiScs } from '../../../contexts/RiScContext';
-import { useScenario } from '../../../contexts/ScenarioContext';
 import { FormScenario } from '../../../utils/types';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 
 export const DeleteActionConfirmation = ({
   deleteActionConfirmationIsOpen,
   setDeleteActionConfirmationIsOpen,
-  id,
+
   remove,
   index,
+  onSubmit,
 }: {
   deleteActionConfirmationIsOpen: boolean;
   setDeleteActionConfirmationIsOpen: (
     deleteActionConfirmationIsOpen: boolean,
   ) => void;
   formMethods: UseFormReturn<FormScenario>;
-  id: string;
   index: number;
   remove: UseFieldArrayRemove;
+  onSubmit: () => void;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { selectedRiSc: riSc } = useRiScs();
-  const { scenario } = useScenario();
-  const { submitEditedScenarioToRiSc } = useScenario();
+  // const { selectedRiSc: riSc } = useRiScs();
+  // const { scenario } = useScenario();
+  // const { submitEditedScenarioToRiSc } = useScenario();
 
   const confirmDeletion = () => {
-    if (riSc) {
-      riSc.content.scenarios.forEach(s => {
-        if (s.ID === scenario.ID) {
-          const updatedActions = s.actions.filter(action => action.ID !== id);
-          const updatedScenario = { ...s, actions: updatedActions };
-          remove(index);
-          submitEditedScenarioToRiSc(updatedScenario);
-        }
-      });
+    // riSc.content.scenarios.forEach(s => {
+    //   if (s.ID === scenario.ID) {
+    //     const updatedActions = s.actions.filter(action => action.ID !== id);
+    //     const updatedScenario = { ...s, actions: updatedActions };
 
-      setDeleteActionConfirmationIsOpen(false);
-    }
+    remove(index);
+    onSubmit();
+    // submitEditedScenarioToRiSc(updatedScenario);
+    setDeleteActionConfirmationIsOpen(false);
   };
 
   return (

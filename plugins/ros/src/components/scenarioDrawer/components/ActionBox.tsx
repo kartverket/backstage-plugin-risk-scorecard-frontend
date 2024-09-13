@@ -24,6 +24,7 @@ interface ActionBoxProps {
   index: number;
   formMethods: UseFormReturn<FormScenario>;
   remove: () => void;
+  onSubmit: () => void;
 }
 
 export const ActionBox = ({
@@ -31,6 +32,7 @@ export const ActionBox = ({
   index,
   formMethods,
   remove,
+  onSubmit,
 }: ActionBoxProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -94,9 +96,9 @@ export const ActionBox = ({
           deleteActionConfirmationIsOpen={deleteActionConfirmationIsOpen}
           setDeleteActionConfirmationIsOpen={setDeleteActionConfirmationIsOpen}
           formMethods={formMethods}
-          id={action.ID}
           index={index}
           remove={remove}
+          onSubmit={onSubmit}
         />
       </>
     );

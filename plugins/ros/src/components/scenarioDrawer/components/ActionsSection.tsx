@@ -17,11 +17,13 @@ import { AddCircle } from '@mui/icons-material';
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
   isEditing: boolean;
+  onSubmit: () => void;
 };
 
 export const ActionsSection = ({
   formMethods,
   isEditing,
+  onSubmit,
 }: ActionSectionProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -70,6 +72,7 @@ export const ActionsSection = ({
               index={index}
               formMethods={formMethods}
               remove={remove}
+              onSubmit={onSubmit}
             />
           </Fragment>
         ))
