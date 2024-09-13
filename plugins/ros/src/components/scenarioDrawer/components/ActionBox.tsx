@@ -66,12 +66,7 @@ export const ActionBox = ({
             color="primary"
             variant="contained"
             onClick={formMethods.handleSubmit((data: FormScenario) => {
-              submitEditedScenarioToRiSc(
-                mapFormScenarioToScenario(data),
-                () => {
-                  setIsEditing(false);
-                },
-              );
+              submitEditedScenarioToRiSc(mapFormScenarioToScenario(data));
             })}
             disabled={
               !formMethods.formState.isDirty || riScUpdateStatus.isLoading
