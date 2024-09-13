@@ -16,7 +16,6 @@ export const DifferenceText = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <>
-      {/* TODO: Translation og bedre tekst */}
       <Typography
         sx={{
           fontWeight: 700,
@@ -56,7 +55,6 @@ export const DifferenceText = ({
           </ListItem>
         ))}
       </List>
-      {/* TODO: Translation og bedre tekst */}
       <Typography
         sx={{
           fontWeight: 700,
@@ -96,7 +94,6 @@ export const DifferenceText = ({
           </ListItem>
         ))}
       </List>
-      {/* TODO: Translation og bedre tekst */}
       <Typography
         sx={{
           fontWeight: 700,
