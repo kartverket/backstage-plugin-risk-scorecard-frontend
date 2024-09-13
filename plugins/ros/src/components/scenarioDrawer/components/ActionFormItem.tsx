@@ -21,9 +21,6 @@ type ActionFormItemProps = {
   index: number;
   remove: UseFieldArrayRemove;
   showTitleNumber?: boolean;
-  setDeleteActionConfirmationIsOpen?: (
-    deleteActionConfirmationIsOpen: boolean,
-  ) => void;
   handleDelete?: () => void;
 };
 
