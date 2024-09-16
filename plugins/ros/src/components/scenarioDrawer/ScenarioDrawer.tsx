@@ -124,7 +124,11 @@ export const ScenarioDrawer = () => {
           <RiskSection />
         </>
       )}
-      <ActionsSection formMethods={formMethods} isEditing={isEditing} />
+      <ActionsSection
+        formMethods={formMethods}
+        isEditing={isEditing}
+        onSubmit={onSubmit}
+      />
       <Box
         sx={{
           display: 'flex',
@@ -162,7 +166,7 @@ export const ScenarioDrawer = () => {
 
       {response &&
         response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
-          <Alert severity={getAlertSeverity(response.status)}>
+          <Alert severity={getAlertSeverity(riScUpdateStatus)}>
             <Typography>{response.statusMessage}</Typography>
           </Alert>
         )}

@@ -6,6 +6,8 @@ import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { generateRandomId } from '../utils/utilityfunctions';
 import { useRiScs } from './RiScContext';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../utils/translations';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
@@ -83,6 +85,8 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
   const emptyFormScenario = (initialScenario: Scenario): FormScenario => ({
     ...initialScenario,
     risk: {
@@ -125,7 +129,7 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       // If there is an invalid scenario ID in the URL, navigate to the RiSc with error state
       if (!selectedScenario) {
         navigate(getRiScPath({ riScId: riSc.id }), {
-          state: 'Risikoscenarioet du prøver å åpne eksisterer ikke',
+          state: t('errorMessages.ScenarioDoesNotExist'),
         });
         return;
       }
@@ -133,7 +137,7 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       setScenario(selectedScenario);
       setIsDrawerOpen(true);
     }
-  }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams]);
+  }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams, t]);
 
   // SCENARIO DRAWER FUNCTIONS
   const openScenarioDrawer = (id: string) => {

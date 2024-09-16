@@ -40,6 +40,7 @@ export const RiScPlugin = () => {
     riScs,
     selectRiSc,
     isFetching,
+    resetResponse,
     resetRiScStatus,
     response,
     riScUpdateStatus,
@@ -51,14 +52,17 @@ export const RiScPlugin = () => {
   ) as ScenarioWizardSteps | null;
 
   useEffect(() => {
-    if (scenarioWizardStep !== null) resetRiScStatus();
-  }, [resetRiScStatus, scenarioWizardStep]);
+    if (scenarioWizardStep !== null) {
+      resetRiScStatus();
+      resetResponse();
+    }
+  }, [resetRiScStatus, resetResponse, scenarioWizardStep]);
 
   return (
     <>
-      {response && (
+      {response && !riScUpdateStatus.isLoading && (
         <Alert
-          severity={getAlertSeverity(response.status)}
+          severity={getAlertSeverity(riScUpdateStatus)}
           sx={{ marginBottom: 2 }}
         >
           <Typography>{response.statusMessage}</Typography>

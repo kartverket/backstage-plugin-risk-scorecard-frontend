@@ -27,6 +27,7 @@ import { heading1, label } from '../common/typography';
 import { useForm } from 'react-hook-form';
 import { FormScenario, Scenario } from '../../utils/types';
 import { useSearchParams } from 'react-router-dom';
+import { getAlertSeverity } from '../../utils/utilityfunctions';
 
 export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -154,9 +155,8 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
         <>
           {stepComponents[step]}
 
-          {response && riScUpdateStatus.isError && (
-            <Alert severity="error">
-              <Typography>{t('dictionary.saveError')}</Typography>
+          {response && (
+            <Alert severity={getAlertSeverity(riScUpdateStatus)}>
               <Typography>{response.statusMessage}</Typography>
             </Alert>
           )}
