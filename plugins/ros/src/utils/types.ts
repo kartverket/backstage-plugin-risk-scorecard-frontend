@@ -124,7 +124,12 @@ export type Difference = {
 };
 
 export type DifferenceDTO = {
-  status: 'Success' | 'GithubFailure' | 'JsonFailure' | 'DecryptionFailure';
+  status:
+    | 'Success'
+    | 'GithubFailure'
+    | 'JsonFailure'
+    | 'DecryptionFailure'
+    | 'GithubFileNotFound';
   differenceState: Difference;
   errorMessage?: string;
   defaultLastModifiedDateString: string;

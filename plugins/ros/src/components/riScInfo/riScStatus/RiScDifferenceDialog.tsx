@@ -78,7 +78,7 @@ export const RiScDifferenceDialog = ({
           )}
           {differenceFetchState.status !== null &&
             differenceFetchState.status !== 'Success' &&
-            differenceFetchState.status !== 'GithubFailure' && (
+            differenceFetchState.status !== 'GithubFileNotFound' && (
               <Box
                 sx={{
                   display: 'flex',
@@ -98,7 +98,7 @@ export const RiScDifferenceDialog = ({
               </Box>
             )}
           {differenceFetchState.status !== null &&
-            differenceFetchState.status === 'GithubFailure' && (
+            differenceFetchState.status === 'GithubFileNotFound' && (
               <Box
                 sx={{
                   display: 'flex',
