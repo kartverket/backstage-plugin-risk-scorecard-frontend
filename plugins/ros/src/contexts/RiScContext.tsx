@@ -167,6 +167,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
+  // use callback to avoid infinite loop
   const resetResponse = useCallback(() => {
     setResponse(null);
   }, [setResponse]);

@@ -57,6 +57,7 @@ export const useAuthenticatedFetch = () => {
     const [submitResponse, setSubmitResponse] =
       useState<SubmitResponseObject | null>(null);
 
+    // use callback to avoid infinite loop
     const displaySubmitResponse = useCallback(
       (submitStatus: SubmitResponseObject | null) => {
         setSubmitResponse(submitStatus);
