@@ -34,7 +34,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
       risk: 'Risk',
       save: 'Save',
       saveAndClose: 'Save and close',
-      saveError: 'Could not save scenario. Please try again.',
       scenario: 'Scenario',
       scope: 'Scope',
       status: 'Status',
@@ -288,6 +287,25 @@ export const pluginRiScTranslationRef = createTranslationRef({
       Completed: 'Completed',
       Aborted: 'Aborted',
     },
+    errorMessages: {
+      DefaultErrorMessage: 'An error occured',
+      ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
+      ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
+      ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
+      ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
+      FailedToFetchRiScs: 'Failed to fetch risk scorecards',
+      RiScDoesNotExist:
+        'The risk scorecard you are trying to open does not exist',
+      ScenarioDoesNotExist:
+        'The scenario you are trying to open does not exist',
+    },
+    infoMessages: {
+      CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
+      UpdatedRiSc: 'Risk scorecard updated',
+      UpdatedRiScRequiresNewApproval:
+        'Risk scorecard update and requires new approval',
+      CreatedRiSc: 'Created new risk scorecard successfully',
+    },
   },
 });
 
@@ -323,8 +341,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.risk': 'Risiko',
           'dictionary.save': 'Lagre',
           'dictionary.saveAndClose': 'Lagre og lukk',
-          'dictionary.saveError':
-            'Noe gikk galt ved lagring. Venligst prøv igjen.',
           'dictionary.scenario': 'Scenario',
           'dictionary.scope': 'Omfang',
           'dictionary.status': 'Status',
@@ -547,6 +563,31 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.On hold': 'På vent',
           'actionStatus.Completed': 'Fullført',
           'actionStatus.Aborted': 'Avbrutt',
+
+          'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
+          'errorMessages.ErrorWhenUpdatingRiSc':
+            'Kunne ikke lagre risiko- og sårbarhetsanalyse',
+          'errorMessages.ErrorWhenCreatingRiSc':
+            'Kunne ikke opprette risiko- og sårbarhetsanalyse',
+          'errorMessages.RiScDoesNotExist':
+            'Risiko- og sårbarhetsanalysen du prøver å åpne eksisterer ikke',
+          'errorMessages.ScenarioDoesNotExist':
+            'Scenariet du prøver å åpne eksisterer ikke',
+          'errorMessages.ErrorWhenCreatingPullRequest':
+            'Kunne ikke lagre godkjenning av risiko- og sårbarhetsanalysen',
+          'errorMessages.ErrorWhenFetchingRiScs':
+            'Kunne ikke hente risiko- og sårbarhetsanalyser med id-er: ',
+          'errorMessages.FailedToFetchRiScs':
+            'Kunne ikke hente risiko- og sårbarhetsanalyser',
+
+          'infoMessages.CreatedPullRequest':
+            'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
+          'infoMessages.UpdatedRiSc':
+            'Risiko- og sårbarhetsanalysen ble oppdatert',
+          'infoMessages.UpdatedRiScRequiresNewApproval':
+            'Risiko- og sårbarhetsanalysen ble oppdatert og trenger ny godkjenning',
+          'infoMessages.CreatedRiSc':
+            'Risiko- og sårbarhetsanalyse ble opprettet',
         },
       }),
   },

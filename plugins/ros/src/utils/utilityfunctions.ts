@@ -1,10 +1,11 @@
-import { ProcessingStatus, RiSc, Risk, Scenario } from './types';
+import { RiSc, Risk, Scenario } from './types';
 import {
   consequenceOptions,
   latestSupportedVersion,
   probabilityOptions,
   riskMatrix,
 } from './constants';
+import { RiScUpdateStatus } from '../contexts/RiScContext';
 
 export function generateRandomId(): string {
   return [...Array(5)]
@@ -24,16 +25,14 @@ export function formatNOK(amount: number): string {
 }
 
 export function getAlertSeverity(
-  status: ProcessingStatus,
-): 'error' | 'warning' | 'info' {
-  switch (status) {
-    case ProcessingStatus.UpdatedRiSc:
-    case ProcessingStatus.CreatedRiSc:
-    case ProcessingStatus.CreatedPullRequest:
-      return 'info';
-    default:
-      return 'warning';
+  updateStatus: RiScUpdateStatus,
+): 'error' | 'info' | 'warning' {
+  if (updateStatus.isSuccess) {
+    return 'info';
+  } else if (updateStatus.isError) {
+    return 'error';
   }
+  return 'warning';
 }
 
 export function getRiskMatrixColor(risiko: Risk) {
@@ -159,4 +158,15 @@ export function formatNumber(
     return getTranslationWithCorrectUnit(cost, 1e12, 'billion');
   }
   return getTranslationWithCorrectUnit(cost, 1e15, 'trillion');
+}
+
+export function getTranslationKey(
+  type: string,
+  key: string,
+  t: (s: any) => string,
+): string {
+  if (type === 'error') {
+    return t([`errorMessages.${key}`, 'errorMessages.DefaultErrorMessage']);
+  }
+  return t(`infoMessages.${key}`);
 }
