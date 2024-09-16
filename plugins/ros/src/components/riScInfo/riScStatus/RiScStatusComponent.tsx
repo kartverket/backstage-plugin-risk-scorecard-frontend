@@ -268,7 +268,7 @@ export const RiScStatusComponent = ({
       () => {
         setDifferenceFetchState({
           ...emptyDifferenceFetchState,
-          errorMessage: 'Noe gikk galt',
+          errorMessage: t('rosStatus.difference.error'),
         });
       },
     );
