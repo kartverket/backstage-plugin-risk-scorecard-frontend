@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { RiskSection } from './components/RiskSection';
@@ -20,6 +20,7 @@ import Alert from '@mui/material/Alert';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
 import Typography from '@mui/material/Typography';
 import { MatrixDialog } from '../riScDialog/MatrixDialog';
+import { CloseConfirmation } from '../scenarioWizard/components/CloseConfirmation';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -36,9 +37,15 @@ export const ScenarioDrawer = () => {
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
 
+  const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+
   const [isMatrixDialogOpen, setIsMatrixDialogOpen] = useState<boolean>(false);
 
   const { riScUpdateStatus, response } = useRiScs();
+
+  // Used to scroll to the bottom of the drawer when the user deletes a scenario
+  // via the quick edit and DeleteConfirmation
+  const deleteScenarioRef = useRef<HTMLDivElement>(null);
 
   const formMethods = useForm<FormScenario>({
     defaultValues: mapScenarioToFormScenario(scenario),
@@ -50,9 +57,19 @@ export const ScenarioDrawer = () => {
     setIsEditing(false);
   };
 
-  const onClose = () => {
+  const handleClose = () => {
     closeScenarioForm();
     setIsEditing(false);
+    setShowCloseConfirmation(false);
+  };
+
+  const onClose = () => {
+    if (formMethods.formState.isDirty) {
+      setShowCloseConfirmation(true);
+    } else {
+      closeScenarioForm();
+      setIsEditing(false);
+    }
   };
 
   const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
@@ -60,6 +77,15 @@ export const ScenarioDrawer = () => {
       setIsEditing(false),
     );
   });
+
+  const onSubmitAndCloseDialog = () => {
+    onSubmit();
+    setShowCloseConfirmation(false);
+
+    if (deleteScenarioRef.current) {
+      deleteScenarioRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     formMethods.reset(mapScenarioToFormScenario(scenario));
@@ -153,15 +179,17 @@ export const ScenarioDrawer = () => {
             )}
           </Button>
         )}
-        <Button
-          startIcon={<DeleteIcon />}
-          variant="text"
-          color="primary"
-          onClick={() => setDeleteConfirmationIsOpen(true)}
-          sx={{ marginLeft: 'auto' }}
-        >
-          {t('scenarioDrawer.deleteScenarioButton')}
-        </Button>
+        <div ref={deleteScenarioRef}>
+          <Button
+            startIcon={<DeleteIcon />}
+            variant="text"
+            color="primary"
+            onClick={() => setDeleteConfirmationIsOpen(true)}
+            sx={{ marginLeft: 'auto' }}
+          >
+            {t('scenarioDrawer.deleteScenarioButton')}
+          </Button>
+        </div>
       </Box>
 
       {response &&
@@ -178,6 +206,11 @@ export const ScenarioDrawer = () => {
       <MatrixDialog
         open={isMatrixDialogOpen}
         close={() => setIsMatrixDialogOpen(false)}
+      />
+      <CloseConfirmation
+        isOpen={showCloseConfirmation}
+        close={handleClose}
+        save={onSubmitAndCloseDialog}
       />
     </Drawer>
   );

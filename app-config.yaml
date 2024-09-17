@@ -98,9 +98,8 @@ catalog:
         clientId: ${AZURE_CLIENT_ID}
         clientSecret: ${AZURE_CLIENT_SECRET}
 
-        user:
-          filter: >
-            userPrincipalName in ('didrik.sather@bekk.no', 'frida.stovern@bekk.no', 'sara.eriksen@bekk.no', 'oscar.hafstad@bekk.no', 'julie.rossvold@bekk.no', 'ola.hoklie@bekk.no', 'maren.sofie.ringsby@bekk.no', 'jorn.ola.birkeland@bekk.no', 'havard.tollefsen@bekk.no', 'hans.sande@bekk.no', 'brage.fosso@bekk.nos')
+        userGroupMember:
+          filter: displayName eq 'Spire-ros'
         schedule:
           frequency: PT1H
           timeout: PT50M
