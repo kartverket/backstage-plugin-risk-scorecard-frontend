@@ -43,6 +43,8 @@ export const ScenarioDrawer = () => {
 
   const { riScUpdateStatus, response } = useRiScs();
 
+  // Used to scroll to the bottom of the drawer when the user deletes a scenario
+  // via the quick edit and DeleteConfirmation
   const deleteScenarioRef = useRef<HTMLDivElement>(null);
 
   const formMethods = useForm<FormScenario>({
