@@ -8,6 +8,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import {
+  DifferenceDTO,
   GithubRepoInfo,
   ProcessingStatus,
   RiSc,
@@ -45,6 +46,7 @@ export const useAuthenticatedFetch = () => {
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`;
+  const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
 
@@ -107,6 +109,23 @@ export const useAuthenticatedFetch = () => {
       });
     });
   };
+
+  const fetchDifference = (
+    selectedRiSc: RiScWithMetadata,
+    onSuccess: (response: DifferenceDTO) => void,
+    onError?: () => void,
+  ) =>
+    identityApi.getProfileInfo().then(profile => {
+      authenticatedFetch<DifferenceDTO, DifferenceDTO>(
+        uriToFetchDifference(selectedRiSc.id),
+        'POST',
+        onSuccess,
+        () => {
+          if (onError) onError();
+        },
+        riScToDTOString(selectedRiSc.content, false, profile),
+      );
+    });
 
   const fetchRiScs = (
     onSuccess: (response: RiScContentResultDTO[]) => void,
@@ -196,5 +215,6 @@ export const useAuthenticatedFetch = () => {
     publishRiScs,
     response,
     setResponse,
+    fetchDifference,
   };
 };

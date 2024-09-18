@@ -5,6 +5,7 @@ import {
   probabilityOptions,
   riskMatrix,
 } from './constants';
+import { formatISO } from 'date-fns';
 import { RiScUpdateStatus } from '../contexts/RiScContext';
 
 export function generateRandomId(): string {
@@ -158,6 +159,24 @@ export function formatNumber(
     return getTranslationWithCorrectUnit(cost, 1e12, 'billion');
   }
   return getTranslationWithCorrectUnit(cost, 1e15, 'trillion');
+}
+
+export function parseISODateFromEncryptedROS(date?: string): string | null {
+  // Early return if date is null, could happen from recursion
+  if (!date) {
+    return null;
+  }
+  try {
+    return formatISO(date);
+  } catch (e) {
+    if (e instanceof RangeError) {
+      // Could not parse string to date
+      // Sometimes this is because SOPS saved the date with ekstra escaped quotations: \"date\"
+      // Trim the string and try again
+      return parseISODateFromEncryptedROS(date.substring(1, date.length - 1));
+    }
+    return null;
+  }
 }
 
 export function getTranslationKey(

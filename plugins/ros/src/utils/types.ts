@@ -117,3 +117,28 @@ export type FormScenario = Modify<
   'remainingRisk',
   FormRisk
 >;
+
+export type Difference = {
+  entriesOnLeft: string[];
+  entriesOnRight: string[];
+  difference: string[];
+};
+
+export type DifferenceDTO = {
+  status:
+    | 'Success'
+    | 'GithubFailure'
+    | 'JsonFailure'
+    | 'DecryptionFailure'
+    | 'GithubFileNotFound'
+    | 'FrontendFallback';
+  differenceState: Difference;
+  errorMessage?: string;
+  defaultLastModifiedDateString: string;
+};
+
+export type DifferenceFetchState = Modify<
+  DifferenceDTO,
+  'status',
+  DifferenceDTO['status'] | null
+> & { isLoading: boolean; currentDifferenceId: string };

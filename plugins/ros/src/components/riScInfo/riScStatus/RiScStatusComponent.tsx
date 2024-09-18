@@ -1,5 +1,6 @@
-import React, { ReactComponentElement, useState } from 'react';
+import React, { ReactComponentElement, useEffect, useState } from 'react';
 import {
+  DifferenceFetchState,
   MigrationVersions,
   RiScStatus,
   RiScWithMetadata,
@@ -22,19 +23,23 @@ import { InfoCard } from '@backstage/core-components';
 import { PullRequestSvg } from '../../common/Icons';
 import { useRiScs } from '../../../contexts/RiScContext';
 import { subtitle1 } from '../../common/typography';
-import { Box } from '@material-ui/core';
+import Box from '@mui/material/Box';
 import { WarningAmberOutlined } from '@mui/icons-material';
+import { useAuthenticatedFetch } from '../../../utils/hooks';
+import { RiScDifferenceDialog } from './RiScDifferenceDialog';
 
 interface RiScPublishDialogProps {
   openDialog: boolean;
   handleCancel: () => void;
   handlePublish: () => void;
+  differenceFetchState: DifferenceFetchState;
 }
 
 const RiScPublishDialog = ({
   openDialog,
   handleCancel,
   handlePublish,
+  differenceFetchState,
 }: RiScPublishDialogProps): ReactComponentElement<any> => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -48,18 +53,21 @@ const RiScPublishDialog = ({
     <Dialog open={openDialog}>
       <DialogTitle>{t('publishDialog.title')}</DialogTitle>
       <DialogContent>
-        <Alert severity="info" icon={false}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                color="primary"
-                checked={riskOwnerApproves}
-                onChange={handleCheckboxInput}
-              />
-            }
-            label={t('publishDialog.checkboxLabel')}
-          />
-        </Alert>
+        <>
+          <RiScDifferenceDialog differenceFetchState={differenceFetchState} />
+          <Alert severity="info" icon={false}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={riskOwnerApproves}
+                  onChange={handleCheckboxInput}
+                />
+              }
+              label={t('publishDialog.checkboxLabel')}
+            />
+          </Alert>
+        </>
       </DialogContent>
       <DialogActions sx={dialogActions}>
         <Button
@@ -195,6 +203,19 @@ const RosAcceptance = ({
   }
 };
 
+const emptyDifferenceFetchState: DifferenceFetchState = {
+  differenceState: {
+    entriesOnLeft: [],
+    entriesOnRight: [],
+    difference: [],
+  },
+  status: null,
+  isLoading: false,
+  errorMessage: '',
+  currentDifferenceId: '',
+  defaultLastModifiedDateString: '',
+};
+
 interface RiScStatusProps {
   selectedRiSc: RiScWithMetadata;
   publishRiScFn: () => void;
@@ -205,12 +226,16 @@ export const RiScStatusComponent = ({
   publishRiScFn,
 }: RiScStatusProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { fetchDifference } = useAuthenticatedFetch();
 
   const [publishRiScDialogIsOpen, setPublishRiScDialogIsOpen] =
     useState<boolean>(false);
 
   const [migrationDialogIsOpen, setMigrationDialogIsOpen] =
     useState<boolean>(false);
+
+  const [differenceFetchState, setDifferenceFetchState] =
+    useState<DifferenceFetchState>(emptyDifferenceFetchState);
 
   const { updateRiSc } = useRiScs();
 
@@ -219,10 +244,50 @@ export const RiScStatusComponent = ({
     setPublishRiScDialogIsOpen(false);
   };
 
+  const getDifferences = () => {
+    if (
+      !selectedRiSc ||
+      differenceFetchState.isLoading ||
+      differenceFetchState.currentDifferenceId === selectedRiSc.id
+    )
+      return;
+
+    setDifferenceFetchState({ ...differenceFetchState, isLoading: true });
+    fetchDifference(
+      selectedRiSc,
+      response => {
+        setDifferenceFetchState({
+          differenceState: response.differenceState,
+          isLoading: false,
+          currentDifferenceId: selectedRiSc.id,
+          status: response.status,
+          errorMessage: response.errorMessage,
+          defaultLastModifiedDateString: response.defaultLastModifiedDateString,
+        });
+      },
+      () => {
+        setDifferenceFetchState({
+          ...emptyDifferenceFetchState,
+          errorMessage: t('rosStatus.difference.error'),
+          status: 'FrontendFallback', // Fallback when the backend does not deliver a response with status
+        });
+      },
+    );
+  };
+
   const handleUpdate = () => {
     updateRiSc(selectedRiSc.content);
     setMigrationDialogIsOpen(false);
   };
+
+  const handleOpenPublishRiScDialog = () => {
+    setPublishRiScDialogIsOpen(true);
+    getDifferences();
+  };
+
+  useEffect(() => {
+    setDifferenceFetchState(emptyDifferenceFetchState);
+  }, [selectedRiSc]);
 
   return (
     <InfoCard>
@@ -247,8 +312,7 @@ export const RiScStatusComponent = ({
           <Button
             color="primary"
             variant="contained"
-            onClick={() => setPublishRiScDialogIsOpen(!publishRiScDialogIsOpen)}
-            disabled={selectedRiSc.status !== RiScStatus.Draft}
+            onClick={handleOpenPublishRiScDialog}
             sx={{ display: 'block', marginLeft: 'auto' }}
           >
             {t('rosStatus.approveButton')}
@@ -278,6 +342,7 @@ export const RiScStatusComponent = ({
         openDialog={publishRiScDialogIsOpen}
         handlePublish={handleApproveAndPublish}
         handleCancel={() => setPublishRiScDialogIsOpen(false)}
+        differenceFetchState={differenceFetchState}
       />
     </InfoCard>
   );
