@@ -269,6 +269,7 @@ export const RiScStatusComponent = ({
         setDifferenceFetchState({
           ...emptyDifferenceFetchState,
           errorMessage: t('rosStatus.difference.error'),
+          status: 'FrontendFallback', // Fallback when the backend does not deliver a response with status
         });
       },
     );

@@ -116,7 +116,7 @@ export const useAuthenticatedFetch = () => {
     onError?: () => void,
   ) =>
     identityApi.getProfileInfo().then(profile => {
-      authenticatedFetch<DifferenceDTO>(
+      authenticatedFetch<DifferenceDTO, DifferenceDTO>(
         uriToFetchDifference(selectedRiSc.id),
         'POST',
         onSuccess,

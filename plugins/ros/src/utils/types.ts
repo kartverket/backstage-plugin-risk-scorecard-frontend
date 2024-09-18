@@ -130,7 +130,8 @@ export type DifferenceDTO = {
     | 'GithubFailure'
     | 'JsonFailure'
     | 'DecryptionFailure'
-    | 'GithubFileNotFound';
+    | 'GithubFileNotFound'
+    | 'FrontendFallback';
   differenceState: Difference;
   errorMessage?: string;
   defaultLastModifiedDateString: string;
