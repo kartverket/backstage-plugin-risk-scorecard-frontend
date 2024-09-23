@@ -123,13 +123,22 @@ export const ScenarioTableRow = ({
       </TableCell>
       <TableCell className={tableCell}>
         <div className={tableCellContainer}>
-          {remainingActions.length > 0 ? (
-            <>
-              {remainingActions.length} {t('dictionary.planned').toLowerCase()}
-            </>
-          ) : (
-            t('dictionary.completed')
-          )}
+          {(() => {
+            if (remainingActions.length > 0) {
+              return (
+                <>
+                  {remainingActions.length}{' '}
+                  {t('dictionary.planned').toLowerCase()}
+                </>
+              );
+            }
+
+            if (scenario.actions.length > 0) {
+              return t('dictionary.completed');
+            }
+
+            return t('scenarioTable.noActions');
+          })()}
         </div>
       </TableCell>
       <TableCell className={tableCell}>
