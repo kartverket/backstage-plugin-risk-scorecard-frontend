@@ -255,7 +255,8 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           migrationRequiresNewApproval: false,
         },
       };
-
+      const originalRiSc = selectedRiSc;
+      setSelectedRiSc(updatedRiSc);
       setRiScUpdateStatus({
         isLoading: true,
         isError: false,
@@ -288,6 +289,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           });
           setIsRequesting(false);
           if (onError) onError();
+          setSelectedRiSc(originalRiSc);
           setResponse({
             ...error,
             statusMessage: getTranslationKey('error', error.status, t),
