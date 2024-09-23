@@ -39,6 +39,10 @@ const emptyScenario = (): Scenario => ({
 type ScenarioDrawerProps = {
   isDrawerOpen: boolean;
 
+  isActionExpanded: (actionId: string) => boolean;
+  toggleActionExpanded: (actionId: string) => void;
+  collapseAllActions: () => void;
+
   emptyFormScenario: (scenario: Scenario) => FormScenario;
   scenario: Scenario;
   submitNewScenario: (
@@ -86,6 +90,29 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const [expandedActions, setExpandedActions] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const toggleActionExpanded = (actionId: string) => {
+    setExpandedActions(prevState => ({
+      ...prevState,
+      [actionId]: !prevState[actionId],
+    }));
+  };
+
+  const collapseAllActions = () => {
+    const allCollapsed = Object.keys(expandedActions).reduce((acc, key) => {
+      acc[key] = false;
+      return acc;
+    }, {} as { [key: string]: boolean });
+    setExpandedActions(allCollapsed);
+  };
+
+  const isActionExpanded = (actionId: string) => {
+    return expandedActions[actionId] || false;
+  };
 
   const emptyFormScenario = (initialScenario: Scenario): FormScenario => ({
     ...initialScenario,
@@ -238,6 +265,10 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
 
   const value = {
     isDrawerOpen,
+
+    isActionExpanded,
+    toggleActionExpanded,
+    collapseAllActions,
 
     emptyFormScenario,
     scenario,

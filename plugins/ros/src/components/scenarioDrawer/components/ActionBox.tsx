@@ -35,7 +35,11 @@ export const ActionBox = ({
   onSubmit,
 }: ActionBoxProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  // Ref to store the expanded state across renders
+  const { isActionExpanded, toggleActionExpanded } = useScenario();
+
+  const isExpanded = isActionExpanded(action.ID);
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const { riScUpdateStatus } = useRiScs();
@@ -104,7 +108,7 @@ export const ActionBox = ({
           alignItems: 'center',
         }}
       >
-        <IconButton onClick={() => setIsExpanded(!isExpanded)}>
+        <IconButton onClick={() => toggleActionExpanded(action.ID)}>
           {isExpanded ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
         <Typography
