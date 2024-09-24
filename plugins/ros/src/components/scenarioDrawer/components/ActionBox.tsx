@@ -35,7 +35,7 @@ export const ActionBox = ({
   onSubmit,
 }: ActionBoxProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  // Ref to store the expanded state across renders
+
   const { isActionExpanded, toggleActionExpanded } = useScenario();
 
   const isExpanded = isActionExpanded(action.ID);
