@@ -188,11 +188,14 @@ export const useAuthenticatedFetch = () => {
 
   const putRiScs = (
     riSc: RiScWithMetadata,
-    onSuccess?: (response: ProcessRiScResultDTO) => void,
+    onSuccess?: (response: ProcessRiScResultDTO | PublishRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
   ) => {
     identityApi.getProfileInfo().then(profile =>
-      authenticatedFetch<ProcessRiScResultDTO, ProcessRiScResultDTO>(
+      authenticatedFetch<
+        ProcessRiScResultDTO | PublishRiScResultDTO,
+        ProcessRiScResultDTO
+      >(
         uriToFetchRiSc(riSc.id),
         'PUT',
         res => {
