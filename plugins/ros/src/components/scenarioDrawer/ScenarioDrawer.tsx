@@ -32,6 +32,7 @@ export const ScenarioDrawer = () => {
     submitEditedScenarioToRiSc,
     mapScenarioToFormScenario,
     mapFormScenarioToScenario,
+    collapseAllActions,
   } = useScenario();
 
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
@@ -61,6 +62,7 @@ export const ScenarioDrawer = () => {
     closeScenarioForm();
     setIsEditing(false);
     setShowCloseConfirmation(false);
+    collapseAllActions();
   };
 
   const onClose = () => {
@@ -69,6 +71,7 @@ export const ScenarioDrawer = () => {
     } else {
       closeScenarioForm();
       setIsEditing(false);
+      collapseAllActions();
     }
   };
 
