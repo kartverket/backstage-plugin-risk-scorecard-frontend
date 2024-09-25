@@ -93,6 +93,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     scenarioTable: {
       title: 'Risk scenarios',
       addScenarioButton: 'Add scenario',
+      noActions: 'No actions',
       columns: {
         consequenceChar: 'C',
         probabilityChar: 'P',
@@ -422,6 +423,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
+          'scenarioTable.noActions': 'Ingen tiltak',
           'scenarioTable.columns.consequenceChar': 'K',
           'scenarioTable.columns.probabilityChar': 'S',
           'scenarioTable.columns.completed': 'fullført',
