@@ -1,7 +1,7 @@
 
 
-# [Backstage](https://backstage.io)
-
+# RiSc Plugin
+## How to run plugin in Backstage
 To run Backstage locally, you only need to run these commands:
 
 ```sh
@@ -15,38 +15,88 @@ You may now set up [the plugin backend](https://github.com/kartverket/backstage-
 
 ---
 
-
-## App-config files
+### App-config files
 Backstage can be heavily configurated, and depends on configuration files when being built.
 These are named ```app-config.<env>.yaml```, and in this project two are provided by default. One named ```app-config.yaml``` and ```app-config.production.yaml```.
 It is recommended to create a separate file for local development ```app-config.local.yaml```. This file is added to the .gitignore-file to avoid leaking secrets in case you set them directly, and to be able to (more easily) have personal configurations.
 
-### Docker (alternative)
+## How to run the plugin in Kartverket.dev locally
+> 💡 Do not run ```yarn install``` in the kartverket.dev repository before the files below has been set up correctly.
+> If the code changes in the plugin-code does not update as expected, you might have to download the npm package again.
+> Delete node_modules and run ```yarn install``` again to fix.
 
-> [!WARNING]  
-> Simply running `yarn dev` should be sufficient for local development, but some may prefer to run applications through Docker.
-> As this is less frequently used, these instructions may be outdated and may no longer function properly.
+### auth.ts
+Edit _annotations_ in the github provider to use your work email address.
+To give Backstage an email in your profile without making your email public on github, you can add it in your code under `signInResolver` in the github provider.
 
-To build the Docker image, run this command:
+```typescript
+async profileTransform(result, ctx) {
+                    
+/** ********************************************************************
+ * Custom transform code goes here!                                   *
+ * "info" is the sign in result from the upstream (github here), and  *
+ * "ctx" contains useful utilities.                                   *
+ **********************************************************************/
 
-```sh
-docker image build -t backstage .
+return {
+  profile: {
+    email: 'din@epost.no',
+    picture: 'picture',
+    displayName: 'Ditt Navn',
+  },
+};
+}
 ```
 
-To run the Docker image, run this command:
+### org.yaml
+Find a random test user in test_data/org.yaml. Change one of the email addresses to your own (the work email).
 
-```sh
-docker run -it -p 3000:7007 \
--e GITHUB_APP_ID=${GITHUB_APP_ID} \
--e GITHUB_APP_CLIENT_ID=${GITHUB_APP_CLIENT_ID} \
--e GITHUB_APP_CLIENT_SECRET=${GITHUB_APP_CLIENT_SECRET} \
--e GITHUB_APP_PK=${GITHUB_APP_CLIENT_PK} \
--e AZURE_TENANT_ID=${AZURE_TENANT_ID} \
--e AZURE_CLIENT_ID=${AZURE_CLIENT_ID} \
--e AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET} \
--e GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
--e GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-backstage
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  annotations:
+    ...
+    microsoft.com/email: test@example.com # edit this email
+  ...
+spec:
+  memberOf: []
+  profile:
+    email: test@example.com # and this email
+    ...
+```
+
+### package.json
+I package.json we want to add the risc plugin.
+Add the path for risc locally under _packages_ in _workspaces_.
+
+```json
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*",
+      "../backstage-plugin-risk-scorecard-frontend/plugins/ros"
+    ]
+  },
+
+```
+
+> 💡 OS Colima kan få problemer med å installere node-gyp.
+Dette kan løses med å oppdatere versjonnummeret på node-gyp til “^10.0.0”.
+
+### Lerna.json
+```yaml
+  {
+  "packages": [
+    "packages/*",
+    "plugins/*",
+    "path-til-ros-plugin-lokalt-på-din-maskin"
+    "f.eks: ../backstage-plugin-risk-scorecard-frontend/plugins/ros"
+  ],
+  "npmClient": "yarn",
+  "version": "0.1.0",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
+}
 ```
 
 # Publish new version of plugin package
