@@ -1,3 +1,5 @@
+
+
 # [Backstage](https://backstage.io)
 
 To run Backstage locally, you only need to run these commands:
@@ -90,7 +92,7 @@ An important thing to keep in mind:
 Discovery can be quite slow when the number of users, groups and entities increases. 
 Thus, we have tried to limit what we need to fetch when testing, to ensure that we are able to quickly spin up the local environment.
 
-# Spire Risk Authentication of users
+# Spire specific environment - where to find things?
 
 We have configured the login with three different providers: Microsoft Entra ID, GCP and Github.
 The configuration of authentication takes place in `auth.providers`, and is used in `auth.ts`. 
@@ -131,6 +133,8 @@ solution set up as GCP has today. That means that if you have a Github user acco
 
 - [Test application](https://github.com/organizations/spire-test/settings/apps/backstage-ros)
 - [Production application](https://github.com/organizations/spire-test/settings/apps/backstage-testis)
+
+All environment variables for the test environment can be found in Google Cloud under the [spire-kartverket-ros project](https://console.cloud.google.com/apis/credentials/consent?referrer=search&project=spire-ros-5lmr).
 
 # Secrets
 
