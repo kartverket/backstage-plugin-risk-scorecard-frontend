@@ -15,6 +15,12 @@ You may now set up [the plugin backend](https://github.com/kartverket/backstage-
 
 ---
 
+
+## App-config files
+Backstage can be heavily configurated, and depends on configuration files when being built.
+These are named ```app-config.<env>.yaml```, and in this project two are provided by default. One named ```app-config.yaml``` and ```app-config.production.yaml```.
+It is recommended to create a separate file for local development ```app-config.local.yaml```. This file is added to the .gitignore-file to avoid leaking secrets in case you set them directly, and to be able to (more easily) have personal configurations.
+
 ### Docker (alternative)
 
 > [!WARNING]  
