@@ -322,6 +322,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       UpdatedRiScRequiresNewApproval:
         'Risk scorecard update and requires new approval',
       CreatedRiSc: 'Created new risk scorecard successfully',
+      UpdatedRiScAndCreatedPullRequest:
+        'Risk scorecard updated and ready for approval in Github',
     },
   },
 });
@@ -626,6 +628,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Risiko- og sårbarhetsanalysen ble oppdatert og trenger ny godkjenning',
           'infoMessages.CreatedRiSc':
             'Risiko- og sårbarhetsanalyse ble opprettet',
+          'infoMessages.UpdatedRiScAndCreatedPullRequest':
+            'Risiko- og sårbarhetsanalysen ble oppdatert og er klar for godkjenning i Github',
         },
       }),
   },
