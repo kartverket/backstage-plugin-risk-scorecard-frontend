@@ -107,7 +107,7 @@ export const useAuthenticatedFetch = () => {
           .json()
           .then(json => json as T)
           .then(typedJson => onSuccess(typedJson));
-      });
+      }).catch(e => console.error(e));
     });
   };
 
