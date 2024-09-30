@@ -23,7 +23,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import {useGoogleTokenRefresh} from "../../contexts/AuthContext";
-import {GoogleAuthAccessTokenDialog} from "../GoogleAuthAccessTokenDialog";
+import {GoogleAuthAccessTokenDialog} from "../googleDialog/GoogleAuthAccessTokenDialog";
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
