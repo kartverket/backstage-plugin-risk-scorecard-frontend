@@ -3,7 +3,6 @@ import { useCallback, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
-  googleAuthApiRef,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
@@ -25,6 +24,7 @@ import {
 import { latestSupportedVersion } from './constants';
 import { pluginRiScTranslationRef } from './translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import {useGoogleTokenRefresh} from "../contexts/AuthContext";
 
 const useGithubRepositoryInformation = (): GithubRepoInfo => {
   const [, org, repo] =
@@ -40,7 +40,6 @@ const useGithubRepositoryInformation = (): GithubRepoInfo => {
 
 export const useAuthenticatedFetch = () => {
   const repoInformation = useGithubRepositoryInformation();
-  const googleApi = useApi(googleAuthApiRef);
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
@@ -49,6 +48,7 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
+  const { setTokenExpiration, getGoogleAuthAccessToken } = useGoogleTokenRefresh();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -84,8 +84,9 @@ export const useAuthenticatedFetch = () => {
   ) => {
     Promise.all([
       identityApi.getCredentials(),
-      googleApi.getAccessToken(['https://www.googleapis.com/auth/cloudkms']),
+      getGoogleAuthAccessToken(),
     ]).then(([idToken, googleAccessToken]) => {
+      setTokenExpiration(googleAccessToken);
       fetch(uri, {
         method: method,
         headers: {
