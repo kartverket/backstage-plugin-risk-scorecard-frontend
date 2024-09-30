@@ -37,7 +37,7 @@ const GoogleTokenRefreshProvider = ({ children } : {children: ReactNode} ) => {
             setTokenHasExpired(false)
         }
 
-        let tenMinutes = 600;
+        const tenMinutes = 600;
         const tokenIsDyingPromptTimer = setTimeout(() => {
             setShowAuthPrompt(true)
         }, (timeToLive - tenMinutes)*1000)

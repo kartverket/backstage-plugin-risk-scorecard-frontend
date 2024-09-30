@@ -15,7 +15,7 @@ export const GoogleAuthAccessTokenDialog = () => {
             {tokenHasExpired && "Sesjonen din har gått ut, vennligst last inn siden på nytt. Du vil miste endringene dine."}
         </DialogContent>
         <DialogActions>
-            {<Button variant="contained" disabled={refreshingGoogleAuthAccessToken && !tokenHasExpired} onClick={() => {refreshGoogleAuthAccessToken()}}>Hold meg pålogget</Button>}
+            <Button variant="contained" disabled={refreshingGoogleAuthAccessToken && !tokenHasExpired} onClick={() => {refreshGoogleAuthAccessToken()}}>Hold meg pålogget</Button>
             <Button variant="outlined" onClick={() => ignoreRefreshWarningForGoogleAuthAccessToken()}>Ignorer</Button>
         </DialogActions>
     </Dialog>)
