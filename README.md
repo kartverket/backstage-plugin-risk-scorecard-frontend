@@ -139,3 +139,15 @@ solution set up as GCP has today. That means that if you have a Github user acco
 # Configuration
 Crete the file `app-config.local.yaml` at root level. 
 Paste the content from the GCP secret called [backstage-app-config-local](https://console.cloud.google.com/security/secret-manager/secret/backstage-app-config-local/versions?project=spire-ros-5lmr).
+
+
+# Known error using google auth
+An error that is known, is that the ... that is supposed to update the oauth2 token for google auth is not refreshed as expected. 
+When using other authentication providers, such as microsoft and github, the refresh token is used to keep the user logged in when "offline".
+
+Because this does not happen, it results in an "Unauthenticated" exception, where the RiSc analysis is not stored properly. 
+
+We have tried to find a way to refresh this token, and use access_type=offline/offline_access=true to trigger this, but with no success.
+
+We have tried to mitigate this by triggering a prompt to ask if the user want to be kept logged in thereby and refresh the token. If the user does not answer, or answers no, it will experience the same error as earlier.
+This is the reason why the GoogleTokenRefreshProvider-context exists.

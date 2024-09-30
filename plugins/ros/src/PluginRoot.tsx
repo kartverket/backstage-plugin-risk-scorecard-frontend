@@ -6,6 +6,7 @@ import { RiScPlugin } from './components/riScPlugin/RiScPlugin';
 import { ScenarioProvider } from './contexts/ScenarioContext';
 import { riScRouteRef, scenarioRouteRef } from './routes';
 import { RiScProvider } from './contexts/RiScContext';
+import {GoogleTokenRefreshProvider} from "./contexts/AuthContext";
 
 const emotionInsertionPoint = document.createElement('meta');
 emotionInsertionPoint.setAttribute('name', 'emotion-insertion-point');
@@ -18,11 +19,13 @@ const cache = createCache({
 
 const ProvidedPlugin = () => (
   <CacheProvider value={cache}>
-    <RiScProvider>
-      <ScenarioProvider>
-        <RiScPlugin />
-      </ScenarioProvider>
-    </RiScProvider>
+      <GoogleTokenRefreshProvider>
+        <RiScProvider>
+          <ScenarioProvider>
+            <RiScPlugin />
+          </ScenarioProvider>
+        </RiScProvider>
+      </GoogleTokenRefreshProvider>
   </CacheProvider>
 );
 

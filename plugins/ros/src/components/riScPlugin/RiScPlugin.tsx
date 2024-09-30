@@ -22,6 +22,8 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
+import {useGoogleTokenRefresh} from "../../contexts/AuthContext";
+import {GoogleAuthAccessTokenDialog} from "../GoogleAuthAccessTokenDialog";
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -51,6 +53,9 @@ export const RiScPlugin = () => {
     'step',
   ) as ScenarioWizardSteps | null;
 
+  const { showAuthPrompt } = useGoogleTokenRefresh();
+
+
   useEffect(() => {
     if (scenarioWizardStep !== null) {
       resetRiScStatus();
@@ -60,6 +65,7 @@ export const RiScPlugin = () => {
 
   return (
     <>
+      {showAuthPrompt && <GoogleAuthAccessTokenDialog /> }
       {response && !riScUpdateStatus.isLoading && (
         <Alert
           severity={getAlertSeverity(riScUpdateStatus)}
