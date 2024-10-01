@@ -22,6 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
+import { GenerateRiscDialog } from '../riScDialog/GenerateRiScDialog';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -29,11 +30,17 @@ export const RiScPlugin = () => {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
   );
-
   const openCreateRiScDialog = () =>
     setRiScDialogState(RiScDialogStates.Create);
   const openEditRiScDialog = () => setRiScDialogState(RiScDialogStates.Edit);
   const closeRiScDialog = () => setRiScDialogState(RiScDialogStates.Closed);
+
+  const [generateRiScDialogState, setGenerateRiScDialogState] =
+    useState<RiScDialogStates>(RiScDialogStates.Closed);
+  const openGenerateRiScDialog = () =>
+    setGenerateRiScDialogState(RiScDialogStates.Create);
+  const closeGenerateRiScDialog = () =>
+    setGenerateRiScDialogState(RiScDialogStates.Closed);
 
   const {
     selectedRiSc,
@@ -50,6 +57,7 @@ export const RiScPlugin = () => {
   const scenarioWizardStep = searchParams.get(
     'step',
   ) as ScenarioWizardSteps | null;
+  const doesInitialRiScExist = riScs?.find(riSc => riSc.id === 'risc-setup');
 
   useEffect(() => {
     if (scenarioWizardStep !== null) {
@@ -127,6 +135,19 @@ export const RiScPlugin = () => {
                 >
                   {t('contentHeader.createNewButton')}
                 </Button>
+                {!doesInitialRiScExist && (
+                  <Button
+                    startIcon={<AddCircle />}
+                    variant="text"
+                    color="primary"
+                    onClick={openGenerateRiScDialog}
+                    sx={{
+                      minWidth: '205px',
+                    }}
+                  >
+                    {t('contentHeader.generateButton')}
+                  </Button>
+                )}
               </Grid>
             )}
 
@@ -149,6 +170,13 @@ export const RiScPlugin = () => {
 
       {riScDialogState !== RiScDialogStates.Closed && (
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
+      )}
+
+      {generateRiScDialogState !== RiScDialogStates.Closed && (
+        <GenerateRiscDialog
+          onClose={closeGenerateRiScDialog}
+          dialogState={generateRiScDialogState}
+        />
       )}
 
       {!scenarioWizardStep && <ScenarioDrawer />}

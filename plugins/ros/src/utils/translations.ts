@@ -9,6 +9,16 @@ export const pluginRiScTranslationRef = createTranslationRef({
     contentHeader: {
       title: 'Risk scorecard',
       createNewButton: 'Create new scorecard',
+      generateButton: 'Generate initial risk scorecard',
+    },
+    generateRiSc: {
+      title: 'Generate initial risk scorecard',
+      description:
+        'This will generate an initial risk scorecard based on metadata from your repository. It may take a few minutes to complete. If you want to configure writing risk assessments locally, ' +
+        'you may add your public age key. For more information about setting up local age keys you may follow the setup in the README (https://github.com/kartverket/backstage-plugin-risk-crypto-service)',
+      button: 'Generate',
+      error: 'A public age key must begin with "age"',
+      placeholder: 'Your public age key, e.g. age1...',
     },
     dictionary: {
       cancel: 'Cancel',
@@ -336,6 +346,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
         default: {
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
+          'contentHeader.generateButton': 'Generer initiell RoS-vurdering',
+
+          'generateRiSc.title': 'Generering av initiell RoS-vurdering',
+          'generateRiSc.description':
+            'Dette vil generere en initiell RoS-vurdering basert på metadata fra ditt repository. Det kan ta noen minutter å fullføre. Hvis du vil konfigurere skriving ' +
+            'av risikovurderinger lokalt, kan du legge ved din offentlige age-nøkkel. For mer informasjon om hvordan du setter opp age-nøkler lokalt kan du følge oppsettet i README (https://github.com/kartverket/backstage-plugin-risk-crypto-service)',
+          'generateRiSc.button': 'Generer',
+          'generateRiSc.error': 'En offentlig age-nøkkel må starte med "age"',
+          'generateRiSc.placeholder':
+            'Din offentlige age-nøkkel, f.eks. age1...',
 
           'dictionary.cancel': 'Avbryt',
           'dictionary.close': 'Lukk',

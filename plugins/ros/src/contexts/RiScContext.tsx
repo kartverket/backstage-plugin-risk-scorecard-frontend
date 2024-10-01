@@ -63,6 +63,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     publishRiScs,
     response,
     setResponse,
+    generateRiSc,
   } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
@@ -361,6 +362,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     isRequesting,
     isFetching,
     response,
+    generateRiSc,
   };
 
   return <RiScContext.Provider value={value}>{children}</RiScContext.Provider>;

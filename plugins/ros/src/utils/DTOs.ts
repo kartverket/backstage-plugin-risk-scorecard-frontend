@@ -70,6 +70,22 @@ type ActionsDTO = {
   };
 };
 
+export type PublicAgeKeyDTO = {
+  publicAgeKey: string;
+};
+
+export function publicAgeKeyToDTO(publicAgeKey: string): PublicAgeKeyDTO {
+  return {
+    publicAgeKey: publicAgeKey,
+  };
+}
+
+export function publicAgeKeyToDTOString(
+  publicAgeKeyDTO: PublicAgeKeyDTO,
+): string {
+  return JSON.stringify({ publicAgeKeyDTO });
+}
+
 export function dtoToRiSc(riScDTO: RiScDTO): RiSc {
   return {
     ...riScDTO,

@@ -21,6 +21,8 @@ import {
   PublishRiScResultDTO,
   RiScContentResultDTO,
   riScToDTOString,
+  PublicAgeKeyDTO,
+  publicAgeKeyToDTOString,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import { pluginRiScTranslationRef } from './translations';
@@ -49,6 +51,7 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
+  const uriToGenerateRiSc = `${riScUri}/initialize`;
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -211,6 +214,28 @@ export const useAuthenticatedFetch = () => {
     );
   };
 
+  const generateRiSc = (
+    publicAgeKey: PublicAgeKeyDTO,
+    onSuccess?: (response: ProcessRiScResultDTO) => void,
+    onError?: (error: ProcessRiScResultDTO) => void,
+  ) => {
+    identityApi.getProfileInfo().then(() =>
+      authenticatedFetch<ProcessRiScResultDTO, ProcessRiScResultDTO>(
+        uriToGenerateRiSc,
+        'POST',
+        res => {
+          setResponse(res);
+          if (onSuccess) onSuccess(res);
+        },
+        error => {
+          setResponse(error);
+          if (onError) onError(error);
+        },
+        publicAgeKeyToDTOString(publicAgeKey),
+      ),
+    );
+  };
+
   return {
     fetchRiScs,
     postRiScs,
@@ -219,5 +244,6 @@ export const useAuthenticatedFetch = () => {
     response,
     setResponse,
     fetchDifference,
+    generateRiSc,
   };
 };
