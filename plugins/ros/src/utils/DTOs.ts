@@ -70,20 +70,25 @@ type ActionsDTO = {
   };
 };
 
-export type PublicAgeKeyDTO = {
-  publicAgeKey: string;
+export type GenerateRiScDTO = {
+  gcpTeamKey: string;
+  publicAgeKey: string | null;
 };
 
-export function publicAgeKeyToDTO(publicAgeKey: string): PublicAgeKeyDTO {
+export function generateRiScToDTO(
+  gcpTeamKey: string,
+  publicAgeKey: string,
+): GenerateRiScDTO {
   return {
+    gcpTeamKey: gcpTeamKey,
     publicAgeKey: publicAgeKey,
   };
 }
 
-export function publicAgeKeyToDTOString(
-  publicAgeKeyDTO: PublicAgeKeyDTO,
+export function generateRiScToDTOString(
+  generateRiScDTO: GenerateRiScDTO,
 ): string {
-  return JSON.stringify({ publicAgeKeyDTO });
+  return JSON.stringify(generateRiScDTO);
 }
 
 export function dtoToRiSc(riScDTO: RiScDTO): RiSc {

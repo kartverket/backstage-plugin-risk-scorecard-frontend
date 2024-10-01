@@ -21,8 +21,8 @@ import {
   PublishRiScResultDTO,
   RiScContentResultDTO,
   riScToDTOString,
-  PublicAgeKeyDTO,
-  publicAgeKeyToDTOString,
+  GenerateRiScDTO,
+  generateRiScToDTOString,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import { pluginRiScTranslationRef } from './translations';
@@ -215,7 +215,7 @@ export const useAuthenticatedFetch = () => {
   };
 
   const generateRiSc = (
-    publicAgeKey: PublicAgeKeyDTO,
+    generateRiScDTO: GenerateRiScDTO,
     onSuccess?: (response: ProcessRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
   ) => {
@@ -231,7 +231,7 @@ export const useAuthenticatedFetch = () => {
           setResponse(error);
           if (onError) onError(error);
         },
-        publicAgeKeyToDTOString(publicAgeKey),
+        generateRiScToDTOString(generateRiScDTO),
       ),
     );
   };

@@ -11,7 +11,8 @@ import { dialogActions } from '../common/mixins';
 import { RiScDialogStates } from './RiScDialog';
 import { Error } from '@mui/icons-material';
 import { useAuthenticatedFetch } from '../../utils/hooks';
-import { PublicAgeKeyDTO, publicAgeKeyToDTO } from '../../utils/DTOs';
+import { generateRiScToDTO, GenerateRiScDTO } from '../../utils/DTOs';
+import { DialogContentText } from '@mui/material';
 
 interface GenerateRiScDialogProps {
   onClose: () => void;
@@ -25,30 +26,63 @@ export const GenerateRiscDialog = ({
   const { generateRiSc } = useAuthenticatedFetch();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [publicAgeKey, setPublicAgeKey] = useState<string>('');
+  const [gcpTeamKey, setGcpTeamKey] = useState<string>('');
   const [error, setError] = useState<string>('');
 
-  const validateInput = (ageKey: string) => {
+  const validatePublicAgeKeyInput = (ageKey: string) => {
     if (ageKey === '') {
       return true;
     }
     if (!ageKey.startsWith('age')) {
-      setError(t('generateRiSc.error'));
+      setError(t('generateRiSc.errorPublicAgeKey'));
       return false;
     }
     setError('');
     return true;
   };
 
-  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const validateGcpTeamKeyInput = (teamKey: string) => {
+    const mustContain = (str: string, ...substrings: string[]) => {
+      return substrings.every(substring => str.includes(substring));
+    };
+    if (
+      !mustContain(
+        teamKey,
+        'projects/',
+        '/locations/global/keyRings/',
+        '/cryptoKeys/',
+      ) &&
+      teamKey !== ''
+    ) {
+      setError(t('generateRiSc.errorGcpTeamKey'));
+      return false;
+    }
+    setError('');
+    return true;
+  };
+
+  const handleChangePublicAgeKeyInput = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setPublicAgeKey(event.target.value);
   };
 
-  const onSubmit = (publicAgeKey: string) => {
-    if (validateInput(publicAgeKey)) {
-      const publicAgeKeyDTO = publicAgeKeyToDTO(
+  const handleChangeGcpTeamKeyInput = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setGcpTeamKey(event.target.value);
+  };
+
+  const onSubmit = () => {
+    if (
+      validatePublicAgeKeyInput(publicAgeKey) &&
+      validateGcpTeamKeyInput(gcpTeamKey)
+    ) {
+      const generateRiScDTO = generateRiScToDTO(
+        gcpTeamKey,
         publicAgeKey,
-      ) as PublicAgeKeyDTO;
-      generateRiSc(publicAgeKeyDTO);
+      ) as GenerateRiScDTO;
+      generateRiSc(generateRiScDTO);
       onClose();
       // TODO : Hvordan skal vi håndtere dette?
     }
@@ -60,11 +94,19 @@ export const GenerateRiscDialog = ({
       <DialogContent
         sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
       >
+        <DialogContentText>{t('generateRiSc.description')}</DialogContentText>
         <Input
-          sublabel={t('generateRiSc.description')}
-          onChange={handleChangeInput}
+          label={t('generateRiSc.publicAgeKey')}
+          onChange={handleChangePublicAgeKeyInput}
           value={publicAgeKey}
-          placeholder={t('generateRiSc.placeholder')}
+          placeholder={t('generateRiSc.placeholderPublicAgeKey')}
+        />
+        <Input
+          label={t('generateRiSc.gcpTeamKey')}
+          onChange={handleChangeGcpTeamKeyInput}
+          value={gcpTeamKey}
+          placeholder={t('generateRiSc.placeholderGcpTeamKey')}
+          required
         />
       </DialogContent>
 
@@ -87,7 +129,11 @@ export const GenerateRiscDialog = ({
             </DialogContent>
           </>
         )}
-        <Button variant="contained" onClick={() => onSubmit(publicAgeKey)}>
+        <Button
+          variant="contained"
+          onClick={() => onSubmit()}
+          disabled={gcpTeamKey === ''}
+        >
           {t('generateRiSc.button')}
         </Button>
         <Button variant="outlined" onClick={onClose}>
