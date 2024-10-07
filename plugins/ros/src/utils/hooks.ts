@@ -1,4 +1,4 @@
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useState } from 'react';
 import {
   configApiRef,
@@ -44,6 +44,7 @@ export const useAuthenticatedFetch = () => {
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
   const identityApi = useApi(identityApiRef);
+  const catalogApi = useApi(catalogApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
@@ -236,6 +237,50 @@ export const useAuthenticatedFetch = () => {
     );
   };
 
+  const fetchProjectIds = async (): Promise<string[]> => {
+    try {
+      // Step 1: Fetch the component entity by its name
+      const entity = await catalogApi.getEntityByRef(
+        `component:${repoInformation.name}`,
+      );
+
+      // Step 2: Check if the component has 'gcp-project-id' in metadata.labels
+      if (
+        entity?.metadata?.labels &&
+        entity.metadata.labels['gcp-project-id']
+      ) {
+        return entity.metadata.labels['gcp-project-id'].split(',');
+      }
+
+      // Step 3: If no labels, check for the 'ownerOf' systems
+      const ownerOfSystems = entity?.relations?.filter(
+        rel => rel.type === 'ownerOf' && rel.targetRef.startsWith('system:'),
+      );
+
+      if (ownerOfSystems && ownerOfSystems.length > 0) {
+        for (const system of ownerOfSystems) {
+          const systemEntity = await catalogApi.getEntityByRef(
+            system.targetRef,
+          );
+
+          // Step 4: Check if the system entity has 'gcp-project-id' in metadata.labels
+          if (
+            systemEntity?.metadata?.labels &&
+            systemEntity.metadata.labels['gcp-project-id']
+          ) {
+            return systemEntity.metadata.labels['gcp-project-id'].split(',');
+          }
+        }
+      }
+
+      // Step 5: If no project IDs are found, return default project IDs
+      return ['1234567890', '0987654321']; // Default project IDs
+    } catch (error) {
+      console.error('Error fetching project IDs:', error);
+      return [];
+    }
+  };
+
   return {
     fetchRiScs,
     postRiScs,
@@ -245,5 +290,6 @@ export const useAuthenticatedFetch = () => {
     setResponse,
     fetchDifference,
     generateRiSc,
+    fetchProjectIds,
   };
 };

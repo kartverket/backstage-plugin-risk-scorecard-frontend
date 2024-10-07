@@ -17,13 +17,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'This will generate an initial risk scorecard based on metadata from your repository. It may take a few minutes to complete. A GCP team key is required. If you want to configure writing risk assessments locally, ' +
         'you may add your public age key. For more information about setting up local age keys you may follow the setup in the README (https://github.com/kartverket/backstage-plugin-risk-crypto-service)',
       button: 'Generate',
-      gcpTeamKey: 'GCP team key resource URI',
+      GCPprojectId: 'GCP project ID',
       publicAgeKey: 'Public age key',
-      errorGcpTeamKey:
-        'A GCP team key is required. The key must be a resource URI',
+      errorGCPprojectId: 'A GCP project id is required',
       errorPublicAgeKey: 'A public age key must begin with "age"',
-      placeholderGcpTeamKey:
-        'Your GCP team key URI, e.g. projects/{project_id}/locations/global/keyRings/{name_of_the_key_ring}/cryptoKeys/{the_key}',
+      placeholderGCPprojectId: 'Your GCP project id',
       placeholderPublicAgeKey: 'Your public age key, e.g. age1...',
     },
     dictionary: {
@@ -358,15 +356,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'generateRiSc.description':
             'Dette vil generere en initiell RoS-vurdering basert på metadata fra ditt repository. Det kan ta noen minutter å fullføre. En GCP-team-nøkkel er påkrevd. Hvis du vil konfigurere skriving ' +
             'av risikovurderinger lokalt, kan du legge ved din offentlige age-nøkkel. For mer informasjon om hvordan du setter opp age-nøkler lokalt kan du følge oppsettet i README (https://github.com/kartverket/backstage-plugin-risk-crypto-service)',
-          'generateRiSc.gcpTeamKey': 'GCP-team-nøkkel sin ressurs URI',
+          'generateRiSc.GCPprojectId': 'GCP-team-nøkkel sin ressurs URI',
           'generateRiSc.publicAgeKey': 'Offentlig age-nøkkel',
           'generateRiSc.button': 'Generer',
-          'generateRiSc.errorGcpTeamKey':
+          'generateRiSc.errorGCPprojectId':
             'En GCP-team-nøkkel er påkrevd. Nøkkelen må være en ressurs URI',
           'generateRiSc.errorPublicAgeKey':
             'En offentlig age-nøkkel må starte med "age"',
-          'generateRiSc.placeholderGcpTeamKey':
-            'Din GCP-team-nøkkel URI, f.eks. projects/{project_id}/locations/global/keyRings/{name_of_key_ring}/cryptoKeys/{the_key}',
+          'generateRiSc.placeholderGCPprojectId': 'Ditt GCP-prosjekt',
           'generateRiSc.placeholderPublicAgeKey':
             'Din offentlige age-nøkkel, f.eks. age1...',
 
