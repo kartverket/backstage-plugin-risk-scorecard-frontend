@@ -28,11 +28,26 @@ export const GenerateRiscDialog = ({
   const [publicAgeKey, setPublicAgeKey] = useState<string>('');
   const [GCPProjectId, setGCPprojectId] = useState<string>('');
   const [error, setError] = useState<string>('');
-  const [projectIds, setProjectIds] = useState<string[]>([]);
+  const [projectIds, setProjectIds] = useState<Record<string, string>>({});
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
-    fetchProjectIds().then(setProjectIds);
+    fetchProjectIds().then(
+      (response: string[]) => {
+        const projectIdMap = response.reduce((acc, it) => {
+          const lastDashIndex = it.lastIndexOf('-');
+          const formattedKey =
+            lastDashIndex !== -1 ? it.slice(0, lastDashIndex) : it;
+          acc[formattedKey] = it;
+          return acc;
+        }, {} as Record<string, string>);
+
+        setProjectIds(projectIdMap);
+      },
+      () => {
+        setProjectIds({});
+      },
+    );
   }, []);
 
   const validatePublicAgeKeyInput = (ageKey: string) => {
@@ -48,18 +63,7 @@ export const GenerateRiscDialog = ({
   };
 
   const validateGCPProjectIdInput = (teamKey: string) => {
-    const mustContain = (str: string, ...substrings: string[]) => {
-      return substrings.every(substring => str.includes(substring));
-    };
-    if (
-      !mustContain(
-        teamKey,
-        'projects/',
-        '/locations/global/keyRings/',
-        '/cryptoKeys/',
-      ) &&
-      teamKey !== ''
-    ) {
+    if (teamKey !== '') {
       setError(t('generateRiSc.errorGCPprojectId'));
       return false;
     }
@@ -115,36 +119,60 @@ export const GenerateRiscDialog = ({
           value={publicAgeKey}
           placeholder={t('generateRiSc.placeholderPublicAgeKey')}
         />
-        <Button
-          aria-controls="simple-menu"
-          aria-haspopup="true"
-          onClick={handleClick}
-        >
-          Velg GCP-prosjekt
-        </Button>
-        <Menu
-          open={Boolean(anchorEl)}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
-          {projectIds.map(projectId => (
-            <MenuItem
-              key={projectId}
-              onClick={() => setGCPprojectId(projectId)}
-              sx={{ cursor: 'pointer' }}
+        {Object.entries(projectIds).length > 0 ? (
+          <>
+            <Button
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleClick}
             >
-              {projectId}
-            </MenuItem>
-          ))}
-        </Menu>
+              {t('generateRiSc.selectGCPprojectId')}
+            </Button>
+            <Menu
+              open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              {Object.entries(projectIds).map(
+                ([formattedProjectId, projectId]) => (
+                  <MenuItem
+                    key={projectId}
+                    onClick={() => setGCPprojectId(projectId)}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    {formattedProjectId}
+                  </MenuItem>
+                ),
+              )}
+            </Menu>
+          </>
+        ) : (
+          <div style={{ alignItems: 'center', display: 'flex' }}>
+            <Error color="error" />
+            <DialogContent
+              sx={{
+                color: 'red',
+                display: 'flex',
+                flexDirection: 'row',
+                maxHeight: '4px',
+                overflow: 'hidden',
+                alignItems: 'center',
+                gap: '2px',
+              }}
+            >
+              {t('generateRiSc.errorContactAdmin')}
+            </DialogContent>
+          </div>
+        )}
+
         <Input
           label={t('generateRiSc.GCPprojectId')}
           onChange={handleChangeGcpProjectIdInput}

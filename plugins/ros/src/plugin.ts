@@ -21,3 +21,10 @@ export const RiScPage = riScPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+import packageJson from '../package.json';
+
+const pluginVersionToMetaTag = document.createElement('meta');
+pluginVersionToMetaTag.setAttribute('name', 'plugin-version');
+pluginVersionToMetaTag.setAttribute('version', `${packageJson.version}`);
+document.querySelector('head')?.appendChild(pluginVersionToMetaTag);

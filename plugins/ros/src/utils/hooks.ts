@@ -53,6 +53,7 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
   const uriToGenerateRiSc = `${riScUri}/initialize`;
+  const component = useEntity();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -237,46 +238,72 @@ export const useAuthenticatedFetch = () => {
     );
   };
 
-  const fetchProjectIds = async (): Promise<string[]> => {
+  const fetchProjectIds = async (onError?: () => void): Promise<string[]> => {
     try {
-      // Step 1: Fetch the component entity by its name
-      const entity = await catalogApi.getEntityByRef(
-        `component:${repoInformation.name}`,
-      );
-
-      // Step 2: Check if the component has 'gcp-project-id' in metadata.labels
-      if (
-        entity?.metadata?.labels &&
-        entity.metadata.labels['gcp-project-id']
-      ) {
-        return entity.metadata.labels['gcp-project-id'].split(',');
-      }
-
-      // Step 3: If no labels, check for the 'ownerOf' systems
-      const ownerOfSystems = entity?.relations?.filter(
+      // Step 1: Fetch the component entity and check if it is connected to a system (ownerOf)
+      const parentSystemRelation = component.entity?.relations?.find(
         rel => rel.type === 'ownerOf' && rel.targetRef.startsWith('system:'),
       );
 
-      if (ownerOfSystems && ownerOfSystems.length > 0) {
-        for (const system of ownerOfSystems) {
-          const systemEntity = await catalogApi.getEntityByRef(
-            system.targetRef,
-          );
+      // Step 2: If the component has a parent system, check its gcp-project-id
+      if (parentSystemRelation) {
+        const parentSystemEntity = await catalogApi.getEntityByRef(
+          parentSystemRelation.targetRef,
+        );
 
-          // Step 4: Check if the system entity has 'gcp-project-id' in metadata.labels
-          if (
-            systemEntity?.metadata?.labels &&
-            systemEntity.metadata.labels['gcp-project-id']
-          ) {
-            return systemEntity.metadata.labels['gcp-project-id'].split(',');
-          }
+        // If the parent system has 'gcp-project-id' in metadata.labels, return it
+        if (
+          parentSystemEntity?.metadata?.labels &&
+          parentSystemEntity.metadata.labels['gcp-project-id']
+        ) {
+          return parentSystemEntity.metadata.labels['gcp-project-id'].split(
+            ',',
+          );
         }
       }
 
-      // Step 5: If no project IDs are found, return default project IDs
-      return ['1234567890', '0987654321']; // Default project IDs
+      // Step 3: If the parent system doesn't exist or doesn't have 'gcp-project-id', check the owner's systems
+      const ownedByRelation = component.entity?.relations?.find(
+        rel => rel.type === 'ownedBy',
+      );
+
+      if (ownedByRelation) {
+        const ownerEntity = await catalogApi.getEntityByRef(
+          ownedByRelation.targetRef,
+        );
+
+        // Fetch all systems owned by this owner (ownerOf relation)
+        const ownerSystems = ownerEntity?.relations?.filter(
+          rel => rel.type === 'ownerOf' && rel.targetRef.startsWith('system:'),
+        );
+
+        // Collect gcp-project-ids from all the owner's systems
+        const projectIds: string[] = [];
+        if (ownerSystems && ownerSystems.length > 0) {
+          for (const system of ownerSystems) {
+            const systemEntity = await catalogApi.getEntityByRef(
+              system.targetRef,
+            );
+
+            if (
+              systemEntity?.metadata?.labels &&
+              systemEntity.metadata.labels['gcp-project-id']
+            ) {
+              projectIds.push(
+                ...systemEntity.metadata.labels['gcp-project-id'].split(','),
+              );
+            }
+          }
+        }
+
+        // If we collected project IDs from the owner's systems, return them
+        if (projectIds.length > 0 && !parentSystemRelation) {
+          return projectIds;
+        }
+      }
+      return [];
     } catch (error) {
-      console.error('Error fetching project IDs:', error);
+      onError && onError();
       return [];
     }
   };

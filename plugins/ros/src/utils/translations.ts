@@ -23,6 +23,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
       errorPublicAgeKey: 'A public age key must begin with "age"',
       placeholderGCPprojectId: 'Your GCP project id',
       placeholderPublicAgeKey: 'Your public age key, e.g. age1...',
+      errorContactAdmin:
+        'Error fetching GCP project ids. A GCP project id is necessary for configuration. Contact SKVIS.',
+      selectGCPprojectId: 'Select GCP project ID',
     },
     dictionary: {
       cancel: 'Cancel',
@@ -354,9 +357,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'generateRiSc.title': 'Generering av initiell RoS-vurdering',
           'generateRiSc.description':
-            'Dette vil generere en initiell RoS-vurdering basert på metadata fra ditt repository. Det kan ta noen minutter å fullføre. En GCP-team-nøkkel er påkrevd. Hvis du vil konfigurere skriving ' +
+            'Dette vil generere en initiell RoS-vurdering basert på metadata fra ditt repository. Det kan ta noen minutter å fullføre. En GCP-prosjekt-ID er påkrevd. Hvis du vil konfigurere skriving ' +
             'av risikovurderinger lokalt, kan du legge ved din offentlige age-nøkkel. For mer informasjon om hvordan du setter opp age-nøkler lokalt kan du følge oppsettet i README (https://github.com/kartverket/backstage-plugin-risk-crypto-service)',
-          'generateRiSc.GCPprojectId': 'GCP-team-nøkkel sin ressurs URI',
+          'generateRiSc.GCPprojectId': 'GCP-prosjekt-ID',
           'generateRiSc.publicAgeKey': 'Offentlig age-nøkkel',
           'generateRiSc.button': 'Generer',
           'generateRiSc.errorGCPprojectId':
@@ -366,7 +369,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'generateRiSc.placeholderGCPprojectId': 'Ditt GCP-prosjekt',
           'generateRiSc.placeholderPublicAgeKey':
             'Din offentlige age-nøkkel, f.eks. age1...',
-
+          'generateRiSc.errorContactAdmin':
+            'Feil ved henting av tilknyttede GCP-prosjekt-IDer. En GCP-prosjekt-ID er nødvendig for konfigurering. Ta kontakt med SKVIS.',
+          'generateRiSc.selectGCPprojectId': 'Velg GCP-prosjekt-ID',
           'dictionary.cancel': 'Avbryt',
           'dictionary.close': 'Lukk',
           'dictionary.completed': 'Fullført',

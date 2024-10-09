@@ -178,7 +178,6 @@ export const RiScPlugin = () => {
           dialogState={generateRiScDialogState}
         />
       )}
-
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>
   );
