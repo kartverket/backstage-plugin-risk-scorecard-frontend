@@ -58,16 +58,14 @@ export const GenerateRiscDialog = ({
       setError(t('generateRiSc.errorPublicAgeKey'));
       return false;
     }
-    setError('');
     return true;
   };
 
-  const validateGCPProjectIdInput = (teamKey: string) => {
-    if (teamKey !== '') {
+  const validateGCPProjectIdInput = (projectId: string) => {
+    if (projectId == '') {
       setError(t('generateRiSc.errorGCPprojectId'));
       return false;
     }
-    setError('');
     return true;
   };
 
@@ -176,7 +174,9 @@ export const GenerateRiscDialog = ({
         <Input
           label={t('generateRiSc.GCPprojectId')}
           onChange={handleChangeGcpProjectIdInput}
-          value={GCPProjectId}
+          value={Object.keys(projectIds).find(
+            key => projectIds[key] === GCPProjectId,
+          )}
           placeholder={t('generateRiSc.placeholderGCPprojectId')}
           required
           disabled

@@ -362,8 +362,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'generateRiSc.GCPprojectId': 'GCP-prosjekt-ID',
           'generateRiSc.publicAgeKey': 'Offentlig age-nøkkel',
           'generateRiSc.button': 'Generer',
-          'generateRiSc.errorGCPprojectId':
-            'En GCP-team-nøkkel er påkrevd. Nøkkelen må være en ressurs URI',
+          'generateRiSc.errorGCPprojectId': 'En GCP-prosjekt-ID er påkrevd.',
           'generateRiSc.errorPublicAgeKey':
             'En offentlig age-nøkkel må starte med "age"',
           'generateRiSc.placeholderGCPprojectId': 'Ditt GCP-prosjekt',
