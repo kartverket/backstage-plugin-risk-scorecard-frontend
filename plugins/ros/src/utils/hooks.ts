@@ -1,4 +1,4 @@
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useState } from 'react';
 import {
   configApiRef,
@@ -21,6 +21,8 @@ import {
   PublishRiScResultDTO,
   RiScContentResultDTO,
   riScToDTOString,
+  GenerateRiScDTO,
+  generateRiScToDTOString,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import { pluginRiScTranslationRef } from './translations';
@@ -42,6 +44,7 @@ export const useAuthenticatedFetch = () => {
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
   const identityApi = useApi(identityApiRef);
+  const catalogApi = useApi(catalogApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
@@ -49,6 +52,8 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
+  const uriToGenerateRiSc = `${riScUri}/initialize`;
+  const component = useEntity();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -211,6 +216,90 @@ export const useAuthenticatedFetch = () => {
     );
   };
 
+  const generateRiSc = (
+    generateRiScDTO: GenerateRiScDTO,
+    onSuccess?: (response: ProcessRiScResultDTO) => void,
+    onError?: (error: ProcessRiScResultDTO) => void,
+  ) => {
+    identityApi.getProfileInfo().then(() =>
+      authenticatedFetch<ProcessRiScResultDTO, ProcessRiScResultDTO>(
+        uriToGenerateRiSc,
+        'POST',
+        res => {
+          setResponse(res);
+          if (onSuccess) onSuccess(res);
+        },
+        error => {
+          setResponse(error);
+          if (onError) onError(error);
+        },
+        generateRiScToDTOString(generateRiScDTO),
+      ),
+    );
+  };
+
+  const fetchProjectIds = async (): Promise<string[]> => {
+    try {
+      const parentSystemRelation = component.entity?.relations?.find(
+        rel => rel.type === 'ownerOf' && rel.targetRef.startsWith('system:'),
+      );
+
+      if (parentSystemRelation) {
+        const parentSystemEntity = await catalogApi.getEntityByRef(
+          parentSystemRelation.targetRef,
+        );
+
+        if (
+          parentSystemEntity?.metadata?.labels &&
+          parentSystemEntity.metadata.labels['gcp-project-id']
+        ) {
+          return parentSystemEntity.metadata.labels['gcp-project-id'].split(
+            ',',
+          );
+        }
+      }
+
+      const ownedByRelation = component.entity?.relations?.find(
+        rel => rel.type === 'ownedBy',
+      );
+
+      if (ownedByRelation) {
+        const ownerEntity = await catalogApi.getEntityByRef(
+          ownedByRelation.targetRef,
+        );
+
+        const ownerSystems = ownerEntity?.relations?.filter(
+          rel => rel.type === 'ownerOf' && rel.targetRef.startsWith('system:'),
+        );
+
+        const projectIds: string[] = [];
+        if (ownerSystems && ownerSystems.length > 0) {
+          for (const system of ownerSystems) {
+            const systemEntity = await catalogApi.getEntityByRef(
+              system.targetRef,
+            );
+
+            if (
+              systemEntity?.metadata?.labels &&
+              systemEntity.metadata.labels['gcp-project-id']
+            ) {
+              projectIds.push(
+                ...systemEntity.metadata.labels['gcp-project-id'].split(','),
+              );
+            }
+          }
+        }
+
+        if (projectIds.length > 0 && !parentSystemRelation) {
+          return projectIds;
+        }
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  };
+
   return {
     fetchRiScs,
     postRiScs,
@@ -219,5 +308,7 @@ export const useAuthenticatedFetch = () => {
     response,
     setResponse,
     fetchDifference,
+    generateRiSc,
+    fetchProjectIds,
   };
 };

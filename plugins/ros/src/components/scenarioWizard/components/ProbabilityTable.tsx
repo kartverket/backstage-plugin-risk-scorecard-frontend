@@ -21,8 +21,8 @@ export const ProbabilityTableInfo = () => {
 
   return (
     <Box sx={riskRow}>
-      {getContentCell(1)}
       {getContentCell(0)}
+      {getContentCell(1)}
       {getContentCell(2)}
       {getContentCell(3)}
       {getContentCell(4)}
