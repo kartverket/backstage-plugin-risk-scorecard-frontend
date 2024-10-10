@@ -4,15 +4,17 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Input } from '../common/Input';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { dialogActions } from '../common/mixins';
 import { RiScDialogStates } from './RiScDialog';
 import { Error } from '@mui/icons-material';
 import { useAuthenticatedFetch } from '../../utils/hooks';
 import { generateRiScToDTO, GenerateRiScDTO } from '../../utils/DTOs';
-import { DialogContentText, Menu, MenuItem } from '@mui/material';
 
 interface GenerateRiScDialogProps {
   onClose: () => void;
@@ -48,7 +50,8 @@ export const GenerateRiscDialog = ({
         setProjectIds({});
       },
     );
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once
 
   const validatePublicAgeKeyInput = (ageKey: string) => {
     if (ageKey === '') {
@@ -62,7 +65,7 @@ export const GenerateRiscDialog = ({
   };
 
   const validateGCPProjectIdInput = (projectId: string) => {
-    if (projectId == '') {
+    if (projectId === '') {
       setError(t('generateRiSc.errorGCPprojectId'));
       return false;
     }

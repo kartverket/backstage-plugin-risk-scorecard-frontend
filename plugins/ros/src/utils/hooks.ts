@@ -238,20 +238,17 @@ export const useAuthenticatedFetch = () => {
     );
   };
 
-  const fetchProjectIds = async (onError?: () => void): Promise<string[]> => {
+  const fetchProjectIds = async (): Promise<string[]> => {
     try {
-      // Step 1: Fetch the component entity and check if it is connected to a system (ownerOf)
       const parentSystemRelation = component.entity?.relations?.find(
         rel => rel.type === 'ownerOf' && rel.targetRef.startsWith('system:'),
       );
 
-      // Step 2: If the component has a parent system, check its gcp-project-id
       if (parentSystemRelation) {
         const parentSystemEntity = await catalogApi.getEntityByRef(
           parentSystemRelation.targetRef,
         );
 
-        // If the parent system has 'gcp-project-id' in metadata.labels, return it
         if (
           parentSystemEntity?.metadata?.labels &&
           parentSystemEntity.metadata.labels['gcp-project-id']
@@ -262,7 +259,6 @@ export const useAuthenticatedFetch = () => {
         }
       }
 
-      // Step 3: If the parent system doesn't exist or doesn't have 'gcp-project-id', check the owner's systems
       const ownedByRelation = component.entity?.relations?.find(
         rel => rel.type === 'ownedBy',
       );
@@ -272,12 +268,10 @@ export const useAuthenticatedFetch = () => {
           ownedByRelation.targetRef,
         );
 
-        // Fetch all systems owned by this owner (ownerOf relation)
         const ownerSystems = ownerEntity?.relations?.filter(
           rel => rel.type === 'ownerOf' && rel.targetRef.startsWith('system:'),
         );
 
-        // Collect gcp-project-ids from all the owner's systems
         const projectIds: string[] = [];
         if (ownerSystems && ownerSystems.length > 0) {
           for (const system of ownerSystems) {
@@ -296,14 +290,12 @@ export const useAuthenticatedFetch = () => {
           }
         }
 
-        // If we collected project IDs from the owner's systems, return them
         if (projectIds.length > 0 && !parentSystemRelation) {
           return projectIds;
         }
       }
       return [];
-    } catch (error) {
-      onError && onError();
+    } catch {
       return [];
     }
   };
