@@ -19,11 +19,13 @@ import { generateRiScToDTO, GenerateRiScDTO } from '../../utils/DTOs';
 interface GenerateRiScDialogProps {
   onClose: () => void;
   dialogState: RiScDialogStates;
+  setInitialRiScHasBeenGenerated: (value: boolean) => void;
 }
 
 export const GenerateRiscDialog = ({
   onClose,
   dialogState,
+  setInitialRiScHasBeenGenerated,
 }: GenerateRiScDialogProps) => {
   const { generateRiSc, fetchProjectIds } = useAuthenticatedFetch();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -94,8 +96,10 @@ export const GenerateRiscDialog = ({
         publicAgeKey,
       ) as GenerateRiScDTO;
       generateRiSc(generateRiScDTO);
-      onClose();
+
       // TODO : Hvordan skal vi håndtere dette?
+      setInitialRiScHasBeenGenerated(true);
+      onClose();
     }
   };
 

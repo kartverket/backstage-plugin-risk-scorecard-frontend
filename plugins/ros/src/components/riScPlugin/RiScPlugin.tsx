@@ -57,7 +57,9 @@ export const RiScPlugin = () => {
   const scenarioWizardStep = searchParams.get(
     'step',
   ) as ScenarioWizardSteps | null;
-  const doesInitialRiScExist = riScs?.find(riSc => riSc.id === 'risc-setup');
+  const doesInitialRiScExist = riScs?.some(riSc => riSc.id === 'risc-setup');
+  const [hasInitialRiScBeenGenerated, setInitialRiScHasBeenGenerated] =
+    useState(false);
 
   useEffect(() => {
     if (scenarioWizardStep !== null) {
@@ -135,7 +137,7 @@ export const RiScPlugin = () => {
                 >
                   {t('contentHeader.createNewButton')}
                 </Button>
-                {!doesInitialRiScExist && (
+                {!hasInitialRiScBeenGenerated && !doesInitialRiScExist && (
                   <Button
                     startIcon={<AddCircle />}
                     variant="text"
@@ -176,6 +178,7 @@ export const RiScPlugin = () => {
         <GenerateRiscDialog
           onClose={closeGenerateRiScDialog}
           dialogState={generateRiScDialogState}
+          setInitialRiScHasBeenGenerated={setInitialRiScHasBeenGenerated}
         />
       )}
       {!scenarioWizardStep && <ScenarioDrawer />}
