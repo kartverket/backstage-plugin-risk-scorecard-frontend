@@ -323,6 +323,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     errorMessages: {
       DefaultErrorMessage: 'An error occured',
+      NoWriteAccessToRepository: 'Unable to update RiSc. You do not have write access to this repository.',
       ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
       ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
       ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
@@ -639,6 +640,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.Aborted': 'Avbrutt',
 
           'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
+          'errorMessages.NoWriteAccessToRepository': 'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til dette repoet.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
           'errorMessages.ErrorWhenCreatingRiSc':

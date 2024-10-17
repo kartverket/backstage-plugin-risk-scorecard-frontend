@@ -4,6 +4,7 @@ import {
   configApiRef,
   fetchApiRef,
   googleAuthApiRef,
+  githubAuthApiRef,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
@@ -16,13 +17,13 @@ import {
   SubmitResponseObject,
 } from './types';
 import {
+  GenerateRiScDTO,
+  generateRiScToDTOString,
   ProcessRiScResultDTO,
   profileInfoToDTOString,
   PublishRiScResultDTO,
   RiScContentResultDTO,
   riScToDTOString,
-  GenerateRiScDTO,
-  generateRiScToDTOString,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import { pluginRiScTranslationRef } from './translations';
@@ -43,6 +44,7 @@ const useGithubRepositoryInformation = (): GithubRepoInfo => {
 export const useAuthenticatedFetch = () => {
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
+  const githubApi = useApi(githubAuthApiRef)
   const identityApi = useApi(identityApiRef);
   const catalogApi = useApi(catalogApiRef);
   const { fetch } = useApi(fetchApiRef);
@@ -90,12 +92,15 @@ export const useAuthenticatedFetch = () => {
     Promise.all([
       identityApi.getCredentials(),
       googleApi.getAccessToken(['https://www.googleapis.com/auth/cloudkms']),
-    ]).then(([idToken, googleAccessToken]) => {
+      githubApi.getAccessToken(['repo'])
+    ]).then(([idToken, googleAccessToken , gitHubAccessToken]) => {
+      console.log(gitHubAccessToken)
       fetch(uri, {
         method: method,
         headers: {
           Authorization: `Bearer ${idToken.token}`,
           'GCP-Access-Token': googleAccessToken,
+          'GitHub-Access-Token': gitHubAccessToken,
           'Content-Type': 'application/json',
         },
         body: body,
