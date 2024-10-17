@@ -1,9 +1,10 @@
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
   googleAuthApiRef,
+  githubAuthApiRef,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
@@ -16,6 +17,8 @@ import {
   SubmitResponseObject,
 } from './types';
 import {
+  GenerateRiScDTO,
+  generateRiScToDTOString,
   ProcessRiScResultDTO,
   profileInfoToDTOString,
   PublishRiScResultDTO,
@@ -41,7 +44,9 @@ const useGithubRepositoryInformation = (): GithubRepoInfo => {
 export const useAuthenticatedFetch = () => {
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
+  const githubApi = useApi(githubAuthApiRef)
   const identityApi = useApi(identityApiRef);
+  const catalogApi = useApi(catalogApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
@@ -49,6 +54,8 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
+  const uriToGenerateRiSc = `${riScUri}/initialize`;
+  const component = useEntity();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -85,12 +92,15 @@ export const useAuthenticatedFetch = () => {
     Promise.all([
       identityApi.getCredentials(),
       googleApi.getAccessToken(['https://www.googleapis.com/auth/cloudkms']),
-    ]).then(([idToken, googleAccessToken]) => {
+      githubApi.getAccessToken(['repo'])
+    ]).then(([idToken, googleAccessToken , gitHubAccessToken]) => {
+      console.log(gitHubAccessToken)
       fetch(uri, {
         method: method,
         headers: {
           Authorization: `Bearer ${idToken.token}`,
           'GCP-Access-Token': googleAccessToken,
+          'GitHub-Access-Token': gitHubAccessToken,
           'Content-Type': 'application/json',
         },
         body: body,
@@ -211,6 +221,90 @@ export const useAuthenticatedFetch = () => {
     );
   };
 
+  const generateRiSc = (
+    generateRiScDTO: GenerateRiScDTO,
+    onSuccess?: (response: ProcessRiScResultDTO) => void,
+    onError?: (error: ProcessRiScResultDTO) => void,
+  ) => {
+    identityApi.getProfileInfo().then(() =>
+      authenticatedFetch<ProcessRiScResultDTO, ProcessRiScResultDTO>(
+        uriToGenerateRiSc,
+        'POST',
+        res => {
+          setResponse(res);
+          if (onSuccess) onSuccess(res);
+        },
+        error => {
+          setResponse(error);
+          if (onError) onError(error);
+        },
+        generateRiScToDTOString(generateRiScDTO),
+      ),
+    );
+  };
+
+  const fetchProjectIds = async (): Promise<string[]> => {
+    try {
+      const parentSystemRelation = component.entity?.relations?.find(
+        rel => rel.type === 'ownerOf' && rel.targetRef.startsWith('system:'),
+      );
+
+      if (parentSystemRelation) {
+        const parentSystemEntity = await catalogApi.getEntityByRef(
+          parentSystemRelation.targetRef,
+        );
+
+        if (
+          parentSystemEntity?.metadata?.labels &&
+          parentSystemEntity.metadata.labels['gcp-project-id']
+        ) {
+          return parentSystemEntity.metadata.labels['gcp-project-id'].split(
+            ',',
+          );
+        }
+      }
+
+      const ownedByRelation = component.entity?.relations?.find(
+        rel => rel.type === 'ownedBy',
+      );
+
+      if (ownedByRelation) {
+        const ownerEntity = await catalogApi.getEntityByRef(
+          ownedByRelation.targetRef,
+        );
+
+        const ownerSystems = ownerEntity?.relations?.filter(
+          rel => rel.type === 'ownerOf' && rel.targetRef.startsWith('system:'),
+        );
+
+        const projectIds: string[] = [];
+        if (ownerSystems && ownerSystems.length > 0) {
+          for (const system of ownerSystems) {
+            const systemEntity = await catalogApi.getEntityByRef(
+              system.targetRef,
+            );
+
+            if (
+              systemEntity?.metadata?.labels &&
+              systemEntity.metadata.labels['gcp-project-id']
+            ) {
+              projectIds.push(
+                ...systemEntity.metadata.labels['gcp-project-id'].split(','),
+              );
+            }
+          }
+        }
+
+        if (projectIds.length > 0 && !parentSystemRelation) {
+          return projectIds;
+        }
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  };
+
   return {
     fetchRiScs,
     postRiScs,
@@ -219,5 +313,7 @@ export const useAuthenticatedFetch = () => {
     response,
     setResponse,
     fetchDifference,
+    generateRiSc,
+    fetchProjectIds,
   };
 };

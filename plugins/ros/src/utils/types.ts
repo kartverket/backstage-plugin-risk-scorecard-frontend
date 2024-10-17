@@ -95,6 +95,7 @@ export enum ProcessingStatus {
   CreatedPullRequest = 'CreatedPullRequest',
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
   ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
+  ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
   ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
@@ -105,6 +106,7 @@ export enum ContentStatus {
   Failure = 'Failure',
   FileNotFound = 'FileNotFound',
   DecryptionFailed = 'DecryptionFailed',
+  NoReadAccess = 'NoReadAccess',
 }
 
 type FormRisk = Modify<
@@ -129,6 +131,7 @@ export type DifferenceDTO = {
   status:
     | 'Success'
     | 'GithubFailure'
+    | 'NoReadAccess'
     | 'JsonFailure'
     | 'DecryptionFailure'
     | 'GithubFileNotFound'
