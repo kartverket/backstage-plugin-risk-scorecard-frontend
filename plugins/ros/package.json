@@ -28,7 +28,8 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
-    "prettier:check": "prettier --check ."
+    "publishToNpm": "npm publish",
+    "tsc": "tsc"
   },
   "dependencies": {
     "@backstage/core-components": "^0.15.0",
