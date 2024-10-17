@@ -18,9 +18,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@kartverket'
       - run: corepack enable
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn tsc
       - run: yarn build
-      - run: yarn publish --access public
+      - run: yarn publishToNpm --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.KARTVERKET_BACKSTAGE_NPM_TOKEN }}

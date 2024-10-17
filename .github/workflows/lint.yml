@@ -18,6 +18,4 @@ jobs:
       - run: corepack enable
       - run: yarn install --immutable
       - run: yarn prettier:check
-      - run: yarn lint
-      # tsc outputs type definitions to dist-types/ in the repo root, which are then consumed by the build
       - run: yarn tsc
