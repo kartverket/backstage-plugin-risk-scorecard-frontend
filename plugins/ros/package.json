@@ -64,18 +64,7 @@
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^14.0.0",
-    "msw": "^1.0.0",
-    "prettier": "^2.3.2"
-  },
-  "prettier": "@spotify/prettier-config",
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md}": [
-      "prettier --write"
-    ]
+    "msw": "^1.0.0"
   },
   "files": [
     "dist"
