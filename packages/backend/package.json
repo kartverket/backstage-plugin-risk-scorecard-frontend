@@ -26,8 +26,8 @@
     "@backstage/plugin-auth-backend-module-microsoft-provider": "^0.1.17",
     "@backstage/plugin-auth-node": "^0.4.17",
     "@backstage/plugin-catalog-backend": "^1.24.0",
-    "@backstage/plugin-catalog-backend-module-msgraph": "^0.5.30",
     "@backstage/plugin-catalog-backend-module-github": "^0.6.5",
+    "@backstage/plugin-catalog-backend-module-msgraph": "^0.5.30",
     "@backstage/plugin-permission-backend": "^0.5.46",
     "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.1.19",
     "@backstage/plugin-permission-common": "^0.8.0",
@@ -42,6 +42,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@backstage/cli": "^0.26.11",
     "@backstage/eslint-plugin": "^0.1.8",
     "@spotify/eslint-config-base": "^15.0.0",
     "@spotify/eslint-config-typescript": "^15.0.0",
@@ -50,8 +51,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jest": "^27.9.0",
-    "eslint-plugin-unused-imports": "^3.1.0",
-    "@backstage/cli": "^0.26.11"
+    "eslint-plugin-unused-imports": "^3.1.0"
   },
   "files": [
     "dist"
