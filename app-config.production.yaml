@@ -22,7 +22,8 @@ proxy:
   endpoints:
     '/risc-proxy':
       target: https://kv-ros-backend-245zlcbrnq-lz.a.run.app
-      allowedHeaders: ['Authorization', 'GCP-Access-Token']
+      allowedHeaders:
+        ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
 
 auth:
   environment: development

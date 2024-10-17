@@ -96,6 +96,7 @@ export enum ProcessingStatus {
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
   ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
   ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
+  ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
 }
@@ -105,6 +106,7 @@ export enum ContentStatus {
   Failure = 'Failure',
   FileNotFound = 'FileNotFound',
   DecryptionFailed = 'DecryptionFailed',
+  NoReadAccess = 'NoReadAccess',
 }
 
 type FormRisk = Modify<
@@ -131,6 +133,7 @@ export type DifferenceDTO = {
     | 'GithubFailure'
     | 'JsonFailure'
     | 'DecryptionFailure'
+    | 'NoReadAccess'
     | 'GithubFileNotFound'
     | 'FrontendFallback';
   differenceState: Difference;
