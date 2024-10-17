@@ -1,9 +1,7 @@
 name: Lint and compile plugin
 
 on:
-  push:
-    paths:
-      - 'plugins/ros/**'
+  pull_request:
 
 jobs:
   compile_and_lint:
