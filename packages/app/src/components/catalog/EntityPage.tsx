@@ -18,25 +18,25 @@ import {
   EntityHasSystemsCard,
   EntityLayout,
   EntityLinksCard,
+  EntitySwitch,
   EntityOrphanWarning,
   EntityProcessingErrorsPanel,
-  EntityRelationWarning,
-  EntitySwitch,
-  hasCatalogProcessingErrors,
-  hasRelationWarnings,
   isComponentType,
   isKind,
+  hasCatalogProcessingErrors,
   isOrphan,
+  hasRelationWarnings,
+  EntityRelationWarning,
 } from '@backstage/plugin-catalog';
 import {
-  EntityGithubActionsContent,
   isGithubActionsAvailable,
-} from '@backstage/plugin-github-actions';
+  EntityGithubActionsContent,
+} from '@backstage-community/plugin-github-actions';
 import {
+  EntityUserProfileCard,
   EntityGroupProfileCard,
   EntityMembersListCard,
   EntityOwnershipCard,
-  EntityUserProfileCard,
 } from '@backstage/plugin-org';
 import { EntityTechdocsContent } from '@backstage/plugin-techdocs';
 import { EmptyState } from '@backstage/core-components';
@@ -57,6 +57,13 @@ import {
 
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
+import { EntityLinguistCard } from '@backstage-community/plugin-linguist';
+import { EntityLighthouseContent } from '@backstage-community/plugin-lighthouse';
+import {
+    EntityKubernetesContent,
+    isKubernetesAvailable,
+} from '@backstage/plugin-kubernetes';
+import { EntityGrafanaAlertsCard, EntityGrafanaDashboardsCard, EntityOverviewDashboardViewer, isAlertSelectorAvailable, isDashboardSelectorAvailable, isOverviewDashboardAvailable } from '@k-phoen/backstage-plugin-grafana';
 import { RiScPage } from '@kartverket/backstage-plugin-risk-scorecard';
 
 const techdocsContent = (
@@ -65,6 +72,32 @@ const techdocsContent = (
       <ReportIssue />
     </TechDocsAddons>
   </EntityTechdocsContent>
+);
+
+const grafanaContent = (
+  <>
+    <EntitySwitch>
+      <EntitySwitch.Case if={isAlertSelectorAvailable}>
+        <Grid item md={6}>
+          <EntityGrafanaAlertsCard showState />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+    <EntitySwitch>
+      <EntitySwitch.Case if={entity => Boolean(isDashboardSelectorAvailable(entity))}>
+        <Grid item md={6}>
+          <EntityGrafanaDashboardsCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+    <EntitySwitch>
+      <EntitySwitch.Case if={isOverviewDashboardAvailable}>
+        <Grid item md={12}>
+          <EntityOverviewDashboardViewer />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+  </>
 );
 
 const cicdContent = (
@@ -131,13 +164,16 @@ const overviewContent = (
     <Grid item md={6} xs={12}>
       <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
-
+    <Grid item md={12}>
+      <EntityLinguistCard />
+    </Grid>
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
     </Grid>
     <Grid item md={8} xs={12}>
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
+    {grafanaContent}
   </Grid>
 );
 
@@ -178,8 +214,9 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/risc" title="ROS">
-      <RiScPage />
+        <RiScPage />
     </EntityLayout.Route>
+
   </EntityLayout>
 );
 
@@ -208,9 +245,14 @@ const websiteEntityPage = (
       {techdocsContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/risc" title="ROS">
-      <RiScPage />
+    <EntityLayout.Route path="/lighthouse" title="Lighthouse">
+      <EntityLighthouseContent />
     </EntityLayout.Route>
+
+    <EntityLayout.Route path="/risc" title="Risk Scorecard">
+        <RiScPage />
+    </EntityLayout.Route>
+
   </EntityLayout>
 );
 
@@ -230,6 +272,14 @@ const defaultEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
+
+      <EntityLayout.Route
+          path="/kubernetes"
+          title="Kubernetes"
+          if={isKubernetesAvailable}
+      >
+          <EntityKubernetesContent />
+      </EntityLayout.Route>
   </EntityLayout>
 );
 
@@ -307,13 +357,20 @@ const groupPage = (
           <EntityGroupProfileCard variant="gridItem" />
         </Grid>
         <Grid item xs={12} md={6}>
-          <EntityOwnershipCard variant="gridItem" />
+          <EntityOwnershipCard
+              variant="gridItem"
+              entityFilterKind={[
+                  'Domain',
+                  'System',
+                  'Component',
+                  'API',
+                  'Template',
+                  'Resource',
+              ]}
+          />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <EntityMembersListCard showAggregateMembersToggle />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <EntityLinksCard />
+        <Grid item xs={12}>
+          <EntityMembersListCard showAggregateMembersToggle={true} />
         </Grid>
       </Grid>
     </EntityLayout.Route>
@@ -364,6 +421,11 @@ const systemPage = (
         unidirectional={false}
       />
     </EntityLayout.Route>
+
+    <EntityLayout.Route path="/risc" title="ROS">
+        <RiScPage />
+    </EntityLayout.Route>
+
   </EntityLayout>
 );
 
