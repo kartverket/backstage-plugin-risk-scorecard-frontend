@@ -18,10 +18,11 @@ jobs:
           node-version: "20.x"
           registry-url: "https://registry.npmjs.org"
           scope: "@kartverket"
-      - run: corepack yarn install --immutable
-      - run: corepack yarn tsc
-      - run: corepack yarn build
-      - name: Publish to the npm registry
-        run: corepack npm publish --access public
+      - name: Build and push to npr registry
+        run: |
+          yarn install --immutable
+          yarn tsc
+          yarn build
+          yarn publish
         env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.KARTVERKET_BACKSTAGE_NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.KARTVERKET_BACKSTAGE_NPM_TOKEN }}
