@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: corepack enable
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
@@ -23,6 +24,6 @@ jobs:
           yarn install --immutable
           yarn tsc
           yarn build
-          yarn publish
+          yarn publishToNpm --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.KARTVERKET_BACKSTAGE_NPM_TOKEN }}
