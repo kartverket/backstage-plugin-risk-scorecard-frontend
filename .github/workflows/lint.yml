@@ -7,17 +7,23 @@ jobs:
   compile_and_lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js ${{ matrix.node-version }}
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: "20.x"
           cache: 'npm'
-      - run: corepack enable
-      - run: yarn install --immutable
-      - run: yarn prettier:check
-      - run: yarn lint
-      # tsc outputs type definitions to dist-types/ in the repo root, which are then consumed by the build
-      - run: yarn tsc
+      - name: Install dependencies
+        working-directory: plugins/ros
+        run: yarn install --immutable
+      - name: Run Prettier
+        working-directory: plugins/ros
+        run: yarn prettier:check
+      - name: Run lint
+        working-directory: plugins/ros
+        run: yarn lint
+      - name: Run tsc
+        working-directory: plugins/ros
+        run: yarn tsc

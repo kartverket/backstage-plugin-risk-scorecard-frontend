@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import { makeStyles } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import ExtensionIcon from '@material-ui/icons/Extension';
-import MapIcon from '@material-ui/icons/MyLocation';
+import SpeedIcon from '@material-ui/icons/Speed';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
 import LogoFull from './LogoFull';
@@ -22,10 +22,14 @@ import {
   SidebarScrollWrapper,
   SidebarSpace,
   useSidebarOpenState,
-  Link,
+  Link, WarningIcon,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import LayersIcon from '@material-ui/icons/Layers';
+import CategoryIcon from '@material-ui/icons/Category';
+import { MyGroupsSidebarItem } from '@backstage/plugin-org';
+import GroupIcon from '@material-ui/icons/People';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -49,7 +53,7 @@ const SidebarLogo = () => {
   return (
     <div className={classes.root}>
       <Link to="/" underline="none" className={classes.link} aria-label="Home">
-        {isOpen ? <LogoFull /> : <LogoIcon />}
+        {isOpen ? <LogoFull type="light" /> : <LogoIcon />}
       </Link>
     </div>
   );
@@ -65,15 +69,20 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
         {/* Global nav, not org-specific */}
-        <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
+        <SidebarItem icon={HomeIcon} to="/" text="Home" />
+        <SidebarItem icon={CategoryIcon} to="catalog" text="Catalog" />
+        <MyGroupsSidebarItem singularTitle="My Group" pluralTitle="My Groups" icon={GroupIcon}
+        />
         <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
+        <SidebarItem icon={LayersIcon} to="explore" text="Explore" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
         {/* End global nav */}
         <SidebarDivider />
         <SidebarScrollWrapper>
-          <SidebarItem icon={MapIcon} to="tech-radar" text="Tech Radar" />
+          <SidebarItem icon={SpeedIcon} to="lighthouse" text="Lighthouse" />
         </SidebarScrollWrapper>
+        <SidebarItem icon={WarningIcon} to="opencost" text="SKIPcost" />
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
