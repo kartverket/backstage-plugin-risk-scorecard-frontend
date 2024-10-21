@@ -1,9 +1,9 @@
-name: Publish Package to npmjs
+name: Publish RiSc plugin to npmjs
 on:
-  workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
+    workflow_dispatch:
+    push:
+        tags:
+            - "v*"
 jobs:
   build:
     defaults:
