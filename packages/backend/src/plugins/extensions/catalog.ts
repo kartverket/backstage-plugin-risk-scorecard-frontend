@@ -1,5 +1,5 @@
 import { createBackendModule } from '@backstage/backend-plugin-api';
-import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph/alpha';
+import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph';
 import { msGraphGroupTransformer } from '../transformers/msGraphTransformer';
 
 export const msGroupTransformerCatalogModule = createBackendModule({
