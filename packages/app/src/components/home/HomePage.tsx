@@ -158,7 +158,7 @@ export const HomePage = () => {
                 ]}
               />
             </Grid>
-            <Grid item xs={24} md={8}>
+            <Grid item xs={12} md={4}>
               <XkcdComicCard />
             </Grid>
             <Grid item xs={12} md={4}>
