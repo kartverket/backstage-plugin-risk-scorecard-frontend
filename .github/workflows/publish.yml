@@ -12,18 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
-          registry-url: "https://registry.npmjs.org"
-          scope: "@kartverket"
-      - name: Build and push to npr registry
-        run: |
-          yarn install --immutable
-          yarn tsc
-          yarn build
-          yarn publishToNpm --access public
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@kartverket'
+      - run: yarn install --frozen-lockfile
+      - run: yarn tsc
+      - run: yarn build
+      - run: yarn publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.KARTVERKET_BACKSTAGE_NPM_TOKEN }}
