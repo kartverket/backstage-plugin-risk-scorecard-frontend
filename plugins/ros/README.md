@@ -11,10 +11,11 @@ proxy:
   endpoints:
     '/risc-proxy':
       target: http://localhost:8080
-      allowedHeaders: ['Authorization', 'GCP-Access-Token']
+      allowedHeaders: ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
 ```
 
-The backend uses EntraID id-tokens to validate the user, and GCP access tokens to federate access to the GCP KMS.
+The backend uses Backstage-issued tokens to validate the user, and GCP access tokens to federate access to the GCP KMS.
+Write and read access to repositories is managed by the users GitHub access token.
 The plugin uses the apiRefs for both of these providers, and entity providers and authentication have to be implemented
 for both:
 
