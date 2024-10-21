@@ -15,7 +15,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: 'npm'
+          registry-url: "https://registry.npmjs.org"
+          scope: "@kartverket"
       - run: yarn install --immutable
         working-directory: plugins/ros
       - run: yarn tsc
