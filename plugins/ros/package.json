@@ -29,7 +29,6 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
-    "login": "npm login",
     "publishToNpm": "npm publish",
     "tsc": "tsc"
   },
