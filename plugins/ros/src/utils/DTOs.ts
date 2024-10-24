@@ -46,6 +46,10 @@ export type RiScDTO = {
   scenarios: ScenarioDTO[];
 };
 
+export type GcpProjectDTO = {
+  gcpProject: string;
+}
+
 type ScenarioDTO = {
   title: string;
   scenario: {

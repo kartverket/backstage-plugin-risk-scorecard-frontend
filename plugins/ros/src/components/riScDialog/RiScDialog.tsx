@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RiSc } from '../../utils/types';
 import { emptyRiSc } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -12,6 +12,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../common/mixins';
+import { getAssociatedGcpProjects } from '../../utils/hooks';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 export enum RiScDialogStates {
   Closed,
@@ -54,6 +56,10 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     onClose();
   });
 
+  useEffect(() => {
+    getAssociatedGcpProjects()
+  }, [RiScDialogStates.Create]);
+
   return (
     <Dialog open={dialogState !== RiScDialogStates.Closed} onClose={onClose}>
       <DialogTitle>{titleTranslation}</DialogTitle>
@@ -61,6 +67,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
       <DialogContent
         sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
       >
+        <DialogTitle>{t('rosDialog.gcpProject')}</DialogTitle>
         <Input
           required
           {...register('title', { required: true })}
@@ -76,7 +83,6 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
           minRows={4}
         />
       </DialogContent>
-
       <DialogActions sx={dialogActions}>
         <Button variant="contained" onClick={onSubmit} disabled={!isDirty}>
           {t('dictionary.save')}

@@ -1,10 +1,10 @@
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
-  googleAuthApiRef,
   githubAuthApiRef,
+  googleAuthApiRef,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
@@ -225,3 +225,55 @@ export const useAuthenticatedFetch = () => {
     fetchDifference,
   };
 };
+
+interface ComponentSpec {
+  owner: string;
+  system?: string | null;
+  [key: string]: any;
+}
+
+function castToType<T>(jsonObject: Record<string, any> | undefined): T {
+  if (!jsonObject) {
+    throw new Error('Input JSON object is undefined');
+  }
+  return {
+    ...jsonObject,
+  } as T;
+}
+
+export async function getAssociatedGcpProjects(): Promise<string[]> {
+  const catalogApi = useApi(catalogApiRef);
+  const currentEntity = useEntity();
+  switch (currentEntity.entity.kind) {
+    case 'component': {
+      const componentSpec = castToType<ComponentSpec>(
+        currentEntity.entity.spec,
+      );
+      const associatedSystem = componentSpec.system;
+      if (typeof associatedSystem === 'string') {
+        const system = await catalogApi.getEntityByRef({
+          name: associatedSystem,
+          namespace: 'default',
+          kind: 'system',
+        });
+        if (system && system.metadata.labels) {
+          const gcpProjectId = system.metadata.labels['gcp-project-id']
+        }
+      } else {
+        return getAssociatedGcpProjectsFromOwner()
+      }
+    }
+    case 'system': {
+      throw Error('Not implemented on system yet');
+    }
+    default: {
+      throw Error(
+        'RiSC is not supported on other levels than component and system',
+      );
+    }
+  }
+}
+
+function getAssociatedGcpProjectsFromOwner(ownerName: string): Promise<string[]> {
+  
+}

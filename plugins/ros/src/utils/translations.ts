@@ -146,6 +146,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       titleNew: 'New risk scorecard',
       titleEdit: 'Edit scorecard',
       titleError: 'The scorecard has to have a title',
+      gcpProject: 'Choose associated GCP-project',
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
       scopeError: 'The scorecard has to have a description of the scope',
@@ -465,6 +466,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr/hendelse x 50 hendelser/år = 1 500 000 kr/år.',
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
+          'rosDialog.gcpProject': 'Velg assosiert GCP-prosjekt',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':

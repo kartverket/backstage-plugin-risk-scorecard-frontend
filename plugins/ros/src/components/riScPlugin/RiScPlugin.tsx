@@ -27,7 +27,7 @@ export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
-    RiScDialogStates.Closed,
+    RiScDialogStates.Create,
   );
 
   const openCreateRiScDialog = () =>
