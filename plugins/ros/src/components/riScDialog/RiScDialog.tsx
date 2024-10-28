@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { RiSc } from '../../utils/types';
 import { emptyRiSc } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -13,7 +13,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../common/mixins';
 import { getAssociatedGcpProjects } from '../../utils/hooks';
-import { useEntity } from '@backstage/plugin-catalog-react';
 
 export enum RiScDialogStates {
   Closed,
@@ -26,26 +25,26 @@ interface RiScDialogProps {
   dialogState: RiScDialogStates;
 }
 
-export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { selectedRiSc, createNewRiSc, updateRiSc } = useRiScs();
+export const RiScDialog = ({onClose, dialogState}: RiScDialogProps) => {
+  const {t} = useTranslationRef(pluginRiScTranslationRef);
+  const {selectedRiSc, createNewRiSc, updateRiSc} = useRiScs();
 
   const {
     register,
     handleSubmit,
-    formState: { isDirty, errors },
+    formState: {isDirty, errors},
   } = useForm<RiSc>({
     defaultValues:
-      dialogState === RiScDialogStates.Edit
-        ? selectedRiSc!.content
-        : emptyRiSc(),
+        dialogState === RiScDialogStates.Edit
+            ? selectedRiSc!.content
+            : emptyRiSc(),
     mode: 'onBlur',
   });
 
   const titleTranslation =
-    dialogState === RiScDialogStates.Create
-      ? t('rosDialog.titleNew')
-      : t('rosDialog.titleEdit');
+      dialogState === RiScDialogStates.Create
+          ? t('rosDialog.titleNew')
+          : t('rosDialog.titleEdit');
 
   const onSubmit = handleSubmit((data: RiSc) => {
     if (dialogState === RiScDialogStates.Create) {
@@ -56,41 +55,39 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     onClose();
   });
 
-  useEffect(() => {
-    getAssociatedGcpProjects()
-  }, [RiScDialogStates.Create]);
+  const [associatedGcpProjects, setAssociatedGcpProjects] = useState(getAssociatedGcpProjects())
+  console.log(associatedGcpProjects)
 
   return (
-    <Dialog open={dialogState !== RiScDialogStates.Closed} onClose={onClose}>
-      <DialogTitle>{titleTranslation}</DialogTitle>
-
-      <DialogContent
-        sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
-      >
-        <DialogTitle>{t('rosDialog.gcpProject')}</DialogTitle>
-        <Input
-          required
-          {...register('title', { required: true })}
-          error={errors.title !== undefined}
-          label={t('dictionary.title')}
-        />
-        <Input
-          required
-          {...register('scope', { required: true })}
-          label={t('dictionary.scope')}
-          sublabel={t('rosDialog.scopeDescription')}
-          error={errors.scope !== undefined}
-          minRows={4}
-        />
-      </DialogContent>
-      <DialogActions sx={dialogActions}>
-        <Button variant="contained" onClick={onSubmit} disabled={!isDirty}>
-          {t('dictionary.save')}
-        </Button>
-        <Button variant="outlined" onClick={onClose}>
-          {t('dictionary.cancel')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <Dialog open={dialogState !== RiScDialogStates.Closed} onClose={onClose}>
+        <DialogTitle>{titleTranslation}</DialogTitle>
+        <DialogContent
+            sx={{display: 'flex', flexDirection: 'column', gap: '16px'}}
+        >
+          <DialogTitle>{t('rosDialog.titleNew')}</DialogTitle>
+          <Input
+              required
+              {...register('title', {required: true})}
+              error={errors.title !== undefined}
+              label={t('dictionary.title')}
+          />
+          <Input
+              required
+              {...register('scope', {required: true})}
+              label={t('dictionary.scope')}
+              sublabel={t('rosDialog.scopeDescription')}
+              error={errors.scope !== undefined}
+              minRows={4}
+          />
+        </DialogContent>
+        <DialogActions sx={dialogActions}>
+          <Button variant="contained" onClick={onSubmit} disabled={!isDirty}>
+            {t('dictionary.save')}
+          </Button>
+          <Button variant="outlined" onClick={onClose}>
+            {t('dictionary.cancel')}
+          </Button>
+        </DialogActions>
+      </Dialog>
   );
 };
