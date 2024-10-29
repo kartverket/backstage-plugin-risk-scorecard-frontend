@@ -189,3 +189,9 @@ export function getTranslationKey(
   }
   return t(`infoMessages.${key}`);
 }
+
+export function gcpProjectIdToReadableString(gcpProjectId: string) {
+  const parts = gcpProjectId.split('-');
+  parts.pop();
+  return parts.join('-');
+}

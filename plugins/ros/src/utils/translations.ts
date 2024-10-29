@@ -146,7 +146,14 @@ export const pluginRiScTranslationRef = createTranslationRef({
       titleNew: 'New risk scorecard',
       titleEdit: 'Edit scorecard',
       titleError: 'The scorecard has to have a title',
-      gcpProject: 'Choose associated GCP-project',
+      gcpProject: 'GCP-project',
+      gcpProjectDescription: 'Choose which GCP-project the cryptographic key used to encrypt and decrypt the RiSc should reside from.',
+      publicAgeKey: 'Public age key',
+      publicAgeKeyDescription: 'Provide a public age key if you wish to work with the RiSc locally.',
+      lagNyFraScratch: 'Create new',
+      lagNyFraAutogenerert: 'Generate new',
+      nyFraScratch: 'Create empty RiSc',
+      nyFraAutogenerert: 'Generate initial RiSc',
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
       scopeError: 'The scorecard has to have a description of the scope',
@@ -311,6 +318,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'Unable to update RiSc. You do not have write access to this repository.',
       ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
       ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
+      ErrorWhenSchedulingInitialRiSc:
+        'Failed to schedule initial RiSc generation',
       ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
       ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
       FailedToFetchRiScs: 'Failed to fetch risk scorecards',
@@ -325,6 +334,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       UpdatedRiScRequiresNewApproval:
         'Risk scorecard update and requires new approval',
       CreatedRiSc: 'Created new risk scorecard successfully',
+      ScheduledInitialRiSc:
+        'Scheduled the generation of initial RiSc successfully',
       UpdatedRiScAndCreatedPullRequest:
         'Risk scorecard updated and ready for approval in Github',
     },
@@ -466,7 +477,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr/hendelse x 50 hendelser/år = 1 500 000 kr/år.',
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
-          'rosDialog.gcpProject': 'Velg assosiert GCP-prosjekt',
+          'rosDialog.gcpProject': 'GCP-prosjekt',
+          'rosDialog.gcpProjectDescription': 'Velg hvilket GCP-prosjekt den kryptografiske nøkkelen brukt til å kryptere og dekryptere risiko -og sårbarhetsanalysen skal komme fra',
+          'rosDialog.publicAgeKey': 'Offentlig age-nøkkel',
+          'rosDialog.publicAgeKeyDescription': 'Legg ved din offentlige age-nøkkel hvis du ønsker å jobbe med risiko -og sårbarhetsanalysen lokalt.',
+          'rosDialog.nyFraScratch': 'Opprett tom RoS',
+          'rosDialog.nyFraAutogenerert': 'Generer initiell RoS',
+          'rosDialog.lagNyFraScratch': 'Lagre ny',
+          'rosDialog.lagNyFraAutogenerert': 'Generer ny',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':
@@ -621,6 +639,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Scenariet du prøver å åpne eksisterer ikke',
           'errorMessages.ErrorWhenCreatingPullRequest':
             'Kunne ikke lagre godkjenning av risiko- og sårbarhetsanalysen',
+          'errorMessages.ErrorWhenSchedulingInitialRiSc':
+            'Generering av initiell RoS feilet',
           'errorMessages.ErrorWhenFetchingRiScs':
             'Kunne ikke hente risiko- og sårbarhetsanalyser med id-er: ',
           'errorMessages.FailedToFetchRiScs':
@@ -632,6 +652,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Risiko- og sårbarhetsanalysen ble oppdatert',
           'infoMessages.UpdatedRiScRequiresNewApproval':
             'Risiko- og sårbarhetsanalysen ble oppdatert og trenger ny godkjenning',
+          'infoMessages.ScheduledInitialRiSc':
+            'Generering av initiell RoS ble startet',
           'infoMessages.CreatedRiSc':
             'Risiko- og sårbarhetsanalyse ble opprettet',
           'infoMessages.UpdatedRiScAndCreatedPullRequest':

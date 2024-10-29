@@ -1,6 +1,7 @@
 import {
   Action,
   ContentStatus,
+  GenerateInitialRiScBody,
   MigrationStatus,
   Modify,
   ProcessingStatus,
@@ -46,9 +47,14 @@ export type RiScDTO = {
   scenarios: ScenarioDTO[];
 };
 
+export type ScheduleInitialRiScDTO = {
+  status: ProcessingStatus;
+  statusMessage: string;
+};
+
 export type GcpProjectDTO = {
   gcpProject: string;
-}
+};
 
 type ScenarioDTO = {
   title: string;
@@ -96,6 +102,19 @@ function dtoToAction(actionDTO: ActionsDTO): Action {
     ...actionDTO.action,
     title: actionDTO.title,
   };
+}
+
+export function initialRiScToDTOString(body: GenerateInitialRiScBody): string {
+  if (!body.publicAgeKey) {
+    return JSON.stringify({
+      gcpProjectId: body.gcpProjectId,
+    });
+  } else {
+    return JSON.stringify({
+      publicAgeKey: body.publicAgeKey,
+      gcpProjectId: body.gcpProjectId,
+    });
+  }
 }
 
 export function profileInfoToDTOString(profile: ProfileInfo): string {

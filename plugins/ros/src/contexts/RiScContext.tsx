@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import {
   ContentStatus,
+  GenerateInitialRiScBody,
   ProcessingStatus,
   RiSc,
   RiScStatus,
@@ -39,6 +40,7 @@ type RiScDrawerProps = {
     onError?: () => void,
   ) => void;
   approveRiSc: () => void;
+  generateInitialRiSc: (body: GenerateInitialRiScBody) => void;
   riScUpdateStatus: RiScUpdateStatus;
   resetRiScStatus: () => void;
   resetResponse: () => void;
@@ -63,6 +65,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     publishRiScs,
     response,
     setResponse,
+    postGenerateInitialRiSc,
   } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
@@ -348,6 +351,41 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const generateInitialRiSc = (body: GenerateInitialRiScBody) => {
+    setIsFetching(true);
+    setSelectedRiSc(null);
+
+    postGenerateInitialRiSc(
+      body,
+      res => {
+        setIsFetching(false);
+        setResponse({
+          ...res,
+          statusMessage: getTranslationKey('info', res.status, t),
+        });
+        setRiScUpdateStatus({
+          isLoading: false,
+          isError: false,
+          isSuccess: true,
+        });
+      },
+      error => {
+        setSelectedRiSc(selectedRiSc);
+        setIsFetching(false);
+        setRiScUpdateStatus({
+          isLoading: false,
+          isError: true,
+          isSuccess: false,
+        });
+
+        setResponse({
+          ...error,
+          statusMessage: getTranslationKey('error', error.status, t),
+        });
+      },
+    );
+  };
+
   const value = {
     riScs,
     selectRiSc,
@@ -355,6 +393,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     createNewRiSc,
     updateRiSc,
     approveRiSc,
+    generateInitialRiSc,
     riScUpdateStatus,
     resetRiScStatus,
     resetResponse,
