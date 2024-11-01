@@ -104,8 +104,11 @@ export enum ProcessingStatus {
   ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
-  ScheduledInitialRiSc = 'Scheduled initial RiSc generation successfully',
+  ScheduledInitialRiSc = "Initial RiSc generation Shceduled successfully",
+  Encrypting = "Encrypting RiSc",
+  Commiting = "Writing RiSc to GitHub",
   ErrorWhenSchedulingInitialRiSc = 'Error scheduling initial RiSc generation',
+  ErrorWhenFetchingInitilRiScStatus = 'Error when fetching initial RiSc status',
 }
 
 export enum ContentStatus {

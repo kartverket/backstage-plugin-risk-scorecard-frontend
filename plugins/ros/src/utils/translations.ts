@@ -74,6 +74,19 @@ export const pluginRiScTranslationRef = createTranslationRef({
       approveButton: 'Accept risks', // Godkjenn ROS
       moreInformationButton: 'More information', // Lagre ROS migrering
     },
+    loadingProgressInitialRiSc: {
+      '0': 'Scheduling initial RiSc generation',
+      '10': 'Automatic RiSc generation is scheduled',
+      '20': 'Generating RiSc based on security metrics',
+      '30': 'Generating RiSc based on security metrics',
+      '40': 'Generating RiSc based on security metrics',
+      '50': 'Generating RiSc based on security metrics',
+      '60': 'Generating RiSc based on security metrics',
+      '70': 'RiSc generation finished',
+      '80': 'Encrypting RiSc',
+      '90': 'Writing to GitHub',
+      '100': 'Done',
+    },
     publishDialog: {
       title: 'Accept risks', // Godkjenn ROS
       checkboxLabel:
@@ -147,9 +160,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
       titleEdit: 'Edit scorecard',
       titleError: 'The scorecard has to have a title',
       gcpProject: 'GCP-project',
-      gcpProjectDescription: 'Choose which GCP-project the cryptographic key used to encrypt and decrypt the RiSc should reside from.',
+      gcpProjectDescription:
+        'Choose which GCP-project the cryptographic key used to encrypt and decrypt the RiSc should reside from.',
       publicAgeKey: 'Public age key',
-      publicAgeKeyDescription: 'Provide a public age key if you wish to work with the RiSc locally.',
+      publicAgeKeyDescription:
+        'Provide a public age key if you wish to work with the RiSc locally.',
       lagNyFraScratch: 'Create new',
       lagNyFraAutogenerert: 'Generate new',
       nyFraScratch: 'Create empty RiSc',
@@ -320,6 +335,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
       ErrorWhenSchedulingInitialRiSc:
         'Failed to schedule initial RiSc generation',
+      ErrorWhenFetchingInitilRiScStatus:
+        'Failed to fetch status on initial RiSc generation',
       ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
       ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
       FailedToFetchRiScs: 'Failed to fetch risk scorecards',
@@ -426,6 +443,18 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'publishDialog.checkboxLabel':
             'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
 
+          'loadingProgressInitialRiSc.0': 'Skedulerer initiell RoS generering',
+          'loadingProgressInitialRiSc.10': 'Automatisk RoS generering er skedulert',
+          'loadingProgressInitialRiSc.20': 'Genererer RoS basert på sikkerhetsmetrikker',
+          'loadingProgressInitialRiSc.30': 'Genererer RoS basert på sikkerhetsmetrikker',
+          'loadingProgressInitialRiSc.40': 'Genererer RoS basert på sikkerhetsmetrikker',
+          'loadingProgressInitialRiSc.50': 'Genererer RoS basert på sikkerhetsmetrikker',
+          'loadingProgressInitialRiSc.60': 'Genererer RoS basert på sikkerhetsmetrikker',
+          'loadingProgressInitialRiSc.70': 'RoS-generering ferdig',
+          'loadingProgressInitialRiSc.80': 'Krypterer RoS',
+          'loadingProgressInitialRiSc.90': 'Skriver til GitHub',
+          'loadingProgressInitialRiSc.100': 'Ferdig',
+
           'migrationDialog.title': 'Lagre endringer',
           'migrationDialog.description':
             'Endringene er gjort for å følge den nyeste skjema versjonen. I dette tilfellet ble ROS-analysen oppdatert til ',
@@ -478,9 +507,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.gcpProject': 'GCP-prosjekt',
-          'rosDialog.gcpProjectDescription': 'Velg hvilket GCP-prosjekt den kryptografiske nøkkelen brukt til å kryptere og dekryptere risiko -og sårbarhetsanalysen skal komme fra',
+          'rosDialog.gcpProjectDescription':
+            'Velg hvilket GCP-prosjekt den kryptografiske nøkkelen brukt til å kryptere og dekryptere risiko -og sårbarhetsanalysen skal komme fra',
           'rosDialog.publicAgeKey': 'Offentlig age-nøkkel',
-          'rosDialog.publicAgeKeyDescription': 'Legg ved din offentlige age-nøkkel hvis du ønsker å jobbe med risiko -og sårbarhetsanalysen lokalt.',
+          'rosDialog.publicAgeKeyDescription':
+            'Legg ved din offentlige age-nøkkel hvis du ønsker å jobbe med risiko -og sårbarhetsanalysen lokalt.',
           'rosDialog.nyFraScratch': 'Opprett tom RoS',
           'rosDialog.nyFraAutogenerert': 'Generer initiell RoS',
           'rosDialog.lagNyFraScratch': 'Lagre ny',
@@ -641,6 +672,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke lagre godkjenning av risiko- og sårbarhetsanalysen',
           'errorMessages.ErrorWhenSchedulingInitialRiSc':
             'Generering av initiell RoS feilet',
+          'errorMessages.ErrorWhenFetchingInitilRiScStatus':
+            'Kunne ikke hente status på initiell RoS-generering',
           'errorMessages.ErrorWhenFetchingRiScs':
             'Kunne ikke hente risiko- og sårbarhetsanalyser med id-er: ',
           'errorMessages.FailedToFetchRiScs':

@@ -21,11 +21,16 @@ export enum RiScDialogStates {
 }
 
 export interface RiScDialogProps {
-  onClose: () => void;
+  onCloseFromScratch: () => void;
+  onCloseGenerateInitial: () => void;
   dialogState: RiScDialogStates;
 }
 
-export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
+export const RiScDialog = ({
+  onCloseFromScratch,
+  onCloseGenerateInitial,
+  dialogState,
+}: RiScDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const titleTranslation =
@@ -53,7 +58,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   return (
     <Dialog
       open={dialogState !== RiScDialogStates.Closed}
-      onClose={onClose}
+      onClose={onCloseFromScratch}
       maxWidth={'sm'}
       fullWidth={true}
     >
@@ -73,14 +78,12 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
       </Box>
       {chosenRisCDialog === ChosenRisCDialog.FromScratc && (
         <CreateNewFromScratchTabPanel
-          onClose={onClose}
+          onCloseFromScratch={onCloseFromScratch}
           dialogState={dialogState}
         />
       )}
       {chosenRisCDialog === ChosenRisCDialog.GenerateInitial && (
-        <GenerateInitialTabPanel
-            onClose={onClose}
-        />
+        <GenerateInitialTabPanel onClose={onCloseGenerateInitial} />
       )}
     </Dialog>
   );

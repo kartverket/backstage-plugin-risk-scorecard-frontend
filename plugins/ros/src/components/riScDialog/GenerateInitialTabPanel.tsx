@@ -26,7 +26,7 @@ export const GenerateInitialTabPanel = ({
 }: GenerateInitialTabPanelProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { fetchAssociatedGcpProjects } = useAuthenticatedFetch();
-  const { generateInitialRiSc } = useRiScs();
+  const { generateInitialRiSc, selectedRiSc } = useRiScs();
   const [associatedGcpProjects, setAssociatedGcpProjects] = useState<string[]>(
     [],
   );
@@ -42,7 +42,7 @@ export const GenerateInitialTabPanel = ({
   });
 
   const onSubmit = handleSubmit((data: GenerateInitialRiScBody) => {
-    generateInitialRiSc(data);
+    generateInitialRiSc(selectedRiSc, data);
     onClose();
   });
 
@@ -79,10 +79,13 @@ export const GenerateInitialTabPanel = ({
       )}
       {!isLoading && (
         <Select
-            value={chosenGcpProjectId}
-            required
-            {...register('gcpProjectId', {required: true, onChange: handleChangeGcpProject})}
-            error={errors.gcpProjectId !== undefined}
+          value={chosenGcpProjectId}
+          required
+          {...register('gcpProjectId', {
+            required: true,
+            onChange: handleChangeGcpProject,
+          })}
+          error={errors.gcpProjectId !== undefined}
         >
           {associatedGcpProjects.map((item, _) => (
             <MenuItem value={item}>
@@ -92,17 +95,14 @@ export const GenerateInitialTabPanel = ({
         </Select>
       )}
       <Input
-          {...register('publicAgeKey', { required: false })}
-          label={t('rosDialog.publicAgeKey')}
-          sublabel={t('rosDialog.publicAgeKeyDescription')}
-          error={errors.publicAgeKey !== undefined}
-          minRows={2}
+        {...register('publicAgeKey', { required: false })}
+        label={t('rosDialog.publicAgeKey')}
+        sublabel={t('rosDialog.publicAgeKeyDescription')}
+        error={errors.publicAgeKey !== undefined}
+        minRows={2}
       />
       <DialogActions sx={dialogActions}>
-        <Button
-          variant="contained"
-          onClick={onSubmit}
-        >
+        <Button variant="contained" onClick={onSubmit}>
           {t('rosDialog.lagNyFraAutogenerert')}
         </Button>
       </DialogActions>

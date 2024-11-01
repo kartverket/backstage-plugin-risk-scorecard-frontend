@@ -8,16 +8,19 @@ import DialogContent from '@mui/material/DialogContent';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { RiSc } from '../../utils/types';
-import { RiScDialogProps, RiScDialogStates } from './RiScDialog';
+import { RiScDialogStates } from './RiScDialog';
 import { useRiScs } from '../../contexts/RiScContext';
 import { emptyRiSc } from '../../utils/utilityfunctions';
 
-
+interface CreateNewFromScratchTabPanelProps {
+  onCloseFromScratch: () => void;
+  dialogState: RiScDialogStates;
+}
 
 export const CreateNewFromScratchTabPanel = ({
-  onClose,
+  onCloseFromScratch,
   dialogState,
-}: RiScDialogProps) => {
+}: CreateNewFromScratchTabPanelProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc, createNewRiSc, updateRiSc } = useRiScs();
 
@@ -39,7 +42,7 @@ export const CreateNewFromScratchTabPanel = ({
     } else {
       updateRiSc(data);
     }
-    onClose();
+    onCloseFromScratch();
   });
 
   return (

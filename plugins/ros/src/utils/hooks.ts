@@ -54,6 +54,7 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToInitializeRiSc = `${riScUri}/initialize`;
+  const uriToFetchInitialRiScStatus = `${riScUri}/initialize`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
   const currentEntity = useEntity();
   const catalogApi = useApi(catalogApiRef);
@@ -234,10 +235,34 @@ export const useAuthenticatedFetch = () => {
         if (onSuccess) onSuccess(res);
       },
       error => {
-        setResponse(error);
         if (onError) onError(error);
+        setResponse({
+          statusMessage: t('errorMessages.ErrorWhenSchedulingInitialRiSc'),
+          status: ProcessingStatus.ErrorWhenSchedulingInitialRiSc,
+        });
       },
       initialRiScToDTOString(body),
+    );
+  };
+
+  const fetchGenerateInitialRiScStatus = (
+      onSuccess?: (response: ScheduleInitialRiScDTO) => void,
+      onError?: (error: ScheduleInitialRiScDTO) => void,
+  ) => {
+    authenticatedFetch<ScheduleInitialRiScDTO, ScheduleInitialRiScDTO>(
+        uriToFetchInitialRiScStatus,
+        'GET',
+        res => {
+          setResponse(res);
+          if (onSuccess) onSuccess(res);
+        },
+        error => {
+          if (onError) onError(error);
+          setResponse({
+            statusMessage: t('errorMessages.ErrorWhenSchedulingInitialRiSc'),
+            status: ProcessingStatus.ErrorWhenFetchingInitilRiScStatus,
+          });
+        },
     );
   };
 
@@ -254,11 +279,14 @@ export const useAuthenticatedFetch = () => {
             namespace: 'default',
             kind: 'System',
           });
-          const labels = system?.metadata.labels
-          const systemGcpProjectUnfiltered = labels ? [labels['gcp-project-id']] : [undefined];
+          const labels = system?.metadata.labels;
+          const systemGcpProjectUnfiltered = labels
+            ? [labels['gcp-project-id']]
+            : [undefined];
 
-
-          const systemGcpProjects = systemGcpProjectUnfiltered.filter((value): value is string => value !== undefined);
+          const systemGcpProjects = systemGcpProjectUnfiltered.filter(
+            (value): value is string => value !== undefined,
+          );
           const associatedGcpProjectsFromOwner =
             await getAssociatedGcpProjectsFromOwner(componentSpec.owner);
           return Array.from(
@@ -300,6 +328,7 @@ export const useAuthenticatedFetch = () => {
     fetchRiScs,
     postRiScs,
     postGenerateInitialRiSc,
+    fetchGenerateInitialRiScStatus,
     putRiScs,
     publishRiScs,
     response,

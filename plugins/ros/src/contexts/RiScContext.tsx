@@ -16,7 +16,7 @@ import {
 } from '../utils/utilityfunctions';
 import { riScRouteRef } from '../routes';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { dtoToRiSc, RiScDTO } from '../utils/DTOs';
+import {dtoToRiSc, RiScDTO, scheduleInitialRiScDTOToInitialRiScStatus} from '../utils/DTOs';
 import { useEffectOnce } from 'react-use';
 import { useAuthenticatedFetch } from '../utils/hooks';
 import { latestSupportedVersion } from '../utils/constants';
@@ -29,6 +29,12 @@ export type RiScUpdateStatus = {
   isSuccess: boolean;
 };
 
+export enum InitialRiScStatus {
+  Scheduled,
+  Encrypting,
+  Commiting,
+}
+
 type RiScDrawerProps = {
   riScs: RiScWithMetadata[] | null;
   selectRiSc: (title: string) => void;
@@ -40,11 +46,14 @@ type RiScDrawerProps = {
     onError?: () => void,
   ) => void;
   approveRiSc: () => void;
-  generateInitialRiSc: (body: GenerateInitialRiScBody) => void;
+  generateInitialRiSc: (riScInFocus: RiScWithMetadata | null, body: GenerateInitialRiScBody) => void;
+  pollGenerateInitialRiScStatus: () => void;
+  initialRiScStatus: InitialRiScStatus;
   riScUpdateStatus: RiScUpdateStatus;
   resetRiScStatus: () => void;
   resetResponse: () => void;
   isFetching: boolean;
+  isLoadingGenerateInitialRiSc: boolean;
   response: SubmitResponseObject | null;
 };
 
@@ -66,6 +75,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     response,
     setResponse,
     postGenerateInitialRiSc,
+    fetchGenerateInitialRiScStatus,
   } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
@@ -73,11 +83,14 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     null,
   );
   const [isFetching, setIsFetching] = useState(true);
+  const [isLoadingGenerateInitialRiSc, setIsLoadingGenerateInitialRiSc] =
+      useState<boolean>(false);
   const [riScUpdateStatus, setRiScUpdateStatus] = useState({
     isLoading: false,
     isError: false,
     isSuccess: false,
   });
+  const [initialRiScStatus, setInitialRiScStatus] = useState<InitialRiScStatus>(InitialRiScStatus.Scheduled)
 
   useEffect(() => {
     if (location.state) {
@@ -351,7 +364,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const generateInitialRiSc = (body: GenerateInitialRiScBody) => {
+  const generateInitialRiSc = (riScInFocus: RiScWithMetadata | null, body: GenerateInitialRiScBody) => {
     setIsFetching(true);
     setSelectedRiSc(null);
 
@@ -368,21 +381,45 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           isError: false,
           isSuccess: true,
         });
+        setIsLoadingGenerateInitialRiSc(true)
       },
       error => {
-        setSelectedRiSc(selectedRiSc);
         setIsFetching(false);
         setRiScUpdateStatus({
           isLoading: false,
           isError: true,
           isSuccess: false,
         });
-
+        if (riScInFocus) {
+          setSelectedRiSc(riScInFocus)
+        }
         setResponse({
           ...error,
           statusMessage: getTranslationKey('error', error.status, t),
         });
       },
+    );
+  };
+
+  const pollGenerateInitialRiScStatus = () => {
+    setSelectedRiSc(null);
+    fetchGenerateInitialRiScStatus(
+        res => {
+          setInitialRiScStatus(scheduleInitialRiScDTOToInitialRiScStatus(res))
+          setResponse(res);
+        },
+        error => {
+          setRiScUpdateStatus({
+            isLoading: false,
+            isError: true,
+            isSuccess: false,
+          });
+
+          setResponse({
+            ...error,
+            statusMessage: getTranslationKey('error', error.status, t),
+          });
+        },
     );
   };
 
@@ -394,11 +431,14 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     updateRiSc,
     approveRiSc,
     generateInitialRiSc,
+    pollGenerateInitialRiScStatus,
+    initialRiScStatus,
     riScUpdateStatus,
     resetRiScStatus,
     resetResponse,
     isRequesting,
     isFetching,
+    isLoadingGenerateInitialRiSc,
     response,
   };
 

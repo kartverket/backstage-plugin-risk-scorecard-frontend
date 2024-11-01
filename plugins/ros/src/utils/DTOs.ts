@@ -12,6 +12,7 @@ import {
   Valuations,
 } from './types';
 import { ProfileInfo } from '@backstage/core-plugin-api';
+import { InitialRiScStatus } from '../contexts/RiScContext';
 
 export type ProcessRiScResultDTO = {
   riScId: string;
@@ -50,10 +51,6 @@ export type RiScDTO = {
 export type ScheduleInitialRiScDTO = {
   status: ProcessingStatus;
   statusMessage: string;
-};
-
-export type GcpProjectDTO = {
-  gcpProject: string;
 };
 
 type ScenarioDTO = {
@@ -114,6 +111,17 @@ export function initialRiScToDTOString(body: GenerateInitialRiScBody): string {
       publicAgeKey: body.publicAgeKey,
       gcpProjectId: body.gcpProjectId,
     });
+  }
+}
+
+export function scheduleInitialRiScDTOToInitialRiScStatus(scheduleInitialRiScDTO: ScheduleInitialRiScDTO): InitialRiScStatus {
+  switch (scheduleInitialRiScDTO.status) {
+    case ProcessingStatus.ScheduledInitialRiSc:
+      return InitialRiScStatus.Scheduled;
+    case ProcessingStatus.Encrypting:
+      return InitialRiScStatus.Encrypting;
+    case ProcessingStatus.Commiting: return InitialRiScStatus.Commiting
+    default: throw Error(`Received unexpected processing status when fetching for initial RiSc status: ${scheduleInitialRiScDTO.status}, with status message: ${scheduleInitialRiScDTO.statusMessage}`)
   }
 }
 
