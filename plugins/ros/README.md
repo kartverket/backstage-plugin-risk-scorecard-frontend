@@ -11,7 +11,8 @@ proxy:
   endpoints:
     '/risc-proxy':
       target: http://localhost:8080
-      allowedHeaders: ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
+      allowedHeaders:
+        ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
 ```
 
 The backend uses Backstage-issued tokens to validate the user, and GCP access tokens to federate access to the GCP KMS.

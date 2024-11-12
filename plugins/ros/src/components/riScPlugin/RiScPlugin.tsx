@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ContentHeader, SupportButton } from '@backstage/core-components';
 import { useSearchParams } from 'react-router-dom';
 import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
@@ -33,7 +33,11 @@ export const RiScPlugin = () => {
   const openCreateRiScDialog = () =>
     setRiScDialogState(RiScDialogStates.Create);
   const openEditRiScDialog = () => setRiScDialogState(RiScDialogStates.Edit);
-  const closeRiScDialog = () => setRiScDialogState(RiScDialogStates.Closed);
+  const closeFromScratchRiScDialog = () =>
+    setRiScDialogState(RiScDialogStates.Closed);
+  const closeGenerateInitialRiScDialog = () => {
+    setRiScDialogState(RiScDialogStates.Closed);
+  };
 
   const {
     selectedRiSc,
@@ -43,6 +47,7 @@ export const RiScPlugin = () => {
     resetResponse,
     resetRiScStatus,
     response,
+    isLoadingGenerateInitialRiSc,
     riScUpdateStatus,
   } = useRiScs();
 
@@ -57,6 +62,21 @@ export const RiScPlugin = () => {
       resetResponse();
     }
   }, [resetRiScStatus, resetResponse, scenarioWizardStep]);
+
+  const [spinnerText, setSpinnerText] = useState('');
+  const spinnerTextStateRef = useRef(spinnerText);
+
+  useEffect(() => {
+    spinnerTextStateRef.current = spinnerText;
+  }, [spinnerText]);
+
+  useEffect(() => {
+    if (isLoadingGenerateInitialRiSc) {
+      setSpinnerText(t('loadingGenerateInitialRiSc'));
+    } else {
+      setSpinnerText('');
+    }
+  }, [isLoadingGenerateInitialRiSc]);
 
   return (
     <>
@@ -86,8 +106,7 @@ export const RiScPlugin = () => {
             <SupportButton />
           </ContentHeader>
 
-          {isFetching && <Spinner size={80} />}
-
+          {isFetching && <Spinner size={80} text={spinnerText} />}
           <Grid container spacing={4}>
             {riScs !== null && riScs.length !== 0 && (
               <Grid
@@ -148,7 +167,11 @@ export const RiScPlugin = () => {
       )}
 
       {riScDialogState !== RiScDialogStates.Closed && (
-        <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
+        <RiScDialog
+          onCloseFromScratch={closeFromScratchRiScDialog}
+          onCloseGenerateInitial={closeGenerateInitialRiScDialog}
+          dialogState={riScDialogState}
+        />
       )}
 
       {!scenarioWizardStep && <ScenarioDrawer />}

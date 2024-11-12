@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import {
   ContentStatus,
+  GenerateInitialRiScBody,
   ProcessingStatus,
   RiSc,
   RiScStatus,
@@ -39,10 +40,15 @@ type RiScDrawerProps = {
     onError?: () => void,
   ) => void;
   approveRiSc: () => void;
+  generateInitialRiSc: (
+    riScInFocus: RiScWithMetadata | null,
+    body: GenerateInitialRiScBody,
+  ) => void;
   riScUpdateStatus: RiScUpdateStatus;
   resetRiScStatus: () => void;
   resetResponse: () => void;
   isFetching: boolean;
+  isLoadingGenerateInitialRiSc: boolean;
   response: SubmitResponseObject | null;
 };
 
@@ -63,6 +69,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     publishRiScs,
     response,
     setResponse,
+    postGenerateInitialRiSc,
   } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
@@ -70,6 +77,8 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     null,
   );
   const [isFetching, setIsFetching] = useState(true);
+  const [isLoadingGenerateInitialRiSc, setIsLoadingGenerateInitialRiSc] =
+    useState(false);
   const [riScUpdateStatus, setRiScUpdateStatus] = useState({
     isLoading: false,
     isError: false,
@@ -348,6 +357,59 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const generateInitialRiSc = (
+    riScInFocus: RiScWithMetadata | null,
+    body: GenerateInitialRiScBody,
+  ) => {
+    setIsFetching(true);
+    setIsLoadingGenerateInitialRiSc(true);
+    postGenerateInitialRiSc(
+      body,
+      res => {
+        const json = JSON.parse(res.riScContent) as RiScDTO;
+        const content = dtoToRiSc(json);
+        const generatedRiSc: RiScWithMetadata = {
+          id: res.riScId,
+          content: content,
+          status: res.riScStatus,
+          pullRequestUrl: res.pullRequestUrl,
+          migrationStatus: res.migrationStatus,
+        }
+        if (riScs !== null) {
+          setRiScs([generatedRiSc, ...riScs])
+        }
+        setSelectedRiSc(generatedRiSc)
+        setIsFetching(false);
+        setIsLoadingGenerateInitialRiSc(false);
+        setResponse({
+          statusMessage: t('initializedRiSc'),
+          status: ProcessingStatus.InitializedRiSc,
+        })
+        setRiScUpdateStatus({
+          isLoading: false,
+          isError: false,
+          isSuccess: true,
+        });
+      },
+      _ => {
+        setIsFetching(false);
+        setIsLoadingGenerateInitialRiSc(false);
+        setRiScUpdateStatus({
+          isLoading: false,
+          isError: true,
+          isSuccess: false,
+        });
+        if (riScInFocus) {
+          setSelectedRiSc(riScInFocus);
+        }
+        setResponse({
+          statusMessage: t('errorMessages.FailedToGenerateInitialRiSc'),
+          status: ProcessingStatus.ErrorWhenGeneratingInitialRiSc,
+        });
+      },
+    );
+  };
+
   const value = {
     riScs,
     selectRiSc,
@@ -355,11 +417,13 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     createNewRiSc,
     updateRiSc,
     approveRiSc,
+    generateInitialRiSc,
     riScUpdateStatus,
     resetRiScStatus,
     resetResponse,
     isRequesting,
     isFetching,
+    isLoadingGenerateInitialRiSc,
     response,
   };
 

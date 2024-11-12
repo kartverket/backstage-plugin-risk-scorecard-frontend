@@ -74,6 +74,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       approveButton: 'Accept risks', // Godkjenn ROS
       moreInformationButton: 'More information', // Lagre ROS migrering
     },
+    loadingGenerateInitialRiSc: 'Generating initial RiSc',
+    initializedRiSc: 'Successfully generated initial RiSc',
     publishDialog: {
       title: 'Accept risks', // Godkjenn ROS
       checkboxLabel:
@@ -146,6 +148,16 @@ export const pluginRiScTranslationRef = createTranslationRef({
       titleNew: 'New risk scorecard',
       titleEdit: 'Edit scorecard',
       titleError: 'The scorecard has to have a title',
+      gcpProject: 'GCP-project',
+      gcpProjectDescription:
+        'Choose which GCP-project the cryptographic key used to encrypt and decrypt the RiSc should reside from.',
+      publicAgeKey: 'Public age key',
+      publicAgeKeyDescription:
+        'Provide a public age key if you wish to work with the RiSc locally.',
+      lagNyFraScratch: 'Create new',
+      lagNyFraAutogenerert: 'Generate new',
+      nyFraScratch: 'Create empty RiSc',
+      nyFraAutogenerert: 'Generate initial RiSc',
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
       scopeError: 'The scorecard has to have a description of the scope',
@@ -317,6 +329,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'The risk scorecard you are trying to open does not exist',
       ScenarioDoesNotExist:
         'The scenario you are trying to open does not exist',
+      FailedToGenerateInitialRiSc: 'Unable to generate initial RiSc'
     },
     infoMessages: {
       CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
@@ -410,6 +423,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Lagt til i ROS-analyse',
           'rosStatus.difference.differences.noneAdded': 'Ingenting er lagt til',
 
+          'loadingGenerateInitialRiSc': 'Genererer initiell RoS',
+          'initializedRiSc': 'Suksess! Initiell RoS ble generert.',
+
           'publishDialog.title': 'Godkjenn ROS-analyse',
           'publishDialog.checkboxLabel':
             'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
@@ -465,6 +481,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr/hendelse x 50 hendelser/år = 1 500 000 kr/år.',
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
+          'rosDialog.gcpProject': 'GCP-prosjekt',
+          'rosDialog.gcpProjectDescription':
+            'Velg hvilket GCP-prosjekt den kryptografiske nøkkelen brukt til å kryptere og dekryptere risiko -og sårbarhetsanalysen skal komme fra',
+          'rosDialog.publicAgeKey': 'Offentlig age-nøkkel',
+          'rosDialog.publicAgeKeyDescription':
+            'Legg ved din offentlige age-nøkkel hvis du ønsker å jobbe med risiko -og sårbarhetsanalysen lokalt.',
+          'rosDialog.nyFraScratch': 'Opprett tom RoS',
+          'rosDialog.nyFraAutogenerert': 'Generer initiell RoS',
+          'rosDialog.lagNyFraScratch': 'Lagre ny',
+          'rosDialog.lagNyFraAutogenerert': 'Generer ny',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':
@@ -619,10 +645,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Scenariet du prøver å åpne eksisterer ikke',
           'errorMessages.ErrorWhenCreatingPullRequest':
             'Kunne ikke lagre godkjenning av risiko- og sårbarhetsanalysen',
+          'errorMessages.ErrorWhenSchedulingInitialRiSc':
+            'Generering av initiell RoS feilet',
+          'errorMessages.ErrorWhenFetchingInitilRiScStatus':
+            'Kunne ikke hente status på initiell RoS-generering',
           'errorMessages.ErrorWhenFetchingRiScs':
             'Kunne ikke hente risiko- og sårbarhetsanalyser med id-er: ',
           'errorMessages.FailedToFetchRiScs':
             'Kunne ikke hente risiko- og sårbarhetsanalyser',
+          'errorMessages.FailedToGenerateInitialRiSc':
+              'Kunne ikke generere initiell RoS',
 
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',

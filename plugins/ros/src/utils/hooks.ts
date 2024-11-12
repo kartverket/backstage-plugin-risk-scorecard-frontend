@@ -1,15 +1,16 @@
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
-  googleAuthApiRef,
   githubAuthApiRef,
+  googleAuthApiRef,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
 import {
   DifferenceDTO,
+  GenerateInitialRiScBody,
   GithubRepoInfo,
   ProcessingStatus,
   RiSc,
@@ -17,6 +18,7 @@ import {
   SubmitResponseObject,
 } from './types';
 import {
+  initialRiScToDTOString,
   ProcessRiScResultDTO,
   profileInfoToDTOString,
   PublishRiScResultDTO,
@@ -50,7 +52,10 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`;
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
+  const uriToInitializeRiSc = `${riScUri}/initialize`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
+  const currentEntity = useEntity();
+  const catalogApi = useApi(catalogApiRef);
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -215,13 +220,107 @@ export const useAuthenticatedFetch = () => {
     );
   };
 
+  const postGenerateInitialRiSc = (
+    body: GenerateInitialRiScBody,
+    onSuccess?: (response: RiScContentResultDTO) => void,
+    onError?: (error: RiScContentResultDTO) => void,
+  ) => {
+    authenticatedFetch<RiScContentResultDTO, RiScContentResultDTO>(
+      uriToInitializeRiSc,
+      'POST',
+      res => {
+        if (onSuccess) onSuccess(res);
+      },
+      error => {
+        if (onError) onError(error);
+      },
+      initialRiScToDTOString(body),
+    );
+  };
+
+  const fetchAssociatedGcpProjects = async () => {
+    switch (currentEntity.entity.kind) {
+      case 'Component': {
+        const componentSpec = castToType<ComponentSpec>(
+          currentEntity.entity.spec,
+        );
+        const associatedSystem = componentSpec.system;
+        if (typeof associatedSystem === 'string') {
+          const system = await catalogApi.getEntityByRef({
+            name: associatedSystem,
+            namespace: 'default',
+            kind: 'System',
+          });
+          const labels = system?.metadata.labels;
+          const systemGcpProjectUnfiltered = labels
+            ? [labels['gcp-project-id']]
+            : [undefined];
+
+          const systemGcpProjects = systemGcpProjectUnfiltered.filter(
+            (value): value is string => value !== undefined,
+          );
+          const associatedGcpProjectsFromOwner =
+            await getAssociatedGcpProjectsFromOwner(componentSpec.owner);
+          return Array.from(
+            new Set([...systemGcpProjects, ...associatedGcpProjectsFromOwner]),
+          );
+        } else {
+          return Array.from(
+            new Set(
+              await getAssociatedGcpProjectsFromOwner(componentSpec.owner),
+            ),
+          );
+        }
+      }
+      case 'System': {
+        throw Error('Not implemented on system yet');
+      }
+      default: {
+        throw Error(
+          'RiSC is not supported on other levels than component and system',
+        );
+      }
+    }
+  };
+
+  const getAssociatedGcpProjectsFromOwner = async (ownerName: string) => {
+    const entitiesResponse = await catalogApi.getEntities({
+      filter: {
+        kind: 'System',
+        'spec.owner': ownerName,
+      },
+    });
+    const systems = entitiesResponse.items;
+    return systems
+      .map(system => system.metadata.labels?.['gcp-project-id'])
+      .filter((value): value is string => value !== undefined);
+  };
+
   return {
     fetchRiScs,
     postRiScs,
+    postGenerateInitialRiSc,
     putRiScs,
     publishRiScs,
     response,
     setResponse,
     fetchDifference,
+    fetchAssociatedGcpProjects,
   };
 };
+
+interface ComponentSpec {
+  owner: string;
+  system?: string | null;
+
+  [key: string]: any;
+}
+
+function castToType<T>(jsonObject: Record<string, any> | undefined): T {
+  if (!jsonObject) {
+    throw new Error('Input JSON object is undefined');
+  }
+  return {
+    ...jsonObject,
+  } as T;
+}

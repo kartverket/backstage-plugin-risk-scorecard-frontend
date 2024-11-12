@@ -16,6 +16,11 @@ export type RiScWithMetadata = {
   migrationStatus?: MigrationStatus;
 };
 
+export type GenerateInitialRiScBody = {
+  publicAgeKey: string | null;
+  gcpProjectId: string;
+};
+
 export type MigrationStatus = {
   migrationChanges: boolean;
   migrationRequiresNewApproval: boolean;
@@ -92,6 +97,7 @@ export enum ProcessingStatus {
   UpdatedRiScRequiresNewApproval = 'UpdatedRiScRequiresNewApproval',
   UpdatedRiScAndCreatedPullRequest = 'UpdatedRiScAndCreatedPullRequest',
   CreatedRiSc = 'CreatedRiSc',
+  InitializedRiSc = 'InitializedRiSc',
   CreatedPullRequest = 'CreatedPullRequest',
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
   ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
@@ -99,6 +105,7 @@ export enum ProcessingStatus {
   ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
+  ErrorWhenGeneratingInitialRiSc = 'Error when generating initial risk scorecard',
 }
 
 export enum ContentStatus {
