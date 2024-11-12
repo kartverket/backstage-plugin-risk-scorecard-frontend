@@ -24,7 +24,7 @@ import {
   PublishRiScResultDTO,
   RiScContentResultDTO,
   riScToDTOString,
-  ScheduleInitialRiScDTO,
+  GenerateInitialRiScDTO,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import { pluginRiScTranslationRef } from './translations';
@@ -54,7 +54,6 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToInitializeRiSc = `${riScUri}/initialize`;
-  const uriToFetchInitialRiScStatus = `${riScUri}/initialize`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
   const currentEntity = useEntity();
   const catalogApi = useApi(catalogApiRef);
@@ -224,10 +223,10 @@ export const useAuthenticatedFetch = () => {
 
   const postGenerateInitialRiSc = (
     body: GenerateInitialRiScBody,
-    onSuccess?: (response: ScheduleInitialRiScDTO) => void,
-    onError?: (error: ScheduleInitialRiScDTO) => void,
+    onSuccess?: (response: GenerateInitialRiScDTO) => void,
+    onError?: (error: GenerateInitialRiScDTO) => void,
   ) => {
-    authenticatedFetch<ScheduleInitialRiScDTO, ScheduleInitialRiScDTO>(
+    authenticatedFetch<GenerateInitialRiScDTO, GenerateInitialRiScDTO>(
       uriToInitializeRiSc,
       'POST',
       res => {
@@ -238,31 +237,10 @@ export const useAuthenticatedFetch = () => {
         if (onError) onError(error);
         setResponse({
           statusMessage: t('errorMessages.ErrorWhenSchedulingInitialRiSc'),
-          status: ProcessingStatus.ErrorWhenSchedulingInitialRiSc,
+          status: ProcessingStatus.ErrorWhenGeneratingInitialRiSc,
         });
       },
       initialRiScToDTOString(body),
-    );
-  };
-
-  const fetchGenerateInitialRiScStatus = (
-      onSuccess?: (response: ScheduleInitialRiScDTO) => void,
-      onError?: (error: ScheduleInitialRiScDTO) => void,
-  ) => {
-    authenticatedFetch<ScheduleInitialRiScDTO, ScheduleInitialRiScDTO>(
-        uriToFetchInitialRiScStatus,
-        'GET',
-        res => {
-          setResponse(res);
-          if (onSuccess) onSuccess(res);
-        },
-        error => {
-          if (onError) onError(error);
-          setResponse({
-            statusMessage: t('errorMessages.ErrorWhenSchedulingInitialRiSc'),
-            status: ProcessingStatus.ErrorWhenFetchingInitilRiScStatus,
-          });
-        },
     );
   };
 
@@ -328,7 +306,6 @@ export const useAuthenticatedFetch = () => {
     fetchRiScs,
     postRiScs,
     postGenerateInitialRiSc,
-    fetchGenerateInitialRiScStatus,
     putRiScs,
     publishRiScs,
     response,

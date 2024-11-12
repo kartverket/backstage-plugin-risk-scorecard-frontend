@@ -74,19 +74,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       approveButton: 'Accept risks', // Godkjenn ROS
       moreInformationButton: 'More information', // Lagre ROS migrering
     },
-    loadingProgressInitialRiSc: {
-      '0': 'Scheduling initial RiSc generation',
-      '10': 'Automatic RiSc generation is scheduled',
-      '20': 'Generating RiSc based on security metrics',
-      '30': 'Generating RiSc based on security metrics',
-      '40': 'Generating RiSc based on security metrics',
-      '50': 'Generating RiSc based on security metrics',
-      '60': 'Generating RiSc based on security metrics',
-      '70': 'RiSc generation finished',
-      '80': 'Encrypting RiSc',
-      '90': 'Writing to GitHub',
-      '100': 'Done',
-    },
+    loadingGenerateInitialRiSc: 'Generating initial RiSc',
     publishDialog: {
       title: 'Accept risks', // Godkjenn ROS
       checkboxLabel:
@@ -439,21 +427,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Lagt til i ROS-analyse',
           'rosStatus.difference.differences.noneAdded': 'Ingenting er lagt til',
 
+          loadingGenerateInitialRiSc: 'Genererer initiell RoS',
+
           'publishDialog.title': 'Godkjenn ROS-analyse',
           'publishDialog.checkboxLabel':
             'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
-
-          'loadingProgressInitialRiSc.0': 'Skedulerer initiell RoS generering',
-          'loadingProgressInitialRiSc.10': 'Automatisk RoS generering er skedulert',
-          'loadingProgressInitialRiSc.20': 'Genererer RoS basert på sikkerhetsmetrikker',
-          'loadingProgressInitialRiSc.30': 'Genererer RoS basert på sikkerhetsmetrikker',
-          'loadingProgressInitialRiSc.40': 'Genererer RoS basert på sikkerhetsmetrikker',
-          'loadingProgressInitialRiSc.50': 'Genererer RoS basert på sikkerhetsmetrikker',
-          'loadingProgressInitialRiSc.60': 'Genererer RoS basert på sikkerhetsmetrikker',
-          'loadingProgressInitialRiSc.70': 'RoS-generering ferdig',
-          'loadingProgressInitialRiSc.80': 'Krypterer RoS',
-          'loadingProgressInitialRiSc.90': 'Skriver til GitHub',
-          'loadingProgressInitialRiSc.100': 'Ferdig',
 
           'migrationDialog.title': 'Lagre endringer',
           'migrationDialog.description':

@@ -63,27 +63,33 @@ export const RiScDialog = ({
       fullWidth={true}
     >
       <DialogTitle>{titleTranslation}</DialogTitle>
-      {/*<Button variant="outlined" onClick={onClose}>*/}
-      {/*  <ClearIcon/>*/}
-      {/*</Button>*/}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs
-          value={chosenRisCDialog}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label={t('rosDialog.nyFraScratch')} />
-          <Tab label={t('rosDialog.nyFraAutogenerert')} />
-        </Tabs>
-      </Box>
-      {chosenRisCDialog === ChosenRisCDialog.FromScratc && (
+      {dialogState === RiScDialogStates.Create ? (
+        <Box>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs
+              value={chosenRisCDialog}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+            >
+              <Tab label={t('rosDialog.nyFraScratch')} />
+              <Tab label={t('rosDialog.nyFraAutogenerert')} />
+            </Tabs>
+          </Box>
+          {chosenRisCDialog === ChosenRisCDialog.FromScratc && (
+            <CreateNewFromScratchTabPanel
+              onCloseFromScratch={onCloseFromScratch}
+              dialogState={dialogState}
+            />
+          )}
+          {chosenRisCDialog === ChosenRisCDialog.GenerateInitial && (
+            <GenerateInitialTabPanel onClose={onCloseGenerateInitial} />
+          )}
+        </Box>
+      ) : (
         <CreateNewFromScratchTabPanel
           onCloseFromScratch={onCloseFromScratch}
           dialogState={dialogState}
         />
-      )}
-      {chosenRisCDialog === ChosenRisCDialog.GenerateInitial && (
-        <GenerateInitialTabPanel onClose={onCloseGenerateInitial} />
       )}
     </Dialog>
   );

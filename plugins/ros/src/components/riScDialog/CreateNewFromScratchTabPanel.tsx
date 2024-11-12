@@ -11,6 +11,7 @@ import { RiSc } from '../../utils/types';
 import { RiScDialogStates } from './RiScDialog';
 import { useRiScs } from '../../contexts/RiScContext';
 import { emptyRiSc } from '../../utils/utilityfunctions';
+import Box from '@mui/material/Box';
 
 interface CreateNewFromScratchTabPanelProps {
   onCloseFromScratch: () => void;
@@ -64,9 +65,20 @@ export const CreateNewFromScratchTabPanel = ({
         minRows={4}
       />
       <DialogActions sx={dialogActions}>
-        <Button variant="contained" onClick={onSubmit} disabled={!isDirty}>
-          {t('rosDialog.lagNyFraScratch')}
-        </Button>
+        {dialogState === RiScDialogStates.Create ? (
+          <Button variant="contained" onClick={onSubmit} disabled={!isDirty}>
+            {t('rosDialog.lagNyFraScratch')}
+          </Button>
+        ) : (
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button variant="contained" onClick={onSubmit} disabled={!isDirty}>
+              {t('dictionary.save')}
+            </Button>
+            <Button variant="outlined" onClick={onCloseFromScratch}>
+              {t('dictionary.cancel')}
+            </Button>
+          </Box>
+        )}
       </DialogActions>
     </DialogContent>
   );

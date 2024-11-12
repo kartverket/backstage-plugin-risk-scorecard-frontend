@@ -7,6 +7,7 @@ import {
   ProcessingStatus,
   RiSc,
   RiScStatus,
+  RiScWithMetadata,
   Risk,
   Scenario,
   Valuations,
@@ -48,7 +49,8 @@ export type RiScDTO = {
   scenarios: ScenarioDTO[];
 };
 
-export type ScheduleInitialRiScDTO = {
+export type GenerateInitialRiScDTO = {
+  riSc: RiScWithMetadata;
   status: ProcessingStatus;
   statusMessage: string;
 };
@@ -114,14 +116,20 @@ export function initialRiScToDTOString(body: GenerateInitialRiScBody): string {
   }
 }
 
-export function scheduleInitialRiScDTOToInitialRiScStatus(scheduleInitialRiScDTO: ScheduleInitialRiScDTO): InitialRiScStatus {
+export function scheduleInitialRiScDTOToInitialRiScStatus(
+  scheduleInitialRiScDTO: GenerateInitialRiScDTO,
+): InitialRiScStatus {
   switch (scheduleInitialRiScDTO.status) {
     case ProcessingStatus.ScheduledInitialRiSc:
       return InitialRiScStatus.Scheduled;
     case ProcessingStatus.Encrypting:
       return InitialRiScStatus.Encrypting;
-    case ProcessingStatus.Commiting: return InitialRiScStatus.Commiting
-    default: throw Error(`Received unexpected processing status when fetching for initial RiSc status: ${scheduleInitialRiScDTO.status}, with status message: ${scheduleInitialRiScDTO.statusMessage}`)
+    case ProcessingStatus.Commiting:
+      return InitialRiScStatus.Commiting;
+    default:
+      throw Error(
+        `Received unexpected processing status when fetching for initial RiSc status: ${scheduleInitialRiScDTO.status}, with status message: ${scheduleInitialRiScDTO.statusMessage}`,
+      );
   }
 }
 
