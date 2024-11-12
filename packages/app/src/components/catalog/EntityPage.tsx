@@ -280,6 +280,9 @@ const defaultEntityPage = (
       >
           <EntityKubernetesContent />
       </EntityLayout.Route>
+      <EntityLayout.Route path="/risc" title="Risk Scorecard">
+          <RiScPage />
+      </EntityLayout.Route>
   </EntityLayout>
 );
 

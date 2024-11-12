@@ -97,6 +97,7 @@ export enum ProcessingStatus {
   UpdatedRiScRequiresNewApproval = 'UpdatedRiScRequiresNewApproval',
   UpdatedRiScAndCreatedPullRequest = 'UpdatedRiScAndCreatedPullRequest',
   CreatedRiSc = 'CreatedRiSc',
+  InitializedRiSc = 'InitializedRiSc',
   CreatedPullRequest = 'CreatedPullRequest',
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
   ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
@@ -104,9 +105,6 @@ export enum ProcessingStatus {
   ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
-  ScheduledInitialRiSc = 'Initial RiSc generation Shceduled successfully',
-  Encrypting = 'Encrypting RiSc',
-  Commiting = 'Writing RiSc to GitHub',
   ErrorWhenGeneratingInitialRiSc = 'Error when generating initial risk scorecard',
 }
 

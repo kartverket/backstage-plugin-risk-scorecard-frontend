@@ -24,7 +24,6 @@ import {
   PublishRiScResultDTO,
   RiScContentResultDTO,
   riScToDTOString,
-  GenerateInitialRiScDTO,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import { pluginRiScTranslationRef } from './translations';
@@ -223,22 +222,17 @@ export const useAuthenticatedFetch = () => {
 
   const postGenerateInitialRiSc = (
     body: GenerateInitialRiScBody,
-    onSuccess?: (response: GenerateInitialRiScDTO) => void,
-    onError?: (error: GenerateInitialRiScDTO) => void,
+    onSuccess?: (response: RiScContentResultDTO) => void,
+    onError?: (error: RiScContentResultDTO) => void,
   ) => {
-    authenticatedFetch<GenerateInitialRiScDTO, GenerateInitialRiScDTO>(
+    authenticatedFetch<RiScContentResultDTO, RiScContentResultDTO>(
       uriToInitializeRiSc,
       'POST',
       res => {
-        setResponse(res);
         if (onSuccess) onSuccess(res);
       },
       error => {
         if (onError) onError(error);
-        setResponse({
-          statusMessage: t('errorMessages.ErrorWhenSchedulingInitialRiSc'),
-          status: ProcessingStatus.ErrorWhenGeneratingInitialRiSc,
-        });
       },
       initialRiScToDTOString(body),
     );

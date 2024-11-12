@@ -29,12 +29,6 @@ export type RiScUpdateStatus = {
   isSuccess: boolean;
 };
 
-export enum InitialRiScStatus {
-  Scheduled,
-  Encrypting,
-  Commiting,
-}
-
 type RiScDrawerProps = {
   riScs: RiScWithMetadata[] | null;
   selectRiSc: (title: string) => void;
@@ -90,9 +84,6 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     isError: false,
     isSuccess: false,
   });
-  const [initialRiScStatus] = useState<InitialRiScStatus>(
-    InitialRiScStatus.Scheduled,
-  );
 
   useEffect(() => {
     if (location.state) {
@@ -371,24 +362,36 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     body: GenerateInitialRiScBody,
   ) => {
     setIsFetching(true);
-    setSelectedRiSc(null);
     setIsLoadingGenerateInitialRiSc(true);
     postGenerateInitialRiSc(
       body,
       res => {
+        const json = JSON.parse(res.riScContent) as RiScDTO;
+        const content = dtoToRiSc(json);
+        const generatedRiSc: RiScWithMetadata = {
+          id: res.riScId,
+          content: content,
+          status: res.riScStatus,
+          pullRequestUrl: res.pullRequestUrl,
+          migrationStatus: res.migrationStatus,
+        }
+        if (riScs !== null) {
+          setRiScs([generatedRiSc, ...riScs])
+        }
+        setSelectedRiSc(generatedRiSc)
         setIsFetching(false);
         setIsLoadingGenerateInitialRiSc(false);
         setResponse({
-          ...res,
-          statusMessage: getTranslationKey('info', res.status, t),
-        });
+          statusMessage: t('initializedRiSc'),
+          status: ProcessingStatus.InitializedRiSc,
+        })
         setRiScUpdateStatus({
           isLoading: false,
           isError: false,
           isSuccess: true,
         });
       },
-      error => {
+      _ => {
         setIsFetching(false);
         setIsLoadingGenerateInitialRiSc(false);
         setRiScUpdateStatus({
@@ -400,8 +403,8 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           setSelectedRiSc(riScInFocus);
         }
         setResponse({
-          ...error,
-          statusMessage: getTranslationKey('error', error.status, t),
+          statusMessage: t('errorMessages.FailedToGenerateInitialRiSc'),
+          status: ProcessingStatus.ErrorWhenGeneratingInitialRiSc,
         });
       },
     );
@@ -415,7 +418,6 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     updateRiSc,
     approveRiSc,
     generateInitialRiSc,
-    initialRiScStatus,
     riScUpdateStatus,
     resetRiScStatus,
     resetResponse,

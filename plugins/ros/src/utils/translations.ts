@@ -75,6 +75,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       moreInformationButton: 'More information', // Lagre ROS migrering
     },
     loadingGenerateInitialRiSc: 'Generating initial RiSc',
+    initializedRiSc: 'Successfully generated initial RiSc',
     publishDialog: {
       title: 'Accept risks', // Godkjenn ROS
       checkboxLabel:
@@ -321,10 +322,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'Unable to update RiSc. You do not have write access to this repository.',
       ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
       ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
-      ErrorWhenSchedulingInitialRiSc:
-        'Failed to schedule initial RiSc generation',
-      ErrorWhenFetchingInitilRiScStatus:
-        'Failed to fetch status on initial RiSc generation',
       ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
       ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
       FailedToFetchRiScs: 'Failed to fetch risk scorecards',
@@ -332,6 +329,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'The risk scorecard you are trying to open does not exist',
       ScenarioDoesNotExist:
         'The scenario you are trying to open does not exist',
+      FailedToGenerateInitialRiSc: 'Unable to generate initial RiSc'
     },
     infoMessages: {
       CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
@@ -339,8 +337,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
       UpdatedRiScRequiresNewApproval:
         'Risk scorecard update and requires new approval',
       CreatedRiSc: 'Created new risk scorecard successfully',
-      ScheduledInitialRiSc:
-        'Scheduled the generation of initial RiSc successfully',
       UpdatedRiScAndCreatedPullRequest:
         'Risk scorecard updated and ready for approval in Github',
     },
@@ -427,7 +423,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Lagt til i ROS-analyse',
           'rosStatus.difference.differences.noneAdded': 'Ingenting er lagt til',
 
-          loadingGenerateInitialRiSc: 'Genererer initiell RoS',
+          'loadingGenerateInitialRiSc': 'Genererer initiell RoS',
+          'initializedRiSc': 'Suksess! Initiell RoS ble generert.',
 
           'publishDialog.title': 'Godkjenn ROS-analyse',
           'publishDialog.checkboxLabel':
@@ -656,6 +653,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke hente risiko- og sårbarhetsanalyser med id-er: ',
           'errorMessages.FailedToFetchRiScs':
             'Kunne ikke hente risiko- og sårbarhetsanalyser',
+          'errorMessages.FailedToGenerateInitialRiSc':
+              'Kunne ikke generere initiell RoS',
 
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
@@ -663,8 +662,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Risiko- og sårbarhetsanalysen ble oppdatert',
           'infoMessages.UpdatedRiScRequiresNewApproval':
             'Risiko- og sårbarhetsanalysen ble oppdatert og trenger ny godkjenning',
-          'infoMessages.ScheduledInitialRiSc':
-            'Generering av initiell RoS ble startet',
           'infoMessages.CreatedRiSc':
             'Risiko- og sårbarhetsanalyse ble opprettet',
           'infoMessages.UpdatedRiScAndCreatedPullRequest':
