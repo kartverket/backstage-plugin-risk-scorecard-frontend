@@ -7,6 +7,7 @@ import {pluginRiScTranslationRef} from "../../utils/translations";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import {Menu, SelectChangeEvent} from "@mui/material";
+import {gcpProjectIdToReadableString} from "../../utils/utilityfunctions";
 
 
 export const AssociatedGcpProjectMenu = () => {
