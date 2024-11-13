@@ -4,7 +4,11 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import Button from '@mui/material/Button';
 import { EnhancedEncryptionOutlined } from '@material-ui/icons';
 
-export const AssociatedGcpProjectMenu = (handleClick: () => {}) => {
+interface SopsConfigButtonProps {
+    handleClick: () => void;
+}
+
+export const SopsConfigButton = (handleClick: () => void): SopsConfigButtonProps => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (

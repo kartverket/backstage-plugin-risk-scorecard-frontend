@@ -22,7 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
-import { AssociatedGcpProjectMenu } from '../common/AssociatedGcpProjectMenu';
+import { SopsConfigButton } from '../common/SopsConfigButton';
 import { NewSopsConfigDialog } from '../sopsConfigDialog/NewSopsConfigDialog';
 
 export const RiScPlugin = () => {
@@ -93,7 +93,7 @@ export const RiScPlugin = () => {
                 flexDirection: 'row',
               }}
             >
-              <AssociatedGcpProjectMenu />
+              <SopsConfigButton />
               <SupportButton />
             </Grid>
           </ContentHeader>
