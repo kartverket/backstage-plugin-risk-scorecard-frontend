@@ -153,6 +153,13 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
       scopeError: 'The scorecard has to have a description of the scope',
     },
+    newSopsConfigDialog: {
+      title: 'Associate GCP project',
+      description: "Which GCP project do you want to encrypt and decrypt your RiSc's with? It is important that you choose a GCP project where you have the Cloud KMS CryptoKey Encrypter/Decrypter role.",
+      selectDescription: 'Choose GCP project',
+      cancel: 'Cancel',
+      create: 'Create',
+    },
     scenarioStepper: {
       initialRiskStep: {
         title: 'Initial risk',
@@ -475,6 +482,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeDescription':
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
+
+          'newSopsConfigDialog.title': 'Assosier GCP prosjekt',
+          'newSopsConfigDialog.description': "Hvilket GCP-prosjekt vil du bruke for å kryptere og dekryptere RoS'ene dine med? Det er viktig at du velger et GCP-prosjekt hvor du har rollen Cloud KMS CryptoKey Encrypter/Decrypter role.",
+          'newSopsConfigDialog.selectDescription': 'Velg GCP-prosjekt',
+          'newSopsConfigDialog.cancel': 'Avbryt',
+          'newSopsConfigDialog.create': 'Opprett',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':

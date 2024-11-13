@@ -24,6 +24,7 @@ import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import {Box} from "@material-ui/core";
 import {AssociatedGcpProjectMenu} from "../common/AssociatedGcpProjectMenu";
+import {NewSopsConfigDialog} from "../sopsConfigDialog/NewSopsConfigDialog";
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -160,6 +161,8 @@ export const RiScPlugin = () => {
       {riScDialogState !== RiScDialogStates.Closed && (
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
+
+      <NewSopsConfigDialog/>
 
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>

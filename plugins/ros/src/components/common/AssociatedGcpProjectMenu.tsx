@@ -6,8 +6,13 @@ import {useTranslationRef} from "@backstage/core-plugin-api/alpha";
 import {pluginRiScTranslationRef} from "../../utils/translations";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import {Menu, SelectChangeEvent} from "@mui/material";
+import {Menu, SelectChangeEvent, styled} from "@mui/material";
 import {gcpProjectIdToReadableString} from "../../utils/utilityfunctions";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import {EnhancedEncryptionOutlined} from "@material-ui/icons";
+import EditButton from "./EditButton";
 
 
 export const AssociatedGcpProjectMenu = () => {
@@ -24,12 +29,14 @@ export const AssociatedGcpProjectMenu = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const [associatedGcpProjects, setAssociatedGcpProjects] = useState<string[]>(
+        [],
+    );
+    const [chosenGcpProject, setChosenGcpProject] = useState<string>('');
 
-    const [chosenGcpProject, setChosenGcpProject] = useState()
-    const [associatedGcpProjects, setAssociatedGcpProjects] = useState()
-
-    const handleChangeGcpProject = (event: SelectChangeEvent) => {
-        setChosenGcpProject(event.target.value as string);
+    const handleChangeGcpProject = (item: string) => {
+        setChosenGcpProject(item);
+        handleClose()
     };
 
     useEffect(() => {
@@ -37,57 +44,52 @@ export const AssociatedGcpProjectMenu = () => {
             .then(res => {
                 setAssociatedGcpProjects(res);
                 setChosenGcpProject(res[0]);
-                setIsLoading(false);
             })
             .catch(err => {
                 throw err;
             });
     }, []);
 
-    {associatedGcpProjects.map((item, _) => (
-        <MenuItem value={item}>
-            {gcpProjectIdToReadableString(item)}
-        </MenuItem>
-    ))}
+    const ButtonStyledDiv = styled('div')(({ theme }) => ({
+        ...theme.typography.button,
+        backgroundColor: theme.palette.background.paper,
+        padding: theme.spacing(1),
+    }));
 
     return (
-        <Box
-            sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}
+        <ButtonStyledDiv
+            sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 1,
+            }}
         >
-            <Typography>
-                {`${t('associatedGcpProject.description')}:`}
-            </Typography>
-            <Button
-                aria-controls={open ? 'demo-positioned-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-            >
-                Dashboard
-            </Button>
-            <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-            >
-                {associatedGcpProjects.map((item, _) => (
-                    <MenuItem value={item}>
-                        {gcpProjectIdToReadableString(item)}
-                    </MenuItem>
-                ))}
-
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
-            </Menu>
-        </Box>
+                {`${t('associatedGcpProject.description')}: ${gcpProjectIdToReadableString(chosenGcpProject)}`}
+            <EditButton />
+        </ButtonStyledDiv>
     );
 }
+
+// <Menu
+//     anchorEl={anchorEl}
+//     open={open}
+//     onClose={handleClose}
+//     anchorOrigin={{
+//         vertical: 'top',
+//         horizontal: 'left',
+//     }}
+//     transformOrigin={{
+//         vertical: 'top',
+//         horizontal: 'left',
+//     }}
+// >
+//     {associatedGcpProjects.map((item, _) => (
+//         <MenuItem
+//             value={item}
+//             onClick={() => handleChangeGcpProject(item)}
+//         >
+//             {gcpProjectIdToReadableString(item)}
+//         </MenuItem>
+//     ))}
+// </Menu>
