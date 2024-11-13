@@ -1,12 +1,12 @@
 import {useAuthenticatedFetch} from "../../utils/hooks";
 import Box from "@mui/material/Box";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Typography from "@mui/material/Typography";
 import {useTranslationRef} from "@backstage/core-plugin-api/alpha";
 import {pluginRiScTranslationRef} from "../../utils/translations";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import {Menu} from "@mui/material";
+import {Menu, SelectChangeEvent} from "@mui/material";
 
 
 export const AssociatedGcpProjectMenu = () => {
@@ -24,7 +24,30 @@ export const AssociatedGcpProjectMenu = () => {
         setAnchorEl(null);
     };
 
+    const [chosenGcpProject, setChosenGcpProject] = useState()
+    const [associatedGcpProjects, setAssociatedGcpProjects] = useState()
 
+    const handleChangeGcpProject = (event: SelectChangeEvent) => {
+        setChosenGcpProject(event.target.value as string);
+    };
+
+    useEffect(() => {
+        fetchAssociatedGcpProjects()
+            .then(res => {
+                setAssociatedGcpProjects(res);
+                setChosenGcpProject(res[0]);
+                setIsLoading(false);
+            })
+            .catch(err => {
+                throw err;
+            });
+    }, []);
+
+    {associatedGcpProjects.map((item, _) => (
+        <MenuItem value={item}>
+            {gcpProjectIdToReadableString(item)}
+        </MenuItem>
+    ))}
 
     return (
         <Box
@@ -42,8 +65,6 @@ export const AssociatedGcpProjectMenu = () => {
                 Dashboard
             </Button>
             <Menu
-                id="demo-positioned-menu"
-                aria-labelledby="demo-positioned-button"
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
@@ -56,6 +77,12 @@ export const AssociatedGcpProjectMenu = () => {
                     horizontal: 'left',
                 }}
             >
+                {associatedGcpProjects.map((item, _) => (
+                    <MenuItem value={item}>
+                        {gcpProjectIdToReadableString(item)}
+                    </MenuItem>
+                ))}
+
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
                 <MenuItem onClick={handleClose}>Logout</MenuItem>
