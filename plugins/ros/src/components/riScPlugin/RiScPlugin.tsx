@@ -22,9 +22,8 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
-import {Box} from "@material-ui/core";
-import {AssociatedGcpProjectMenu} from "../common/AssociatedGcpProjectMenu";
-import {NewSopsConfigDialog} from "../sopsConfigDialog/NewSopsConfigDialog";
+import { AssociatedGcpProjectMenu } from '../common/AssociatedGcpProjectMenu';
+import { NewSopsConfigDialog } from '../sopsConfigDialog/NewSopsConfigDialog';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -38,6 +37,8 @@ export const RiScPlugin = () => {
   const openEditRiScDialog = () => setRiScDialogState(RiScDialogStates.Edit);
   const closeRiScDialog = () => setRiScDialogState(RiScDialogStates.Closed);
 
+  const [showNewSopsConfigDialog, setShowNewSopsConfigDialog] = useState(false)
+  
   const {
     selectedRiSc,
     riScs,
@@ -90,7 +91,7 @@ export const RiScPlugin = () => {
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
-            }}
+              }}
             >
               <AssociatedGcpProjectMenu />
               <SupportButton />
@@ -162,7 +163,9 @@ export const RiScPlugin = () => {
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
 
-      <NewSopsConfigDialog/>
+      {showNewSopsConfigDialog &&
+        <NewSopsConfigDialog />
+      }
 
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>

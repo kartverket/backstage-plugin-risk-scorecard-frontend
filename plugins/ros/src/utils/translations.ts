@@ -157,8 +157,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
       title: 'Associate GCP project',
       description: "Which GCP project do you want to encrypt and decrypt your RiSc's with? It is important that you choose a GCP project where you have the Cloud KMS CryptoKey Encrypter/Decrypter role.",
       selectDescription: 'Choose GCP project',
-      cancel: 'Cancel',
-      create: 'Create',
     },
     scenarioStepper: {
       initialRiskStep: {
@@ -486,8 +484,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'newSopsConfigDialog.title': 'Assosier GCP prosjekt',
           'newSopsConfigDialog.description': "Hvilket GCP-prosjekt vil du bruke for å kryptere og dekryptere RoS'ene dine med? Det er viktig at du velger et GCP-prosjekt hvor du har rollen Cloud KMS CryptoKey Encrypter/Decrypter role.",
           'newSopsConfigDialog.selectDescription': 'Velg GCP-prosjekt',
-          'newSopsConfigDialog.cancel': 'Avbryt',
-          'newSopsConfigDialog.create': 'Opprett',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
