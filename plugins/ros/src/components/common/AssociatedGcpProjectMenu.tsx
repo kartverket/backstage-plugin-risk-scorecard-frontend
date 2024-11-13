@@ -4,7 +4,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import Button from '@mui/material/Button';
 import { EnhancedEncryptionOutlined } from '@material-ui/icons';
 
-export const AssociatedGcpProjectMenu = () => {
+export const AssociatedGcpProjectMenu = (handleClick: () => {}) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -16,9 +16,7 @@ export const AssociatedGcpProjectMenu = () => {
         alignItems: 'center',
         gap: 1,
       }}
-      onClick={() => {
-
-      }}
+      onClick={handleClick()}
     >
       {`${t('associatedGcpProject.description')}: TEST-PROD`}
       <EnhancedEncryptionOutlined />
