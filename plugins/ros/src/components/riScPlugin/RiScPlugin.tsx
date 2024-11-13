@@ -22,6 +22,8 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
+import {Box} from "@material-ui/core";
+import {AssociatedGcpProjectMenu} from "../common/AssociatedGcpProjectMenu";
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -83,7 +85,15 @@ export const RiScPlugin = () => {
       ) : (
         <>
           <ContentHeader title={t('contentHeader.title')}>
-            <SupportButton />
+            <Grid
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+            }}
+            >
+              <AssociatedGcpProjectMenu />
+              <SupportButton />
+            </Grid>
           </ContentHeader>
 
           {isFetching && <Spinner size={80} />}

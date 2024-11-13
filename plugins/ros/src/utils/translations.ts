@@ -43,6 +43,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
       emptyField: 'No {{field}} specified',
       vulnerabilities: 'Vulnerabilities',
     },
+    associatedGcpProject: {
+      description: 'Associated GCP project',
+    },
     rosStatus: {
       statusBadge: {
         missing: 'Awaiting acceptance from risk owner', // Mangler godkjenning av risikoeier
@@ -377,6 +380,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.action.requiredError': 'Feltet er påkrevd',
           'scenarioDrawer.action.emptyState':
             'Scenariet har ingen definerte tiltak',
+
+          'associatedGcpProject.description': 'Assosiert GCP-prosjekt',
 
           'rosStatus.statusBadge.missing':
             'Venter på godkjenning av risikoeier',
