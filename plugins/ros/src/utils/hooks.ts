@@ -51,7 +51,6 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
-  const currentEntity = useEntity();
   const catalogApi = useApi(catalogApiRef);
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -216,62 +215,20 @@ export const useAuthenticatedFetch = () => {
       ),
     );
   };
-  const fetchAssociatedGcpProjects = async () => {
-    switch (currentEntity.entity.kind) {
-      case 'Component': {
-        const componentSpec = castToType<ComponentSpec>(
-            currentEntity.entity.spec,
-        );
-        const associatedSystem = componentSpec.system;
-        if (typeof associatedSystem === 'string') {
-          const system = await catalogApi.getEntityByRef({
-            name: associatedSystem,
-            namespace: 'default',
-            kind: 'System',
-          });
-          const labels = system?.metadata.labels;
-          const systemGcpProjectUnfiltered = labels
-              ? [labels['gcp-project-id']]
-              : [undefined];
-
-          const systemGcpProjects = systemGcpProjectUnfiltered.filter(
-              (value): value is string => value !== undefined,
-          );
-          const associatedGcpProjectsFromOwner =
-              await getAssociatedGcpProjectsFromOwner(componentSpec.owner);
-          return Array.from(
-              new Set([...systemGcpProjects, ...associatedGcpProjectsFromOwner]),
-          );
-        } else {
-          return Array.from(
-              new Set(
-                  await getAssociatedGcpProjectsFromOwner(componentSpec.owner),
-              ),
-          );
-        }
-      }
-      case 'System': {
-        throw Error('Not implemented on system yet');
-      }
-      default: {
-        throw Error(
-            'RiSC is not supported on other levels than component and system',
-        );
-      }
-    }
-  };
-
-  const getAssociatedGcpProjectsFromOwner = async (ownerName: string) => {
+  const fetchGcpProjects = async () => {
     const entitiesResponse = await catalogApi.getEntities({
       filter: {
         kind: 'System',
-        'spec.owner': ownerName,
       },
     });
     const systems = entitiesResponse.items;
-    return systems
-        .map(system => system.metadata.labels?.['gcp-project-id'])
-        .filter((value): value is string => value !== undefined);
+    return Array.from(
+        new Set(
+            systems
+                .map(system => system.metadata.labels?.['gcp-project-id'])
+                .filter((value): value is string => value !== undefined)
+        )
+    );
   };
 
   return {
@@ -282,22 +239,6 @@ export const useAuthenticatedFetch = () => {
     response,
     setResponse,
     fetchDifference,
-    fetchAssociatedGcpProjects,
+    fetchGcpProjects,
   };
 };
-
-interface ComponentSpec {
-  owner: string;
-  system?: string | null;
-
-  [key: string]: any;
-}
-
-function castToType<T>(jsonObject: Record<string, any> | undefined): T {
-  if (!jsonObject) {
-    throw new Error('Input JSON object is undefined');
-  }
-  return {
-    ...jsonObject,
-  } as T;
-}

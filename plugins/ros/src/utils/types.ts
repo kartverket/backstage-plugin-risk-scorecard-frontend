@@ -27,6 +27,11 @@ export type MigrationVersions = {
   toVersion: string;
 };
 
+export type SopsConfig = {
+  gcpProjectId: string;
+  publicAgeKeys: string[];
+};
+
 export type RiSc = {
   schemaVersion: string;
   title: string;

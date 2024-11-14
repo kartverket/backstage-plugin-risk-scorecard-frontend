@@ -43,8 +43,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       emptyField: 'No {{field}} specified',
       vulnerabilities: 'Vulnerabilities',
     },
-    associatedGcpProject: {
-      description: 'Associated GCP project',
+    encryption: {
+      title: 'Encryption settings',
     },
     rosStatus: {
       statusBadge: {
@@ -153,10 +153,15 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
       scopeError: 'The scorecard has to have a description of the scope',
     },
-    newSopsConfigDialog: {
-      title: 'Associate GCP project',
+    sopsConfigDialog: {
+      titleNew: 'Set up encryption',
+      titleEdit: 'Edit encryption',
       description: "Which GCP project do you want to encrypt and decrypt your RiSc's with? It is important that you choose a GCP project where you have the Cloud KMS CryptoKey Encrypter/Decrypter role.",
-      selectDescription: 'Choose GCP project',
+      gcpProject: 'GCP project',
+      publicAgeKeyDescription: "Provide public age keys for individuals who wish to write RiSc's locally.",
+      addPublicAgeKey: 'Add public age key',
+      publicAgeKey: 'Public age key',
+      update: 'Update',
     },
     scenarioStepper: {
       initialRiskStep: {
@@ -386,7 +391,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.action.emptyState':
             'Scenariet har ingen definerte tiltak',
 
-          'associatedGcpProject.description': 'Assosiert GCP-prosjekt',
+          'encryption.title': 'Krypteringsinnstillinger',
 
           'rosStatus.statusBadge.missing':
             'Venter på godkjenning av risikoeier',
@@ -481,9 +486,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
 
-          'newSopsConfigDialog.title': 'Assosier GCP prosjekt',
-          'newSopsConfigDialog.description': "Hvilket GCP-prosjekt vil du bruke for å kryptere og dekryptere RoS'ene dine med? Det er viktig at du velger et GCP-prosjekt hvor du har rollen Cloud KMS CryptoKey Encrypter/Decrypter role.",
-          'newSopsConfigDialog.selectDescription': 'Velg GCP-prosjekt',
+          'sopsConfigDialog.titleNew': 'Sett opp kryptering',
+          'sopsConfigDialog.titleEdit': 'Rediger kryptering',
+          'sopsConfigDialog.description': "Hvilket GCP-prosjekt vil du bruke for å kryptere og dekryptere RoS'ene dine med? Det er viktig at du velger et GCP-prosjekt hvor du har rollen Cloud KMS CryptoKey Encrypter/Decrypter role.",
+          'sopsConfigDialog.gcpProject': 'GCP-prosjekt',
+          'sopsConfigDialog.publicAgeKeyDescription': "Legg ved offentlige age-nøkler til personer som ønsker å skrive kodenær RoS lokalt.",
+          'sopsConfigDialog.addPublicAgeKey': 'Legg til offentlig age-nøkkel',
+          'sopsConfigDialog.publicAgeKey': 'Offentlig age-nøkkel',
+          'sopsConfigDialog.update': 'Oppdater',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
