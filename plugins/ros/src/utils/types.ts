@@ -27,7 +27,15 @@ export type MigrationVersions = {
   toVersion: string;
 };
 
+export enum SopsConfigStatus {
+  NotInitialized,
+  Created,
+  NotCreated,
+}
+
 export type SopsConfig = {
+  status: SopsConfigStatus;
+  gcpProjectIds: string[];
   gcpProjectId: string;
   publicAgeKeys: string[];
 };
@@ -104,6 +112,10 @@ export enum ProcessingStatus {
   ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
+  ErrorWhenFetchingSopsConfig = 'ErrorWhenFetchingSopsConfig',
+  NoGcpKeyInSopsConfigFound = 'No GCP KMS resource ID was found in sops config',
+  FailedToFetchGcpProjectIds = 'Failed to fetch GCP project IDs',
+  NoSopsConfigFound = 'No SOPS config found in repo',
 }
 
 export enum ContentStatus {

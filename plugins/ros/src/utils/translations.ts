@@ -44,7 +44,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       vulnerabilities: 'Vulnerabilities',
     },
     encryption: {
-      title: 'Encryption settings',
+      title: 'Encryption',
     },
     rosStatus: {
       statusBadge: {
@@ -156,12 +156,14 @@ export const pluginRiScTranslationRef = createTranslationRef({
     sopsConfigDialog: {
       titleNew: 'Set up encryption',
       titleEdit: 'Edit encryption',
-      description: "Which GCP project do you want to encrypt and decrypt your RiSc's with? It is important that you choose a GCP project where you have the Cloud KMS CryptoKey Encrypter/Decrypter role.",
+      description: 'In order to use RiSc scorecard, you first have to enable an encryption scheme by setting up a SOPS configuration on the default branch of your repository.',
+      gcpProjectDescription: "Which GCP project do you want to encrypt and decrypt your RiSc's with? It is important that you choose a GCP project where you have the Cloud KMS CryptoKey Encrypter/Decrypter role.",
       gcpProject: 'GCP project',
       publicAgeKeyDescription: "Provide public age keys for individuals who wish to write RiSc's locally.",
       addPublicAgeKey: 'Add public age key',
       publicAgeKey: 'Public age key',
       update: 'Update',
+      required: 'This field is required'
     },
     scenarioStepper: {
       initialRiskStep: {
@@ -330,6 +332,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'The risk scorecard you are trying to open does not exist',
       ScenarioDoesNotExist:
         'The scenario you are trying to open does not exist',
+      ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration'
     },
     infoMessages: {
       CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
@@ -391,7 +394,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.action.emptyState':
             'Scenariet har ingen definerte tiltak',
 
-          'encryption.title': 'Krypteringsinnstillinger',
+          'encryption.title': 'Kryptering',
 
           'rosStatus.statusBadge.missing':
             'Venter på godkjenning av risikoeier',
@@ -488,12 +491,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'sopsConfigDialog.titleNew': 'Sett opp kryptering',
           'sopsConfigDialog.titleEdit': 'Rediger kryptering',
-          'sopsConfigDialog.description': "Hvilket GCP-prosjekt vil du bruke for å kryptere og dekryptere RoS'ene dine med? Det er viktig at du velger et GCP-prosjekt hvor du har rollen Cloud KMS CryptoKey Encrypter/Decrypter role.",
+          'sopsConfigDialog.description': 'For å bruke kodenær RoS, må du først sette opp et krypteringsskjema ved å sette opp en SOPS-konfigurasjon på main-branchen til ditt GitHub-repo.',
+          'sopsConfigDialog.gcpProjectDescription': "Hvilket GCP-prosjekt vil du bruke for å kryptere og dekryptere RoS'ene dine med? Det er viktig at du velger et GCP-prosjekt hvor du har rollen Cloud KMS CryptoKey Encrypter/Decrypter role.",
           'sopsConfigDialog.gcpProject': 'GCP-prosjekt',
           'sopsConfigDialog.publicAgeKeyDescription': "Legg ved offentlige age-nøkler til personer som ønsker å skrive kodenær RoS lokalt.",
-          'sopsConfigDialog.addPublicAgeKey': 'Legg til offentlig age-nøkkel',
+          'sopsConfigDialog.addPublicAgeKey': 'Legg til nøkkel',
           'sopsConfigDialog.publicAgeKey': 'Offentlig age-nøkkel',
           'sopsConfigDialog.update': 'Oppdater',
+          'sopsConfigDialog.required': 'Dette feltet er påkrevd',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
@@ -647,6 +652,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke hente risiko- og sårbarhetsanalyser med id-er: ',
           'errorMessages.FailedToFetchRiScs':
             'Kunne ikke hente risiko- og sårbarhetsanalyser',
+          'errorMessages.ErrorWhenFetchingSopsConfig':
+              'Kunne ikke hente SOPS-konfigurasjon',
 
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',

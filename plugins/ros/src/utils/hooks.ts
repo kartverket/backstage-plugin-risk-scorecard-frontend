@@ -1,10 +1,10 @@
-import {catalogApiRef, useEntity} from '@backstage/plugin-catalog-react';
+import { useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useState } from 'react';
 import {
   configApiRef,
   fetchApiRef,
-  googleAuthApiRef,
   githubAuthApiRef,
+  googleAuthApiRef,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
@@ -22,6 +22,7 @@ import {
   PublishRiScResultDTO,
   RiScContentResultDTO,
   riScToDTOString,
+  SopsConfigResultDTO,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import { pluginRiScTranslationRef } from './translations';
@@ -47,11 +48,11 @@ export const useAuthenticatedFetch = () => {
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
+  const sopsUri = `${backendUrl}/api/proxy/risc-proxy/api/sops/${repoInformation.owner}/${repoInformation.name}`;
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`;
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
-  const catalogApi = useApi(catalogApiRef);
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -87,7 +88,7 @@ export const useAuthenticatedFetch = () => {
   ) => {
     Promise.all([
       identityApi.getCredentials(),
-      googleApi.getAccessToken(['https://www.googleapis.com/auth/cloudkms']),
+      googleApi.getAccessToken(['https://www.googleapis.com/auth/cloudkms', 'https://www.googleapis.com/auth/cloudplatformprojects.readonly']),
       gitHubApi.getAccessToken(['repo']),
     ]).then(([idToken, googleAccessToken, gitHubAccessToken]) => {
       fetch(uri, {
@@ -148,6 +149,23 @@ export const useAuthenticatedFetch = () => {
         });
       },
     );
+
+  const fetchSopsConfig = (
+      onSuccess: (response: SopsConfigResultDTO) => void,
+      onError?: () => void,
+  ) =>
+      authenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
+          sopsUri,
+          'GET',
+          onSuccess,
+          () => {
+            if (onError) onError();
+            setResponse({
+              statusMessage: t('errorMessages.FailedToFetchRiScs'),
+              status: ProcessingStatus.ErrorWhenFetchingSopsConfig,
+            });
+          },
+      );
 
   const publishRiScs = (
     riScId: string,
@@ -215,30 +233,15 @@ export const useAuthenticatedFetch = () => {
       ),
     );
   };
-  const fetchGcpProjects = async () => {
-    const entitiesResponse = await catalogApi.getEntities({
-      filter: {
-        kind: 'System',
-      },
-    });
-    const systems = entitiesResponse.items;
-    return Array.from(
-        new Set(
-            systems
-                .map(system => system.metadata.labels?.['gcp-project-id'])
-                .filter((value): value is string => value !== undefined)
-        )
-    );
-  };
 
   return {
     fetchRiScs,
+    fetchSopsConfig,
     postRiScs,
     putRiScs,
     publishRiScs,
     response,
     setResponse,
     fetchDifference,
-    fetchGcpProjects,
   };
 };

@@ -23,10 +23,8 @@ import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { SopsConfigButton } from '../common/SopsConfigButton';
-import {
-  SopsConfigDialog,
-  SopsConfigDialogStates,
-} from '../sopsConfigDialog/SopsConfigDialog';
+import { SopsConfigDialog } from '../sopsConfigDialog/SopsConfigDialog';
+import { SopsConfigStatus } from '../../utils/types';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -35,24 +33,26 @@ export const RiScPlugin = () => {
     RiScDialogStates.Closed,
   );
 
-  const [sopsConfigDialogState, setSopsConfigDialogState] =
-    useState<SopsConfigDialogStates>(SopsConfigDialogStates.Create);
+  const [showSopsConfigDialog, setShowSopsConfigDialog] =
+    useState<boolean>(false);
 
   const openCreateRiScDialog = () =>
     setRiScDialogState(RiScDialogStates.Create);
   const openEditRiScDialog = () => setRiScDialogState(RiScDialogStates.Edit);
   const closeRiScDialog = () => setRiScDialogState(RiScDialogStates.Closed);
-  const closeSopsConfigDialog = () =>
-    setSopsConfigDialogState(SopsConfigDialogStates.Closed);
+  const closeSopsConfigDialog = () => setShowSopsConfigDialog(false);
 
-  const handleClickNewSopsConfigDialog = () =>
-    setSopsConfigDialogState(SopsConfigDialogStates.Create);
+  const handleClickNewSopsConfigDialog = () => {
+    console.log(sopsConfig);
+    setShowSopsConfigDialog(true);
+  }
 
   const {
     selectedRiSc,
     riScs,
     selectRiSc,
     isFetching,
+    sopsConfig,
     resetResponse,
     resetRiScStatus,
     response,
@@ -70,6 +70,13 @@ export const RiScPlugin = () => {
       resetResponse();
     }
   }, [resetRiScStatus, resetResponse, scenarioWizardStep]);
+
+  useEffect(() => {
+    console.log(sopsConfig)
+    if (!isFetching && sopsConfig.status === SopsConfigStatus.NotCreated) {
+      setShowSopsConfigDialog(true);
+    }
+  }, [isFetching]);
 
   return (
     <>
@@ -102,7 +109,11 @@ export const RiScPlugin = () => {
                 flexDirection: 'row',
               }}
             >
-              <SopsConfigButton handleClick={handleClickNewSopsConfigDialog} />
+              {!isFetching && (
+                <SopsConfigButton
+                  handleClick={handleClickNewSopsConfigDialog}
+                />
+              )}
               <SupportButton />
             </Grid>
           </ContentHeader>
@@ -172,12 +183,13 @@ export const RiScPlugin = () => {
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
 
-      {sopsConfigDialogState !== SopsConfigDialogStates.Closed && (
-        <SopsConfigDialog
-          dialogState={sopsConfigDialogState}
-          onClose={closeSopsConfigDialog}
-        />
-      )}
+      {showSopsConfigDialog && (
+          <SopsConfigDialog
+            onClose={closeSopsConfigDialog}
+            showDialog={showSopsConfigDialog}
+            sopsConfig={sopsConfig}
+          />
+        )}
 
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>

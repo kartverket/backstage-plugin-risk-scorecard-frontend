@@ -1,11 +1,10 @@
 import Dialog from '@mui/material/Dialog';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import FormLabel from '@mui/material/FormLabel';
-import { gcpProjectIdsToReadableString } from '../../utils/utilityfunctions';
-import { useAuthenticatedFetch } from '../../utils/hooks';
+import { gcpProjectIdToReadableString } from '../../utils/utilityfunctions';
 import DialogContent from '@mui/material/DialogContent';
 import { dialogActions } from '../common/mixins';
 import Button from '@mui/material/Button';
@@ -13,135 +12,149 @@ import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import { Autocomplete } from '@mui/material';
 import AddCircle from '@mui/icons-material/AddCircle';
-import { PublicKeyTextField } from '../common/PublicKeyTextField';
+import { PublicKeyTextField } from './PublicKeyTextField';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { SopsConfig } from '../../utils/types';
-
-export enum SopsConfigDialogStates {
-  Closed,
-  Edit,
-  Create,
-}
+import { SopsConfig, SopsConfigStatus } from '../../utils/types';
+import Typography from '@mui/material/Typography';
+import { PublicKeyList } from './PublicKeyList';
 
 interface SopsConfigDialogProps {
   onClose: () => void;
-  dialogState: SopsConfigDialogStates;
+  showDialog: boolean;
+  sopsConfig: SopsConfig;
+}
+
+export interface SopsConfigDialogFormData {
+  gcpProjectId: string;
+  publicAgeKeys: string[];
 }
 
 export const SopsConfigDialog = ({
   onClose,
-  dialogState,
+  showDialog,
+  sopsConfig,
 }: SopsConfigDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const titleTranslation =
-    dialogState === SopsConfigDialogStates.Create
+    sopsConfig.status === SopsConfigStatus.NotCreated
       ? t('sopsConfigDialog.titleNew')
       : t('sopsConfigDialog.titleEdit');
 
-  const { fetchGcpProjects } = useAuthenticatedFetch();
-
-  const [associatedGcpProjects, setAssociatedGcpProjects] = useState<string[]>(
-    [],
+  const [publicKeys, setPublicKeys] = useState<string[]>(
+    sopsConfig.publicAgeKeys,
   );
-  const [chosenGcpProject, setChosenGcpProject] = useState<string>('');
+  const publicKeysRef = useRef(publicKeys);
 
-  const handleChangeGcpProject = (item: string) => {
-    setChosenGcpProject(item);
+  useEffect(() => {
+    if (sopsConfig.status === SopsConfigStatus.NotCreated) {
+      publicKeysRef.current = [];
+      setPublicKeys(publicKeysRef.current);
+      setValue('publicAgeKeys', publicKeysRef.current);
+    } else {
+      publicKeysRef.current = sopsConfig.publicAgeKeys;
+      setPublicKeys(publicKeysRef.current);
+      setValue('publicAgeKeys', publicKeysRef.current);
+    }
+  }, []);
+
+  const handleClickAddKeyButton = () => {
+    publicKeysRef.current = [...publicKeys, ''];
+    setPublicKeys(publicKeysRef.current);
+    setValue('publicAgeKeys', publicKeysRef.current);
   };
 
-  const [numberOfPublicKeyTextFields, setNumberOfPublicKeyTextFields] =
-    useState(0);
+  const handleClickDeletePublicKeyTextField = (index: number) => {
+    publicKeysRef.current = publicKeys.filter((_, i) => i !== index);
+    setPublicKeys(publicKeysRef.current);
+    setValue('publicAgeKeys', publicKeysRef.current);
+  };
 
-  const handleClickAddKeyButton = () =>
-    setNumberOfPublicKeyTextFields(prevState => prevState + 1);
-  const handleClickDeletePublicKeyTextField = () =>
-    setNumberOfPublicKeyTextFields(prevState => prevState - 1);
+  const handleOnChangePublicKeyTextField = (index: number, value: string) => {
+    const updateList = [...publicKeys];
+    updateList[index] = value;
+    publicKeysRef.current = updateList;
+    setPublicKeys(publicKeysRef.current);
+    setValue('publicAgeKeys', publicKeysRef.current);
+  };
 
   const {
-    control,
     handleSubmit,
-    reset,
+    control,
+    setValue,
     formState: { isDirty, errors },
-  } = useForm<SopsConfig>({
+  } = useForm<SopsConfigDialogFormData>({
     defaultValues: {
-      gcpProjectId: '',
-      publicAgeKeys: Array(numberOfPublicKeyTextFields).fill(''),
+      gcpProjectId: sopsConfig.gcpProjectId,
+      publicAgeKeys: publicKeys,
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields } = useFieldArray({
     control,
     name: 'publicAgeKeys',
   });
 
-  const onSubmit = handleSubmit((data: SopsConfig) => {
+  const onSubmit = handleSubmit((data: SopsConfigDialogFormData) => {
+    console.log(data);
     onClose();
   });
 
-  useEffect(() => {
-    // Reset form with a new array in b when numFields changes
-    reset({
-      gcpProjectId: '',
-      publicAgeKeys: Array(numberOfPublicKeyTextFields).fill(''),
-    });
-  }, [numberOfPublicKeyTextFields, reset]);
-
-  useEffect(() => {
-    fetchGcpProjects()
-      .then(res => {
-        setAssociatedGcpProjects(res);
-        setChosenGcpProject(res[0]);
-      })
-      .catch(err => {
-        throw err;
-      });
-  }, []);
-
   return (
-    <Dialog
-      open={dialogState !== SopsConfigDialogStates.Closed}
-      onClose={onClose}
-    >
+    <Dialog open={showDialog} onClose={onClose} maxWidth={'md'}>
       <DialogTitle>{titleTranslation}</DialogTitle>
       <DialogContent
         sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
       >
-        <FormLabel>{t('sopsConfigDialog.description')}</FormLabel>
+        {sopsConfig.status === SopsConfigStatus.NotCreated && (
+          <Typography>{t('sopsConfigDialog.description')}</Typography>
+        )}
+        <FormLabel>{t('sopsConfigDialog.gcpProjectDescription')}</FormLabel>
         <Controller
-          name="gcpProjectId"
+          name={'gcpProjectId'}
           control={control}
+          rules={{ required: t('sopsConfigDialog.required') }}
           render={({ field }) => (
             <Autocomplete
               {...field}
-              disablePortal
-              options={gcpProjectIdsToReadableString(associatedGcpProjects)}
+              options={sopsConfig.gcpProjectIds}
+              getOptionLabel={(option: string) =>
+                gcpProjectIdToReadableString(option)
+              }
+              disableClearable={true}
               sx={{ width: 300 }}
               renderInput={params => (
                 <TextField
                   {...params}
                   label={t('sopsConfigDialog.gcpProject')}
+                  error={!!errors.gcpProjectId}
                 />
               )}
+              onChange={(_, value) => field.onChange(value)}
             />
           )}
         />
 
+        <PublicKeyList publicKeys={sopsConfig.publicAgeKeys} />
+
         <FormLabel>{t('sopsConfigDialog.publicAgeKeyDescription')}</FormLabel>
-        {fields.map((field, index) => (
+        {fields.map((_field, index) => (
           <Controller
-            key={field.id}
             name={`publicAgeKeys.${index}`}
             control={control}
             render={({ field }) => (
               <PublicKeyTextField
-                {...field}
+                value={publicKeys[index]}
+                index={index}
+                field={field}
+                onChange={handleOnChangePublicKeyTextField}
                 onClick={handleClickDeletePublicKeyTextField}
-                minWidth={500}
+                minWidth={800}
               />
             )}
           />
         ))}
+
         <Button
           startIcon={<AddCircle />}
           variant="text"

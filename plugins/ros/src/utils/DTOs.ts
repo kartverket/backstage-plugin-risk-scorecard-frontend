@@ -46,6 +46,13 @@ export type RiScDTO = {
   scenarios: ScenarioDTO[];
 };
 
+export type SopsConfigResultDTO = {
+  status: ProcessingStatus,
+  gcpProjectId: string,
+  gcpProjectIds: string[],
+  publicAgeKeys: string[],
+}
+
 type ScenarioDTO = {
   title: string;
   scenario: {

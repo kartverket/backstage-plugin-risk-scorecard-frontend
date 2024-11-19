@@ -190,11 +190,8 @@ export function getTranslationKey(
   return t(`infoMessages.${key}`);
 }
 
-export function gcpProjectIdsToReadableString(gcpProjectIds: string[]) {
-  return gcpProjectIds.map((gcpProjectId) => {
-    const parts = gcpProjectId.split('-');
-    parts.pop();
-    return parts.join('-');
-  })
-
+export function gcpProjectIdToReadableString(gcpProjectId: string) {
+  const parts = gcpProjectId.split('-');
+  parts.pop();
+  return parts.join('-');
 }

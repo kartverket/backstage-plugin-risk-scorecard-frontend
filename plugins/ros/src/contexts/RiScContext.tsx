@@ -1,13 +1,20 @@
-import React, { ReactNode } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   ContentStatus,
   ProcessingStatus,
   RiSc,
   RiScStatus,
   RiScWithMetadata,
+  SopsConfig,
+  SopsConfigStatus,
   SubmitResponseObject,
 } from '../utils/types';
-import { useCallback, useEffect, useState } from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import {
   getTranslationKey,
@@ -43,6 +50,8 @@ type RiScDrawerProps = {
   resetRiScStatus: () => void;
   resetResponse: () => void;
   isFetching: boolean;
+  isFetchingSopsConfig: boolean;
+  sopsConfig: SopsConfig;
   response: SubmitResponseObject | null;
 };
 
@@ -58,6 +67,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 
   const {
     fetchRiScs,
+    fetchSopsConfig,
     postRiScs,
     putRiScs,
     publishRiScs,
@@ -70,10 +80,22 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     null,
   );
   const [isFetching, setIsFetching] = useState(true);
+  const isFetchingRef = useRef(isFetching)
+  const [isFetchingRiScs, setIsFetchingRiScs] = useState(true);
+  const isFetchingRiScsRef = useRef(isFetchingRiScs)
+  const [isFetchingSopsConfig, setIsFecthingSopsConfig] = useState(true);
+  const isFetchingSopsConfigRef = useRef(isFetchingSopsConfig)
   const [riScUpdateStatus, setRiScUpdateStatus] = useState({
     isLoading: false,
     isError: false,
     isSuccess: false,
+  });
+  
+  const [sopsConfig, setSopsConfig] = useState<SopsConfig>({
+    status: SopsConfigStatus.NotInitialized,
+    gcpProjectId: '',
+    gcpProjectIds: [],
+    publicAgeKeys: []
   });
 
   useEffect(() => {
@@ -84,6 +106,40 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       });
     }
   }, [location, setResponse]);
+
+  // Initial fetch of SOPS config
+  useEffectOnce(() => {
+    fetchSopsConfig(
+        res => {
+          setSopsConfig({
+            gcpProjectId: res.gcpProjectId,
+            status: Object.keys(ProcessingStatus).includes(res.status) ? SopsConfigStatus.NotCreated : SopsConfigStatus.Created,
+            gcpProjectIds: res.gcpProjectIds,
+            publicAgeKeys: res.publicAgeKeys
+          })
+          isFetchingSopsConfigRef.current = false
+          setIsFecthingSopsConfig(isFetchingSopsConfigRef.current)
+          if (!isFetchingRiScsRef.current) {
+            isFetchingRef.current = false
+            setIsFetching(isFetchingRef.current);
+          }
+        },
+        () => {
+          setSopsConfig({
+            gcpProjectId: '',
+            status: SopsConfigStatus.NotCreated,
+            publicAgeKeys: [],
+            gcpProjectIds: [],
+          })
+          isFetchingSopsConfigRef.current = false
+          setIsFecthingSopsConfig(isFetchingSopsConfigRef.current)
+          if (!isFetchingRiScsRef.current) {
+            isFetchingRef.current = false
+            setIsFetching(isFetchingRef.current);
+          }
+        },
+    )
+  });
 
   // Initial fetch of RiScs
   useEffectOnce(() => {
@@ -106,7 +162,13 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             };
           });
         setRiScs(fetchedRiScs);
-        setIsFetching(false);
+
+        isFetchingRiScsRef.current = false
+        setIsFetchingRiScs(isFetchingRiScsRef.current)
+        if (!isFetchingSopsConfigRef.current) {
+          isFetchingRef.current = false
+          setIsFetching(isFetchingRef.current);
+        }
 
         const errorRiScs: string[] = res
           .filter(risk => risk.status !== ContentStatus.Success)
@@ -144,10 +206,17 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         }
       },
       () => {
-        setIsFetching(false);
+        isFetchingRiScsRef.current = false
+        setIsFetchingRiScs(isFetchingRiScsRef.current)
+        if (!isFetchingSopsConfigRef.current) {
+          isFetchingRef.current = false
+          setIsFetching(isFetchingRef.current);
+        }
       },
     );
   });
+  
+
 
   // Set selected RiSc based on URL
   useEffect(() => {
@@ -360,7 +429,9 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     resetResponse,
     isRequesting,
     isFetching,
+    isFetchingSopsConfig,
     response,
+    sopsConfig,
   };
 
   return <RiScContext.Provider value={value}>{children}</RiScContext.Provider>;
