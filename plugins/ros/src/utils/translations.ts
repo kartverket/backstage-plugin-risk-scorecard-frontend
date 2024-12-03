@@ -11,6 +11,24 @@ export const pluginRiScTranslationRef = createTranslationRef({
       createNewButton: 'Create new scorecard',
     },
     dictionary: {
+      yes: 'Yes',
+      no: 'No',
+      optional: 'optional',
+      month: 'month',
+      week: 'week',
+      day: 'day',
+      hour: 'hour',
+      minute: 'minute',
+      second: 'second',
+      months: 'months',
+      weeks: 'weeks',
+      days: 'days',
+      hours: 'hours',
+      minutes: 'minutes',
+      seconds: 'seconds',
+      add: 'Add',
+      copy: 'Copy',
+      copied: 'Copied',
       cancel: 'Cancel',
       close: 'Close',
       completed: 'Completed',
@@ -152,18 +170,44 @@ export const pluginRiScTranslationRef = createTranslationRef({
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
       scopeError: 'The scorecard has to have a description of the scope',
+      generateInitialDescription:
+        'RiSc Scorecard lets you generate a default RiSc based on information about the codebase in kartverket.dev, security metrics and security controls.',
+      generateInitialToggleDescription:
+        'Do you want to generate a default RiSc?',
+      fromScratch: 'Empty',
+      generateDefault: 'Default',
     },
     sopsConfigDialog: {
-      titleNew: 'Set up encryption',
-      titleEdit: 'Edit encryption',
-      description: 'In order to use RiSc scorecard, you first have to enable an encryption scheme by setting up a SOPS configuration on the default branch of your repository.',
-      gcpProjectDescription: "Which GCP project do you want to encrypt and decrypt your RiSc's with? It is important that you choose a GCP project where you have the Cloud KMS CryptoKey Encrypter/Decrypter role.",
+      title: 'SOPS configuration',
+      description:
+        'In order to use RiSc scorecard, you first have to enable an encryption scheme by setting up a SOPS configuration on the default branch of your repository.',
+      gcpProjectDescription:
+        "Which GCP project do you want to encrypt and decrypt your RiSc's with? It is important that you choose a GCP project where you have the Cloud KMS CryptoKey Encrypter/Decrypter role.",
       gcpProject: 'GCP project',
-      publicAgeKeyDescription: "Provide public age keys for individuals who wish to write RiSc's locally.",
+      publicAgeKeysAlreadyPresent:
+        'The following age keys are already present:',
+      publicAgeKeyDescription:
+        "Provide public age keys for individuals who wish to write RiSc's locally.",
       addPublicAgeKey: 'Add public age key',
       publicAgeKey: 'Public age key',
       update: 'Update',
-      required: 'This field is required'
+      required: 'This field is required',
+      publicKeyHelperTextKeyAlreadyExists: 'Public key already added',
+      publicKeyHelperTextKeyAlreadyExistInSopsConfig:
+        'Public key already present in existing SOPS configuration',
+      publicKeyHelperTextKeyNotValid:
+        'Public key is not a valid age public key',
+      pendingTitle: 'Pending SOPS configuration',
+      pendingDescription:
+        'The following pull requests are opened to include a SOPS configuration in the GitHub-repo',
+      secondaryPullRequestText: 'Opened _n_ ago by',
+      reEncryptTitle: "Re-encryption of existing RiSc's",
+      reEncryptDescription:
+        "When updating SOPS configuration, you will not be able to decrypt old RiSc's encrypted with the previous SOPS configuration. We therefore encourage you to re-encrypt the existing RiSc's on the default branch of your GitHub-repository for you to be able to use them with your updated SOPS configuration.",
+      reEncryptConsentDescription:
+        "Do you want to re-encrypt the RiSc's on the default branch of ",
+      openPR: 'Open pull request',
+      gotoPullRequest: 'Go to pull request',
     },
     scenarioStepper: {
       initialRiskStep: {
@@ -332,16 +376,23 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'The risk scorecard you are trying to open does not exist',
       ScenarioDoesNotExist:
         'The scenario you are trying to open does not exist',
-      ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration'
+      ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration',
+      FailedToCreateSops: 'Failed to create SOPS configuration',
+      FailedToUpdateSops: 'SOPS configuration could not be updated',
     },
     infoMessages: {
+      OpenedPullRequest: 'Successfully opened pull request',
       CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
       UpdatedRiSc: 'Risk scorecard updated',
+      UpdatedSops: 'SOPS configuration updated',
       UpdatedRiScRequiresNewApproval:
         'Risk scorecard update and requires new approval',
       CreatedRiSc: 'Created new risk scorecard successfully',
       UpdatedRiScAndCreatedPullRequest:
         'Risk scorecard updated and ready for approval in Github',
+      NoSopsConfigFound:
+        'No SOPS configuration present on default branch of the GitHub repository',
+      CreatedSops: 'SOPS configuration created successfully',
     },
   },
 });
@@ -355,6 +406,24 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
 
+          'dictionary.yes': 'Ja',
+          'dictionary.no': 'Nei',
+          'dictionary.optional': 'valgfritt',
+          'dictionary.month': 'måned',
+          'dictionary.week': 'uke',
+          'dictionary.day': 'dag',
+          'dictionary.hour': 'time',
+          'dictionary.minute': 'minutt',
+          'dictionary.second': 'sekund',
+          'dictionary.months': 'måneder',
+          'dictionary.weeks': 'uker',
+          'dictionary.days': 'dager',
+          'dictionary.hours': 'timer',
+          'dictionary.minutes': 'minutter',
+          'dictionary.seconds': 'sekunder',
+          'dictionary.add': 'Legg til',
+          'dictionary.copy': 'Kopier',
+          'dictionary.copied': 'Kopiert',
           'dictionary.cancel': 'Avbryt',
           'dictionary.close': 'Lukk',
           'dictionary.completed': 'Fullført',
@@ -488,17 +557,45 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeDescription':
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
+          'rosDialog.generateInitialDescription':
+            'Kodenær RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
+          'rosDialog.generateInitialToggleDescription':
+            'Vil du generere initiell RoS?',
+          'rosDialog.fromScratch': 'Tom',
+          'rosDialog.generateDefault': 'Initiell',
 
-          'sopsConfigDialog.titleNew': 'Sett opp kryptering',
-          'sopsConfigDialog.titleEdit': 'Rediger kryptering',
-          'sopsConfigDialog.description': 'For å bruke kodenær RoS, må du først sette opp et krypteringsskjema ved å sette opp en SOPS-konfigurasjon på main-branchen til ditt GitHub-repo.',
-          'sopsConfigDialog.gcpProjectDescription': "Hvilket GCP-prosjekt vil du bruke for å kryptere og dekryptere RoS'ene dine med? Det er viktig at du velger et GCP-prosjekt hvor du har rollen Cloud KMS CryptoKey Encrypter/Decrypter role.",
+          'sopsConfigDialog.title': 'SOPS-konfigurasjon',
+          'sopsConfigDialog.description':
+            'For å bruke kodenær RoS, må du først sette opp et krypteringsskjema ved å sette opp en SOPS-konfigurasjon på hoved-branchen til ditt GitHub-repo.',
+          'sopsConfigDialog.gcpProjectDescription':
+            "Hvilket GCP-prosjekt vil du bruke for å kryptere og dekryptere RoS'ene dine med? Det er viktig at du velger et GCP-prosjekt hvor du har rollen Cloud KMS CryptoKey Encrypter/Decrypter role.",
           'sopsConfigDialog.gcpProject': 'GCP-prosjekt',
-          'sopsConfigDialog.publicAgeKeyDescription': "Legg ved offentlige age-nøkler til personer som ønsker å skrive kodenær RoS lokalt.",
+          'sopsConfigDialog.publicAgeKeysAlreadyPresent':
+            'Følgende age-nøkler er allerede til stede:',
+          'sopsConfigDialog.publicAgeKeyDescription':
+            'Legg ved offentlige age-nøkler til personer som ønsker å skrive kodenær RoS lokalt.',
           'sopsConfigDialog.addPublicAgeKey': 'Legg til nøkkel',
           'sopsConfigDialog.publicAgeKey': 'Offentlig age-nøkkel',
           'sopsConfigDialog.update': 'Oppdater',
           'sopsConfigDialog.required': 'Dette feltet er påkrevd',
+          'sopsConfigDialog.publicKeyHelperTextKeyAlreadyExists':
+            'Offentlig møkkel allerede lagt til',
+          'sopsConfigDialog.publicKeyHelperTextKeyAlreadyExistInSopsConfig':
+            'Offentlig nøkkel er allerede i eksisterende SOPS-konfigurasjon',
+          'sopsConfigDialog.publicKeyHelperTextKeyNotValid':
+            'Offentlig nøkkel er ikke en gyldig age offentlig nøkkel',
+          'sopsConfigDialog.pendingTitle': 'Avventende SOPS-konfigurasjon',
+          'sopsConfigDialog.pendingDescription':
+            'Følgende pull requests er åpnet for å inkludere en SOPS-konfigurasjon i GitHub-repoet',
+          'sopsConfigDialog.secondaryPullRequestText': 'Åpnet _n_ siden av',
+          'sopsConfigDialog.reEncryptTitle':
+            "Rekryptering av eksisterende RoS'er",
+          'sopsConfigDialog.reEncryptDescription':
+            "Ved å oppdatere SOPS-konfigurasjonen, vil du ikke lenger kunne dekryptere gamle RoS'er kryptert med den forrige SOPS-konfigurasjonen. Vi anbefaler derfor på det sterkeste å rekryptere eksisterende RoS'er på hoved-branchen i ditt GitHub-repo for at du skal kunne fortsette å lese dem med din oppdaterte SOPS-konfigurasjon.",
+          'sopsConfigDialog.reEncryptConsentDescription':
+            "Vil du rekryptere eksisterende RoS'er på hoved-branchen til",
+          'sopsConfigDialog.openPR': 'Åpne pull request',
+          'sopsConfigDialog.gotoPullRequest': 'Gå til pull request',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
@@ -653,18 +750,27 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'errorMessages.FailedToFetchRiScs':
             'Kunne ikke hente risiko- og sårbarhetsanalyser',
           'errorMessages.ErrorWhenFetchingSopsConfig':
-              'Kunne ikke hente SOPS-konfigurasjon',
+            'Kunne ikke hente SOPS-konfigurasjon',
+          'errorMessages.FailedToCreateSops':
+            'Kunne ikke opprette SOPS-konfigurasjon',
+          'errorMessages.FailedToUpdateSops':
+            'SOPS-konfigurasjon kunne ikke oppdateres',
 
+          'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
           'infoMessages.UpdatedRiSc':
             'Risiko- og sårbarhetsanalysen ble oppdatert',
+          'infoMessages.UpdatedSops': 'SOPS-konfigurasjon oppdatert',
           'infoMessages.UpdatedRiScRequiresNewApproval':
             'Risiko- og sårbarhetsanalysen ble oppdatert og trenger ny godkjenning',
           'infoMessages.CreatedRiSc':
             'Risiko- og sårbarhetsanalyse ble opprettet',
           'infoMessages.UpdatedRiScAndCreatedPullRequest':
             'Risiko- og sårbarhetsanalysen ble oppdatert og er klar for godkjenning i Github',
+          'infoMessages.NoSopsConfigFound':
+            'Ingen SOPS-konfigurasjon funnet på default branchen til GitHub-repoet',
+          'infoMessages.CreatedSops': 'SOPS-konfigurasjon opprettet',
         },
       }),
   },

@@ -31,11 +31,11 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
     useTableStyles();
   const { openNewScenarioWizard, openScenarioDrawer } = useScenario();
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
-  const { updateRiSc, riScUpdateStatus } = useRiScs();
+  const { updateRiSc, updateStatus } = useRiScs();
   const [isOrderChanged, setIsOrderChanged] = useState(false);
 
   useEffect(() => {
-    if (!riScUpdateStatus.isSuccess) {
+    if (!updateStatus.isSuccess) {
       return;
     }
     const updatedScenarios = tempScenarios
@@ -51,7 +51,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
 
     setTempScenarios([...updatedScenarios, ...scenariosNotInTemp]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [riSc.scenarios, riScUpdateStatus.isSuccess]);
+  }, [riSc.scenarios, updateStatus.isSuccess]);
 
   const moveRow = (dragIndex: number, hoverIndex: number) => {
     const updatedScenarios = [...tempScenarios];

@@ -17,18 +17,24 @@ import {
   SubmitResponseObject,
 } from './types';
 import {
+  CreateRiScResultDTO,
+  OpenPullRequestForSopsConfigResponseBody,
   ProcessRiScResultDTO,
   profileInfoToDTOString,
   PublishRiScResultDTO,
   RiScContentResultDTO,
   riScToDTOString,
+  SopsConfigCreateResponse,
+  SopsConfigRequestBody,
   SopsConfigResultDTO,
+  sopsConfigToDTOString,
+  SopsConfigUpdateResponse,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import { pluginRiScTranslationRef } from './translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
-const useGithubRepositoryInformation = (): GithubRepoInfo => {
+export const useGithubRepositoryInformation = (): GithubRepoInfo => {
   const [, org, repo] =
     useEntity().entity.metadata.annotations?.['backstage.io/view-url'].match(
       /github\.com\/([^\/]+)\/([^\/]+)/,
@@ -49,6 +55,8 @@ export const useAuthenticatedFetch = () => {
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
   const sopsUri = `${backendUrl}/api/proxy/risc-proxy/api/sops/${repoInformation.owner}/${repoInformation.name}`;
+  const openPullRequestForSopsConfigUri = (branch: string) =>
+    `${sopsUri}/openPullRequest/${branch}`;
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`;
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
@@ -88,7 +96,10 @@ export const useAuthenticatedFetch = () => {
   ) => {
     Promise.all([
       identityApi.getCredentials(),
-      googleApi.getAccessToken(['https://www.googleapis.com/auth/cloudkms', 'https://www.googleapis.com/auth/cloudplatformprojects.readonly']),
+      googleApi.getAccessToken([
+        'https://www.googleapis.com/auth/cloudkms',
+        'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
+      ]),
       gitHubApi.getAccessToken(['repo']),
     ]).then(([idToken, googleAccessToken, gitHubAccessToken]) => {
       fetch(uri, {
@@ -151,21 +162,77 @@ export const useAuthenticatedFetch = () => {
     );
 
   const fetchSopsConfig = (
-      onSuccess: (response: SopsConfigResultDTO) => void,
-      onError?: () => void,
+    onSuccess: (response: SopsConfigResultDTO) => void,
+    onError?: (error: SopsConfigResultDTO) => void,
   ) =>
-      authenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
-          sopsUri,
-          'GET',
-          onSuccess,
-          () => {
-            if (onError) onError();
-            setResponse({
-              statusMessage: t('errorMessages.FailedToFetchRiScs'),
-              status: ProcessingStatus.ErrorWhenFetchingSopsConfig,
-            });
-          },
-      );
+    authenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
+      sopsUri,
+      'GET',
+      res => onSuccess(res),
+      error => {
+        if (onError) onError(error);
+      },
+    );
+
+  const putSopsConfig = (
+    sopsConfig: SopsConfigRequestBody,
+    onSuccess: (response: SopsConfigCreateResponse) => void,
+    onError?: (error: ProcessRiScResultDTO) => void,
+  ) =>
+    authenticatedFetch<SopsConfigCreateResponse, SopsConfigCreateResponse>(
+      sopsUri,
+      'PUT',
+      res => {
+        setResponse(res);
+        if (onSuccess) onSuccess(res);
+      },
+      error => {
+        setResponse(error);
+        if (onError) onError(error);
+      },
+      sopsConfigToDTOString(sopsConfig),
+    );
+
+  const postSopsConfig = (
+    sopsConfig: SopsConfigRequestBody,
+    branch: string,
+    onSuccess: (response: SopsConfigUpdateResponse) => void,
+    onError?: (error: ProcessRiScResultDTO) => void,
+  ) =>
+    authenticatedFetch<SopsConfigUpdateResponse, ProcessRiScResultDTO>(
+      `${sopsUri}?ref=${branch}`,
+      'POST',
+      res => {
+        setResponse(res);
+        if (onSuccess) onSuccess(res);
+      },
+      error => {
+        setResponse(error);
+        if (onError) onError(error);
+      },
+      sopsConfigToDTOString(sopsConfig),
+    );
+
+  const postOpenPullRequestForSopsConfig = (
+    branch: string,
+    onSuccess: (response: OpenPullRequestForSopsConfigResponseBody) => void,
+    onError?: (error: ProcessRiScResultDTO) => void,
+  ) =>
+    authenticatedFetch<
+      OpenPullRequestForSopsConfigResponseBody,
+      ProcessRiScResultDTO
+    >(
+      openPullRequestForSopsConfigUri(branch),
+      'POST',
+      res => {
+        setResponse(res);
+        if (onSuccess) onSuccess(res);
+      },
+      error => {
+        setResponse(error);
+        if (onError) onError(error);
+      },
+    );
 
   const publishRiScs = (
     riScId: string,
@@ -190,12 +257,13 @@ export const useAuthenticatedFetch = () => {
 
   const postRiScs = (
     riSc: RiSc,
-    onSuccess?: (response: ProcessRiScResultDTO) => void,
+    generateDefault: boolean,
+    onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
     identityApi.getProfileInfo().then(profile =>
-      authenticatedFetch<ProcessRiScResultDTO, ProcessRiScResultDTO>(
-        riScUri,
+      authenticatedFetch<CreateRiScResultDTO, ProcessRiScResultDTO>(
+        `${riScUri}?generateDefault=${generateDefault}`,
         'POST',
         res => {
           setResponse(res);
@@ -243,5 +311,8 @@ export const useAuthenticatedFetch = () => {
     response,
     setResponse,
     fetchDifference,
+    putSopsConfig,
+    postSopsConfig,
+    postOpenPullRequestForSopsConfig,
   };
 };

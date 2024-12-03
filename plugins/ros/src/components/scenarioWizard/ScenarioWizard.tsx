@@ -31,7 +31,7 @@ import { getAlertSeverity } from '../../utils/utilityfunctions';
 
 export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { isFetching, response, riScUpdateStatus } = useRiScs();
+  const { isFetching, response, updateStatus } = useRiScs();
   const [, setSearchParams] = useSearchParams();
 
   const { scenario, emptyFormScenario, closeScenarioForm, submitNewScenario } =
@@ -156,7 +156,7 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
           {stepComponents[step]}
 
           {response && (
-            <Alert severity={getAlertSeverity(riScUpdateStatus)}>
+            <Alert severity={getAlertSeverity(updateStatus)}>
               <Typography>{response.statusMessage}</Typography>
             </Alert>
           )}
@@ -175,7 +175,7 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
             <Button
               variant={isLastStep ? 'contained' : 'outlined'}
               onClick={onSubmit}
-              disabled={!isDirty || riScUpdateStatus.isLoading}
+              disabled={!isDirty || updateStatus.isLoading}
               sx={{ marginLeft: 'auto' }}
             >
               {t('dictionary.saveAndClose')}

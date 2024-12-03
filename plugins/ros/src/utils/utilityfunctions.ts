@@ -6,7 +6,9 @@ import {
   riskMatrix,
 } from './constants';
 import { formatISO } from 'date-fns';
-import { RiScUpdateStatus } from '../contexts/RiScContext';
+import { UpdateStatus } from '../contexts/RiScContext';
+import { pluginRiScTranslationRef } from './translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export function generateRandomId(): string {
   return [...Array(5)]
@@ -26,7 +28,7 @@ export function formatNOK(amount: number): string {
 }
 
 export function getAlertSeverity(
-  updateStatus: RiScUpdateStatus,
+  updateStatus: UpdateStatus,
 ): 'error' | 'info' | 'warning' {
   if (updateStatus.isSuccess) {
     return 'info';
@@ -194,4 +196,109 @@ export function gcpProjectIdToReadableString(gcpProjectId: string) {
   const parts = gcpProjectId.split('-');
   parts.pop();
   return parts.join('-');
+}
+
+export function isPublicAgeKeyValid(publicAgeKey: string) {
+  if (publicAgeKey.length != 62) {
+    return false;
+  }
+
+  if (!publicAgeKey.startsWith('age1')) {
+    return false;
+  }
+
+  const ageKeyRegex = /^age1[ac-hj-np-z02-9]{58}$/;
+  return ageKeyRegex.test(publicAgeKey);
+}
+
+export interface Duration {
+  months: number;
+  weeks: number;
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+export function getPullRequestSecondaryText(fromDate: Date, userName: string) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const now = new Date();
+
+  const years = now.getUTCFullYear() - fromDate.getUTCFullYear();
+  const months = now.getUTCMonth() - fromDate.getUTCMonth() + years * 12;
+
+  const normalizedFromDate = new Date(fromDate);
+  normalizedFromDate.setUTCMonth(now.getUTCMonth(), now.getUTCDate());
+
+  let days = Math.floor(
+    (now.getTime() - normalizedFromDate.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  // Adjust month differences if the current day is before the fromDate day.
+  if (days < 0) {
+    const dayAdjustmentDate = new Date(normalizedFromDate);
+    dayAdjustmentDate.setMonth(now.getMonth() - 1);
+    days = Math.floor(
+      (now.getTime() - dayAdjustmentDate.getTime()) / (1000 * 60 * 60 * 24),
+    );
+  }
+
+  // Weeks can be extracted from days
+  const weeks = Math.floor(days / 7);
+  days = days % 7;
+
+  // Remaining time
+  let remainder =
+    now.getTime() -
+    normalizedFromDate.getTime() -
+    (weeks * 7 + days) * 24 * 60 * 60 * 1000;
+  const hours = Math.floor(remainder / (1000 * 60 * 60));
+  remainder -= hours * 1000 * 60 * 60;
+  const minutes = Math.floor(remainder / (1000 * 60));
+  remainder -= minutes * 1000 * 60;
+  const seconds = Math.floor(remainder / 1000);
+
+  const text = t('sopsConfigDialog.secondaryPullRequestText');
+
+  if (months > 0) {
+    return `${text.replace(
+      '_n_',
+      `${months} ${
+        months > 1 ? t('dictionary.months') : t('dictionary.month')
+      }`,
+    )} ${userName}`;
+  }
+  if (weeks > 0) {
+    return `${text.replace(
+      '_n_',
+      `${weeks} ${weeks > 1 ? t('dictionary.weeks') : t('dictionary.week')}`,
+    )} ${userName}`;
+  }
+  if (days > 0) {
+    return `${text.replace(
+      '_n_',
+      `${days} ${days > 1 ? t('dictionary.days') : t('dictionary.day')}`,
+    )} ${userName}`;
+  }
+  if (hours > 0) {
+    return `${text.replace(
+      '_n_',
+      `${hours} ${hours > 1 ? t('dictionary.hours') : t('dictionary.hour')}`,
+    )} ${userName}`;
+  }
+  if (minutes > 0) {
+    return `${text.replace(
+      '_n_',
+      `${minutes} ${
+        minutes > 1 ? t('dictionary.minutes') : t('dictionary.minute')
+      }`,
+    )} ${userName}`;
+  }
+  return `${text.replace(
+    '_n_',
+    `${seconds} ${
+      seconds > 1 ? t('dictionary.seconds') : t('dictionary.second')
+    }`,
+  )} ${userName}`;
 }
