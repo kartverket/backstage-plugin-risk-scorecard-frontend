@@ -4,39 +4,37 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import FormLabel from '@mui/material/FormLabel';
-import {
-  gcpProjectIdToReadableString,
-  isPublicAgeKeyValid,
-} from '../../utils/utilityfunctions';
+import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
 import DialogContent from '@mui/material/DialogContent';
 import { dialogActions } from '../common/mixins';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
-import { Autocomplete, Divider } from '@mui/material';
+import { Divider } from '@mui/material';
 import AddCircle from '@mui/icons-material/AddCircle';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { SopsConfig } from '../../utils/types';
 import { PublicKeyList } from './PublicKeyList';
 import { useRiScs } from '../../contexts/RiScContext';
-import { SopsConfigRequestBody } from '../../utils/DTOs';
+import {GcpCryptoKeyObject, SopsConfigRequestBody} from '../../utils/DTOs';
 import Box from '@mui/material/Box';
 import { GitBranchMenu } from './GitBranchMenu';
 import { PullRequestComponent } from './PullRequestComponent';
 import { OpenPullRequestButton } from './OpenPullRequestButton';
 import { DialogContentText } from '@material-ui/core';
+import {GcpCryptoKeyMenu} from "./GcpCryptoKeyMenu";
 
 interface SopsConfigDialogProps {
   onClose: () => void;
   showDialog: boolean;
   sopsConfigs: SopsConfig[];
-  gcpProjectIds: string[];
+  gcpCryptoKeys: GcpCryptoKeyObject[];
   hasOpenedGitBranchMenuOnce: boolean;
   handleOpenGitBranchMenuFirst: () => void;
 }
 
 export interface SopsConfigDialogFormData {
-  gcpProjectId: string;
+  gcpCryptoKey: GcpCryptoKeyObject;
   publicAgeKeysToAdd: string[];
   publicAgeKeysToDelete: string[];
 }
@@ -45,7 +43,7 @@ export const SopsConfigDialog = ({
   onClose,
   showDialog,
   sopsConfigs,
-  gcpProjectIds,
+  gcpCryptoKeys,
   hasOpenedGitBranchMenuOnce,
   handleOpenGitBranchMenuFirst,
 }: SopsConfigDialogProps) => {
@@ -58,7 +56,7 @@ export const SopsConfigDialog = ({
     sopsConfigs.find(value => value.onDefaultBranch) || sopsConfigs[0]
       ? sopsConfigs[0]
       : {
-          gcpProjectId: '',
+          gcpCryptoKey: gcpCryptoKeys[0],
           publicAgeKeys: [],
           onDefaultBranch: false,
           pullRequest: null,
@@ -74,6 +72,9 @@ export const SopsConfigDialog = ({
       sopsConfigs.find(value => value.branch == branch) || sopsConfigs[0],
     );
   };
+
+  const [chosenGcpCryptoKey, setChosenGcpCryptoKey] = useState<GcpCryptoKeyObject>(chosenSopsConfig.gcpCryptoKey)
+  const handleChangeGcpCryptoKey = (gcpCryptoKey: GcpCryptoKeyObject) => setChosenGcpCryptoKey(gcpCryptoKey)
 
   const [publicKeysToAdd, setPublicKeysToAdd] = useState<string[]>([]);
   const publicKeysToAddRef = useRef(publicKeysToAdd);
@@ -92,7 +93,7 @@ export const SopsConfigDialog = ({
     publicKeysToAddRef.current = [];
     setPublicKeysToAdd(publicKeysToAddRef.current);
     setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
-    setValue('gcpProjectId', chosenSopsConfig.gcpProjectId);
+    setValue('gcpCryptoKey', chosenSopsConfig.gcpCryptoKey);
   }, [showDialog, chosenSopsConfig]);
 
   const handleClickAddKeyButton = () => {
@@ -152,13 +153,11 @@ export const SopsConfigDialog = ({
 
   const {
     handleSubmit,
-    control,
     setValue,
     watch,
-    formState: { errors },
   } = useForm<SopsConfigDialogFormData>({
     defaultValues: {
-      gcpProjectId: chosenSopsConfig.gcpProjectId,
+      gcpCryptoKey: chosenSopsConfig.gcpCryptoKey,
       publicAgeKeysToAdd: publicKeysToAdd,
       publicAgeKeysToDelete: publicKeysToBeDeleted,
     },
@@ -169,9 +168,9 @@ export const SopsConfigDialog = ({
   const sopsConfigDialogFormData = watch();
   useEffect(() => {
     setIsDirty(
-      sopsConfigDialogFormData.gcpProjectId === '' ||
-        (chosenSopsConfig.gcpProjectId ===
-          sopsConfigDialogFormData.gcpProjectId &&
+      sopsConfigDialogFormData.gcpCryptoKey === gcpCryptoKeys[0] ||
+        (chosenSopsConfig.gcpCryptoKey ===
+          sopsConfigDialogFormData.gcpCryptoKey &&
           sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0 &&
           sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0),
     );
@@ -186,7 +185,7 @@ export const SopsConfigDialog = ({
     ];
 
     const sopsConfigRequestBody: SopsConfigRequestBody = {
-      gcpProjectId: formData.gcpProjectId,
+      gcpCryptoKey: formData.gcpCryptoKey,
       publicAgeKeys: publicKeysToBeWritten,
     };
 
@@ -249,30 +248,7 @@ export const SopsConfigDialog = ({
         )}
         <FormLabel>{t('sopsConfigDialog.gcpProjectDescription')}</FormLabel>
 
-        <Controller
-          name={'gcpProjectId'}
-          control={control}
-          render={({ field }) => (
-            <Autocomplete
-              {...field}
-              options={gcpProjectIds}
-              getOptionLabel={(option: string) =>
-                gcpProjectIdToReadableString(option)
-              }
-              value={sopsConfigDialogFormData.gcpProjectId}
-              disableClearable={true}
-              sx={{ width: 300 }}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label={t('sopsConfigDialog.gcpProject')}
-                  error={!!errors.gcpProjectId}
-                />
-              )}
-              onChange={(_, value) => field.onChange(value)}
-            />
-          )}
-        />
+        <GcpCryptoKeyMenu chosenGcpCryptoKey={chosenGcpCryptoKey} onChange={handleChangeGcpCryptoKey} gcpCryptoKeys={gcpCryptoKeys}/>
 
         <Divider sx={{ marginTop: 1, marginBottom: 1 }} />
 

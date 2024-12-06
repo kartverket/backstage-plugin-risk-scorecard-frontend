@@ -8,7 +8,7 @@ import { GitPullRequestIcon } from '../common/GitPullRequestIcon';
 interface GitBranchMenuItemProps {
   value: string;
   text: string;
-  handleClick: (branch: string, isNewBranch: boolean) => void;
+  handleClick: (branch: string) => void;
   isPullRequest: boolean;
   setBold: boolean;
 }
@@ -21,7 +21,7 @@ export const GitBranchMenuItem = ({
   setBold,
 }: GitBranchMenuItemProps) => {
   return (
-    <MenuItem onClick={() => handleClick(value, false)} value={value}>
+    <MenuItem onClick={() => handleClick(value)} value={value}>
       <Box
         sx={{
           display: 'flex',

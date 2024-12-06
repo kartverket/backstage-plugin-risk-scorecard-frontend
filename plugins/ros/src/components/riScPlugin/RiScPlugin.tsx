@@ -64,7 +64,7 @@ export const RiScPlugin = () => {
     selectRiSc,
     isFetching,
     sopsConfigs,
-    gcpProjectIds,
+    gcpCryptoKeys,
     resetResponse,
     resetRiScStatus,
     response,
@@ -219,7 +219,7 @@ export const RiScPlugin = () => {
           onClose={closeSopsConfigDialog}
           showDialog={showSopsConfigDialog}
           sopsConfigs={sopsConfigs}
-          gcpProjectIds={gcpProjectIds}
+          gcpCryptoKeys={gcpCryptoKeys}
           hasOpenedGitBranchMenuOnce={
             hasOpenedSopsConfigDialogGitBranchMenuOnce
           }
