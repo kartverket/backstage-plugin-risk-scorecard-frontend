@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Badge from '@mui/material/Badge';
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
@@ -24,7 +24,7 @@ export const GitBranchMenu = ({
   hasOpenedOnce,
   handleOpenFirst,
 }: SelectSopsConfigComponentProps) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     handleOpenFirst();
