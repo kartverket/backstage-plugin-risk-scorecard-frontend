@@ -122,7 +122,8 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       res => {
         sopsConfigsRef.current = res.sopsConfigs;
         setSopsConfigs(sopsConfigsRef.current);
-        setGcpCryptoKeys(res.gcpCryptoKeys);
+        // Sorts the crypto keys on whether the user has encrypt/decrypt role on it
+        setGcpCryptoKeys(res.gcpCryptoKeys.sort((a, b) => (b.hasEncryptDecryptAccess === a.hasEncryptDecryptAccess) ? 0 : b.hasEncryptDecryptAccess ? 1 : -1));
         isFetchingSopsConfigRef.current = false;
         setIsFetchingSopsConfig(isFetchingSopsConfigRef.current);
         if (!isFetchingRiScsRef.current) {
@@ -520,7 +521,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           config.branch === branch
             ? {
                 ...config,
-                gcpProjectId: sopsConfigRequestBody.gcpProjectId,
+                gcpCryptoKey: sopsConfigRequestBody.gcpCryptoKey,
                 publicAgeKeys: sopsConfigRequestBody.publicAgeKeys,
               }
             : config,

@@ -157,7 +157,7 @@ export const SopsConfigDialog = ({
     watch,
   } = useForm<SopsConfigDialogFormData>({
     defaultValues: {
-      gcpCryptoKey: chosenSopsConfig.gcpCryptoKey,
+      gcpCryptoKey: chosenGcpCryptoKey,
       publicAgeKeysToAdd: publicKeysToAdd,
       publicAgeKeysToDelete: publicKeysToBeDeleted,
     },
@@ -168,15 +168,17 @@ export const SopsConfigDialog = ({
   const sopsConfigDialogFormData = watch();
   useEffect(() => {
     setIsDirty(
-      sopsConfigDialogFormData.gcpCryptoKey === gcpCryptoKeys[0] ||
-        (chosenSopsConfig.gcpCryptoKey ===
-          sopsConfigDialogFormData.gcpCryptoKey &&
-          sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0 &&
-          sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0),
+        //TODO: Finn ut av en fornuftig ting å vise i crypto key meny når det ikke eksisterer en SOPS config
+
+        chosenSopsConfig.gcpCryptoKey.projectId === chosenGcpCryptoKey.projectId
+        && chosenSopsConfig.gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing
+        && chosenSopsConfig.gcpCryptoKey.name === chosenGcpCryptoKey.name
+        && sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0
+        && sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0
     );
   }, [sopsConfigDialogFormData]);
 
-  const onSubmit = handleSubmit((formData: SopsConfigDialogFormData) => {
+  const onSubmit = handleSubmit((_formData: SopsConfigDialogFormData) => {
     const publicKeysToBeWritten = [
       ...publicKeysToAdd,
       ...chosenSopsConfig.publicAgeKeys.filter(
@@ -185,7 +187,7 @@ export const SopsConfigDialog = ({
     ];
 
     const sopsConfigRequestBody: SopsConfigRequestBody = {
-      gcpCryptoKey: formData.gcpCryptoKey,
+      gcpCryptoKey: chosenGcpCryptoKey,
       publicAgeKeys: publicKeysToBeWritten,
     };
 

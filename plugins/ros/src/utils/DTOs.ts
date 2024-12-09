@@ -66,6 +66,7 @@ export type GcpCryptoKeyObject = {
   projectId: string;
   keyRing: string;
   name: string;
+  hasEncryptDecryptAccess: boolean;
 };
 
 export type PullRequestObject = {

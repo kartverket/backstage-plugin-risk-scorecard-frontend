@@ -98,6 +98,7 @@ export const useAuthenticatedFetch = () => {
       identityApi.getCredentials(),
       googleApi.getAccessToken([
         'https://www.googleapis.com/auth/cloudkms',
+        'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
       ]),
       gitHubApi.getAccessToken(['repo']),
