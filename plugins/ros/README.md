@@ -1,6 +1,6 @@
 # Risk Scorecard (RiSc)
 
-This is a plugin for Backstage that helps you and your team when working continuously with risk analysis (:))
+This is a plugin for Backstage that helps you and your team when working continuously with risk analysis (:)
 The plugin is dependent on a backend service in order to decrypt and communicate with GitHub, and some configuration is
 necessary for them to communicate.
 
@@ -11,7 +11,8 @@ proxy:
   endpoints:
     '/risc-proxy':
       target: http://localhost:8080
-      allowedHeaders: ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
+      allowedHeaders:
+        ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
 ```
 
 The backend uses Backstage-issued tokens to validate the user, and GCP access tokens to federate access to the GCP KMS.
