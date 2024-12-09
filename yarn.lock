@@ -8310,7 +8310,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kartverket/backstage-plugin-risk-scorecard@npm:2.0.3, @kartverket/backstage-plugin-risk-scorecard@workspace:plugins/ros":
+"@kartverket/backstage-plugin-risk-scorecard@npm:2.0.3":
+  version: 2.0.3
+  resolution: "@kartverket/backstage-plugin-risk-scorecard@npm:2.0.3"
+  dependencies:
+    "@backstage/core-components": "npm:^0.15.0"
+    "@backstage/core-plugin-api": "npm:^1.9.4"
+    "@backstage/plugin-catalog-react": "npm:^1.13.1"
+    "@backstage/theme": "npm:^0.5.7"
+    "@emotion/cache": "npm:^11.11.0"
+    "@emotion/react": "npm:^11.11.3"
+    "@emotion/styled": "npm:^11.11.0"
+    "@material-ui/core": "npm:^4.12.2"
+    "@material-ui/icons": "npm:^4.9.1"
+    "@material-ui/lab": "npm:4.0.0-alpha.61"
+    "@mui/icons-material": "npm:^5.15.8"
+    "@mui/material": "npm:^5.15.7"
+    "@mui/x-date-pickers": "npm:^6.19.8"
+    date-fns: "npm:^3.3.1"
+    react-dnd: "npm:^16.0.1"
+    react-dnd-html5-backend: "npm:^16.0.1"
+    react-hook-form: "npm:^7.52.1"
+    react-use: "npm:^17.2.4"
+  peerDependencies:
+    react: ^17.0.0
+    react-router: ^6.3.0
+    react-router-dom: ^6.3.0
+  checksum: 10c0/f26203630fbf32c85ab1d4439b562b7ed2b33f62c5b19ddf14a133849eba4a4f1b10e9eb04c9bf9f0a2356327b4dc9478c451f2c8a99f340c83dc3dbe33411ac
+  languageName: node
+  linkType: hard
+
+"@kartverket/backstage-plugin-risk-scorecard@workspace:plugins/ros":
   version: 0.0.0-use.local
   resolution: "@kartverket/backstage-plugin-risk-scorecard@workspace:plugins/ros"
   dependencies:
