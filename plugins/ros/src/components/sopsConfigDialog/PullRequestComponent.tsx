@@ -1,6 +1,8 @@
 import { PullRequestObject } from '../../utils/DTOs';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
-import { Avatar, ListItemButton, Tooltip } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import ListItemButton from '@mui/material/ListItemButton';
+import Tooltip from '@mui/material/Tooltip';
 import { GitHubIcon } from '@backstage/core-components';
 import ListItemText from '@mui/material/ListItemText';
 import { getPullRequestSecondaryText } from '../../utils/utilityfunctions';
@@ -35,6 +37,7 @@ export const PullRequestComponent = ({
           secondary={getPullRequestSecondaryText(
             new Date(pullRequest.createdAt),
             pullRequest.openedBy,
+            t,
           )}
         />
       </ListItemButton>

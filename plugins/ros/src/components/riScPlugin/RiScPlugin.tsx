@@ -99,7 +99,7 @@ export const RiScPlugin = () => {
       setShowSopsConfigButton(false);
       setDisableSopsConfigButton(true);
     }
-  }, [isFetching, updateStatus]);
+  }, [isFetching, updateStatus, failedToFetchSopsConfig, riScs, sopsConfigs]);
 
   return (
     <>

@@ -1,5 +1,7 @@
 import React from 'react';
-import { Badge, Menu, Tooltip } from '@mui/material';
+import Badge from '@mui/material/Badge';
+import Menu from '@mui/material/Menu';
+import Tooltip from '@mui/material/Tooltip';
 import { SopsConfig } from '../../utils/types';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -39,7 +41,7 @@ export const GitBranchMenu = ({
 
   return (
     <Badge
-      color={'error'}
+      color="error"
       badgeContent={pullRequestCount}
       invisible={hasOpenedOnce}
     >
@@ -60,7 +62,7 @@ export const GitBranchMenu = ({
         anchorEl={anchorEl}
         open={open}
         onClose={() => setAnchorEl(null)}
-        variant={'selectedMenu'}
+        variant="selectedMenu"
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >

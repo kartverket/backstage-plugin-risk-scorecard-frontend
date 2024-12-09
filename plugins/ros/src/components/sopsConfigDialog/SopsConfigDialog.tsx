@@ -13,7 +13,8 @@ import { dialogActions } from '../common/mixins';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
-import { Autocomplete, Divider } from '@mui/material';
+import Divider from '@mui/material/Divider';
+import Autocomplete from '@mui/material/Autocomplete';
 import AddCircle from '@mui/icons-material/AddCircle';
 import { Controller, useForm } from 'react-hook-form';
 import { SopsConfig } from '../../utils/types';
@@ -71,7 +72,7 @@ export const SopsConfigDialog = ({
       return;
     }
     setChosenSopsConfig(
-      sopsConfigs.find(value => value.branch == branch) || sopsConfigs[0],
+      sopsConfigs.find(value => value.branch === branch) || sopsConfigs[0],
     );
   };
 
@@ -88,12 +89,26 @@ export const SopsConfigDialog = ({
   const [currentPublicKey, setCurrentPublicKey] = useState('');
   const [publicKeyTextFieldError, setPublicKeyTextFieldError] = useState(false);
 
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<SopsConfigDialogFormData>({
+    defaultValues: {
+      gcpProjectId: chosenSopsConfig.gcpProjectId,
+      publicAgeKeysToAdd: publicKeysToAdd,
+      publicAgeKeysToDelete: publicKeysToBeDeleted,
+    },
+  });
+
   useEffect(() => {
     publicKeysToAddRef.current = [];
     setPublicKeysToAdd(publicKeysToAddRef.current);
     setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
     setValue('gcpProjectId', chosenSopsConfig.gcpProjectId);
-  }, [showDialog, chosenSopsConfig]);
+  }, [showDialog, chosenSopsConfig, setValue]);
 
   const handleClickAddKeyButton = () => {
     if (chosenSopsConfig.publicAgeKeys.includes(currentPublicKey)) {
@@ -150,20 +165,6 @@ export const SopsConfigDialog = ({
     onClose();
   };
 
-  const {
-    handleSubmit,
-    control,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<SopsConfigDialogFormData>({
-    defaultValues: {
-      gcpProjectId: chosenSopsConfig.gcpProjectId,
-      publicAgeKeysToAdd: publicKeysToAdd,
-      publicAgeKeysToDelete: publicKeysToBeDeleted,
-    },
-  });
-
   // Check if the SopsConfig we retrieved is exactly the same as the sops config to be written
   const [isDirty, setIsDirty] = useState(true);
   const sopsConfigDialogFormData = watch();
@@ -175,7 +176,7 @@ export const SopsConfigDialog = ({
           sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0 &&
           sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0),
     );
-  }, [sopsConfigDialogFormData]);
+  }, [sopsConfigDialogFormData, chosenSopsConfig]);
 
   const onSubmit = handleSubmit((formData: SopsConfigDialogFormData) => {
     const publicKeysToBeWritten = [
@@ -199,7 +200,7 @@ export const SopsConfigDialog = ({
   });
 
   return (
-    <Dialog open={showDialog} onClose={onClose} maxWidth={'md'}>
+    <Dialog open={showDialog} onClose={onClose} maxWidth="md">
       <Box
         sx={{
           display: 'flex',
@@ -250,7 +251,7 @@ export const SopsConfigDialog = ({
         <FormLabel>{t('sopsConfigDialog.gcpProjectDescription')}</FormLabel>
 
         <Controller
-          name={'gcpProjectId'}
+          name="gcpProjectId"
           control={control}
           render={({ field }) => (
             <Autocomplete
