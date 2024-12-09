@@ -23,7 +23,7 @@ export const PullRequestComponent = ({
     <Tooltip title={t('sopsConfigDialog.gotoPullRequest')}>
       <ListItemButton
         onClick={() => {
-          window.location.href = pullRequest.url;
+          window.open(pullRequest.url, '_blank')?.focus();
         }}
         dense={true}
       >
