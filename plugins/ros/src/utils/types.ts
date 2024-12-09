@@ -1,3 +1,5 @@
+import { PullRequestObject } from './DTOs';
+
 /**
  * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.
  * @template {object} O Which object type to use as basis
@@ -25,6 +27,14 @@ export type MigrationStatus = {
 export type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
+};
+
+export type SopsConfig = {
+  gcpProjectId: string;
+  publicAgeKeys: string[];
+  branch: string;
+  onDefaultBranch: boolean;
+  pullRequest: PullRequestObject | null;
 };
 
 export type RiSc = {
@@ -89,16 +99,25 @@ export enum ProcessingStatus {
   EncryptionFailed = 'EncryptionFailed',
   CouldNotCreateBranch = 'CouldNotCreateBranch',
   UpdatedRiSc = 'UpdatedRiSc',
+  UpdatedSops = 'UpdatedSops',
   UpdatedRiScRequiresNewApproval = 'UpdatedRiScRequiresNewApproval',
   UpdatedRiScAndCreatedPullRequest = 'UpdatedRiScAndCreatedPullRequest',
   CreatedRiSc = 'CreatedRiSc',
+  OpenedPullRequest = 'OpenedPullRequest',
   CreatedPullRequest = 'CreatedPullRequest',
+  CreatedSops = 'Created SOPS configuration successfully',
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
   ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
   ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
   ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
+  ErrorWhenFetchingSopsConfig = 'ErrorWhenFetchingSopsConfig',
+  NoGcpKeyInSopsConfigFound = 'No GCP KMS resource ID was found in sops config',
+  FailedToFetchGcpProjectIds = 'Failed to fetch GCP project IDs',
+  NoSopsConfigFound = 'No SOPS configuration found on default branch',
+  FailedToCreateSops = 'Failed to create SOPS configuration',
+  FailedToUpdateSops = 'Failed to create SOPS configuration',
 }
 
 export enum ContentStatus {
