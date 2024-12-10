@@ -165,3 +165,9 @@ export type DifferenceFetchState = Modify<
   'status',
   DifferenceDTO['status'] | null
 > & { isLoading: boolean; currentDifferenceId: string };
+
+export interface SopsConfigDialogFormData {
+  gcpProjectId: string;
+  publicAgeKeysToAdd: string[];
+  publicAgeKeysToDelete: string[];
+}
