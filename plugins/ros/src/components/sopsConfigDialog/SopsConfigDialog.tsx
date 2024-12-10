@@ -1,13 +1,9 @@
 import Dialog from '@mui/material/Dialog';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import FormLabel from '@mui/material/FormLabel';
-import {
-  gcpProjectIdToReadableString,
-  isPublicAgeKeyValid,
-} from '../../utils/utilityfunctions';
+import { gcpProjectIdToReadableString } from '../../utils/utilityfunctions';
 import DialogContent from '@mui/material/DialogContent';
 import { dialogActions } from '../common/mixins';
 import Button from '@mui/material/Button';
@@ -20,23 +16,16 @@ import {
   StepLabel,
   Stepper,
 } from '@mui/material';
-import AddCircle from '@mui/icons-material/AddCircle';
 import { Controller, useForm } from 'react-hook-form';
-import { SopsConfig } from '../../utils/types';
-import { PublicKeyList } from './PublicKeyList';
+import { SopsConfig, SopsConfigDialogFormData } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import { SopsConfigRequestBody } from '../../utils/DTOs';
 import Box from '@mui/material/Box';
 import { GitBranchMenu } from './GitBranchMenu';
 import { PullRequestComponent } from './PullRequestComponent';
 import { OpenPullRequestButton } from './OpenPullRequestButton';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  DialogContentText,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { DialogContentText } from '@material-ui/core';
+import { AgeKeysComponent } from './AgeKeysComponent';
 
 interface SopsConfigDialogProps {
   onClose: () => void;
@@ -45,12 +34,6 @@ interface SopsConfigDialogProps {
   gcpProjectIds: string[];
   hasOpenedGitBranchMenuOnce: boolean;
   handleOpenGitBranchMenuFirst: () => void;
-}
-
-export interface SopsConfigDialogFormData {
-  gcpProjectId: string;
-  publicAgeKeysToAdd: string[];
-  publicAgeKeysToDelete: string[];
 }
 
 export const SopsConfigDialog = ({
@@ -65,6 +48,11 @@ export const SopsConfigDialog = ({
 
   const { createSopsConfig, updateSopsConfig, openPullRequestForSopsConfig } =
     useRiScs();
+
+  const [publicKeysToAdd, setPublicKeysToAdd] = useState<string[]>([]);
+  const [publicKeysToBeDeleted, setPublicKeysToBeDeleted] = useState<string[]>(
+    [],
+  );
 
   const [chosenSopsConfig, setChosenSopsConfig] = useState<SopsConfig>(
     sopsConfigs.find(value => value.onDefaultBranch) || sopsConfigs[0]
@@ -85,76 +73,6 @@ export const SopsConfigDialog = ({
     setChosenSopsConfig(
       sopsConfigs.find(value => value.branch === branch) || sopsConfigs[0],
     );
-  };
-
-  const [publicKeysToAdd, setPublicKeysToAdd] = useState<string[]>([]);
-  const publicKeysToAddRef = useRef(publicKeysToAdd);
-  const [publicKeysToBeDeleted, setPublicKeysToBeDeleted] = useState<string[]>(
-    [],
-  );
-  const publicKeysToBeDeletedRef = useRef(publicKeysToBeDeleted);
-
-  const [publicKeyTextFieldHelperText, setPublicKeyTextFieldHelperText] =
-    useState('');
-
-  const [currentPublicKey, setCurrentPublicKey] = useState('');
-  const [publicKeyTextFieldError, setPublicKeyTextFieldError] = useState(false);
-
-  useEffect(() => {
-    publicKeysToAddRef.current = [];
-    setPublicKeysToAdd(publicKeysToAddRef.current);
-    setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
-    setValue('gcpProjectId', chosenSopsConfig.gcpProjectId);
-  }, [showDialog, chosenSopsConfig]);
-
-  const handleClickAddKeyButton = () => {
-    if (chosenSopsConfig.publicAgeKeys.includes(currentPublicKey)) {
-      setPublicKeyTextFieldHelperText(
-        t('sopsConfigDialog.publicKeyHelperTextKeyAlreadyExistInSopsConfig'),
-      );
-      setPublicKeyTextFieldError(true);
-      return;
-    }
-    if (publicKeysToAdd.includes(currentPublicKey)) {
-      setPublicKeyTextFieldHelperText(
-        t('sopsConfigDialog.publicKeyHelperTextKeyAlreadyExists'),
-      );
-      setPublicKeyTextFieldError(true);
-      return;
-    }
-    if (!isPublicAgeKeyValid(currentPublicKey)) {
-      setPublicKeyTextFieldHelperText(
-        t('sopsConfigDialog.publicKeyHelperTextKeyNotValid'),
-      );
-      setPublicKeyTextFieldError(true);
-      return;
-    }
-    publicKeysToAddRef.current = [...publicKeysToAdd, currentPublicKey];
-    setPublicKeysToAdd(publicKeysToAddRef.current);
-    setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
-    setCurrentPublicKey('');
-  };
-
-  const handleDeletePublicKeyListItem = (key: string) => {
-    publicKeysToAddRef.current = publicKeysToAdd.filter(
-      element => element !== key,
-    );
-    setPublicKeysToAdd(publicKeysToAddRef.current);
-    setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
-  };
-
-  const handleDeletePublicKeyAlreadyPresent = (key: string) => {
-    if (publicKeysToBeDeleted.includes(key)) {
-      publicKeysToBeDeletedRef.current = publicKeysToBeDeleted.filter(
-        k => k !== key,
-      );
-      setPublicKeysToBeDeleted(publicKeysToBeDeletedRef.current);
-      setValue('publicAgeKeysToDelete', publicKeysToBeDeletedRef.current);
-    } else {
-      publicKeysToBeDeletedRef.current = [...publicKeysToBeDeleted, key];
-      setPublicKeysToBeDeleted(publicKeysToBeDeletedRef.current);
-      setValue('publicAgeKeysToDelete', publicKeysToBeDeletedRef.current);
-    }
   };
 
   const handleClickOpenPullRequestButton = () => {
@@ -248,21 +166,15 @@ export const SopsConfigDialog = ({
 
         <Stepper activeStep={activeStep} orientation="vertical">
           <Step key="step1">
-            <StepLabel>{t('sopsConfigDialog.gcpProjectTitle')}</StepLabel>
+            <StepLabel
+              onClick={() => setActiveStep(0)}
+              sx={{ cursor: 'pointer' }}
+            >
+              {t('sopsConfigDialog.gcpProjectTitle')}
+            </StepLabel>
             <StepContent>
               {t('sopsConfigDialog.gcpProjectDescription')}
-              <Accordion elevation={0}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1-content"
-                  id="panel1-header"
-                >
-                  {t('sopsConfigDialog.gcpKeyRoleQuestion')}
-                </AccordionSummary>
-                <AccordionDetails>
-                  {t('sopsConfigDialog.gcpKeyRoleAnswer')}
-                </AccordionDetails>
-              </Accordion>
+
               <Controller
                 name="gcpProjectId"
                 control={control}
@@ -275,7 +187,7 @@ export const SopsConfigDialog = ({
                     }
                     value={sopsConfigDialogFormData.gcpProjectId}
                     disableClearable
-                    sx={{ width: 300 }}
+                    sx={{ width: 300, mt: 2 }}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -287,69 +199,15 @@ export const SopsConfigDialog = ({
                   />
                 )}
               />
-              <Box>
-                <Accordion elevation={0}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1-content"
-                    id="panel1-header"
-                  >
-                    {t('sopsConfigDialog.publicAgeKeyQuestion')}
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Box>
-                      {chosenSopsConfig.publicAgeKeys.length !== 0 && (
-                        <FormLabel>
-                          {t('sopsConfigDialog.publicAgeKeysAlreadyPresent')}
-                        </FormLabel>
-                      )}
-                      <PublicKeyList
-                        publicKeys={chosenSopsConfig.publicAgeKeys}
-                        onClickButton={handleDeletePublicKeyAlreadyPresent}
-                        deletedKeys={publicKeysToBeDeleted}
-                      />
 
-                      {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
-                        'dictionary.optional',
-                      )})`}
-
-                      <PublicKeyList
-                        publicKeys={publicKeysToAdd}
-                        onClickButton={handleDeletePublicKeyListItem}
-                        deletedKeys={publicKeysToBeDeleted}
-                      />
-                      <TextField
-                        label={t('sopsConfigDialog.publicAgeKey')}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter') {
-                            handleClickAddKeyButton();
-                          }
-                        }}
-                        sx={{ minWidth: 800 }}
-                        error={publicKeyTextFieldError}
-                        onFocus={() => {
-                          setPublicKeyTextFieldError(false);
-                          setPublicKeyTextFieldHelperText('');
-                        }}
-                        value={currentPublicKey}
-                        helperText={publicKeyTextFieldHelperText}
-                        onChange={e => setCurrentPublicKey(e.target.value)}
-                      />
-                      <Button
-                        startIcon={<AddCircle />}
-                        variant="text"
-                        color="primary"
-                        onClick={handleClickAddKeyButton}
-                        sx={{
-                          maxWidth: 200,
-                        }}
-                      >
-                        {t('sopsConfigDialog.addPublicAgeKey')}
-                      </Button>
-                    </Box>
-                  </AccordionDetails>
-                </Accordion>
-              </Box>
+              <AgeKeysComponent
+                chosenSopsConfig={chosenSopsConfig}
+                publicKeysToAdd={publicKeysToAdd}
+                setPublicKeysToAdd={setPublicKeysToAdd}
+                publicKeysToBeDeleted={publicKeysToBeDeleted}
+                setPublicKeysToBeDeleted={setPublicKeysToBeDeleted}
+                setValue={setValue}
+              />
 
               <Button
                 variant="contained"
@@ -402,13 +260,6 @@ export const SopsConfigDialog = ({
       </DialogContent>
 
       <DialogActions sx={dialogActions}>
-        {/* <Button
-          variant="contained"
-          onClick={() => resetEncryption}
-          // må evt ha en disabled når ingen endringer er gjort
-        >
-          {t('sopsConfigDialog.startOver')}
-        </Button> */}
         <Button variant="outlined" onClick={onClose}>
           {t('dictionary.cancel')}
         </Button>
