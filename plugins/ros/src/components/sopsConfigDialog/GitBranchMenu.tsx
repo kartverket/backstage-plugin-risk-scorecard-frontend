@@ -75,8 +75,9 @@ export const GitBranchMenu = ({
         >
           Branches
         </Typography>
-        {sopsConfigs.map(config => (
+        {sopsConfigs.map((config, index) => (
           <GitBranchMenuItem
+            key={index}
             value={config.branch}
             text={config.branch}
             handleClick={handleClickMenuItem}
@@ -102,9 +103,10 @@ export const GitBranchMenu = ({
                 Pull requests
               </Typography>
             </Box>
-            {sopsConfigs.map(config =>
+            {sopsConfigs.map((config, index) =>
               config.pullRequest ? (
                 <GitBranchMenuItem
+                  key={index}
                   value={config.branch}
                   text={config.pullRequest.title}
                   handleClick={handleClickMenuItem}
