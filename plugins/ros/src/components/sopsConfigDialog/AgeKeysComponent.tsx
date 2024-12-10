@@ -143,6 +143,7 @@ export const AgeKeysComponent = ({
                   handleClickAddKeyButton();
                 }
               }}
+              sx={{ minWidth: 700 }}
               error={publicKeyTextFieldError}
               onFocus={() => {
                 setPublicKeyTextFieldError(false);
@@ -160,6 +161,7 @@ export const AgeKeysComponent = ({
               onClick={handleClickAddKeyButton}
               sx={{
                 maxWidth: 200,
+                mt: 1,
               }}
             >
               {t('sopsConfigDialog.addPublicAgeKey')}

@@ -190,7 +190,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       publicAgeKeyQuestion:
         'Does anyone need to write Risk Scorecards locally using their editor?',
       publicAgeKeyDescription:
-        'Provide public age keys below for individuals who are allowed local editing and encryption.',
+        'Provide public age keys below for individuals who are allowed local editing and encryption',
       addPublicAgeKey: 'Add public age key',
       publicAgeKey: 'Public age key',
       update: 'Update',
@@ -585,7 +585,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.publicAgeKeyQuestion':
             'Trenger noen å skrive RoS lokalt i sin editor?',
           'sopsConfigDialog.publicAgeKeyDescription':
-            'Legg ved offentlige age-nøkler til personer som ønsker å skrive kodenær RoS lokalt.',
+            'Legg ved offentlige age-nøkler til personer som ønsker å skrive kodenær RoS lokalt',
           'sopsConfigDialog.addPublicAgeKey': 'Legg til nøkkel',
           'sopsConfigDialog.publicAgeKey': 'Offentlig age-nøkkel',
           'sopsConfigDialog.update': 'Oppdater',
