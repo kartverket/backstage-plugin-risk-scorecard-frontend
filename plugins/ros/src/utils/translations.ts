@@ -178,19 +178,36 @@ export const pluginRiScTranslationRef = createTranslationRef({
       generateDefault: 'Default',
     },
     sopsConfigDialog: {
-      title: 'SOPS configuration',
+      title: 'Encryption',
       description:
-        'In order to use RiSc scorecard, you first have to enable an encryption scheme by setting up a SOPS configuration on the default branch of your repository.',
+        'To use the Risk Scorecard, you need to enable an encryption scheme (SOPS configuration) by selecting a Google Cloud Platform (GCP) project for encrypting and decrypting. Follow the steps below to complete the setup:',
+      gcpProjectTitle: 'Select GCP project',
       gcpProjectDescription:
-        "Which GCP project do you want to encrypt and decrypt your RiSc's with? It is important that you choose a GCP project where you have the Cloud KMS CryptoKey Encrypter/Decrypter role.",
+        'From the list below, select the GCP project you want to use for encrypting and decrypting Risk Scorecards. Ensure you have the CryptoKey Access Role (Cloud KMS CryptoKey Encrypter/Decrypter Role) assigned for this project.',
+      gcpKeyRoleQuestion:
+        'How do I check if I have a cryptokey role for the GCP project?',
+      gcpKeyRoleAnswer:
+        'Navigate to the GCP Console, go to IAM & Admin, and check the permissions for your user or service account in the selected project. Look for the role roles/cloudkms.cryptoKeyEncrypterDecrypter.',
       gcpProject: 'GCP project',
       publicAgeKeysAlreadyPresent:
         'The following age keys are already present:',
+      publicAgeKeyQuestion:
+        'Does anyone need to write Risk Scorecards locally using their editor?',
       publicAgeKeyDescription:
-        "Provide public age keys for individuals who wish to write RiSc's locally.",
+        'Provide public age keys below for individuals who are allowed local editing and encryption.',
       addPublicAgeKey: 'Add public age key',
       publicAgeKey: 'Public age key',
       update: 'Update',
+      startOver: 'Start over/reset',
+      createPRTitle: 'Create a Pull Request with the new encryption scheme',
+      createPRContent:
+        'Your encryption configuration is now ready and has been created in a new branch. Below you can create a PR with these changes. Alternatively, you can move the changes to a different branch by clicking the "Branch" button and selecting another active branch.',
+      PRTitle: 'Review and merge the Pull Request',
+      PRContent:
+        'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk Scorecards.',
+      // setupCompletedTitle: 'Encryption setup complete!',
+      // setupCompletedContent:
+      //   'Your Risk Scorecard encryption scheme is now configured. You’re all set to start creating and managing Risk Scorecards.',
       required: 'This field is required',
       publicKeyHelperTextKeyAlreadyExists: 'Public key already added',
       publicKeyHelperTextKeyAlreadyExistInSopsConfig:
@@ -206,7 +223,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         "When updating SOPS configuration, you will not be able to decrypt old RiSc's encrypted with the previous SOPS configuration. We therefore encourage you to re-encrypt the existing RiSc's on the default branch of your GitHub-repository for you to be able to use them with your updated SOPS configuration.",
       reEncryptConsentDescription:
         "Do you want to re-encrypt the RiSc's on the default branch of ",
-      openPR: 'Open pull request',
+      openPR: 'Create pull request',
       gotoPullRequest: 'Go to pull request',
     },
     scenarioStepper: {
@@ -564,19 +581,30 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.fromScratch': 'Tom',
           'rosDialog.generateDefault': 'Initiell',
 
-          'sopsConfigDialog.title': 'SOPS-konfigurasjon',
+          'sopsConfigDialog.title': 'Kryptering',
           'sopsConfigDialog.description':
             'For å bruke kodenær RoS, må du først sette opp et krypteringsskjema ved å sette opp en SOPS-konfigurasjon på hoved-branchen til ditt GitHub-repo.',
+          'sopsConfigDialog.gcpProjectTitle': 'norsk x',
           'sopsConfigDialog.gcpProjectDescription':
             "Hvilket GCP-prosjekt vil du bruke for å kryptere og dekryptere RoS'ene dine med? Det er viktig at du velger et GCP-prosjekt hvor du har rollen Cloud KMS CryptoKey Encrypter/Decrypter role.",
+          'sopsConfigDialog.gcpKeyRoleQuestion': 'norsk x',
+          'sopsConfigDialog.gcpKeyRoleAnswer': 'norsk x',
           'sopsConfigDialog.gcpProject': 'GCP-prosjekt',
           'sopsConfigDialog.publicAgeKeysAlreadyPresent':
             'Følgende age-nøkler er allerede til stede:',
+          'sopsConfigDialog.publicAgeKeyQuestion': 'norsk x',
           'sopsConfigDialog.publicAgeKeyDescription':
             'Legg ved offentlige age-nøkler til personer som ønsker å skrive kodenær RoS lokalt.',
           'sopsConfigDialog.addPublicAgeKey': 'Legg til nøkkel',
           'sopsConfigDialog.publicAgeKey': 'Offentlig age-nøkkel',
+          'sopsConfigDialog.startOver': 'Start på nytt',
           'sopsConfigDialog.update': 'Oppdater',
+          'sopsConfigDialog.createPRTitle': 'norsk x',
+          'sopsConfigDialog.createPRContent': 'norsk x',
+          'sopsConfigDialog.PRTitle': 'norsk x',
+          'sopsConfigDialog.PRContent': 'norsk x',
+          // 'sopsConfigDialog.setupCompletedTitle': 'norsk x',
+          // 'sopsConfigDialog.setupCompletedContent': 'norsk x',
           'sopsConfigDialog.required': 'Dette feltet er påkrevd',
           'sopsConfigDialog.publicKeyHelperTextKeyAlreadyExists':
             'Offentlig møkkel allerede lagt til',
