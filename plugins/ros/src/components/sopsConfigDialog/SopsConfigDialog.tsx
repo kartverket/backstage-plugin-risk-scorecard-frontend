@@ -246,13 +246,35 @@ export const SopsConfigDialog = ({
           </Step>
 
           <Step key="step3">
-            <StepLabel>{t('sopsConfigDialog.PRTitle')}</StepLabel>
+            <StepLabel
+              onClick={
+                chosenSopsConfig.pullRequest
+                  ? () => setActiveStep(2)
+                  : undefined
+              }
+              sx={{ cursor: 'pointer' }}
+            >
+              {t('sopsConfigDialog.PRTitle')}
+            </StepLabel>
             <StepContent>
               {t('sopsConfigDialog.PRContent')}
               {chosenSopsConfig.pullRequest && (
-                <PullRequestComponent
-                  pullRequest={chosenSopsConfig.pullRequest}
-                />
+                <Box m={1} display="flex" alignItems="center">
+                  <Box flex={1}>
+                    <PullRequestComponent
+                      pullRequest={chosenSopsConfig.pullRequest}
+                    />
+                  </Box>
+                  <Box flex={1}>
+                    <GitBranchMenu
+                      chosenBranch={chosenSopsConfig.branch}
+                      onChange={handleChangeSopsBranch}
+                      sopsConfigs={sopsConfigs}
+                      hasOpenedOnce={hasOpenedGitBranchMenuOnce}
+                      handleOpenFirst={handleOpenGitBranchMenuFirst}
+                    />
+                  </Box>
+                </Box>
               )}
             </StepContent>
           </Step>
