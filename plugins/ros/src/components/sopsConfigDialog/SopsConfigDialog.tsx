@@ -16,7 +16,7 @@ import { useForm } from 'react-hook-form';
 import { SopsConfig } from '../../utils/types';
 import { PublicKeyList } from './PublicKeyList';
 import { useRiScs } from '../../contexts/RiScContext';
-import { SopsConfigRequestBody } from '../../utils/DTOs';
+import {GcpCryptoKeyObject, SopsConfigRequestBody} from '../../utils/DTOs';
 import Box from '@mui/material/Box';
 import { GitBranchMenu } from './GitBranchMenu';
 import { PullRequestComponent } from './PullRequestComponent';
@@ -69,7 +69,7 @@ export const SopsConfigDialog = ({
       return;
     }
     setChosenSopsConfig(
-      sopsConfigs.find(value => value.branch == branch) || sopsConfigs[0],
+      sopsConfigs.find(value => value.branch === branch) || sopsConfigs[0],
     );
   };
   
@@ -167,7 +167,6 @@ export const SopsConfigDialog = ({
   const sopsConfigDialogFormData = watch();
   useEffect(() => {
     setIsDirty(
-        //TODO: Finn ut av en fornuftig ting å vise i crypto key meny når det ikke eksisterer en SOPS config
         chosenSopsConfig.gcpCryptoKey.projectId === chosenGcpCryptoKey.projectId
         && chosenSopsConfig.gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing
         && chosenSopsConfig.gcpCryptoKey.name === chosenGcpCryptoKey.name

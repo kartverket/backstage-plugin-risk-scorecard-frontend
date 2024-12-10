@@ -7,8 +7,6 @@ import {
 } from './constants';
 import { formatISO } from 'date-fns';
 import { UpdateStatus } from '../contexts/RiScContext';
-import { pluginRiScTranslationRef } from './translations';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export function generateRandomId(): string {
   return [...Array(5)]
