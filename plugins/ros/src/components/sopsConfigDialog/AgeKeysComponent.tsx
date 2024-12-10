@@ -104,67 +104,69 @@ export const AgeKeysComponent = ({
   }, [chosenSopsConfig, setPublicKeysToAdd, setValue]);
 
   return (
-    <Accordion elevation={0}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1-content"
-        id="panel1-header"
-      >
-        {t('sopsConfigDialog.publicAgeKeyQuestion')}
-      </AccordionSummary>
-      <AccordionDetails>
-        <Box>
-          {chosenSopsConfig.publicAgeKeys.length !== 0 && (
-            <FormLabel>
-              {t('sopsConfigDialog.publicAgeKeysAlreadyPresent')}
-            </FormLabel>
-          )}
-          <PublicKeyList
-            publicKeys={chosenSopsConfig.publicAgeKeys}
-            onClickButton={handleDeletePublicKeyAlreadyPresent}
-            deletedKeys={publicKeysToBeDeleted}
-          />
+    <Box>
+      <Accordion elevation={0}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          {t('sopsConfigDialog.publicAgeKeyQuestion')}
+        </AccordionSummary>
+        <AccordionDetails>
+          <Box>
+            {chosenSopsConfig.publicAgeKeys.length !== 0 && (
+              <FormLabel>
+                {t('sopsConfigDialog.publicAgeKeysAlreadyPresent')}
+              </FormLabel>
+            )}
+            <PublicKeyList
+              publicKeys={chosenSopsConfig.publicAgeKeys}
+              onClickButton={handleDeletePublicKeyAlreadyPresent}
+              deletedKeys={publicKeysToBeDeleted}
+            />
 
-          {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
-            'dictionary.optional',
-          )})`}
+            {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
+              'dictionary.optional',
+            )})`}
 
-          <PublicKeyList
-            publicKeys={publicKeysToAdd}
-            onClickButton={handleDeletePublicKeyListItem}
-            deletedKeys={publicKeysToBeDeleted}
-          />
+            <PublicKeyList
+              publicKeys={publicKeysToAdd}
+              onClickButton={handleDeletePublicKeyListItem}
+              deletedKeys={publicKeysToBeDeleted}
+            />
 
-          <TextField
-            label={t('sopsConfigDialog.publicAgeKey')}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                handleClickAddKeyButton();
-              }
-            }}
-            error={publicKeyTextFieldError}
-            onFocus={() => {
-              setPublicKeyTextFieldError(false);
-              setPublicKeyTextFieldHelperText('');
-            }}
-            value={currentPublicKey}
-            helperText={publicKeyTextFieldHelperText}
-            onChange={e => setCurrentPublicKey(e.target.value)}
-          />
+            <TextField
+              label={t('sopsConfigDialog.publicAgeKey')}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  handleClickAddKeyButton();
+                }
+              }}
+              error={publicKeyTextFieldError}
+              onFocus={() => {
+                setPublicKeyTextFieldError(false);
+                setPublicKeyTextFieldHelperText('');
+              }}
+              value={currentPublicKey}
+              helperText={publicKeyTextFieldHelperText}
+              onChange={e => setCurrentPublicKey(e.target.value)}
+            />
 
-          <Button
-            startIcon={<AddCircle />}
-            variant="text"
-            color="primary"
-            onClick={handleClickAddKeyButton}
-            sx={{
-              maxWidth: 200,
-            }}
-          >
-            {t('sopsConfigDialog.addPublicAgeKey')}
-          </Button>
-        </Box>
-      </AccordionDetails>
-    </Accordion>
+            <Button
+              startIcon={<AddCircle />}
+              variant="text"
+              color="primary"
+              onClick={handleClickAddKeyButton}
+              sx={{
+                maxWidth: 200,
+              }}
+            >
+              {t('sopsConfigDialog.addPublicAgeKey')}
+            </Button>
+          </Box>
+        </AccordionDetails>
+      </Accordion>
+    </Box>
   );
 };
