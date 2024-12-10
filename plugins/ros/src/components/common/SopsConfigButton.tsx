@@ -2,8 +2,8 @@ import React from 'react';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import Button from '@mui/material/Button';
-import { Settings } from '@material-ui/icons';
-import { Badge } from '@mui/material';
+import Badge from '@mui/material/Badge';
+import Settings from '@material-ui/icons/Settings';
 
 interface SopsConfigButtonProps {
   handleClick: () => void;
@@ -22,7 +22,7 @@ export const SopsConfigButton = ({
 
   return (
     <Badge
-      color={'error'}
+      color="error"
       badgeContent={pullRequestCount}
       invisible={hasOpenedOnce}
     >

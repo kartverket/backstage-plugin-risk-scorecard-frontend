@@ -10,19 +10,19 @@ import { dialogActions } from '../common/mixins';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
-import { Divider } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import AddCircle from '@mui/icons-material/AddCircle';
 import { useForm } from 'react-hook-form';
 import { SopsConfig } from '../../utils/types';
 import { PublicKeyList } from './PublicKeyList';
 import { useRiScs } from '../../contexts/RiScContext';
-import {GcpCryptoKeyObject, SopsConfigRequestBody} from '../../utils/DTOs';
+import { SopsConfigRequestBody } from '../../utils/DTOs';
 import Box from '@mui/material/Box';
 import { GitBranchMenu } from './GitBranchMenu';
 import { PullRequestComponent } from './PullRequestComponent';
 import { OpenPullRequestButton } from './OpenPullRequestButton';
 import { DialogContentText } from '@material-ui/core';
-import {GcpCryptoKeyMenu} from "./GcpCryptoKeyMenu";
+import { GcpCryptoKeyMenu } from './GcpCryptoKeyMenu';
 
 interface SopsConfigDialogProps {
   onClose: () => void;
@@ -72,10 +72,9 @@ export const SopsConfigDialog = ({
       sopsConfigs.find(value => value.branch == branch) || sopsConfigs[0],
     );
   };
-
+  
   const [chosenGcpCryptoKey, setChosenGcpCryptoKey] = useState<GcpCryptoKeyObject>(chosenSopsConfig.gcpCryptoKey)
   const handleChangeGcpCryptoKey = (gcpCryptoKey: GcpCryptoKeyObject) => setChosenGcpCryptoKey(gcpCryptoKey)
-
   const [publicKeysToAdd, setPublicKeysToAdd] = useState<string[]>([]);
   const publicKeysToAddRef = useRef(publicKeysToAdd);
   const [publicKeysToBeDeleted, setPublicKeysToBeDeleted] = useState<string[]>(
@@ -89,12 +88,24 @@ export const SopsConfigDialog = ({
   const [currentPublicKey, setCurrentPublicKey] = useState('');
   const [publicKeyTextFieldError, setPublicKeyTextFieldError] = useState(false);
 
+    const {
+        handleSubmit,
+        setValue,
+        watch,
+    } = useForm<SopsConfigDialogFormData>({
+        defaultValues: {
+            gcpCryptoKey: chosenGcpCryptoKey,
+            publicAgeKeysToAdd: publicKeysToAdd,
+            publicAgeKeysToDelete: publicKeysToBeDeleted,
+        },
+    });
+  
   useEffect(() => {
     publicKeysToAddRef.current = [];
     setPublicKeysToAdd(publicKeysToAddRef.current);
     setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
     setValue('gcpCryptoKey', chosenSopsConfig.gcpCryptoKey);
-  }, [showDialog, chosenSopsConfig]);
+  }, [showDialog, chosenSopsConfig, setValue]);
 
   const handleClickAddKeyButton = () => {
     if (chosenSopsConfig.publicAgeKeys.includes(currentPublicKey)) {
@@ -150,33 +161,20 @@ export const SopsConfigDialog = ({
     openPullRequestForSopsConfig(chosenSopsConfig.branch);
     onClose();
   };
-
-  const {
-    handleSubmit,
-    setValue,
-    watch,
-  } = useForm<SopsConfigDialogFormData>({
-    defaultValues: {
-      gcpCryptoKey: chosenGcpCryptoKey,
-      publicAgeKeysToAdd: publicKeysToAdd,
-      publicAgeKeysToDelete: publicKeysToBeDeleted,
-    },
-  });
-
+  
   // Check if the SopsConfig we retrieved is exactly the same as the sops config to be written
   const [isDirty, setIsDirty] = useState(true);
   const sopsConfigDialogFormData = watch();
   useEffect(() => {
     setIsDirty(
         //TODO: Finn ut av en fornuftig ting å vise i crypto key meny når det ikke eksisterer en SOPS config
-
         chosenSopsConfig.gcpCryptoKey.projectId === chosenGcpCryptoKey.projectId
         && chosenSopsConfig.gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing
         && chosenSopsConfig.gcpCryptoKey.name === chosenGcpCryptoKey.name
         && sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0
         && sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0
     );
-  }, [sopsConfigDialogFormData]);
+  }, [chosenGcpCryptoKey, chosenSopsConfig, sopsConfigDialogFormData]);
 
   const onSubmit = handleSubmit((_formData: SopsConfigDialogFormData) => {
     const publicKeysToBeWritten = [
@@ -200,7 +198,7 @@ export const SopsConfigDialog = ({
   });
 
   return (
-    <Dialog open={showDialog} onClose={onClose} maxWidth={'md'}>
+    <Dialog open={showDialog} onClose={onClose} maxWidth="md">
       <Box
         sx={{
           display: 'flex',
@@ -249,7 +247,7 @@ export const SopsConfigDialog = ({
           </DialogContentText>
         )}
         <FormLabel>{t('sopsConfigDialog.gcpProjectDescription')}</FormLabel>
-
+          
         <GcpCryptoKeyMenu chosenGcpCryptoKey={chosenGcpCryptoKey} onChange={handleChangeGcpCryptoKey} gcpCryptoKeys={gcpCryptoKeys}/>
 
         <Divider sx={{ marginTop: 1, marginBottom: 1 }} />

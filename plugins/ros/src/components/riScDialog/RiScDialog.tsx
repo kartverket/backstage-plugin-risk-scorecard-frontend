@@ -14,7 +14,7 @@ import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../common/mixins';
 import { DialogContentText } from '@material-ui/core';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Switch } from '@mui/material';
+import Switch from '@mui/material/Switch';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 

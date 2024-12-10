@@ -95,11 +95,12 @@ export const RiScPlugin = () => {
       setShowSopsConfigButton(true);
       setHasOpenedSopsConfigDialogOnce(true);
       setShowSopsConfigDialog(true);
+      setDisableSopsConfigButton(false);
     } else {
       setShowSopsConfigButton(false);
       setDisableSopsConfigButton(true);
     }
-  }, [isFetching, updateStatus]);
+  }, [isFetching, updateStatus, failedToFetchSopsConfig, riScs, sopsConfigs]);
 
   return (
     <>

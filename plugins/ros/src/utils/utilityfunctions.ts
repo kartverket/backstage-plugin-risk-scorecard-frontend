@@ -199,7 +199,7 @@ export function gcpProjectIdToReadableString(gcpProjectId: string) {
 }
 
 export function isPublicAgeKeyValid(publicAgeKey: string) {
-  if (publicAgeKey.length != 62) {
+  if (publicAgeKey.length !== 62) {
     return false;
   }
 
@@ -220,9 +220,11 @@ export interface Duration {
   seconds: number;
 }
 
-export function getPullRequestSecondaryText(fromDate: Date, userName: string) {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-
+export function getPullRequestSecondaryText(
+  fromDate: Date,
+  userName: string,
+  t: (s: any) => string,
+) {
   const now = new Date();
 
   const years = now.getUTCFullYear() - fromDate.getUTCFullYear();
