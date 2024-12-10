@@ -99,27 +99,33 @@ export const ActionBox = ({
 
   return (
     <Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <IconButton onClick={() => toggleActionExpanded(action.ID)}>
-          {isExpanded ? <ExpandLess /> : <ExpandMore />}
-        </IconButton>
-        <Typography
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <Box
           sx={{
-            fontSize: '16px',
-            fontWeight: 500,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            cursor: 'pointer',
+            width: '100%',
           }}
+          onClick={() => toggleActionExpanded(action.ID)}
         >
-          {isActionTitlePresent
-            ? action.title
-            : `${t('dictionary.measure')} ${index + 1}`}
-        </Typography>
+          <IconButton>
+            {isExpanded ? <ExpandLess /> : <ExpandMore />}
+          </IconButton>
+          <Typography
+            sx={{
+              fontSize: '16px',
+              fontWeight: 500,
+            }}
+          >
+            {isActionTitlePresent
+              ? action.title
+              : `${t('dictionary.measure')} ${index + 1}`}
+          </Typography>
+        </Box>
         <IconButton
+          disabled={isExpanded ? false : true}
           sx={{
             marginLeft: 'auto',
             opacity: isExpanded ? 1 : 0,
