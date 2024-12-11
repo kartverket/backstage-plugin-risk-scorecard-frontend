@@ -105,7 +105,7 @@ export const SopsConfigDialog = ({
           sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0 &&
           sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0),
     );
-  }, [sopsConfigDialogFormData]);
+  }, [chosenSopsConfig.gcpProjectId, sopsConfigDialogFormData]);
 
   const onSubmit = handleSubmit((formData: SopsConfigDialogFormData) => {
     const publicKeysToBeWritten = [
