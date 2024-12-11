@@ -106,8 +106,8 @@ export const AgeKeysComponent = ({
   return (
     <Box>
       <Accordion
-          elevation={1}
-          defaultExpanded={chosenSopsConfig.publicAgeKeys.length > 0}
+        elevation={1}
+        defaultExpanded={chosenSopsConfig.publicAgeKeys.length > 0}
       >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}

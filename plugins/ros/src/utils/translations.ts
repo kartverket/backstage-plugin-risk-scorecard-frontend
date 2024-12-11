@@ -198,11 +198,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
       createPRContent:
         'Your encryption configuration is now ready and has been created in a new branch. Below you can create a PR with these changes. Alternatively, you can move the changes to a different branch by clicking the "Branch" button and selecting another active branch.',
       PRTitle: 'Review and merge the Pull Request',
-      SummaryDescription: 'A PR with the encryption scheme has now been created.',
-      SummaryGCP:
-        'The selected GCP key is ',
-      SummaryAgeKeys:
-        'The following public age keys have also been added: ',
+      SummaryDescription:
+        'A PR with the encryption scheme has now been created.',
+      SummaryGCP: 'The selected GCP key is ',
+      SummaryAgeKeys: 'The following public age keys have also been added: ',
       PRContent:
         'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk Scorecards.',
       required: 'This field is required',
@@ -224,7 +223,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       gotoPullRequest: 'Go to pull request',
       gcpKeyHaveAccess: 'Has access',
       gcpKeyDoNotHaveAccess: 'Do not have access',
-      gcpKeyDoNotHaveAccessDescription: 'You cannot choose this key as you do not have the role Cloud KMS CryptoKey Encrypter/Decrypter on it.',
+      gcpKeyDoNotHaveAccessDescription:
+        'You cannot choose this key as you do not have the role Cloud KMS CryptoKey Encrypter/Decrypter on it.',
     },
     scenarioStepper: {
       initialRiskStep: {
@@ -603,9 +603,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Krypteringskonfigurasjonen er nå klar og har blitt lagt til i en ny branch. Nedenfor kan du opprette en PR med disse endringene. Alternativt kan du flytte endringene til en annen branch ved å klikke på "Branch"-knappen og velge en annen aktiv branch.',
           'sopsConfigDialog.PRTitle': "Se gjennom og merge Pull Request'en",
           'sopsConfigDialog.SummaryDescription':
-              'En PR med det nye krypteringsskjemaet har nå blitt opprettet.',
-          'sopsConfigDialog.SummaryGCP':
-            'Den valgte GCP-nøkkelen er ',
+            'En PR med det nye krypteringsskjemaet har nå blitt opprettet.',
+          'sopsConfigDialog.SummaryGCP': 'Den valgte GCP-nøkkelen er ',
           'sopsConfigDialog.SummaryAgeKeys':
             ' Følgende offentlige age nøkler har også blitt lagt ved: ',
           'sopsConfigDialog.PRContent':
@@ -631,7 +630,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.gotoPullRequest': 'Gå til pull request',
           'sopsConfigDialog.gcpKeyHaveAccess': 'Har tilgang',
           'sopsConfigDialog.gcpKeyDoNotHaveAccess': 'Har ikke tilgang',
-          'sopsConfigDialog.gcpKeyDoNotHaveAccessDescription': 'Du kan ikke velge denne nøkkelen fordi du ikke har Cloud KMS CryptoKey Encrypter/Decrypter rollen på nøkkelen.',
+          'sopsConfigDialog.gcpKeyDoNotHaveAccessDescription':
+            'Du kan ikke velge denne nøkkelen fordi du ikke har Cloud KMS CryptoKey Encrypter/Decrypter rollen på nøkkelen.',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':

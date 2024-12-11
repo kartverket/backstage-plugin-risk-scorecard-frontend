@@ -3,10 +3,10 @@ import React from 'react';
 import { VpnKey } from '@mui/icons-material';
 import { GcpCryptoKeyObject } from '../../utils/DTOs';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
-import {Avatar, Tooltip} from '@mui/material';
+import { Avatar, Tooltip } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
-import {useTranslationRef} from "@backstage/core-plugin-api/alpha";
-import {pluginRiScTranslationRef} from "../../utils/translations";
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 
 interface GcpCryptoKeyMenuItemProps {
   value: string;
@@ -21,12 +21,12 @@ export const GcpCryptoKeyMenuItem = ({
   handleClick,
   hasAccess,
 }: GcpCryptoKeyMenuItemProps) => {
-  const { t } = useTranslationRef(pluginRiScTranslationRef)
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Tooltip
-        title={t('sopsConfigDialog.gcpKeyDoNotHaveAccessDescription')}
-        disableHoverListener={hasAccess}
+      title={t('sopsConfigDialog.gcpKeyDoNotHaveAccessDescription')}
+      disableHoverListener={hasAccess}
     >
       <MenuItem
         value={value}
@@ -43,7 +43,7 @@ export const GcpCryptoKeyMenuItem = ({
           secondary={
             <>
               Project ID: {gcpCryptoKey.projectId}
-              <br/>
+              <br />
               Key ring: {gcpCryptoKey.keyRing}
             </>
           }

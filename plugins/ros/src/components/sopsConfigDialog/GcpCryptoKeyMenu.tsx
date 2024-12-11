@@ -6,8 +6,8 @@ import Box from '@mui/material/Box';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { VpnKey } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import {useTranslationRef} from "@backstage/core-plugin-api/alpha";
-import {pluginRiScTranslationRef} from "../../utils/translations";
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 
 interface GcpCryptoKeyMenuProps {
   chosenGcpCryptoKey: GcpCryptoKeyObject;
@@ -20,7 +20,7 @@ export const GcpCryptoKeyMenu = ({
   onChange,
   gcpCryptoKeys,
 }: GcpCryptoKeyMenuProps) => {
-  const { t } = useTranslationRef(pluginRiScTranslationRef)
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -32,8 +32,10 @@ export const GcpCryptoKeyMenu = ({
     setAnchorEl(null);
   };
 
-  const gcpCryptoKeysGroupedByAccess = gcpCryptoKeys.reduce<Record<string, GcpCryptoKeyObject[]>>((acc, gcpCryptoKey) => {
-    const key = gcpCryptoKey.hasEncryptDecryptAccess.toString()
+  const gcpCryptoKeysGroupedByAccess = gcpCryptoKeys.reduce<
+    Record<string, GcpCryptoKeyObject[]>
+  >((acc, gcpCryptoKey) => {
+    const key = gcpCryptoKey.hasEncryptDecryptAccess.toString();
     if (!acc[key]) {
       acc[key] = [];
     }
@@ -65,12 +67,12 @@ export const GcpCryptoKeyMenu = ({
         <ListItemText
           primary={chosenGcpCryptoKey.name}
           secondary={
-          <>
-            Project ID: {chosenGcpCryptoKey.projectId}
-            <br/>
-            Key ring: {chosenGcpCryptoKey.keyRing}
-          </>
-        }
+            <>
+              Project ID: {chosenGcpCryptoKey.projectId}
+              <br />
+              Key ring: {chosenGcpCryptoKey.keyRing}
+            </>
+          }
         />
       </ListItemButton>
       <Menu
@@ -88,22 +90,24 @@ export const GcpCryptoKeyMenu = ({
           },
         }}
       >
-        {Object.keys(gcpCryptoKeysGroupedByAccess).map((hasAccess) => (
-            <li>
-              <ul
-                  style={{ paddingLeft: 0, marginLeft: 0 }}
-              >
-                <ListSubheader>{hasAccess === "true" ? t('sopsConfigDialog.gcpKeyHaveAccess') : t('sopsConfigDialog.gcpKeyDoNotHaveAccess')}</ListSubheader>
-                {gcpCryptoKeysGroupedByAccess[hasAccess].map((gcpCryptoKey) => (
-                    <GcpCryptoKeyMenuItem
-                        value={JSON.stringify(gcpCryptoKey)}
-                        gcpCryptoKey={gcpCryptoKey}
-                        handleClick={handleClickMenuItem}
-                        hasAccess={hasAccess === "true"}
-                    />
-                ))}
-              </ul>
-            </li>
+        {Object.keys(gcpCryptoKeysGroupedByAccess).map(hasAccess => (
+          <li>
+            <ul style={{ paddingLeft: 0, marginLeft: 0 }}>
+              <ListSubheader>
+                {hasAccess === 'true'
+                  ? t('sopsConfigDialog.gcpKeyHaveAccess')
+                  : t('sopsConfigDialog.gcpKeyDoNotHaveAccess')}
+              </ListSubheader>
+              {gcpCryptoKeysGroupedByAccess[hasAccess].map(gcpCryptoKey => (
+                <GcpCryptoKeyMenuItem
+                  value={JSON.stringify(gcpCryptoKey)}
+                  gcpCryptoKey={gcpCryptoKey}
+                  handleClick={handleClickMenuItem}
+                  hasAccess={hasAccess === 'true'}
+                />
+              ))}
+            </ul>
+          </li>
         ))}
       </Menu>
     </Box>

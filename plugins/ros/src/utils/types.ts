@@ -1,4 +1,4 @@
-import {GcpCryptoKeyObject, PullRequestObject} from './DTOs';
+import { GcpCryptoKeyObject, PullRequestObject } from './DTOs';
 
 /**
  * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.

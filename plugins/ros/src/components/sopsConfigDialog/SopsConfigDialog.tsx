@@ -18,7 +18,7 @@ import { OpenPullRequestButton } from './OpenPullRequestButton';
 import { DialogContentText } from '@material-ui/core';
 import { AgeKeysComponent } from './AgeKeysComponent';
 import { GcpCryptoKeyMenu } from './GcpCryptoKeyMenu';
-import Typography from "@mui/material/Typography";
+import Typography from '@mui/material/Typography';
 
 interface SopsConfigDialogProps {
   onClose: () => void;
@@ -51,27 +51,25 @@ export const SopsConfigDialog = ({
           branch: '',
         },
   );
-  
-  const [chosenGcpCryptoKey, setChosenGcpCryptoKey] = useState<GcpCryptoKeyObject>(chosenSopsConfig.gcpCryptoKey)
-  const handleChangeGcpCryptoKey = (gcpCryptoKey: GcpCryptoKeyObject) => setChosenGcpCryptoKey(gcpCryptoKey)
+
+  const [chosenGcpCryptoKey, setChosenGcpCryptoKey] =
+    useState<GcpCryptoKeyObject>(chosenSopsConfig.gcpCryptoKey);
+  const handleChangeGcpCryptoKey = (gcpCryptoKey: GcpCryptoKeyObject) =>
+    setChosenGcpCryptoKey(gcpCryptoKey);
   const [publicKeysToAdd, setPublicKeysToAdd] = useState<string[]>([]);
   const publicKeysToAddRef = useRef(publicKeysToAdd);
   const [publicKeysToBeDeleted, setPublicKeysToBeDeleted] = useState<string[]>(
     [],
   );
 
-    const {
-        handleSubmit,
-        setValue,
-        watch,
-    } = useForm<SopsConfigDialogFormData>({
-        defaultValues: {
-            gcpCryptoKey: chosenGcpCryptoKey,
-            publicAgeKeysToAdd: publicKeysToAdd,
-            publicAgeKeysToDelete: publicKeysToBeDeleted,
-        },
-    });
-  
+  const { handleSubmit, setValue, watch } = useForm<SopsConfigDialogFormData>({
+    defaultValues: {
+      gcpCryptoKey: chosenGcpCryptoKey,
+      publicAgeKeysToAdd: publicKeysToAdd,
+      publicAgeKeysToDelete: publicKeysToBeDeleted,
+    },
+  });
+
   useEffect(() => {
     publicKeysToAddRef.current = [];
     setPublicKeysToAdd(publicKeysToAddRef.current);
@@ -89,11 +87,12 @@ export const SopsConfigDialog = ({
   const sopsConfigDialogFormData = watch();
   useEffect(() => {
     setIsDirty(
-        chosenSopsConfig.gcpCryptoKey.projectId === chosenGcpCryptoKey.projectId
-        && chosenSopsConfig.gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing
-        && chosenSopsConfig.gcpCryptoKey.name === chosenGcpCryptoKey.name
-        && sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0
-        && sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0
+      chosenSopsConfig.gcpCryptoKey.projectId ===
+        chosenGcpCryptoKey.projectId &&
+        chosenSopsConfig.gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing &&
+        chosenSopsConfig.gcpCryptoKey.name === chosenGcpCryptoKey.name &&
+        sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0 &&
+        sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0,
     );
   }, [chosenGcpCryptoKey, chosenSopsConfig, sopsConfigDialogFormData]);
 
@@ -254,7 +253,11 @@ export const SopsConfigDialog = ({
               {chosenSopsConfig.publicAgeKeys.length !== 0 && (
                 <>
                   {t('sopsConfigDialog.SummaryAgeKeys')}
-                  <strong>{chosenSopsConfig.publicAgeKeys.map(key => `${key.substring(0, 8)}...${key.slice(-4)}`).join(',')}</strong>
+                  <strong>
+                    {chosenSopsConfig.publicAgeKeys
+                      .map(key => `${key.substring(0, 8)}...${key.slice(-4)}`)
+                      .join(',')}
+                  </strong>
                 </>
               )}
               <p>{t('sopsConfigDialog.PRContent')}</p>

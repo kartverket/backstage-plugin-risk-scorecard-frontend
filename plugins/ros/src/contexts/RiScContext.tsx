@@ -22,9 +22,10 @@ import {
 import { riScRouteRef } from '../routes';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import {
-    dtoToRiSc, GcpCryptoKeyObject,
-    RiScDTO,
-    SopsConfigRequestBody,
+  dtoToRiSc,
+  GcpCryptoKeyObject,
+  RiScDTO,
+  SopsConfigRequestBody,
 } from '../utils/DTOs';
 import { useEffectOnce } from 'react-use';
 import { useAuthenticatedFetch } from '../utils/hooks';
@@ -123,7 +124,15 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         sopsConfigsRef.current = res.sopsConfigs;
         setSopsConfigs(sopsConfigsRef.current);
         // Sorts the crypto keys on whether the user has encrypt/decrypt role on it
-        setGcpCryptoKeys(res.gcpCryptoKeys.sort((a, b) => (b.hasEncryptDecryptAccess === a.hasEncryptDecryptAccess) ? 0 : b.hasEncryptDecryptAccess ? 1 : -1));
+        setGcpCryptoKeys(
+          res.gcpCryptoKeys.sort((a, b) =>
+            b.hasEncryptDecryptAccess === a.hasEncryptDecryptAccess
+              ? 0
+              : b.hasEncryptDecryptAccess
+              ? 1
+              : -1,
+          ),
+        );
         isFetchingSopsConfigRef.current = false;
         setIsFetchingSopsConfig(isFetchingSopsConfigRef.current);
         if (!isFetchingRiScsRef.current) {
