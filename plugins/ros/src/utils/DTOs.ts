@@ -58,9 +58,16 @@ export type RiScDTO = {
 export type SopsConfigResultDTO = {
   status: ProcessingStatus;
   statusMessage: string;
-  gcpProjectIds: string[];
+  gcpCryptoKeys: GcpCryptoKeyObject[];
   sopsConfigs: SopsConfig[];
 } & ProcessRiScResultDTO;
+
+export type GcpCryptoKeyObject = {
+  projectId: string;
+  keyRing: string;
+  name: string;
+  hasEncryptDecryptAccess: boolean;
+};
 
 export type PullRequestObject = {
   url: string;
@@ -70,7 +77,7 @@ export type PullRequestObject = {
 };
 
 export type SopsConfigRequestBody = {
-  gcpProjectId: string;
+  gcpCryptoKey: GcpCryptoKeyObject;
   publicAgeKeys: string[];
 };
 
@@ -150,7 +157,11 @@ export function sopsConfigToDTOString(
   sopsConfig: SopsConfigRequestBody,
 ): string {
   return JSON.stringify({
-    gcpProjectId: sopsConfig.gcpProjectId,
+    gcpCryptoKey: {
+      projectId: sopsConfig.gcpCryptoKey.projectId,
+      keyRing: sopsConfig.gcpCryptoKey.keyRing,
+      name: sopsConfig.gcpCryptoKey.name,
+    },
     publicAgeKeys: sopsConfig.publicAgeKeys,
   });
 }

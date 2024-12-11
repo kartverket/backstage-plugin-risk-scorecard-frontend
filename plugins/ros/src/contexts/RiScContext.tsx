@@ -21,7 +21,11 @@ import {
 } from '../utils/utilityfunctions';
 import { riScRouteRef } from '../routes';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { dtoToRiSc, RiScDTO, SopsConfigRequestBody } from '../utils/DTOs';
+import {
+    dtoToRiSc, GcpCryptoKeyObject,
+    RiScDTO,
+    SopsConfigRequestBody,
+} from '../utils/DTOs';
 import { useEffectOnce } from 'react-use';
 import { useAuthenticatedFetch } from '../utils/hooks';
 import { latestSupportedVersion } from '../utils/constants';
@@ -55,7 +59,7 @@ type RiScDrawerProps = {
   isFetchingSopsConfig: boolean;
   failedToFetchSopsConfig: boolean;
   sopsConfigs: SopsConfig[];
-  gcpProjectIds: string[];
+  gcpCryptoKeys: GcpCryptoKeyObject[];
   response: SubmitResponseObject | null;
 };
 
@@ -101,7 +105,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 
   const [sopsConfigs, setSopsConfigs] = useState<SopsConfig[]>([]);
   const sopsConfigsRef = useRef(sopsConfigs);
-  const [gcpProjectIds, setGcpProjectIds] = useState<string[]>([]);
+  const [gcpCryptoKeys, setGcpCryptoKeys] = useState<GcpCryptoKeyObject[]>([]);
 
   useEffect(() => {
     if (location.state) {
@@ -118,7 +122,8 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       res => {
         sopsConfigsRef.current = res.sopsConfigs;
         setSopsConfigs(sopsConfigsRef.current);
-        setGcpProjectIds(res.gcpProjectIds);
+        // Sorts the crypto keys on whether the user has encrypt/decrypt role on it
+        setGcpCryptoKeys(res.gcpCryptoKeys.sort((a, b) => (b.hasEncryptDecryptAccess === a.hasEncryptDecryptAccess) ? 0 : b.hasEncryptDecryptAccess ? 1 : -1));
         isFetchingSopsConfigRef.current = false;
         setIsFetchingSopsConfig(isFetchingSopsConfigRef.current);
         if (!isFetchingRiScsRef.current) {
@@ -466,7 +471,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         sopsConfigsRef.current = sopsConfigs.map(config =>
           config.branch === branch
             ? {
-                gcpProjectId: config.gcpProjectId,
+                gcpCryptoKey: config.gcpCryptoKey,
                 publicAgeKeys: config.publicAgeKeys,
                 branch: config.branch,
                 onDefaultBranch: config.onDefaultBranch,
@@ -516,7 +521,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           config.branch === branch
             ? {
                 ...config,
-                gcpProjectId: sopsConfigRequestBody.gcpProjectId,
+                gcpCryptoKey: sopsConfigRequestBody.gcpCryptoKey,
                 publicAgeKeys: sopsConfigRequestBody.publicAgeKeys,
               }
             : config,
@@ -565,7 +570,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     failedToFetchSopsConfig,
     response,
     sopsConfigs,
-    gcpProjectIds,
+    gcpCryptoKeys,
   };
 
   return <RiScContext.Provider value={value}>{children}</RiScContext.Provider>;

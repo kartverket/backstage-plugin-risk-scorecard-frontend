@@ -221,6 +221,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
         "Do you want to re-encrypt the RiSc's on the default branch of ",
       openPR: 'Create pull request',
       gotoPullRequest: 'Go to pull request',
+      gcpKeyHaveAccess: 'Has access',
+      gcpKeyDoNotHaveAccess: 'Do not have access',
+      gcpKeyDoNotHaveAccessDescription: 'You cannot choose this key as you do not have the role Cloud KMS CryptoKey Encrypter/Decrypter on it.',
     },
     scenarioStepper: {
       initialRiskStep: {
@@ -623,6 +626,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             "Vil du rekryptere eksisterende RoS'er på hoved-branchen til",
           'sopsConfigDialog.openPR': 'Åpne pull request',
           'sopsConfigDialog.gotoPullRequest': 'Gå til pull request',
+          'sopsConfigDialog.gcpKeyHaveAccess': 'Har tilgang',
+          'sopsConfigDialog.gcpKeyDoNotHaveAccess': 'Har ikke tilgang',
+          'sopsConfigDialog.gcpKeyDoNotHaveAccessDescription': 'Du kan ikke velge denne nøkkelen fordi du ikke har Cloud KMS CryptoKey Encrypter/Decrypter rollen på nøkkelen.',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':

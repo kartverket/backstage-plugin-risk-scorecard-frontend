@@ -100,7 +100,7 @@ export const AgeKeysComponent = ({
     publicKeysToAddRef.current = [];
     setPublicKeysToAdd(publicKeysToAddRef.current);
     setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
-    setValue('gcpProjectId', chosenSopsConfig.gcpProjectId);
+    setValue('gcpCryptoKey', chosenSopsConfig.gcpCryptoKey);
   }, [chosenSopsConfig, setPublicKeysToAdd, setValue]);
 
   return (
