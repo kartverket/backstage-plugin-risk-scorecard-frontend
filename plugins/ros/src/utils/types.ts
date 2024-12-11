@@ -1,4 +1,4 @@
-import { PullRequestObject } from './DTOs';
+import { GcpCryptoKeyObject, PullRequestObject } from './DTOs';
 
 /**
  * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.
@@ -30,7 +30,7 @@ export type MigrationVersions = {
 };
 
 export type SopsConfig = {
-  gcpProjectId: string;
+  gcpCryptoKey: GcpCryptoKeyObject;
   publicAgeKeys: string[];
   branch: string;
   onDefaultBranch: boolean;
@@ -165,3 +165,9 @@ export type DifferenceFetchState = Modify<
   'status',
   DifferenceDTO['status'] | null
 > & { isLoading: boolean; currentDifferenceId: string };
+
+export interface SopsConfigDialogFormData {
+  gcpCryptoKey: GcpCryptoKeyObject;
+  publicAgeKeysToAdd: string[];
+  publicAgeKeysToDelete: string[];
+}

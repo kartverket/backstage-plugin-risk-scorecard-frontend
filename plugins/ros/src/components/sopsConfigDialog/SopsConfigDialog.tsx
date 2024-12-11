@@ -3,63 +3,48 @@ import React, { useEffect, useRef, useState } from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import FormLabel from '@mui/material/FormLabel';
-import {
-  gcpProjectIdToReadableString,
-  isPublicAgeKeyValid,
-} from '../../utils/utilityfunctions';
 import DialogContent from '@mui/material/DialogContent';
 import { dialogActions } from '../common/mixins';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import Divider from '@mui/material/Divider';
-import Autocomplete from '@mui/material/Autocomplete';
-import AddCircle from '@mui/icons-material/AddCircle';
-import { Controller, useForm } from 'react-hook-form';
-import { SopsConfig } from '../../utils/types';
-import { PublicKeyList } from './PublicKeyList';
+import { Step, StepContent, StepLabel, Stepper } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { SopsConfig, SopsConfigDialogFormData } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
-import { SopsConfigRequestBody } from '../../utils/DTOs';
+import { GcpCryptoKeyObject, SopsConfigRequestBody } from '../../utils/DTOs';
 import Box from '@mui/material/Box';
-import { GitBranchMenu } from './GitBranchMenu';
 import { PullRequestComponent } from './PullRequestComponent';
 import { OpenPullRequestButton } from './OpenPullRequestButton';
 import { DialogContentText } from '@material-ui/core';
+import { AgeKeysComponent } from './AgeKeysComponent';
+import { GcpCryptoKeyMenu } from './GcpCryptoKeyMenu';
+import Typography from '@mui/material/Typography';
 
 interface SopsConfigDialogProps {
   onClose: () => void;
   showDialog: boolean;
   sopsConfigs: SopsConfig[];
-  gcpProjectIds: string[];
+  gcpCryptoKeys: GcpCryptoKeyObject[];
   hasOpenedGitBranchMenuOnce: boolean;
   handleOpenGitBranchMenuFirst: () => void;
-}
-
-export interface SopsConfigDialogFormData {
-  gcpProjectId: string;
-  publicAgeKeysToAdd: string[];
-  publicAgeKeysToDelete: string[];
 }
 
 export const SopsConfigDialog = ({
   onClose,
   showDialog,
   sopsConfigs,
-  gcpProjectIds,
-  hasOpenedGitBranchMenuOnce,
-  handleOpenGitBranchMenuFirst,
+  gcpCryptoKeys,
 }: SopsConfigDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { createSopsConfig, updateSopsConfig, openPullRequestForSopsConfig } =
     useRiScs();
 
-  const [chosenSopsConfig, setChosenSopsConfig] = useState<SopsConfig>(
+  const [chosenSopsConfig, _setChosenSopsConfig] = useState<SopsConfig>(
     sopsConfigs.find(value => value.onDefaultBranch) || sopsConfigs[0]
       ? sopsConfigs[0]
       : {
-          gcpProjectId: '',
+          gcpCryptoKey: gcpCryptoKeys[0],
           publicAgeKeys: [],
           onDefaultBranch: false,
           pullRequest: null,
@@ -67,37 +52,19 @@ export const SopsConfigDialog = ({
         },
   );
 
-  const handleChangeSopsBranch = (branch: string) => {
-    if (branch === chosenSopsConfig.branch) {
-      return;
-    }
-    setChosenSopsConfig(
-      sopsConfigs.find(value => value.branch === branch) || sopsConfigs[0],
-    );
-  };
-
+  const [chosenGcpCryptoKey, setChosenGcpCryptoKey] =
+    useState<GcpCryptoKeyObject>(chosenSopsConfig.gcpCryptoKey);
+  const handleChangeGcpCryptoKey = (gcpCryptoKey: GcpCryptoKeyObject) =>
+    setChosenGcpCryptoKey(gcpCryptoKey);
   const [publicKeysToAdd, setPublicKeysToAdd] = useState<string[]>([]);
   const publicKeysToAddRef = useRef(publicKeysToAdd);
   const [publicKeysToBeDeleted, setPublicKeysToBeDeleted] = useState<string[]>(
     [],
   );
-  const publicKeysToBeDeletedRef = useRef(publicKeysToBeDeleted);
 
-  const [publicKeyTextFieldHelperText, setPublicKeyTextFieldHelperText] =
-    useState('');
-
-  const [currentPublicKey, setCurrentPublicKey] = useState('');
-  const [publicKeyTextFieldError, setPublicKeyTextFieldError] = useState(false);
-
-  const {
-    handleSubmit,
-    control,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<SopsConfigDialogFormData>({
+  const { handleSubmit, setValue, watch } = useForm<SopsConfigDialogFormData>({
     defaultValues: {
-      gcpProjectId: chosenSopsConfig.gcpProjectId,
+      gcpCryptoKey: chosenGcpCryptoKey,
       publicAgeKeysToAdd: publicKeysToAdd,
       publicAgeKeysToDelete: publicKeysToBeDeleted,
     },
@@ -107,58 +74,8 @@ export const SopsConfigDialog = ({
     publicKeysToAddRef.current = [];
     setPublicKeysToAdd(publicKeysToAddRef.current);
     setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
-    setValue('gcpProjectId', chosenSopsConfig.gcpProjectId);
+    setValue('gcpCryptoKey', chosenSopsConfig.gcpCryptoKey);
   }, [showDialog, chosenSopsConfig, setValue]);
-
-  const handleClickAddKeyButton = () => {
-    if (chosenSopsConfig.publicAgeKeys.includes(currentPublicKey)) {
-      setPublicKeyTextFieldHelperText(
-        t('sopsConfigDialog.publicKeyHelperTextKeyAlreadyExistInSopsConfig'),
-      );
-      setPublicKeyTextFieldError(true);
-      return;
-    }
-    if (publicKeysToAdd.includes(currentPublicKey)) {
-      setPublicKeyTextFieldHelperText(
-        t('sopsConfigDialog.publicKeyHelperTextKeyAlreadyExists'),
-      );
-      setPublicKeyTextFieldError(true);
-      return;
-    }
-    if (!isPublicAgeKeyValid(currentPublicKey)) {
-      setPublicKeyTextFieldHelperText(
-        t('sopsConfigDialog.publicKeyHelperTextKeyNotValid'),
-      );
-      setPublicKeyTextFieldError(true);
-      return;
-    }
-    publicKeysToAddRef.current = [...publicKeysToAdd, currentPublicKey];
-    setPublicKeysToAdd(publicKeysToAddRef.current);
-    setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
-    setCurrentPublicKey('');
-  };
-
-  const handleDeletePublicKeyListItem = (key: string) => {
-    publicKeysToAddRef.current = publicKeysToAdd.filter(
-      element => element !== key,
-    );
-    setPublicKeysToAdd(publicKeysToAddRef.current);
-    setValue('publicAgeKeysToAdd', publicKeysToAddRef.current);
-  };
-
-  const handleDeletePublicKeyAlreadyPresent = (key: string) => {
-    if (publicKeysToBeDeleted.includes(key)) {
-      publicKeysToBeDeletedRef.current = publicKeysToBeDeleted.filter(
-        k => k !== key,
-      );
-      setPublicKeysToBeDeleted(publicKeysToBeDeletedRef.current);
-      setValue('publicAgeKeysToDelete', publicKeysToBeDeletedRef.current);
-    } else {
-      publicKeysToBeDeletedRef.current = [...publicKeysToBeDeleted, key];
-      setPublicKeysToBeDeleted(publicKeysToBeDeletedRef.current);
-      setValue('publicAgeKeysToDelete', publicKeysToBeDeletedRef.current);
-    }
-  };
 
   const handleClickOpenPullRequestButton = () => {
     openPullRequestForSopsConfig(chosenSopsConfig.branch);
@@ -170,15 +87,16 @@ export const SopsConfigDialog = ({
   const sopsConfigDialogFormData = watch();
   useEffect(() => {
     setIsDirty(
-      sopsConfigDialogFormData.gcpProjectId === '' ||
-        (chosenSopsConfig.gcpProjectId ===
-          sopsConfigDialogFormData.gcpProjectId &&
-          sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0 &&
-          sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0),
+      chosenSopsConfig.gcpCryptoKey.projectId ===
+        chosenGcpCryptoKey.projectId &&
+        chosenSopsConfig.gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing &&
+        chosenSopsConfig.gcpCryptoKey.name === chosenGcpCryptoKey.name &&
+        sopsConfigDialogFormData.publicAgeKeysToAdd.length === 0 &&
+        sopsConfigDialogFormData.publicAgeKeysToDelete.length === 0,
     );
-  }, [sopsConfigDialogFormData, chosenSopsConfig]);
+  }, [chosenGcpCryptoKey, chosenSopsConfig, sopsConfigDialogFormData]);
 
-  const onSubmit = handleSubmit((formData: SopsConfigDialogFormData) => {
+  const onSubmit = handleSubmit((_formData: SopsConfigDialogFormData) => {
     const publicKeysToBeWritten = [
       ...publicKeysToAdd,
       ...chosenSopsConfig.publicAgeKeys.filter(
@@ -187,7 +105,7 @@ export const SopsConfigDialog = ({
     ];
 
     const sopsConfigRequestBody: SopsConfigRequestBody = {
-      gcpProjectId: formData.gcpProjectId,
+      gcpCryptoKey: chosenGcpCryptoKey,
       publicAgeKeys: publicKeysToBeWritten,
     };
 
@@ -196,49 +114,35 @@ export const SopsConfigDialog = ({
     } else {
       updateSopsConfig(sopsConfigRequestBody, chosenSopsConfig.branch);
     }
+
     onClose();
   });
 
+  const determineActiveStep = (config: SopsConfig): number => {
+    if (config.pullRequest) {
+      return 2;
+    } else if (
+      !config.pullRequest &&
+      !config.onDefaultBranch &&
+      config.branch !== ''
+    ) {
+      return 1;
+    }
+    return 0;
+  };
+
+  const [activeStep, setActiveStep] = useState(() =>
+    determineActiveStep(chosenSopsConfig),
+  );
+
+  useEffect(() => {
+    setActiveStep(determineActiveStep(chosenSopsConfig));
+  }, [chosenSopsConfig]);
+
   return (
     <Dialog open={showDialog} onClose={onClose} maxWidth="md">
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
-      >
-        <DialogTitle>{t('sopsConfigDialog.title')}</DialogTitle>
-        <Box
-          sx={{
-            marginRight: 3,
-            marginTop: 3,
-            gap: 2,
-            display: 'flex',
-            flexDirection: 'row',
-          }}
-        >
-          {!chosenSopsConfig.pullRequest &&
-            !chosenSopsConfig.onDefaultBranch &&
-            chosenSopsConfig.branch !== '' && (
-              <OpenPullRequestButton
-                handleClick={handleClickOpenPullRequestButton}
-              />
-            )}
-          {chosenSopsConfig.pullRequest && (
-            <PullRequestComponent pullRequest={chosenSopsConfig.pullRequest} />
-          )}
-          {sopsConfigs.length > 0 && (
-            <GitBranchMenu
-              chosenBranch={chosenSopsConfig.branch}
-              onChange={handleChangeSopsBranch}
-              sopsConfigs={sopsConfigs}
-              hasOpenedOnce={hasOpenedGitBranchMenuOnce}
-              handleOpenFirst={handleOpenGitBranchMenuFirst}
-            />
-          )}
-        </Box>
-      </Box>
+      <DialogTitle>{t('sopsConfigDialog.title')}</DialogTitle>
+
       <DialogContent
         sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
       >
@@ -248,88 +152,130 @@ export const SopsConfigDialog = ({
             {t('sopsConfigDialog.description')}
           </DialogContentText>
         )}
-        <FormLabel>{t('sopsConfigDialog.gcpProjectDescription')}</FormLabel>
+        <Stepper activeStep={activeStep} orientation="vertical">
+          <Step key="step1">
+            <StepLabel
+              onClick={() => setActiveStep(0)}
+              sx={{ cursor: 'pointer' }}
+            >
+              {t('sopsConfigDialog.selectKeysTitle')}
+            </StepLabel>
+            <StepContent>
+              {t('sopsConfigDialog.gcpCryptoKeyDescription')}
 
-        <Controller
-          name="gcpProjectId"
-          control={control}
-          render={({ field }) => (
-            <Autocomplete
-              {...field}
-              options={gcpProjectIds}
-              getOptionLabel={(option: string) =>
-                gcpProjectIdToReadableString(option)
+              <GcpCryptoKeyMenu
+                chosenGcpCryptoKey={chosenGcpCryptoKey}
+                onChange={handleChangeGcpCryptoKey}
+                gcpCryptoKeys={gcpCryptoKeys}
+              />
+
+              <AgeKeysComponent
+                chosenSopsConfig={chosenSopsConfig}
+                publicKeysToAdd={publicKeysToAdd}
+                setPublicKeysToAdd={setPublicKeysToAdd}
+                publicKeysToBeDeleted={publicKeysToBeDeleted}
+                setPublicKeysToBeDeleted={setPublicKeysToBeDeleted}
+                setValue={setValue}
+              />
+
+              <Button
+                variant="contained"
+                onClick={onSubmit}
+                disabled={isDirty}
+                sx={{ mt: 1 }}
+              >
+                {t('sopsConfigDialog.update')}
+              </Button>
+            </StepContent>
+          </Step>
+
+          <Step key="step2">
+            <StepLabel
+              onClick={
+                !chosenSopsConfig.pullRequest &&
+                !chosenSopsConfig.onDefaultBranch &&
+                chosenSopsConfig.branch !== ''
+                  ? () => setActiveStep(1)
+                  : undefined
               }
-              value={sopsConfigDialogFormData.gcpProjectId}
-              disableClearable={true}
-              sx={{ width: 300 }}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label={t('sopsConfigDialog.gcpProject')}
-                  error={!!errors.gcpProjectId}
-                />
+              sx={{
+                cursor:
+                  !chosenSopsConfig.pullRequest &&
+                  !chosenSopsConfig.onDefaultBranch &&
+                  chosenSopsConfig.branch !== ''
+                    ? 'pointer'
+                    : 'default',
+              }}
+            >
+              {t('sopsConfigDialog.createPRTitle')}
+            </StepLabel>
+            <StepContent>
+              {t('sopsConfigDialog.createPRContent')}
+              <Box m={1}>
+                {!chosenSopsConfig.pullRequest &&
+                  !chosenSopsConfig.onDefaultBranch &&
+                  chosenSopsConfig.branch !== '' && (
+                    <OpenPullRequestButton
+                      handleClick={handleClickOpenPullRequestButton}
+                    />
+                  )}
+              </Box>
+            </StepContent>
+          </Step>
+
+          <Step key="step3">
+            <StepLabel
+              optional={
+                <Typography variant="caption">
+                  {t('dictionary.summary')}
+                </Typography>
+              }
+              onClick={
+                chosenSopsConfig.pullRequest
+                  ? () => setActiveStep(2)
+                  : undefined
+              }
+              sx={{
+                cursor: chosenSopsConfig.pullRequest ? 'pointer' : 'default',
+              }}
+            >
+              {t('sopsConfigDialog.PRTitle')}
+            </StepLabel>
+            <StepContent>
+              {t('sopsConfigDialog.SummaryDescription')}
+              <br />
+              <br />
+              {t('sopsConfigDialog.SummaryGCP')}
+              <strong>{chosenGcpCryptoKey.name}</strong>
+              {'. '}
+              <br />
+              <br />
+              {chosenSopsConfig.publicAgeKeys.length !== 0 && (
+                <>
+                  {t('sopsConfigDialog.SummaryAgeKeys')}
+                  <strong>
+                    {chosenSopsConfig.publicAgeKeys
+                      .map(key => `${key.substring(0, 8)}...${key.slice(-4)}`)
+                      .join(',')}
+                  </strong>
+                </>
               )}
-              onChange={(_, value) => field.onChange(value)}
-            />
-          )}
-        />
-
-        <Divider sx={{ marginTop: 1, marginBottom: 1 }} />
-
-        {chosenSopsConfig.publicAgeKeys.length !== 0 && (
-          <FormLabel>
-            {t('sopsConfigDialog.publicAgeKeysAlreadyPresent')}
-          </FormLabel>
-        )}
-        <PublicKeyList
-          publicKeys={chosenSopsConfig.publicAgeKeys}
-          onClickButton={handleDeletePublicKeyAlreadyPresent}
-          deletedKeys={publicKeysToBeDeleted}
-        />
-
-        <FormLabel>{`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
-          'dictionary.optional',
-        )})`}</FormLabel>
-        <PublicKeyList
-          publicKeys={publicKeysToAdd}
-          onClickButton={handleDeletePublicKeyListItem}
-          deletedKeys={publicKeysToBeDeleted}
-        />
-        <TextField
-          label={t('sopsConfigDialog.publicAgeKey')}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              handleClickAddKeyButton();
-            }
-          }}
-          sx={{ minWidth: 800 }}
-          error={publicKeyTextFieldError}
-          onFocus={() => {
-            setPublicKeyTextFieldError(false);
-            setPublicKeyTextFieldHelperText('');
-          }}
-          value={currentPublicKey}
-          helperText={publicKeyTextFieldHelperText}
-          onChange={e => setCurrentPublicKey(e.target.value)}
-        />
-        <Button
-          startIcon={<AddCircle />}
-          variant="text"
-          color="primary"
-          onClick={handleClickAddKeyButton}
-          sx={{
-            maxWidth: 200,
-          }}
-        >
-          {t('sopsConfigDialog.addPublicAgeKey')}
-        </Button>
+              <p>{t('sopsConfigDialog.PRContent')}</p>
+              {chosenSopsConfig.pullRequest && (
+                <Box m={1} display="flex" alignItems="center">
+                  <Box flex={1}>
+                    <PullRequestComponent
+                      pullRequest={chosenSopsConfig.pullRequest}
+                    />
+                  </Box>
+                </Box>
+              )}
+            </StepContent>
+          </Step>
+        </Stepper>
       </DialogContent>
 
       <DialogActions sx={dialogActions}>
-        <Button variant="contained" onClick={onSubmit} disabled={isDirty}>
-          {t('sopsConfigDialog.update')}
-        </Button>
         <Button variant="outlined" onClick={onClose}>
           {t('dictionary.cancel')}
         </Button>
