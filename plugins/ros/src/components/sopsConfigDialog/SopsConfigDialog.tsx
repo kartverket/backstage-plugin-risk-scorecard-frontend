@@ -257,7 +257,18 @@ export const SopsConfigDialog = ({
               {t('sopsConfigDialog.PRTitle')}
             </StepLabel>
             <StepContent>
-              {t('sopsConfigDialog.PRContent')}
+              {t('sopsConfigDialog.SummaryGCP')}
+              <strong>
+                {gcpProjectIdToReadableString(chosenSopsConfig.gcpProjectId)}
+              </strong>
+              {'. '}
+              {chosenSopsConfig.publicAgeKeys.length !== 0 && (
+                <>
+                  {t('sopsConfigDialog.SummaryAgeKeys')}
+                  {chosenSopsConfig.publicAgeKeys.map(key => key).join(',')}
+                </>
+              )}
+              <p>{t('sopsConfigDialog.PRContent')}</p>
               {chosenSopsConfig.pullRequest && (
                 <Box m={1} display="flex" alignItems="center">
                   <Box flex={1}>

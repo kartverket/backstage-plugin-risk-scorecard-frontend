@@ -198,6 +198,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
       createPRContent:
         'Your encryption configuration is now ready and has been created in a new branch. Below you can create a PR with these changes. Alternatively, you can move the changes to a different branch by clicking the "Branch" button and selecting another active branch.',
       PRTitle: 'Review and merge the Pull Request',
+      SummaryGCP:
+        'A PR with the encryption scheme has now been created. The selected GCP project is ',
+      SummaryAgeKeys:
+        'The following public age keys have also been added to the schema: ',
       PRContent:
         'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk Scorecards.',
       required: 'This field is required',
@@ -594,6 +598,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.createPRContent':
             'Krypteringskonfigurasjonen er nå klar og har blitt lagt til i en ny branch. Nedenfor kan du opprette en PR med disse endringene. Alternativt kan du flytte endringene til en annen branch ved å klikke på "Branch"-knappen og velge en annen aktiv branch.',
           'sopsConfigDialog.PRTitle': "Se gjennom og merge Pull Request'en",
+          'sopsConfigDialog.SummaryGCP':
+            'En PR med det nye krypteringsskjemaet har nå blitt opprettet. Det valgte GCP-prosjektet er ',
+          'sopsConfigDialog.SummaryAgeKeys':
+            ' Følgende public age keys har også blitt lagt ved i skjemaet.',
           'sopsConfigDialog.PRContent':
             "Klikk på knappen nedenfor for å se gjennom endringene og merge PR-en. Etter at du har merget PR-en, kan du begynne å opprette og administrere RoS'er.",
           'sopsConfigDialog.required': 'Dette feltet er påkrevd',
