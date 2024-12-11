@@ -221,7 +221,14 @@ export const SopsConfigDialog = ({
           </Step>
 
           <Step key="step2">
-            <StepLabel>{t('sopsConfigDialog.createPRTitle')}</StepLabel>
+            <StepLabel
+              onClick={
+                chosenSopsConfig.branch !== ''
+                    ? () => setActiveStep(1)
+                    : undefined
+              }
+              sx={{ cursor: 'pointer' }}
+            >{t('sopsConfigDialog.createPRTitle')}</StepLabel>
             <StepContent>
               {t('sopsConfigDialog.createPRContent')}
               <Box m={1}>
