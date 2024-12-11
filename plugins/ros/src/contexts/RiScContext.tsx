@@ -125,13 +125,12 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         setSopsConfigs(sopsConfigsRef.current);
         // Sorts the crypto keys on whether the user has encrypt/decrypt role on it
         setGcpCryptoKeys(
-          res.gcpCryptoKeys.sort((a, b) =>
-            b.hasEncryptDecryptAccess === a.hasEncryptDecryptAccess
-              ? 0
-              : b.hasEncryptDecryptAccess
-              ? 1
-              : -1,
-          ),
+          res.gcpCryptoKeys.sort((a, b) => {
+            if (b.hasEncryptDecryptAccess === a.hasEncryptDecryptAccess) {
+              return 0;
+            }
+            return b.hasEncryptDecryptAccess ? 1 : -1;
+          }),
         );
         isFetchingSopsConfigRef.current = false;
         setIsFetchingSopsConfig(isFetchingSopsConfigRef.current);
