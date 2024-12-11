@@ -105,7 +105,10 @@ export const AgeKeysComponent = ({
 
   return (
     <Box>
-      <Accordion elevation={0}>
+      <Accordion
+          elevation={1}
+          defaultExpanded={chosenSopsConfig.publicAgeKeys.length > 0}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"

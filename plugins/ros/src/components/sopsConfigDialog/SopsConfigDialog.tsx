@@ -13,12 +13,12 @@ import { SopsConfig, SopsConfigDialogFormData } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import { GcpCryptoKeyObject, SopsConfigRequestBody } from '../../utils/DTOs';
 import Box from '@mui/material/Box';
-import { GitBranchMenu } from './GitBranchMenu';
 import { PullRequestComponent } from './PullRequestComponent';
 import { OpenPullRequestButton } from './OpenPullRequestButton';
 import { DialogContentText } from '@material-ui/core';
 import { AgeKeysComponent } from './AgeKeysComponent';
 import { GcpCryptoKeyMenu } from './GcpCryptoKeyMenu';
+import Typography from "@mui/material/Typography";
 
 interface SopsConfigDialogProps {
   onClose: () => void;
@@ -34,15 +34,13 @@ export const SopsConfigDialog = ({
   showDialog,
   sopsConfigs,
   gcpCryptoKeys,
-  hasOpenedGitBranchMenuOnce,
-  handleOpenGitBranchMenuFirst,
 }: SopsConfigDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { createSopsConfig, updateSopsConfig, openPullRequestForSopsConfig } =
     useRiScs();
 
-  const [chosenSopsConfig, setChosenSopsConfig] = useState<SopsConfig>(
+  const [chosenSopsConfig, _setChosenSopsConfig] = useState<SopsConfig>(
     sopsConfigs.find(value => value.onDefaultBranch) || sopsConfigs[0]
       ? sopsConfigs[0]
       : {
@@ -53,15 +51,6 @@ export const SopsConfigDialog = ({
           branch: '',
         },
   );
-
-  const handleChangeSopsBranch = (branch: string) => {
-    if (branch === chosenSopsConfig.branch) {
-      return;
-    }
-    setChosenSopsConfig(
-      sopsConfigs.find(value => value.branch === branch) || sopsConfigs[0],
-    );
-  };
   
   const [chosenGcpCryptoKey, setChosenGcpCryptoKey] = useState<GcpCryptoKeyObject>(chosenSopsConfig.gcpCryptoKey)
   const handleChangeGcpCryptoKey = (gcpCryptoKey: GcpCryptoKeyObject) => setChosenGcpCryptoKey(gcpCryptoKey)
@@ -170,12 +159,16 @@ export const SopsConfigDialog = ({
               onClick={() => setActiveStep(0)}
               sx={{ cursor: 'pointer' }}
             >
-              {t('sopsConfigDialog.gcpProjectTitle')}
+              {t('sopsConfigDialog.selectKeysTitle')}
             </StepLabel>
             <StepContent>
-              {t('sopsConfigDialog.gcpProjectDescription')}
+              {t('sopsConfigDialog.gcpCryptoKeyDescription')}
 
-              <GcpCryptoKeyMenu chosenGcpCryptoKey={chosenGcpCryptoKey} onChange={handleChangeGcpCryptoKey} gcpCryptoKeys={gcpCryptoKeys}/>
+              <GcpCryptoKeyMenu
+                chosenGcpCryptoKey={chosenGcpCryptoKey}
+                onChange={handleChangeGcpCryptoKey}
+                gcpCryptoKeys={gcpCryptoKeys}
+              />
 
               <AgeKeysComponent
                 chosenSopsConfig={chosenSopsConfig}
@@ -200,12 +193,23 @@ export const SopsConfigDialog = ({
           <Step key="step2">
             <StepLabel
               onClick={
+                !chosenSopsConfig.pullRequest &&
+                !chosenSopsConfig.onDefaultBranch &&
                 chosenSopsConfig.branch !== ''
-                    ? () => setActiveStep(1)
-                    : undefined
+                  ? () => setActiveStep(1)
+                  : undefined
               }
-              sx={{ cursor: 'pointer' }}
-            >{t('sopsConfigDialog.createPRTitle')}</StepLabel>
+              sx={{
+                cursor:
+                  !chosenSopsConfig.pullRequest &&
+                  !chosenSopsConfig.onDefaultBranch &&
+                  chosenSopsConfig.branch !== ''
+                    ? 'pointer'
+                    : 'default',
+              }}
+            >
+              {t('sopsConfigDialog.createPRTitle')}
+            </StepLabel>
             <StepContent>
               {t('sopsConfigDialog.createPRContent')}
               <Box m={1}>
@@ -216,40 +220,41 @@ export const SopsConfigDialog = ({
                       handleClick={handleClickOpenPullRequestButton}
                     />
                   )}
-                {sopsConfigs.length > 0 && (
-                  <GitBranchMenu
-                    chosenBranch={chosenSopsConfig.branch}
-                    onChange={handleChangeSopsBranch}
-                    sopsConfigs={sopsConfigs}
-                    hasOpenedOnce={hasOpenedGitBranchMenuOnce}
-                    handleOpenFirst={handleOpenGitBranchMenuFirst}
-                  />
-                )}
               </Box>
             </StepContent>
           </Step>
 
           <Step key="step3">
             <StepLabel
+              optional={
+                <Typography variant="caption">
+                  {t('dictionary.summary')}
+                </Typography>
+              }
               onClick={
                 chosenSopsConfig.pullRequest
                   ? () => setActiveStep(2)
                   : undefined
               }
-              sx={{ cursor: 'pointer' }}
+              sx={{
+                cursor: chosenSopsConfig.pullRequest ? 'pointer' : 'default',
+              }}
             >
               {t('sopsConfigDialog.PRTitle')}
             </StepLabel>
             <StepContent>
+              {t('sopsConfigDialog.SummaryDescription')}
+              <br />
+              <br />
               {t('sopsConfigDialog.SummaryGCP')}
-              <strong>
-                TODO!!!!
-              </strong>
+              <strong>{chosenGcpCryptoKey.name}</strong>
               {'. '}
+              <br />
+              <br />
               {chosenSopsConfig.publicAgeKeys.length !== 0 && (
                 <>
                   {t('sopsConfigDialog.SummaryAgeKeys')}
-                  {chosenSopsConfig.publicAgeKeys.map(key => key).join(',')}
+                  <strong>{chosenSopsConfig.publicAgeKeys.map(key => `${key.substring(0, 8)}...${key.slice(-4)}`).join(',')}</strong>
                 </>
               )}
               <p>{t('sopsConfigDialog.PRContent')}</p>
@@ -258,15 +263,6 @@ export const SopsConfigDialog = ({
                   <Box flex={1}>
                     <PullRequestComponent
                       pullRequest={chosenSopsConfig.pullRequest}
-                    />
-                  </Box>
-                  <Box flex={1}>
-                    <GitBranchMenu
-                      chosenBranch={chosenSopsConfig.branch}
-                      onChange={handleChangeSopsBranch}
-                      sopsConfigs={sopsConfigs}
-                      hasOpenedOnce={hasOpenedGitBranchMenuOnce}
-                      handleOpenFirst={handleOpenGitBranchMenuFirst}
                     />
                   </Box>
                 </Box>
