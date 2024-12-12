@@ -8,6 +8,7 @@ import { VpnKey } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
+import AddIcon from '@mui/icons-material/Add';
 
 interface GcpCryptoKeyMenuProps {
   chosenGcpCryptoKey: GcpCryptoKeyObject;
@@ -48,6 +49,7 @@ export const GcpCryptoKeyMenu = ({
       sx={{
         position: 'relative',
         left: 0,
+        marginTop: 1
       }}
     >
       <ListItemButton
@@ -59,21 +61,38 @@ export const GcpCryptoKeyMenu = ({
           gap: 1,
         }}
       >
-        <ListItemAvatar>
-          <Avatar>
-            <VpnKey />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={chosenGcpCryptoKey.name}
-          secondary={
+        {chosenGcpCryptoKey.projectId === '' ? (
             <>
-              Project ID: {chosenGcpCryptoKey.projectId}
-              <br />
-              Key ring: {chosenGcpCryptoKey.keyRing}
+              <ListItemAvatar>
+                <Avatar>
+                  <AddIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                  primary={t('sopsConfigDialog.chooseGcpCryptoKey')}
+              />
             </>
-          }
-        />
+        ) : (
+          <>
+            <ListItemAvatar>
+              <Avatar>
+                <VpnKey />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+                primary={chosenGcpCryptoKey.name}
+                secondary={
+                  <>
+                    Project ID: {chosenGcpCryptoKey.projectId}
+                    <br />
+                    Key ring: {chosenGcpCryptoKey.keyRing}
+                  </>
+                }
+            />
+          </>
+        )
+        }
+
       </ListItemButton>
       <Menu
         anchorEl={anchorEl}
