@@ -14,6 +14,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       yes: 'Yes',
       no: 'No',
       summary: 'Summary',
+      noAccess: 'No access',
       optional: 'optional',
       month: 'month',
       week: 'week',
@@ -426,6 +427,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'dictionary.yes': 'Ja',
           'dictionary.no': 'Nei',
+          'dictionary.noAccess': 'Ingen tilgang',
           'dictionary.summary': 'Oppsummering',
           'dictionary.optional': 'valgfritt',
           'dictionary.month': 'måned',

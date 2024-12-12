@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import AddIcon from '@mui/icons-material/Add';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 interface GcpCryptoKeyMenuProps {
   chosenGcpCryptoKey: GcpCryptoKeyObject;
@@ -77,16 +78,23 @@ export const GcpCryptoKeyMenu = ({
                 <VpnKey />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText
-              primary={`${chosenGcpCryptoKey.name} ${!chosenGcpCryptoKey.hasEncryptDecryptAccess ? "(you do not have access)" : "" }`}
-              secondary={
-                <>
-                  Project ID: {chosenGcpCryptoKey.projectId}
-                  <br />
-                  Key ring: {chosenGcpCryptoKey.keyRing}
-                </>
-              }
-            />
+
+              <ListItemText
+                primary={chosenGcpCryptoKey.name}
+                secondary={
+                  <>
+                    Project ID: {chosenGcpCryptoKey.projectId}
+                    <br />
+                    Key ring: {chosenGcpCryptoKey.keyRing}
+                  </>
+                }
+              />
+            {!chosenGcpCryptoKey.hasEncryptDecryptAccess &&
+              < >
+                <WarningAmberIcon sx={{ color: 'red' }}/>
+                {t('dictionary.noAccess')}
+              </>
+            }
           </>
         )}
       </ListItemButton>
