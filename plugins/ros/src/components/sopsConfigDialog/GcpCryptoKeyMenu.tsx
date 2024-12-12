@@ -79,22 +79,22 @@ export const GcpCryptoKeyMenu = ({
               </Avatar>
             </ListItemAvatar>
 
-              <ListItemText
-                primary={chosenGcpCryptoKey.name}
-                secondary={
-                  <>
-                    Project ID: {chosenGcpCryptoKey.projectId}
-                    <br />
-                    Key ring: {chosenGcpCryptoKey.keyRing}
-                  </>
-                }
-              />
-            {!chosenGcpCryptoKey.hasEncryptDecryptAccess &&
-              < >
-                <WarningAmberIcon sx={{ color: 'red' }}/>
+            <ListItemText
+              primary={chosenGcpCryptoKey.name}
+              secondary={
+                <>
+                  Project ID: {chosenGcpCryptoKey.projectId}
+                  <br />
+                  Key ring: {chosenGcpCryptoKey.keyRing}
+                </>
+              }
+            />
+            {!chosenGcpCryptoKey.hasEncryptDecryptAccess && (
+              <>
+                <WarningAmberIcon sx={{ color: 'red' }} />
                 {t('dictionary.noAccess')}
               </>
-            }
+            )}
           </>
         )}
       </ListItemButton>
