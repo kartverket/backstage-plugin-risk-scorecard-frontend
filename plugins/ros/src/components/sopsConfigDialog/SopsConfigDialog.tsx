@@ -44,7 +44,12 @@ export const SopsConfigDialog = ({
     sopsConfigs.find(value => value.onDefaultBranch) || sopsConfigs[0]
       ? sopsConfigs[0]
       : {
-          gcpCryptoKey: gcpCryptoKeys[0],
+          gcpCryptoKey: {
+            projectId: '',
+            keyRing: '',
+            name: '',
+            hasEncryptDecryptAccess: false,
+          },
           publicAgeKeys: [],
           onDefaultBranch: false,
           pullRequest: null,

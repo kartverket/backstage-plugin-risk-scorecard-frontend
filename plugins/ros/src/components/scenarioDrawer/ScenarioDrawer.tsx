@@ -92,7 +92,7 @@ export const ScenarioDrawer = () => {
 
   useEffect(() => {
     formMethods.reset(mapScenarioToFormScenario(scenario));
-  }, [scenario, formMethods, mapScenarioToFormScenario]);
+  }, [formMethods, mapScenarioToFormScenario, scenario]);
 
   return (
     <Drawer

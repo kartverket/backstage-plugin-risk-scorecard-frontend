@@ -14,6 +14,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       yes: 'Yes',
       no: 'No',
       summary: 'Summary',
+      noAccess: 'No access',
       optional: 'optional',
       month: 'month',
       week: 'week',
@@ -183,6 +184,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       description:
         'To use the Risk Scorecard, you need to enable an encryption scheme by selecting a key from Google Cloud Platform (GCP) for encrypting and decrypting. Follow the steps below to complete the setup:',
       selectKeysTitle: 'Select keys',
+      chooseGcpCryptoKey: 'Choose GCP key',
       gcpCryptoKeyDescription:
         'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk Scorecards.',
       publicAgeKeysAlreadyPresent:
@@ -425,6 +427,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'dictionary.yes': 'Ja',
           'dictionary.no': 'Nei',
+          'dictionary.noAccess': 'Ingen tilgang',
           'dictionary.summary': 'Oppsummering',
           'dictionary.optional': 'valgfritt',
           'dictionary.month': 'måned',
@@ -586,6 +589,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.description':
             'For å bruke kodenær RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
           'sopsConfigDialog.selectKeysTitle': 'Velg nøkler',
+          'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':
             "Hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med?",
           'sopsConfigDialog.publicAgeKeysAlreadyPresent':

@@ -8,6 +8,8 @@ import { VpnKey } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
+import AddIcon from '@mui/icons-material/Add';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 interface GcpCryptoKeyMenuProps {
   chosenGcpCryptoKey: GcpCryptoKeyObject;
@@ -48,6 +50,7 @@ export const GcpCryptoKeyMenu = ({
       sx={{
         position: 'relative',
         left: 0,
+        marginTop: 1,
       }}
     >
       <ListItemButton
@@ -59,21 +62,41 @@ export const GcpCryptoKeyMenu = ({
           gap: 1,
         }}
       >
-        <ListItemAvatar>
-          <Avatar>
-            <VpnKey />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={chosenGcpCryptoKey.name}
-          secondary={
-            <>
-              Project ID: {chosenGcpCryptoKey.projectId}
-              <br />
-              Key ring: {chosenGcpCryptoKey.keyRing}
-            </>
-          }
-        />
+        {chosenGcpCryptoKey.projectId === '' ? (
+          <>
+            <ListItemAvatar>
+              <Avatar>
+                <AddIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={t('sopsConfigDialog.chooseGcpCryptoKey')} />
+          </>
+        ) : (
+          <>
+            <ListItemAvatar>
+              <Avatar>
+                <VpnKey />
+              </Avatar>
+            </ListItemAvatar>
+
+            <ListItemText
+              primary={chosenGcpCryptoKey.name}
+              secondary={
+                <>
+                  Project ID: {chosenGcpCryptoKey.projectId}
+                  <br />
+                  Key ring: {chosenGcpCryptoKey.keyRing}
+                </>
+              }
+            />
+            {!chosenGcpCryptoKey.hasEncryptDecryptAccess && (
+              <>
+                <WarningAmberIcon sx={{ color: 'red' }} />
+                {t('dictionary.noAccess')}
+              </>
+            )}
+          </>
+        )}
       </ListItemButton>
       <Menu
         anchorEl={anchorEl}
