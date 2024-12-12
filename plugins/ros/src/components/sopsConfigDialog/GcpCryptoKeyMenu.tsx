@@ -49,7 +49,7 @@ export const GcpCryptoKeyMenu = ({
       sx={{
         position: 'relative',
         left: 0,
-        marginTop: 1
+        marginTop: 1,
       }}
     >
       <ListItemButton
@@ -62,16 +62,14 @@ export const GcpCryptoKeyMenu = ({
         }}
       >
         {chosenGcpCryptoKey.projectId === '' ? (
-            <>
-              <ListItemAvatar>
-                <Avatar>
-                  <AddIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                  primary={t('sopsConfigDialog.chooseGcpCryptoKey')}
-              />
-            </>
+          <>
+            <ListItemAvatar>
+              <Avatar>
+                <AddIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={t('sopsConfigDialog.chooseGcpCryptoKey')} />
+          </>
         ) : (
           <>
             <ListItemAvatar>
@@ -80,19 +78,17 @@ export const GcpCryptoKeyMenu = ({
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-                primary={chosenGcpCryptoKey.name}
-                secondary={
-                  <>
-                    Project ID: {chosenGcpCryptoKey.projectId}
-                    <br />
-                    Key ring: {chosenGcpCryptoKey.keyRing}
-                  </>
-                }
+              primary={chosenGcpCryptoKey.name}
+              secondary={
+                <>
+                  Project ID: {chosenGcpCryptoKey.projectId}
+                  <br />
+                  Key ring: {chosenGcpCryptoKey.keyRing}
+                </>
+              }
             />
           </>
-        )
-        }
-
+        )}
       </ListItemButton>
       <Menu
         anchorEl={anchorEl}

@@ -92,7 +92,6 @@ export const SopsConfigDialog = ({
   const sopsConfigDialogFormData = watch();
   useEffect(() => {
     setIsDirty(
-
       chosenSopsConfig.gcpCryptoKey.projectId ===
         chosenGcpCryptoKey.projectId &&
         chosenSopsConfig.gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing &&
