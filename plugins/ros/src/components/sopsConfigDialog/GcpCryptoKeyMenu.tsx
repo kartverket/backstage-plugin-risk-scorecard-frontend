@@ -78,7 +78,7 @@ export const GcpCryptoKeyMenu = ({
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary={chosenGcpCryptoKey.name}
+              primary={`${chosenGcpCryptoKey.name} ${!chosenGcpCryptoKey.hasEncryptDecryptAccess ? "(you do not have access)" : "" }`}
               secondary={
                 <>
                   Project ID: {chosenGcpCryptoKey.projectId}

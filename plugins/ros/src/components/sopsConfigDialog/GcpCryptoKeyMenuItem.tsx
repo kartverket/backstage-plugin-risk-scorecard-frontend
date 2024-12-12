@@ -31,7 +31,6 @@ export const GcpCryptoKeyMenuItem = ({
       <MenuItem
         value={value}
         onClick={() => handleClick(JSON.parse(value) as GcpCryptoKeyObject)}
-        disabled={!hasAccess}
       >
         <ListItemAvatar>
           <Avatar>
