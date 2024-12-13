@@ -43,8 +43,16 @@ export const RiScInfo = ({ riSc, edit }: RiScInfoProps) => {
             <Typography variant="h5">{riSc.content.title}</Typography>
             <EditButton onClick={edit} />
           </Box>
-          <Typography className={label}>{t('dictionary.scope')}</Typography>
-          <Typography className={body2}>{riSc.content.scope}</Typography>
+          <Box display="flex" flexDirection="row">
+            <Box flex={1}>
+              <Typography className={label}>Branch</Typography>
+              <Typography>{riSc.id}</Typography>
+            </Box>
+            <Box flex={2}>
+              <Typography className={label}>{t('dictionary.scope')}</Typography>
+              <Typography className={body2}>{riSc.content.scope}</Typography>
+            </Box>
+          </Box>
         </InfoCard>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>

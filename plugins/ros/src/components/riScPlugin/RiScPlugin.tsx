@@ -24,7 +24,6 @@ import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { SopsConfigButton } from '../common/SopsConfigButton';
 import { SopsConfigDialog } from '../sopsConfigDialog/SopsConfigDialog';
-import { BranchSvg } from '../common/Icons';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -167,9 +166,6 @@ export const RiScPlugin = () => {
                       </MenuItem>
                     )) ?? []}
                   </Select>
-                </Grid>
-                <Grid item xs>
-                  <BranchSvg /> Branchname: {selectedRiSc?.id}
                 </Grid>
               </>
             )}
