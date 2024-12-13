@@ -42,7 +42,7 @@ export const ActionBox = ({
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const { riScUpdateStatus } = useRiScs();
+  const { updateStatus } = useRiScs();
 
   const { submitEditedScenarioToRiSc, mapFormScenarioToScenario } =
     useScenario();
@@ -72,12 +72,10 @@ export const ActionBox = ({
             onClick={formMethods.handleSubmit((data: FormScenario) => {
               submitEditedScenarioToRiSc(mapFormScenarioToScenario(data));
             })}
-            disabled={
-              !formMethods.formState.isDirty || riScUpdateStatus.isLoading
-            }
+            disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
           >
             {t('dictionary.save')}
-            {riScUpdateStatus.isLoading && (
+            {updateStatus.isLoading && (
               <CircularProgress
                 size={16}
                 sx={{ marginLeft: 1, color: 'inherit' }}

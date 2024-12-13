@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RiSc } from '../../utils/types';
 import { emptyRiSc } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -12,6 +12,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../common/mixins';
+import { DialogContentText } from '@material-ui/core';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 export enum RiScDialogStates {
   Closed,
@@ -22,6 +27,11 @@ export enum RiScDialogStates {
 interface RiScDialogProps {
   onClose: () => void;
   dialogState: RiScDialogStates;
+}
+
+enum CreateRiScFrom {
+  Scratch,
+  Default,
 }
 
 export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
@@ -45,9 +55,20 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
       ? t('rosDialog.titleNew')
       : t('rosDialog.titleEdit');
 
+  const [createRiScFrom, setCreateRiScFrom] = useState<CreateRiScFrom>(
+    CreateRiScFrom.Scratch,
+  );
+  const handleChangeCreateRiScFrom = () => {
+    if (createRiScFrom === CreateRiScFrom.Scratch) {
+      setCreateRiScFrom(CreateRiScFrom.Default);
+    } else {
+      setCreateRiScFrom(CreateRiScFrom.Scratch);
+    }
+  };
+
   const onSubmit = handleSubmit((data: RiSc) => {
     if (dialogState === RiScDialogStates.Create) {
-      createNewRiSc(data);
+      createNewRiSc(data, createRiScFrom === CreateRiScFrom.Default);
     } else {
       updateRiSc(data);
     }
@@ -75,6 +96,40 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
           error={errors.scope !== undefined}
           minRows={4}
         />
+
+        {dialogState === RiScDialogStates.Create && (
+          <div>
+            <DialogContentText>
+              {t('rosDialog.generateInitialDescription')}
+            </DialogContentText>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontWeight: 'bold',
+                }}
+              >
+                {t('rosDialog.generateInitialToggleDescription')}
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Switch onChange={() => handleChangeCreateRiScFrom()} />
+                }
+                label={
+                  createRiScFrom === CreateRiScFrom.Scratch
+                    ? t('dictionary.no')
+                    : t('dictionary.yes')
+                }
+              />
+            </Box>
+          </div>
+        )}
       </DialogContent>
 
       <DialogActions sx={dialogActions}>

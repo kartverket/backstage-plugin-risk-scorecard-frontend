@@ -11,6 +11,26 @@ export const pluginRiScTranslationRef = createTranslationRef({
       createNewButton: 'Create new scorecard',
     },
     dictionary: {
+      yes: 'Yes',
+      no: 'No',
+      summary: 'Summary',
+      noAccess: 'No access',
+      optional: 'optional',
+      month: 'month',
+      week: 'week',
+      day: 'day',
+      hour: 'hour',
+      minute: 'minute',
+      second: 'second',
+      months: 'months',
+      weeks: 'weeks',
+      days: 'days',
+      hours: 'hours',
+      minutes: 'minutes',
+      seconds: 'seconds',
+      add: 'Add',
+      copy: 'Copy',
+      copied: 'Copied',
       cancel: 'Cancel',
       close: 'Close',
       completed: 'Completed',
@@ -42,6 +62,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
       url: 'URL',
       emptyField: 'No {{field}} specified',
       vulnerabilities: 'Vulnerabilities',
+    },
+    encryption: {
+      title: 'Encryption',
     },
     rosStatus: {
       statusBadge: {
@@ -149,6 +172,61 @@ export const pluginRiScTranslationRef = createTranslationRef({
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
       scopeError: 'The scorecard has to have a description of the scope',
+      generateInitialDescription:
+        'RiSc Scorecard lets you generate a default RiSc based on information about the codebase in kartverket.dev, security metrics and security controls.',
+      generateInitialToggleDescription:
+        'Do you want to generate a default RiSc?',
+      fromScratch: 'Empty',
+      generateDefault: 'Default',
+    },
+    sopsConfigDialog: {
+      title: 'Encryption',
+      description:
+        'To use the Risk Scorecard, you need to enable an encryption scheme by selecting a key from Google Cloud Platform (GCP) for encrypting and decrypting. Follow the steps below to complete the setup:',
+      selectKeysTitle: 'Select keys',
+      chooseGcpCryptoKey: 'Choose GCP key',
+      gcpCryptoKeyDescription:
+        'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk Scorecards.',
+      publicAgeKeysAlreadyPresent:
+        'The following age keys are already present:',
+      publicAgeKeyQuestion:
+        'Does anyone need to write Risk Scorecards locally using their editor?',
+      publicAgeKeyDescription:
+        'Provide public age keys below for individuals who are allowed local editing and encryption',
+      addPublicAgeKey: 'Add public age key',
+      publicAgeKey: 'Public age key',
+      update: 'Update',
+      createPRTitle: 'Create a Pull Request with the new encryption scheme',
+      createPRContent:
+        'Your encryption configuration is now ready and has been created in a new branch. Below you can create a PR with these changes. Alternatively, you can move the changes to a different branch by clicking the "Branch" button and selecting another active branch.',
+      PRTitle: 'Review and merge the Pull Request',
+      SummaryDescription:
+        'A PR with the encryption scheme has now been created.',
+      SummaryGCP: 'The selected GCP key is ',
+      SummaryAgeKeys: 'The following public age keys have also been added: ',
+      PRContent:
+        'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk Scorecards.',
+      required: 'This field is required',
+      publicKeyHelperTextKeyAlreadyExists: 'Public key already added',
+      publicKeyHelperTextKeyAlreadyExistInSopsConfig:
+        'Public key already present in existing SOPS configuration',
+      publicKeyHelperTextKeyNotValid:
+        'Public key is not a valid age public key',
+      pendingTitle: 'Pending SOPS configuration',
+      pendingDescription:
+        'The following pull requests are opened to include a SOPS configuration in the GitHub-repo',
+      secondaryPullRequestText: 'Opened _n_ ago by',
+      reEncryptTitle: "Re-encryption of existing RiSc's",
+      reEncryptDescription:
+        "When updating SOPS configuration, you will not be able to decrypt old RiSc's encrypted with the previous SOPS configuration. We therefore encourage you to re-encrypt the existing RiSc's on the default branch of your GitHub-repository for you to be able to use them with your updated SOPS configuration.",
+      reEncryptConsentDescription:
+        "Do you want to re-encrypt the RiSc's on the default branch of ",
+      openPR: 'Create pull request',
+      gotoPullRequest: 'Go to pull request',
+      gcpKeyHaveAccess: 'Has access',
+      gcpKeyDoNotHaveAccess: 'Do not have access',
+      gcpKeyDoNotHaveAccessDescription:
+        'You cannot choose this key as you do not have the role Cloud KMS CryptoKey Encrypter/Decrypter on it.',
     },
     scenarioStepper: {
       initialRiskStep: {
@@ -317,15 +395,23 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'The risk scorecard you are trying to open does not exist',
       ScenarioDoesNotExist:
         'The scenario you are trying to open does not exist',
+      ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration',
+      FailedToCreateSops: 'Failed to create SOPS configuration',
+      FailedToUpdateSops: 'SOPS configuration could not be updated',
     },
     infoMessages: {
+      OpenedPullRequest: 'Successfully opened pull request',
       CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
       UpdatedRiSc: 'Risk scorecard updated',
+      UpdatedSops: 'SOPS configuration updated',
       UpdatedRiScRequiresNewApproval:
         'Risk scorecard update and requires new approval',
       CreatedRiSc: 'Created new risk scorecard successfully',
       UpdatedRiScAndCreatedPullRequest:
         'Risk scorecard updated and ready for approval in Github',
+      NoSopsConfigFound:
+        'No SOPS configuration present on default branch of the GitHub repository',
+      CreatedSops: 'SOPS configuration created successfully',
     },
   },
 });
@@ -339,6 +425,26 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
 
+          'dictionary.yes': 'Ja',
+          'dictionary.no': 'Nei',
+          'dictionary.noAccess': 'Ingen tilgang',
+          'dictionary.summary': 'Oppsummering',
+          'dictionary.optional': 'valgfritt',
+          'dictionary.month': 'måned',
+          'dictionary.week': 'uke',
+          'dictionary.day': 'dag',
+          'dictionary.hour': 'time',
+          'dictionary.minute': 'minutt',
+          'dictionary.second': 'sekund',
+          'dictionary.months': 'måneder',
+          'dictionary.weeks': 'uker',
+          'dictionary.days': 'dager',
+          'dictionary.hours': 'timer',
+          'dictionary.minutes': 'minutter',
+          'dictionary.seconds': 'sekunder',
+          'dictionary.add': 'Legg til',
+          'dictionary.copy': 'Kopier',
+          'dictionary.copied': 'Kopiert',
           'dictionary.cancel': 'Avbryt',
           'dictionary.close': 'Lukk',
           'dictionary.completed': 'Fullført',
@@ -377,6 +483,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.action.requiredError': 'Feltet er påkrevd',
           'scenarioDrawer.action.emptyState':
             'Scenariet har ingen definerte tiltak',
+
+          'encryption.title': 'Kryptering',
 
           'rosStatus.statusBadge.missing':
             'Venter på godkjenning av risikoeier',
@@ -470,6 +578,64 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeDescription':
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
+          'rosDialog.generateInitialDescription':
+            'Kodenær RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
+          'rosDialog.generateInitialToggleDescription':
+            'Vil du generere initiell RoS?',
+          'rosDialog.fromScratch': 'Tom',
+          'rosDialog.generateDefault': 'Initiell',
+
+          'sopsConfigDialog.title': 'Kryptering',
+          'sopsConfigDialog.description':
+            'For å bruke kodenær RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
+          'sopsConfigDialog.selectKeysTitle': 'Velg nøkler',
+          'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
+          'sopsConfigDialog.gcpCryptoKeyDescription':
+            "Hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med?",
+          'sopsConfigDialog.publicAgeKeysAlreadyPresent':
+            'Følgende age-nøkler er allerede til stede:',
+          'sopsConfigDialog.publicAgeKeyQuestion':
+            'Trenger noen å skrive RoS lokalt i sin editor?',
+          'sopsConfigDialog.publicAgeKeyDescription':
+            'Legg ved offentlige age-nøkler til personer som ønsker å skrive kodenær RoS lokalt',
+          'sopsConfigDialog.addPublicAgeKey': 'Legg til nøkkel',
+          'sopsConfigDialog.publicAgeKey': 'Offentlig age-nøkkel',
+          'sopsConfigDialog.update': 'Oppdater',
+          'sopsConfigDialog.createPRTitle':
+            'Lag en Pull Request med det nye krypteringsskjemaet',
+          'sopsConfigDialog.createPRContent':
+            'Krypteringskonfigurasjonen er nå klar og har blitt lagt til i en ny branch. Nedenfor kan du opprette en PR med disse endringene. Alternativt kan du flytte endringene til en annen branch ved å klikke på "Branch"-knappen og velge en annen aktiv branch.',
+          'sopsConfigDialog.PRTitle': "Se gjennom og merge Pull Request'en",
+          'sopsConfigDialog.SummaryDescription':
+            'En PR med det nye krypteringsskjemaet har nå blitt opprettet.',
+          'sopsConfigDialog.SummaryGCP': 'Den valgte GCP-nøkkelen er ',
+          'sopsConfigDialog.SummaryAgeKeys':
+            ' Følgende offentlige age nøkler har også blitt lagt ved: ',
+          'sopsConfigDialog.PRContent':
+            "Klikk på knappen nedenfor for å se gjennom endringene og merge PR-en. Etter at du har merget PR-en, kan du begynne å opprette og administrere RoS'er.",
+          'sopsConfigDialog.required': 'Dette feltet er påkrevd',
+          'sopsConfigDialog.publicKeyHelperTextKeyAlreadyExists':
+            'Offentlig møkkel allerede lagt til',
+          'sopsConfigDialog.publicKeyHelperTextKeyAlreadyExistInSopsConfig':
+            'Offentlig nøkkel er allerede i eksisterende SOPS-konfigurasjon',
+          'sopsConfigDialog.publicKeyHelperTextKeyNotValid':
+            'Offentlig nøkkel er ikke en gyldig age offentlig nøkkel',
+          'sopsConfigDialog.pendingTitle': 'Avventende SOPS-konfigurasjon',
+          'sopsConfigDialog.pendingDescription':
+            'Følgende pull requests er åpnet for å inkludere en SOPS-konfigurasjon i GitHub-repoet',
+          'sopsConfigDialog.secondaryPullRequestText': 'Åpnet _n_ siden av',
+          'sopsConfigDialog.reEncryptTitle':
+            "Rekryptering av eksisterende RoS'er",
+          'sopsConfigDialog.reEncryptDescription':
+            "Ved å oppdatere SOPS-konfigurasjonen, vil du ikke lenger kunne dekryptere gamle RoS'er kryptert med den forrige SOPS-konfigurasjonen. Vi anbefaler derfor på det sterkeste å rekryptere eksisterende RoS'er på hoved-branchen i ditt GitHub-repo for at du skal kunne fortsette å lese dem med din oppdaterte SOPS-konfigurasjon.",
+          'sopsConfigDialog.reEncryptConsentDescription':
+            "Vil du rekryptere eksisterende RoS'er på hoved-branchen til",
+          'sopsConfigDialog.openPR': 'Åpne pull request',
+          'sopsConfigDialog.gotoPullRequest': 'Gå til pull request',
+          'sopsConfigDialog.gcpKeyHaveAccess': 'Har tilgang',
+          'sopsConfigDialog.gcpKeyDoNotHaveAccess': 'Har ikke tilgang',
+          'sopsConfigDialog.gcpKeyDoNotHaveAccessDescription':
+            'Du kan ikke velge denne nøkkelen fordi du ikke har Cloud KMS CryptoKey Encrypter/Decrypter rollen på nøkkelen.',
 
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
@@ -623,17 +789,28 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke hente risiko- og sårbarhetsanalyser med id-er: ',
           'errorMessages.FailedToFetchRiScs':
             'Kunne ikke hente risiko- og sårbarhetsanalyser',
+          'errorMessages.ErrorWhenFetchingSopsConfig':
+            'Kunne ikke hente SOPS-konfigurasjon',
+          'errorMessages.FailedToCreateSops':
+            'Kunne ikke opprette SOPS-konfigurasjon',
+          'errorMessages.FailedToUpdateSops':
+            'SOPS-konfigurasjon kunne ikke oppdateres',
 
+          'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
           'infoMessages.UpdatedRiSc':
             'Risiko- og sårbarhetsanalysen ble oppdatert',
+          'infoMessages.UpdatedSops': 'SOPS-konfigurasjon oppdatert',
           'infoMessages.UpdatedRiScRequiresNewApproval':
             'Risiko- og sårbarhetsanalysen ble oppdatert og trenger ny godkjenning',
           'infoMessages.CreatedRiSc':
             'Risiko- og sårbarhetsanalyse ble opprettet',
           'infoMessages.UpdatedRiScAndCreatedPullRequest':
             'Risiko- og sårbarhetsanalysen ble oppdatert og er klar for godkjenning i Github',
+          'infoMessages.NoSopsConfigFound':
+            'Ingen SOPS-konfigurasjon funnet på default branchen til GitHub-repoet',
+          'infoMessages.CreatedSops': 'SOPS-konfigurasjon opprettet',
         },
       }),
   },

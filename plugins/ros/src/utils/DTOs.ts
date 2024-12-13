@@ -8,6 +8,7 @@ import {
   RiScStatus,
   Risk,
   Scenario,
+  SopsConfig,
   Valuations,
 } from './types';
 import { ProfileInfo } from '@backstage/core-plugin-api';
@@ -16,6 +17,7 @@ export type ProcessRiScResultDTO = {
   riScId: string;
   status: ProcessingStatus;
   statusMessage: string;
+  riScContent: string | null;
 };
 
 // Takes a normal ProcessRiScResultDTO and changes status to ContentStatus.
@@ -32,6 +34,13 @@ export type PublishRiScResultDTO = {
   };
 } & ProcessRiScResultDTO;
 
+export type CreateRiScResultDTO = {
+  riScId: String;
+  status: ProcessingStatus;
+  statusMessage: string;
+  riScContent: string | null;
+} & ProcessRiScResultDTO;
+
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;
@@ -45,6 +54,49 @@ export type RiScDTO = {
   valuations: Valuations[];
   scenarios: ScenarioDTO[];
 };
+
+export type SopsConfigResultDTO = {
+  status: ProcessingStatus;
+  statusMessage: string;
+  gcpCryptoKeys: GcpCryptoKeyObject[];
+  sopsConfigs: SopsConfig[];
+} & ProcessRiScResultDTO;
+
+export type GcpCryptoKeyObject = {
+  projectId: string;
+  keyRing: string;
+  name: string;
+  hasEncryptDecryptAccess: boolean;
+};
+
+export type PullRequestObject = {
+  url: string;
+  title: string;
+  openedBy: string;
+  createdAt: string;
+};
+
+export type SopsConfigRequestBody = {
+  gcpCryptoKey: GcpCryptoKeyObject;
+  publicAgeKeys: string[];
+};
+
+export type SopsConfigCreateResponse = {
+  status: ProcessingStatus;
+  statusMessage: string;
+  sopsConfig: SopsConfig;
+} & ProcessRiScResultDTO;
+
+export type SopsConfigUpdateResponse = {
+  status: ProcessingStatus;
+  statusMessage: string;
+} & ProcessRiScResultDTO;
+
+export type OpenPullRequestForSopsConfigResponseBody = {
+  status: ProcessingStatus;
+  statusMessage: string;
+  pullRequest: PullRequestObject;
+} & ProcessRiScResultDTO;
 
 type ScenarioDTO = {
   title: string;
@@ -98,6 +150,19 @@ export function profileInfoToDTOString(profile: ProfileInfo): string {
   return JSON.stringify({
     name: profile.displayName ?? '',
     email: profile.email ?? '',
+  });
+}
+
+export function sopsConfigToDTOString(
+  sopsConfig: SopsConfigRequestBody,
+): string {
+  return JSON.stringify({
+    gcpCryptoKey: {
+      projectId: sopsConfig.gcpCryptoKey.projectId,
+      keyRing: sopsConfig.gcpCryptoKey.keyRing,
+      name: sopsConfig.gcpCryptoKey.name,
+    },
+    publicAgeKeys: sopsConfig.publicAgeKeys,
   });
 }
 
