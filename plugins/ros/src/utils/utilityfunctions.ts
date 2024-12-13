@@ -225,80 +225,74 @@ export function getPullRequestSecondaryText(
 ) {
   const now = new Date();
 
-  const years = now.getUTCFullYear() - fromDate.getUTCFullYear();
-  const months = now.getUTCMonth() - fromDate.getUTCMonth() + years * 12;
+  // Total difference in milliseconds
+  const diffInMs = now.getTime() - fromDate.getTime();
 
-  const normalizedFromDate = new Date(fromDate);
-  normalizedFromDate.setUTCMonth(now.getUTCMonth(), now.getUTCDate());
-
-  let days = Math.floor(
-    (now.getTime() - normalizedFromDate.getTime()) / (1000 * 60 * 60 * 24),
+  const diffInSeconds = Math.floor(diffInMs / 1000);
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  const diffInDays = Math.floor(diffInHours / 24);
+  const diffInWeeks = Math.floor(diffInDays / 7);
+  const diffInMonths = Math.floor(
+    diffInDays / 30.436875, // Average days in a month
   );
-
-  // Adjust month differences if the current day is before the fromDate day.
-  if (days < 0) {
-    const dayAdjustmentDate = new Date(normalizedFromDate);
-    dayAdjustmentDate.setMonth(now.getMonth() - 1);
-    days = Math.floor(
-      (now.getTime() - dayAdjustmentDate.getTime()) / (1000 * 60 * 60 * 24),
-    );
-  }
-
-  // Weeks can be extracted from days
-  const weeks = Math.floor(days / 7);
-  days = days % 7;
-
-  // Remaining time
-  let remainder =
-    now.getTime() -
-    normalizedFromDate.getTime() -
-    (weeks * 7 + days) * 24 * 60 * 60 * 1000;
-  const hours = Math.floor(remainder / (1000 * 60 * 60));
-  remainder -= hours * 1000 * 60 * 60;
-  const minutes = Math.floor(remainder / (1000 * 60));
-  remainder -= minutes * 1000 * 60;
-  const seconds = Math.floor(remainder / 1000);
+  const diffInYears = Math.floor(diffInMonths / 12);
 
   const text = t('sopsConfigDialog.secondaryPullRequestText');
 
-  if (months > 0) {
+  // Return the appropriate string based on the largest non-zero difference
+  if (diffInYears > 0) {
     return `${text.replace(
       '_n_',
-      `${months} ${
-        months > 1 ? t('dictionary.months') : t('dictionary.month')
+      `${diffInYears} ${
+        diffInYears > 1 ? t('dictionary.years') : t('dictionary.year')
       }`,
     )} ${userName}`;
   }
-  if (weeks > 0) {
+  if (diffInMonths > 0) {
     return `${text.replace(
       '_n_',
-      `${weeks} ${weeks > 1 ? t('dictionary.weeks') : t('dictionary.week')}`,
+      `${diffInMonths} ${
+        diffInMonths > 1 ? t('dictionary.months') : t('dictionary.month')
+      }`,
     )} ${userName}`;
   }
-  if (days > 0) {
+  if (diffInWeeks > 0) {
     return `${text.replace(
       '_n_',
-      `${days} ${days > 1 ? t('dictionary.days') : t('dictionary.day')}`,
+      `${diffInWeeks} ${
+        diffInWeeks > 1 ? t('dictionary.weeks') : t('dictionary.week')
+      }`,
     )} ${userName}`;
   }
-  if (hours > 0) {
+  if (diffInDays > 0) {
     return `${text.replace(
       '_n_',
-      `${hours} ${hours > 1 ? t('dictionary.hours') : t('dictionary.hour')}`,
+      `${diffInDays} ${
+        diffInDays > 1 ? t('dictionary.days') : t('dictionary.day')
+      }`,
     )} ${userName}`;
   }
-  if (minutes > 0) {
+  if (diffInHours > 0) {
     return `${text.replace(
       '_n_',
-      `${minutes} ${
-        minutes > 1 ? t('dictionary.minutes') : t('dictionary.minute')
+      `${diffInHours} ${
+        diffInHours > 1 ? t('dictionary.hours') : t('dictionary.hour')
+      }`,
+    )} ${userName}`;
+  }
+  if (diffInMinutes > 0) {
+    return `${text.replace(
+      '_n_',
+      `${diffInMinutes} ${
+        diffInMinutes > 1 ? t('dictionary.minutes') : t('dictionary.minute')
       }`,
     )} ${userName}`;
   }
   return `${text.replace(
     '_n_',
-    `${seconds} ${
-      seconds > 1 ? t('dictionary.seconds') : t('dictionary.second')
+    `${diffInSeconds} ${
+      diffInSeconds > 1 ? t('dictionary.seconds') : t('dictionary.second')
     }`,
   )} ${userName}`;
 }
