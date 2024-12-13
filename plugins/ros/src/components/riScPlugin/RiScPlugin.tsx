@@ -163,12 +163,12 @@ export const RiScPlugin = () => {
               >
                 <Select
                   variant="standard"
-                  value={selectedRiSc?.content.title ?? ''}
+                  value={selectedRiSc?.id ?? ''}
                   onChange={e => selectRiSc(e.target.value)}
                   sx={{ width: '100%' }}
                 >
                   {riScs.map(riSc => (
-                    <MenuItem key={riSc.id} value={riSc.content.title}>
+                    <MenuItem key={riSc.id} value={riSc.id}>
                       <ListItemText primary={riSc.content.title} />
                     </MenuItem>
                   )) ?? []}
