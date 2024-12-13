@@ -24,6 +24,7 @@ import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { SopsConfigButton } from '../common/SopsConfigButton';
 import { SopsConfigDialog } from '../sopsConfigDialog/SopsConfigDialog';
+import { BranchSvg } from '../common/Icons';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -152,28 +153,25 @@ export const RiScPlugin = () => {
 
           <Grid container spacing={4}>
             {riScs !== null && riScs.length !== 0 && (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                sx={{
-                  maxWidth: '600px',
-                  minWidth: '300px',
-                }}
-              >
-                <Select
-                  variant="standard"
-                  value={selectedRiSc?.id ?? ''}
-                  onChange={e => selectRiSc(e.target.value)}
-                  sx={{ width: '100%' }}
-                >
-                  {riScs.map(riSc => (
-                    <MenuItem key={riSc.id} value={riSc.id}>
-                      <ListItemText primary={riSc.content.title} />
-                    </MenuItem>
-                  )) ?? []}
-                </Select>
-              </Grid>
+              <>
+                <Grid item xs={12} sm={6}>
+                  <Select
+                    variant="standard"
+                    value={selectedRiSc?.id ?? ''}
+                    onChange={e => selectRiSc(e.target.value)}
+                    sx={{ width: '100%' }}
+                  >
+                    {riScs.map(riSc => (
+                      <MenuItem key={riSc.id} value={riSc.id}>
+                        <ListItemText primary={riSc.content.title} />
+                      </MenuItem>
+                    )) ?? []}
+                  </Select>
+                </Grid>
+                <Grid item xs>
+                  <BranchSvg /> Branchname: {selectedRiSc?.id}
+                </Grid>
+              </>
             )}
 
             {!isFetching &&
@@ -185,9 +183,6 @@ export const RiScPlugin = () => {
                     variant="text"
                     color="primary"
                     onClick={openCreateRiScDialog}
-                    sx={{
-                      minWidth: '205px',
-                    }}
                   >
                     {t('contentHeader.createNewButton')}
                   </Button>
