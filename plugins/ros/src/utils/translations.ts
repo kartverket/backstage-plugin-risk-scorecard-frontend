@@ -344,7 +344,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       rows: {
         '1': 'Very low', // svært liten
         '2': 'Low', // liten
-        '3': 'Moderat', // moderat
+        '3': 'Moderate', // moderat
         '4': 'High', // stor
         '5': 'Very high', // svært stor
       },
