@@ -152,23 +152,15 @@ export const RiScPlugin = () => {
 
           <Grid container spacing={4}>
             {riScs !== null && riScs.length !== 0 && (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                sx={{
-                  maxWidth: '600px',
-                  minWidth: '300px',
-                }}
-              >
+              <Grid item xs={12} sm={6}>
                 <Select
                   variant="standard"
-                  value={selectedRiSc?.content.title ?? ''}
+                  value={selectedRiSc?.id ?? ''}
                   onChange={e => selectRiSc(e.target.value)}
                   sx={{ width: '100%' }}
                 >
                   {riScs.map(riSc => (
-                    <MenuItem key={riSc.id} value={riSc.content.title}>
+                    <MenuItem key={riSc.id} value={riSc.id}>
                       <ListItemText primary={riSc.content.title} />
                     </MenuItem>
                   )) ?? []}

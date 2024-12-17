@@ -253,10 +253,8 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     setResponse(null);
   }, [setResponse]);
 
-  const selectRiSc = (title: string) => {
-    const selectedRiScId = riScs?.find(
-      riSc => riSc.content.title === title,
-    )?.id;
+  const selectRiSc = (id: string) => {
+    const selectedRiScId = riScs?.find(riSc => riSc.id === id)?.id;
     if (selectedRiScId) {
       navigate(getRiScPath({ riScId: selectedRiScId }));
     }
