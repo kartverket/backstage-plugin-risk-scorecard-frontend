@@ -186,11 +186,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
       selectKeysTitle: 'Select keys',
       chooseGcpCryptoKey: 'Choose GCP key',
       gcpCryptoKeyDescription:
-        'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk Scorecards.',
+        'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk scorecards.',
       publicAgeKeysAlreadyPresent:
         'The following age keys are already present:',
       publicAgeKeyQuestion:
-        'Does anyone need to write Risk Scorecards locally using their editor?',
+        'Does anyone need to write Risk scorecards locally using their editor?',
       publicAgeKeyDescription:
         'Provide public age keys below for individuals who are allowed local editing and encryption',
       addPublicAgeKey: 'Add public age key',
@@ -205,7 +205,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       SummaryGCP: 'The selected GCP key is ',
       SummaryAgeKeys: 'The following public age keys have also been added: ',
       PRContent:
-        'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk Scorecards.',
+        'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk scorecards.',
       required: 'This field is required',
       publicKeyHelperTextKeyAlreadyExists: 'Public key already added',
       publicKeyHelperTextKeyAlreadyExistInSopsConfig:
@@ -344,7 +344,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       rows: {
         '1': 'Very low', // svært liten
         '2': 'Low', // liten
-        '3': 'Moderat', // moderat
+        '3': 'Moderate', // moderat
         '4': 'High', // stor
         '5': 'Very high', // svært stor
       },
@@ -591,7 +591,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.selectKeysTitle': 'Velg nøkler',
           'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':
-            "Hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med?",
+            "Fra listen under kan du velge hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med.",
           'sopsConfigDialog.publicAgeKeysAlreadyPresent':
             'Følgende age-nøkler er allerede til stede:',
           'sopsConfigDialog.publicAgeKeyQuestion':

@@ -224,43 +224,21 @@ export function getPullRequestSecondaryText(
   t: (s: any) => string,
 ) {
   const now = new Date();
+  const diffMilliseconds = now.getTime() - fromDate.getTime();
 
-  const years = now.getUTCFullYear() - fromDate.getUTCFullYear();
-  const months = now.getUTCMonth() - fromDate.getUTCMonth() + years * 12;
-
-  const normalizedFromDate = new Date(fromDate);
-  normalizedFromDate.setUTCMonth(now.getUTCMonth(), now.getUTCDate());
-
-  let days = Math.floor(
-    (now.getTime() - normalizedFromDate.getTime()) / (1000 * 60 * 60 * 24),
-  );
-
-  // Adjust month differences if the current day is before the fromDate day.
-  if (days < 0) {
-    const dayAdjustmentDate = new Date(normalizedFromDate);
-    dayAdjustmentDate.setMonth(now.getMonth() - 1);
-    days = Math.floor(
-      (now.getTime() - dayAdjustmentDate.getTime()) / (1000 * 60 * 60 * 24),
-    );
-  }
-
-  // Weeks can be extracted from days
+  const seconds = Math.floor(diffMilliseconds / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
   const weeks = Math.floor(days / 7);
-  days = days % 7;
-
-  // Remaining time
-  let remainder =
-    now.getTime() -
-    normalizedFromDate.getTime() -
-    (weeks * 7 + days) * 24 * 60 * 60 * 1000;
-  const hours = Math.floor(remainder / (1000 * 60 * 60));
-  remainder -= hours * 1000 * 60 * 60;
-  const minutes = Math.floor(remainder / (1000 * 60));
-  remainder -= minutes * 1000 * 60;
-  const seconds = Math.floor(remainder / 1000);
+  const months =
+    now.getUTCMonth() -
+    fromDate.getUTCMonth() +
+    (now.getUTCFullYear() - fromDate.getUTCFullYear()) * 12;
 
   const text = t('sopsConfigDialog.secondaryPullRequestText');
 
+  // Rounding up (like GitHub?)
   if (months > 0) {
     return `${text.replace(
       '_n_',
@@ -276,22 +254,32 @@ export function getPullRequestSecondaryText(
     )} ${userName}`;
   }
   if (days > 0) {
+    const remainingHours = hours % 24;
+    const adjustedDays = remainingHours >= 12 ? days + 1 : days;
     return `${text.replace(
       '_n_',
-      `${days} ${days > 1 ? t('dictionary.days') : t('dictionary.day')}`,
+      `${adjustedDays} ${
+        adjustedDays > 1 ? t('dictionary.days') : t('dictionary.day')
+      }`,
     )} ${userName}`;
   }
   if (hours > 0) {
+    const remainingMinutes = minutes % 60;
+    const adjustedHours = remainingMinutes >= 30 ? hours + 1 : hours;
     return `${text.replace(
       '_n_',
-      `${hours} ${hours > 1 ? t('dictionary.hours') : t('dictionary.hour')}`,
+      `${adjustedHours} ${
+        adjustedHours > 1 ? t('dictionary.hours') : t('dictionary.hour')
+      }`,
     )} ${userName}`;
   }
   if (minutes > 0) {
+    const remainingSeconds = seconds % 60;
+    const adjustedMinutes = remainingSeconds >= 30 ? minutes + 1 : minutes;
     return `${text.replace(
       '_n_',
-      `${minutes} ${
-        minutes > 1 ? t('dictionary.minutes') : t('dictionary.minute')
+      `${adjustedMinutes} ${
+        adjustedMinutes > 1 ? t('dictionary.minutes') : t('dictionary.minute')
       }`,
     )} ${userName}`;
   }
