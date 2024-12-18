@@ -20,6 +20,9 @@ import { useAuthenticatedFetch } from '../../../utils/hooks';
 import Progress from './Progress';
 import { RiScMigrationDialog } from '../MigrationDialog';
 import { RiScPublishDialog } from '../PublishDialog';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -120,114 +123,128 @@ export const RiScStatusComponent = ({
   }, [selectedRiSc.status]);
 
   const migration = selectedRiSc.migrationStatus?.migrationChanges;
-  // const migration = true;
 
   return (
     <InfoCard>
       <Typography variant="h5">Status</Typography>
 
-      <Box
-        display="flex"
-        flexDirection="row"
-        alignItems="center"
-        gap={2}
-        justifyContent="space-between"
-        m={1}
-      >
-        <Progress step={status} />
+      {!migration && (
+        <>
+          <Box mt={1}>
+            <Progress step={status} />
+          </Box>
 
-        {/* Migration */}
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+            mt={2}
+          >
+            {status === 1 && (
+              <Box display="flex" gap={1}>
+                <EditNoteIcon />
+                <Typography>{t('rosStatus.statusBadge.draft')}</Typography>
+              </Box>
+            )}
+            {status === 2 && (
+              <Box display="flex" gap={1}>
+                <PendingActionsIcon />
+                <Typography>{t('rosStatus.statusBadge.waiting')}</Typography>
+              </Box>
+            )}
+            {status === 3 && (
+              <Box display="flex" gap={1}>
+                <CheckCircleOutlineIcon />
+                <Typography>{t('rosStatus.statusBadge.published')}</Typography>
+              </Box>
+            )}
 
-        {migration && (
-          <>
-            <Typography paragraph sx={subtitle1}>
-              <WarningAmberOutlined
-                fontSize="medium"
-                sx={{ transform: 'translateY(5px)', marginTop: '5px' }}
-              />{' '}
-              {t('rosStatus.statusBadge.migration.title')}
-            </Typography>
-            <Typography>
-              {t('rosStatus.statusBadge.migration.description')}
-            </Typography>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
-              sx={{ display: 'block', marginLeft: 'auto' }}
-            >
-              <Typography variant="button">
-                {t('rosStatus.moreInformationButton')}
+            {/* Draft */}
+            {status === 1 && (
+              <Typography paragraph variant="subtitle1">
+                {t('rosStatus.statusBadge.missing')}
               </Typography>
-            </Button>
-            <RiScMigrationDialog
-              openDialog={migrationDialogIsOpen}
-              handleUpdate={handleUpdate}
-              handleCancel={() => setMigrationDialogIsOpen(false)}
-              migrationVersions={
-                selectedRiSc.migrationStatus?.migrationVersions
-              }
-            />
-          </>
-        )}
+            )}
 
-        {/* Draft (1) */}
+            {/* Waiting for approval */}
+            {status === 2 && (
+              <Typography paragraph variant="subtitle1">
+                <PullRequestSvg />
+                {t('rosStatus.prStatus')}
+                <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
+                  Github
+                </Link>
+              </Typography>
+            )}
 
-        {!migration && status === 1 && (
-          <>
-            <Typography paragraph sx={subtitle1}>
-              {t('rosStatus.statusBadge.missing')}
-            </Typography>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={handleOpenPublishRiScDialog}
-              sx={{ display: 'block', marginLeft: 'auto' }}
-            >
-              {t('rosStatus.approveButton')}
-            </Button>
-          </>
-        )}
+            {/* Published */}
+            {status === 3 && (
+              <Typography paragraph variant="subtitle1" display="flex" gap={1}>
+                <CheckIcon />
+                {t('rosStatus.statusBadge.approved')}
+              </Typography>
+            )}
+          </Box>
 
-        {/* SentForApproval (2) */}
+          {status === 1 && (
+            <>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={handleOpenPublishRiScDialog}
+                sx={{ display: 'block', marginLeft: 'auto' }}
+              >
+                {t('rosStatus.approveButton')}
+              </Button>
+              <RiScPublishDialog
+                openDialog={publishRiScDialogIsOpen}
+                handlePublish={handleApproveAndPublish}
+                handleCancel={() => setPublishRiScDialogIsOpen(false)}
+                differenceFetchState={differenceFetchState}
+              />
+            </>
+          )}
+        </>
+      )}
 
-        {!migration && status === 2 && (
-          <Typography sx={{ fontWeight: 700 }} paragraph variant="subtitle1">
-            <PullRequestSvg />
-            {t('rosStatus.prStatus')}
-            <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
-              Github
-            </Link>
-          </Typography>
-        )}
-
-        {/* Published (3) */}
-
-        {!migration && status === 3 && (
+      {/* Migration */}
+      {migration && (
+        <Box>
           <Typography paragraph sx={subtitle1}>
-            <CheckIcon
+            <WarningAmberOutlined
               fontSize="medium"
-              sx={{ transform: 'translateY(5px)' }}
+              sx={{ transform: 'translateY(5px)', marginTop: '5px' }}
             />{' '}
-            {t('rosStatus.statusBadge.approved')}
+            {t('rosStatus.statusBadge.migration.title')}
           </Typography>
-        )}
-      </Box>
+          <Typography>
+            {t('rosStatus.statusBadge.migration.description')}
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
+            sx={{ display: 'block', marginLeft: 'auto', mt: 1 }}
+          >
+            <Typography variant="button">
+              {t('rosStatus.moreInformationButton')}
+            </Typography>
+          </Button>
+          <RiScMigrationDialog
+            openDialog={migrationDialogIsOpen}
+            handleUpdate={handleUpdate}
+            handleCancel={() => setMigrationDialogIsOpen(false)}
+            migrationVersions={selectedRiSc.migrationStatus?.migrationVersions}
+          />
+        </Box>
+      )}
 
       {/* Error */}
-
       {!selectedRiSc && (
-        <Typography paragraph sx={subtitle1}>
+        <Typography paragraph variant="subtitle1">
           {t('rosStatus.statusBadge.error')}
         </Typography>
       )}
-
-      <RiScPublishDialog
-        openDialog={publishRiScDialogIsOpen}
-        handlePublish={handleApproveAndPublish}
-        handleCancel={() => setPublishRiScDialogIsOpen(false)}
-        differenceFetchState={differenceFetchState}
-      />
     </InfoCard>
   );
 };

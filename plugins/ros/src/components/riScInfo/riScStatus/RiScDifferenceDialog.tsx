@@ -58,6 +58,7 @@ export const RiScDifferenceDialog = ({
             position: 'relative',
             marginBottom: '20px',
             minHeight: '260px',
+            color: 'white',
           }}
         >
           {differenceFetchState.isLoading && (

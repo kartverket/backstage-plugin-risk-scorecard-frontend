@@ -76,6 +76,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
           description:
             'There has been done changes to the risk scorecard, as a result of a migration to the newest version. The changes may include deletion and modification of information. It will not be possible to save edits of the scorecard without including and accepting the changes.', // Automatisk migrering av ROS
         },
+        draft: 'Draft',
+        waiting: 'Waiting for approval',
+        published: 'Published',
       },
       difference: {
         description: 'Summary of changes that will be approved by risk owner.',
@@ -494,6 +497,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Gjennomgang og lagring av endringer kreves',
           'rosStatus.statusBadge.migration.description':
             'Det har blitt gjort endringer i risiko- og sårbarhetsanalysen, som følge av en migrering til nyeste versjon. Endringene kan være både sletting og endring av informsasjon. Det vil ikke være mulig å lagre endringer av analysen uten å inkludere og godta endringene.',
+          'rosStatus.statusBadge.draft': 'Utkast',
+          'rosStatus.statusBadge.waiting': 'Venter på godkjenning',
+          'rosStatus.statusBadge.published': 'Publisert',
           'rosStatus.prStatus': ' Avventer godkjenning av pull request i ',
           'rosStatus.approveButton': 'Godkjenn ROS',
           'rosStatus.moreInformationButton': 'Mer informasjon',
