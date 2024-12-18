@@ -113,8 +113,8 @@ export const GcpCryptoKeyMenu = ({
           },
         }}
       >
-        {Object.keys(gcpCryptoKeysGroupedByAccess).map((hasAccess, index) => (
-          <li key={index}>
+        {Object.keys(gcpCryptoKeysGroupedByAccess).map(hasAccess => (
+          <li>
             <ul style={{ paddingLeft: 0, marginLeft: 0 }}>
               <ListSubheader>
                 {hasAccess === 'true'
@@ -123,7 +123,7 @@ export const GcpCryptoKeyMenu = ({
               </ListSubheader>
               {gcpCryptoKeysGroupedByAccess[hasAccess].map(gcpCryptoKey => (
                 <GcpCryptoKeyMenuItem
-                  key={index}
+                  key={`${gcpCryptoKey.projectId}-${gcpCryptoKey.keyRing}-${gcpCryptoKey.name}`}
                   value={JSON.stringify(gcpCryptoKey)}
                   gcpCryptoKey={gcpCryptoKey}
                   handleClick={handleClickMenuItem}
