@@ -11,7 +11,7 @@ const CircularProgressWithLabel = (
 };
 
 interface CircularWithValueLabelProps {
-  step: 1 | 2 | 3;
+  step: 0 | 1 | 2 | 3;
 }
 
 const Progress = ({ step }: CircularWithValueLabelProps) => {

@@ -110,17 +110,19 @@ export const RiScStatusComponent = ({
     setDifferenceFetchState(emptyDifferenceFetchState);
   }, [selectedRiSc]);
 
-  const [status, setStatus] = useState<1 | 2 | 3>(1);
+  const [status, setStatus] = useState<0 | 1 | 2 | 3>(0);
 
   useEffect(() => {
-    if (selectedRiSc.status === RiScStatus.Draft) {
+    if (selectedRiSc.content.scenarios.length === 0) {
+      setStatus(0);
+    } else if (selectedRiSc.status === RiScStatus.Draft) {
       setStatus(1);
     } else if (selectedRiSc.status === RiScStatus.SentForApproval) {
       setStatus(2);
     } else if (selectedRiSc.status === RiScStatus.Published) {
       setStatus(3);
     }
-  }, [selectedRiSc.status]);
+  }, [selectedRiSc.status, selectedRiSc.content.scenarios]);
 
   const migration = selectedRiSc.migrationStatus?.migrationChanges;
 
@@ -140,6 +142,12 @@ export const RiScStatusComponent = ({
             justifyContent="space-between"
             mt={2}
           >
+            {status === 0 && (
+              <Box display="flex" gap={1}>
+                <EditNoteIcon />
+                <Typography>Created empty scorecard</Typography>
+              </Box>
+            )}
             {status === 1 && (
               <Box display="flex" gap={1}>
                 <EditNoteIcon />
@@ -186,6 +194,7 @@ export const RiScStatusComponent = ({
             )}
           </Box>
 
+          {/* Draft */}
           {status === 1 && (
             <>
               <Button
