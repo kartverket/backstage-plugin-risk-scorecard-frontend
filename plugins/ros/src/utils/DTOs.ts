@@ -28,10 +28,7 @@ type ContentRiScResultDTO = Modify<
 > & { pullRequestUrl: string };
 
 export type PublishRiScResultDTO = {
-  pendingApproval?: {
-    pullRequestUrl: string;
-    pullRequestName: string;
-  };
+  pullRequestObject?: PullRequestObject;
 } & ProcessRiScResultDTO;
 
 export type CreateRiScResultDTO = {
