@@ -352,8 +352,8 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             isError: false,
             isSuccess: true,
           });
-          if ('pendingApproval' in res && res.pendingApproval?.pullRequestUrl) {
-            updatedRiSc.pullRequestUrl = res.pendingApproval.pullRequestUrl;
+          if ('pullRequestObject' in res && res.pullRequestObject) {
+            updatedRiSc.pullRequestObject = res.pullRequestObject;
             updatedRiSc.status = RiScStatus.SentForApproval;
           }
           setSelectedRiSc(updatedRiSc);
@@ -395,11 +395,10 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       publishRiScs(
         selectedRiSc.id,
         res => {
-          const prUrl = res.pendingApproval?.pullRequestUrl;
-          const updatedRiSc = {
+          const updatedRiSc: RiScWithMetadata = {
             ...selectedRiSc,
             status: RiScStatus.SentForApproval,
-            pullRequestUrl: prUrl,
+            pullRequestObject: res.pullRequestObject,
           };
           setSelectedRiSc(updatedRiSc);
           setRiScs(
