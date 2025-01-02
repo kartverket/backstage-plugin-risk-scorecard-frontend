@@ -179,10 +179,7 @@ export const RiScStatusComponent = ({
               <Typography paragraph variant="subtitle1">
                 <PullRequestSvg />
                 {t('rosStatus.prStatus')}
-                <Link
-                  target="_blank"
-                  href={selectedRiSc.pullRequestObject?.url}
-                >
+                <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
                   Github
                 </Link>
               </Typography>
