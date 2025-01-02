@@ -13,7 +13,6 @@ import IconButton from '@mui/material/IconButton';
 import { UseFormReturn } from 'react-hook-form';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -65,7 +64,7 @@ export const ActionBox = ({
           showTitleNumber={false}
           remove={remove}
         />
-        <ButtonGroup fullWidth>
+        <Box display="flex" gap={1}>
           <Button
             color="primary"
             variant="contained"
@@ -83,8 +82,10 @@ export const ActionBox = ({
             )}
           </Button>
 
-          <Button onClick={() => setIsEditing(false)}>Avbryt</Button>
-        </ButtonGroup>
+          <Button onClick={() => setIsEditing(false)}>
+            {t('dictionary.cancel')}
+          </Button>
+        </Box>
         <DeleteActionConfirmation
           deleteActionConfirmationIsOpen={deleteActionConfirmationIsOpen}
           setDeleteActionConfirmationIsOpen={setDeleteActionConfirmationIsOpen}
