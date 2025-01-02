@@ -7,12 +7,15 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Scenario } from '../../utils/types';
 import { useTableStyles } from './ScenarioTableStyles';
 import {
+  deletionScenario,
   getConsequenceLevel,
   getProbabilityLevel,
   getRiskMatrixColor,
 } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useRiScs } from '../../contexts/RiScContext';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -38,6 +41,8 @@ export const ScenarioTableRow = ({
     tableCellTitle,
     tableCellContainer,
   } = useTableStyles();
+
+  const { selectedRiSc: riSc, updateRiSc } = useRiScs();
 
   const ref = useRef<HTMLTableRowElement>(null);
 
@@ -154,6 +159,14 @@ export const ScenarioTableRow = ({
           {t('scenarioTable.columns.consequenceChar')}:
           {getConsequenceLevel(scenario.remainingRisk)}
         </div>
+      </TableCell>
+      <TableCell>
+        <IconButton
+          size="small"
+          onClick={() => deletionScenario(riSc, updateRiSc, scenario)}
+        >
+          <DeleteIcon />
+        </IconButton>
       </TableCell>
     </TableRow>
   );
