@@ -1,4 +1,4 @@
-import { RiSc, Risk, Scenario } from './types';
+import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
 import {
   consequenceOptions,
   latestSupportedVersion,
@@ -290,3 +290,29 @@ export function getPullRequestSecondaryText(
     }`,
   )} ${userName}`;
 }
+
+export const deleteScenario = (
+  riSc: RiScWithMetadata | null,
+  updateRiSc: (
+    riSc: RiSc,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => void,
+  scenario: Scenario,
+) => {
+  if (riSc) {
+    const updatedScenarios = riSc.content.scenarios.filter(
+      s => s.ID !== scenario.ID,
+    );
+    updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
+  }
+};
+
+export const deleteAction = (
+  remove: (index?: number | number[]) => void,
+  index: number,
+  onSubmit: () => void,
+) => {
+  remove(index);
+  onSubmit();
+};

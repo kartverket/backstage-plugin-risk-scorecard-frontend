@@ -10,24 +10,24 @@ import { body2, emptyState, label } from '../../common/typography';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore, Edit } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
-import { UseFormReturn } from 'react-hook-form';
+import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
-import { DeleteActionConfirmation } from './DeleteActionConfirmation';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { actionStatusOptions } from '../../../utils/constants';
-import CircularProgress from '@mui/material/CircularProgress';
 import { useIsMounted } from '../../../utils/hooks';
+import CircularProgress from '@mui/material/CircularProgress';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteAction } from '../../../utils/utilityfunctions';
 
 interface ActionBoxProps {
   action: Action;
   index: number;
   formMethods: UseFormReturn<FormScenario>;
-  remove: () => void;
+  remove: UseFieldArrayRemove;
   onSubmit: () => void;
 }
 
@@ -55,9 +55,6 @@ export const ActionBox = ({
 
   /* @ts-ignore Because ts can't typecheck strings against our keys */
   const translatedActionStatus = t(`actionStatus.${action.status}`);
-
-  const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
-    useState(false);
 
   const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
     value: actionStatus,
@@ -100,11 +97,11 @@ export const ActionBox = ({
         <ActionFormItem
           formMethods={formMethods}
           index={index}
-          handleDelete={() => setDeleteActionConfirmationIsOpen(true)}
+          handleDelete={() => deleteAction(remove, index, onSubmit)}
           showTitleNumber={false}
           remove={remove}
         />
-        <ButtonGroup fullWidth>
+        <Box display="flex" gap={1}>
           <Button
             color="primary"
             variant="contained"
@@ -122,16 +119,10 @@ export const ActionBox = ({
             )}
           </Button>
 
-          <Button onClick={() => setIsEditing(false)}>Avbryt</Button>
-        </ButtonGroup>
-        <DeleteActionConfirmation
-          deleteActionConfirmationIsOpen={deleteActionConfirmationIsOpen}
-          setDeleteActionConfirmationIsOpen={setDeleteActionConfirmationIsOpen}
-          formMethods={formMethods}
-          index={index}
-          remove={remove}
-          onSubmit={onSubmit}
-        />
+          <Button onClick={() => setIsEditing(false)}>
+            {t('dictionary.cancel')}
+          </Button>
+        </Box>
       </>
     );
   }
@@ -200,6 +191,13 @@ export const ActionBox = ({
             </MenuItem>
           ))}
         </Menu>
+        <IconButton
+          onClick={() => {
+            deleteAction(remove, index, onSubmit);
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
       </Box>
       <Collapse in={isExpanded}>
         <Typography sx={{ ...label, marginTop: 1 }}>

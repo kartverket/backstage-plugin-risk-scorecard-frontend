@@ -19,6 +19,7 @@ import { useRiScs } from '../../contexts/RiScContext';
 import { arrayNotEquals } from '../../utils/utilityfunctions';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { CheckCircle, Edit } from '@mui/icons-material';
 
 interface ScenarioTableProps {
   riSc: RiSc;
@@ -78,6 +79,8 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
     });
   };
 
+  const [edit, setEdit] = useState<boolean>(false);
+
   return (
     <>
       <Paper>
@@ -102,6 +105,25 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                 onClick={openNewScenarioWizard}
               >
                 {t('scenarioTable.addScenarioButton')}
+              </Button>
+              <Button
+                startIcon={edit ? <CheckCircle /> : <Edit />}
+                variant="text"
+                color="primary"
+                onClick={() => {
+                  if (edit && isOrderChanged) {
+                    saveOrder();
+                    setEdit(false);
+                  } else if (edit && !isOrderChanged) {
+                    setEdit(false);
+                  } else {
+                    setEdit(true);
+                  }
+                }}
+              >
+                {edit
+                  ? t('scenarioTable.doneEditing')
+                  : t('scenarioTable.editButton')}
               </Button>
             </Box>
           )}
@@ -134,7 +156,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
               <Table>
                 <TableHead style={{ whiteSpace: 'nowrap' }}>
                   <TableRow className={rowBorder}>
-                    <TableCell className={tableCellDragIcon} />
+                    {edit && <TableCell className={tableCellDragIcon} />}
                     <TableCell className={tableCellTitle}>
                       <Typography
                         className={label}
@@ -179,22 +201,11 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                       viewRow={openScenarioDrawer}
                       moveRow={moveRow}
                       isLastRow={idx === riSc.scenarios.length - 1}
+                      edit={edit}
                     />
                   ))}
                 </TableBody>
               </Table>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={saveOrder}
-                style={{
-                  margin: '1rem',
-                  float: 'right',
-                }}
-                disabled={!isOrderChanged}
-              >
-                Save Order
-              </Button>
             </TableContainer>
           </>
         )}
