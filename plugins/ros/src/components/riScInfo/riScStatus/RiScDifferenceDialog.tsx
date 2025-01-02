@@ -30,25 +30,14 @@ export const RiScDifferenceDialog = ({
   return (
     <Box>
       <Typography>{t('rosStatus.difference.description')}</Typography>
-      <Typography
-        sx={{
-          fontWeight: 700,
-          fontSize: '0.8rem',
-          paddingBottom: '40px',
-        }}
-      >
+      <Typography fontWeight={700} fontSize={13} pb={2}>
         {parsedDateString &&
           t('rosStatus.difference.publishDate', {
             date: parsedDateString,
           })}
       </Typography>
       <Box>
-        <Typography
-          variant="h3"
-          sx={{
-            fontSize: 18,
-          }}
-        >
+        <Typography variant="h3" fontSize={18}>
           {t('rosStatus.difference.differences.title')}
         </Typography>
         <Card

@@ -9,9 +9,7 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import CheckIcon from '@mui/icons-material/Check';
 import { InfoCard } from '@backstage/core-components';
-import { PullRequestSvg } from '../../common/Icons';
 import { useRiScs } from '../../../contexts/RiScContext';
 import { subtitle1 } from '../../common/typography';
 import Box from '@mui/material/Box';
@@ -145,50 +143,82 @@ export const RiScStatusComponent = ({
             {status === 0 && (
               <Box display="flex" gap={1}>
                 <EditNoteIcon />
-                <Typography>Created empty scorecard</Typography>
+                <Typography paragraph variant="subtitle1" mb={0}>
+                  {t('rosStatus.statusBadge.created')}
+                </Typography>
               </Box>
             )}
             {status === 1 && (
               <Box display="flex" gap={1}>
                 <EditNoteIcon />
-                <Typography>{t('rosStatus.statusBadge.draft')}</Typography>
+                <Typography paragraph variant="subtitle1" mb={0}>
+                  {t('rosStatus.statusBadge.draft')}
+                </Typography>
               </Box>
             )}
             {status === 2 && (
               <Box display="flex" gap={1}>
                 <PendingActionsIcon />
-                <Typography>{t('rosStatus.statusBadge.waiting')}</Typography>
+                <Typography paragraph variant="subtitle1" mb={0}>
+                  {t('rosStatus.statusBadge.waiting')}
+                </Typography>
               </Box>
             )}
             {status === 3 && (
               <Box display="flex" gap={1}>
                 <CheckCircleOutlineIcon />
-                <Typography>{t('rosStatus.statusBadge.published')}</Typography>
+                <Typography paragraph variant="subtitle1" mb={0}>
+                  {t('rosStatus.statusBadge.published')}
+                </Typography>
               </Box>
+            )}
+
+            {/* Created */}
+            {status === 0 && (
+              <Typography
+                paragraph
+                variant="subtitle1"
+                mb={0}
+                ml={5}
+                align="right"
+              >
+                {t('rosStatus.editing')}
+              </Typography>
             )}
 
             {/* Draft */}
             {status === 1 && (
-              <Typography paragraph variant="subtitle1">
+              <Typography paragraph variant="subtitle1" ml={5} align="right">
                 {t('rosStatus.statusBadge.missing')}
               </Typography>
             )}
 
             {/* Waiting for approval */}
             {status === 2 && (
-              <Typography paragraph variant="subtitle1">
-                <PullRequestSvg />
+              <Typography
+                paragraph
+                variant="subtitle1"
+                mb={0}
+                ml={5}
+                align="right"
+              >
                 {t('rosStatus.prStatus')}
                 <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
                   Github
                 </Link>
+                {t('rosStatus.prStatus2')}
               </Typography>
             )}
 
             {/* Published */}
             {status === 3 && (
-              <Typography paragraph variant="subtitle1" display="flex" gap={1}>
-                <CheckIcon />
+              <Typography
+                paragraph
+                variant="subtitle1"
+                display="flex"
+                gap={1}
+                mb={0}
+              >
                 {t('rosStatus.statusBadge.approved')}
               </Typography>
             )}
