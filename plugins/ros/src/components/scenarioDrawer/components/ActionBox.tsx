@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Action, FormScenario } from '../../../utils/types';
+import { Action, AlertProps, FormScenario } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Chip from '@mui/material/Chip';
@@ -10,21 +10,22 @@ import { body2, emptyState, label } from '../../common/typography';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore, Edit } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
-import { UseFormReturn } from 'react-hook-form';
+import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
 import CircularProgress from '@mui/material/CircularProgress';
 import { DeleteActionConfirmation } from './DeleteActionConfirmation';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ActionBoxProps {
   action: Action;
   index: number;
   formMethods: UseFormReturn<FormScenario>;
-  remove: () => void;
+  remove: UseFieldArrayRemove;
   onSubmit: () => void;
+  showAlert: ({ message, severity }: AlertProps) => void;
 }
 
 export const ActionBox = ({
@@ -33,6 +34,7 @@ export const ActionBox = ({
   formMethods,
   remove,
   onSubmit,
+  showAlert,
 }: ActionBoxProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -65,7 +67,7 @@ export const ActionBox = ({
           showTitleNumber={false}
           remove={remove}
         />
-        <ButtonGroup fullWidth>
+        <Box display="flex" gap={1}>
           <Button
             color="primary"
             variant="contained"
@@ -83,8 +85,10 @@ export const ActionBox = ({
             )}
           </Button>
 
-          <Button onClick={() => setIsEditing(false)}>Avbryt</Button>
-        </ButtonGroup>
+          <Button onClick={() => setIsEditing(false)}>
+            {t('dictionary.cancel')}
+          </Button>
+        </Box>
         <DeleteActionConfirmation
           deleteActionConfirmationIsOpen={deleteActionConfirmationIsOpen}
           setDeleteActionConfirmationIsOpen={setDeleteActionConfirmationIsOpen}
@@ -145,6 +149,19 @@ export const ActionBox = ({
                 : undefined,
           }}
         />
+        <IconButton
+          onClick={() => {
+            remove(index);
+            onSubmit();
+            showAlert({
+              message:
+                'Action deleted. If this was a mistake, you can review the commit history in GitHub and restore a previous version.',
+              severity: 'info',
+            });
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
       </Box>
       <Collapse in={isExpanded}>
         <Typography sx={{ ...label, marginTop: 1 }}>

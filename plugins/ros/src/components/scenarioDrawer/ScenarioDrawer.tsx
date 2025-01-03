@@ -9,7 +9,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { ScopeSection } from './components/ScopeSection';
 import { useForm } from 'react-hook-form';
-import { FormScenario, ProcessingStatus } from '../../utils/types';
+import { AlertProps, FormScenario, ProcessingStatus } from '../../utils/types';
 import RiskFormSection from './components/RiskFormSection';
 import ScopeFormSection from './components/ScopeFormSection';
 import Drawer from '@mui/material/Drawer';
@@ -21,6 +21,7 @@ import { getAlertSeverity } from '../../utils/utilityfunctions';
 import Typography from '@mui/material/Typography';
 import { MatrixDialog } from '../riScDialog/MatrixDialog';
 import { CloseConfirmation } from '../scenarioWizard/components/CloseConfirmation';
+import { CustomAlert } from '../common/CustomAlert';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -41,6 +42,13 @@ export const ScenarioDrawer = () => {
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
   const [isMatrixDialogOpen, setIsMatrixDialogOpen] = useState<boolean>(false);
+
+  const [alert, setAlert] = useState<AlertProps | null>(null);
+
+  const showAlert = ({ message, severity = 'info' }: AlertProps) => {
+    setAlert({ message, severity });
+    setTimeout(() => setAlert(null), 20000);
+  };
 
   const { updateStatus, response } = useRiScs();
 
@@ -140,6 +148,13 @@ export const ScenarioDrawer = () => {
         </Button>
       </Box>
 
+      {response &&
+        response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
+          <Alert severity={getAlertSeverity(updateStatus)}>
+            <Typography>{response.statusMessage}</Typography>
+          </Alert>
+        )}
+
       {isEditing ? (
         <>
           <ScopeFormSection formMethods={formMethods} />
@@ -158,6 +173,7 @@ export const ScenarioDrawer = () => {
         formMethods={formMethods}
         isEditing={isEditing}
         onSubmit={onSubmit}
+        showAlert={showAlert}
       />
       <Box
         sx={{
@@ -194,16 +210,10 @@ export const ScenarioDrawer = () => {
         </div>
       </Box>
 
-      {response &&
-        response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
-          <Alert severity={getAlertSeverity(updateStatus)}>
-            <Typography>{response.statusMessage}</Typography>
-          </Alert>
-        )}
-
       <DeleteConfirmation
         deleteConfirmationIsOpen={deleteConfirmationIsOpen}
         setDeleteConfirmationIsOpen={setDeleteConfirmationIsOpen}
+        showAlert={showAlert}
       />
       <MatrixDialog
         open={isMatrixDialogOpen}
@@ -214,6 +224,8 @@ export const ScenarioDrawer = () => {
         close={handleClose}
         save={onSubmitAndCloseDialog}
       />
+
+      {alert && <CustomAlert alert={alert} setAlert={setAlert} />}
     </Drawer>
   );
 };

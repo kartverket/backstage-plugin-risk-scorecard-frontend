@@ -1,4 +1,4 @@
-import { RiSc, Risk, Scenario } from './types';
+import { AlertProps, RiSc, RiScWithMetadata, Risk, Scenario } from './types';
 import {
   consequenceOptions,
   latestSupportedVersion,
@@ -290,3 +290,26 @@ export function getPullRequestSecondaryText(
     }`,
   )} ${userName}`;
 }
+
+export const deletionScenario = (
+  riSc: RiScWithMetadata | null,
+  updateRiSc: (
+    riSc: RiSc,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => void,
+  scenario: Scenario,
+  showAlert: ({ message, severity }: AlertProps) => void,
+) => {
+  if (riSc) {
+    const updatedScenarios = riSc.content.scenarios.filter(
+      s => s.ID !== scenario.ID,
+    );
+    updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
+    showAlert({
+      message:
+        'Scenario deleted. If this was a mistake, you can review the commit history in GitHub and restore a previous version.',
+      severity: 'info',
+    });
+  }
+};

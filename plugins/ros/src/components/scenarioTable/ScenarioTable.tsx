@@ -13,7 +13,7 @@ import { useTableStyles } from './ScenarioTableStyles';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useScenario } from '../../contexts/ScenarioContext';
-import { RiSc, RiScWithMetadata } from '../../utils/types';
+import { AlertProps, RiSc, RiScWithMetadata } from '../../utils/types';
 import { useFontStyles } from '../../utils/style';
 import { useRiScs } from '../../contexts/RiScContext';
 import { arrayNotEquals } from '../../utils/utilityfunctions';
@@ -22,9 +22,10 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 interface ScenarioTableProps {
   riSc: RiSc;
+  showAlert: ({ message, severity }: AlertProps) => void;
 }
 
-export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
+export const ScenarioTable = ({ riSc, showAlert }: ScenarioTableProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label } = useFontStyles();
   const { titleBox, rowBorder, tableCell, tableCellTitle, tableCellDragIcon } =
@@ -179,6 +180,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                       viewRow={openScenarioDrawer}
                       moveRow={moveRow}
                       isLastRow={idx === riSc.scenarios.length - 1}
+                      showAlert={showAlert}
                     />
                   ))}
                 </TableBody>
@@ -205,12 +207,16 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
 
 interface ScenarioTableWrapperProps {
   riSc: RiScWithMetadata;
+  showAlert: ({ message, severity }: AlertProps) => void;
 }
 
-export const ScenarioTableWrapper = ({ riSc }: ScenarioTableWrapperProps) => {
+export const ScenarioTableWrapper = ({
+  riSc,
+  showAlert,
+}: ScenarioTableWrapperProps) => {
   return (
     <DndProvider backend={HTML5Backend}>
-      <ScenarioTable key={riSc.id} riSc={riSc.content} />
+      <ScenarioTable key={riSc.id} riSc={riSc.content} showAlert={showAlert} />
     </DndProvider>
   );
 };
