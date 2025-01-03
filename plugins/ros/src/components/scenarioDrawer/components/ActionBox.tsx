@@ -10,19 +10,20 @@ import { body2, emptyState, label } from '../../common/typography';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore, Edit } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
-import { UseFormReturn } from 'react-hook-form';
+import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
 import CircularProgress from '@mui/material/CircularProgress';
 import { DeleteActionConfirmation } from './DeleteActionConfirmation';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ActionBoxProps {
   action: Action;
   index: number;
   formMethods: UseFormReturn<FormScenario>;
-  remove: () => void;
+  remove: UseFieldArrayRemove;
   onSubmit: () => void;
 }
 
@@ -146,6 +147,14 @@ export const ActionBox = ({
                 : undefined,
           }}
         />
+        <IconButton
+          onClick={() => {
+            remove(index);
+            onSubmit();
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
       </Box>
       <Collapse in={isExpanded}>
         <Typography sx={{ ...label, marginTop: 1 }}>
