@@ -9,7 +9,7 @@ import { section } from '../scenarioDrawerComponents';
 import { emptyState, heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
+import { AlertProps, FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
@@ -18,12 +18,14 @@ type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
   isEditing: boolean;
   onSubmit: () => void;
+  showAlert: ({ message, severity }: AlertProps) => void;
 };
 
 export const ActionsSection = ({
   formMethods,
   isEditing,
   onSubmit,
+  showAlert,
 }: ActionSectionProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -73,6 +75,7 @@ export const ActionsSection = ({
               formMethods={formMethods}
               remove={remove}
               onSubmit={onSubmit}
+              showAlert={showAlert}
             />
           </Fragment>
         ))

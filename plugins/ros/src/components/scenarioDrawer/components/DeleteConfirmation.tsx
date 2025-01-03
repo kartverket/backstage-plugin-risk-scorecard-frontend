@@ -9,13 +9,16 @@ import { dialogActions } from '../../common/mixins';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
 import { deletionScenario } from '../../../utils/utilityfunctions';
+import { AlertProps } from '../../../utils/types';
 
 export const DeleteConfirmation = ({
   deleteConfirmationIsOpen,
   setDeleteConfirmationIsOpen,
+  showAlert,
 }: {
   deleteConfirmationIsOpen: boolean;
   setDeleteConfirmationIsOpen: (deleteConfirmationIsOpen: boolean) => void;
+  showAlert: ({ message, severity }: AlertProps) => void;
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
@@ -34,7 +37,7 @@ export const DeleteConfirmation = ({
           onClick={() => {
             setDeleteConfirmationIsOpen(false);
             closeScenarioForm();
-            deletionScenario(riSc, updateRiSc, scenario);
+            deletionScenario(riSc, updateRiSc, scenario, showAlert);
           }}
           variant="contained"
           color="error"

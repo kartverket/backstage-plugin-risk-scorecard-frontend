@@ -24,6 +24,8 @@ import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { SopsConfigButton } from '../common/SopsConfigButton';
 import { SopsConfigDialog } from '../sopsConfigDialog/SopsConfigDialog';
+import { AlertProps } from '../../utils/types';
+import { CustomAlert } from '../common/CustomAlert';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -101,6 +103,13 @@ export const RiScPlugin = () => {
       setDisableSopsConfigButton(true);
     }
   }, [isFetching, updateStatus, failedToFetchSopsConfig, riScs, sopsConfigs]);
+
+  const [alert, setAlert] = useState<AlertProps | null>(null);
+
+  const showAlert = ({ message, severity = 'info' }: AlertProps) => {
+    setAlert({ message, severity });
+    setTimeout(() => setAlert(null), 20000);
+  };
 
   return (
     <>
@@ -192,7 +201,10 @@ export const RiScPlugin = () => {
                   <RiScInfo riSc={selectedRiSc} edit={openEditRiScDialog} />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
-                  <ScenarioTableWrapper riSc={selectedRiSc} />
+                  <ScenarioTableWrapper
+                    riSc={selectedRiSc}
+                    showAlert={showAlert}
+                  />
                 </Grid>
                 <Grid item xs md={5} lg={4}>
                   <RiskMatrix riSc={selectedRiSc.content} />
@@ -221,6 +233,8 @@ export const RiScPlugin = () => {
       )}
 
       {!scenarioWizardStep && <ScenarioDrawer />}
+
+      {alert && <CustomAlert alert={alert} setAlert={setAlert} />}
     </>
   );
 };

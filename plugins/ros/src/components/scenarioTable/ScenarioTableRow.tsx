@@ -4,7 +4,7 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { IconButton, Paper, Typography } from '@material-ui/core';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { Scenario } from '../../utils/types';
+import { AlertProps, Scenario } from '../../utils/types';
 import { useTableStyles } from './ScenarioTableStyles';
 import {
   deletionScenario,
@@ -23,6 +23,7 @@ interface ScenarioTableRowProps {
   index: number;
   moveRow: (dragIndex: number, hoverIndex: number) => void;
   isLastRow?: boolean;
+  showAlert: ({ message, severity }: AlertProps) => void;
 }
 
 export const ScenarioTableRow = ({
@@ -31,6 +32,7 @@ export const ScenarioTableRow = ({
   index,
   moveRow,
   isLastRow,
+  showAlert,
 }: ScenarioTableRowProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
@@ -163,7 +165,9 @@ export const ScenarioTableRow = ({
       <TableCell>
         <IconButton
           size="small"
-          onClick={() => deletionScenario(riSc, updateRiSc, scenario)}
+          onClick={() =>
+            deletionScenario(riSc, updateRiSc, scenario, showAlert)
+          }
         >
           <DeleteIcon />
         </IconButton>

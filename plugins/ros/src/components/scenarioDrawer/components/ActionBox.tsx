@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Action, FormScenario } from '../../../utils/types';
+import { Action, AlertProps, FormScenario } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Chip from '@mui/material/Chip';
@@ -25,6 +25,7 @@ interface ActionBoxProps {
   formMethods: UseFormReturn<FormScenario>;
   remove: UseFieldArrayRemove;
   onSubmit: () => void;
+  showAlert: ({ message, severity }: AlertProps) => void;
 }
 
 export const ActionBox = ({
@@ -33,6 +34,7 @@ export const ActionBox = ({
   formMethods,
   remove,
   onSubmit,
+  showAlert,
 }: ActionBoxProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -151,6 +153,11 @@ export const ActionBox = ({
           onClick={() => {
             remove(index);
             onSubmit();
+            showAlert({
+              message:
+                'Action deleted. If this was a mistake, you can review the commit history in GitHub and restore a previous version.',
+              severity: 'info',
+            });
           }}
         >
           <DeleteIcon />
