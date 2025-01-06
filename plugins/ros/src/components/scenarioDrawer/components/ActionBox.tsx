@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Action, FormScenario } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -16,8 +16,12 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
-import CircularProgress from '@mui/material/CircularProgress';
 import { DeleteActionConfirmation } from './DeleteActionConfirmation';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { actionStatusOptions } from '../../../utils/constants';
+import CircularProgress from '@mui/material/CircularProgress'
+import { useIsMounted } from '../../../utils/hooks';
 
 interface ActionBoxProps {
   action: Action;
@@ -44,7 +48,7 @@ export const ActionBox = ({
 
   const { updateStatus } = useRiScs();
 
-  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario } =
+  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
     useScenario();
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
@@ -55,6 +59,42 @@ export const ActionBox = ({
   const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
     useState(false);
 
+  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
+    value: actionStatus,
+    /* @ts-ignore Because ts can't typecheck strings against our keys */
+    renderedValue: t(`actionStatus.${actionStatus}`),
+  }));
+
+  const isMounted = useIsMounted();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleChipClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    
+      const updatedScenario = {
+        ...scenario,
+        actions: scenario.actions.map(a =>
+          a.ID === action.ID ? { ...a, status: newStatus } : a,
+        ),
+      };
+
+      await submitEditedScenarioToRiSc(updatedScenario);
+      
+      if (isMounted()) {
+        handleMenuClose();
+      }   
+  };
+
+  useEffect(() => () => setAnchorEl(null), []);
+  
   if (isEditing) {
     return (
       <>
@@ -78,7 +118,7 @@ export const ActionBox = ({
             {updateStatus.isLoading && (
               <CircularProgress
                 size={16}
-                sx={{ marginLeft: 1, color: 'inherit' }}
+                sx={{ marginLeft: 8, color: 'inherit' }}
               />
             )}
           </Button>
@@ -144,7 +184,23 @@ export const ActionBox = ({
                 ? { backgroundColor: '#6BC6A4' }
                 : undefined,
           }}
+          onClick={handleChipClick}
         />
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleMenuClose}
+          onClick={handleMenuClose}
+        >
+          {translatedActionStatuses.map(option => (
+            <MenuItem
+              key={option.value}
+              onClick={() => handleStatusChange(option.value)}
+            >
+              {option.renderedValue}
+            </MenuItem>
+          ))}
+        </Menu>
       </Box>
       <Collapse in={isExpanded}>
         <Typography sx={{ ...label, marginTop: 1 }}>
