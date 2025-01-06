@@ -87,7 +87,7 @@ export const useAuthenticatedFetch = () => {
 
   const [response, setResponse] = useResponse();
 
-  const authenticatedFetch = <T, K>(
+  const fullyAuthenticatedFetch = <T, K>(
     uri: string,
     method: 'GET' | 'POST' | 'PUT',
     onSuccess: (response: T) => void,
@@ -128,13 +128,52 @@ export const useAuthenticatedFetch = () => {
     });
   };
 
+  const googleAuthenticatedFetch = <T, K>(
+      uri: string,
+      method: 'GET' | 'POST' | 'PUT',
+      onSuccess: (response: T) => void,
+      onError: (error: K) => void,
+      body?: string,
+  ) => {
+    Promise.all([
+      identityApi.getCredentials(),
+      googleApi.getAccessToken([
+        'https://www.googleapis.com/auth/cloudkms',
+        'https://www.googleapis.com/auth/cloud-platform',
+        'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
+      ]),
+    ]).then(([idToken, googleAccessToken]) => {
+      fetch(uri, {
+        method: method,
+        headers: {
+          Authorization: `Bearer ${idToken.token}`,
+          'GCP-Access-Token': googleAccessToken,
+          'Content-Type': 'application/json',
+        },
+        body: body,
+      }).then(res => {
+        if (!res.ok) {
+          return res
+              .json()
+              .then(json => json as K)
+              .then(typedJson => onError(typedJson))
+              .catch(error => onError(error));
+        }
+        return res
+            .json()
+            .then(json => json as T)
+            .then(typedJson => onSuccess(typedJson));
+      });
+    });
+  };
+
   const fetchDifference = (
     selectedRiSc: RiScWithMetadata,
     onSuccess: (response: DifferenceDTO) => void,
     onError?: () => void,
   ) =>
     identityApi.getProfileInfo().then(profile => {
-      authenticatedFetch<DifferenceDTO, DifferenceDTO>(
+      fullyAuthenticatedFetch<DifferenceDTO, DifferenceDTO>(
         uriToFetchDifference(selectedRiSc.id),
         'POST',
         onSuccess,
@@ -149,7 +188,7 @@ export const useAuthenticatedFetch = () => {
     onSuccess: (response: RiScContentResultDTO[]) => void,
     onError?: () => void,
   ) =>
-    authenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
+    googleAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
       uriToFetchAllRiScs,
       'GET',
       onSuccess,
@@ -166,7 +205,7 @@ export const useAuthenticatedFetch = () => {
     onSuccess: (response: SopsConfigResultDTO) => void,
     onError?: (error: SopsConfigResultDTO) => void,
   ) =>
-    authenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
+    googleAuthenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
       sopsUri,
       'GET',
       res => onSuccess(res),
@@ -180,7 +219,7 @@ export const useAuthenticatedFetch = () => {
     onSuccess: (response: SopsConfigCreateResponse) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
-    authenticatedFetch<SopsConfigCreateResponse, SopsConfigCreateResponse>(
+    fullyAuthenticatedFetch<SopsConfigCreateResponse, SopsConfigCreateResponse>(
       sopsUri,
       'PUT',
       res => {
@@ -200,7 +239,7 @@ export const useAuthenticatedFetch = () => {
     onSuccess: (response: SopsConfigUpdateResponse) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
-    authenticatedFetch<SopsConfigUpdateResponse, ProcessRiScResultDTO>(
+    fullyAuthenticatedFetch<SopsConfigUpdateResponse, ProcessRiScResultDTO>(
       `${sopsUri}?ref=${branch}`,
       'POST',
       res => {
@@ -219,7 +258,7 @@ export const useAuthenticatedFetch = () => {
     onSuccess: (response: OpenPullRequestForSopsConfigResponseBody) => void,
     onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
-    authenticatedFetch<
+    fullyAuthenticatedFetch<
       OpenPullRequestForSopsConfigResponseBody,
       ProcessRiScResultDTO
     >(
@@ -241,7 +280,7 @@ export const useAuthenticatedFetch = () => {
     onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
     identityApi.getProfileInfo().then(profile =>
-      authenticatedFetch<PublishRiScResultDTO, ProcessRiScResultDTO>(
+      fullyAuthenticatedFetch<PublishRiScResultDTO, ProcessRiScResultDTO>(
         uriToPublishRiSc(riScId),
         'POST',
         res => {
@@ -263,7 +302,7 @@ export const useAuthenticatedFetch = () => {
     onError?: (error: ProcessRiScResultDTO) => void,
   ) =>
     identityApi.getProfileInfo().then(profile =>
-      authenticatedFetch<CreateRiScResultDTO, ProcessRiScResultDTO>(
+      fullyAuthenticatedFetch<CreateRiScResultDTO, ProcessRiScResultDTO>(
         `${riScUri}?generateDefault=${generateDefault}`,
         'POST',
         res => {
@@ -284,7 +323,7 @@ export const useAuthenticatedFetch = () => {
     onError?: (error: ProcessRiScResultDTO) => void,
   ) => {
     identityApi.getProfileInfo().then(profile =>
-      authenticatedFetch<
+      fullyAuthenticatedFetch<
         ProcessRiScResultDTO | PublishRiScResultDTO,
         ProcessRiScResultDTO
       >(
