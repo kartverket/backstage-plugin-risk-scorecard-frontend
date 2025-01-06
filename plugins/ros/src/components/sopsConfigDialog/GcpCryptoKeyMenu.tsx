@@ -123,6 +123,7 @@ export const GcpCryptoKeyMenu = ({
               </ListSubheader>
               {gcpCryptoKeysGroupedByAccess[hasAccess].map(gcpCryptoKey => (
                 <GcpCryptoKeyMenuItem
+                  key={`${gcpCryptoKey.projectId}-${gcpCryptoKey.keyRing}-${gcpCryptoKey.name}`}
                   value={JSON.stringify(gcpCryptoKey)}
                   gcpCryptoKey={gcpCryptoKey}
                   handleClick={handleClickMenuItem}

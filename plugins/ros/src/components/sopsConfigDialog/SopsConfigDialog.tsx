@@ -254,7 +254,6 @@ export const SopsConfigDialog = ({
               <strong>{chosenGcpCryptoKey.name}</strong>
               {'. '}
               <br />
-              <br />
               {chosenSopsConfig.publicAgeKeys.length !== 0 && (
                 <>
                   {t('sopsConfigDialog.SummaryAgeKeys')}

@@ -68,7 +68,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     rosStatus: {
       statusBadge: {
-        missing: 'Awaiting acceptance from risk owner', // Mangler godkjenning av risikoeier
+        missing:
+          'Once the draft is complete, the risk owner can review and accept the changes.', // Mangler godkjenning av risikoeier
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
         migration: {
@@ -76,6 +77,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
           description:
             'There has been done changes to the risk scorecard, as a result of a migration to the newest version. The changes may include deletion and modification of information. It will not be possible to save edits of the scorecard without including and accepting the changes.', // Automatisk migrering av ROS
         },
+        created: 'Empty scorecard created',
+        draft: 'Draft',
+        waiting: 'Awaiting approval',
+        published: 'Published',
       },
       difference: {
         description: 'Summary of changes that will be approved by risk owner.',
@@ -86,15 +91,17 @@ export const pluginRiScTranslationRef = createTranslationRef({
         differences: {
           title: 'CHANGES',
           noneRemoved: 'Nothing is removed',
-          titleRemoved: 'Removed from ROS-analysis',
-          titleExisting: 'Changed existing ROS-analysis',
+          titleRemoved: 'Removed from risk scorecard',
+          titleExisting: 'Changed in existing risk scorecard',
           noneExisting: 'Nothing is changed',
-          titleAdded: 'Added to ROS-analysis',
+          titleAdded: 'Added to risk scorecard',
           noneAdded: 'Nothing is added',
         },
       },
-      prStatus: ' Pending pull request in ', // Avventer godkjenning av PR i Github
+      editing: 'You can now start editing',
       approveButton: 'Accept risks', // Godkjenn ROS
+      prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
+      prStatus2: ' to publish the scorecard.',
       moreInformationButton: 'More information', // Lagre ROS migrering
     },
     publishDialog: {
@@ -186,11 +193,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
       selectKeysTitle: 'Select keys',
       chooseGcpCryptoKey: 'Choose GCP key',
       gcpCryptoKeyDescription:
-        'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk Scorecards.',
+        'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk scorecards.',
       publicAgeKeysAlreadyPresent:
         'The following age keys are already present:',
       publicAgeKeyQuestion:
-        'Does anyone need to write Risk Scorecards locally using their editor?',
+        'Does anyone need to write Risk scorecards locally using their editor?',
       publicAgeKeyDescription:
         'Provide public age keys below for individuals who are allowed local editing and encryption',
       addPublicAgeKey: 'Add public age key',
@@ -205,7 +212,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       SummaryGCP: 'The selected GCP key is ',
       SummaryAgeKeys: 'The following public age keys have also been added: ',
       PRContent:
-        'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk Scorecards.',
+        'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk scorecards.',
       required: 'This field is required',
       publicKeyHelperTextKeyAlreadyExists: 'Public key already added',
       publicKeyHelperTextKeyAlreadyExistInSopsConfig:
@@ -344,7 +351,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       rows: {
         '1': 'Very low', // svært liten
         '2': 'Low', // liten
-        '3': 'Moderat', // moderat
+        '3': 'Moderate', // moderat
         '4': 'High', // stor
         '5': 'Very high', // svært stor
       },
@@ -487,15 +494,21 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'encryption.title': 'Kryptering',
 
           'rosStatus.statusBadge.missing':
-            'Venter på godkjenning av risikoeier',
+            'Når utkastet er ferdig, kan risikoeier gå gjennom og godkjenne endringene.',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
           'rosStatus.statusBadge.migration.title':
             'Gjennomgang og lagring av endringer kreves',
           'rosStatus.statusBadge.migration.description':
             'Det har blitt gjort endringer i risiko- og sårbarhetsanalysen, som følge av en migrering til nyeste versjon. Endringene kan være både sletting og endring av informsasjon. Det vil ikke være mulig å lagre endringer av analysen uten å inkludere og godta endringene.',
-          'rosStatus.prStatus': ' Avventer godkjenning av pull request i ',
+          'rosStatus.statusBadge.created': 'Opprettet tom ROS',
+          'rosStatus.statusBadge.draft': 'Utkast',
+          'rosStatus.statusBadge.waiting': 'Avventer godkjenning',
+          'rosStatus.statusBadge.published': 'Publisert',
+          'rosStatus.editing': 'Du kan nå gjøre endringer',
           'rosStatus.approveButton': 'Godkjenn ROS',
+          'rosStatus.prStatus': ' Merge pull requesten i ',
+          'rosStatus.prStatus2': " for å publisere ROS'en.",
           'rosStatus.moreInformationButton': 'Mer informasjon',
           'rosStatus.difference.description':
             'Oppsummering av endringer som må godkjennes av risikoeier.',
@@ -511,7 +524,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.difference.differences.noneRemoved':
             'Ingenting er fjernet',
           'rosStatus.difference.differences.titleExisting':
-            'Endret eksisterende ROS-analyse',
+            'Endret i eksisterende ROS-analyse',
           'rosStatus.difference.differences.noneExisting':
             'Ingenting er endret',
           'rosStatus.difference.differences.titleAdded':
@@ -591,7 +604,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.selectKeysTitle': 'Velg nøkler',
           'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':
-            "Hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med?",
+            "Fra listen under kan du velge hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med.",
           'sopsConfigDialog.publicAgeKeysAlreadyPresent':
             'Følgende age-nøkler er allerede til stede:',
           'sopsConfigDialog.publicAgeKeyQuestion':

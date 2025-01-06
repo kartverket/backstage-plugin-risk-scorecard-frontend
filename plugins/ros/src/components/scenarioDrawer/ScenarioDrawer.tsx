@@ -92,7 +92,8 @@ export const ScenarioDrawer = () => {
 
   useEffect(() => {
     formMethods.reset(mapScenarioToFormScenario(scenario));
-  }, [formMethods, mapScenarioToFormScenario, scenario]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scenario]);
 
   return (
     <Drawer
