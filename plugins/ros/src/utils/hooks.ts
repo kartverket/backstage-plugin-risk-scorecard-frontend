@@ -320,7 +320,7 @@ export const useAuthenticatedFetch = () => {
 
 export const useIsMounted = () => {
   const mountedRef = useRef(false);
-  
+
   useEffect(() => {
     mountedRef.current = true;
     return () => {

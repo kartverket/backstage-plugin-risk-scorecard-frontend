@@ -20,7 +20,7 @@ import { DeleteActionConfirmation } from './DeleteActionConfirmation';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { actionStatusOptions } from '../../../utils/constants';
-import CircularProgress from '@mui/material/CircularProgress'
+import CircularProgress from '@mui/material/CircularProgress';
 import { useIsMounted } from '../../../utils/hooks';
 
 interface ActionBoxProps {
@@ -78,23 +78,22 @@ export const ActionBox = ({
   };
 
   const handleStatusChange = async (newStatus: string) => {
-    
-      const updatedScenario = {
-        ...scenario,
-        actions: scenario.actions.map(a =>
-          a.ID === action.ID ? { ...a, status: newStatus } : a,
-        ),
-      };
+    const updatedScenario = {
+      ...scenario,
+      actions: scenario.actions.map(a =>
+        a.ID === action.ID ? { ...a, status: newStatus } : a,
+      ),
+    };
 
-      await submitEditedScenarioToRiSc(updatedScenario);
-      
-      if (isMounted()) {
-        handleMenuClose();
-      }   
+    await submitEditedScenarioToRiSc(updatedScenario);
+
+    if (isMounted()) {
+      handleMenuClose();
+    }
   };
 
   useEffect(() => () => setAnchorEl(null), []);
-  
+
   if (isEditing) {
     return (
       <>
