@@ -316,3 +316,19 @@ export const deleteAction = (
   remove(index);
   onSubmit();
 };
+
+export const getAgeStatus = (date: string): 'good' | 'ok' | 'bad' => {
+  const [day, month, year] = date.split('/').map(Number);
+  const parsedDate: Date = new Date(year, month - 1, day);
+
+  const now: Date = new Date();
+  const diffInMilliseconds: number = now.getTime() - parsedDate.getTime();
+  const diffInMonths: number = diffInMilliseconds / (1000 * 60 * 60 * 24 * 30);
+
+  if (diffInMonths > 6) {
+    return 'bad';
+  } else if (diffInMonths > 3) {
+    return 'ok';
+  }
+  return 'good';
+};

@@ -8,8 +8,6 @@ import { ErrorOutline, Favorite } from '@mui/icons-material';
 import { DifferenceText } from './DifferenceText';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { parseISODateFromEncryptedROS } from '../../../utils/utilityfunctions';
-import { parseISO } from 'date-fns';
 
 type RiScDifferenceDialogProps = {
   differenceFetchState: DifferenceFetchState;
@@ -20,22 +18,9 @@ export const RiScDifferenceDialog = ({
 }: RiScDifferenceDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const formatedDateString = parseISODateFromEncryptedROS(
-    differenceFetchState.defaultLastModifiedDateString,
-  );
-
-  const parsedDateString = formatedDateString
-    ? parseISO(formatedDateString).toLocaleDateString()
-    : null;
   return (
     <Box>
-      <Typography>{t('rosStatus.difference.description')}</Typography>
-      <Typography fontWeight={700} fontSize={13} pb={2}>
-        {parsedDateString &&
-          t('rosStatus.difference.publishDate', {
-            date: parsedDateString,
-          })}
-      </Typography>
+      <Typography pb={2}>{t('rosStatus.difference.description')}</Typography>
       <Box>
         <Typography variant="h3" fontSize={18}>
           {t('rosStatus.difference.differences.title')}

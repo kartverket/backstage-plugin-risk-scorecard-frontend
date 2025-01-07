@@ -70,7 +70,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     rosStatus: {
       statusBadge: {
         missing:
-          'Once the draft is complete, the risk owner can review and accept the changes.', // Mangler godkjenning av risikoeier
+          'Once the draft is complete, the risk owner can accept the changes.', // Mangler godkjenning av risikoeier
         approved: 'Accepted by risk owner', // Godkjent av risikoeier
         error: 'Failed to retrieve status', // Kunne ikke hente status
         migration: {
@@ -85,7 +85,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       },
       difference: {
         description: 'Summary of changes that will be approved by risk owner.',
-        publishDate: 'Last published changes {{date}}',
+        publishDate: 'Last published changes: ',
         fetching: 'Fetching changes',
         error: 'Error while fetching changes',
         newROS: 'No published Risk scorecards to compare with',
@@ -516,8 +516,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.moreInformationButton': 'Mer informasjon',
           'rosStatus.difference.description':
             'Oppsummering av endringer som må godkjennes av risikoeier.',
-          'rosStatus.difference.publishDate':
-            'Siste publiserte endringer {{date}}',
+          'rosStatus.difference.publishDate': 'Siste publiserte endringer: ',
           'rosStatus.difference.fetching': 'Henter endringer',
           'rosStatus.difference.error': 'Feil med uthenting av endringer',
           'rosStatus.difference.newROS':

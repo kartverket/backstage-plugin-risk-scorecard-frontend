@@ -14,7 +14,6 @@ import { useRiScs } from '../../../contexts/RiScContext';
 import { subtitle1 } from '../../common/typography';
 import Box from '@mui/material/Box';
 import { WarningAmberOutlined } from '@mui/icons-material';
-import { useAuthenticatedFetch } from '../../../utils/hooks';
 import Progress from './Progress';
 import { RiScMigrationDialog } from '../MigrationDialog';
 import { RiScPublishDialog } from '../PublishDialog';
@@ -22,30 +21,24 @@ import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
-const emptyDifferenceFetchState: DifferenceFetchState = {
-  differenceState: {
-    entriesOnLeft: [],
-    entriesOnRight: [],
-    difference: [],
-  },
-  status: null,
-  isLoading: false,
-  errorMessage: '',
-  currentDifferenceId: '',
-  defaultLastModifiedDateString: '',
-};
-
 interface RiScStatusProps {
   selectedRiSc: RiScWithMetadata;
   publishRiScFn: () => void;
+  differenceFetchState: DifferenceFetchState;
+  setDifferenceFetchState: React.Dispatch<
+    React.SetStateAction<DifferenceFetchState>
+  >;
+  emptyDifferenceFetchState: DifferenceFetchState;
 }
 
 export const RiScStatusComponent = ({
   selectedRiSc,
   publishRiScFn,
+  differenceFetchState,
+  setDifferenceFetchState,
+  emptyDifferenceFetchState,
 }: RiScStatusProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { fetchDifference } = useAuthenticatedFetch();
 
   const [publishRiScDialogIsOpen, setPublishRiScDialogIsOpen] =
     useState<boolean>(false);
@@ -53,45 +46,11 @@ export const RiScStatusComponent = ({
   const [migrationDialogIsOpen, setMigrationDialogIsOpen] =
     useState<boolean>(false);
 
-  const [differenceFetchState, setDifferenceFetchState] =
-    useState<DifferenceFetchState>(emptyDifferenceFetchState);
-
   const { updateRiSc } = useRiScs();
 
   const handleApproveAndPublish = () => {
     publishRiScFn();
     setPublishRiScDialogIsOpen(false);
-  };
-
-  const getDifferences = () => {
-    if (
-      !selectedRiSc ||
-      differenceFetchState.isLoading ||
-      differenceFetchState.currentDifferenceId === selectedRiSc.id
-    )
-      return;
-
-    setDifferenceFetchState({ ...differenceFetchState, isLoading: true });
-    fetchDifference(
-      selectedRiSc,
-      response => {
-        setDifferenceFetchState({
-          differenceState: response.differenceState,
-          isLoading: false,
-          currentDifferenceId: selectedRiSc.id,
-          status: response.status,
-          errorMessage: response.errorMessage,
-          defaultLastModifiedDateString: response.defaultLastModifiedDateString,
-        });
-      },
-      () => {
-        setDifferenceFetchState({
-          ...emptyDifferenceFetchState,
-          errorMessage: t('rosStatus.difference.error'),
-          status: 'FrontendFallback', // Fallback when the backend does not deliver a response with status
-        });
-      },
-    );
   };
 
   const handleUpdate = () => {
@@ -101,12 +60,11 @@ export const RiScStatusComponent = ({
 
   const handleOpenPublishRiScDialog = () => {
     setPublishRiScDialogIsOpen(true);
-    getDifferences();
   };
 
   useEffect(() => {
     setDifferenceFetchState(emptyDifferenceFetchState);
-  }, [selectedRiSc]);
+  }, [emptyDifferenceFetchState, selectedRiSc, setDifferenceFetchState]);
 
   const [status, setStatus] = useState<0 | 1 | 2 | 3>(0);
 
