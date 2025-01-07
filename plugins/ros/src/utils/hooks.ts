@@ -129,11 +129,11 @@ export const useAuthenticatedFetch = () => {
   };
 
   const googleAuthenticatedFetch = <T, K>(
-      uri: string,
-      method: 'GET' | 'POST' | 'PUT',
-      onSuccess: (response: T) => void,
-      onError: (error: K) => void,
-      body?: string,
+    uri: string,
+    method: 'GET' | 'POST' | 'PUT',
+    onSuccess: (response: T) => void,
+    onError: (error: K) => void,
+    body?: string,
   ) => {
     Promise.all([
       identityApi.getCredentials(),
@@ -154,15 +154,15 @@ export const useAuthenticatedFetch = () => {
       }).then(res => {
         if (!res.ok) {
           return res
-              .json()
-              .then(json => json as K)
-              .then(typedJson => onError(typedJson))
-              .catch(error => onError(error));
+            .json()
+            .then(json => json as K)
+            .then(typedJson => onError(typedJson))
+            .catch(error => onError(error));
         }
         return res
-            .json()
-            .then(json => json as T)
-            .then(typedJson => onSuccess(typedJson));
+          .json()
+          .then(json => json as T)
+          .then(typedJson => onSuccess(typedJson));
       });
     });
   };
