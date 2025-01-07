@@ -1,5 +1,5 @@
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import {
   configApiRef,
   fetchApiRef,
@@ -316,4 +316,17 @@ export const useAuthenticatedFetch = () => {
     postSopsConfig,
     postOpenPullRequestForSopsConfig,
   };
+};
+
+export const useIsMounted = () => {
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  return useCallback(() => mountedRef.current, []);
 };
