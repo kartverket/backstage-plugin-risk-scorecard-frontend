@@ -122,7 +122,6 @@ export const useAuthenticatedFetch = () => {
         });
       })
       .catch(error => {
-        console.log('GitHub rejected');
         if (error.name === 'RejectedError') {
           onError(error, true);
         } else {
@@ -170,7 +169,6 @@ export const useAuthenticatedFetch = () => {
         });
       })
       .catch(error => {
-        console.log('Google rejected');
         if (error.name === 'RejectedError') {
           onError(error, true);
         } else {
