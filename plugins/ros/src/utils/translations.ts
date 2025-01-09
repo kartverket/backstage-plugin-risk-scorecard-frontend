@@ -11,6 +11,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       createNewButton: 'Create new scorecard',
     },
     dictionary: {
+      rejectedLogin: 'Login rejected by user.',
       yes: 'Yes',
       no: 'No',
       summary: 'Summary',
@@ -432,6 +433,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
 
+          'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.yes': 'Ja',
           'dictionary.no': 'Nei',
           'dictionary.noAccess': 'Ingen tilgang',
