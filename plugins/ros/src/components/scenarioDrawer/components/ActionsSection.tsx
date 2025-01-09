@@ -61,7 +61,7 @@ export const ActionsSection = ({
 
   return (
     <Paper sx={section}>
-      <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
+      <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
 
       {fields.length > 0 ? (
         fields.map((field, index) => (

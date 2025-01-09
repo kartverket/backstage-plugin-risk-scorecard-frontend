@@ -7,12 +7,15 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Scenario } from '../../utils/types';
 import { useTableStyles } from './ScenarioTableStyles';
 import {
+  deleteScenario,
   getConsequenceLevel,
   getProbabilityLevel,
   getRiskMatrixColor,
 } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useRiScs } from '../../contexts/RiScContext';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -20,6 +23,7 @@ interface ScenarioTableRowProps {
   index: number;
   moveRow: (dragIndex: number, hoverIndex: number) => void;
   isLastRow?: boolean;
+  isEditing: boolean;
 }
 
 export const ScenarioTableRow = ({
@@ -28,6 +32,7 @@ export const ScenarioTableRow = ({
   index,
   moveRow,
   isLastRow,
+  isEditing,
 }: ScenarioTableRowProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
@@ -38,6 +43,8 @@ export const ScenarioTableRow = ({
     tableCellTitle,
     tableCellContainer,
   } = useTableStyles();
+
+  const { selectedRiSc: riSc, updateRiSc } = useRiScs();
 
   const ref = useRef<HTMLTableRowElement>(null);
 
@@ -94,14 +101,16 @@ export const ScenarioTableRow = ({
       onClick={() => viewRow(scenario.ID)}
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
-      <TableCell>
-        <IconButton size="small" ref={drag}>
-          <DragIndicatorIcon
-            aria-label="Drag"
-            sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-          />
-        </IconButton>
-      </TableCell>
+      {isEditing && (
+        <TableCell>
+          <IconButton size="small" ref={drag}>
+            <DragIndicatorIcon
+              aria-label="Drag"
+              sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            />
+          </IconButton>
+        </TableCell>
+      )}
       <TableCell className={tableCellTitle}>
         <Typography color="primary" style={{ fontWeight: 600 }}>
           {scenario.title}
@@ -155,6 +164,16 @@ export const ScenarioTableRow = ({
           {getConsequenceLevel(scenario.remainingRisk)}
         </div>
       </TableCell>
+      {isEditing && (
+        <TableCell>
+          <IconButton
+            size="small"
+            onClick={() => deleteScenario(riSc, updateRiSc, scenario)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      )}
     </TableRow>
   );
 };
