@@ -4,6 +4,7 @@ import { useScenario } from '../../contexts/ScenarioContext';
 import { RiskSection } from './components/RiskSection';
 import { ActionsSection } from './components/ActionsSection';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { DeleteConfirmation } from './components/DeleteConfirmation';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { ScopeSection } from './components/ScopeSection';
@@ -20,7 +21,6 @@ import { getAlertSeverity } from '../../utils/utilityfunctions';
 import Typography from '@mui/material/Typography';
 import { MatrixDialog } from '../riScDialog/MatrixDialog';
 import { CloseConfirmation } from '../scenarioWizard/components/CloseConfirmation';
-import { DeleteConfirmation } from './components/DeleteConfirmation';
 
 export const ScenarioDrawer = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -34,6 +34,9 @@ export const ScenarioDrawer = () => {
     mapFormScenarioToScenario,
     collapseAllActions,
   } = useScenario();
+
+  const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
+    useState(false);
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
@@ -71,9 +74,6 @@ export const ScenarioDrawer = () => {
       collapseAllActions();
     }
   };
-
-  const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
-    useState(false);
 
   const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
     submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), () =>
@@ -140,13 +140,6 @@ export const ScenarioDrawer = () => {
         </Button>
       </Box>
 
-      {response &&
-        response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
-          <Alert severity={getAlertSeverity(updateStatus)}>
-            <Typography>{response.statusMessage}</Typography>
-          </Alert>
-        )}
-
       {isEditing ? (
         <>
           <ScopeFormSection formMethods={formMethods} />
@@ -201,16 +194,21 @@ export const ScenarioDrawer = () => {
         </div>
       </Box>
 
+      {response &&
+        response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
+          <Alert severity={getAlertSeverity(updateStatus)}>
+            <Typography>{response.statusMessage}</Typography>
+          </Alert>
+        )}
+
       <DeleteConfirmation
         deleteConfirmationIsOpen={deleteConfirmationIsOpen}
         setDeleteConfirmationIsOpen={setDeleteConfirmationIsOpen}
       />
-
       <MatrixDialog
         open={isMatrixDialogOpen}
         close={() => setIsMatrixDialogOpen(false)}
       />
-
       <CloseConfirmation
         isOpen={showCloseConfirmation}
         close={handleClose}

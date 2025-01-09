@@ -79,7 +79,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
     });
   };
 
-  const [edit, setEdit] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   return (
     <>
@@ -107,21 +107,21 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                 {t('scenarioTable.addScenarioButton')}
               </Button>
               <Button
-                startIcon={edit ? <CheckCircle /> : <Edit />}
+                startIcon={isEditing ? <CheckCircle /> : <Edit />}
                 variant="text"
                 color="primary"
                 onClick={() => {
-                  if (edit && isOrderChanged) {
+                  if (isEditing && isOrderChanged) {
                     saveOrder();
-                    setEdit(false);
-                  } else if (edit && !isOrderChanged) {
-                    setEdit(false);
+                    setIsEditing(false);
+                  } else if (isEditing && !isOrderChanged) {
+                    setIsEditing(false);
                   } else {
-                    setEdit(true);
+                    setIsEditing(true);
                   }
                 }}
               >
-                {edit
+                {isEditing
                   ? t('scenarioTable.doneEditing')
                   : t('scenarioTable.editButton')}
               </Button>
@@ -156,7 +156,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
               <Table>
                 <TableHead style={{ whiteSpace: 'nowrap' }}>
                   <TableRow className={rowBorder}>
-                    {edit && <TableCell className={tableCellDragIcon} />}
+                    {isEditing && <TableCell className={tableCellDragIcon} />}
                     <TableCell className={tableCellTitle}>
                       <Typography
                         className={label}
@@ -201,7 +201,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                       viewRow={openScenarioDrawer}
                       moveRow={moveRow}
                       isLastRow={idx === riSc.scenarios.length - 1}
-                      edit={edit}
+                      isEditing={isEditing}
                     />
                   ))}
                 </TableBody>

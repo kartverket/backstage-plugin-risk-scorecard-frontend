@@ -23,7 +23,7 @@ interface ScenarioTableRowProps {
   index: number;
   moveRow: (dragIndex: number, hoverIndex: number) => void;
   isLastRow?: boolean;
-  edit: boolean;
+  isEditing: boolean;
 }
 
 export const ScenarioTableRow = ({
@@ -32,7 +32,7 @@ export const ScenarioTableRow = ({
   index,
   moveRow,
   isLastRow,
-  edit,
+  isEditing,
 }: ScenarioTableRowProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
@@ -101,7 +101,7 @@ export const ScenarioTableRow = ({
       onClick={() => viewRow(scenario.ID)}
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
-      {edit && (
+      {isEditing && (
         <TableCell>
           <IconButton size="small" ref={drag}>
             <DragIndicatorIcon
@@ -164,7 +164,7 @@ export const ScenarioTableRow = ({
           {getConsequenceLevel(scenario.remainingRisk)}
         </div>
       </TableCell>
-      {edit && (
+      {isEditing && (
         <TableCell>
           <IconButton
             size="small"

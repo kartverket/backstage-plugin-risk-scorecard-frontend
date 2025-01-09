@@ -421,8 +421,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
       NoSopsConfigFound:
         'No SOPS configuration present on default branch of the GitHub repository',
       CreatedSops: 'SOPS configuration created successfully',
-      Deleted:
-        '{{ type }} deleted. If this was a mistake, you can review the commit history in GitHub and restore a previous version.',
     },
   },
 });
@@ -830,8 +828,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.NoSopsConfigFound':
             'Ingen SOPS-konfigurasjon funnet på default branchen til GitHub-repoet',
           'infoMessages.CreatedSops': 'SOPS-konfigurasjon opprettet',
-          'infoMessages.Deleted':
-            '{{ type }} slettet. Dersom dette var en feil, kan du gå gjennom historikken i GitHub og gjenopprette en tidligere versjon.',
         },
       }),
   },

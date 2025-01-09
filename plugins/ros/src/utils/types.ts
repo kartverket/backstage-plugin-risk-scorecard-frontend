@@ -1,4 +1,3 @@
-import { AlertColor } from '@mui/material';
 import { GcpCryptoKeyObject, PullRequestObject } from './DTOs';
 
 /**
@@ -172,8 +171,3 @@ export interface SopsConfigDialogFormData {
   publicAgeKeysToAdd: string[];
   publicAgeKeysToDelete: string[];
 }
-
-export type AlertProps = {
-  message: string;
-  severity: AlertColor;
-};
