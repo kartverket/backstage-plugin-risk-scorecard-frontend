@@ -58,7 +58,7 @@ export const useAuthenticatedFetch = () => {
   const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
   const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
   const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
-  
+
   const useResponse = (): [
     SubmitResponseObject | null,
     (submitStatus: SubmitResponseObject | null) => void,
@@ -68,7 +68,6 @@ export const useAuthenticatedFetch = () => {
     // use callback to avoid infinite loop
     const displaySubmitResponse = useCallback(
       (submitStatus: SubmitResponseObject | null) => {
-
         setSubmitResponse(submitStatus);
         setTimeout(() => {
           setSubmitResponse(null);
@@ -97,37 +96,39 @@ export const useAuthenticatedFetch = () => {
         'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
       ]),
       gitHubApi.getAccessToken(['repo']),
-    ]).then(([idToken, googleAccessToken, gitHubAccessToken]) => {
-      fetch(uri, {
-        method: method,
-        headers: {
-          Authorization: `Bearer ${idToken.token}`,
-          'GCP-Access-Token': googleAccessToken,
-          'GitHub-Access-Token': gitHubAccessToken,
-          'Content-Type': 'application/json',
-        },
-        body: body,
-      }).then(res => {
-        if (!res.ok) {
+    ])
+      .then(([idToken, googleAccessToken, gitHubAccessToken]) => {
+        fetch(uri, {
+          method: method,
+          headers: {
+            Authorization: `Bearer ${idToken.token}`,
+            'GCP-Access-Token': googleAccessToken,
+            'GitHub-Access-Token': gitHubAccessToken,
+            'Content-Type': 'application/json',
+          },
+          body: body,
+        }).then(res => {
+          if (!res.ok) {
+            return res
+              .json()
+              .then(json => json as K)
+              .then(typedJson => onError(typedJson, false))
+              .catch(error => onError(error, false));
+          }
           return res
             .json()
-            .then(json => json as K)
-            .then(typedJson => onError(typedJson, false))
-            .catch(error => onError(error, false));
+            .then(json => json as T)
+            .then(typedJson => onSuccess(typedJson));
+        });
+      })
+      .catch(error => {
+        console.log('GitHub rejected');
+        if (error.name === 'RejectedError') {
+          onError(error, true);
+        } else {
+          onError(error, false);
         }
-        return res
-          .json()
-          .then(json => json as T)
-          .then(typedJson => onSuccess(typedJson));
       });
-    }).catch(error => {
-      console.log("GitHub rejected")
-      if (error.name === 'RejectedError') {
-        onError(error, true)
-      } else {
-        onError(error, false)
-      }
-    });
   };
 
   const googleAuthenticatedFetch = <T, K>(
@@ -144,36 +145,38 @@ export const useAuthenticatedFetch = () => {
         'https://www.googleapis.com/auth/cloud-platform',
         'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
       ]),
-    ]).then(([idToken, googleAccessToken]) => {
-      fetch(uri, {
-        method: method,
-        headers: {
-          Authorization: `Bearer ${idToken.token}`,
-          'GCP-Access-Token': googleAccessToken,
-          'Content-Type': 'application/json',
-        },
-        body: body,
-      }).then(res => {
-        if (!res.ok) {
+    ])
+      .then(([idToken, googleAccessToken]) => {
+        fetch(uri, {
+          method: method,
+          headers: {
+            Authorization: `Bearer ${idToken.token}`,
+            'GCP-Access-Token': googleAccessToken,
+            'Content-Type': 'application/json',
+          },
+          body: body,
+        }).then(res => {
+          if (!res.ok) {
+            return res
+              .json()
+              .then(json => json as K)
+              .then(typedJson => onError(typedJson, false))
+              .catch(error => onError(error, false));
+          }
           return res
             .json()
-            .then(json => json as K)
-            .then(typedJson => onError(typedJson, false))
-            .catch(error => onError(error, false));
+            .then(json => json as T)
+            .then(typedJson => onSuccess(typedJson));
+        });
+      })
+      .catch(error => {
+        console.log('Google rejected');
+        if (error.name === 'RejectedError') {
+          onError(error, true);
+        } else {
+          onError(error, false);
         }
-        return res
-          .json()
-          .then(json => json as T)
-          .then(typedJson => onSuccess(typedJson));
       });
-    }).catch(error => {
-      console.log("Google rejected")
-      if (error.name === 'RejectedError') {
-        onError(error, true)
-      } else {
-        onError(error, false)
-      }
-    });
   };
 
   const fetchDifference = (
