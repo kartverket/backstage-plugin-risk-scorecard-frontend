@@ -8,6 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../../common/mixins';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
+import { deleteScenario } from '../../../utils/utilityfunctions';
 
 export const DeleteConfirmation = ({
   deleteConfirmationIsOpen,
@@ -18,18 +19,7 @@ export const DeleteConfirmation = ({
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
-  const { scenario, closeScenarioForm } = useScenario();
-
-  const confirmDeletion = () => {
-    if (riSc) {
-      setDeleteConfirmationIsOpen(false);
-      closeScenarioForm();
-      const updatedScenarios = riSc.content.scenarios.filter(
-        s => s.ID !== scenario.ID,
-      );
-      updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
-    }
-  };
+  const { scenario } = useScenario();
 
   return (
     <Dialog open={deleteConfirmationIsOpen}>
@@ -40,7 +30,14 @@ export const DeleteConfirmation = ({
         <Button onClick={() => setDeleteConfirmationIsOpen(false)}>
           {t('dictionary.cancel')}
         </Button>
-        <Button onClick={confirmDeletion} variant="contained" color="error">
+        <Button
+          onClick={() => {
+            setDeleteConfirmationIsOpen(false);
+            deleteScenario(riSc, updateRiSc, scenario);
+          }}
+          variant="contained"
+          color="error"
+        >
           {t('scenarioDrawer.deleteScenarioButton')}
         </Button>
       </DialogActions>
