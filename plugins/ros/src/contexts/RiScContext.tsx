@@ -139,11 +139,15 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           setIsFetching(isFetchingRef.current);
         }
       },
-      _error => {
+      (_error, loginRejected) => {
         setFailedToFetchSopsConfig(true);
         setResponse({
           status: ProcessingStatus.ErrorWhenFetchingSopsConfig,
-          statusMessage: t('errorMessages.ErrorWhenFetchingSopsConfig'),
+          statusMessage: loginRejected
+            ? `${t('errorMessages.ErrorWhenFetchingSopsConfig')}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : t('errorMessages.ErrorWhenFetchingSopsConfig'),
         });
         isFetchingSopsConfigRef.current = false;
         setIsFetchingSopsConfig(isFetchingSopsConfigRef.current);
@@ -219,7 +223,15 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           return;
         }
       },
-      () => {
+      loginRejected => {
+        setResponse({
+          status: ProcessingStatus.ErrorWhenFetchingRiScs,
+          statusMessage: loginRejected
+            ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : t('errorMessages.ErrorWhenFetchingRiScs'),
+        });
         isFetchingRiScsRef.current = false;
         setIsFetchingRiScs(isFetchingRiScsRef.current);
         if (!isFetchingSopsConfigRef.current) {
@@ -296,7 +308,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           isSuccess: true,
         });
       },
-      error => {
+      (error, loginRejected) => {
         setSelectedRiSc(selectedRiSc);
         setIsFetching(false);
         setUpdateStatus({
@@ -307,7 +319,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 
         setResponse({
           ...error,
-          statusMessage: getTranslationKey('error', error.status, t),
+          statusMessage: loginRejected
+            ? `${getTranslationKey('error', error.status, t)}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : getTranslationKey('error', error.status, t),
         });
       },
     );
@@ -367,7 +383,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             statusMessage: getTranslationKey('info', res.status, t),
           });
         },
-        error => {
+        (error, loginRejected) => {
           setUpdateStatus({
             isLoading: false,
             isError: true,
@@ -378,7 +394,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           setSelectedRiSc(originalRiSc);
           setResponse({
             ...error,
-            statusMessage: getTranslationKey('error', error.status, t),
+            statusMessage: loginRejected
+              ? `${getTranslationKey('error', error.status, t)}. ${t(
+                  'dictionary.rejectedLogin',
+                )}`
+              : getTranslationKey('error', error.status, t),
           });
         },
       );
@@ -415,7 +435,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             statusMessage: getTranslationKey('info', res.status, t),
           });
         },
-        error => {
+        (error, loginRejected) => {
           setUpdateStatus({
             isLoading: false,
             isError: true,
@@ -423,7 +443,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           });
           setResponse({
             ...error,
-            statusMessage: getTranslationKey('error', error.status, t),
+            statusMessage: loginRejected
+              ? `${getTranslationKey('error', error.status, t)}. ${t(
+                  'dictionary.rejectedLogin',
+                )}`
+              : getTranslationKey('error', error.status, t),
           });
         },
       );
@@ -451,7 +475,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           statusMessage: getTranslationKey('info', res.status, t),
         });
       },
-      error => {
+      (error, loginRejected) => {
         setUpdateStatus({
           isLoading: false,
           isError: true,
@@ -459,7 +483,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         });
         setResponse({
           status: ProcessingStatus.FailedToCreateSops,
-          statusMessage: getTranslationKey('error', error.status, t),
+          statusMessage: loginRejected
+            ? `${getTranslationKey('error', error.status, t)}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : getTranslationKey('error', error.status, t),
         });
       },
     );
@@ -496,7 +524,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           statusMessage: getTranslationKey('info', res.status, t),
         });
       },
-      error => {
+      (error, loginRejected) => {
         setUpdateStatus({
           isLoading: false,
           isError: true,
@@ -504,7 +532,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         });
         setResponse({
           status: ProcessingStatus.FailedToCreateSops,
-          statusMessage: getTranslationKey('error', error.status, t),
+          statusMessage: loginRejected
+            ? `${getTranslationKey('error', error.status, t)}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : getTranslationKey('error', error.status, t),
         });
       },
     );
@@ -543,7 +575,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           statusMessage: getTranslationKey('info', res.status, t),
         });
       },
-      error => {
+      (error, loginRejected) => {
         setUpdateStatus({
           isLoading: false,
           isError: true,
@@ -551,7 +583,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         });
         setResponse({
           status: ProcessingStatus.FailedToUpdateSops,
-          statusMessage: getTranslationKey('error', error.status, t),
+          statusMessage: loginRejected
+            ? `${getTranslationKey('error', error.status, t)}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : getTranslationKey('error', error.status, t),
         });
       },
     );
