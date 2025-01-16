@@ -1,4 +1,4 @@
-import { parseISO } from 'date-fns';
+import { parseISO, differenceInDays } from 'date-fns';
 import {
   getAgeStatus,
   parseISODateFromEncryptedROS,
@@ -81,32 +81,34 @@ export const LastPublishedComponent = ({
     differenceFetchState.defaultLastModifiedDateString,
   );
 
-  const lastModifiedDate =
-    formatedDateString && parseISO(formatedDateString).toLocaleDateString();
+  const lastModifiedDate = formatedDateString && parseISO(formatedDateString);
+  const daysSincePublication =
+    lastModifiedDate && differenceInDays(new Date(), lastModifiedDate);
 
-  const age = lastModifiedDate && getAgeStatus(lastModifiedDate);
+  const age =
+    lastModifiedDate && getAgeStatus(lastModifiedDate.toLocaleDateString());
 
   return (
     <InfoCard>
-      <Typography variant="h5">Publication status</Typography>
+      <Typography variant="h5">{t('rosStatus.lastPublished')}</Typography>
       {differenceFetchState.isLoading ? (
         <Box mt={1}>
-          <Skeleton variant="text" width="40%" height={26} />
           <Skeleton variant="text" width="60%" height={26} />
+          <Skeleton variant="text" width="40%" height={26} />
         </Box>
       ) : (
         <>
           {!lastModifiedDate && (
             <Typography display="flex" gap={1} mt={1}>
               <HighlightOffIcon color="error" />
-              No risk scorecard published
+              {t('rosStatus.notPublished')}
             </Typography>
           )}
           {lastModifiedDate && (
             <Typography display="flex" flexDirection="column" gap={1} mt={1}>
               <Box display="flex" gap={1}>
                 <CheckCircleOutlineIcon color="success" />
-                Risk scorecard published
+                {t('rosStatus.published')}
               </Box>
               <Box display="flex" gap={1}>
                 {age === 'bad' && (
@@ -116,8 +118,8 @@ export const LastPublishedComponent = ({
                 {age === 'good' && (
                   <SentimentSatisfiedAltIcon color="success" />
                 )}
-                {t('rosStatus.difference.publishDate')}
-                {lastModifiedDate}
+                {daysSincePublication}
+                {t('rosStatus.publishDate')}
               </Box>
             </Typography>
           )}

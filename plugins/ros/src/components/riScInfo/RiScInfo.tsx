@@ -65,17 +65,17 @@ export const RiScInfo = ({ riSc, edit }: RiScInfoProps) => {
         </InfoCard>
       </Grid>
       <Grid item xs={8} sm={4} md={4}>
-        <LastPublishedComponent
+        <RiScStatusComponent
           selectedRiSc={riSc}
+          publishRiScFn={approveRiSc}
           differenceFetchState={differenceFetchState}
           setDifferenceFetchState={setDifferenceFetchState}
           emptyDifferenceFetchState={emptyDifferenceFetchState}
         />
       </Grid>
       <Grid item xs={8} sm={4} md={4}>
-        <RiScStatusComponent
+        <LastPublishedComponent
           selectedRiSc={riSc}
-          publishRiScFn={approveRiSc}
           differenceFetchState={differenceFetchState}
           setDifferenceFetchState={setDifferenceFetchState}
           emptyDifferenceFetchState={emptyDifferenceFetchState}

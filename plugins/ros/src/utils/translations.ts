@@ -85,7 +85,6 @@ export const pluginRiScTranslationRef = createTranslationRef({
       },
       difference: {
         description: 'Summary of changes that will be approved by risk owner.',
-        publishDate: 'Last published changes: ',
         fetching: 'Fetching changes',
         error: 'Error while fetching changes',
         newROS: 'No published Risk scorecards to compare with',
@@ -99,6 +98,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
           noneAdded: 'Nothing is added',
         },
       },
+      lastPublished: 'Last published',
+      published: 'Risk scorecard published',
+      notPublished: 'No risk scorecard published',
+      publishDate: ' days since last publish',
       editing: 'You can now start editing',
       approveButton: 'Accept risks', // Godkjenn ROS
       prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
@@ -509,6 +512,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.draft': 'Utkast',
           'rosStatus.statusBadge.waiting': 'Avventer godkjenning',
           'rosStatus.statusBadge.published': 'Publisert',
+          'rosStatus.lastPublished': 'Siste publisering',
+          'rosStatus.notPublished': 'Ingen ROS publisert',
+          'rosStatus.published': 'ROS publisert',
+          'rosStatus.publishDate': ' dager siden forrige publisering',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
           'rosStatus.approveButton': 'Godkjenn ROS',
           'rosStatus.prStatus': ' Merge pull requesten i ',
@@ -516,7 +523,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.moreInformationButton': 'Mer informasjon',
           'rosStatus.difference.description':
             'Oppsummering av endringer som må godkjennes av risikoeier.',
-          'rosStatus.difference.publishDate': 'Siste publiserte endringer: ',
+
           'rosStatus.difference.fetching': 'Henter endringer',
           'rosStatus.difference.error': 'Feil med uthenting av endringer',
           'rosStatus.difference.newROS':
