@@ -51,15 +51,11 @@ export const ScenarioTableRow = ({
   const [, drop] = useDrop({
     accept: 'row',
     hover(item: { index: number }, monitor) {
-      if (!ref.current) {
-        return;
-      }
+      if (!ref.current) return;
+
       const dragIndex = item.index;
       const hoverIndex = index;
-
-      if (dragIndex === hoverIndex) {
-        return;
-      }
+      if (dragIndex === hoverIndex) return;
 
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const hoverMiddleY =
@@ -67,13 +63,10 @@ export const ScenarioTableRow = ({
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
 
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return;
-      }
-
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return;
-      }
+      const isMovingDown =
+        dragIndex < hoverIndex && hoverClientY < hoverMiddleY;
+      const isMovingUp = dragIndex > hoverIndex && hoverClientY > hoverMiddleY;
+      if (isMovingDown || isMovingUp) return;
 
       moveRow(dragIndex, hoverIndex);
       item.index = hoverIndex;
