@@ -130,8 +130,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
         probabilityChar: 'P',
         completed: 'complete',
       },
-      editButton: 'Edit scenario list',
-      doneEditing: 'Save editing',
+      editButton: 'Edit list',
+      doneEditing: 'Finish editing',
     },
     riskMatrix: {
       title: 'Risk matrix', // Risk matrix or Risk overview
@@ -557,7 +557,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioTable.columns.probabilityChar': 'S',
           'scenarioTable.columns.completed': 'fullført',
           'scenarioTable.editButton': 'Rediger liste',
-          'scenarioTable.doneEditing': 'Lagre endringer',
+          'scenarioTable.doneEditing': 'Avslutt redigering',
 
           'riskMatrix.title': 'Risikomatrise',
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',

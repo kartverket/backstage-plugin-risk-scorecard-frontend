@@ -16,7 +16,6 @@ import { useScenario } from '../../contexts/ScenarioContext';
 import { RiSc, RiScWithMetadata } from '../../utils/types';
 import { useFontStyles } from '../../utils/style';
 import { useRiScs } from '../../contexts/RiScContext';
-import { arrayNotEquals } from '../../utils/utilityfunctions';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { CheckCircle, Edit } from '@mui/icons-material';
@@ -33,7 +32,6 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
   const { openNewScenarioWizard, openScenarioDrawer } = useScenario();
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
-  const [isOrderChanged, setIsOrderChanged] = useState(false);
 
   useEffect(() => {
     if (!updateStatus.isSuccess) {
@@ -59,24 +57,13 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
     const [removed] = updatedScenarios.splice(dragIndex, 1);
     updatedScenarios.splice(hoverIndex, 0, removed);
     setTempScenarios(updatedScenarios);
-    const updatedOrder = updatedScenarios.map(scenario => scenario.ID);
-    setIsOrderChanged(
-      arrayNotEquals(
-        riSc.scenarios.map(scenario => scenario.ID),
-        updatedOrder,
-      ),
-    );
-  };
 
-  const saveOrder = () => {
     const updatedRiSc = {
       ...riSc,
-      scenarios: tempScenarios,
+      scenarios: updatedScenarios,
     };
 
-    updateRiSc(updatedRiSc, () => {
-      setIsOrderChanged(false);
-    });
+    updateRiSc(updatedRiSc, () => {});
   };
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -110,16 +97,9 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                 startIcon={isEditing ? <CheckCircle /> : <Edit />}
                 variant="text"
                 color="primary"
-                onClick={() => {
-                  if (isEditing && isOrderChanged) {
-                    saveOrder();
-                    setIsEditing(false);
-                  } else if (isEditing && !isOrderChanged) {
-                    setIsEditing(false);
-                  } else {
-                    setIsEditing(true);
-                  }
-                }}
+                onClick={() =>
+                  isEditing ? setIsEditing(false) : setIsEditing(true)
+                }
               >
                 {isEditing
                   ? t('scenarioTable.doneEditing')
