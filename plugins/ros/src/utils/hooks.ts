@@ -82,7 +82,8 @@ export const useAuthenticatedFetch = () => {
   const [response, setResponse] = useResponse();
 
   const configApi = useApi(configApiRef);
-  const isDevelopment = () => configApi.getString('auth.environment') === 'development';
+  const isDevelopment = () =>
+    configApi.getString('auth.environment') === 'development';
 
   const fullyAuthenticatedFetch = <T, K>(
     uri: string,
@@ -203,12 +204,12 @@ export const useAuthenticatedFetch = () => {
   ) => {
     if (isDevelopment()) {
       fullyAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
-          uriToFetchAllRiScs,
-          'GET',
-          onSuccess,
-          (_, rejectedLogin) => {
-            if (onError) onError(rejectedLogin);
-          },
+        uriToFetchAllRiScs,
+        'GET',
+        onSuccess,
+        (_, rejectedLogin) => {
+          if (onError) onError(rejectedLogin);
+        },
       );
     } else {
       googleAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
@@ -220,7 +221,7 @@ export const useAuthenticatedFetch = () => {
         },
       );
     }
-  }
+  };
 
   const fetchSopsConfig = (
     onSuccess: (response: SopsConfigResultDTO) => void,
@@ -237,15 +238,15 @@ export const useAuthenticatedFetch = () => {
       );
     } else {
       googleAuthenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
-          sopsUri,
-          'GET',
-          res => onSuccess(res),
-          (error, rejectedLogin) => {
-            if (onError) onError(error, rejectedLogin);
-          },
+        sopsUri,
+        'GET',
+        res => onSuccess(res),
+        (error, rejectedLogin) => {
+          if (onError) onError(error, rejectedLogin);
+        },
       );
     }
-  }
+  };
 
   const putSopsConfig = (
     sopsConfig: SopsConfigRequestBody,
