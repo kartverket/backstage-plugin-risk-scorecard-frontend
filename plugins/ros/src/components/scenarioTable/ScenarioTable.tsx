@@ -52,17 +52,23 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [riSc.scenarios, updateStatus.isSuccess]);
 
-  const moveRow = (dragIndex: number, hoverIndex: number) => {
+  const moveRowLocal = (dragIndex: number, hoverIndex: number) => {
     const updatedScenarios = [...tempScenarios];
     const [removed] = updatedScenarios.splice(dragIndex, 1);
     updatedScenarios.splice(hoverIndex, 0, removed);
+    setTempScenarios(updatedScenarios);
+  };
+
+  const moveRowFinal = (dragIndex: number, dropIndex: number) => {
+    const updatedScenarios = [...tempScenarios];
+    const [removed] = updatedScenarios.splice(dragIndex, 1);
+    updatedScenarios.splice(dropIndex, 0, removed);
     setTempScenarios(updatedScenarios);
 
     const updatedRiSc = {
       ...riSc,
       scenarios: updatedScenarios,
     };
-
     updateRiSc(updatedRiSc, () => {});
   };
 
@@ -179,7 +185,8 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                       index={idx}
                       scenario={scenario}
                       viewRow={openScenarioDrawer}
-                      moveRow={moveRow}
+                      moveRowFinal={moveRowFinal}
+                      moveRowLocal={moveRowLocal}
                       isLastRow={idx === riSc.scenarios.length - 1}
                       isEditing={isEditing}
                     />
