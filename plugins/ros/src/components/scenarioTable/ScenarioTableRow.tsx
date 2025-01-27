@@ -21,7 +21,8 @@ interface ScenarioTableRowProps {
   scenario: Scenario;
   viewRow: (id: string) => void;
   index: number;
-  moveRow: (dragIndex: number, hoverIndex: number) => void;
+  moveRowFinal: (dragIndex: number, dropIndex: number) => void;
+  moveRowLocal: (dragIndex: number, hoverIndex: number) => void;
   isLastRow?: boolean;
   isEditing: boolean;
 }
@@ -30,7 +31,8 @@ export const ScenarioTableRow = ({
   scenario,
   viewRow,
   index,
-  moveRow,
+  moveRowFinal,
+  moveRowLocal,
   isLastRow,
   isEditing,
 }: ScenarioTableRowProps) => {
@@ -68,18 +70,29 @@ export const ScenarioTableRow = ({
       const isMovingUp = dragIndex > hoverIndex && hoverClientY > hoverMiddleY;
       if (isMovingDown || isMovingUp) return;
 
-      moveRow(dragIndex, hoverIndex);
+      moveRowLocal(dragIndex, hoverIndex);
+
       item.index = hoverIndex;
     },
   });
 
-  const [{ isDragging }, drag, preview] = useDrag({
+  const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: 'row',
-    item: { index },
+    item: { index, originalIndex: index },
+
+    end: (item, monitor) => {
+      if (monitor.didDrop()) {
+        const finalIndex = item.index;
+        const { originalIndex } = item;
+
+        moveRowFinal(originalIndex, finalIndex);
+      }
+    },
+
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
-  });
+  }));
 
   preview(drop(ref));
 
