@@ -24,6 +24,7 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import {
   dtoToRiSc,
   GcpCryptoKeyObject,
+  ProcessRiScResultDTO,
   RiScDTO,
   SopsConfigRequestBody,
 } from '../utils/DTOs';
@@ -281,10 +282,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       ...riSc,
       schemaVersion: latestSupportedVersion,
     };
+    if (!selectedRiSc) return;
     postRiScs(
       newRiSc,
       generateDefault,
-      sops,
+      selectedRiSc.sopsConfig,
       res => {
         if (!res.riScId) throw new Error('No RiSc ID returned');
         if (!res.riScContent) throw new Error('No RiSc content returned');
@@ -311,7 +313,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           isSuccess: true,
         });
       },
-      (error, loginRejected) => {
+      (error: ProcessRiScResultDTO, loginRejected: boolean) => {
         setSelectedRiSc(selectedRiSc);
         setIsFetching(false);
         setUpdateStatus({
@@ -342,7 +344,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         selectedRiSc.migrationStatus?.migrationRequiresNewApproval ||
         requiresNewApproval(selectedRiSc.content, riSc);
 
-      const updatedRiSc = {
+      const updatedRiSc: RiScWithMetadata = {
         ...selectedRiSc,
         content: riSc,
         status:
