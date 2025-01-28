@@ -39,11 +39,13 @@ export type CreateRiScResultDTO = {
   status: ProcessingStatus;
   statusMessage: string;
   riScContent: string | null;
+  sopsConfig: SopsConfig;
 } & ProcessRiScResultDTO;
 
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;
+  sopsConfig: SopsConfig;
   migrationStatus: MigrationStatus;
 } & ContentRiScResultDTO;
 
@@ -170,6 +172,7 @@ export function riScToDTOString(
   riSc: RiSc,
   isRequiresNewApproval: boolean,
   profile: ProfileInfo,
+  sopsConfig: SopsConfig,
 ): string {
   return JSON.stringify({
     riSc: JSON.stringify(riScToDTO(riSc)),
@@ -179,6 +182,7 @@ export function riScToDTOString(
       name: profile.displayName ?? '',
       email: profile.email ?? '',
     },
+    sopsConfig: sopsConfig,
   });
 }
 

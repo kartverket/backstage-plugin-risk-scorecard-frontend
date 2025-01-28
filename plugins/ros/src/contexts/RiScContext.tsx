@@ -174,6 +174,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             return {
               id: riScDTO.riScId,
               content: content,
+              sopsConfig: riScDTO.sopsConfig,
               status: riScDTO.riScStatus,
               pullRequestUrl: riScDTO.pullRequestUrl,
               migrationStatus: riScDTO.migrationStatus,
@@ -283,6 +284,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     postRiScs(
       newRiSc,
       generateDefault,
+      sops,
       res => {
         if (!res.riScId) throw new Error('No RiSc ID returned');
         if (!res.riScContent) throw new Error('No RiSc content returned');
@@ -292,6 +294,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           id: res.riScId,
           status: RiScStatus.Draft,
           content: content,
+          sopsConfig: res.sopsConfig,
           schemaVersion: riSc.schemaVersion,
         };
         setRiScs(riScs ? [...riScs, riScWithMetaData] : [riScWithMetaData]);

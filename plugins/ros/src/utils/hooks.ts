@@ -13,6 +13,7 @@ import {
   GithubRepoInfo,
   RiSc,
   RiScWithMetadata,
+  SopsConfig,
   SubmitResponseObject,
 } from './types';
 import {
@@ -194,7 +195,7 @@ export const useAuthenticatedFetch = () => {
         (_, rejectedLogin) => {
           if (onError) onError(rejectedLogin);
         },
-        riScToDTOString(selectedRiSc.content, false, profile),
+        riScToDTOString(selectedRiSc.content, false, profile, selectedRiSc.sopsConfig),
       );
     });
 
@@ -328,6 +329,7 @@ export const useAuthenticatedFetch = () => {
   const postRiScs = (
     riSc: RiSc,
     generateDefault: boolean,
+    sopsConfig: SopsConfig,
     onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) =>
@@ -342,7 +344,7 @@ export const useAuthenticatedFetch = () => {
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
         },
-        riScToDTOString(riSc, true, profile),
+        riScToDTOString(riSc, true, profile, sopsConfig),
       ),
     );
 
@@ -365,7 +367,7 @@ export const useAuthenticatedFetch = () => {
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
         },
-        riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!, profile),
+        riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!, profile, riSc.sopsConfig),
       ),
     );
   };

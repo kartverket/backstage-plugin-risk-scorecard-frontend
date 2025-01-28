@@ -12,6 +12,7 @@ export type RiScWithMetadata = {
   id: string;
   status: RiScStatus;
   content: RiSc;
+  sopsConfig: SopsConfig;
   isRequiresNewApproval?: boolean;
   pullRequestUrl?: string;
   schemaVersion?: string;
