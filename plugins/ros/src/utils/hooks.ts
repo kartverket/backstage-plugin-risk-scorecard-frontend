@@ -195,7 +195,12 @@ export const useAuthenticatedFetch = () => {
         (_, rejectedLogin) => {
           if (onError) onError(rejectedLogin);
         },
-        riScToDTOString(selectedRiSc.content, false, profile, selectedRiSc.sopsConfig),
+        riScToDTOString(
+          selectedRiSc.content,
+          false,
+          profile,
+          selectedRiSc.sopsConfig,
+        ),
       );
     });
 
@@ -367,7 +372,12 @@ export const useAuthenticatedFetch = () => {
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
         },
-        riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!, profile, riSc.sopsConfig),
+        riScToDTOString(
+          riSc.content,
+          riSc.isRequiresNewApproval!!,
+          profile,
+          riSc.sopsConfig,
+        ),
       ),
     );
   };
