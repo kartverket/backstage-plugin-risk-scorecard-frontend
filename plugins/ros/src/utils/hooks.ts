@@ -81,9 +81,13 @@ export const useAuthenticatedFetch = () => {
 
   const [response, setResponse] = useResponse();
 
+  const configApi = useApi(configApiRef);
+  const isDevelopment = () =>
+    configApi.getString('auth.environment') === 'development';
+
   const fullyAuthenticatedFetch = <T, K>(
     uri: string,
-    method: 'POST' | 'PUT',
+    method: 'GET' | 'POST' | 'PUT',
     onSuccess: (response: T) => void,
     onError: (error: K, rejectedLogin: boolean) => void,
     body?: string,
@@ -197,28 +201,52 @@ export const useAuthenticatedFetch = () => {
   const fetchRiScs = (
     onSuccess: (response: RiScContentResultDTO[]) => void,
     onError?: (loginRejected: boolean) => void,
-  ) =>
-    googleAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
-      uriToFetchAllRiScs,
-      'GET',
-      onSuccess,
-      (_, rejectedLogin) => {
-        if (onError) onError(rejectedLogin);
-      },
-    );
+  ) => {
+    if (isDevelopment()) {
+      fullyAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
+        uriToFetchAllRiScs,
+        'GET',
+        onSuccess,
+        (_, rejectedLogin) => {
+          if (onError) onError(rejectedLogin);
+        },
+      );
+    } else {
+      googleAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
+        uriToFetchAllRiScs,
+        'GET',
+        onSuccess,
+        (_, rejectedLogin) => {
+          if (onError) onError(rejectedLogin);
+        },
+      );
+    }
+  };
 
   const fetchSopsConfig = (
     onSuccess: (response: SopsConfigResultDTO) => void,
     onError?: (error: SopsConfigResultDTO, loginRejected: boolean) => void,
-  ) =>
-    googleAuthenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
-      sopsUri,
-      'GET',
-      res => onSuccess(res),
-      (error, rejectedLogin) => {
-        if (onError) onError(error, rejectedLogin);
-      },
-    );
+  ) => {
+    if (isDevelopment()) {
+      fullyAuthenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
+        sopsUri,
+        'GET',
+        res => onSuccess(res),
+        (error, rejectedLogin) => {
+          if (onError) onError(error, rejectedLogin);
+        },
+      );
+    } else {
+      googleAuthenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
+        sopsUri,
+        'GET',
+        res => onSuccess(res),
+        (error, rejectedLogin) => {
+          if (onError) onError(error, rejectedLogin);
+        },
+      );
+    }
+  };
 
   const putSopsConfig = (
     sopsConfig: SopsConfigRequestBody,
