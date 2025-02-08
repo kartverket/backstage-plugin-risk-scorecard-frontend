@@ -29,9 +29,6 @@ backend.add(import('@backstage-community/plugin-explore-backend'));
 // Devtools
 backend.add(import('@backstage/plugin-devtools-backend'));
 
-// Kubernetes
-backend.add(import('@backstage/plugin-kubernetes-backend/alpha'));
-
 // Lighthouse
 backend.add(import('@backstage-community/plugin-lighthouse-backend'));
 
