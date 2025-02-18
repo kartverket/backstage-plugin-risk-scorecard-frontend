@@ -188,6 +188,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'Do you want to generate a default RiSc?',
       fromScratch: 'Empty',
       generateDefault: 'Default',
+      stepRiscDetails: 'Risk Scorecard Details',
+      stepEncryption: 'Configure Encryption',
     },
     sopsConfigDialog: {
       title: 'Encryption',
@@ -202,7 +204,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       publicAgeKeyQuestion:
         'Does anyone need to write Risk scorecards locally using their editor?',
       publicAgeKeyDescription:
-        'Provide public age keys below for individuals who are allowed local editing and encryption',
+        'Provide a public age key below for individuals allowed local editing',
       addPublicAgeKey: 'Add public age key',
       publicAgeKey: 'Public age key',
       update: 'Update',
@@ -408,6 +410,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration',
       FailedToCreateSops: 'Failed to create SOPS configuration',
       FailedToUpdateSops: 'SOPS configuration could not be updated',
+      ErrorWhenFetchingGcpCryptoKeys: 'Failed to fetch GCP crypto keys',
     },
     infoMessages: {
       OpenedPullRequest: 'Successfully opened pull request',
@@ -434,7 +437,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
         default: {
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
-
+          
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.yes': 'Ja',
           'dictionary.no': 'Nei',
@@ -603,7 +606,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Vil du generere initiell RoS?',
           'rosDialog.fromScratch': 'Tom',
           'rosDialog.generateDefault': 'Initiell',
-
+          'rosDialog.stepRiscDetails': 'RoS-detaljer',
+          'rosDialog.stepEncryption': 'Konfigurer kryptering',
           'sopsConfigDialog.title': 'Kryptering',
           'sopsConfigDialog.description':
             'For å bruke kodenær RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
@@ -616,7 +620,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.publicAgeKeyQuestion':
             'Trenger noen å skrive RoS lokalt i sin editor?',
           'sopsConfigDialog.publicAgeKeyDescription':
-            'Legg ved offentlige age-nøkler til personer som ønsker å skrive kodenær RoS lokalt',
+            'Legg ved offentlige age-nøkkel til personer som ønsker å skrive kodenær RoS lokalt',
           'sopsConfigDialog.addPublicAgeKey': 'Legg til nøkkel',
           'sopsConfigDialog.publicAgeKey': 'Offentlig age-nøkkel',
           'sopsConfigDialog.update': 'Oppdater',
@@ -814,7 +818,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke opprette SOPS-konfigurasjon',
           'errorMessages.FailedToUpdateSops':
             'SOPS-konfigurasjon kunne ikke oppdateres',
-
+          'errorMessages.ErrorWhenFetchingGcpCryptoKeys':
+            'Kunne ikke hente GCP-krypteringsnøkler',
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',

@@ -17,16 +17,13 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 interface PublicKeyListProps {
   publicKeys: string[];
-  onClickButton: (key: string) => void;
-  deletedKeys: string[];
 }
 
 export const PublicKeyList = ({
   publicKeys,
-  onClickButton,
-  deletedKeys,
 }: PublicKeyListProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  
 
   return (
     <List>
