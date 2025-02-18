@@ -13,11 +13,11 @@ import {
   GithubRepoInfo,
   RiSc,
   RiScWithMetadata,
-  SopsConfig,
   SubmitResponseObject,
 } from './types';
 import {
   CreateRiScResultDTO,
+  GcpCryptoKeyObject,
   OpenPullRequestForSopsConfigResponseBody,
   ProcessRiScResultDTO,
   profileInfoToDTOString,
@@ -25,6 +25,7 @@ import {
   RiScContentResultDTO,
   riScToDTOString,
   SopsConfigCreateResponse,
+  SopsConfigDTO,
   SopsConfigRequestBody,
   SopsConfigResultDTO,
   sopsConfigToDTOString,
@@ -254,6 +255,20 @@ export const useAuthenticatedFetch = () => {
     }
   };
 
+  const fetchGcpCryptoKeys = (
+    onSuccess: (response: GcpCryptoKeyObject[]) => void,
+    onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
+  ) => {
+    fullyAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
+      `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`,
+      'GET',
+      res => onSuccess(res),
+      (error, rejectedLogin) => {
+        if (onError) onError(error, rejectedLogin);
+      },
+    );
+  };
+
   const putSopsConfig = (
     sopsConfig: SopsConfigRequestBody,
     onSuccess: (response: SopsConfigCreateResponse) => void,
@@ -334,7 +349,7 @@ export const useAuthenticatedFetch = () => {
   const postRiScs = (
     riSc: RiSc,
     generateDefault: boolean,
-    sopsConfig: SopsConfig,
+    sopsConfig: SopsConfigDTO,
     onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) =>
@@ -385,6 +400,7 @@ export const useAuthenticatedFetch = () => {
   return {
     fetchRiScs,
     fetchSopsConfig,
+    fetchGcpCryptoKeys,
     postRiScs,
     putRiScs,
     publishRiScs,
