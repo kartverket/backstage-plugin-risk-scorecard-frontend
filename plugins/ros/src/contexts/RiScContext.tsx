@@ -1,13 +1,19 @@
-import React, { ReactNode } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   ContentStatus,
   ProcessingStatus,
   RiSc,
   RiScStatus,
   RiScWithMetadata,
+  SopsConfig,
   SubmitResponseObject,
 } from '../utils/types';
-import { useCallback, useEffect, useState } from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import {
   getTranslationKey,
@@ -15,14 +21,19 @@ import {
 } from '../utils/utilityfunctions';
 import { riScRouteRef } from '../routes';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { dtoToRiSc, RiScDTO } from '../utils/DTOs';
+import {
+  dtoToRiSc,
+  GcpCryptoKeyObject,
+  RiScDTO,
+  SopsConfigRequestBody,
+} from '../utils/DTOs';
 import { useEffectOnce } from 'react-use';
 import { useAuthenticatedFetch } from '../utils/hooks';
 import { latestSupportedVersion } from '../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
 
-export type RiScUpdateStatus = {
+export type UpdateStatus = {
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;
@@ -32,17 +43,24 @@ type RiScDrawerProps = {
   riScs: RiScWithMetadata[] | null;
   selectRiSc: (title: string) => void;
   selectedRiSc: RiScWithMetadata | null;
-  createNewRiSc: (riSc: RiSc) => void;
+  createNewRiSc: (riSc: RiSc, generateDefault: boolean) => void;
   updateRiSc: (
     riSc: RiSc,
     onSuccess?: () => void,
     onError?: () => void,
   ) => void;
   approveRiSc: () => void;
-  riScUpdateStatus: RiScUpdateStatus;
+  updateStatus: UpdateStatus;
   resetRiScStatus: () => void;
   resetResponse: () => void;
+  createSopsConfig: (sopsConfig: SopsConfigRequestBody) => void;
+  openPullRequestForSopsConfig: (branch: string) => void;
+  updateSopsConfig: (sopsConfig: SopsConfigRequestBody, branch: string) => void;
   isFetching: boolean;
+  isFetchingSopsConfig: boolean;
+  failedToFetchSopsConfig: boolean;
+  sopsConfigs: SopsConfig[];
+  gcpCryptoKeys: GcpCryptoKeyObject[];
   response: SubmitResponseObject | null;
 };
 
@@ -58,11 +76,15 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 
   const {
     fetchRiScs,
+    fetchSopsConfig,
     postRiScs,
     putRiScs,
     publishRiScs,
     response,
     setResponse,
+    putSopsConfig,
+    postSopsConfig,
+    postOpenPullRequestForSopsConfig,
   } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
@@ -70,11 +92,21 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     null,
   );
   const [isFetching, setIsFetching] = useState(true);
-  const [riScUpdateStatus, setRiScUpdateStatus] = useState({
+  const isFetchingRef = useRef(isFetching);
+  const [isFetchingRiScs, setIsFetchingRiScs] = useState(true);
+  const isFetchingRiScsRef = useRef(isFetchingRiScs);
+  const [isFetchingSopsConfig, setIsFetchingSopsConfig] = useState(true);
+  const isFetchingSopsConfigRef = useRef(isFetchingSopsConfig);
+  const [failedToFetchSopsConfig, setFailedToFetchSopsConfig] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState({
     isLoading: false,
     isError: false,
     isSuccess: false,
   });
+
+  const [sopsConfigs, setSopsConfigs] = useState<SopsConfig[]>([]);
+  const sopsConfigsRef = useRef(sopsConfigs);
+  const [gcpCryptoKeys, setGcpCryptoKeys] = useState<GcpCryptoKeyObject[]>([]);
 
   useEffect(() => {
     if (location.state) {
@@ -84,6 +116,48 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       });
     }
   }, [location, setResponse]);
+
+  // Initial fetch of SOPS config
+  useEffectOnce(() => {
+    fetchSopsConfig(
+      res => {
+        sopsConfigsRef.current = res.sopsConfigs;
+        setSopsConfigs(sopsConfigsRef.current);
+        // Sorts the crypto keys on whether the user has encrypt/decrypt role on it
+        setGcpCryptoKeys(
+          res.gcpCryptoKeys.sort((a, b) => {
+            if (b.hasEncryptDecryptAccess === a.hasEncryptDecryptAccess) {
+              return 0;
+            }
+            return b.hasEncryptDecryptAccess ? 1 : -1;
+          }),
+        );
+        isFetchingSopsConfigRef.current = false;
+        setIsFetchingSopsConfig(isFetchingSopsConfigRef.current);
+        if (!isFetchingRiScsRef.current) {
+          isFetchingRef.current = false;
+          setIsFetching(isFetchingRef.current);
+        }
+      },
+      (_error, loginRejected) => {
+        setFailedToFetchSopsConfig(true);
+        setResponse({
+          status: ProcessingStatus.ErrorWhenFetchingSopsConfig,
+          statusMessage: loginRejected
+            ? `${t('errorMessages.ErrorWhenFetchingSopsConfig')}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : t('errorMessages.ErrorWhenFetchingSopsConfig'),
+        });
+        isFetchingSopsConfigRef.current = false;
+        setIsFetchingSopsConfig(isFetchingSopsConfigRef.current);
+        if (!isFetchingRiScsRef.current) {
+          isFetchingRef.current = false;
+          setIsFetching(isFetchingRef.current);
+        }
+      },
+    );
+  });
 
   // Initial fetch of RiScs
   useEffectOnce(() => {
@@ -106,7 +180,13 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             };
           });
         setRiScs(fetchedRiScs);
-        setIsFetching(false);
+
+        isFetchingRiScsRef.current = false;
+        setIsFetchingRiScs(isFetchingRiScsRef.current);
+        if (!isFetchingSopsConfigRef.current) {
+          isFetchingRef.current = false;
+          setIsFetching(isFetchingRef.current);
+        }
 
         const errorRiScs: string[] = res
           .filter(risk => risk.status !== ContentStatus.Success)
@@ -143,8 +223,21 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           return;
         }
       },
-      () => {
-        setIsFetching(false);
+      loginRejected => {
+        setResponse({
+          status: ProcessingStatus.ErrorWhenFetchingRiScs,
+          statusMessage: loginRejected
+            ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : t('errorMessages.ErrorWhenFetchingRiScs'),
+        });
+        isFetchingRiScsRef.current = false;
+        setIsFetchingRiScs(isFetchingRiScsRef.current);
+        if (!isFetchingSopsConfigRef.current) {
+          isFetchingRef.current = false;
+          setIsFetching(isFetchingRef.current);
+        }
       },
     );
   });
@@ -160,7 +253,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
   }, [riScs, riScIdFromParams]);
 
   const resetRiScStatus = useCallback(() => {
-    setRiScUpdateStatus({
+    setUpdateStatus({
       isLoading: false,
       isSuccess: false,
       isError: false,
@@ -172,16 +265,14 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     setResponse(null);
   }, [setResponse]);
 
-  const selectRiSc = (title: string) => {
-    const selectedRiScId = riScs?.find(
-      riSc => riSc.content.title === title,
-    )?.id;
+  const selectRiSc = (id: string) => {
+    const selectedRiScId = riScs?.find(riSc => riSc.id === id)?.id;
     if (selectedRiScId) {
       navigate(getRiScPath({ riScId: selectedRiScId }));
     }
   };
 
-  const createNewRiSc = (riSc: RiSc) => {
+  const createNewRiSc = (riSc: RiSc, generateDefault: boolean) => {
     setIsFetching(true);
     setSelectedRiSc(null);
 
@@ -191,15 +282,18 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     };
     postRiScs(
       newRiSc,
+      generateDefault,
       res => {
         if (!res.riScId) throw new Error('No RiSc ID returned');
+        if (!res.riScContent) throw new Error('No RiSc content returned');
+        const json = JSON.parse(res.riScContent) as RiScDTO;
+        const content = dtoToRiSc(json);
         const riScWithMetaData: RiScWithMetadata = {
           id: res.riScId,
           status: RiScStatus.Draft,
-          content: riSc,
+          content: content,
           schemaVersion: riSc.schemaVersion,
         };
-
         setRiScs(riScs ? [...riScs, riScWithMetaData] : [riScWithMetaData]);
         setSelectedRiSc(riScWithMetaData);
         setIsFetching(false);
@@ -208,16 +302,16 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           ...res,
           statusMessage: getTranslationKey('info', res.status, t),
         });
-        setRiScUpdateStatus({
+        setUpdateStatus({
           isLoading: false,
           isError: false,
           isSuccess: true,
         });
       },
-      error => {
+      (error, loginRejected) => {
         setSelectedRiSc(selectedRiSc);
         setIsFetching(false);
-        setRiScUpdateStatus({
+        setUpdateStatus({
           isLoading: false,
           isError: true,
           isSuccess: false,
@@ -225,7 +319,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 
         setResponse({
           ...error,
-          statusMessage: getTranslationKey('error', error.status, t),
+          statusMessage: loginRejected
+            ? `${getTranslationKey('error', error.status, t)}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : getTranslationKey('error', error.status, t),
         });
       },
     );
@@ -257,7 +355,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       };
       const originalRiSc = selectedRiSc;
       setSelectedRiSc(updatedRiSc);
-      setRiScUpdateStatus({
+      setUpdateStatus({
         isLoading: true,
         isError: false,
         isSuccess: false,
@@ -265,7 +363,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       putRiScs(
         updatedRiSc,
         res => {
-          setRiScUpdateStatus({
+          setUpdateStatus({
             isLoading: false,
             isError: false,
             isSuccess: true,
@@ -285,8 +383,8 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             statusMessage: getTranslationKey('info', res.status, t),
           });
         },
-        error => {
-          setRiScUpdateStatus({
+        (error, loginRejected) => {
+          setUpdateStatus({
             isLoading: false,
             isError: true,
             isSuccess: false,
@@ -296,7 +394,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           setSelectedRiSc(originalRiSc);
           setResponse({
             ...error,
-            statusMessage: getTranslationKey('error', error.status, t),
+            statusMessage: loginRejected
+              ? `${getTranslationKey('error', error.status, t)}. ${t(
+                  'dictionary.rejectedLogin',
+                )}`
+              : getTranslationKey('error', error.status, t),
           });
         },
       );
@@ -305,7 +407,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 
   const approveRiSc = () => {
     if (selectedRiSc && riScs) {
-      setRiScUpdateStatus({
+      setUpdateStatus({
         isLoading: true,
         isError: false,
         isSuccess: false,
@@ -323,7 +425,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           setRiScs(
             riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
           );
-          setRiScUpdateStatus({
+          setUpdateStatus({
             isLoading: false,
             isError: false,
             isSuccess: true,
@@ -333,34 +435,184 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
             statusMessage: getTranslationKey('info', res.status, t),
           });
         },
-        error => {
-          setRiScUpdateStatus({
+        (error, loginRejected) => {
+          setUpdateStatus({
             isLoading: false,
             isError: true,
             isSuccess: false,
           });
           setResponse({
             ...error,
-            statusMessage: getTranslationKey('error', error.status, t),
+            statusMessage: loginRejected
+              ? `${getTranslationKey('error', error.status, t)}. ${t(
+                  'dictionary.rejectedLogin',
+                )}`
+              : getTranslationKey('error', error.status, t),
           });
         },
       );
     }
   };
 
+  const createSopsConfig = (sopsConfigRequestBody: SopsConfigRequestBody) => {
+    setUpdateStatus({
+      isLoading: true,
+      isError: false,
+      isSuccess: false,
+    });
+    putSopsConfig(
+      sopsConfigRequestBody,
+      res => {
+        sopsConfigsRef.current = [res.sopsConfig, ...sopsConfigs];
+        setSopsConfigs(sopsConfigsRef.current);
+        setUpdateStatus({
+          isLoading: false,
+          isError: false,
+          isSuccess: true,
+        });
+        setResponse({
+          ...res,
+          statusMessage: getTranslationKey('info', res.status, t),
+        });
+      },
+      (error, loginRejected) => {
+        setUpdateStatus({
+          isLoading: false,
+          isError: true,
+          isSuccess: false,
+        });
+        setResponse({
+          status: ProcessingStatus.FailedToCreateSops,
+          statusMessage: loginRejected
+            ? `${getTranslationKey('error', error.status, t)}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : getTranslationKey('error', error.status, t),
+        });
+      },
+    );
+  };
+
+  const openPullRequestForSopsConfig = (branch: string) => {
+    setUpdateStatus({
+      isLoading: true,
+      isError: false,
+      isSuccess: false,
+    });
+    postOpenPullRequestForSopsConfig(
+      branch,
+      res => {
+        sopsConfigsRef.current = sopsConfigs.map(config =>
+          config.branch === branch
+            ? {
+                gcpCryptoKey: config.gcpCryptoKey,
+                publicAgeKeys: config.publicAgeKeys,
+                branch: config.branch,
+                onDefaultBranch: config.onDefaultBranch,
+                pullRequest: res.pullRequest,
+              }
+            : config,
+        );
+        setSopsConfigs(sopsConfigsRef.current);
+        setUpdateStatus({
+          isLoading: false,
+          isError: false,
+          isSuccess: true,
+        });
+        setResponse({
+          ...res,
+          statusMessage: getTranslationKey('info', res.status, t),
+        });
+      },
+      (error, loginRejected) => {
+        setUpdateStatus({
+          isLoading: false,
+          isError: true,
+          isSuccess: false,
+        });
+        setResponse({
+          status: ProcessingStatus.FailedToCreateSops,
+          statusMessage: loginRejected
+            ? `${getTranslationKey('error', error.status, t)}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : getTranslationKey('error', error.status, t),
+        });
+      },
+    );
+  };
+
+  const updateSopsConfig = (
+    sopsConfigRequestBody: SopsConfigRequestBody,
+    branch: string,
+  ) => {
+    setUpdateStatus({
+      isLoading: true,
+      isError: false,
+      isSuccess: false,
+    });
+    postSopsConfig(
+      sopsConfigRequestBody,
+      branch,
+      res => {
+        sopsConfigsRef.current = sopsConfigs.map(config =>
+          config.branch === branch
+            ? {
+                ...config,
+                gcpCryptoKey: sopsConfigRequestBody.gcpCryptoKey,
+                publicAgeKeys: sopsConfigRequestBody.publicAgeKeys,
+              }
+            : config,
+        );
+        setSopsConfigs(sopsConfigsRef.current);
+        setUpdateStatus({
+          isLoading: false,
+          isError: false,
+          isSuccess: true,
+        });
+        setResponse({
+          ...res,
+          statusMessage: getTranslationKey('info', res.status, t),
+        });
+      },
+      (error, loginRejected) => {
+        setUpdateStatus({
+          isLoading: false,
+          isError: true,
+          isSuccess: false,
+        });
+        setResponse({
+          status: ProcessingStatus.FailedToUpdateSops,
+          statusMessage: loginRejected
+            ? `${getTranslationKey('error', error.status, t)}. ${t(
+                'dictionary.rejectedLogin',
+              )}`
+            : getTranslationKey('error', error.status, t),
+        });
+      },
+    );
+  };
+
   const value = {
     riScs,
     selectRiSc,
     selectedRiSc,
+    createSopsConfig,
+    openPullRequestForSopsConfig,
+    updateSopsConfig,
     createNewRiSc,
     updateRiSc,
     approveRiSc,
-    riScUpdateStatus,
+    updateStatus,
     resetRiScStatus,
     resetResponse,
     isRequesting,
     isFetching,
+    isFetchingSopsConfig,
+    failedToFetchSopsConfig,
     response,
+    sopsConfigs,
+    gcpCryptoKeys,
   };
 
   return <RiScContext.Provider value={value}>{children}</RiScContext.Provider>;

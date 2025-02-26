@@ -7,27 +7,34 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Scenario } from '../../utils/types';
 import { useTableStyles } from './ScenarioTableStyles';
 import {
+  deleteScenario,
   getConsequenceLevel,
   getProbabilityLevel,
   getRiskMatrixColor,
 } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useRiScs } from '../../contexts/RiScContext';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
   viewRow: (id: string) => void;
   index: number;
-  moveRow: (dragIndex: number, hoverIndex: number) => void;
+  moveRowFinal: (dragIndex: number, dropIndex: number) => void;
+  moveRowLocal: (dragIndex: number, hoverIndex: number) => void;
   isLastRow?: boolean;
+  isEditing: boolean;
 }
 
 export const ScenarioTableRow = ({
   scenario,
   viewRow,
   index,
-  moveRow,
+  moveRowFinal,
+  moveRowLocal,
   isLastRow,
+  isEditing,
 }: ScenarioTableRowProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
@@ -39,20 +46,18 @@ export const ScenarioTableRow = ({
     tableCellContainer,
   } = useTableStyles();
 
+  const { selectedRiSc: riSc, updateRiSc } = useRiScs();
+
   const ref = useRef<HTMLTableRowElement>(null);
 
   const [, drop] = useDrop({
     accept: 'row',
     hover(item: { index: number }, monitor) {
-      if (!ref.current) {
-        return;
-      }
+      if (!ref.current) return;
+
       const dragIndex = item.index;
       const hoverIndex = index;
-
-      if (dragIndex === hoverIndex) {
-        return;
-      }
+      if (dragIndex === hoverIndex) return;
 
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const hoverMiddleY =
@@ -60,26 +65,34 @@ export const ScenarioTableRow = ({
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
 
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return;
-      }
+      const isMovingDown =
+        dragIndex < hoverIndex && hoverClientY < hoverMiddleY;
+      const isMovingUp = dragIndex > hoverIndex && hoverClientY > hoverMiddleY;
+      if (isMovingDown || isMovingUp) return;
 
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return;
-      }
+      moveRowLocal(dragIndex, hoverIndex);
 
-      moveRow(dragIndex, hoverIndex);
       item.index = hoverIndex;
     },
   });
 
-  const [{ isDragging }, drag, preview] = useDrag({
+  const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: 'row',
-    item: { index },
+    item: { index, originalIndex: index },
+
+    end: (item, monitor) => {
+      if (monitor.didDrop()) {
+        const finalIndex = item.index;
+        const { originalIndex } = item;
+
+        moveRowFinal(originalIndex, finalIndex);
+      }
+    },
+
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
-  });
+  }));
 
   preview(drop(ref));
 
@@ -94,14 +107,16 @@ export const ScenarioTableRow = ({
       onClick={() => viewRow(scenario.ID)}
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
-      <TableCell>
-        <IconButton size="small" ref={drag}>
-          <DragIndicatorIcon
-            aria-label="Drag"
-            sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-          />
-        </IconButton>
-      </TableCell>
+      {isEditing && (
+        <TableCell>
+          <IconButton size="small" ref={drag}>
+            <DragIndicatorIcon
+              aria-label="Drag"
+              sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            />
+          </IconButton>
+        </TableCell>
+      )}
       <TableCell className={tableCellTitle}>
         <Typography color="primary" style={{ fontWeight: 600 }}>
           {scenario.title}
@@ -155,6 +170,16 @@ export const ScenarioTableRow = ({
           {getConsequenceLevel(scenario.remainingRisk)}
         </div>
       </TableCell>
+      {isEditing && (
+        <TableCell>
+          <IconButton
+            size="small"
+            onClick={() => deleteScenario(riSc, updateRiSc, scenario)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      )}
     </TableRow>
   );
 };

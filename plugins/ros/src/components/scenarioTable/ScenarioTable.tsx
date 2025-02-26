@@ -16,9 +16,9 @@ import { useScenario } from '../../contexts/ScenarioContext';
 import { RiSc, RiScWithMetadata } from '../../utils/types';
 import { useFontStyles } from '../../utils/style';
 import { useRiScs } from '../../contexts/RiScContext';
-import { arrayNotEquals } from '../../utils/utilityfunctions';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { CheckCircle, Edit } from '@mui/icons-material';
 
 interface ScenarioTableProps {
   riSc: RiSc;
@@ -31,11 +31,10 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
     useTableStyles();
   const { openNewScenarioWizard, openScenarioDrawer } = useScenario();
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
-  const { updateRiSc, riScUpdateStatus } = useRiScs();
-  const [isOrderChanged, setIsOrderChanged] = useState(false);
+  const { updateRiSc, updateStatus } = useRiScs();
 
   useEffect(() => {
-    if (!riScUpdateStatus.isSuccess) {
+    if (!updateStatus.isSuccess) {
       return;
     }
     const updatedScenarios = tempScenarios
@@ -51,32 +50,29 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
 
     setTempScenarios([...updatedScenarios, ...scenariosNotInTemp]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [riSc.scenarios, riScUpdateStatus.isSuccess]);
+  }, [riSc.scenarios, updateStatus.isSuccess]);
 
-  const moveRow = (dragIndex: number, hoverIndex: number) => {
+  const moveRowLocal = (dragIndex: number, hoverIndex: number) => {
     const updatedScenarios = [...tempScenarios];
     const [removed] = updatedScenarios.splice(dragIndex, 1);
     updatedScenarios.splice(hoverIndex, 0, removed);
     setTempScenarios(updatedScenarios);
-    const updatedOrder = updatedScenarios.map(scenario => scenario.ID);
-    setIsOrderChanged(
-      arrayNotEquals(
-        riSc.scenarios.map(scenario => scenario.ID),
-        updatedOrder,
-      ),
-    );
   };
 
-  const saveOrder = () => {
+  const moveRowFinal = (dragIndex: number, dropIndex: number) => {
+    const updatedScenarios = [...tempScenarios];
+    const [removed] = updatedScenarios.splice(dragIndex, 1);
+    updatedScenarios.splice(dropIndex, 0, removed);
+    setTempScenarios(updatedScenarios);
+
     const updatedRiSc = {
       ...riSc,
-      scenarios: tempScenarios,
+      scenarios: updatedScenarios,
     };
-
-    updateRiSc(updatedRiSc, () => {
-      setIsOrderChanged(false);
-    });
+    updateRiSc(updatedRiSc, () => {});
   };
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   return (
     <>
@@ -102,6 +98,18 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                 onClick={openNewScenarioWizard}
               >
                 {t('scenarioTable.addScenarioButton')}
+              </Button>
+              <Button
+                startIcon={isEditing ? <CheckCircle /> : <Edit />}
+                variant="text"
+                color="primary"
+                onClick={() =>
+                  isEditing ? setIsEditing(false) : setIsEditing(true)
+                }
+              >
+                {isEditing
+                  ? t('scenarioTable.doneEditing')
+                  : t('scenarioTable.editButton')}
               </Button>
             </Box>
           )}
@@ -134,7 +142,7 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
               <Table>
                 <TableHead style={{ whiteSpace: 'nowrap' }}>
                   <TableRow className={rowBorder}>
-                    <TableCell className={tableCellDragIcon} />
+                    {isEditing && <TableCell className={tableCellDragIcon} />}
                     <TableCell className={tableCellTitle}>
                       <Typography
                         className={label}
@@ -177,24 +185,14 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
                       index={idx}
                       scenario={scenario}
                       viewRow={openScenarioDrawer}
-                      moveRow={moveRow}
+                      moveRowFinal={moveRowFinal}
+                      moveRowLocal={moveRowLocal}
                       isLastRow={idx === riSc.scenarios.length - 1}
+                      isEditing={isEditing}
                     />
                   ))}
                 </TableBody>
               </Table>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={saveOrder}
-                style={{
-                  margin: '1rem',
-                  float: 'right',
-                }}
-                disabled={!isOrderChanged}
-              >
-                Save Order
-              </Button>
             </TableContainer>
           </>
         )}

@@ -42,7 +42,7 @@ export const ScenarioDrawer = () => {
 
   const [isMatrixDialogOpen, setIsMatrixDialogOpen] = useState<boolean>(false);
 
-  const { riScUpdateStatus, response } = useRiScs();
+  const { updateStatus, response } = useRiScs();
 
   // Used to scroll to the bottom of the drawer when the user deletes a scenario
   // via the quick edit and DeleteConfirmation
@@ -92,7 +92,8 @@ export const ScenarioDrawer = () => {
 
   useEffect(() => {
     formMethods.reset(mapScenarioToFormScenario(scenario));
-  }, [scenario, formMethods, mapScenarioToFormScenario]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scenario]);
 
   return (
     <Drawer
@@ -169,12 +170,10 @@ export const ScenarioDrawer = () => {
             color="primary"
             variant="contained"
             onClick={onSubmit}
-            disabled={
-              !formMethods.formState.isDirty || riScUpdateStatus.isLoading
-            }
+            disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
           >
             {t('dictionary.save')}
-            {riScUpdateStatus.isLoading && (
+            {updateStatus.isLoading && (
               <CircularProgress
                 size={16}
                 sx={{ marginLeft: 1, color: 'inherit' }}
@@ -197,7 +196,7 @@ export const ScenarioDrawer = () => {
 
       {response &&
         response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
-          <Alert severity={getAlertSeverity(riScUpdateStatus)}>
+          <Alert severity={getAlertSeverity(updateStatus)}>
             <Typography>{response.statusMessage}</Typography>
           </Alert>
         )}

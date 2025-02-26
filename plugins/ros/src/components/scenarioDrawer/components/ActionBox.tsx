@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Action, FormScenario } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -10,20 +10,24 @@ import { body2, emptyState, label } from '../../common/typography';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore, Edit } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
-import { UseFormReturn } from 'react-hook-form';
+import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { actionStatusOptions } from '../../../utils/constants';
+import { useIsMounted } from '../../../utils/hooks';
 import CircularProgress from '@mui/material/CircularProgress';
-import { DeleteActionConfirmation } from './DeleteActionConfirmation';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteAction } from '../../../utils/utilityfunctions';
 
 interface ActionBoxProps {
   action: Action;
   index: number;
   formMethods: UseFormReturn<FormScenario>;
-  remove: () => void;
+  remove: UseFieldArrayRemove;
   onSubmit: () => void;
 }
 
@@ -42,9 +46,9 @@ export const ActionBox = ({
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const { riScUpdateStatus } = useRiScs();
+  const { updateStatus } = useRiScs();
 
-  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario } =
+  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
     useScenario();
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
@@ -52,8 +56,40 @@ export const ActionBox = ({
   /* @ts-ignore Because ts can't typecheck strings against our keys */
   const translatedActionStatus = t(`actionStatus.${action.status}`);
 
-  const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
-    useState(false);
+  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
+    value: actionStatus,
+    /* @ts-ignore Because ts can't typecheck strings against our keys */
+    renderedValue: t(`actionStatus.${actionStatus}`),
+  }));
+
+  const isMounted = useIsMounted();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleChipClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    const updatedScenario = {
+      ...scenario,
+      actions: scenario.actions.map(a =>
+        a.ID === action.ID ? { ...a, status: newStatus } : a,
+      ),
+    };
+
+    await submitEditedScenarioToRiSc(updatedScenario);
+
+    if (isMounted()) {
+      handleMenuClose();
+    }
+  };
+
+  useEffect(() => () => setAnchorEl(null), []);
 
   if (isEditing) {
     return (
@@ -61,67 +97,65 @@ export const ActionBox = ({
         <ActionFormItem
           formMethods={formMethods}
           index={index}
-          handleDelete={() => setDeleteActionConfirmationIsOpen(true)}
+          handleDelete={() => deleteAction(remove, index, onSubmit)}
           showTitleNumber={false}
           remove={remove}
         />
-        <ButtonGroup fullWidth>
+        <Box display="flex" gap={1}>
           <Button
             color="primary"
             variant="contained"
             onClick={formMethods.handleSubmit((data: FormScenario) => {
               submitEditedScenarioToRiSc(mapFormScenarioToScenario(data));
             })}
-            disabled={
-              !formMethods.formState.isDirty || riScUpdateStatus.isLoading
-            }
+            disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
           >
             {t('dictionary.save')}
-            {riScUpdateStatus.isLoading && (
+            {updateStatus.isLoading && (
               <CircularProgress
                 size={16}
-                sx={{ marginLeft: 1, color: 'inherit' }}
+                sx={{ marginLeft: 8, color: 'inherit' }}
               />
             )}
           </Button>
 
-          <Button onClick={() => setIsEditing(false)}>Avbryt</Button>
-        </ButtonGroup>
-        <DeleteActionConfirmation
-          deleteActionConfirmationIsOpen={deleteActionConfirmationIsOpen}
-          setDeleteActionConfirmationIsOpen={setDeleteActionConfirmationIsOpen}
-          formMethods={formMethods}
-          index={index}
-          remove={remove}
-          onSubmit={onSubmit}
-        />
+          <Button onClick={() => setIsEditing(false)}>
+            {t('dictionary.cancel')}
+          </Button>
+        </Box>
       </>
     );
   }
 
   return (
     <Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <IconButton onClick={() => toggleActionExpanded(action.ID)}>
-          {isExpanded ? <ExpandLess /> : <ExpandMore />}
-        </IconButton>
-        <Typography
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <Box
           sx={{
-            fontSize: '16px',
-            fontWeight: 500,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            cursor: 'pointer',
+            width: '100%',
           }}
+          onClick={() => toggleActionExpanded(action.ID)}
         >
-          {isActionTitlePresent
-            ? action.title
-            : `${t('dictionary.measure')} ${index + 1}`}
-        </Typography>
+          <IconButton>
+            {isExpanded ? <ExpandLess /> : <ExpandMore />}
+          </IconButton>
+          <Typography
+            sx={{
+              fontSize: '16px',
+              fontWeight: 500,
+            }}
+          >
+            {isActionTitlePresent
+              ? action.title
+              : `${t('dictionary.measure')} ${index + 1}`}
+          </Typography>
+        </Box>
         <IconButton
+          disabled={isExpanded ? false : true}
           sx={{
             marginLeft: 'auto',
             opacity: isExpanded ? 1 : 0,
@@ -140,7 +174,30 @@ export const ActionBox = ({
                 ? { backgroundColor: '#6BC6A4' }
                 : undefined,
           }}
+          onClick={handleChipClick}
         />
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleMenuClose}
+          onClick={handleMenuClose}
+        >
+          {translatedActionStatuses.map(option => (
+            <MenuItem
+              key={option.value}
+              onClick={() => handleStatusChange(option.value)}
+            >
+              {option.renderedValue}
+            </MenuItem>
+          ))}
+        </Menu>
+        <IconButton
+          onClick={() => {
+            deleteAction(remove, index, onSubmit);
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
       </Box>
       <Collapse in={isExpanded}>
         <Typography sx={{ ...label, marginTop: 1 }}>
