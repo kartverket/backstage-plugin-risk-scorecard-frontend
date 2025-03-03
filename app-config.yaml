@@ -140,8 +140,8 @@ catalog:
   providers:
     github:
       providerId:
-        organization: 'Kartverket'
-        catalogPath: '/catalog-info.yaml' # string
+        organization: 'spire-test'
+        catalogPath: '.security/catalog-info.yaml' # string
         validateLocationsExist: true
         filters:
           repository: '.*' # Regex

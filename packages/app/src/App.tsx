@@ -40,7 +40,6 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { ExplorePage } from '@backstage-community/plugin-explore';
-import { microsoftAuthApiRef } from '@backstage/core-plugin-api';
 import { LighthousePage } from '@backstage-community/plugin-lighthouse';
 import { DevToolsPage } from '@backstage/plugin-devtools';
 import { pluginRiScNorwegianTranslation } from '@kartverket/backstage-plugin-risk-scorecard';
@@ -53,21 +52,7 @@ const app = createApp({
   },
   components: {
     SignInPage: props => {
-      // if (configApi.getOptionalString('auth.environment') != 'production') {
-      //   return <SignInPage {...props} auto providers={['guest']} />;
-      // }
-      return (
-        <SignInPage
-          {...props}
-          auto
-          provider={{
-            id: 'microsoft-auth-provider',
-            title: 'Microsoft',
-            message: 'Sign in using Microsoft',
-            apiRef: microsoftAuthApiRef,
-          }}
-        />
-      );
+      return <SignInPage {...props} auto providers={['guest']} />;
     },
   },
   apis,
