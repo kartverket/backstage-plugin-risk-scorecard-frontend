@@ -35,6 +35,23 @@ jobs:
       - name: Configure Docker to use the gcloud command-line tool as a credential helper
         run: gcloud auth configure-docker ${{ env.AR_REPO_LOCATION }}-docker.pkg.dev --quiet
 
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - run: corepack enable
+
+      - run: yarn install --immutable
+
+      # tsc outputs type definitions to dist-types/ in the repo root, which are then consumed by the build
+      # - run: yarn tsc
+
+      # Build the backend, which bundles it all up into the packages/backend/dist folder.
+      # The configuration files here should match the one you use inside the Dockerfile below.
+      - run: yarn build:backend --config ../../app-config.yaml --config ../../app-config.production.yaml
+
       - name: Build the Docker image
         run: |
           docker build -f packages/backend/Dockerfile -t "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" packages/backend
