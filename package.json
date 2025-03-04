@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
+    "//node": "From `.node-version`",
     "node": "20"
   },
   "scripts": {
