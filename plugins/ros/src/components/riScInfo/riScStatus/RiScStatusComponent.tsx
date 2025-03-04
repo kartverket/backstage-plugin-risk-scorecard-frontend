@@ -95,7 +95,7 @@ export const RiScStatusComponent = ({
   };
 
   const handleUpdate = () => {
-    updateRiSc(selectedRiSc.content);
+    updateRiSc(selectedRiSc);
     setMigrationDialogIsOpen(false);
   };
 

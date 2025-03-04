@@ -22,8 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
-import { SopsConfigButton } from '../common/SopsConfigButton';
-import { SopsConfigDialog } from '../sopsConfigDialog/SopsConfigDialog';
+import { Edit } from '@mui/icons-material';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -32,45 +31,28 @@ export const RiScPlugin = () => {
     RiScDialogStates.Closed,
   );
 
-  const [showSopsConfigDialog, setShowSopsConfigDialog] =
-    useState<boolean>(false);
-
   const openCreateRiScDialog = () =>
     setRiScDialogState(RiScDialogStates.Create);
-  const [hasOpenedSopsConfigDialogOnce, setHasOpenedSopsConfigDialogOnce] =
-    useState(false);
-  const [
-    hasOpenedSopsConfigDialogGitBranchMenuOnce,
-    setHasOpenedSopsConfigDialogGitBranchMenuOnce,
-  ] = useState(false);
-  const handleOpenSopsConfigDialogGitBranchMenu = () => {
-    setInterval(() => setHasOpenedSopsConfigDialogGitBranchMenuOnce(true), 700);
-  };
 
-  const openEditRiScDialog = () => setRiScDialogState(RiScDialogStates.Edit);
+  const openEditRiScDialog = () =>
+    setRiScDialogState(RiScDialogStates.EditRiscInfo);
+  const openEditEncryptionDialog = () =>
+    setRiScDialogState(RiScDialogStates.EditEncryption);
   const closeRiScDialog = () => setRiScDialogState(RiScDialogStates.Closed);
-  const closeSopsConfigDialog = () => setShowSopsConfigDialog(false);
-
-  const [showSopsConfigButton, setShowSopsConfigButton] = useState(false);
-  const [disableSopsConfigButton, setDisableSopsConfigButton] = useState(false);
-  const handleClickSopsConfigDialogButton = () => {
-    setHasOpenedSopsConfigDialogOnce(true);
-    setShowSopsConfigDialog(true);
-  };
 
   const {
     selectedRiSc,
     riScs,
     selectRiSc,
     isFetching,
-    sopsConfigs,
-    gcpCryptoKeys,
     resetResponse,
     resetRiScStatus,
     response,
     updateStatus,
-    failedToFetchSopsConfig,
   } = useRiScs();
+
+  // eslint-disable-next-line no-console
+  console.log('selectedRiSc', selectedRiSc);
 
   const [searchParams] = useSearchParams();
   const scenarioWizardStep = searchParams.get(
@@ -85,22 +67,10 @@ export const RiScPlugin = () => {
   }, [resetRiScStatus, resetResponse, scenarioWizardStep]);
 
   useEffect(() => {
-    if (
-      !isFetching &&
-      sopsConfigs.filter(config => config.onDefaultBranch).length < 1 &&
-      !failedToFetchSopsConfig &&
-      !updateStatus.isLoading &&
-      riScs?.length === 0
-    ) {
-      setShowSopsConfigButton(true);
-      setHasOpenedSopsConfigDialogOnce(true);
-      setShowSopsConfigDialog(true);
-      setDisableSopsConfigButton(false);
-    } else {
-      setShowSopsConfigButton(false);
-      setDisableSopsConfigButton(true);
+    if (!isFetching && !updateStatus.isLoading && riScs?.length === 0) {
+      // No Riscs found, only show the create new button
     }
-  }, [isFetching, updateStatus, failedToFetchSopsConfig, riScs, sopsConfigs]);
+  }, [isFetching, updateStatus, riScs]);
 
   return (
     <>
@@ -133,17 +103,6 @@ export const RiScPlugin = () => {
                 flexDirection: 'row',
               }}
             >
-              {showSopsConfigButton && (
-                <SopsConfigButton
-                  disable={disableSopsConfigButton}
-                  hasOpenedOnce={hasOpenedSopsConfigDialogOnce}
-                  handleClick={handleClickSopsConfigDialogButton}
-                  pullRequestCount={
-                    sopsConfigs.filter(value => value.pullRequest !== null)
-                      .length
-                  }
-                />
-              )}
               <SupportButton />
             </Grid>
           </ContentHeader>
@@ -168,31 +127,42 @@ export const RiScPlugin = () => {
               </Grid>
             )}
 
-            {!isFetching &&
-              sopsConfigs.find(value => value.onDefaultBranch) !==
-                undefined && (
-                <Grid item xs>
+            {!isFetching && (
+              <Grid item xs>
+                <Button
+                  startIcon={<AddCircle />}
+                  variant="text"
+                  color="primary"
+                  onClick={openCreateRiScDialog}
+                  sx={{
+                    minWidth: '205px',
+                  }}
+                >
+                  {t('contentHeader.createNewButton')}
+                </Button>
+                {selectedRiSc && (
                   <Button
-                    startIcon={<AddCircle />}
+                    startIcon={<Edit />}
                     variant="text"
                     color="primary"
-                    onClick={openCreateRiScDialog}
-                    sx={{
-                      minWidth: '205px',
-                    }}
+                    onClick={openEditEncryptionDialog}
                   >
-                    {t('contentHeader.createNewButton')}
+                    {t('contentHeader.editEncryption')}
                   </Button>
-                </Grid>
-              )}
+                )}
+              </Grid>
+            )}
 
             {selectedRiSc && (
               <>
                 <Grid item xs={12}>
-                  <RiScInfo riSc={selectedRiSc} edit={openEditRiScDialog} />
+                  <RiScInfo
+                    riScWithMetadata={selectedRiSc}
+                    edit={openEditRiScDialog}
+                  />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
-                  <ScenarioTableWrapper riSc={selectedRiSc} />
+                  <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
                 </Grid>
                 <Grid item xs md={5} lg={4}>
                   <RiskMatrix riSc={selectedRiSc.content} />
@@ -206,20 +176,6 @@ export const RiScPlugin = () => {
       {riScDialogState !== RiScDialogStates.Closed && (
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
-
-      {showSopsConfigDialog && (
-        <SopsConfigDialog
-          onClose={closeSopsConfigDialog}
-          showDialog={showSopsConfigDialog}
-          sopsConfigs={sopsConfigs}
-          gcpCryptoKeys={gcpCryptoKeys}
-          hasOpenedGitBranchMenuOnce={
-            hasOpenedSopsConfigDialogGitBranchMenuOnce
-          }
-          handleOpenGitBranchMenuFirst={handleOpenSopsConfigDialogGitBranchMenu}
-        />
-      )}
-
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>
   );

@@ -10,11 +10,11 @@ import EditButton from '../common/EditButton';
 import { useRiScs } from '../../contexts/RiScContext';
 
 interface RiScInfoProps {
-  riSc: RiScWithMetadata;
+  riScWithMetadata: RiScWithMetadata;
   edit: () => void;
 }
 
-export const RiScInfo = ({ riSc, edit }: RiScInfoProps) => {
+export const RiScInfo = ({ riScWithMetadata, edit }: RiScInfoProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label, body2 } = useFontStyles();
 
@@ -40,15 +40,22 @@ export const RiScInfo = ({ riSc, edit }: RiScInfoProps) => {
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="h5">{riSc.content.title}</Typography>
+            <Typography variant="h5">
+              {riScWithMetadata.content.title}
+            </Typography>
             <EditButton onClick={edit} />
           </Box>
           <Typography className={label}>{t('dictionary.scope')}</Typography>
-          <Typography className={body2}>{riSc.content.scope}</Typography>
+          <Typography className={body2}>
+            {riScWithMetadata.content.scope}
+          </Typography>
         </InfoCard>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
-        <RiScStatusComponent selectedRiSc={riSc} publishRiScFn={approveRiSc} />
+        <RiScStatusComponent
+          selectedRiSc={riScWithMetadata}
+          publishRiScFn={approveRiSc}
+        />
       </Grid>
     </Grid>
   );

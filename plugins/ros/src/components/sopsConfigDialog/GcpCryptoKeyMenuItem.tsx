@@ -39,7 +39,7 @@ export const GcpCryptoKeyMenuItem = ({
           </Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary={gcpCryptoKey.name}
+          primary={gcpCryptoKey.keyName}
           secondary={
             <>
               Project ID: {gcpCryptoKey.projectId}

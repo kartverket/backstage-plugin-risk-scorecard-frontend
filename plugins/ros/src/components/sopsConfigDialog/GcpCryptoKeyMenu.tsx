@@ -37,7 +37,7 @@ export const GcpCryptoKeyMenu = ({
   const gcpCryptoKeysGroupedByAccess = gcpCryptoKeys.reduce<
     Record<string, GcpCryptoKeyObject[]>
   >((acc, gcpCryptoKey) => {
-    const key = gcpCryptoKey.hasEncryptDecryptAccess.toString();
+    const key = (gcpCryptoKey.hasEncryptDecryptAccess ?? false).toString();
     if (!acc[key]) {
       acc[key] = [];
     }
@@ -80,7 +80,7 @@ export const GcpCryptoKeyMenu = ({
             </ListItemAvatar>
 
             <ListItemText
-              primary={chosenGcpCryptoKey.name}
+              primary={chosenGcpCryptoKey.keyName}
               secondary={
                 <>
                   Project ID: {chosenGcpCryptoKey.projectId}
@@ -114,7 +114,7 @@ export const GcpCryptoKeyMenu = ({
         }}
       >
         {Object.keys(gcpCryptoKeysGroupedByAccess).map(hasAccess => (
-          <li>
+          <li key={`access-group-${hasAccess}`}>
             <ul style={{ paddingLeft: 0, marginLeft: 0 }}>
               <ListSubheader>
                 {hasAccess === 'true'
@@ -123,7 +123,7 @@ export const GcpCryptoKeyMenu = ({
               </ListSubheader>
               {gcpCryptoKeysGroupedByAccess[hasAccess].map(gcpCryptoKey => (
                 <GcpCryptoKeyMenuItem
-                  key={`${gcpCryptoKey.projectId}-${gcpCryptoKey.keyRing}-${gcpCryptoKey.name}`}
+                  key={`${gcpCryptoKey.projectId}-${gcpCryptoKey.keyRing}-${gcpCryptoKey.keyName}`}
                   value={JSON.stringify(gcpCryptoKey)}
                   gcpCryptoKey={gcpCryptoKey}
                   handleClick={handleClickMenuItem}
