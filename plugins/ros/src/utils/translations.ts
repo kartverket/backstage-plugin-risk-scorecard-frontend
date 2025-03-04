@@ -9,6 +9,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     contentHeader: {
       title: 'Risk scorecard',
       createNewButton: 'Create new scorecard',
+      editEncryption: 'Edit encryption',
     },
     dictionary: {
       rejectedLogin: 'Login rejected by user.',
@@ -178,6 +179,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
     rosDialog: {
       titleNew: 'New risk scorecard',
       titleEdit: 'Edit scorecard',
+      editEncryption: 'Edit encryption',
       titleError: 'The scorecard has to have a title',
       scopeDescription:
         'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
@@ -193,8 +195,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
     },
     sopsConfigDialog: {
       title: 'Encryption',
-      description:
-        'To use the Risk Scorecard, you need to enable an encryption scheme by selecting a key from Google Cloud Platform (GCP) for encrypting and decrypting. Follow the steps below to complete the setup:',
+      description: {
+        new : "The Risc Scorecard will be encrypted to limit access. Below please choose a key from Google Cloud Platform which you and your team can access.",
+        edit: "The Risc Scorecard will be encrypted to limit access. You can change which key is utilized from Google Cloud platform, make sure the correct people have access to the new key.",
+      },
       selectKeysTitle: 'Select keys',
       chooseGcpCryptoKey: 'Choose GCP key',
       gcpCryptoKeyDescription:
@@ -437,7 +441,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
         default: {
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
-          
+          'contentHeader.editEncryption': 'Rediger kryptering',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.yes': 'Ja',
           'dictionary.no': 'Nei',
@@ -596,6 +600,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
+          'rosDialog.editEncryption': 'Rediger kryptering',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
@@ -609,8 +614,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.stepRiscDetails': 'RoS-detaljer',
           'rosDialog.stepEncryption': 'Konfigurer kryptering',
           'sopsConfigDialog.title': 'Kryptering',
-          'sopsConfigDialog.description':
+          'sopsConfigDialog.description.new':
             'For å bruke kodenær RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
+            'sopsConfigDialog.description.edit': "Risiko og sårbarhetsanalysen vil bli kryptert for å sørge for kofidiensialitet. Du kan endre hvilken krypteringsnøkkel fra Google Cloud Platform som skal bli brukt her:",
           'sopsConfigDialog.selectKeysTitle': 'Velg nøkler',
           'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':

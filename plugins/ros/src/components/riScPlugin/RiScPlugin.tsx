@@ -22,6 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
+import { Edit } from '@mui/icons-material';
 
 export const RiScPlugin = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -33,7 +34,8 @@ export const RiScPlugin = () => {
   const openCreateRiScDialog = () =>
     setRiScDialogState(RiScDialogStates.Create);
 
-  const openEditRiScDialog = () => setRiScDialogState(RiScDialogStates.Edit);
+  const openEditRiScDialog = () => setRiScDialogState(RiScDialogStates.EditRiscInfo);
+  const openEditEncryptionDialog = () => setRiScDialogState(RiScDialogStates.EditEncryption);
   const closeRiScDialog = () => setRiScDialogState(RiScDialogStates.Closed);
 
   const {
@@ -46,6 +48,9 @@ export const RiScPlugin = () => {
     response,
     updateStatus,
   } = useRiScs();
+
+  // eslint-disable-next-line no-console
+  console.log('selectedRiSc', selectedRiSc);
 
   const [searchParams] = useSearchParams();
   const scenarioWizardStep = searchParams.get(
@@ -60,11 +65,7 @@ export const RiScPlugin = () => {
   }, [resetRiScStatus, resetResponse, scenarioWizardStep]);
 
   useEffect(() => {
-    if (
-      !isFetching &&
-      !updateStatus.isLoading &&
-      riScs?.length === 0
-    ) {
+    if (!isFetching && !updateStatus.isLoading && riScs?.length === 0) {
       // No Riscs found, only show the create new button
     }
   }, [isFetching, updateStatus, riScs]);
@@ -124,21 +125,31 @@ export const RiScPlugin = () => {
               </Grid>
             )}
 
-            {!isFetching &&
+            {!isFetching && (
               <Grid item xs>
                 <Button
                   startIcon={<AddCircle />}
                   variant="text"
                   color="primary"
                   onClick={openCreateRiScDialog}
-                    sx={{
-                      minWidth: '205px',
-                    }}
+                  sx={{
+                    minWidth: '205px',
+                  }}
+                >
+                  {t('contentHeader.createNewButton')}
+                </Button>
+                {selectedRiSc && (
+                  <Button
+                    startIcon={<Edit />}
+                    variant="text"
+                    color="primary"
+                    onClick={openEditEncryptionDialog}
                   >
-                    {t('contentHeader.createNewButton')}
+                    {t('contentHeader.editEncryption')}
                   </Button>
+                )}
               </Grid>
-            }
+            )}
 
             {selectedRiSc && (
               <>

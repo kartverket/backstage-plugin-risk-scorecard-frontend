@@ -1,34 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { RiSc, RiScWithMetadata, SopsConfig } from '../../utils/types';
-import { emptyRiSc, isPublicAgeKeyValid } from '../../utils/utilityfunctions';
+import React, { useState } from 'react';
+import { RiScWithMetadata } from '../../utils/types';
+import { emptyRiSc } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiScs } from '../../contexts/RiScContext';
 import { useForm } from 'react-hook-form';
-import { Input } from '../common/Input';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../common/mixins';
-import { DialogContentText, IconButton, List, ListItem, ListItemText, TextField, ListItemSecondaryAction } from '@material-ui/core';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { Step, StepLabel, Stepper } from '@mui/material';
-import { Accordion, AccordionDetails, AccordionSummary, FormLabel } from '@mui/material';
-import { GcpCryptoKeyMenu } from '../sopsConfigDialog/GcpCryptoKeyMenu';
-import { GcpCryptoKeyObject } from '../../utils/DTOs';
-import { AddCircle} from '@mui/icons-material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ConfigEncryptionDialog from './ConfigEncryptionDialog';
+import ConfigRiscInfo from './ConfigRiscInfo';
+
 
 export enum RiScDialogStates {
   Closed,
-  Edit,
   Create,
+  EditRiscInfo,
+  EditEncryption,
 }
 
 interface RiScDialogProps {
@@ -36,10 +29,31 @@ interface RiScDialogProps {
   dialogState: RiScDialogStates;
 }
 
-enum CreateRiScFrom {
+export enum CreateRiScFrom {
   Scratch,
   Default,
 }
+
+const RiScStepper = ({children, activeStep}: {children: React.ReactNode, activeStep: number}  ) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const steps = [
+    t('rosDialog.stepRiscDetails'),
+    t('rosDialog.stepEncryption'),
+  ];
+  return (
+    <Box sx={{ width: '100%', p: 2 }}>
+      <Stepper activeStep={activeStep}>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step> 
+            ))}
+          </Stepper>
+          {children}
+    </Box>
+  );
+};
 
 export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -48,11 +62,11 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   const {
     register,
     handleSubmit,
-    formState: { isDirty, errors },
+    formState: { errors },
     setValue,
   } = useForm<RiScWithMetadata>({
     defaultValues:
-      dialogState === RiScDialogStates.Edit
+      dialogState === RiScDialogStates.EditRiscInfo || dialogState === RiScDialogStates.EditEncryption
         ? selectedRiSc!
         : {
             content: emptyRiSc(),
@@ -65,45 +79,15 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   });
 
   const [activeStep, setActiveStep] = useState(0);
-  const [riscData, setRiscData] = useState<RiSc | null>(null);
-  const [sopsData, setSopsData] = useState<SopsConfig | null>(null);
-  const [publicAgeKeyHelperText, setPublicKeyTextFieldHelperText] = useState("");
-  const [publicAgeKeyError, setPublicKeyTextFieldError] = useState(false);
-  const [chosenGcpCryptoKey, setChosenGcpCryptoKey] =
-    useState<GcpCryptoKeyObject>(gcpCryptoKeys[0]);
-  const [publicAgeKeys, setPublicAgeKeys] = useState<string[]>([]);
-  const [newPublicAgeKey, setNewPublicAgeKey] = useState("");
-  const handleChangeGcpCryptoKey = (gcpCryptoKey: GcpCryptoKeyObject) =>
-    setChosenGcpCryptoKey(gcpCryptoKey);
-
-  useEffect(() => {
-    setValue('sopsConfig', {
-      shamir_threshold: 2,
-      key_groups: [{
-        gcp_kms: [{
-          resource_id: chosenGcpCryptoKey.resourceId,
-          created_at: chosenGcpCryptoKey.createdAt,
-        }],
-      },
-      {
-        age: publicAgeKeys.map(key => ({
-          recipient: key,
-        })),
-      },
-    ],
-    });
-  }, [chosenGcpCryptoKey, publicAgeKeys, setValue]);
-  
-
-  const steps = [
-    t('rosDialog.stepRiscDetails'),
-    t('rosDialog.stepEncryption'),
-  ];
-
-  const titleTranslation =
-    dialogState === RiScDialogStates.Create
-      ? t('rosDialog.titleNew')
-      : t('rosDialog.titleEdit');
+  const titleTranslation = (() => {
+    if (dialogState === RiScDialogStates.Create) {
+      return t('rosDialog.titleNew', {});
+    }
+    if (dialogState === RiScDialogStates.EditRiscInfo) {
+      return t('rosDialog.titleEdit', {});
+    }
+    return t('rosDialog.editEncryption', {});
+  })();
 
   const [createRiScFrom, setCreateRiScFrom] = useState<CreateRiScFrom>(
     CreateRiScFrom.Scratch,
@@ -116,9 +100,8 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     }
   };
 
-  const handleNext = handleSubmit((data: RiScWithMetadata) => {
+  const handleNext = handleSubmit(() => {
     if (activeStep === 0) {
-      setRiscData(data.content);
       setActiveStep(1);
     }
   });
@@ -132,193 +115,33 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
     if (dialogState === RiScDialogStates.Create) {
       // eslint-disable-next-line no-console
-      console.log('data', data);
+      console.log('Create RiSc', data);
       createNewRiSc(data, createRiScFrom === CreateRiScFrom.Default);
     } else {
-      updateRiSc(data.content);
+      // eslint-disable-next-line no-console
+      console.log('Update RiSc', data);
+      updateRiSc(data);
     }
     onClose();
   });
 
-  const handleAddPublicAgeKey = () => {
-    if (isPublicAgeKeyValid(newPublicAgeKey)) {
-      if (publicAgeKeys.includes(newPublicAgeKey)) {
-        setPublicKeyTextFieldHelperText(
-          t('sopsConfigDialog.publicKeyHelperTextKeyAlreadyExistInSopsConfig'),
-        );
-        setPublicKeyTextFieldError(true);
-      } else {
-        setPublicAgeKeys([...publicAgeKeys, newPublicAgeKey]);
-        setNewPublicAgeKey("");
-      }
-    } else {
-      setPublicKeyTextFieldHelperText(
-        t('sopsConfigDialog.publicKeyHelperTextKeyNotValid'),
-      );
-      setPublicKeyTextFieldError(true);
-    }
-  };
-
-  return (
-      <Dialog open={dialogState !== RiScDialogStates.Closed} onClose={onClose}>
+  if (dialogState === RiScDialogStates.Create) {
+    return (
+      <Dialog open={dialogState === RiScDialogStates.Create} onClose={onClose}>
         <DialogTitle>{titleTranslation}</DialogTitle>
-
-        <Box sx={{ width: '100%', p: 2 }}>
-          <Stepper activeStep={activeStep}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Box>
-
-        <DialogContent
+      <RiScStepper activeStep={activeStep}>
+      <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
         >
           {activeStep === 0 && (
-            <>
-              <Input
-                required
-                {...register('content.title', { required: true })}
-                error={errors?.content?.title !== undefined}
-                label={t('dictionary.title')}
-              />
-              <Input
-                required
-                {...register('content.scope', { required: true })}
-                label={t('dictionary.scope')}
-                sublabel={t('rosDialog.scopeDescription')}
-                error={errors?.content?.scope !== undefined}
-                minRows={4}
-              />
-
-              {dialogState === RiScDialogStates.Create && (
-                <div>
-                  <DialogContentText>
-                    {t('rosDialog.generateInitialDescription')}
-                  </DialogContentText>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 4,
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {t('rosDialog.generateInitialToggleDescription')}
-                    </Typography>
-                    <FormControlLabel
-                      control={
-                        <Switch onChange={() => handleChangeCreateRiScFrom()} />
-                      }
-                      label={
-                        createRiScFrom === CreateRiScFrom.Scratch
-                          ? t('dictionary.no')
-                          : t('dictionary.yes')
-                      }
-                    />
-                  </Box>
-                </div>
-              )}
-            </>
+            <ConfigRiscInfo dialogState={dialogState} createRiScFrom={createRiScFrom} handleChangeCreateRiScFrom={handleChangeCreateRiScFrom} register={register} errors={errors} />
           )}
           {activeStep === 1 && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <DialogContentText>
-              {t('sopsConfigDialog.description')}
-            </DialogContentText>
-                  {t('sopsConfigDialog.selectKeysTitle')}
-      
-                  {t('sopsConfigDialog.gcpCryptoKeyDescription')}
-      
-                  <GcpCryptoKeyMenu
-                    chosenGcpCryptoKey={chosenGcpCryptoKey}
-                    onChange={handleChangeGcpCryptoKey}
-                    gcpCryptoKeys={gcpCryptoKeys}
-                  />
-                  <Box>
-      <Accordion
-        elevation={1}
-        defaultExpanded={sopsData ? true : false}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"  
-          id="panel1-header"
-        >
-          {t('sopsConfigDialog.publicAgeKeyQuestion')}
-        </AccordionSummary>
-        <AccordionDetails>
-          <Box>
-            {sopsData?.publicAgeKeys && (
-              <FormLabel>
-                {t('sopsConfigDialog.publicAgeKeysAlreadyPresent')}
-              </FormLabel>
-            )}
-            <List>
-              {publicAgeKeys.map((key) => (
-                <ListItem dense={true}>
-                  <ListItemText>{key}</ListItemText>
-                  <ListItemSecondaryAction>
-                    <IconButton onClick={() => {
-                      setPublicAgeKeys(publicAgeKeys.filter(k => k !== key));
-                    }}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-            <Typography>
-            {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
-              'dictionary.optional',
-            )})`}
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'space-between', gap: 2 }}>
-            <TextField
-              label={t('sopsConfigDialog.publicAgeKey')}
-              helperText={publicAgeKeyHelperText}
-              error={publicAgeKeyError}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  handleAddPublicAgeKey();
-                }
-              }}
-              onFocus={() => {
-                setPublicKeyTextFieldError(false);
-                setPublicKeyTextFieldHelperText('');
-              }}
-              value={newPublicAgeKey}
-              onChange={(e) => setNewPublicAgeKey(e.target.value)}
-            />
-            <Button
-              startIcon={<AddCircle />}
-              variant="text"
-              color="primary"
-              onClick={handleAddPublicAgeKey}
-              sx={{
-                maxWidth: 200,
-                mt: 1,
-              }}
-            >
-              {t('sopsConfigDialog.addPublicAgeKey')}
-            </Button>
-            </Box>
-          </Box>
-        </AccordionDetails>
-      </Accordion>
-    </Box>
-          </Box>
+            <ConfigEncryptionDialog gcpCryptoKeys={gcpCryptoKeys} setValue={setValue} state={dialogState} register={register} />
           )}
         </DialogContent>
-
-        <DialogActions sx={dialogActions}>
+      </RiScStepper>
+      <DialogActions sx={dialogActions}>
           {activeStep > 0 && (
             <Button variant="outlined" onClick={handleBack}>
               {t('dictionary.previous')}
@@ -328,7 +151,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
             {t('dictionary.cancel')}
           </Button>
           {activeStep === 0 ? (
-            <Button variant="contained" onClick={handleNext} disabled={!isDirty}>
+            <Button variant="contained" onClick={handleNext}>
               {t('dictionary.next')}
             </Button>
           ) : (
@@ -338,6 +161,50 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
           )}
         </DialogActions>
       </Dialog>
-    
-  );
+    )
+  }
+
+  if (dialogState === RiScDialogStates.EditRiscInfo) {
+    return (
+      <Dialog open={dialogState === RiScDialogStates.EditRiscInfo} onClose={onClose}>
+      <DialogTitle>{titleTranslation}</DialogTitle>
+      <DialogContent
+        sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+      >
+      <ConfigRiscInfo dialogState={dialogState} createRiScFrom={createRiScFrom} handleChangeCreateRiScFrom={handleChangeCreateRiScFrom} register={register} errors={errors} />
+      </DialogContent>
+      <DialogActions sx={dialogActions}>
+          <Button variant="outlined" onClick={onClose}>
+            {t('dictionary.cancel')}
+          </Button>
+            <Button variant="contained" onClick={handleFinish}>
+              {t('dictionary.save')}
+            </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
+  if (dialogState === RiScDialogStates.EditEncryption) {
+    return (
+      <Dialog open={dialogState === RiScDialogStates.EditEncryption} onClose={onClose}>
+        <DialogTitle>{titleTranslation}</DialogTitle>
+        <DialogContent
+          sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+        >
+      <ConfigEncryptionDialog gcpCryptoKeys={gcpCryptoKeys} sopsData={selectedRiSc?.sopsConfig} setValue={setValue} state={dialogState} register={register}/>
+      </DialogContent>
+      <DialogActions sx={dialogActions}>
+          <Button variant="outlined" onClick={onClose}>
+            {t('dictionary.cancel')}
+          </Button>
+            <Button variant="contained" onClick={handleFinish}>
+              {t('dictionary.save')}
+            </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
+return null;
 };
