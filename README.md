@@ -31,12 +31,17 @@ integrations:
       token: <YOUR GITHUB PERSONAL ACCESS TOKEN>
 ```
 - **Setting up auth modules**:
-In order to use Backstage RiSc plugin, users need to authenticate towards Google Cloud and GitHub.
+In order to use Backstage RiSc plugin, users need to authenticate towards Microsoft Entra ID, Google Cloud and GitHub.
 You therefore need to set up Google and GitHub OAuth-apps and set up credentials for the apps in `app-config.local.yaml`.
 ```yaml
 auth:
   environment: development
   providers:
+    microsoft:
+      development:
+        tenantId: ${ENTRA_ID_TENANT_ID}
+        clientId: ${ENTRA_ID_CLIENT_ID}
+        clientSecret: ${ENTRA_ID_CLIENT_SECRET}   
     guest:
       development:
     google:
@@ -48,14 +53,27 @@ auth:
         clientId: <GITHUB CLIENT ID>
         clientSecret: <GITHUB CLIENT SECRET>
 ```
-- **Setting up proxy-endpoint to RiSc-backend**:
-To send requests to the RiSc backend, Backstage RiSc plugin relies on a configured proxy in the Backstage-backend to proxy 
-requests towards towards `/risc` to the URL of the RiSc backend.
+- **Setting up integration towards Microsoft Graph API to retrieve organization data**:
+Backstage needs credentials to retrieve users and groups from Microsoft Entra ID, 
+which can be used to enrich the Software Catalog with a hierarchical ownership structure.
 ```yaml
-proxy:
-  endpoints:
-    '/risc':
-      target: http://localhost:8080
+catalog:
+  providers:
+    microsoftGraphOrg:
+      default:
+        queryMode: 'advanced'
+        user:
+          filter: accountEnabled eq true and userType eq 'member'
+          select: ['accountEnabled', 'displayName', 'givenName', 'id', 'mail', 'mailNickname', 'userPrincipalName', 'surname', 'companyName', 'userType']
+        group:
+          filter: >
+            startswith(displayName, 'AAD - TF')
+        schedule:
+          frequency: PT1H
+          timeout: PT50M
+        tenantId: ${ENTRA_ID_TENANT_ID}
+        clientId: ${ENTRA_ID_CLIENT_ID}
+        clientSecret: ${ENTRA_ID_CLIENT_SECRET}
 ```
 
 You can then run Backstage with Backstage RiSc plugin locally by running:

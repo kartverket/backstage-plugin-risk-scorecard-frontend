@@ -24,10 +24,10 @@ import {CatalogGraphPage} from '@backstage/plugin-catalog-graph';
 import {RequirePermission} from '@backstage/plugin-permission-react';
 import {catalogEntityCreatePermission} from '@backstage/plugin-catalog-common/alpha';
 import {ExplorePage} from '@backstage-community/plugin-explore';
-import {LighthousePage} from '@backstage-community/plugin-lighthouse';
 import {DevToolsPage} from '@backstage/plugin-devtools';
 import {pluginRiScNorwegianTranslation} from '@kartverket/backstage-plugin-risk-scorecard';
 import {OpencostPage} from '@kartverket/backstage-plugin-opencost';
+import {configApiRef, microsoftAuthApiRef, useApi} from "@backstage/core-plugin-api";
 
 const app = createApp({
   __experimentalTranslations: {
@@ -36,7 +36,21 @@ const app = createApp({
   },
   components: {
     SignInPage: props => {
-      return <SignInPage {...props} auto providers={['guest']} />;
+        const configApi = useApi(configApiRef);
+        if (configApi.getOptionalString('auth.environment') !== 'production') {
+            return (<SignInPage {...props} auto providers={['guest', {
+                id: 'microsoft-auth-provider',
+                title: 'Microsoft',
+                message: 'Sign in using Microsoft',
+                apiRef: microsoftAuthApiRef,
+            }]} />);
+        }
+        return (<SignInPage {...props} auto provider={{
+            id: 'microsoft-auth-provider',
+            title: 'Microsoft',
+            message: 'Sign in using Microsoft',
+            apiRef: microsoftAuthApiRef,
+        }} />);
     },
   },
   apis,
@@ -102,7 +116,6 @@ const routes = (
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/explore" element={<ExplorePage />} />
-    <Route path="/lighthouse" element={<LighthousePage />} />
     <Route path="/devtools" element={<DevToolsPage />} />
     <Route path="/opencost" element={<OpencostPage />} />
   </FlatRoutes>
