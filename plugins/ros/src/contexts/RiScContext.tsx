@@ -24,7 +24,6 @@ import {
   GcpCryptoKeyObject,
   ProcessRiScResultDTO,
   RiScDTO,
-  SopsConfigRequestBody,
 } from '../utils/DTOs';
 import { useEffectOnce } from 'react-use';
 import { useAuthenticatedFetch } from '../utils/hooks';
@@ -52,7 +51,6 @@ type RiScDrawerProps = {
   updateStatus: UpdateStatus;
   resetRiScStatus: () => void;
   resetResponse: () => void;
-  createSopsConfig: (sopsConfig: SopsConfigRequestBody) => void;
   isFetching: boolean;
   isFetchingGcpCryptoKeys: boolean;
   failedToFetchGcpCryptoKeys: boolean;
@@ -78,7 +76,6 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     publishRiScs,
     response,
     setResponse,
-    putSopsConfig,
   } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
@@ -440,102 +437,10 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createSopsConfig = (sopsConfigRequestBody: SopsConfigRequestBody) => {
-    setUpdateStatus({
-      isLoading: true,
-      isError: false,
-      isSuccess: false,
-    });
-    putSopsConfig(
-      sopsConfigRequestBody,
-      res => {
-        setUpdateStatus({
-          isLoading: false,
-          isError: false,
-          isSuccess: true,
-        });
-        setResponse({
-          ...res,
-          statusMessage: getTranslationKey('info', res.status, t),
-        });
-      },
-      (error, loginRejected) => {
-        setUpdateStatus({
-          isLoading: false,
-          isError: true,
-          isSuccess: false,
-        });
-        setResponse({
-          status: ProcessingStatus.FailedToCreateSops,
-          statusMessage: loginRejected
-            ? `${getTranslationKey('error', error.status, t)}. ${t(
-                'dictionary.rejectedLogin',
-              )}`
-            : getTranslationKey('error', error.status, t),
-        });
-      },
-    );
-  };
-
-  // TODO: Rewrite this function to not use sopsConfig
-  /*
-  const updateSopsConfig = (
-    sopsConfigRequestBody: SopsConfigRequestBody,
-    branch: string,
-  ) => {
-    setUpdateStatus({
-      isLoading: true,
-      isError: false,
-      isSuccess: false,
-    });
-    postSopsConfig(
-      sopsConfigRequestBody,
-      branch,
-      res => {
-        sopsConfigsRef.current = sopsConfigs.map(config =>
-          config.branch === branch
-            ? {
-                ...config,
-                gcpCryptoKey: sopsConfigRequestBody.gcpCryptoKey,
-                publicAgeKeys: sopsConfigRequestBody.publicAgeKeys,
-              }
-            : config,
-        );
-        setSopsConfigs(sopsConfigsRef.current);
-        setUpdateStatus({
-          isLoading: false,
-          isError: false,
-          isSuccess: true,
-        });
-        setResponse({
-          ...res,
-          statusMessage: getTranslationKey('info', res.status, t),
-        });
-      },
-      (error, loginRejected) => {
-        setUpdateStatus({
-          isLoading: false,
-          isError: true,
-          isSuccess: false,
-        });
-        setResponse({
-          status: ProcessingStatus.FailedToUpdateSops,
-          statusMessage: loginRejected
-            ? `${getTranslationKey('error', error.status, t)}. ${t(
-                'dictionary.rejectedLogin',
-              )}`
-            : getTranslationKey('error', error.status, t),
-        });
-      },
-    );
-  };
-  */
-
   const value = {
     riScs,
     selectRiSc,
     selectedRiSc,
-    createSopsConfig,
     createNewRiSc,
     updateRiSc,
     approveRiSc,
