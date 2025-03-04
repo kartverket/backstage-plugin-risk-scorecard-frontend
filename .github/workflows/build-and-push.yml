@@ -12,7 +12,7 @@ env:
   AR_REPO_LOCATION: 'europe-north1'
   AR_URL: 'europe-north1-docker.pkg.dev/spire-ros-5lmr/risc-plugin'
   SERVICE_ACCOUNT: 'risc-plugin-github-actions@spire-ros-5lmr.iam.gserviceaccount.com'
-  WORKLOAD_IDENTITY_PROVIDER: 'projects/457384642040/locations/global/workloadIdentityPools/github-actions-pool/provider/github-actions-provider'
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/457384642040/locations/global/workloadIdentityPools/github-actions-pool/providers/github'
 
 jobs:
   push_to_ar:
