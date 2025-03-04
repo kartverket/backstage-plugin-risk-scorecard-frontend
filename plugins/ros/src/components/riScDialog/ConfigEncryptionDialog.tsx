@@ -1,4 +1,19 @@
-import { Box, DialogContentText, Accordion, AccordionSummary, AccordionDetails, FormLabel, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Typography, TextField, Button } from '@mui/material'; 
+import {
+  Box,
+  DialogContentText,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  FormLabel,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  Typography,
+  TextField,
+  Button,
+} from '@mui/material';
 import { GcpCryptoKeyMenu } from '../sopsConfigDialog/GcpCryptoKeyMenu';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -20,58 +35,88 @@ interface ConfigEncryptionDialogProps {
   state: RiScDialogStates;
 }
 
-const ConfigEncryptionDialog = ({ gcpCryptoKeys, sopsData, setValue, register, state }: ConfigEncryptionDialogProps) => {
+const ConfigEncryptionDialog = ({
+  gcpCryptoKeys,
+  sopsData,
+  setValue,
+  register,
+  state,
+}: ConfigEncryptionDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const [publicAgeKeyHelperText, setPublicKeyTextFieldHelperText] = useState("");
+  const [publicAgeKeyHelperText, setPublicKeyTextFieldHelperText] =
+    useState('');
   const [publicAgeKeyError, setPublicKeyTextFieldError] = useState(false);
-  const [newPublicAgeKey, setNewPublicAgeKey] = useState("");
+  const [newPublicAgeKey, setNewPublicAgeKey] = useState('');
   const [publicAgeKeys, setPublicAgeKeys] = useState<string[]>(() => {
     if (sopsData?.key_groups) {
       return sopsData.key_groups
         .flatMap(group => group.age || [])
-        .map(age => age.recipient).filter(key => key !== "age18e0t6ve0vdxqzzjt7rxf0r6vzc37fhs5cad2qz40r02c3spzgvvq8uxz23").filter(key => key !== "age145s860ux96jvx6d7nwvzar588qjmgv5p47sp6nmmt2jnmhqh4scqcuk0mg").filter(key => key !== "age1kjpgclkjev08aa8l2uy277gn0cngrkrkazt240405ezqywkm5axqt3d3tq");
+        .map(age => age.recipient)
+        .filter(
+          key =>
+            key !==
+            'age18e0t6ve0vdxqzzjt7rxf0r6vzc37fhs5cad2qz40r02c3spzgvvq8uxz23',
+        )
+        .filter(
+          key =>
+            key !==
+            'age145s860ux96jvx6d7nwvzar588qjmgv5p47sp6nmmt2jnmhqh4scqcuk0mg',
+        )
+        .filter(
+          key =>
+            key !==
+            'age1kjpgclkjev08aa8l2uy277gn0cngrkrkazt240405ezqywkm5axqt3d3tq',
+        );
     }
     return [];
   });
-  
-  const [chosenGcpCryptoKey, setChosenGcpCryptoKey] = useState<GcpCryptoKeyObject>(() => {
-    if (state === RiScDialogStates.EditEncryption && sopsData?.key_groups) {
-      const gcpKms = sopsData.key_groups.find(keygroup => keygroup.gcp_kms)?.gcp_kms?.[0];
-      // eslint-disable-next-line no-console
-      console.log(gcpKms);
-      if (gcpKms?.resource_id) {
-        const resourceParts = gcpKms.resource_id.split("/");
-        if (resourceParts.length === 8) {
-          return {
-            projectId: resourceParts[1],
-            keyRing: resourceParts[5],
-            keyName: resourceParts[7],
-            locations: resourceParts[3],
-            resourceId: gcpKms.resource_id,
-            createdAt: gcpKms.created_at,
-            hasEncryptDecryptAccess: true
-          };
+
+  const [chosenGcpCryptoKey, setChosenGcpCryptoKey] =
+    useState<GcpCryptoKeyObject>(() => {
+      if (state === RiScDialogStates.EditEncryption && sopsData?.key_groups) {
+        const gcpKms = sopsData.key_groups.find(keygroup => keygroup.gcp_kms)
+          ?.gcp_kms?.[0];
+        // eslint-disable-next-line no-console
+        console.log(gcpKms);
+        if (gcpKms?.resource_id) {
+          const resourceParts = gcpKms.resource_id.split('/');
+          if (resourceParts.length === 8) {
+            return {
+              projectId: resourceParts[1],
+              keyRing: resourceParts[5],
+              keyName: resourceParts[7],
+              locations: resourceParts[3],
+              resourceId: gcpKms.resource_id,
+              createdAt: gcpKms.created_at,
+              hasEncryptDecryptAccess: true,
+            };
+          }
         }
       }
-    }
-    return gcpCryptoKeys[0];
-  });
+      return gcpCryptoKeys[0];
+    });
 
   useEffect(() => {
     setValue('sopsConfig', {
       shamir_threshold: 2,
       key_groups: [
         {
-          gcp_kms: [{
-            resource_id: chosenGcpCryptoKey.resourceId,
-            created_at: chosenGcpCryptoKey.createdAt,
-          }],
+          gcp_kms: [
+            {
+              resource_id: chosenGcpCryptoKey.resourceId,
+              created_at: chosenGcpCryptoKey.createdAt,
+            },
+          ],
         },
-        ...(publicAgeKeys.length > 0 ? [{
-          age: publicAgeKeys.map(key => ({
-            recipient: key
-          }))
-        }] : [])
+        ...(publicAgeKeys.length > 0
+          ? [
+              {
+                age: publicAgeKeys.map(key => ({
+                  recipient: key,
+                })),
+              },
+            ]
+          : []),
       ],
     });
   }, [chosenGcpCryptoKey, publicAgeKeys, setValue]);
@@ -89,7 +134,7 @@ const ConfigEncryptionDialog = ({ gcpCryptoKeys, sopsData, setValue, register, s
         setPublicKeyTextFieldError(true);
       } else {
         setPublicAgeKeys([...publicAgeKeys, newPublicAgeKey]);
-        setNewPublicAgeKey("");
+        setNewPublicAgeKey('');
       }
     } else {
       setPublicKeyTextFieldHelperText(
@@ -102,7 +147,9 @@ const ConfigEncryptionDialog = ({ gcpCryptoKeys, sopsData, setValue, register, s
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <DialogContentText>
-        {state === RiScDialogStates.Create ? t('sopsConfigDialog.description.new') : t('sopsConfigDialog.description.edit')}
+        {state === RiScDialogStates.Create
+          ? t('sopsConfigDialog.description.new')
+          : t('sopsConfigDialog.description.edit')}
       </DialogContentText>
       {t('sopsConfigDialog.selectKeysTitle')}
       {t('sopsConfigDialog.gcpCryptoKeyDescription')}
@@ -116,7 +163,7 @@ const ConfigEncryptionDialog = ({ gcpCryptoKeys, sopsData, setValue, register, s
         <Accordion elevation={1} defaultExpanded={publicAgeKeys.length > 0}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
-            aria-controls="panel1-content"  
+            aria-controls="panel1-content"
             id="panel1-header"
           >
             {t('sopsConfigDialog.publicAgeKeyQuestion')}
@@ -129,13 +176,17 @@ const ConfigEncryptionDialog = ({ gcpCryptoKeys, sopsData, setValue, register, s
                 </FormLabel>
               )}
               <List>
-                {publicAgeKeys.map((key) => (
+                {publicAgeKeys.map(key => (
                   <ListItem key={key} dense>
                     <ListItemText>{key}</ListItemText>
                     <ListItemSecondaryAction>
-                      <IconButton onClick={() => {
-                        setPublicAgeKeys(publicAgeKeys.filter(k => k !== key));
-                      }}>
+                      <IconButton
+                        onClick={() => {
+                          setPublicAgeKeys(
+                            publicAgeKeys.filter(k => k !== key),
+                          );
+                        }}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </ListItemSecondaryAction>
@@ -143,9 +194,18 @@ const ConfigEncryptionDialog = ({ gcpCryptoKeys, sopsData, setValue, register, s
                 ))}
               </List>
               <Typography>
-                {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t('dictionary.optional')})`}
+                {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
+                  'dictionary.optional',
+                )})`}
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'space-between', gap: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'space-between',
+                  gap: 2,
+                }}
+              >
                 <TextField
                   label={t('sopsConfigDialog.publicAgeKey')}
                   helperText={publicAgeKeyHelperText}
@@ -160,7 +220,7 @@ const ConfigEncryptionDialog = ({ gcpCryptoKeys, sopsData, setValue, register, s
                     setPublicKeyTextFieldHelperText('');
                   }}
                   value={newPublicAgeKey}
-                  onChange={(e) => setNewPublicAgeKey(e.target.value)}
+                  onChange={e => setNewPublicAgeKey(e.target.value)}
                 />
                 <Button
                   startIcon={<AddCircle />}

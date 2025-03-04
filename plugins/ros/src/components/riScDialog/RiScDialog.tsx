@@ -16,7 +16,6 @@ import { Step, StepLabel, Stepper } from '@mui/material';
 import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
 
-
 export enum RiScDialogStates {
   Closed,
   Create,
@@ -34,23 +33,26 @@ export enum CreateRiScFrom {
   Default,
 }
 
-const RiScStepper = ({children, activeStep}: {children: React.ReactNode, activeStep: number}  ) => {
+const RiScStepper = ({
+  children,
+  activeStep,
+}: {
+  children: React.ReactNode;
+  activeStep: number;
+}) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const steps = [
-    t('rosDialog.stepRiscDetails'),
-    t('rosDialog.stepEncryption'),
-  ];
+  const steps = [t('rosDialog.stepRiscDetails'), t('rosDialog.stepEncryption')];
   return (
     <Box sx={{ width: '100%', p: 2 }}>
       <Stepper activeStep={activeStep}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step> 
-            ))}
-          </Stepper>
-          {children}
+        {steps.map(label => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+      {children}
     </Box>
   );
 };
@@ -66,14 +68,15 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     setValue,
   } = useForm<RiScWithMetadata>({
     defaultValues:
-      dialogState === RiScDialogStates.EditRiscInfo || dialogState === RiScDialogStates.EditEncryption
+      dialogState === RiScDialogStates.EditRiscInfo ||
+      dialogState === RiScDialogStates.EditEncryption
         ? selectedRiSc!
         : {
             content: emptyRiSc(),
-              sopsConfig: {
-                shamir_threshold: 2,
-                key_groups: [],
-              },
+            sopsConfig: {
+              shamir_threshold: 2,
+              key_groups: [],
+            },
           },
     mode: 'onBlur',
   });
@@ -129,19 +132,30 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     return (
       <Dialog open={dialogState === RiScDialogStates.Create} onClose={onClose}>
         <DialogTitle>{titleTranslation}</DialogTitle>
-      <RiScStepper activeStep={activeStep}>
-      <DialogContent
-          sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
-        >
-          {activeStep === 0 && (
-            <ConfigRiscInfo dialogState={dialogState} createRiScFrom={createRiScFrom} handleChangeCreateRiScFrom={handleChangeCreateRiScFrom} register={register} errors={errors} />
-          )}
-          {activeStep === 1 && (
-            <ConfigEncryptionDialog gcpCryptoKeys={gcpCryptoKeys} setValue={setValue} state={dialogState} register={register} />
-          )}
-        </DialogContent>
-      </RiScStepper>
-      <DialogActions sx={dialogActions}>
+        <RiScStepper activeStep={activeStep}>
+          <DialogContent
+            sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+          >
+            {activeStep === 0 && (
+              <ConfigRiscInfo
+                dialogState={dialogState}
+                createRiScFrom={createRiScFrom}
+                handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
+                register={register}
+                errors={errors}
+              />
+            )}
+            {activeStep === 1 && (
+              <ConfigEncryptionDialog
+                gcpCryptoKeys={gcpCryptoKeys}
+                setValue={setValue}
+                state={dialogState}
+                register={register}
+              />
+            )}
+          </DialogContent>
+        </RiScStepper>
+        <DialogActions sx={dialogActions}>
           {activeStep > 0 && (
             <Button variant="outlined" onClick={handleBack}>
               {t('dictionary.previous')}
@@ -161,50 +175,68 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
           )}
         </DialogActions>
       </Dialog>
-    )
+    );
   }
 
   if (dialogState === RiScDialogStates.EditRiscInfo) {
     return (
-      <Dialog open={dialogState === RiScDialogStates.EditRiscInfo} onClose={onClose}>
-      <DialogTitle>{titleTranslation}</DialogTitle>
-      <DialogContent
-        sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+      <Dialog
+        open={dialogState === RiScDialogStates.EditRiscInfo}
+        onClose={onClose}
       >
-      <ConfigRiscInfo dialogState={dialogState} createRiScFrom={createRiScFrom} handleChangeCreateRiScFrom={handleChangeCreateRiScFrom} register={register} errors={errors} />
-      </DialogContent>
-      <DialogActions sx={dialogActions}>
-          <Button variant="outlined" onClick={onClose}>
-            {t('dictionary.cancel')}
-          </Button>
-            <Button variant="contained" onClick={handleFinish}>
-              {t('dictionary.save')}
-            </Button>
-        </DialogActions>
-      </Dialog>
-    )
-  }
-
-  if (dialogState === RiScDialogStates.EditEncryption) {
-    return (
-      <Dialog open={dialogState === RiScDialogStates.EditEncryption} onClose={onClose}>
         <DialogTitle>{titleTranslation}</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
         >
-      <ConfigEncryptionDialog gcpCryptoKeys={gcpCryptoKeys} sopsData={selectedRiSc?.sopsConfig} setValue={setValue} state={dialogState} register={register}/>
-      </DialogContent>
-      <DialogActions sx={dialogActions}>
+          <ConfigRiscInfo
+            dialogState={dialogState}
+            createRiScFrom={createRiScFrom}
+            handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
+            register={register}
+            errors={errors}
+          />
+        </DialogContent>
+        <DialogActions sx={dialogActions}>
           <Button variant="outlined" onClick={onClose}>
             {t('dictionary.cancel')}
           </Button>
-            <Button variant="contained" onClick={handleFinish}>
-              {t('dictionary.save')}
-            </Button>
+          <Button variant="contained" onClick={handleFinish}>
+            {t('dictionary.save')}
+          </Button>
         </DialogActions>
       </Dialog>
-    )
+    );
   }
 
-return null;
+  if (dialogState === RiScDialogStates.EditEncryption) {
+    return (
+      <Dialog
+        open={dialogState === RiScDialogStates.EditEncryption}
+        onClose={onClose}
+      >
+        <DialogTitle>{titleTranslation}</DialogTitle>
+        <DialogContent
+          sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+        >
+          <ConfigEncryptionDialog
+            gcpCryptoKeys={gcpCryptoKeys}
+            sopsData={selectedRiSc?.sopsConfig}
+            setValue={setValue}
+            state={dialogState}
+            register={register}
+          />
+        </DialogContent>
+        <DialogActions sx={dialogActions}>
+          <Button variant="outlined" onClick={onClose}>
+            {t('dictionary.cancel')}
+          </Button>
+          <Button variant="contained" onClick={handleFinish}>
+            {t('dictionary.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  return null;
 };

@@ -34,8 +34,10 @@ export const RiScPlugin = () => {
   const openCreateRiScDialog = () =>
     setRiScDialogState(RiScDialogStates.Create);
 
-  const openEditRiScDialog = () => setRiScDialogState(RiScDialogStates.EditRiscInfo);
-  const openEditEncryptionDialog = () => setRiScDialogState(RiScDialogStates.EditEncryption);
+  const openEditRiScDialog = () =>
+    setRiScDialogState(RiScDialogStates.EditRiscInfo);
+  const openEditEncryptionDialog = () =>
+    setRiScDialogState(RiScDialogStates.EditEncryption);
   const closeRiScDialog = () => setRiScDialogState(RiScDialogStates.Closed);
 
   const {

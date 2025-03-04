@@ -345,7 +345,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         isLoading: true,
         isError: false,
         isSuccess: false,
-      });    
+      });
       putRiScs(
         updatedRiSc,
         res => {

@@ -219,10 +219,11 @@ export function findKeyGroupByAgeKey(
   );
 }
 
-export function getGCPKey(sopsConfig: SopsConfigDTO){
-  return sopsConfig.key_groups.find(keyGroup => keyGroup.gcp_kms)?.gcp_kms?.at(0)
+export function getGCPKey(sopsConfig: SopsConfigDTO) {
+  return sopsConfig.key_groups
+    .find(keyGroup => keyGroup.gcp_kms)
+    ?.gcp_kms?.at(0);
 }
-
 
 export interface Duration {
   months: number;

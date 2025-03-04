@@ -19,11 +19,8 @@ interface PublicKeyListProps {
   publicKeys: string[];
 }
 
-export const PublicKeyList = ({
-  publicKeys,
-}: PublicKeyListProps) => {
+export const PublicKeyList = ({ publicKeys }: PublicKeyListProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  
 
   return (
     <List>
