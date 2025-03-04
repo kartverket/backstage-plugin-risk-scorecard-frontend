@@ -5,20 +5,12 @@
 Install and make sure to use correct yarn version (see `package.json` - v4.4.1 at the time of writing).
 
 ```bash
-brew install yarn
 corepack enable
+corepack install
 yarn --version
 ```
 
 Install and make sure to use correct node version (v20 at the time of writing).
-If you do not use a Node Version Manager (NVM), and use homebrew for installation, this can be used for reference.
-
-```bash
-brew install node@20
-brew unlink node
-brew link node@20
-node --version
-```
 
 ## How to run plugin in Backstage
 
