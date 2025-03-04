@@ -4,7 +4,7 @@
 
 Install and make sure to use correct yarn version (see `package.json` - v4.4.1 at the time of writing).
 
-```
+```bash
 brew install yarn
 corepack enable
 yarn --version
@@ -13,7 +13,7 @@ yarn --version
 Install and make sure to use correct node version (v20 at the time of writing).
 If you do not use a Node Version Manager (NVM), and use homebrew for installation, this can be used for reference.
 
-```
+```bash
 brew install node@20
 brew unlink node
 brew link node@20
@@ -30,18 +30,34 @@ Backstage can be heavily configurated, and depends on configuration files when b
 These are named `app-config.<env>.yaml`, and in this project two are provided by default. One named `app-config.yaml` and `app-config.production.yaml`.
 For local development, you also have to create the file `app-config.local.yaml`. This file contains the configuration needed to run the app locally, and it is added to the .gitignore-file to avoid leaking secrets in case you set them directly.
 
-There are 4 local configurations needed in `app-config.local.yaml` in order to run the app locally: 
-- **Setting up local database**:
+There are 4 local configurations needed in `app-config.local.yaml` in order to run the app locally.
+
+#### Setting up local database
+
+Copy current path to clipboard:
+
+```bash
+pwd | pbcopy
+```
+
+Create a `app-config.local.yaml` and add the following.
+
 ```yaml
- backend:
+backend:
    database:
      client: better-sqlite3
      connection:
        directory: <ABSOLUTE PATH TO REPO>/db
 ```
-- **Setting up GitHub integration**:
+
+
+#### Setting up GitHub integration
+
 The main part of Backstage is a Software Catalog, which can be loaded from yaml-files in GitHub repositories in your organization.
 GitHub auth is therefore required.
+
+Create a Personal Access Token (classic) from Github, with the scopes `repo` and `workflow`.
+
 ```yaml
 integrations:
   github:
@@ -50,9 +66,13 @@ integrations:
       # about setting up the GitHub integration here: https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration
       token: <YOUR GITHUB PERSONAL ACCESS TOKEN>
 ```
-- **Setting up auth modules**:
+
+#### Setting up auth modules
+
 In order to use Backstage RiSc plugin, users need to authenticate towards Google Cloud and GitHub.
 You therefore need to set up Google and GitHub OAuth-apps and set up credentials for the apps in `app-config.local.yaml`.
+The credentials can be found in the password manager used by the team (ask your fellow developer).
+
 ```yaml
 auth:
   environment: development
@@ -68,15 +88,20 @@ auth:
         clientId: <GITHUB CLIENT ID>
         clientSecret: <GITHUB CLIENT SECRET>
 ```
-- **Setting up proxy-endpoint to RiSc-backend**:
+
+#### Setting up proxy-endpoint to RiSc-backend
+
 To send requests to the RiSc backend, Backstage RiSc plugin relies on a configured proxy in the Backstage-backend to proxy 
 requests towards towards `/risc` to the URL of the RiSc backend.
+
 ```yaml
 proxy:
   endpoints:
     '/risc':
       target: http://localhost:8080
 ```
+
+### Install and run
 
 You can then run Backstage with Backstage RiSc plugin locally by running:
 
