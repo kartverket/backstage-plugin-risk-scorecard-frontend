@@ -29,9 +29,6 @@ backend.add(import('@backstage-community/plugin-explore-backend'));
 // Devtools
 backend.add(import('@backstage/plugin-devtools-backend'));
 
-// Lighthouse
-backend.add(import('@backstage-community/plugin-lighthouse-backend'));
-
 // Linguist
 backend.add(import('@backstage-community/plugin-linguist-backend'));
 

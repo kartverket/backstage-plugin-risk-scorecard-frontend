@@ -1,14 +1,14 @@
 app:
-  baseUrl: https://risc-backstage-457384642040.europe-north1.run.app
+  baseUrl: https://risc-457384642040.europe-north1.run.app
 
 backend:
-  baseUrl: https://risc-backstage-457384642040.europe-north1.run.app
+  baseUrl: https://risc-457384642040.europe-north1.run.app
   listen:
     port: 7007
   csp:
     connect-src: ["'self'", 'http:', 'https:']
   cors:
-    origin: ['https://risc-backstage-457384642040.europe-north1.run.app/']
+    origin: ['https://risc-457384642040.europe-north1.run.app/']
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   database:
@@ -38,6 +38,11 @@ integrations:
 auth:
   environment: production
   providers:
+    microsoft:
+      production:
+        tenantId: ${ENTRA_ID_TENANT_ID}
+        clientId: ${ENTRA_ID_CLIENT_ID}
+        clientSecret: ${ENTRA_ID_CLIENT_SECRET}
     google:
       production:
         clientId: ${GOOGLE_CLIENT_ID}
@@ -46,3 +51,21 @@ auth:
       production:
         clientId: ${GITHUB_CLIENT_ID}
         clientSecret: ${GITHUB_CLIENT_SECRET}
+
+catalog:
+  providers:
+    microsoftGraphOrg:
+      default:
+        queryMode: 'advanced'
+        user:
+          filter: accountEnabled eq true and userType eq 'member'
+          select: ['accountEnabled', 'displayName', 'givenName', 'id', 'mail', 'mailNickname', 'userPrincipalName', 'surname', 'companyName', 'userType']
+        group:
+          filter: >
+            startswith(displayName, 'AAD - TF')
+        schedule:
+          frequency: PT1H
+          timeout: PT50M
+        tenantId: ${ENTRA_ID_TENANT_ID}
+        clientId: ${ENTRA_ID_CLIENT_ID}
+        clientSecret: ${ENTRA_ID_CLIENT_SECRET}
