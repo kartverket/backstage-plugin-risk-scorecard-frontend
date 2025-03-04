@@ -11,8 +11,8 @@ env:
   PROJECT_ID: 'spire-ros-5lmr'
   AR_REPO_LOCATION: 'europe-north1'
   AR_URL: 'europe-north1-docker.pkg.dev/spire-ros-5lmr/risc-plugin'
-  SERVICE_ACCOUNT: 'github-actions-service-account@spire-ros-5lmr.iam.gserviceaccount.com'
-  WORKLOAD_IDENTITY_PROVIDER: 'projects/457384642040/locations/global/workloadIdentityPools/risc-dev-pool/providers/github-actions-provider'
+  SERVICE_ACCOUNT: 'risc-plugin-github-actions@spire-ros-5lmr.iam.gserviceaccount.com'
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/457384642040/locations/global/workloadIdentityPools/github-actions-pool/provider/github-actions-provider'
 
 jobs:
   push_to_ar:
@@ -25,12 +25,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Google Auth
-        id: auth
+      - id: auth
+        name: 'Authneticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
-          token_format: 'access_token'
-          project_id: ${{ env.PROJECT_ID }}
           service_account: ${{ env.SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
 
