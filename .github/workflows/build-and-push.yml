@@ -35,9 +35,12 @@ jobs:
       - name: Configure Docker to use the gcloud command-line tool as a credential helper
         run: gcloud auth configure-docker ${{ env.AR_REPO_LOCATION }}-docker.pkg.dev --quiet
 
-      - name: Build and Push Container
-        run: |-
-          docker build -t "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" -f packages/backend/Dockerfile
+      - name: Build the Docker image
+        run: |
+          docker build -f packages/backend/Dockerfile -t "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+
+      - name: Push the Docker image to Google Artifact Registry
+        run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             docker push "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
           fi
