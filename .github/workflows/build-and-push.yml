@@ -37,7 +37,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          docker build -f packages/backend/Dockerfile -t "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          docker build -f packages/backend/Dockerfile -t "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" packages/backend
 
       - name: Push the Docker image to Google Artifact Registry
         run: |
