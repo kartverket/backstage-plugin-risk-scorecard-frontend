@@ -310,7 +310,7 @@ export function getPullRequestSecondaryText(
 export const deleteScenario = (
   riSc: RiScWithMetadata | null,
   updateRiSc: (
-    riSc: RiSc,
+    riSc: RiScWithMetadata,
     onSuccess?: () => void,
     onError?: () => void,
   ) => void,
@@ -320,7 +320,10 @@ export const deleteScenario = (
     const updatedScenarios = riSc.content.scenarios.filter(
       s => s.ID !== scenario.ID,
     );
-    updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
+    updateRiSc({
+      ...riSc,
+      content: { ...riSc.content, scenarios: updatedScenarios },
+    });
   }
 };
 

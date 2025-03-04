@@ -156,10 +156,13 @@ export const RiScPlugin = () => {
             {selectedRiSc && (
               <>
                 <Grid item xs={12}>
-                  <RiScInfo riSc={selectedRiSc} edit={openEditRiScDialog} />
+                  <RiScInfo
+                    riScWithMetadata={selectedRiSc}
+                    edit={openEditRiScDialog}
+                  />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
-                  <ScenarioTableWrapper riSc={selectedRiSc} />
+                  <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
                 </Grid>
                 <Grid item xs md={5} lg={4}>
                   <RiskMatrix riSc={selectedRiSc.content} />

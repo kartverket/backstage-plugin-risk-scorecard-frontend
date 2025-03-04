@@ -19,12 +19,11 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { AddCircle, ExpandMore } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { GcpCryptoKeyObject, KeyGroup, SopsConfigDTO } from '../../utils/DTOs';
+import { GcpCryptoKeyObject, SopsConfigDTO } from '../../utils/DTOs';
 import React, { useEffect, useState } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
 import { UseFormSetValue, UseFormRegister } from 'react-hook-form';
 import { RiScDialogStates } from './RiScDialog';
-import { findKeyGroupByAgeKey } from '../../utils/utilityfunctions';
 import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
 
 interface ConfigEncryptionDialogProps {
@@ -39,7 +38,6 @@ const ConfigEncryptionDialog = ({
   gcpCryptoKeys,
   sopsData,
   setValue,
-  register,
   state,
 }: ConfigEncryptionDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);

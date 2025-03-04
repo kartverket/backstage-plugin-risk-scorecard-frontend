@@ -187,8 +187,11 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     if (riSc) {
       updateRiSc(
         {
-          ...riSc.content,
-          scenarios: riSc.content.scenarios.concat(newScenario),
+          ...riSc,
+          content: {
+            ...riSc.content,
+            scenarios: riSc.content.scenarios.concat(newScenario),
+          },
         },
         onSuccess,
         onError,
@@ -204,10 +207,13 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     if (riSc) {
       updateRiSc(
         {
-          ...riSc.content,
-          scenarios: riSc.content.scenarios.map(s =>
-            s.ID === editedScenario.ID ? editedScenario : s,
-          ),
+          ...riSc,
+          content: {
+            ...riSc.content,
+            scenarios: riSc.content.scenarios.map(s =>
+              s.ID === editedScenario.ID ? editedScenario : s,
+            ),
+          },
         },
         onSuccess,
         onError,
