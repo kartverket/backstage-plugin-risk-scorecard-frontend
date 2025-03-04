@@ -1,14 +1,14 @@
 app:
-  baseUrl: https://kv-ros-backstage-245zlcbrnq-lz.a.run.app
+  baseUrl: https://risc-backstage-457384642040.europe-north1.run.app
 
 backend:
-  baseUrl: https://kv-ros-backstage-245zlcbrnq-lz.a.run.app
+  baseUrl: https://risc-backstage-457384642040.europe-north1.run.app
   listen:
     port: 7007
   csp:
     connect-src: ["'self'", 'http:', 'https:']
   cors:
-    origin: ['https://kv-ros-backstage-245zlcbrnq-lz.a.run.app/']
+    origin: ['https://risc-backstage-457384642040.europe-north1.run.app/']
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   database:
@@ -25,50 +25,24 @@ proxy:
       allowedHeaders:
         ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
 
-auth:
-  environment: development
-  providers:
-    microsoft:
-      development:
-        clientId: ${AZURE_CLIENT_ID}
-        clientSecret: ${AZURE_CLIENT_SECRET}
-        tenantId: ${AZURE_TENANT_ID}
-        domainHint: ${AZURE_TENANT_ID}
-        signIn:
-          resolvers:
-            - resolver: emailMatchingUserEntityAnnotation
-            - resolver: emailMatchingUserEntityProfileEmail
-            - resolver: emailLocalPartMatchingUserEntityName
+integrations:
+  github:
+    - host: github.com
+      apps:
+        - appId: ${GITHUB_APP_ID}
+          clientId: ${GITHUB_CLIENT_ID}
+          clientSecret: ${GITHUB_CLIENT_SECRET}
+          privateKey: ${GITHUB_PRIVATE_KEY}
+          webhookSecret: ${GITHUB_WEBHOOK_SECRET}
 
+auth:
+  environment: production
+  providers:
     google:
-      development:
+      production:
         clientId: ${GOOGLE_CLIENT_ID}
         clientSecret: ${GOOGLE_CLIENT_SECRET}
-
-catalog:
-  providers:
     github:
-      spire-test:
-        organization: 'spire-test'
-        catalogPath: '.security/catalog-info.yaml'
-        filters:
-          branch: 'main'
-          repository: '^kv-ros-.*$'
-        schedule:
-          frequency: { minutes: 1440 }
-          timeout: { minutes: 3 }
-
-    microsoftGraphOrg:
-      development:
-        tenantId: ${AZURE_TENANT_ID}
-        domainHint: ${AZURE_TENANT_ID}
-        clientId: ${AZURE_CLIENT_ID}
-        clientSecret: ${AZURE_CLIENT_SECRET}
-        userGroupMember:
-          filter: displayName eq 'Spire-ros'
-        group:
-          filter: >
-            displayName eq 'Spire-ros'
-        schedule:
-          frequency: PT1H
-          timeout: PT50M
+      production:
+        clientId: ${GITHUB_CLIENT_ID}
+        clientSecret: ${GITHUB_CLIENT_SECRET}
