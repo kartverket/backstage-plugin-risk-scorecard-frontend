@@ -1,20 +1,10 @@
 app:
-  title: Kartverket.dev
+  title: Spire RiSc Backstage
   baseUrl: http://localhost:3000
 
   support:
-    url: https://skip.kartverket.no # Used by common ErrorPage
+    url: https://kartverketgroup.slack.com/archives/C075KCPTURY
     items: # Used by common SupportButton component
-      - title: Documentation
-        icon: article
-        links:
-          - url: https://skip.kartverket.no/docs
-            title: SKIPDOK
-      - title: Slack Channel
-        icon: chat
-        links:
-          - url: https://kartverketgroup.slack.com/archives/C028ZEED280
-            title: '#gen-skip'
       - title: RISC Feedback Channel
         icon: chat
         links:
@@ -25,14 +15,9 @@ app:
         links:
           - url: https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1176142023/Koden+r+RoS
             title: Confluence - RISC
-      - title: Sikkerhetsmetrikker Feedback Channel
-        icon: chat
-        links:
-          - url: https://kartverketgroup.slack.com/archives/C07RNB2LPUZ
-            title: '#sikkerhetsmetrikker-tilbakemelding'
 
 organization:
-  name: Kartverket
+  name: Spire
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
@@ -51,18 +36,13 @@ backend:
     img-src: ["'self'", 'data:', 'imgs.xkcd.com']
     frame-src:
       [
-        'sandbox.kartverket.dev',
-        'kartverket.dev',
         'fedifeed.com',
-        'monitoring.kartverket.cloud',
       ]
     # unsafe-eval is required by backstage
     # unsafe-inline is required by the lighthouse iframe
     script-src:
       [
         "'self'",
-        'sandbox.kartverket.dev',
-        'skip.instatus.com',
         "'unsafe-eval'",
         "'unsafe-inline'",
       ]
@@ -82,55 +62,14 @@ permission:
 ### A typical reason to do this is to handle HTTPS and CORS for internal services.
 proxy:
   endpoints:
-    '/xkcd-proxy':
-      target: https://xkcd.com/
-    '/opencost':
-      # Uses cluster-local service in a kubernetes environment
-      target: https://opencost.dev.skip.statkart.no
-    '/lighthouse':
-      target: http://lighthouse-audit-service.lighthouse-audit-service.svc.cluster.local:3003
-    '/grafana/api':
-      # May be a public or an internal DNS
-      target: https://monitoring.kartverket.cloud
-      headers:
-        Authorization: Bearer ${GRAFANA_TOKEN}
     '/risc-proxy':
       target: http://localhost:8080
       allowedHeaders: ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
-    '/opencost-cacher':
-      target: http://localhost:8080
-      credentials: forward
-      changeOrigin: true
-
-lighthouse:
-  baseUrl: http://localhost:7007/api/proxy/lighthouse
-
-kubernetes:
-  serviceLocatorMethod:
-    type: 'multiTenant'
-  clusterLocatorMethods:
-    - type: 'config'
-      clusters:
-        - url: https://10.13.2.133
-          name: atkv1-sandbox
-          authProvider: 'serviceAccount'
-          #dashboardUrl: http://127.0.0.1:64713 # url copied from running the command: minikube service kubernetes-dashboard -n kubernetes-dashboard
-          #dashboardApp: standard
-          #customResources:
-          #  - group: 'argoproj.io'
-          #    apiVersion: 'v1alpha1'
-          #    plural: 'rollouts'
-        - url: https://34.88.245.88
-          name: atgcp1-sandbox
-          authProvider: 'serviceAccount'
-          skipTLSVerify: true # TODO Fix me
-          serviceAccountToken: ${ATGCP1_SANDBOX_SERVICE_ACCOUNT_TOKEN}
-          caData: ${ATGCP1_SANDBOX_CA_DATA}
 
 scaffolder:
   defaultAuthor:
     name: 'Backstage'
-    email: 'martin.nygard@kartverket.no'
+    email: 'hakon.froland@kartverket.no'
   defaultCommitMessage: 'Test'
 
 catalog:
@@ -151,239 +90,7 @@ catalog:
           # supports ISO duration, "human duration" as used in code
           timeout: { minutes: 3 }
 
-techdocs:
-  builder: local
-
-grafana:
-  # Publicly accessible domain
-  domain: https://monitoring.kartverket.cloud
-
   # Is unified alerting enabled in Grafana?
   # See: https://grafana.com/blog/2021/06/14/the-new-unified-alerting-system-for-grafana-everything-you-need-to-know/
   # Optional. Default: false
   unifiedAlerting: true
-
-home:
-  recentVisits:
-    filterBy:
-      - field: pathname
-        operator: '!='
-        value: /
-      - field: pathname
-        operator: '!='
-        value: /catalog
-      - field: pathname
-        operator: '!='
-        value: /settings
-      - field: pathname
-        operator: '!='
-        value: /api-docs
-      - field: pathname
-        operator: '!='
-        value: /explore
-      - field: pathname
-        operator: '!='
-        value: /docs
-      - field: pathname
-        operator: '!='
-        value: /tech-radar
-      - field: pathname
-        operator: '!='
-        value: /search
-      - field: pathname
-        operator: '!='
-        value: /create
-  topVisits:
-    filterBy:
-      - field: pathname
-        operator: '!='
-        value: /
-      - field: pathname
-        operator: '!='
-        value: /catalog
-      - field: pathname
-        operator: '!='
-        value: /settings
-      - field: pathname
-        operator: '!='
-        value: /api-docs
-      - field: pathname
-        operator: '!='
-        value: /explore
-      - field: pathname
-        operator: '!='
-        value: /docs
-      - field: pathname
-        operator: '!='
-        value: /tech-radar
-      - field: pathname
-        operator: '!='
-        value: /search
-      - field: pathname
-        operator: '!='
-        value: /create
-
-explore:
-  tools:
-    - title: Google Cloud
-      description: |
-        Google Cloud Platform lets you build, deploy, and scale applications,
-        websites, and services on the same infrastructure as Google. GCP provides
-        a suite of cloud computing services like compute, storage, networking,
-        databases, and machine learning.
-      url: https://console.cloud.google.com
-      image: /img/google-cloud.svg
-      tags:
-        - google-cloud
-
-    - title: Grafana – monitoring.kartverket.cloud
-      description: Query, visualize, alert on, and understand your data no matter where it's stored. With Grafana you can create, explore, and share all of your data through beautiful, flexible dashboards.
-      url: https://monitoring.kartverket.cloud
-      image: /img/grafana.png
-      tags:
-        - observability
-
-    - title: Argo CD dev
-      description: Declarative continuous delivery with a fully-loaded UI
-      url: https://argo-dev.kartverket.dev/
-      image: /img/argocd.png
-      tags:
-        - gitops
-        - deployment
-        - kubernetes
-
-    - title: Argo CD production
-      description: Declarative continuous delivery with a fully-loaded UI
-      url: https://argo-prod.kartverket.dev/
-      image: /img/argocd.png
-      tags:
-        - gitops
-        - deployment
-        - kubernetes
-
-    - title: Just-In-Time Access
-      description: Grants you access to Google Cloud projects for a limited time
-      url: https://jit.skip.kartverket.no/
-      image: /img/jit.png
-      tags:
-        - google-cloud
-        - security
-
-    - title: Google Secret Manager
-      description: |
-        Google Secret Manager is a secure and convenient storage system for
-        API keys, passwords, certificates, and other sensitive data. Secret
-        Manager provides a central place and single source of truth to manage,
-        access, and audit secrets across Google Cloud.
-      url: https://kartverket.atlassian.net/wiki/spaces/SKIPDOK/pages/433455199
-      image: /img/gsm.webp
-      tags:
-        - google-cloud
-        - security
-        - secrets
-
-
-    - title: Scality S3 Admin
-      description: |
-        Scality S3 is a highly scalable, durable, and available S3-compatible
-        object storage service that can be used to store and retrieve any amount
-        of data, at any time, from anywhere.
-      url: https://s3-rin.statkart.no/_/console/login
-      image: /img/s3.jpeg
-      tags:
-        - storage
-
-    - title: Scality S3 Browser
-      description: |
-        Scality S3 is a highly scalable, durable, and available S3-compatible
-        object storage service that can be used to store and retrieve any amount
-        of data, at any time, from anywhere.
-      url: https://s3-rin.statkart.no/_/s3browser/connect
-      image: /img/s3.jpeg
-      tags:
-        - storage
-
-    - title: GitHub
-      description: |
-        GitHub is a Git repository hosting service which adds many additional
-        features. Storing code on GitHub is the main use for GitHub which has a powerful
-        graphical interface. It also provides builds, bug tracking, change requests,
-        collaboration features, such as a wikis and basic task management tools.
-      url: https://github.com/kartverket
-      image: /img/github.png
-      tags:
-        - git
-        - collaboration
-
-    - title: Skiperator
-      description: |
-        Skiperator is an operator intended to make the setup of applications
-        simple from the users' point of view. When using the operator an
-        application developer can set up all associated resources for an optimal
-        deployment using a simple custom resource called Application.
-      url: https://github.com/kartverket/skiperator
-      image: /skip.png
-      tags:
-        - kubernetes
-        - deployment
-
-    - title: Sysdig
-      description: |
-        Sysdig is a unified platform for container and microservices monitoring,
-        troubleshooting, security and forensics. Sysdig platform has been built
-        on top of Sysdig open source technologies, such as Falco, Sysdig, and
-        Sysdig Inspect.
-      url: https://eu1.app.sysdig.com/secure
-      image: /img/sysdig.webp
-      tags:
-        - security
-
-    - title: ArgoKit
-      description: |
-        ArgoKit is a toolkit for Argo CD. It contains a set of tools that
-        makes it easier to work with Argo CD.
-      url: https://github.com/kartverket/argokit
-      image: /img/argokit.png
-      tags:
-        - gitops
-        - deployment
-
-    - title: Pharos
-      description: |
-        A GitHub action for running different Security Scans, that should be run before deploying to SKIP.
-        Currently the action contains two scans, TFSec and Trivy. To use Trivy, an image must be provided as an input.
-      url: https://github.com/kartverket/pharos
-      image: /img/pharos.png
-      tags:
-        - security
-        - deployment
-
-    - title: Nacho SKIP
-      description: |
-        A composite GitHub Action for authenticating with GCP@Kartverket using Workload Identity Federation using cosign for image signing and verification.
-        As of the current version cosign is used only to sign and verify an image, but in the future there will hopefully be ways of attesting and attaching SBOMs to the image using the SLSA framework.
-      url: https://github.com/kartverket/nacho-skip
-      image: /img/nachoskip.png
-      lifecycle: Experimental
-      tags:
-        - deployment
-        - google-cloud
-
-    - title: GitHub Workflows
-      description: |
-        Shared reusable workflows for GitHub Actions.
-      url: https://github.com/kartverket/github-workflows
-      image: /skip.png
-      lifecycle: Sunsetting
-      tags:
-        - deployment
-
-    - title: Tailscale
-      description: |
-        Tailscale is a zero config VPN for building secure networks. Remote
-        access from any network or physical location.
-      url: https://tailscale.com/
-      image: /img/tailscale.svg
-      lifecycle: Closed Beta
-      tags:
-        - security
