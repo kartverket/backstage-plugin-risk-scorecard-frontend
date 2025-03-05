@@ -39,11 +39,13 @@ export type CreateRiScResultDTO = {
   status: ProcessingStatus;
   statusMessage: string;
   riScContent: string | null;
+  sopsConfig: SopsConfigDTO;
 } & ProcessRiScResultDTO;
 
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;
+  sopsConfig: SopsConfigDTO;
   migrationStatus: MigrationStatus;
 } & ContentRiScResultDTO;
 
@@ -65,8 +67,11 @@ export type SopsConfigResultDTO = {
 export type GcpCryptoKeyObject = {
   projectId: string;
   keyRing: string;
-  name: string;
-  hasEncryptDecryptAccess: boolean;
+  keyName: string;
+  locations: string;
+  resourceId: string;
+  createdAt: string;
+  hasEncryptDecryptAccess?: boolean;
 };
 
 export type PullRequestObject = {
@@ -160,7 +165,7 @@ export function sopsConfigToDTOString(
     gcpCryptoKey: {
       projectId: sopsConfig.gcpCryptoKey.projectId,
       keyRing: sopsConfig.gcpCryptoKey.keyRing,
-      name: sopsConfig.gcpCryptoKey.name,
+      keyName: sopsConfig.gcpCryptoKey.keyName,
     },
     publicAgeKeys: sopsConfig.publicAgeKeys,
   });
@@ -170,8 +175,9 @@ export function riScToDTOString(
   riSc: RiSc,
   isRequiresNewApproval: boolean,
   profile: ProfileInfo,
+  sopsConfig: SopsConfigDTO,
 ): string {
-  return JSON.stringify({
+  const json = JSON.stringify({
     riSc: JSON.stringify(riScToDTO(riSc)),
     isRequiresNewApproval: isRequiresNewApproval,
     schemaVersion: riSc.schemaVersion,
@@ -179,7 +185,9 @@ export function riScToDTOString(
       name: profile.displayName ?? '',
       email: profile.email ?? '',
     },
+    sopsConfig: sopsConfig,
   });
+  return json;
 }
 
 function riScToDTO(riSc: RiSc): RiScDTO {
@@ -216,3 +224,26 @@ function actionToDTO(action: Action): ActionsDTO {
     },
   };
 }
+
+export type SopsConfigDTO = {
+  shamir_threshold: number;
+  key_groups: KeyGroup[];
+  lastmodified?: string;
+  unencrypted_suffix?: string;
+  version?: string;
+};
+
+export type KeyGroup = {
+  gcp_kms?: GcpKmsEntry[];
+  hc_vault?: any[];
+  age?: AgeEntry[];
+};
+
+export type GcpKmsEntry = {
+  resource_id: string;
+  created_at: string;
+};
+
+export type AgeEntry = {
+  recipient: string;
+};

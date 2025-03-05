@@ -1,4 +1,4 @@
-import { GcpCryptoKeyObject, PullRequestObject } from './DTOs';
+import { GcpCryptoKeyObject, SopsConfigDTO } from './DTOs';
 
 /**
  * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.
@@ -12,6 +12,7 @@ export type RiScWithMetadata = {
   id: string;
   status: RiScStatus;
   content: RiSc;
+  sopsConfig: SopsConfigDTO;
   isRequiresNewApproval?: boolean;
   pullRequestUrl?: string;
   schemaVersion?: string;
@@ -30,11 +31,12 @@ export type MigrationVersions = {
 };
 
 export type SopsConfig = {
+  shamirThreshold: number;
+  lastModified?: string;
+  modified?: boolean;
+  version?: string;
   gcpCryptoKey: GcpCryptoKeyObject;
   publicAgeKeys: string[];
-  branch: string;
-  onDefaultBranch: boolean;
-  pullRequest: PullRequestObject | null;
 };
 
 export type RiSc = {
@@ -114,6 +116,7 @@ export enum ProcessingStatus {
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
   ErrorWhenFetchingSopsConfig = 'ErrorWhenFetchingSopsConfig',
   NoGcpKeyInSopsConfigFound = 'No GCP KMS resource ID was found in sops config',
+  ErrorWhenFetchingGcpCryptoKeys = 'ErrorWhenFetchingGcpCryptoKeys',
   FailedToFetchGcpProjectIds = 'Failed to fetch GCP project IDs',
   NoSopsConfigFound = 'No SOPS configuration found on default branch',
   FailedToCreateSops = 'Failed to create SOPS configuration',

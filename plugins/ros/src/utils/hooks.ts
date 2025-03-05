@@ -17,6 +17,7 @@ import {
 } from './types';
 import {
   CreateRiScResultDTO,
+  GcpCryptoKeyObject,
   OpenPullRequestForSopsConfigResponseBody,
   ProcessRiScResultDTO,
   profileInfoToDTOString,
@@ -24,6 +25,7 @@ import {
   RiScContentResultDTO,
   riScToDTOString,
   SopsConfigCreateResponse,
+  SopsConfigDTO,
   SopsConfigRequestBody,
   SopsConfigResultDTO,
   sopsConfigToDTOString,
@@ -194,7 +196,12 @@ export const useAuthenticatedFetch = () => {
         (_, rejectedLogin) => {
           if (onError) onError(rejectedLogin);
         },
-        riScToDTOString(selectedRiSc.content, false, profile),
+        riScToDTOString(
+          selectedRiSc.content,
+          false,
+          profile,
+          selectedRiSc.sopsConfig,
+        ),
       );
     });
 
@@ -246,6 +253,20 @@ export const useAuthenticatedFetch = () => {
         },
       );
     }
+  };
+
+  const fetchGcpCryptoKeys = (
+    onSuccess: (response: GcpCryptoKeyObject[]) => void,
+    onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
+  ) => {
+    fullyAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
+      `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`,
+      'GET',
+      res => onSuccess(res),
+      (error, rejectedLogin) => {
+        if (onError) onError(error, rejectedLogin);
+      },
+    );
   };
 
   const putSopsConfig = (
@@ -328,6 +349,7 @@ export const useAuthenticatedFetch = () => {
   const postRiScs = (
     riSc: RiSc,
     generateDefault: boolean,
+    sopsConfig: SopsConfigDTO,
     onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) =>
@@ -342,7 +364,7 @@ export const useAuthenticatedFetch = () => {
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
         },
-        riScToDTOString(riSc, true, profile),
+        riScToDTOString(riSc, true, profile, sopsConfig),
       ),
     );
 
@@ -365,7 +387,12 @@ export const useAuthenticatedFetch = () => {
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
         },
-        riScToDTOString(riSc.content, riSc.isRequiresNewApproval!!, profile),
+        riScToDTOString(
+          riSc.content,
+          riSc.isRequiresNewApproval!!,
+          profile,
+          riSc.sopsConfig,
+        ),
       ),
     );
   };
@@ -373,6 +400,7 @@ export const useAuthenticatedFetch = () => {
   return {
     fetchRiScs,
     fetchSopsConfig,
+    fetchGcpCryptoKeys,
     postRiScs,
     putRiScs,
     publishRiScs,

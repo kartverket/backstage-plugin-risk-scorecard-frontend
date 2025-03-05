@@ -21,10 +21,11 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { CheckCircle, Edit } from '@mui/icons-material';
 
 interface ScenarioTableProps {
-  riSc: RiSc;
+  riScWithMetadata: RiScWithMetadata;
 }
 
-export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
+export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
+  const riSc = riScWithMetadata.content;
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label } = useFontStyles();
   const { titleBox, rowBorder, tableCell, tableCellTitle, tableCellDragIcon } =
@@ -66,8 +67,11 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
     setTempScenarios(updatedScenarios);
 
     const updatedRiSc = {
-      ...riSc,
-      scenarios: updatedScenarios,
+      ...riScWithMetadata,
+      content: {
+        ...riSc,
+        scenarios: updatedScenarios,
+      },
     };
     updateRiSc(updatedRiSc, () => {});
   };
@@ -202,13 +206,18 @@ export const ScenarioTable = ({ riSc }: ScenarioTableProps) => {
 };
 
 interface ScenarioTableWrapperProps {
-  riSc: RiScWithMetadata;
+  riScWithMetadata: RiScWithMetadata;
 }
 
-export const ScenarioTableWrapper = ({ riSc }: ScenarioTableWrapperProps) => {
+export const ScenarioTableWrapper = ({
+  riScWithMetadata,
+}: ScenarioTableWrapperProps) => {
   return (
     <DndProvider backend={HTML5Backend}>
-      <ScenarioTable key={riSc.id} riSc={riSc.content} />
+      <ScenarioTable
+        key={riScWithMetadata.id}
+        riScWithMetadata={riScWithMetadata}
+      />
     </DndProvider>
   );
 };

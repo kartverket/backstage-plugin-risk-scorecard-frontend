@@ -7,6 +7,7 @@ import {
 } from './constants';
 import { formatISO } from 'date-fns';
 import { UpdateStatus } from '../contexts/RiScContext';
+import { SopsConfigDTO } from './DTOs';
 
 export function generateRandomId(): string {
   return [...Array(5)]
@@ -209,6 +210,21 @@ export function isPublicAgeKeyValid(publicAgeKey: string) {
   return ageKeyRegex.test(publicAgeKey);
 }
 
+export function findKeyGroupByAgeKey(
+  sopsConfig: SopsConfigDTO,
+  ageKey: string,
+) {
+  return sopsConfig.key_groups.find(keyGroup =>
+    keyGroup.age?.some(key => key.recipient === ageKey),
+  );
+}
+
+export function getGCPKey(sopsConfig: SopsConfigDTO) {
+  return sopsConfig.key_groups
+    .find(keyGroup => keyGroup.gcp_kms)
+    ?.gcp_kms?.at(0);
+}
+
 export interface Duration {
   months: number;
   weeks: number;
@@ -294,7 +310,7 @@ export function getPullRequestSecondaryText(
 export const deleteScenario = (
   riSc: RiScWithMetadata | null,
   updateRiSc: (
-    riSc: RiSc,
+    riSc: RiScWithMetadata,
     onSuccess?: () => void,
     onError?: () => void,
   ) => void,
@@ -304,7 +320,10 @@ export const deleteScenario = (
     const updatedScenarios = riSc.content.scenarios.filter(
       s => s.ID !== scenario.ID,
     );
-    updateRiSc({ ...riSc.content, scenarios: updatedScenarios });
+    updateRiSc({
+      ...riSc,
+      content: { ...riSc.content, scenarios: updatedScenarios },
+    });
   }
 };
 
