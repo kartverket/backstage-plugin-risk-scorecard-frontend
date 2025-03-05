@@ -21,7 +21,7 @@ backend:
 proxy:
   endpoints:
     '/risc-proxy':
-      target: https://kv-ros-backend-245zlcbrnq-lz.a.run.app
+      target: https://risc-backend-457384642040.europe-north1.run.app
       allowedHeaders:
         ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
 
