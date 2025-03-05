@@ -121,6 +121,10 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         );
         isFetchingGcpCryptoKeysRef.current = false;
         setIsFetchingGcpCryptoKeys(isFetchingGcpCryptoKeysRef.current);
+        if (!isFetchingRiScsRef.current) {
+          isFetchingRef.current = false;
+          setIsFetching(isFetchingRef.current);
+        }
       },
       (_error, loginRejected) => {
         setResponse({
@@ -260,7 +264,6 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       ...riSc,
       schemaVersion: latestSupportedVersion,
     };
-    if (!selectedRiSc) return;
     postRiScs(
       newRiSc.content,
       generateDefault,

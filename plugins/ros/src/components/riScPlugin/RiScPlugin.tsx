@@ -51,9 +51,6 @@ export const RiScPlugin = () => {
     updateStatus,
   } = useRiScs();
 
-  // eslint-disable-next-line no-console
-  console.log('selectedRiSc', selectedRiSc);
-
   const [searchParams] = useSearchParams();
   const scenarioWizardStep = searchParams.get(
     'step',
@@ -65,12 +62,6 @@ export const RiScPlugin = () => {
       resetResponse();
     }
   }, [resetRiScStatus, resetResponse, scenarioWizardStep]);
-
-  useEffect(() => {
-    if (!isFetching && !updateStatus.isLoading && riScs?.length === 0) {
-      // No Riscs found, only show the create new button
-    }
-  }, [isFetching, updateStatus, riScs]);
 
   return (
     <>

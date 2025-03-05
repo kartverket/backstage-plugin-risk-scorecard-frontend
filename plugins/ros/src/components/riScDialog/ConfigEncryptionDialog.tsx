@@ -1,18 +1,19 @@
 import {
-  Box,
-  DialogContentText,
   Accordion,
-  AccordionSummary,
   AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  DialogContentText,
   FormLabel,
+  IconButton,
+  Link,
   List,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
-  IconButton,
-  Typography,
+  ListItemText,
   TextField,
-  Button,
+  Typography,
 } from '@mui/material';
 import { GcpCryptoKeyMenu } from '../sopsConfigDialog/GcpCryptoKeyMenu';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -22,7 +23,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { GcpCryptoKeyObject, SopsConfigDTO } from '../../utils/DTOs';
 import React, { useEffect, useState } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
-import { UseFormSetValue, UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { RiScDialogStates } from './RiScDialog';
 import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
 
@@ -74,8 +75,6 @@ const ConfigEncryptionDialog = ({
       if (state === RiScDialogStates.EditEncryption && sopsData?.key_groups) {
         const gcpKms = sopsData.key_groups.find(keygroup => keygroup.gcp_kms)
           ?.gcp_kms?.[0];
-        // eslint-disable-next-line no-console
-        console.log(gcpKms);
         if (gcpKms?.resource_id) {
           const resourceParts = gcpKms.resource_id.split('/');
           if (resourceParts.length === 8) {
@@ -191,6 +190,19 @@ const ConfigEncryptionDialog = ({
                   </ListItem>
                 ))}
               </List>
+              <Typography>
+                {t('dictionary.click')}{' '}
+                <Link
+                    href="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1472528509/Skrive+koden+r+RoS+lokalt"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    color="primary"
+                    underline="hover"
+                >
+                  {t('dictionary.here')}
+                </Link>{' '}
+                {t('sopsConfigDialog.writeLocalRiscSuffix')}
+              </Typography>
               <Typography>
                 {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
                   'dictionary.optional',

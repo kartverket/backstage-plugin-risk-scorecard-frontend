@@ -12,6 +12,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
       editEncryption: 'Edit encryption',
     },
     dictionary: {
+      click: 'Click',
+      here: 'here',
       rejectedLogin: 'Login rejected by user.',
       yes: 'Yes',
       no: 'No',
@@ -207,6 +209,8 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'The following age keys are already present:',
       publicAgeKeyQuestion:
         'Does anyone need to write Risk scorecards locally using their editor?',
+      writeLocalRiscSuffix:
+        "to learn more about writing RiSc's locally.",
       publicAgeKeyDescription:
         'Provide a public age key below for individuals allowed local editing',
       addPublicAgeKey: 'Add public age key',
@@ -443,6 +447,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.createNewButton': 'Opprett ny analyse',
           'contentHeader.editEncryption': 'Rediger kryptering',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
+          'dictionary.click': 'Klikk',
+          'dictionary.here': 'her',
           'dictionary.yes': 'Ja',
           'dictionary.no': 'Nei',
           'dictionary.noAccess': 'Ingen tilgang',
@@ -614,6 +620,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.stepRiscDetails': 'RoS-detaljer',
           'rosDialog.stepEncryption': 'Konfigurer kryptering',
           'sopsConfigDialog.title': 'Kryptering',
+          'sopsConfigDialog.writeLocalRiscSuffix': "for å lære mer om å skrive kodenær RoS lokalt.",
           'sopsConfigDialog.description.new':
             'For å bruke kodenær RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
           'sopsConfigDialog.description.edit':

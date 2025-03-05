@@ -117,12 +117,8 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
 
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
     if (dialogState === RiScDialogStates.Create) {
-      // eslint-disable-next-line no-console
-      console.log('Create RiSc', data);
       createNewRiSc(data, createRiScFrom === CreateRiScFrom.Default);
     } else {
-      // eslint-disable-next-line no-console
-      console.log('Update RiSc', data);
       updateRiSc(data);
     }
     onClose();
