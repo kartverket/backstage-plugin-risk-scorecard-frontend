@@ -193,11 +193,11 @@ const ConfigEncryptionDialog = ({
               <Typography>
                 {t('dictionary.click')}{' '}
                 <Link
-                    href="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1472528509/Skrive+koden+r+RoS+lokalt"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    color="primary"
-                    underline="hover"
+                  href="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1472528509/Skrive+koden+r+RoS+lokalt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="primary"
+                  underline="hover"
                 >
                   {t('dictionary.here')}
                 </Link>{' '}
