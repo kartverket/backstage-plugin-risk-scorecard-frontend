@@ -228,7 +228,7 @@ function actionToDTO(action: Action): ActionsDTO {
 export type SopsConfigDTO = {
   shamir_threshold: number;
   key_groups: KeyGroup[];
-  lastmodified?: string;
+  lastModified?: string;
   unencrypted_suffix?: string;
   version?: string;
 };

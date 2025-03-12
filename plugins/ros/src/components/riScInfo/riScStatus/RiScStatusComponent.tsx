@@ -21,6 +21,10 @@ import { RiScPublishDialog } from '../PublishDialog';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import UpdatedIcon from './icons/updated.svg';
+import LittleOutdatedIcon from './icons/little_outdated.svg';
+import OutdatedIcon from './icons/outdated.svg';
+import VeryOutdatedIcon from './icons/very_outdated.svg';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -40,6 +44,20 @@ interface RiScStatusProps {
   publishRiScFn: () => void;
 }
 
+interface StatusBadgeProps {
+  icon: React.ElementType;
+  text: string;
+}
+
+const StatusBadge = ({ icon: Icon, text }: StatusBadgeProps) => (
+  <Box display="flex" gap={1} alignItems="center">
+    <Icon />
+    <Typography paragraph variant="subtitle1" mb={0}>
+      {text}
+    </Typography>
+  </Box>
+);
+
 export const RiScStatusComponent = ({
   selectedRiSc,
   publishRiScFn,
@@ -55,6 +73,10 @@ export const RiScStatusComponent = ({
 
   const [differenceFetchState, setDifferenceFetchState] =
     useState<DifferenceFetchState>(emptyDifferenceFetchState);
+
+  const [updatedState, setUpdatedState] = useState<
+    'updated' | 'little_outdated' | 'outdated' | 'very_outdated' | null
+  >(null);
 
   const { updateRiSc } = useRiScs();
 
@@ -124,55 +146,84 @@ export const RiScStatusComponent = ({
 
   const migration = selectedRiSc.migrationStatus?.migrationChanges;
 
+  const lastModifiedDate = selectedRiSc.sopsConfig.lastModified
+    ? new Date(selectedRiSc.sopsConfig.lastModified).toLocaleDateString(
+        'no-NO',
+        {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        },
+      )
+    : null;
+
+  const dateString = selectedRiSc.sopsConfig.lastModified;
+
+  const calculateDaysSinceLastModified = (dateString: string) => {
+    const givenDate = new Date(dateString);
+    const now = new Date();
+
+    const diffTime = now.getTime() - givenDate.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays.toString();
+  };
+
+  const daysSinceLastModified = dateString
+    ? calculateDaysSinceLastModified(dateString)
+    : null;
+
+  useEffect(() => {
+    if (daysSinceLastModified) {
+      if (parseInt(daysSinceLastModified) < 7) {
+        setUpdatedState('updated');
+      } else if (parseInt(daysSinceLastModified) < 14) {
+        setUpdatedState('little_outdated');
+      } else if (parseInt(daysSinceLastModified) < 30) {
+        setUpdatedState('outdated');
+      } else {
+        setUpdatedState('very_outdated');
+      }
+    }
+  }, [daysSinceLastModified]);
+
+  const statusMap = {
+    0: { icon: EditNoteIcon, text: t('rosStatus.statusBadge.created') },
+    1: { icon: EditNoteIcon, text: t('rosStatus.statusBadge.draft') },
+    2: { icon: PendingActionsIcon, text: t('rosStatus.statusBadge.waiting') },
+    3: {
+      icon: CheckCircleOutlineIcon,
+      text: t('rosStatus.statusBadge.published'),
+    },
+  };
+
+  const icons = {
+    updated: UpdatedIcon,
+    little_outdated: LittleOutdatedIcon,
+    outdated: OutdatedIcon,
+    very_outdated: VeryOutdatedIcon,
+  };
+
+  const iconSrc = updatedState ? icons[updatedState] : null;
+
   return (
     <InfoCard>
       <Typography variant="h5">Status</Typography>
-
       {!migration && (
         <>
           <Box mt={1}>
             <Progress step={status} />
           </Box>
-
           <Box
             display="flex"
             flexDirection="row"
             justifyContent="space-between"
             mt={2}
           >
-            {status === 0 && (
-              <Box display="flex" gap={1}>
-                <EditNoteIcon />
-                <Typography paragraph variant="subtitle1" mb={0}>
-                  {t('rosStatus.statusBadge.created')}
-                </Typography>
-              </Box>
-            )}
-            {status === 1 && (
-              <Box display="flex" gap={1}>
-                <EditNoteIcon />
-                <Typography paragraph variant="subtitle1" mb={0}>
-                  {t('rosStatus.statusBadge.draft')}
-                </Typography>
-              </Box>
-            )}
-            {status === 2 && (
-              <Box display="flex" gap={1}>
-                <PendingActionsIcon />
-                <Typography paragraph variant="subtitle1" mb={0}>
-                  {t('rosStatus.statusBadge.waiting')}
-                </Typography>
-              </Box>
-            )}
-            {status === 3 && (
-              <Box display="flex" gap={1}>
-                <CheckCircleOutlineIcon />
-                <Typography paragraph variant="subtitle1" mb={0}>
-                  {t('rosStatus.statusBadge.published')}
-                </Typography>
-              </Box>
-            )}
-
+            <StatusBadge
+              icon={statusMap[status].icon}
+              text={statusMap[status].text}
+            />
             {/* Created */}
             {status === 0 && (
               <Typography
@@ -245,7 +296,6 @@ export const RiScStatusComponent = ({
           )}
         </>
       )}
-
       {/* Migration */}
       {migration && (
         <Box>
@@ -277,12 +327,30 @@ export const RiScStatusComponent = ({
           />
         </Box>
       )}
-
       {/* Error */}
       {!selectedRiSc && (
         <Typography paragraph variant="subtitle1">
           {t('rosStatus.statusBadge.error')}
         </Typography>
+      )}
+      {lastModifiedDate && daysSinceLastModified && (
+        <Box mt={2} display="flex" gap={1}>
+          {iconSrc && updatedState && (
+            <img
+              src={iconSrc}
+              alt={`${updatedState.replace('_', ' ')} Icon`}
+              height={24}
+              width={24}
+            />
+          )}
+          <Typography paragraph variant="subtitle1">
+            {t('rosStatus.lastModified')}
+            {lastModifiedDate}{' '}
+            {t('rosStatus.daysSinceLastModified', {
+              days: daysSinceLastModified,
+            })}
+          </Typography>
+        </Box>
       )}
     </InfoCard>
   );
