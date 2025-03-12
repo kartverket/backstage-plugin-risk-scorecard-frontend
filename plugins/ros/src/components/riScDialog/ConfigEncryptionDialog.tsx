@@ -118,7 +118,9 @@ const ConfigEncryptionDialog = ({
           ? t('sopsConfigDialog.description.new')
           : t('sopsConfigDialog.description.edit')}
       </DialogContentText>
-      {t('sopsConfigDialog.selectKeysTitle')}
+      <Typography variant="subtitle2">
+        {t('sopsConfigDialog.selectKeysTitle')}
+      </Typography>
       {t('sopsConfigDialog.gcpCryptoKeyDescription')}
 
       <GcpCryptoKeyMenu
