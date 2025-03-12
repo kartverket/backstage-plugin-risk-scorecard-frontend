@@ -124,7 +124,7 @@ const ConfigEncryptionDialog = ({
       <GcpCryptoKeyMenu
         chosenGcpCryptoKey={chosenGcpCryptoKey}
         onChange={handleChangeGcpCryptoKey}
-        gcpCryptoKeys={gcpCryptoKeys}
+        gcpCryptoKeys={gcpCryptoKeys.includes(chosenGcpCryptoKey) ? gcpCryptoKeys : [...gcpCryptoKeys, chosenGcpCryptoKey]}
       />
       <Box>
         <Accordion elevation={1} defaultExpanded={publicAgeKeys.length > 0}>
