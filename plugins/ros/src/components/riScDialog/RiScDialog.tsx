@@ -103,11 +103,19 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     }
   };
 
-  const handleNext = handleSubmit(() => {
-    if (activeStep === 0) {
-      setActiveStep(1);
-    }
-  });
+  const handleNext = handleSubmit(
+    () => {
+      if (activeStep === 0) {
+        setActiveStep(1);
+      }
+    },
+    // Continue to step 1 even if there are errors, as long as there are no errors in step 0 (the content)
+    validationErrors => {
+      if (activeStep === 0 && validationErrors.content === undefined) {
+        setActiveStep(1);
+      }
+    },
+  );
 
   const handleBack = () => {
     if (activeStep === 1) {
@@ -147,6 +155,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
                 setValue={setValue}
                 state={dialogState}
                 register={register}
+                errors={errors}
               />
             )}
           </DialogContent>
@@ -220,6 +229,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
             setValue={setValue}
             state={dialogState}
             register={register}
+            errors={errors}
           />
         </DialogContent>
         <DialogActions sx={dialogActions}>
