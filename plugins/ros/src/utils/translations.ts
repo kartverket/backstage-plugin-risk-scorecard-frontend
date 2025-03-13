@@ -207,8 +207,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk scorecards.',
       gcpCryptoKeyNoSelectableKey:
         'You do not have access to any suitable GCP crypto keys.',
-      gcpCryptoKeyNonSelectedErrorMessage:
-        'A GCP crypto key must be selected.',
+      gcpCryptoKeyNonSelectedErrorMessage: 'A GCP crypto key must be selected.',
       publicAgeKeysAlreadyPresent:
         'The following age keys are already present:',
       publicAgeKeyQuestion:
