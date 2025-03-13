@@ -82,15 +82,6 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   });
 
   const [activeStep, setActiveStep] = useState(0);
-  const titleTranslation = (() => {
-    if (dialogState === RiScDialogStates.Create) {
-      return t('rosDialog.titleNew', {});
-    }
-    if (dialogState === RiScDialogStates.EditRiscInfo) {
-      return t('rosDialog.titleEdit', {});
-    }
-    return t('rosDialog.editEncryption', {});
-  })();
 
   const [createRiScFrom, setCreateRiScFrom] = useState<CreateRiScFrom>(
     CreateRiScFrom.Scratch,
@@ -134,8 +125,8 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
 
   if (dialogState === RiScDialogStates.Create) {
     return (
-      <Dialog open={dialogState === RiScDialogStates.Create} onClose={onClose}>
-        <DialogTitle>{titleTranslation}</DialogTitle>
+      <Dialog open={true} onClose={onClose}>
+        <DialogTitle>{t('rosDialog.titleNew')}</DialogTitle>
         <RiScStepper activeStep={activeStep}>
           <DialogContent
             sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
@@ -169,7 +160,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
           <Button variant="outlined" onClick={onClose}>
             {t('dictionary.cancel')}
           </Button>
-          {activeStep === 0 ? (
+          {activeStep < 1 ? (
             <Button variant="contained" onClick={handleNext}>
               {t('dictionary.next')}
             </Button>
@@ -185,11 +176,8 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
 
   if (dialogState === RiScDialogStates.EditRiscInfo) {
     return (
-      <Dialog
-        open={dialogState === RiScDialogStates.EditRiscInfo}
-        onClose={onClose}
-      >
-        <DialogTitle>{titleTranslation}</DialogTitle>
+      <Dialog open={true} onClose={onClose}>
+        <DialogTitle>{t('rosDialog.titleEdit')}</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
         >
@@ -215,11 +203,8 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
 
   if (dialogState === RiScDialogStates.EditEncryption) {
     return (
-      <Dialog
-        open={dialogState === RiScDialogStates.EditEncryption}
-        onClose={onClose}
-      >
-        <DialogTitle>{titleTranslation}</DialogTitle>
+      <Dialog open={true} onClose={onClose}>
+        <DialogTitle>{t('rosDialog.editEncryption')}</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
         >
