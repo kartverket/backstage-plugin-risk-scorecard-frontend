@@ -83,12 +83,14 @@ const ConfigEncryptionDialog = ({
   useEffect(() => {
     setValue('sopsConfig', {
       shamir_threshold: 2,
-      gcp_kms: chosenGcpCryptoKey ? [
-        {
-          resource_id: chosenGcpCryptoKey.resourceId,
-          created_at: chosenGcpCryptoKey.createdAt,
-        },
-      ] : [],
+      gcp_kms: chosenGcpCryptoKey
+        ? [
+            {
+              resource_id: chosenGcpCryptoKey.resourceId,
+              created_at: chosenGcpCryptoKey.createdAt,
+            },
+          ]
+        : [],
       age: publicAgeKeys.map(key => ({ recipient: key })),
     });
   }, [chosenGcpCryptoKey, publicAgeKeys, setValue]);
