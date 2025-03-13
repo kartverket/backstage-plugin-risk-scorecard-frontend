@@ -26,12 +26,15 @@ import { RiScWithMetadata } from '../../utils/types';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { RiScDialogStates } from './RiScDialog';
 import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
+import { FieldErrors } from 'react-hook-form/dist/types/errors';
+import FormHelperText from '@mui/material/FormHelperText';
 
 interface ConfigEncryptionDialogProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
   sopsData?: SopsConfigDTO;
   setValue: UseFormSetValue<RiScWithMetadata>;
   register: UseFormRegister<RiScWithMetadata>;
+  errors: FieldErrors<RiScWithMetadata>;
   state: RiScDialogStates;
 }
 
@@ -39,6 +42,8 @@ const ConfigEncryptionDialog = ({
   gcpCryptoKeys,
   sopsData,
   setValue,
+  register,
+  errors,
   state,
 }: ConfigEncryptionDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -78,15 +83,20 @@ const ConfigEncryptionDialog = ({
   useEffect(() => {
     setValue('sopsConfig', {
       shamir_threshold: 2,
-      gcp_kms: [
+      gcp_kms: chosenGcpCryptoKey ? [
         {
           resource_id: chosenGcpCryptoKey.resourceId,
           created_at: chosenGcpCryptoKey.createdAt,
         },
-      ],
+      ] : [],
       age: publicAgeKeys.map(key => ({ recipient: key })),
     });
   }, [chosenGcpCryptoKey, publicAgeKeys, setValue]);
+
+  // Require one key group to contain a GCP key
+  register('sopsConfig.gcp_kms', {
+    validate: gcpKeys => gcpKeys.length > 0,
+  });
 
   const handleChangeGcpCryptoKey = (newKey: GcpCryptoKeyObject) => {
     setChosenGcpCryptoKey(newKey);
@@ -121,13 +131,30 @@ const ConfigEncryptionDialog = ({
       <Typography variant="subtitle2">
         {t('sopsConfigDialog.selectKeysTitle')}
       </Typography>
-      {t('sopsConfigDialog.gcpCryptoKeyDescription')}
 
-      <GcpCryptoKeyMenu
-        chosenGcpCryptoKey={chosenGcpCryptoKey}
-        onChange={handleChangeGcpCryptoKey}
-        gcpCryptoKeys={gcpCryptoKeys.includes(chosenGcpCryptoKey) ? gcpCryptoKeys : [...gcpCryptoKeys, chosenGcpCryptoKey]}
-      />
+      {chosenGcpCryptoKey !== undefined ? (
+        <>
+          {t('sopsConfigDialog.gcpCryptoKeyDescription')}
+          <GcpCryptoKeyMenu
+            chosenGcpCryptoKey={chosenGcpCryptoKey}
+            onChange={handleChangeGcpCryptoKey}
+            gcpCryptoKeys={
+              gcpCryptoKeys.includes(chosenGcpCryptoKey)
+                ? gcpCryptoKeys
+                : [...gcpCryptoKeys, chosenGcpCryptoKey]
+            }
+          />
+        </>
+      ) : (
+        <Typography variant="body1">
+          {t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}
+        </Typography>
+      )}
+      {errors.sopsConfig !== undefined && (
+        <FormHelperText error={true}>
+          {t('sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage')}
+        </FormHelperText>
+      )}
       <Box>
         <Accordion elevation={1} defaultExpanded={publicAgeKeys.length > 0}>
           <AccordionSummary

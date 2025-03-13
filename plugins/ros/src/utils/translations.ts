@@ -205,6 +205,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
       chooseGcpCryptoKey: 'Choose GCP key',
       gcpCryptoKeyDescription:
         'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk scorecards.',
+      gcpCryptoKeyNoSelectableKey:
+        'You do not have access to any suitable GCP crypto keys.',
+      gcpCryptoKeyNonSelectedErrorMessage:
+        'A GCP crypto key must be selected.',
       publicAgeKeysAlreadyPresent:
         'The following age keys are already present:',
       publicAgeKeyQuestion:
@@ -629,6 +633,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':
             "Fra listen under kan du velge hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med.",
+          'sopsConfigDialog.gcpCryptoKeyNoSelectableKey':
+            'Du har ikke tilgang til noe egnede GCP-nøkler.',
+          'sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage':
+            'En GCP-nøkkel må være valgt.',
           'sopsConfigDialog.publicAgeKeysAlreadyPresent':
             'Følgende age-nøkler er allerede til stede:',
           'sopsConfigDialog.publicAgeKeyQuestion':
