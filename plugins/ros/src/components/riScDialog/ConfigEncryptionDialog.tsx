@@ -47,34 +47,16 @@ const ConfigEncryptionDialog = ({
   const [publicAgeKeyError, setPublicKeyTextFieldError] = useState(false);
   const [newPublicAgeKey, setNewPublicAgeKey] = useState('');
   const [publicAgeKeys, setPublicAgeKeys] = useState<string[]>(() => {
-    if (sopsData?.key_groups) {
-      return sopsData.key_groups
-        .flatMap(group => group.age || [])
-        .map(age => age.recipient)
-        .filter(
-          key =>
-            key !==
-            'age18e0t6ve0vdxqzzjt7rxf0r6vzc37fhs5cad2qz40r02c3spzgvvq8uxz23',
-        )
-        .filter(
-          key =>
-            key !==
-            'age145s860ux96jvx6d7nwvzar588qjmgv5p47sp6nmmt2jnmhqh4scqcuk0mg',
-        )
-        .filter(
-          key =>
-            key !==
-            'age1kjpgclkjev08aa8l2uy277gn0cngrkrkazt240405ezqywkm5axqt3d3tq',
-        );
+    if (sopsData?.age) {
+      return sopsData.age.map(age => age.recipient);
     }
     return [];
   });
 
   const [chosenGcpCryptoKey, setChosenGcpCryptoKey] =
     useState<GcpCryptoKeyObject>(() => {
-      if (state === RiScDialogStates.EditEncryption && sopsData?.key_groups) {
-        const gcpKms = sopsData.key_groups.find(keygroup => keygroup.gcp_kms)
-          ?.gcp_kms?.[0];
+      if (state === RiScDialogStates.EditEncryption && sopsData?.gcpKms) {
+        const gcpKms = sopsData.gcpKms[0];
         if (gcpKms?.resource_id) {
           const resourceParts = gcpKms.resource_id.split('/');
           if (resourceParts.length === 8) {
@@ -96,25 +78,13 @@ const ConfigEncryptionDialog = ({
   useEffect(() => {
     setValue('sopsConfig', {
       shamir_threshold: 2,
-      key_groups: [
+      gcpKms: [
         {
-          gcp_kms: [
-            {
-              resource_id: chosenGcpCryptoKey.resourceId,
-              created_at: chosenGcpCryptoKey.createdAt,
-            },
-          ],
+          resource_id: chosenGcpCryptoKey.resourceId,
+          created_at: chosenGcpCryptoKey.createdAt,
         },
-        ...(publicAgeKeys.length > 0
-          ? [
-              {
-                age: publicAgeKeys.map(key => ({
-                  recipient: key,
-                })),
-              },
-            ]
-          : []),
       ],
+      age: publicAgeKeys.map(key => ({ recipient: key })),
     });
   }, [chosenGcpCryptoKey, publicAgeKeys, setValue]);
 
