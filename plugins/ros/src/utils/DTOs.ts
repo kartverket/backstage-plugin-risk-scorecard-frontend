@@ -227,16 +227,11 @@ function actionToDTO(action: Action): ActionsDTO {
 
 export type SopsConfigDTO = {
   shamir_threshold: number;
-  key_groups: KeyGroup[];
+  age?: AgeEntry[];
+  gcp_kms: GcpKmsEntry[];
   lastmodified?: string;
   unencrypted_suffix?: string;
   version?: string;
-};
-
-export type KeyGroup = {
-  gcp_kms?: GcpKmsEntry[];
-  hc_vault?: any[];
-  age?: AgeEntry[];
 };
 
 export type GcpKmsEntry = {

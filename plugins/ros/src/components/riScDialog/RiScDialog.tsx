@@ -75,7 +75,6 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
             content: emptyRiSc(),
             sopsConfig: {
               shamir_threshold: 2,
-              key_groups: [],
             },
           },
     mode: 'onBlur',
