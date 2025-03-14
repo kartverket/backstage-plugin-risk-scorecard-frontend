@@ -55,8 +55,8 @@ const ConfigEncryptionDialog = ({
 
   const [chosenGcpCryptoKey, setChosenGcpCryptoKey] =
     useState<GcpCryptoKeyObject>(() => {
-      if (state === RiScDialogStates.EditEncryption && sopsData?.gcpKms) {
-        const gcpKms = sopsData.gcpKms[0];
+      if (state === RiScDialogStates.EditEncryption && sopsData?.gcp_kms) {
+        const gcpKms = sopsData.gcp_kms[0];
         if (gcpKms?.resource_id) {
           const resourceParts = gcpKms.resource_id.split('/');
           if (resourceParts.length === 8) {
@@ -78,7 +78,7 @@ const ConfigEncryptionDialog = ({
   useEffect(() => {
     setValue('sopsConfig', {
       shamir_threshold: 2,
-      gcpKms: [
+      gcp_kms: [
         {
           resource_id: chosenGcpCryptoKey.resourceId,
           created_at: chosenGcpCryptoKey.createdAt,
