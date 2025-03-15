@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
-import { emptyRiSc } from '../../utils/utilityfunctions';
+import { emptyRiSc, isDeeplyEqual } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiScs } from '../../contexts/RiScContext';
@@ -117,7 +117,10 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     if (dialogState === RiScDialogStates.Create) {
       createNewRiSc(data, createRiScFrom === CreateRiScFrom.Default);
     } else {
-      updateRiSc(data);
+      // Only update the risc if it has changed
+      if (!isDeeplyEqual(data, selectedRiSc)) {
+        updateRiSc(data);
+      }
     }
     onClose();
   });
