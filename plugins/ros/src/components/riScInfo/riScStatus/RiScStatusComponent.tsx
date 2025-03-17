@@ -174,7 +174,6 @@ export const RiScStatusComponent = ({
     : null;
 
   const numOfCommitsBehindMain = selectedRiSc.numOfGeneralCommitsBehindMain;
-  console.log('Number of commits: ' + numOfCommitsBehindMain);
 
   useEffect(() => {
     if (daysSinceLastModified && numOfCommitsBehindMain) {
