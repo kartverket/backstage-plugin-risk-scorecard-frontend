@@ -8,14 +8,30 @@ import { formHelperText, formLabel } from './typography';
 
 type Props = TextFieldProps & {
   sublabel?: string;
+  onMarkdownChange?: (markdown: string) => void;
 };
 
 export const Input = forwardRef<HTMLInputElement, Props>(
-  ({ label, sublabel, error, helperText, required, ...props }, ref) => {
+  (
+    {
+      label,
+      sublabel,
+      error,
+      helperText,
+      required,
+      onMarkdownChange,
+      ...props
+    },
+    ref,
+  ) => {
     const [markdownContent, setMarkdownContent] = useState('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setMarkdownContent(event.target.value);
+      const value = event.target.value;
+      setMarkdownContent(value);
+      if (onMarkdownChange) {
+        onMarkdownChange(value);
+      }
     };
 
     return (

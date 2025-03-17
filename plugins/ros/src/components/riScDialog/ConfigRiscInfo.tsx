@@ -11,7 +11,10 @@ import Box from '@mui/material/Box';
 import { CreateRiScFrom } from './RiScDialog';
 import { RiScWithMetadata } from '../../utils/types';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
-import { UseFormRegister } from 'react-hook-form/dist/types/form';
+import {
+  UseFormRegister,
+  UseFormSetValue,
+} from 'react-hook-form/dist/types/form';
 
 interface ConfigRiscInfoProps {
   dialogState: RiScDialogStates;
@@ -19,6 +22,7 @@ interface ConfigRiscInfoProps {
   handleChangeCreateRiScFrom: () => void;
   register: UseFormRegister<RiScWithMetadata>;
   errors: FieldErrors<RiScWithMetadata>;
+  setValue: UseFormSetValue<RiScWithMetadata>;
 }
 
 const ConfigRiscInfo = ({
@@ -27,8 +31,14 @@ const ConfigRiscInfo = ({
   handleChangeCreateRiScFrom,
   register,
   errors,
+  setValue,
 }: ConfigRiscInfoProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const handleMarkdownChange = (markdown: string) => {
+    setValue('content.scope', markdown);
+  };
+
   return (
     <>
       <Input
@@ -44,6 +54,7 @@ const ConfigRiscInfo = ({
         sublabel={t('rosDialog.scopeDescription')}
         error={errors?.content?.scope !== undefined}
         minRows={4}
+        onMarkdownChange={handleMarkdownChange}
       />
 
       {dialogState === RiScDialogStates.Create && (
