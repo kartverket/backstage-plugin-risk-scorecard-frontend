@@ -2,7 +2,8 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { formHelperText, formLabel } from './typography';
 
 type Props = TextFieldProps & {
@@ -11,6 +12,12 @@ type Props = TextFieldProps & {
 
 export const Input = forwardRef<HTMLInputElement, Props>(
   ({ label, sublabel, error, helperText, required, ...props }, ref) => {
+    const [markdownContent, setMarkdownContent] = useState('');
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setMarkdownContent(event.target.value);
+    };
+
     return (
       <FormControl
         sx={{ width: '100%', gap: '4px' }}
@@ -40,8 +47,10 @@ export const Input = forwardRef<HTMLInputElement, Props>(
             }),
           }}
           {...props}
+          onChange={handleChange}
         />
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
+        <ReactMarkdown>{markdownContent}</ReactMarkdown>
       </FormControl>
     );
   },
