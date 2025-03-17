@@ -47,6 +47,7 @@ export type RiScContentResultDTO = {
   riScContent: string;
   sopsConfig: SopsConfigDTO;
   migrationStatus: MigrationStatus;
+  numOfGeneralCommitsBehindMain: number;
 } & ContentRiScResultDTO;
 
 export type RiScDTO = {

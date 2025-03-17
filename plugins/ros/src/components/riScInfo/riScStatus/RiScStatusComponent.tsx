@@ -173,19 +173,45 @@ export const RiScStatusComponent = ({
     ? calculateDaysSinceLastModified(dateString)
     : null;
 
+  const numOfCommitsBehindMain = selectedRiSc.numOfGeneralCommitsBehindMain;
+  console.log('Number of commits: ' + numOfCommitsBehindMain);
+
   useEffect(() => {
-    if (daysSinceLastModified) {
-      if (parseInt(daysSinceLastModified) < 7) {
-        setUpdatedState('updated');
-      } else if (parseInt(daysSinceLastModified) < 14) {
-        setUpdatedState('little_outdated');
-      } else if (parseInt(daysSinceLastModified) < 30) {
-        setUpdatedState('outdated');
-      } else {
+    if (daysSinceLastModified && numOfCommitsBehindMain) {
+      const days = parseInt(daysSinceLastModified);
+      const commits = numOfCommitsBehindMain;
+
+      if (commits > 50) {
         setUpdatedState('very_outdated');
+      } else if (commits >= 26 && commits <= 50) {
+        if (days <= 30) {
+          setUpdatedState('little_outdated');
+        } else if (days >= 31 && days <= 90) {
+          setUpdatedState('outdated');
+        } else {
+          setUpdatedState('very_outdated');
+        }
+      } else if (commits >= 11 && commits <= 25) {
+        if (days <= 30) {
+          setUpdatedState('updated');
+        } else if (days >= 31 && days <= 90) {
+          setUpdatedState('little_outdated');
+        } else if (days >= 91 && days <= 180) {
+          setUpdatedState('outdated');
+        } else {
+          setUpdatedState('very_outdated');
+        }
+      } else if (commits <= 10) {
+        if (days <= 60) {
+          setUpdatedState('updated');
+        } else {
+          setUpdatedState('little_outdated');
+        }
+      } else {
+        setUpdatedState(null);
       }
     }
-  }, [daysSinceLastModified]);
+  }, [daysSinceLastModified, numOfCommitsBehindMain]);
 
   const statusMap = {
     0: { icon: EditNoteIcon, text: t('rosStatus.statusBadge.created') },
@@ -348,6 +374,7 @@ export const RiScStatusComponent = ({
             {lastModifiedDate}{' '}
             {t('rosStatus.daysSinceLastModified', {
               days: daysSinceLastModified,
+              numCommits: numOfCommitsBehindMain.toString(),
             })}
           </Typography>
         </Box>
