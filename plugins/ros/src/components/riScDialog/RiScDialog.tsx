@@ -117,8 +117,38 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     if (dialogState === RiScDialogStates.Create) {
       createNewRiSc(data, createRiScFrom === CreateRiScFrom.Default);
     } else {
+      // Do manual comparison of contents, as the sopsConfig field contains many values from the backend that are not
+      // used or set by the frontend.
+
+      // Check if the additional Age keys are equal, using the single important field, `recipient`
+      const areAgeKeysEqual = isDeeplyEqual(
+        data.sopsConfig.age?.map(age => age.recipient).sort(),
+        selectedRiSc?.sopsConfig.age?.map(age => age.recipient).sort(),
+      );
+
+      // Check if the GCP keys are equal, using the two important fields, `resource_id` and `created_at`.
+      // Comparison uses dictionaries, where resource ids are keys and created at dates are values
+      const areGCPKeysEqual = isDeeplyEqual(
+        Object.fromEntries(
+          data.sopsConfig.gcp_kms?.map(key => [
+            key.resource_id,
+            key.created_at,
+          ]) ?? [],
+        ),
+        Object.fromEntries(
+          selectedRiSc?.sopsConfig.gcp_kms?.map(key => [
+            key.resource_id,
+            key.created_at,
+          ]) ?? [],
+        ),
+      );
+
       // Only update the risc if it has changed
-      if (!isDeeplyEqual(data, selectedRiSc)) {
+      if (
+        !isDeeplyEqual(data, selectedRiSc, ['sopsConfig']) ||
+        !areGCPKeysEqual ||
+        !areAgeKeysEqual
+      ) {
         updateRiSc(data);
       }
     }

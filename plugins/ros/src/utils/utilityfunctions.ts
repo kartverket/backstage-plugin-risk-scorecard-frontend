@@ -321,9 +321,14 @@ export const deleteAction = (
 };
 
 /**
- * A recursive method for determining if a and b are deeply equal
+ * A recursive method for determining if a and b are deeply equal. Keys in the ignoredKeys argument are ignored in the
+ * comparison, i.e., they are considered non-existing in both a and b.
  */
-export function isDeeplyEqual<T>(a: T, b: T): boolean {
+export function isDeeplyEqual<T>(
+  a: T,
+  b: T,
+  ignoredKeys: string[] = [],
+): boolean {
   // If objects are equal, there is no need compare them any further.
   if (a === b) return true;
 
@@ -334,14 +339,19 @@ export function isDeeplyEqual<T>(a: T, b: T): boolean {
     if (Array.isArray(a) !== Array.isArray(b)) return false;
 
     // Check if a and b have the same number of entries
-    if (Object.keys(a).length !== Object.keys(b).length) return false;
+    if (
+      Object.keys(a).filter(key => !ignoredKeys.includes(key)).length !==
+      Object.keys(b).filter(key => !ignoredKeys.includes(key)).length
+    )
+      return false;
 
     // Check if every key of a is a key of b and that the entry associated with the key is deeply the same in a and b.
     // Since a and b has the same number of entries, it is sufficient to check only the keys of a.
     return Object.entries(a).every(
       ([key, value]) =>
-        Object.hasOwn(b, key as keyof T) &&
-        isDeeplyEqual(value, b[key as keyof T]),
+        ignoredKeys.includes(key) ||
+        (Object.hasOwn(b, key as keyof T) &&
+          isDeeplyEqual(value, b[key as keyof T])),
     );
   }
 
