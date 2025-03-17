@@ -46,16 +46,18 @@ describe('isDeeplyEqual', () => {
 
   const testCasesIgnored: [unknown, unknown, string[], boolean][] = [
     [0, 0, [], true],
-    [0, 0, ["test"], true],
-    [{}, {test: 0}, ["test"], true],
-    [{test: 1}, {test: 0}, ["test"], true],
-    [{test: 1}, {test: 0}, ["test2"], false],
-    [{test: {a: 1}}, {test: 0}, ["test"], true],
-    [{test: 0}, "a", ["test"], false],
-  ]
+    [0, 0, ['test'], true],
+    [{}, { test: 0 }, ['test'], true],
+    [{ test: 1 }, { test: 0 }, ['test'], true],
+    [{ test: 1 }, { test: 0 }, ['test2'], false],
+    [{ test: { a: 1 } }, { test: 0 }, ['test'], true],
+    [{ test: 0 }, 'a', ['test'], false],
+  ];
 
   testCasesIgnored.forEach(([a, b, ignored, result]) =>
-    test(`isDeeplyEqual(${JSON.stringify(a)}, ${JSON.stringify(b)}, ${JSON.stringify(ignored)})`, () => {
+    test(`isDeeplyEqual(${JSON.stringify(a)}, ${JSON.stringify(
+      b,
+    )}, ${JSON.stringify(ignored)})`, () => {
       expect(isDeeplyEqual(a, b, ignored)).toBe(result);
     }),
   );
