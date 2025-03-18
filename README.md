@@ -13,11 +13,11 @@ For local development, you also have to create the file `app-config.local.yaml`.
 There are 4 local configurations needed in `app-config.local.yaml` in order to run the app locally: 
 - **Setting up local database**:
 ```yaml
- backend:
-   database:
-     client: better-sqlite3
-     connection:
-       directory: <ABSOLUTE PATH TO REPO>/db
+backend:
+  database:
+    client: better-sqlite3
+    connection:
+      directory: <ABSOLUTE PATH TO REPO>/db
 ```
 - **Setting up GitHub integration**:
 The main part of Backstage is a Software Catalog, which can be loaded from yaml-files in GitHub repositories in your organization.
