@@ -1,5 +1,32 @@
 # Backstage RiSc Plugin
 
+## Setup
+
+You might need to reload the terminal during these steps.
+Neither `node`, `yarn/npm` or `nvm` is required for this setup to work.
+
+### Install node version manager
+```
+brew install nodenv
+```
+
+See [documentation](https://github.com/nodenv/nodenv) on what to do with
+```
+nodenv init
+```
+
+### Install node version defined in `.node-version`
+```
+nodenv install
+```
+
+### Enable corepack to control package manager
+`corepack` comes with `node`.
+```
+corepack enable
+corepack install
+```
+
 ## How to run plugin in Backstage
 
 Before running your Backstage app, you want to configure it, which is done with _app-configs_.
