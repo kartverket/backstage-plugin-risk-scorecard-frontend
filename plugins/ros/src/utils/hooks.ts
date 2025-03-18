@@ -259,7 +259,7 @@ export const useAuthenticatedFetch = () => {
     onSuccess: (response: GcpCryptoKeyObject[]) => void,
     onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
   ) => {
-    fullyAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
+    googleAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
       `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`,
       'GET',
       res => onSuccess(res),
