@@ -21,10 +21,10 @@ import { RiScPublishDialog } from '../PublishDialog';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import UpdatedIcon from './icons/updated.svg';
-import LittleOutdatedIcon from './icons/little_outdated.svg';
-import OutdatedIcon from './icons/outdated.svg';
-import VeryOutdatedIcon from './icons/very_outdated.svg';
+// import UpdatedIcon from './icons/updated.svg';
+// import LittleOutdatedIcon from './icons/little_outdated.svg';
+// import OutdatedIcon from './icons/outdated.svg';
+// import VeryOutdatedIcon from './icons/very_outdated.svg';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -173,12 +173,14 @@ export const RiScStatusComponent = ({
     ? calculateDaysSinceLastModified(dateString)
     : null;
 
-  const numOfCommitsBehindMain = selectedRiSc.numOfGeneralCommitsBehindMain;
+  const numOfCommitsBehindMain = selectedRiSc.numOfGeneralCommitsBehindMain
+    ? selectedRiSc.numOfGeneralCommitsBehindMain.toString()
+    : null;
 
   useEffect(() => {
     if (daysSinceLastModified && numOfCommitsBehindMain) {
       const days = parseInt(daysSinceLastModified);
-      const commits = numOfCommitsBehindMain;
+      const commits = parseInt(numOfCommitsBehindMain);
 
       if (commits > 50) {
         setUpdatedState('very_outdated');
@@ -222,14 +224,14 @@ export const RiScStatusComponent = ({
     },
   };
 
-  const icons = {
-    updated: UpdatedIcon,
-    little_outdated: LittleOutdatedIcon,
-    outdated: OutdatedIcon,
-    very_outdated: VeryOutdatedIcon,
-  };
+  // const icons = {
+  //   updated: UpdatedIcon,
+  //   little_outdated: LittleOutdatedIcon,
+  //   outdated: OutdatedIcon,
+  //   very_outdated: VeryOutdatedIcon,
+  // };
 
-  const iconSrc = updatedState ? icons[updatedState] : null;
+  // const iconComponent = updatedState ? icons[updatedState] : null;
 
   return (
     <InfoCard>
@@ -360,20 +362,19 @@ export const RiScStatusComponent = ({
       )}
       {lastModifiedDate && daysSinceLastModified && (
         <Box mt={2} display="flex" gap={1}>
-          {iconSrc && updatedState && (
+          {/* {iconComponent && updatedState && (
             <img
-              src={iconSrc}
+              src={iconComponent}
               alt={`${updatedState.replace('_', ' ')} Icon`}
               height={24}
               width={24}
             />
-          )}
+          )} */}
           <Typography paragraph variant="subtitle1">
             {t('rosStatus.lastModified')}
-            {lastModifiedDate}{' '}
             {t('rosStatus.daysSinceLastModified', {
               days: daysSinceLastModified,
-              numCommits: numOfCommitsBehindMain.toString(),
+              numCommits: numOfCommitsBehindMain || '0',
             })}
           </Typography>
         </Box>
