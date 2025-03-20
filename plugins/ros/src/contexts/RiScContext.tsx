@@ -162,8 +162,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
               status: riScDTO.riScStatus,
               pullRequestUrl: riScDTO.pullRequestUrl,
               migrationStatus: riScDTO.migrationStatus,
-              numOfGeneralCommitsBehindMain:
-                riScDTO.numOfGeneralCommitsBehindMain,
+              numOfGeneralCommitsBehind: riScDTO.numOfGeneralCommitsBehind,
             };
           });
         setRiScs(fetchedRiScs);
