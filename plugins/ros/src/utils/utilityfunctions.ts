@@ -69,6 +69,16 @@ export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
   }, false);
 }
 
+export const calculateDaysSinceLastModified = (dateString: string) => {
+  const givenDate = new Date(dateString);
+  const now = new Date();
+
+  const diffTime = now.getTime() - givenDate.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  return diffDays.toString();
+};
+
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
 export const requiresNewApproval = (
   oldRiSc: RiSc,
