@@ -170,17 +170,14 @@ export const RiScStatusComponent = ({
     ? calculateDaysSinceLastModified(dateString)
     : null;
 
-  console.log('hei', selectedRiSc.numOfGeneralCommitsBehind);
-
-  const numOfCommitsBehindMain = selectedRiSc.numOfGeneralCommitsBehind
+  const numOfCommitsBehind = selectedRiSc.numOfGeneralCommitsBehind
     ? selectedRiSc.numOfGeneralCommitsBehind.toString()
     : null;
 
-  console.log('numOfCommitsBehindMain', numOfCommitsBehindMain);
   const updatedState = useMemo(() => {
-    if (daysSinceLastModified && numOfCommitsBehindMain) {
+    if (daysSinceLastModified && numOfCommitsBehind) {
       const days = parseInt(daysSinceLastModified);
-      const commits = parseInt(numOfCommitsBehindMain);
+      const commits = parseInt(numOfCommitsBehind);
 
       if (commits > 50) {
         return 'very_outdated';
@@ -210,8 +207,8 @@ export const RiScStatusComponent = ({
         }
       }
     }
-    return null;
-  }, [daysSinceLastModified, numOfCommitsBehindMain]);
+    return 'updated';
+  }, [daysSinceLastModified, numOfCommitsBehind]);
 
   const statusMap = {
     0: { icon: EditNoteIcon, text: t('rosStatus.statusBadge.created') },
@@ -373,7 +370,7 @@ export const RiScStatusComponent = ({
             {t('rosStatus.lastModified')}
             {t('rosStatus.daysSinceLastModified', {
               days: daysSinceLastModified,
-              numCommits: numOfCommitsBehindMain || '0',
+              numCommits: numOfCommitsBehind || '0',
             })}
           </Typography>
         </Box>
