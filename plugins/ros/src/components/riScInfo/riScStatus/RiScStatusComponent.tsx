@@ -21,7 +21,6 @@ import { RiScPublishDialog } from '../PublishDialog';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-// TODO: fix red
 import UpdatedIcon from './icons/updated.svg';
 import LittleOutdatedIcon from './icons/little_outdated.svg';
 import OutdatedIcon from './icons/outdated.svg';
@@ -129,15 +128,20 @@ export const RiScStatusComponent = ({
 
   const [status, setStatus] = useState<0 | 1 | 2 | 3>(0);
 
+  const STATUS_CREATED = 0;
+  const STATUS_DRAFT = 1;
+  const STATUS_WAITING = 2;
+  const STATUS_PUBLISHED = 3;
+
   useEffect(() => {
     if (selectedRiSc.content.scenarios.length === 0) {
-      setStatus(0);
+      setStatus(STATUS_CREATED);
     } else if (selectedRiSc.status === RiScStatus.Draft) {
-      setStatus(1);
+      setStatus(STATUS_DRAFT);
     } else if (selectedRiSc.status === RiScStatus.SentForApproval) {
-      setStatus(2);
+      setStatus(STATUS_WAITING);
     } else if (selectedRiSc.status === RiScStatus.Published) {
-      setStatus(3);
+      setStatus(STATUS_PUBLISHED);
     }
   }, [selectedRiSc.status, selectedRiSc.content.scenarios]);
 
@@ -211,10 +215,19 @@ export const RiScStatusComponent = ({
   }, [daysSinceLastModified, numOfCommitsBehind]);
 
   const statusMap = {
-    0: { icon: EditNoteIcon, text: t('rosStatus.statusBadge.created') },
-    1: { icon: EditNoteIcon, text: t('rosStatus.statusBadge.draft') },
-    2: { icon: PendingActionsIcon, text: t('rosStatus.statusBadge.waiting') },
-    3: {
+    [STATUS_CREATED]: {
+      icon: EditNoteIcon,
+      text: t('rosStatus.statusBadge.created'),
+    },
+    [STATUS_DRAFT]: {
+      icon: EditNoteIcon,
+      text: t('rosStatus.statusBadge.draft'),
+    },
+    [STATUS_WAITING]: {
+      icon: PendingActionsIcon,
+      text: t('rosStatus.statusBadge.waiting'),
+    },
+    [STATUS_PUBLISHED]: {
       icon: CheckCircleOutlineIcon,
       text: t('rosStatus.statusBadge.published'),
     },
@@ -248,7 +261,7 @@ export const RiScStatusComponent = ({
               text={statusMap[status].text}
             />
             {/* Created */}
-            {status === 0 && (
+            {status === STATUS_CREATED && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -260,15 +273,13 @@ export const RiScStatusComponent = ({
               </Typography>
             )}
 
-            {/* Draft */}
-            {status === 1 && (
+            {status === STATUS_DRAFT && (
               <Typography paragraph variant="subtitle1" ml={5} align="right">
                 {t('rosStatus.statusBadge.missing')}
               </Typography>
             )}
 
-            {/* Waiting for approval */}
-            {status === 2 && (
+            {status === STATUS_WAITING && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -284,8 +295,7 @@ export const RiScStatusComponent = ({
               </Typography>
             )}
 
-            {/* Published */}
-            {status === 3 && (
+            {status === STATUS_PUBLISHED && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -298,8 +308,7 @@ export const RiScStatusComponent = ({
             )}
           </Box>
 
-          {/* Draft */}
-          {status === 1 && (
+          {status === STATUS_DRAFT && (
             <>
               <Button
                 color="primary"
@@ -319,7 +328,6 @@ export const RiScStatusComponent = ({
           )}
         </>
       )}
-      {/* Migration */}
       {migration && (
         <Box>
           <Typography paragraph sx={subtitle1}>
