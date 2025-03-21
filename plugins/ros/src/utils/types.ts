@@ -17,6 +17,7 @@ export type RiScWithMetadata = {
   pullRequestUrl?: string;
   schemaVersion?: string;
   migrationStatus?: MigrationStatus;
+  numOfGeneralCommitsBehind: number;
 };
 
 export type MigrationStatus = {

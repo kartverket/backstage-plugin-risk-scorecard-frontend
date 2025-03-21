@@ -47,6 +47,7 @@ export type RiScContentResultDTO = {
   riScContent: string;
   sopsConfig: SopsConfigDTO;
   migrationStatus: MigrationStatus;
+  numOfGeneralCommitsBehind: number;
 } & ContentRiScResultDTO;
 
 export type RiScDTO = {
@@ -229,7 +230,7 @@ export type SopsConfigDTO = {
   shamir_threshold: number;
   age?: AgeEntry[];
   gcp_kms: GcpKmsEntry[];
-  lastmodified?: string;
+  lastModified?: string;
   unencrypted_suffix?: string;
   version?: string;
 };

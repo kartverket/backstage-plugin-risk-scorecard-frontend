@@ -162,6 +162,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
               status: riScDTO.riScStatus,
               pullRequestUrl: riScDTO.pullRequestUrl,
               migrationStatus: riScDTO.migrationStatus,
+              numOfGeneralCommitsBehind: riScDTO.numOfGeneralCommitsBehind,
             };
           });
         setRiScs(fetchedRiScs);
@@ -279,6 +280,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           content: content,
           sopsConfig: riSc.sopsConfig,
           schemaVersion: riSc.schemaVersion,
+          numOfGeneralCommitsBehind: 0,
         };
         setRiScs(riScs ? [...riScs, riScWithMetaData] : [riScWithMetaData]);
         setIsFetching(false);
