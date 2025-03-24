@@ -20,6 +20,7 @@ import databricksLogo from './logos/Databricks.png';
 import githubLogo from './logos/Github.png';
 import daskLogo from './logos/DASK.png';
 import skipLogo from './logos/SKIP.png';
+import { URLS } from '../../urls';
 
 const useStyles = makeStyles(theme => ({
   searchBarInput: {
@@ -88,28 +89,28 @@ export const HomePage = () => {
               <HomePageToolkit
                 tools={[
                   {
-                    url: 'https://monitoring.kartverket.cloud',
+                    url: URLS.other.monitorering_kartverket_cloud,
                     label: 'Grafana',
                     icon: (
                       <img src={grafanaLogo} alt="Logo of Grafana" width={35} />
                     ),
                   },
                   {
-                    url: 'https://argo.kartverket.dev',
+                    url: URLS.other.argo_kartverket_dev,
                     label: 'Argo CD',
                     icon: (
                       <img src={argoLogo} alt="Logo of Argo CD" width={45} />
                     ),
                   },
                   {
-                    url: 'https://eu1.app.sysdig.com/api/saml/kartverket?redirectRoute=/&product=SDS&companyName=kartverket',
+                    url: URLS.other.sysdig_secure,
                     label: 'Sysdig Secure',
                     icon: (
                       <img src={sysdigLogo} alt="Logo of Sysdig" width={40} />
                     ),
                   },
                   {
-                    url: 'https://accounts.gcp.databricks.com',
+                    url: URLS.other.databricks,
                     label: 'Databricks',
                     icon: (
                       <img
@@ -120,7 +121,7 @@ export const HomePage = () => {
                     ),
                   },
                   {
-                    url: 'https://console.cloud.google.com',
+                    url: URLS.other.google_cloud,
                     label: 'Google Cloud',
                     icon: (
                       <img
@@ -131,26 +132,26 @@ export const HomePage = () => {
                     ),
                   },
                   {
-                    url: 'https://github.com/kartverket',
+                    url: URLS.other.github_kartverket,
                     label: 'GitHub',
                     icon: (
                       <img src={githubLogo} alt="Logo of GitHub" width={35} />
                     ),
                   },
                   {
-                    url: 'https://jit.skip.kartverket.no',
+                    url: URLS.other.jit_kartverket,
                     label: 'JIT',
                     icon: (
                       <img src={googleLogo} alt="Logo of Google" width={35} />
                     ),
                   },
                   {
-                    url: 'https://kartverket.atlassian.net/wiki/spaces/DAT/overview?homepageId=490045441',
+                    url: URLS.other.dask_docs,
                     label: 'DASK Docs',
                     icon: <img src={daskLogo} alt="Logo of DASK" width={35} />,
                   },
                   {
-                    url: 'https://skip.kartverket.no/docs',
+                    url: URLS.other.skip_docs,
                     label: 'SKIP Docs',
                     icon: <img src={skipLogo} alt="Logo of SKIP" width={35} />,
                   },

@@ -68,6 +68,7 @@ import {
   isOverviewDashboardAvailable,
 } from '@k-phoen/backstage-plugin-grafana';
 import { RiScPage } from '@kartverket/backstage-plugin-risk-scorecard';
+import { URLS } from '../../urls';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -122,7 +123,7 @@ const cicdContent = (
           <Button
             variant="contained"
             color="primary"
-            href="https://backstage.io/docs/features/software-catalog/well-known-annotations"
+            href={URLS.other.backstage__annotations}
           >
             Read more
           </Button>
@@ -184,15 +185,15 @@ const overviewContent = (
 
 const serviceEntityPage = (
   <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
+    <EntityLayout.Route path={URLS.frontend.index} title="Overview">
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
+    <EntityLayout.Route path={URLS.frontend.cicd} title="CI/CD">
       {cicdContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/api" title="API">
+    <EntityLayout.Route path={URLS.frontend.api} title="API">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={6}>
           <EntityProvidedApisCard />
@@ -203,7 +204,7 @@ const serviceEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/dependencies" title="Dependencies">
+    <EntityLayout.Route path={URLS.frontend.dependencies} title="Dependencies">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={6}>
           <EntityDependsOnComponentsCard variant="gridItem" />
@@ -214,11 +215,11 @@ const serviceEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/docs" title="Docs">
+    <EntityLayout.Route path={URLS.frontend.docs} title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/risc" title="ROS">
+    <EntityLayout.Route path={URLS.frontend.risc} title="ROS">
       <RiScPage />
     </EntityLayout.Route>
   </EntityLayout>
@@ -226,15 +227,15 @@ const serviceEntityPage = (
 
 const websiteEntityPage = (
   <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
+    <EntityLayout.Route path={URLS.frontend.index} title="Overview">
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/ci-cd" title="CI/CD">
+    <EntityLayout.Route path={URLS.frontend.cicd} title="CI/CD">
       {cicdContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/dependencies" title="Dependencies">
+    <EntityLayout.Route path={URLS.frontend.dependencies} title="Dependencies">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={6}>
           <EntityDependsOnComponentsCard variant="gridItem" />
@@ -245,15 +246,15 @@ const websiteEntityPage = (
       </Grid>
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/docs" title="Docs">
+    <EntityLayout.Route path={URLS.frontend.docs} title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/lighthouse" title="Lighthouse">
+    <EntityLayout.Route path={URLS.frontend.lighthouse} title="Lighthouse">
       <EntityLighthouseContent />
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/risc" title="Risk Scorecard">
+    <EntityLayout.Route path={URLS.frontend.risc} title="Risk Scorecard">
       <RiScPage />
     </EntityLayout.Route>
   </EntityLayout>
@@ -268,11 +269,11 @@ const websiteEntityPage = (
 
 const defaultEntityPage = (
   <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
+    <EntityLayout.Route path={URLS.frontend.index} title="Overview">
       {overviewContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/docs" title="Docs">
+    <EntityLayout.Route path={URLS.frontend.docs} title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
   </EntityLayout>
@@ -294,7 +295,7 @@ const componentPage = (
 
 const apiPage = (
   <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
+    <EntityLayout.Route path={URLS.frontend.index} title="Overview">
       <Grid container spacing={3}>
         {entityWarningContent}
         <Grid item md={6}>
@@ -317,7 +318,7 @@ const apiPage = (
       </Grid>
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/definition" title="Definition">
+    <EntityLayout.Route path={URLS.frontend.definition} title="Definition">
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <EntityApiDefinitionCard />
@@ -329,7 +330,7 @@ const apiPage = (
 
 const userPage = (
   <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
+    <EntityLayout.Route path={URLS.frontend.index} title="Overview">
       <Grid container spacing={3}>
         {entityWarningContent}
         <Grid item xs={12} md={6}>
@@ -345,7 +346,7 @@ const userPage = (
 
 const groupPage = (
   <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
+    <EntityLayout.Route path={URLS.frontend.index} title="Overview">
       <Grid container spacing={3}>
         {entityWarningContent}
         <Grid item xs={12} md={6}>
@@ -374,7 +375,7 @@ const groupPage = (
 
 const systemPage = (
   <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
+    <EntityLayout.Route path={URLS.frontend.index} title="Overview">
       <Grid container spacing={3} alignItems="stretch">
         {entityWarningContent}
         <Grid item md={6}>
@@ -397,7 +398,7 @@ const systemPage = (
         </Grid>
       </Grid>
     </EntityLayout.Route>
-    <EntityLayout.Route path="/diagram" title="Diagram">
+    <EntityLayout.Route path={URLS.frontend.diagram} title="Diagram">
       <EntityCatalogGraphCard
         variant="gridItem"
         direction={Direction.TOP_BOTTOM}
@@ -417,7 +418,7 @@ const systemPage = (
       />
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/risc" title="ROS">
+    <EntityLayout.Route path={URLS.frontend.risc} title="ROS">
       <RiScPage />
     </EntityLayout.Route>
   </EntityLayout>
@@ -425,7 +426,7 @@ const systemPage = (
 
 const domainPage = (
   <EntityLayout>
-    <EntityLayout.Route path="/" title="Overview">
+    <EntityLayout.Route path={URLS.frontend.index} title="Overview">
       <Grid container spacing={3} alignItems="stretch">
         {entityWarningContent}
         <Grid item md={6}>
