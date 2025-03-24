@@ -89,38 +89,36 @@ export const calculateUpdatedStatus = (
   daysSinceLastModified: number | null,
   numOfCommitsBehind: number | null,
 ): UpdatedStatusEnum => {
-  if (daysSinceLastModified && numOfCommitsBehind) {
-    const days = daysSinceLastModified;
-    const commits = numOfCommitsBehind;
-
-    if (commits > 50) {
-      return UpdatedStatusEnum.VERY_OUTDATED;
-    } else if (commits >= 26 && commits <= 50) {
-      if (days <= 30) {
-        return UpdatedStatusEnum.LITTLE_OUTDATED;
-      } else if (days >= 31 && days <= 90) {
-        return UpdatedStatusEnum.OUTDATED;
-      } else {
-        return UpdatedStatusEnum.VERY_OUTDATED;
-      }
-    } else if (commits >= 11 && commits <= 25) {
-      if (days <= 30) {
-        return UpdatedStatusEnum.UPDATED;
-      } else if (days >= 31 && days <= 90) {
-        return UpdatedStatusEnum.LITTLE_OUTDATED;
-      } else if (days >= 91 && days <= 180) {
-        return UpdatedStatusEnum.OUTDATED;
-      } else {
-        return UpdatedStatusEnum.VERY_OUTDATED;
-      }
-    } else if (commits <= 10) {
-      if (days <= 60) {
-        return UpdatedStatusEnum.UPDATED;
-      } else {
-        return UpdatedStatusEnum.LITTLE_OUTDATED;
-      }
-    }
+  if (!daysSinceLastModified || !numOfCommitsBehind) {
+    return UpdatedStatusEnum.VERY_OUTDATED;
   }
+
+  const days = daysSinceLastModified;
+  const commits = numOfCommitsBehind;
+
+  if (commits > 50) {
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  if (commits >= 26 && commits <= 50) {
+    if (days <= 30) return UpdatedStatusEnum.LITTLE_OUTDATED;
+    if (days >= 31 && days <= 90) return UpdatedStatusEnum.OUTDATED;
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  if (commits >= 11 && commits <= 25) {
+    if (days <= 30) return UpdatedStatusEnum.UPDATED;
+    if (days >= 31 && days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
+    if (days >= 91 && days <= 180) return UpdatedStatusEnum.OUTDATED;
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  if (commits <= 10) {
+    return days <= 60
+      ? UpdatedStatusEnum.UPDATED
+      : UpdatedStatusEnum.LITTLE_OUTDATED;
+  }
+
   return UpdatedStatusEnum.UPDATED;
 };
 
