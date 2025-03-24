@@ -8,22 +8,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Enable Corepack
         run: corepack enable
+
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '20.x' # From mise.toml
           cache: 'npm'
+
       - name: Install dependencies
-        working-directory: plugins/ros
         run: yarn install --immutable
+
       - name: Run Prettier
-        working-directory: plugins/ros
-        run: yarn prettier:check
+        run: yarn run prettier:check
+
       - name: Run lint
-        working-directory: plugins/ros
-        run: yarn lint
+        run: yarn run lint:all
+
       - name: Run tsc
-        working-directory: plugins/ros
-        run: yarn tsc
+        run: yarn run tsc

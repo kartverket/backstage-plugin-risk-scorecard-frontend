@@ -19,6 +19,8 @@
     "test:all": "backstage-cli repo test --coverage",
     "test:e2e": "playwright test",
     "fix": "backstage-cli repo fix",
+    "prettier:check": "prettier --check .",
+    "prettier:format": "prettier --write .",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "new": "backstage-cli new --scope internal",
