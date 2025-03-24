@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   DifferenceFetchState,
   RiScStatus,
@@ -169,7 +169,10 @@ export const RiScStatusComponent = ({
     ? selectedRiSc.numOfGeneralCommitsBehind.toString()
     : null;
 
-  const updatedState = useMemo(() => {
+  const calculateUpdatedState = (
+    daysSinceLastModified: string | null,
+    numOfCommitsBehind: string | null,
+  ): string => {
     if (daysSinceLastModified && numOfCommitsBehind) {
       const days = parseInt(daysSinceLastModified);
       const commits = parseInt(numOfCommitsBehind);
@@ -203,7 +206,24 @@ export const RiScStatusComponent = ({
       }
     }
     return 'updated';
-  }, [daysSinceLastModified, numOfCommitsBehind]);
+  };
+
+  const updatedState = calculateUpdatedState(
+    daysSinceLastModified,
+    numOfCommitsBehind,
+  );
+
+  const icons = {
+    updated: UpdatedIcon,
+    little_outdated: LittleOutdatedIcon,
+    outdated: OutdatedIcon,
+    very_outdated: VeryOutdatedIcon,
+  };
+
+  const IconComponent =
+    updatedState && updatedState in icons
+      ? icons[updatedState as keyof typeof icons]
+      : null;
 
   const statusMap = {
     [STATUS_CREATED]: {
@@ -223,15 +243,6 @@ export const RiScStatusComponent = ({
       text: t('rosStatus.statusBadge.published'),
     },
   };
-
-  const icons = {
-    updated: UpdatedIcon,
-    little_outdated: LittleOutdatedIcon,
-    outdated: OutdatedIcon,
-    very_outdated: VeryOutdatedIcon,
-  };
-
-  const IconComponent = updatedState ? icons[updatedState] : null;
 
   return (
     <InfoCard>
