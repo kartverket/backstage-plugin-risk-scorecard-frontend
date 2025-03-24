@@ -25,7 +25,7 @@ import UpdatedIcon from './icons/updated.svg';
 import LittleOutdatedIcon from './icons/little_outdated.svg';
 import OutdatedIcon from './icons/outdated.svg';
 import VeryOutdatedIcon from './icons/very_outdated.svg';
-import { calculateDaysSinceLastModified } from '../../../utils/utilityfunctions';
+import { calculateDaysSince } from '../../../utils/utilityfunctions';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -162,7 +162,7 @@ export const RiScStatusComponent = ({
   const dateString = selectedRiSc.sopsConfig.lastModified;
 
   const daysSinceLastModified = dateString
-    ? calculateDaysSinceLastModified(dateString)
+    ? calculateDaysSince(dateString)
     : null;
 
   const numOfCommitsBehind = selectedRiSc.numOfGeneralCommitsBehind

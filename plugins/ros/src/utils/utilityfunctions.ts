@@ -68,7 +68,7 @@ export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
   }, false);
 }
 
-export const calculateDaysSinceLastModified = (dateString: string) => {
+export const calculateDaysSince = (dateString: string) => {
   const givenDate = new Date(dateString);
   const now = new Date();
 
