@@ -27,7 +27,8 @@ import OutdatedIcon from './icons/outdated.svg';
 import VeryOutdatedIcon from './icons/very_outdated.svg';
 import {
   calculateDaysSince,
-  calculateUpdatedState,
+  calculateUpdatedStatus,
+  UpdatedStatusEnum,
 } from '../../../utils/utilityfunctions';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
@@ -157,22 +158,17 @@ export const RiScStatusComponent = ({
     ? calculateDaysSince(selectedRiSc.sopsConfig.lastModified)
     : null;
 
-  const updatedState = calculateUpdatedState(
+  const updatedStatus = calculateUpdatedStatus(
     daysSinceLastModified,
     selectedRiSc.numOfGeneralCommitsBehind,
   );
 
   const icons = {
-    updated: UpdatedIcon,
-    little_outdated: LittleOutdatedIcon,
-    outdated: OutdatedIcon,
-    very_outdated: VeryOutdatedIcon,
+    [UpdatedStatusEnum.UPDATED]: UpdatedIcon,
+    [UpdatedStatusEnum.LITTLE_OUTDATED]: LittleOutdatedIcon,
+    [UpdatedStatusEnum.OUTDATED]: OutdatedIcon,
+    [UpdatedStatusEnum.VERY_OUTDATED]: VeryOutdatedIcon,
   };
-
-  const IconComponent =
-    updatedState && updatedState in icons
-      ? icons[updatedState as keyof typeof icons]
-      : null;
 
   const statusMap = {
     [RiScStatusEnum.CREATED]: {
@@ -310,15 +306,10 @@ export const RiScStatusComponent = ({
           {t('rosStatus.statusBadge.error')}
         </Typography>
       )}
-      {daysSinceLastModified && daysSinceLastModified && (
+      {daysSinceLastModified && (
         <Box mt={2} display="flex" gap={1}>
-          {updatedState && IconComponent && (
-            <img
-              src={IconComponent}
-              alt={`${updatedState.replace('_', ' ')} Icon`}
-              height={24}
-              width={24}
-            />
+          {updatedStatus && (
+            <img src={icons[updatedStatus]} height={24} width={24} />
           )}
           <Typography paragraph variant="subtitle1">
             {t('rosStatus.lastModified')}

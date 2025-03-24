@@ -78,43 +78,50 @@ export const calculateDaysSince = (dateString: string) => {
   return diffDays;
 };
 
-export const calculateUpdatedState = (
+export enum UpdatedStatusEnum {
+  UPDATED,
+  LITTLE_OUTDATED,
+  OUTDATED,
+  VERY_OUTDATED,
+}
+
+export const calculateUpdatedStatus = (
   daysSinceLastModified: number | null,
   numOfCommitsBehind: number | null,
-): string => {
+): UpdatedStatusEnum => {
   if (daysSinceLastModified && numOfCommitsBehind) {
     const days = daysSinceLastModified;
     const commits = numOfCommitsBehind;
 
     if (commits > 50) {
-      return 'very_outdated';
+      return UpdatedStatusEnum.VERY_OUTDATED;
     } else if (commits >= 26 && commits <= 50) {
       if (days <= 30) {
-        return 'little_outdated';
+        return UpdatedStatusEnum.LITTLE_OUTDATED;
       } else if (days >= 31 && days <= 90) {
-        return 'outdated';
+        return UpdatedStatusEnum.OUTDATED;
       } else {
-        return 'very_outdated';
+        return UpdatedStatusEnum.VERY_OUTDATED;
       }
     } else if (commits >= 11 && commits <= 25) {
       if (days <= 30) {
-        return 'updated';
+        return UpdatedStatusEnum.UPDATED;
       } else if (days >= 31 && days <= 90) {
-        return 'little_outdated';
+        return UpdatedStatusEnum.LITTLE_OUTDATED;
       } else if (days >= 91 && days <= 180) {
-        return 'outdated';
+        return UpdatedStatusEnum.OUTDATED;
       } else {
-        return 'very_outdated';
+        return UpdatedStatusEnum.VERY_OUTDATED;
       }
     } else if (commits <= 10) {
       if (days <= 60) {
-        return 'updated';
+        return UpdatedStatusEnum.UPDATED;
       } else {
-        return 'little_outdated';
+        return UpdatedStatusEnum.LITTLE_OUTDATED;
       }
     }
   }
-  return 'updated';
+  return UpdatedStatusEnum.UPDATED;
 };
 
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
