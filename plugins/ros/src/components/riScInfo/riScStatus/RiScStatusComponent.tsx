@@ -130,22 +130,24 @@ export const RiScStatusComponent = ({
     setDifferenceFetchState(emptyDifferenceFetchState);
   }, [selectedRiSc]);
 
-  const [status, setStatus] = useState<0 | 1 | 2 | 3>(0);
+  enum RiScStatusEnum {
+    CREATED,
+    DRAFT,
+    WAITING,
+    PUBLISHED,
+  }
 
-  const STATUS_CREATED = 0;
-  const STATUS_DRAFT = 1;
-  const STATUS_WAITING = 2;
-  const STATUS_PUBLISHED = 3;
+  const [status, setStatus] = useState<RiScStatusEnum>(RiScStatusEnum.CREATED);
 
   useEffect(() => {
     if (selectedRiSc.content.scenarios.length === 0) {
-      setStatus(STATUS_CREATED);
+      setStatus(RiScStatusEnum.CREATED);
     } else if (selectedRiSc.status === RiScStatus.Draft) {
-      setStatus(STATUS_DRAFT);
+      setStatus(RiScStatusEnum.DRAFT);
     } else if (selectedRiSc.status === RiScStatus.SentForApproval) {
-      setStatus(STATUS_WAITING);
+      setStatus(RiScStatusEnum.WAITING);
     } else if (selectedRiSc.status === RiScStatus.Published) {
-      setStatus(STATUS_PUBLISHED);
+      setStatus(RiScStatusEnum.PUBLISHED);
     }
   }, [selectedRiSc.status, selectedRiSc.content.scenarios]);
 
@@ -173,19 +175,19 @@ export const RiScStatusComponent = ({
       : null;
 
   const statusMap = {
-    [STATUS_CREATED]: {
+    [RiScStatusEnum.CREATED]: {
       icon: EditNoteIcon,
       text: t('rosStatus.statusBadge.created'),
     },
-    [STATUS_DRAFT]: {
+    [RiScStatusEnum.DRAFT]: {
       icon: EditNoteIcon,
       text: t('rosStatus.statusBadge.draft'),
     },
-    [STATUS_WAITING]: {
+    [RiScStatusEnum.WAITING]: {
       icon: PendingActionsIcon,
       text: t('rosStatus.statusBadge.waiting'),
     },
-    [STATUS_PUBLISHED]: {
+    [RiScStatusEnum.PUBLISHED]: {
       icon: CheckCircleOutlineIcon,
       text: t('rosStatus.statusBadge.published'),
     },
@@ -209,8 +211,7 @@ export const RiScStatusComponent = ({
               icon={statusMap[status].icon}
               text={statusMap[status].text}
             />
-            {/* Created */}
-            {status === STATUS_CREATED && (
+            {status === RiScStatusEnum.CREATED && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -221,14 +222,12 @@ export const RiScStatusComponent = ({
                 {t('rosStatus.editing')}
               </Typography>
             )}
-
-            {status === STATUS_DRAFT && (
+            {status === RiScStatusEnum.DRAFT && (
               <Typography paragraph variant="subtitle1" ml={5} align="right">
                 {t('rosStatus.statusBadge.missing')}
               </Typography>
             )}
-
-            {status === STATUS_WAITING && (
+            {status === RiScStatusEnum.WAITING && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -243,8 +242,7 @@ export const RiScStatusComponent = ({
                 {t('rosStatus.prStatus2')}
               </Typography>
             )}
-
-            {status === STATUS_PUBLISHED && (
+            {status === RiScStatusEnum.PUBLISHED && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -256,8 +254,7 @@ export const RiScStatusComponent = ({
               </Typography>
             )}
           </Box>
-
-          {status === STATUS_DRAFT && (
+          {status === RiScStatusEnum.DRAFT && (
             <>
               <Button
                 color="primary"
