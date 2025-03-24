@@ -151,10 +151,8 @@ export const RiScStatusComponent = ({
 
   const migration = selectedRiSc.migrationStatus?.migrationChanges;
 
-  const lastModifiedDateString = selectedRiSc.sopsConfig.lastModified;
-
-  const daysSinceLastModified = lastModifiedDateString
-    ? calculateDaysSince(lastModifiedDateString)
+  const daysSinceLastModified = selectedRiSc.sopsConfig.lastModified
+    ? calculateDaysSince(selectedRiSc.sopsConfig.lastModified)
     : null;
 
   const numOfCommitsBehind = selectedRiSc.numOfGeneralCommitsBehind
@@ -319,7 +317,7 @@ export const RiScStatusComponent = ({
           {t('rosStatus.statusBadge.error')}
         </Typography>
       )}
-      {lastModifiedDateString && daysSinceLastModified && (
+      {daysSinceLastModified && daysSinceLastModified && (
         <Box mt={2} display="flex" gap={1}>
           {updatedState && IconComponent && (
             <img
