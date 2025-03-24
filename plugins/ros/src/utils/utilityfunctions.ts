@@ -78,6 +78,45 @@ export const calculateDaysSince = (dateString: string) => {
   return diffDays.toString();
 };
 
+export const calculateUpdatedState = (
+  daysSinceLastModified: string | null,
+  numOfCommitsBehind: string | null,
+): string => {
+  if (daysSinceLastModified && numOfCommitsBehind) {
+    const days = parseInt(daysSinceLastModified);
+    const commits = parseInt(numOfCommitsBehind);
+
+    if (commits > 50) {
+      return 'very_outdated';
+    } else if (commits >= 26 && commits <= 50) {
+      if (days <= 30) {
+        return 'little_outdated';
+      } else if (days >= 31 && days <= 90) {
+        return 'outdated';
+      } else {
+        return 'very_outdated';
+      }
+    } else if (commits >= 11 && commits <= 25) {
+      if (days <= 30) {
+        return 'updated';
+      } else if (days >= 31 && days <= 90) {
+        return 'little_outdated';
+      } else if (days >= 91 && days <= 180) {
+        return 'outdated';
+      } else {
+        return 'very_outdated';
+      }
+    } else if (commits <= 10) {
+      if (days <= 60) {
+        return 'updated';
+      } else {
+        return 'little_outdated';
+      }
+    }
+  }
+  return 'updated';
+};
+
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
 export const requiresNewApproval = (
   oldRiSc: RiSc,
