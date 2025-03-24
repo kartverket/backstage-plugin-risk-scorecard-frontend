@@ -155,13 +155,9 @@ export const RiScStatusComponent = ({
     ? calculateDaysSince(selectedRiSc.sopsConfig.lastModified)
     : null;
 
-  const numOfCommitsBehind = selectedRiSc.numOfGeneralCommitsBehind
-    ? selectedRiSc.numOfGeneralCommitsBehind.toString()
-    : null;
-
   const updatedState = calculateUpdatedState(
     daysSinceLastModified,
-    numOfCommitsBehind,
+    selectedRiSc.numOfGeneralCommitsBehind,
   );
 
   const icons = {
@@ -330,8 +326,9 @@ export const RiScStatusComponent = ({
           <Typography paragraph variant="subtitle1">
             {t('rosStatus.lastModified')}
             {t('rosStatus.daysSinceLastModified', {
-              days: daysSinceLastModified,
-              numCommits: numOfCommitsBehind || '0',
+              days: daysSinceLastModified.toString(),
+              numCommits:
+                selectedRiSc.numOfGeneralCommitsBehind.toString() || '0',
             })}
           </Typography>
         </Box>

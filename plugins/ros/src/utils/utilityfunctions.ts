@@ -75,16 +75,16 @@ export const calculateDaysSince = (dateString: string) => {
   const diffTime = now.getTime() - givenDate.getTime();
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-  return diffDays.toString();
+  return diffDays;
 };
 
 export const calculateUpdatedState = (
-  daysSinceLastModified: string | null,
-  numOfCommitsBehind: string | null,
+  daysSinceLastModified: number | null,
+  numOfCommitsBehind: number | null,
 ): string => {
   if (daysSinceLastModified && numOfCommitsBehind) {
-    const days = parseInt(daysSinceLastModified);
-    const commits = parseInt(numOfCommitsBehind);
+    const days = daysSinceLastModified;
+    const commits = numOfCommitsBehind;
 
     if (commits > 50) {
       return 'very_outdated';
