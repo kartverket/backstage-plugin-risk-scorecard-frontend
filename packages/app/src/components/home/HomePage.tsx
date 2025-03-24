@@ -1,15 +1,15 @@
 import React from 'react';
 import {
-    HomePageCompanyLogo,
-    HomePageRecentlyVisited,
-    HomePageToolkit,
-    HomePageTopVisited,
+  HomePageCompanyLogo,
+  HomePageRecentlyVisited,
+  HomePageToolkit,
+  HomePageTopVisited,
 } from '@backstage/plugin-home';
-import {Content, Page} from '@backstage/core-components';
-import {HomePageSearchBar} from '@backstage/plugin-search';
-import {SearchContextProvider} from '@backstage/plugin-search-react';
-import {Grid, makeStyles} from '@material-ui/core';
-import {useTheme} from '@material-ui/core/styles';
+import { Content, Page } from '@backstage/core-components';
+import { HomePageSearchBar } from '@backstage/plugin-search';
+import { SearchContextProvider } from '@backstage/plugin-search-react';
+import { Grid, makeStyles } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
 import LogoFull from '../Root/LogoFull';
 import grafanaLogo from './logos/Grafana.png';
 import argoLogo from './logos/Argo.png';
@@ -51,7 +51,7 @@ const useLogoStyles = makeStyles(theme => ({
 
 export const HomePage = () => {
   const classes = useStyles();
-  
+
   const { svg, path, container } = useLogoStyles();
   const theme = useTheme();
   const mode = theme.palette.type === 'dark' ? 'light' : 'dark';
@@ -105,7 +105,7 @@ export const HomePage = () => {
                     url: 'https://eu1.app.sysdig.com/api/saml/kartverket?redirectRoute=/&product=SDS&companyName=kartverket',
                     label: 'Sysdig Secure',
                     icon: (
-                        <img src={sysdigLogo} alt="Logo of Sysdig" width={40} />
+                      <img src={sysdigLogo} alt="Logo of Sysdig" width={40} />
                     ),
                   },
                   {

@@ -1,12 +1,12 @@
 # nonk8s
-apiVersion: "backstage.io/v1alpha1"
-kind: "Component"
+apiVersion: 'backstage.io/v1alpha1'
+kind: 'Component'
 metadata:
-  name: "backstage-plugin-risk-scorecard-frontend"
+  name: 'backstage-plugin-risk-scorecard-frontend'
   tags:
-  - "internal"
+    - 'internal'
 spec:
-  type: "website"
-  lifecycle: "production"
-  owner: "skvis"
-  system: "ros-as-code"
+  type: 'website'
+  lifecycle: 'production'
+  owner: 'skvis'
+  system: 'ros-as-code'

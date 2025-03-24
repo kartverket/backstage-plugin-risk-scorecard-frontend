@@ -2,9 +2,9 @@ name: Push to Google Artifact Registry
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ 'main' ]
+    branches: ['main']
 
 env:
   IMAGE_NAME: ${{ github.repository }}
@@ -68,4 +68,3 @@ jobs:
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             docker push "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
           fi
-
