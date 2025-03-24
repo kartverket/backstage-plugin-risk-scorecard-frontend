@@ -78,17 +78,20 @@ export const calculateDaysSince = (dateString: string) => {
   return diffDays;
 };
 
-export enum UpdatedStatusEnum {
-  UPDATED,
-  LITTLE_OUTDATED,
-  OUTDATED,
-  VERY_OUTDATED,
-}
+export const UpdatedStatusEnum = {
+  UPDATED: 'UPDATED',
+  LITTLE_OUTDATED: 'LITTLE_OUTDATED',
+  OUTDATED: 'OUTDATED',
+  VERY_OUTDATED: 'VERY_OUTDATED',
+} as const;
+
+type UpdatedStatusEnumType =
+  (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
 
 export const calculateUpdatedStatus = (
   daysSinceLastModified: number | null,
   numOfCommitsBehind: number | null,
-): UpdatedStatusEnum => {
+): UpdatedStatusEnumType => {
   if (!daysSinceLastModified || !numOfCommitsBehind) {
     return UpdatedStatusEnum.VERY_OUTDATED;
   }

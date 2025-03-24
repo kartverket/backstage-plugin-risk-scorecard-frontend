@@ -131,14 +131,19 @@ export const RiScStatusComponent = ({
     setDifferenceFetchState(emptyDifferenceFetchState);
   }, [selectedRiSc]);
 
-  enum RiScStatusEnum {
-    CREATED,
-    DRAFT,
-    WAITING,
-    PUBLISHED,
-  }
+  const RiScStatusEnum = {
+    CREATED: 'CREATED',
+    DRAFT: 'DRAFT',
+    WAITING: 'WAITING',
+    PUBLISHED: 'PUBLISHED',
+  } as const;
 
-  const [status, setStatus] = useState<RiScStatusEnum>(RiScStatusEnum.CREATED);
+  type RiScStatusEnumType =
+    (typeof RiScStatusEnum)[keyof typeof RiScStatusEnum];
+
+  const [status, setStatus] = useState<RiScStatusEnumType>(
+    RiScStatusEnum.CREATED,
+  );
 
   useEffect(() => {
     if (selectedRiSc.content.scenarios.length === 0) {
@@ -163,7 +168,7 @@ export const RiScStatusComponent = ({
     selectedRiSc.numOfGeneralCommitsBehind,
   );
 
-  const icons = {
+  const icons: Record<keyof typeof UpdatedStatusEnum, string> = {
     [UpdatedStatusEnum.UPDATED]: UpdatedIcon,
     [UpdatedStatusEnum.LITTLE_OUTDATED]: LittleOutdatedIcon,
     [UpdatedStatusEnum.OUTDATED]: OutdatedIcon,
@@ -195,7 +200,16 @@ export const RiScStatusComponent = ({
       {!migration && (
         <>
           <Box mt={1}>
-            <Progress step={status} />
+            <Progress
+              step={
+                {
+                  [RiScStatusEnum.CREATED]: 0,
+                  [RiScStatusEnum.DRAFT]: 1,
+                  [RiScStatusEnum.WAITING]: 2,
+                  [RiScStatusEnum.PUBLISHED]: 3,
+                }[status] as 0 | 1 | 2 | 3
+              }
+            />
           </Box>
           <Box
             display="flex"
