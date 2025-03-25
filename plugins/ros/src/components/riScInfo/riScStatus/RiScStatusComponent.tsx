@@ -132,10 +132,10 @@ export const RiScStatusComponent = ({
   }, [selectedRiSc]);
 
   const RiScStatusEnum = {
-    CREATED: 'CREATED',
-    DRAFT: 'DRAFT',
-    WAITING: 'WAITING',
-    PUBLISHED: 'PUBLISHED',
+    CREATED: 0,
+    DRAFT: 1,
+    WAITING: 2,
+    PUBLISHED: 3,
   } as const;
 
   type RiScStatusEnumType =
@@ -200,16 +200,7 @@ export const RiScStatusComponent = ({
       {!migration && (
         <>
           <Box mt={1}>
-            <Progress
-              step={
-                {
-                  [RiScStatusEnum.CREATED]: 0,
-                  [RiScStatusEnum.DRAFT]: 1,
-                  [RiScStatusEnum.WAITING]: 2,
-                  [RiScStatusEnum.PUBLISHED]: 3,
-                }[status] as 0 | 1 | 2 | 3
-              }
-            />
+            <Progress step={status} />
           </Box>
           <Box
             display="flex"
@@ -328,9 +319,10 @@ export const RiScStatusComponent = ({
           <Typography paragraph variant="subtitle1">
             {t('rosStatus.lastModified')}
             {t('rosStatus.daysSinceLastModified', {
-              days: daysSinceLastModified.toString(),
-              numCommits:
-                selectedRiSc.numOfGeneralCommitsBehind.toString() || '0',
+              days: (daysSinceLastModified ?? 0).toString(),
+              numCommits: (
+                selectedRiSc.numOfGeneralCommitsBehind ?? 0
+              ).toString(),
             })}
           </Typography>
         </Box>
