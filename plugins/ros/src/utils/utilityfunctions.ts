@@ -92,11 +92,7 @@ export const calculateUpdatedStatus = (
   daysSinceLastModified: number | null,
   numOfCommitsBehind: number | null,
 ): UpdatedStatusEnumType => {
-  if (
-    daysSinceLastModified === null ||
-    numOfCommitsBehind === null ||
-    numOfCommitsBehind === undefined
-  ) {
+  if (daysSinceLastModified === null || numOfCommitsBehind === null) {
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 

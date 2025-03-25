@@ -155,9 +155,13 @@ export const RiScStatusComponent = ({
     ? calculateDaysSince(selectedRiSc.sopsConfig.lastModified)
     : null;
 
+  const numOfCommitsBehind = selectedRiSc.numOfGeneralCommitsBehind
+    ? selectedRiSc.numOfGeneralCommitsBehind
+    : null;
+
   const updatedStatus = calculateUpdatedStatus(
     daysSinceLastModified,
-    selectedRiSc.numOfGeneralCommitsBehind,
+    numOfCommitsBehind,
   );
 
   const icons: Record<UpdatedStatusEnumType, string> = {
@@ -303,21 +307,29 @@ export const RiScStatusComponent = ({
           {t('rosStatus.statusBadge.error')}
         </Typography>
       )}
-      {daysSinceLastModified && (
+      {daysSinceLastModified ? (
         <Box mt={2} display="flex" gap={1}>
           {updatedStatus && (
             <img src={icons[updatedStatus]} height={24} width={24} />
           )}
-          <Typography paragraph variant="subtitle1">
-            {t('rosStatus.lastModified')}
-            {t('rosStatus.daysSinceLastModified', {
-              days: (daysSinceLastModified ?? 0).toString(),
-              numCommits: (
-                selectedRiSc.numOfGeneralCommitsBehind ?? 0
-              ).toString(),
-            })}
-          </Typography>
+          {numOfCommitsBehind !== null && numOfCommitsBehind !== undefined ? (
+            <Typography paragraph variant="subtitle1">
+              {t('rosStatus.lastModified')}
+              {t('rosStatus.daysSinceLastModified', {
+                days: daysSinceLastModified.toString(),
+                numCommits: numOfCommitsBehind.toString(),
+              })}
+            </Typography>
+          ) : (
+            <Typography paragraph variant="subtitle1">
+              {t('rosStatus.errorMessage')}
+            </Typography>
+          )}
         </Box>
+      ) : (
+        <Typography paragraph variant="subtitle1">
+          {t('rosStatus.errorMessage')}
+        </Typography>
       )}
     </InfoCard>
   );
