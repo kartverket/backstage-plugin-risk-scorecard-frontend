@@ -85,14 +85,18 @@ export const UpdatedStatusEnum = {
   VERY_OUTDATED: 'VERY_OUTDATED',
 } as const;
 
-type UpdatedStatusEnumType =
+export type UpdatedStatusEnumType =
   (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
 
 export const calculateUpdatedStatus = (
   daysSinceLastModified: number | null,
   numOfCommitsBehind: number | null,
 ): UpdatedStatusEnumType => {
-  if (!daysSinceLastModified || !numOfCommitsBehind) {
+  if (
+    daysSinceLastModified === null ||
+    numOfCommitsBehind === null ||
+    numOfCommitsBehind === undefined
+  ) {
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
@@ -122,7 +126,7 @@ export const calculateUpdatedStatus = (
       : UpdatedStatusEnum.LITTLE_OUTDATED;
   }
 
-  return UpdatedStatusEnum.UPDATED;
+  return UpdatedStatusEnum.VERY_OUTDATED;
 };
 
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status

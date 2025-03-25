@@ -29,7 +29,9 @@ import {
   calculateDaysSince,
   calculateUpdatedStatus,
   UpdatedStatusEnum,
+  UpdatedStatusEnumType,
 } from '../../../utils/utilityfunctions';
+import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -131,16 +133,6 @@ export const RiScStatusComponent = ({
     setDifferenceFetchState(emptyDifferenceFetchState);
   }, [selectedRiSc]);
 
-  const RiScStatusEnum = {
-    CREATED: 0,
-    DRAFT: 1,
-    WAITING: 2,
-    PUBLISHED: 3,
-  } as const;
-
-  type RiScStatusEnumType =
-    (typeof RiScStatusEnum)[keyof typeof RiScStatusEnum];
-
   const [status, setStatus] = useState<RiScStatusEnumType>(
     RiScStatusEnum.CREATED,
   );
@@ -168,14 +160,14 @@ export const RiScStatusComponent = ({
     selectedRiSc.numOfGeneralCommitsBehind,
   );
 
-  const icons: Record<keyof typeof UpdatedStatusEnum, string> = {
+  const icons: Record<UpdatedStatusEnumType, string> = {
     [UpdatedStatusEnum.UPDATED]: UpdatedIcon,
     [UpdatedStatusEnum.LITTLE_OUTDATED]: LittleOutdatedIcon,
     [UpdatedStatusEnum.OUTDATED]: OutdatedIcon,
     [UpdatedStatusEnum.VERY_OUTDATED]: VeryOutdatedIcon,
   };
 
-  const statusMap = {
+  const statusMap: StatusIconMapType = {
     [RiScStatusEnum.CREATED]: {
       icon: EditNoteIcon,
       text: t('rosStatus.statusBadge.created'),
