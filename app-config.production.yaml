@@ -59,7 +59,19 @@ catalog:
         queryMode: 'advanced'
         user:
           filter: accountEnabled eq true and userType eq 'member'
-          select: ['accountEnabled', 'displayName', 'givenName', 'id', 'mail', 'mailNickname', 'userPrincipalName', 'surname', 'companyName', 'userType']
+          select:
+            [
+              'accountEnabled',
+              'displayName',
+              'givenName',
+              'id',
+              'mail',
+              'mailNickname',
+              'userPrincipalName',
+              'surname',
+              'companyName',
+              'userType',
+            ]
         group:
           filter: >
             startswith(displayName, 'AAD - TF')
