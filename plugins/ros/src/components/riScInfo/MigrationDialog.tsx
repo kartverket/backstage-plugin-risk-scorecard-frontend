@@ -14,6 +14,7 @@ import Box from '@mui/material/Box';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { MigrationVersions } from '../../utils/types';
 import { dialogActions } from '../common/mixins';
+import { URLS } from '../../urls';
 
 interface RiScMigrationDialogProps {
   openDialog: boolean;
@@ -49,7 +50,7 @@ export const RiScMigrationDialog = ({
             <Link
               underline="always"
               target="_blank"
-              href="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md"
+              href={URLS.external.github_com__kartverket_changelog}
             >
               {t('migrationDialog.changelog')}
             </Link>{' '}

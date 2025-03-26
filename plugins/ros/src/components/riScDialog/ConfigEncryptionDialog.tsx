@@ -28,6 +28,7 @@ import { RiScDialogStates } from './RiScDialog';
 import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
 import FormHelperText from '@mui/material/FormHelperText';
+import { URLS } from '../../urls';
 
 interface ConfigEncryptionDialogProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
@@ -194,7 +195,9 @@ const ConfigEncryptionDialog = ({
               <Typography>
                 {t('dictionary.click')}{' '}
                 <Link
-                  href="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1472528509/Skrive+koden+r+RoS+lokalt"
+                  href={
+                    URLS.external.kartverket_atlassian_net__write_ros_locally
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   color="primary"

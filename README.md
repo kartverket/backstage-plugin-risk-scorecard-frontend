@@ -8,6 +8,7 @@ Contains frontend on port `3000` and Backstage backend on port `7007`.
 
 This project currently uses node v20. It is up to each developer how to install and setup their tools.
 `mise` is one of many tools to achieve this. See https://mise.jdx.dev/.
+
 > Be sure to activate mise, see https://mise.jdx.dev/getting-started.html#activate-mise
 
 After installing and activating mise, you can run this following command (it reads from `mise.toml`)
@@ -17,6 +18,7 @@ mise install
 ```
 
 The correct `node` should now apply locally in this project. Check with:
+
 ```sh
 node -v
 >>> v20.18.3
@@ -24,6 +26,7 @@ node -v
 
 Continue by enabling `yarn` as package manager. `corepack` is used for this, it comes with `node`.
 It will read the correct version from `package.json`.
+
 ```sh
 corepack enable
 corepack install

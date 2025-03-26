@@ -1,6 +1,7 @@
-import React from 'react';
 import { renderWithEffects } from '@backstage/test-utils';
+import React from 'react';
 import App from './App';
+import { URLS } from './urls';
 
 describe('App', () => {
   it('should render', async () => {
@@ -10,9 +11,9 @@ describe('App', () => {
         {
           data: {
             app: { title: 'Test' },
-            backend: { baseUrl: 'http://localhost:7007' },
+            backend: { baseUrl: URLS.backend.index },
             techdocs: {
-              storageUrl: 'http://localhost:7007/api/techdocs/static/docs',
+              storageUrl: URLS.backend.docs,
             },
           },
           context: 'test',
