@@ -155,9 +155,11 @@ export const RiScStatusComponent = ({
     ? calculateDaysSince(selectedRiSc.sopsConfig.lastModified)
     : null;
 
-  const numOfCommitsBehind = selectedRiSc.numOfGeneralCommitsBehind
-    ? selectedRiSc.numOfGeneralCommitsBehind
-    : null;
+  const numOfCommitsBehind =
+    typeof selectedRiSc.numOfGeneralCommitsBehind === 'number' &&
+    selectedRiSc.numOfGeneralCommitsBehind >= 0
+      ? selectedRiSc.numOfGeneralCommitsBehind
+      : null;
 
   const updatedStatus = calculateUpdatedStatus(
     daysSinceLastModified,
@@ -307,12 +309,12 @@ export const RiScStatusComponent = ({
           {t('rosStatus.statusBadge.error')}
         </Typography>
       )}
-      {daysSinceLastModified ? (
+      {daysSinceLastModified !== null ? (
         <Box mt={2} display="flex" gap={1}>
           {updatedStatus && (
             <img src={icons[updatedStatus]} height={24} width={24} />
           )}
-          {numOfCommitsBehind !== null && numOfCommitsBehind !== undefined ? (
+          {numOfCommitsBehind !== null ? (
             <Typography paragraph variant="subtitle1">
               {t('rosStatus.lastModified')}
               {t('rosStatus.daysSinceLastModified', {
