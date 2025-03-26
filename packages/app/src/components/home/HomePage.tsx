@@ -89,28 +89,28 @@ export const HomePage = () => {
               <HomePageToolkit
                 tools={[
                   {
-                    url: URLS.other.monitorering_kartverket_cloud,
+                    url: URLS.external.monitorering_kartverket_cloud,
                     label: 'Grafana',
                     icon: (
                       <img src={grafanaLogo} alt="Logo of Grafana" width={35} />
                     ),
                   },
                   {
-                    url: URLS.other.argo_kartverket_dev,
+                    url: URLS.external.argo_kartverket_dev,
                     label: 'Argo CD',
                     icon: (
                       <img src={argoLogo} alt="Logo of Argo CD" width={45} />
                     ),
                   },
                   {
-                    url: URLS.other.sysdig_secure,
+                    url: URLS.external.eu1_app_sysdig_com__saml_kartverket,
                     label: 'Sysdig Secure',
                     icon: (
                       <img src={sysdigLogo} alt="Logo of Sysdig" width={40} />
                     ),
                   },
                   {
-                    url: URLS.other.databricks,
+                    url: URLS.external.accounts_gcp_databricks_com,
                     label: 'Databricks',
                     icon: (
                       <img
@@ -121,7 +121,7 @@ export const HomePage = () => {
                     ),
                   },
                   {
-                    url: URLS.other.google_cloud,
+                    url: URLS.external.console_cloud_google_com,
                     label: 'Google Cloud',
                     icon: (
                       <img
@@ -132,26 +132,26 @@ export const HomePage = () => {
                     ),
                   },
                   {
-                    url: URLS.other.github_kartverket,
+                    url: URLS.external.github_com__kartverket,
                     label: 'GitHub',
                     icon: (
                       <img src={githubLogo} alt="Logo of GitHub" width={35} />
                     ),
                   },
                   {
-                    url: URLS.other.jit_kartverket,
+                    url: URLS.external.jit_skip_kartverket_no,
                     label: 'JIT',
                     icon: (
                       <img src={googleLogo} alt="Logo of Google" width={35} />
                     ),
                   },
                   {
-                    url: URLS.other.dask_docs,
+                    url: URLS.external.kartverket_atlassian_net__dask_docs,
                     label: 'DASK Docs',
                     icon: <img src={daskLogo} alt="Logo of DASK" width={35} />,
                   },
                   {
-                    url: URLS.other.skip_docs,
+                    url: URLS.external.skip_kartverket_no__skip_docs,
                     label: 'SKIP Docs',
                     icon: <img src={skipLogo} alt="Logo of SKIP" width={35} />,
                   },

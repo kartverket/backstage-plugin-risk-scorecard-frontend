@@ -1,7 +1,7 @@
 import { BACKEND_URLS } from './backend';
-import { OTHER_URLS } from './other';
+import { EXTERNAL_URLS } from './external';
 
 export const URLS = {
-  other: OTHER_URLS,
+  external: EXTERNAL_URLS,
   backend: BACKEND_URLS,
 };

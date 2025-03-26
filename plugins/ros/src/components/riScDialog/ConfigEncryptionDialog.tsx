@@ -195,7 +195,9 @@ const ConfigEncryptionDialog = ({
               <Typography>
                 {t('dictionary.click')}{' '}
                 <Link
-                  href={URLS.other.kartverket_atlassian_net__write_ros_locally}
+                  href={
+                    URLS.external.kartverket_atlassian_net__write_ros_locally
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   color="primary"

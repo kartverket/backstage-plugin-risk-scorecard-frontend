@@ -123,7 +123,7 @@ const cicdContent = (
           <Button
             variant="contained"
             color="primary"
-            href={URLS.other.backstage__annotations}
+            href={URLS.external.backstage_io__annotations}
           >
             Read more
           </Button>

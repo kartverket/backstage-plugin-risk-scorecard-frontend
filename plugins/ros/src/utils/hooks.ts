@@ -99,9 +99,9 @@ export const useAuthenticatedFetch = () => {
     Promise.all([
       identityApi.getCredentials(),
       googleApi.getAccessToken([
-        URLS.other.cloudkms,
-        URLS.other.cloud_platform,
-        URLS.other.cloudplatformprojects_readonly,
+        URLS.external.www_googleapis_com__cloudkms,
+        URLS.external.www_googleapis_com__cloud_platform,
+        URLS.external.www_googleapis_com__cloudplatformprojects_readonly,
       ]),
       gitHubApi.getAccessToken(['repo']),
     ])
@@ -148,9 +148,9 @@ export const useAuthenticatedFetch = () => {
     Promise.all([
       identityApi.getCredentials(),
       googleApi.getAccessToken([
-        URLS.other.cloudkms,
-        URLS.other.cloud_platform,
-        URLS.other.cloudplatformprojects_readonly,
+        URLS.external.www_googleapis_com__cloudkms,
+        URLS.external.www_googleapis_com__cloud_platform,
+        URLS.external.www_googleapis_com__cloudplatformprojects_readonly,
       ]),
     ])
       .then(([idToken, googleAccessToken]) => {

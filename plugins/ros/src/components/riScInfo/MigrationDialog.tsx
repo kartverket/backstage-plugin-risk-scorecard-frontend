@@ -50,7 +50,7 @@ export const RiScMigrationDialog = ({
             <Link
               underline="always"
               target="_blank"
-              href={URLS.other.github_com__kartverket_changelog}
+              href={URLS.external.github_com__kartverket_changelog}
             >
               {t('migrationDialog.changelog')}
             </Link>{' '}
