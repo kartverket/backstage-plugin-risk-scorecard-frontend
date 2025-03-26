@@ -11,7 +11,7 @@ describe('App', () => {
         {
           data: {
             app: { title: 'Test' },
-            backend: { baseUrl:  URLS.backend.index},
+            backend: { baseUrl: URLS.backend.index },
             techdocs: {
               storageUrl: URLS.backend.docs,
             },
