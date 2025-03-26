@@ -170,6 +170,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
                 handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
                 register={register}
                 errors={errors}
+                setValue={setValue}
               />
             )}
             {activeStep === 1 && (
@@ -219,6 +220,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
             handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
             register={register}
             errors={errors}
+            setValue={setValue}
           />
         </DialogContent>
         <DialogActions sx={dialogActions}>
