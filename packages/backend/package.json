@@ -13,7 +13,9 @@
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
-    "build-image": "docker build ../.. -f Dockerfile --tag backstage"
+    "build-image": "docker build ../.. -f Dockerfile --tag backstage",
+    "_rm-node-modules": "rm -rf node_modules/ && cp -vnr node_modules_dummy/ node_modules/",
+    "rm-node-modules": "yarn run _rm-node-modules"
   },
   "dependencies": {
     "@backstage-community/plugin-explore-backend": "^0.1.5",
