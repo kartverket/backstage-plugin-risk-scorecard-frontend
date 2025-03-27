@@ -19,6 +19,8 @@
     "test:all": "backstage-cli repo test --coverage",
     "test:e2e": "playwright test",
     "fix": "backstage-cli repo fix",
+    "prettier:check": "prettier --check .",
+    "prettier:format": "prettier --write .",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "new": "backstage-cli new --scope internal",
@@ -37,7 +39,6 @@
     "@backstage/cli": "^0.29.6",
     "@backstage/e2e-test-utils": "^0.1.1",
     "@playwright/test": "^1.32.3",
-    "@spotify/prettier-config": "^12.0.0",
     "concurrently": "^8.0.0",
     "lerna": "^7.3.0",
     "node-gyp": "^10.0.0",
@@ -54,7 +55,7 @@
     "@module-federation/dts-plugin": "0.9.1",
     "@node-saml/node-saml@npm": "5.0.1"
   },
-  "prettier": "@backstage/cli/config/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",

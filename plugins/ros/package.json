@@ -1,6 +1,6 @@
 {
   "name": "@kartverket/backstage-plugin-risk-scorecard",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "MIT",
@@ -63,14 +63,13 @@
     "@backstage/core-app-api": "^1.15.4",
     "@backstage/dev-utils": "^1.1.6",
     "@backstage/test-utils": "^1.7.4",
-    "@spotify/prettier-config": "^12.0.0",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^14.0.0",
     "msw": "^1.0.0",
     "prettier": "^2.3.2"
   },
-  "prettier": "@spotify/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",

@@ -26,12 +26,16 @@ import { RiScWithMetadata } from '../../utils/types';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { RiScDialogStates } from './RiScDialog';
 import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
+import { FieldErrors } from 'react-hook-form/dist/types/errors';
+import FormHelperText from '@mui/material/FormHelperText';
+import { URLS } from '../../urls';
 
 interface ConfigEncryptionDialogProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
   sopsData?: SopsConfigDTO;
   setValue: UseFormSetValue<RiScWithMetadata>;
   register: UseFormRegister<RiScWithMetadata>;
+  errors: FieldErrors<RiScWithMetadata>;
   state: RiScDialogStates;
 }
 
@@ -39,6 +43,8 @@ const ConfigEncryptionDialog = ({
   gcpCryptoKeys,
   sopsData,
   setValue,
+  register,
+  errors,
   state,
 }: ConfigEncryptionDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -47,34 +53,16 @@ const ConfigEncryptionDialog = ({
   const [publicAgeKeyError, setPublicKeyTextFieldError] = useState(false);
   const [newPublicAgeKey, setNewPublicAgeKey] = useState('');
   const [publicAgeKeys, setPublicAgeKeys] = useState<string[]>(() => {
-    if (sopsData?.key_groups) {
-      return sopsData.key_groups
-        .flatMap(group => group.age || [])
-        .map(age => age.recipient)
-        .filter(
-          key =>
-            key !==
-            'age18e0t6ve0vdxqzzjt7rxf0r6vzc37fhs5cad2qz40r02c3spzgvvq8uxz23',
-        )
-        .filter(
-          key =>
-            key !==
-            'age145s860ux96jvx6d7nwvzar588qjmgv5p47sp6nmmt2jnmhqh4scqcuk0mg',
-        )
-        .filter(
-          key =>
-            key !==
-            'age1kjpgclkjev08aa8l2uy277gn0cngrkrkazt240405ezqywkm5axqt3d3tq',
-        );
+    if (sopsData?.age) {
+      return sopsData.age.map(age => age.recipient);
     }
     return [];
   });
 
   const [chosenGcpCryptoKey, setChosenGcpCryptoKey] =
     useState<GcpCryptoKeyObject>(() => {
-      if (state === RiScDialogStates.EditEncryption && sopsData?.key_groups) {
-        const gcpKms = sopsData.key_groups.find(keygroup => keygroup.gcp_kms)
-          ?.gcp_kms?.[0];
+      if (state === RiScDialogStates.EditEncryption && sopsData?.gcp_kms) {
+        const gcpKms = sopsData.gcp_kms[0];
         if (gcpKms?.resource_id) {
           const resourceParts = gcpKms.resource_id.split('/');
           if (resourceParts.length === 8) {
@@ -96,27 +84,22 @@ const ConfigEncryptionDialog = ({
   useEffect(() => {
     setValue('sopsConfig', {
       shamir_threshold: 2,
-      key_groups: [
-        {
-          gcp_kms: [
+      gcp_kms: chosenGcpCryptoKey
+        ? [
             {
               resource_id: chosenGcpCryptoKey.resourceId,
               created_at: chosenGcpCryptoKey.createdAt,
             },
-          ],
-        },
-        ...(publicAgeKeys.length > 0
-          ? [
-              {
-                age: publicAgeKeys.map(key => ({
-                  recipient: key,
-                })),
-              },
-            ]
-          : []),
-      ],
+          ]
+        : [],
+      age: publicAgeKeys.map(key => ({ recipient: key })),
     });
   }, [chosenGcpCryptoKey, publicAgeKeys, setValue]);
+
+  // Require one key group to contain a GCP key
+  register('sopsConfig.gcp_kms', {
+    validate: gcpKeys => gcpKeys.length > 0,
+  });
 
   const handleChangeGcpCryptoKey = (newKey: GcpCryptoKeyObject) => {
     setChosenGcpCryptoKey(newKey);
@@ -148,14 +131,33 @@ const ConfigEncryptionDialog = ({
           ? t('sopsConfigDialog.description.new')
           : t('sopsConfigDialog.description.edit')}
       </DialogContentText>
-      {t('sopsConfigDialog.selectKeysTitle')}
-      {t('sopsConfigDialog.gcpCryptoKeyDescription')}
+      <Typography variant="subtitle2">
+        {t('sopsConfigDialog.selectKeysTitle')}
+      </Typography>
 
-      <GcpCryptoKeyMenu
-        chosenGcpCryptoKey={chosenGcpCryptoKey}
-        onChange={handleChangeGcpCryptoKey}
-        gcpCryptoKeys={gcpCryptoKeys}
-      />
+      {chosenGcpCryptoKey !== undefined ? (
+        <>
+          {t('sopsConfigDialog.gcpCryptoKeyDescription')}
+          <GcpCryptoKeyMenu
+            chosenGcpCryptoKey={chosenGcpCryptoKey}
+            onChange={handleChangeGcpCryptoKey}
+            gcpCryptoKeys={
+              gcpCryptoKeys.includes(chosenGcpCryptoKey)
+                ? gcpCryptoKeys
+                : [...gcpCryptoKeys, chosenGcpCryptoKey]
+            }
+          />
+        </>
+      ) : (
+        <Typography variant="body1">
+          {t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}
+        </Typography>
+      )}
+      {errors.sopsConfig !== undefined && (
+        <FormHelperText error={true}>
+          {t('sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage')}
+        </FormHelperText>
+      )}
       <Box>
         <Accordion elevation={1} defaultExpanded={publicAgeKeys.length > 0}>
           <AccordionSummary
@@ -193,7 +195,9 @@ const ConfigEncryptionDialog = ({
               <Typography>
                 {t('dictionary.click')}{' '}
                 <Link
-                  href="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1472528509/Skrive+koden+r+RoS+lokalt"
+                  href={
+                    URLS.external.kartverket_atlassian_net__write_ros_locally
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   color="primary"
