@@ -316,7 +316,12 @@ export const RiScStatusComponent = ({
       {daysSinceLastModified !== null ? (
         <Box mt={2} display="flex" gap={1}>
           {updatedStatus && (
-            <img src={icons[updatedStatus]} height={24} width={24} />
+            <img
+              src={icons[updatedStatus]}
+              alt="Updated Status Icon"
+              height={24}
+              width={24}
+            />
           )}
           {numOfCommitsBehind !== null ? (
             <Typography paragraph variant="subtitle1">
@@ -335,7 +340,12 @@ export const RiScStatusComponent = ({
       ) : (
         <Box mt={2} display="flex" gap={1}>
           {updatedStatus && (
-            <img src={VeryOutdatedIcon} height={24} width={24} />
+            <img
+              src={VeryOutdatedIcon}
+              alt="Updated Status Icon"
+              height={24}
+              width={24}
+            />
           )}
           <Typography paragraph variant="subtitle1">
             {t('rosStatus.errorMessage')}
