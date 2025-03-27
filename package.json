@@ -51,7 +51,8 @@
     "swagger-ui-react": "5.10.5",
     "jsonpath-plus": "^10.2.0",
     "koa": "2.15.4",
-    "@module-federation/dts-plugin": "0.9.1"
+    "@module-federation/dts-plugin": "0.9.1",
+    "@node-saml/node-saml@npm": "5.0.1"
   },
   "prettier": "@backstage/cli/config/prettier-config",
   "lint-staged": {
