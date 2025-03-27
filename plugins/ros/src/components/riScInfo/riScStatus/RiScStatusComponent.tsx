@@ -151,14 +151,18 @@ export const RiScStatusComponent = ({
 
   const migration = selectedRiSc.migrationStatus?.migrationChanges;
 
-  const daysSinceLastModified = selectedRiSc.sopsConfig.lastModified
-    ? calculateDaysSince(selectedRiSc.sopsConfig.lastModified)
+  const lastPublishedDateTime = selectedRiSc.lastPublished?.dateTime;
+  const lastPublishedNumberOfCommits =
+    selectedRiSc.lastPublished?.numberOfCommits;
+
+  const daysSinceLastModified = lastPublishedDateTime
+    ? calculateDaysSince(new Date(lastPublishedDateTime))
     : null;
 
   const numOfCommitsBehind =
-    typeof selectedRiSc.numOfGeneralCommitsBehind === 'number' &&
-    selectedRiSc.numOfGeneralCommitsBehind >= 0
-      ? selectedRiSc.numOfGeneralCommitsBehind
+    typeof lastPublishedNumberOfCommits === 'number' &&
+    lastPublishedNumberOfCommits >= 0
+      ? lastPublishedNumberOfCommits
       : null;
 
   const updatedStatus = calculateUpdatedStatus(
@@ -329,9 +333,14 @@ export const RiScStatusComponent = ({
           )}
         </Box>
       ) : (
-        <Typography paragraph variant="subtitle1">
-          {t('rosStatus.errorMessage')}
-        </Typography>
+        <Box mt={2} display="flex" gap={1}>
+          {updatedStatus && (
+            <img src={VeryOutdatedIcon} height={24} width={24} />
+          )}
+          <Typography paragraph variant="subtitle1">
+            {t('rosStatus.errorMessage')}
+          </Typography>
+        </Box>
       )}
     </InfoCard>
   );

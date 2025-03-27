@@ -1,6 +1,7 @@
 import {
   Action,
   ContentStatus,
+  LastPublished,
   MigrationStatus,
   Modify,
   ProcessingStatus,
@@ -47,7 +48,7 @@ export type RiScContentResultDTO = {
   riScContent: string;
   sopsConfig: SopsConfigDTO;
   migrationStatus: MigrationStatus;
-  numOfGeneralCommitsBehind: number;
+  lastPublished: LastPublished;
 } & ContentRiScResultDTO;
 
 export type RiScDTO = {
