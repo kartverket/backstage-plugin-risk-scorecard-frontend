@@ -7,6 +7,8 @@
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel --jobs unlimited -v -i run start",
+    "ci//": "echo Installs dependencies without modifying the lockfile",
+    "ci": "yarn install --immutable",
     "start": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
     "build:backend": "yarn workspace backend build",
@@ -24,10 +26,18 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "new": "backstage-cli new --scope internal",
-    "delete_node_modules": "rm -rf node_modules; rm -rf packages/app/node_modules; rm -rf plugins/security-metrics-backend/node_modules; rm -rf plugins/security-metrics/node_modules; rm -rf packages/backend/node_modules",
-    "delete_yarn_lock": "rm yarn.lock",
-    "fresh_clean": "npm run delete_node_modules; npm run delete_yarn_lock",
-    "fresh_start": "npm run fresh_clean; yarn install"
+    "delete_yarn_lock": "rm -f yarn.lock",
+    "rm-node-modules//": "echo Removes `node_modules/` from all workspaces",
+    "_rm-node-modules": "rm -rf node_modules/ && cp -vnr node_modules_dummy/ node_modules/",
+    "rm-node-modules": "yarn run _rm-node-modules && yarn workspaces foreach --all --parallel run rm-node-modules",
+    "rmnm": "yarn run rm-node-modules",
+    "clean-cache": "yarn cache clean --all",
+    "ci:clean//": "echo Removes installed modules before installing packages from lockfile",
+    "ci:clean": "yarn run clean-cache && yarn run rmnm && yarn run ci",
+    "update:clean//": "echo Removes everything before updating packages",
+    "update:clean": "yarn run fresh_clean && yarn run ci",
+    "fresh_clean//": "echo Removes everything related to dependencies",
+    "fresh_clean": "yarn run delete_yarn_lock && yarn run rmnm"
   },
   "workspaces": {
     "packages": [
