@@ -5,7 +5,7 @@ import { msGroupTransformerCatalogModule } from './plugins/extensions/catalog';
 const backend = createBackend();
 
 // App
-backend.add(import('@backstage/plugin-app-backend/alpha'));
+backend.add(import('@backstage/plugin-app-backend'));
 
 // Auth
 backend.add(import('@backstage/plugin-auth-backend'));
@@ -34,7 +34,7 @@ backend.add(import('@backstage/plugin-devtools-backend'));
 backend.add(import('@backstage-community/plugin-linguist-backend'));
 
 // Proxy
-backend.add(import('@backstage/plugin-proxy-backend/alpha'));
+backend.add(import('@backstage/plugin-proxy-backend'));
 
 // Scaffolder
 backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
@@ -42,7 +42,7 @@ backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
 
 // Search
 backend.add(import('@backstage/plugin-search-backend/alpha'));
-backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
+backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 backend.add(import('@backstage/plugin-search-backend-module-pg/alpha'));
 
