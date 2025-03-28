@@ -11,7 +11,9 @@
     "build": "backstage-cli package build",
     "clean": "backstage-cli package clean",
     "test": "backstage-cli package test",
-    "lint": "backstage-cli package lint"
+    "lint": "backstage-cli package lint",
+    "_rm-node-modules": "rm -rf node_modules/ && cp -vnr node_modules_dummy/ node_modules/",
+    "rm-node-modules": "yarn run _rm-node-modules"
   },
   "dependencies": {
     "@backstage-community/plugin-explore": "^0.5.5",
