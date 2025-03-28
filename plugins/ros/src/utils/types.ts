@@ -8,6 +8,11 @@ import { GcpCryptoKeyObject, SopsConfigDTO } from './DTOs';
  */
 export type Modify<O, K extends keyof any, R> = Omit<O, K> & { [P in K]: R };
 
+export type LastPublished = {
+  dateTime: Date;
+  numberOfCommits: number;
+};
+
 export type RiScWithMetadata = {
   id: string;
   status: RiScStatus;
@@ -17,6 +22,7 @@ export type RiScWithMetadata = {
   pullRequestUrl?: string;
   schemaVersion?: string;
   migrationStatus?: MigrationStatus;
+  lastPublished?: LastPublished;
 };
 
 export type MigrationStatus = {

@@ -86,6 +86,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
         waiting: 'Awaiting approval',
         published: 'Published',
       },
+      lastModified: 'Last published: ',
+      daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
+      errorMessage: 'Failed to retrieve status',
       difference: {
         description: 'Summary of changes that will be approved by risk owner.',
         publishDate: 'Last published changes {{date}}',
@@ -524,6 +527,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.draft': 'Utkast',
           'rosStatus.statusBadge.waiting': 'Avventer godkjenning',
           'rosStatus.statusBadge.published': 'Publisert',
+          'rosStatus.lastModified': 'Sist publisert: ',
+          'rosStatus.daysSinceLastModified':
+            '{{days}} dager og {{numCommits}} commits siden',
+          'rosStatus.errorMessage': 'Kunne ikke hente status',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
           'rosStatus.approveButton': 'Godkjenn ROS',
           'rosStatus.prStatus': ' Merge pull requesten i ',
