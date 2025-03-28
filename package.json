@@ -46,14 +46,14 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6",
+    "@backstage/cli": "^0.31.0",
     "@backstage/e2e-test-utils": "^0.1.1",
-    "@playwright/test": "^1.32.3",
-    "concurrently": "^8.0.0",
-    "lerna": "^7.3.0",
-    "node-gyp": "^10.0.0",
-    "prettier": "^2.3.2",
-    "typescript": "~5.2.0"
+    "@playwright/test": "^1.51.1",
+    "concurrently": "^9.1.2",
+    "lerna": "^8.2.1",
+    "node-gyp": "^11.1.0",
+    "prettier": "^3.5.3",
+    "typescript": "~5.8.2"
   },
   "resolutions": {
     "@types/react": "^17",
