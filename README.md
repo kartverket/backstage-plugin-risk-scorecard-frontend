@@ -11,7 +11,7 @@ This project currently uses node v20. It is up to each developer how to install 
 
 > Be sure to activate mise, see https://mise.jdx.dev/getting-started.html#activate-mise
 
-After installing and activating mise, you can run this following command (it reads from `mise.toml`)
+After installing and activating mise, you can run this following command (it reads from `mise.toml`).
 
 ```sh
 mise install
@@ -53,4 +53,44 @@ You can then run Backstage with Backstage RiSc plugin locally by running:
 ```sh
 yarn install
 yarn dev
+```
+
+<br>
+
+## Dependency maintenance
+
+Staying up to date on dependencies is an import task. To mitigate an ever increasing technical debt, it should be performed on a regular basis. This section will explain how to upgrade dependencies in this project.
+
+### Upgrade Backstage
+
+Backstage has its own CLI to perform certain tasks in repos. It's available as `backstage-cli` (installed via `yarn`).
+One of these tasks is upgrading dependencies. It is unusual to not do this directly in `package.json`, but we trust this tool to know their inter-dependent packages better than us. A Backstage project is a combination of a long list of different plugins, upgrading them manually might cause unexpected conflicts.
+
+You will notice that in `package.json`, where a semver version would be expected, all packages from `@backstage` are annotated with `backstage:^` instead. It signals that these packages are handled by their CLI. This syntax has been set automatically through a combination of `backstage-cli` and a yarn plugin. Backstage has provided an official yarn plugin for this purpose (see config files).
+
+> NOTE: Backstage will not maintain community driven packages, e.g. `@backstage-community`.
+
+For the aformentioned reasons, you should use this command to bump Backstage packages:
+
+```sh
+yarn run backstage:upgrade
+```
+
+### Other dependencies
+
+Approach:
+
+1. Determine how outdated the packages are (major/minor/patch?)
+2. If possible, upgrade only a single package per branch. This is preferable if the version gap is on the larger side.
+3. If the package is very far behind, consider bumping only 1 major at a time and merge. Then perform these steps again in a new branch.
+4. If neccessary, read CHANGELOG and BREAKING CHANGES for any given package.
+5. Fix any issues that may arise.
+
+Normal (non-Backstage) dependencies are maintained through `yarn` and `package.json`.
+`yarn` provides an interactive tool to both highlight outdated versions and upgrading them.
+
+> IMPORTANT: Do not touch packages from `@backstage` with `backstage:^`
+
+```sh
+yarn upgrade-interactive
 ```
