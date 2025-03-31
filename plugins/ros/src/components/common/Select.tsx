@@ -3,8 +3,8 @@ import {
   Control,
   FieldValues,
   Path,
-  PathValue,
   useController,
+  type UseControllerReturn,
 } from 'react-hook-form';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -74,8 +74,8 @@ export const Select = <T extends FieldValues>({
     );
 
   const handleChecked = (
-    fieldValue: PathValue<T, (string | undefined) & Path<T>>,
-    optionValue: Props<T>['options'][0]['value'],
+    fieldValue: UseControllerReturn['field']['value'],
+    optionValue: Props<T>['options'][number]['value'],
   ) => {
     if (Array.isArray(fieldValue)) return fieldValue.includes(optionValue);
     return fieldValue === optionValue;
