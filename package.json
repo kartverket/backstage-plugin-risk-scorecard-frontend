@@ -9,6 +9,8 @@
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel --jobs unlimited -v -i run start",
     "ci//": "echo Installs dependencies without modifying the lockfile",
     "ci": "yarn install --immutable",
+    "iup//": "echo 'Interactive upgrade of dependencies (do not touch packages with `backstage:^?)'",
+    "iup": "yarn upgrade-interactive",
     "start": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
     "build:backend": "yarn workspace backend build",
