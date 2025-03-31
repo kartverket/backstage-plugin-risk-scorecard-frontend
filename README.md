@@ -59,7 +59,7 @@ yarn dev
 
 ## Dependency maintenance
 
-Staying up to date on dependencies is an import task. To mitigate an ever increasing technical debt, it should be performed on a regular basis. This section will explain how to upgrade dependencies in this project.
+Staying up to date on dependencies is an important task. To mitigate an ever increasing technical debt, it should be performed on a regular basis. This section will explain how to upgrade dependencies in this project.
 
 ### Upgrade Backstage
 
@@ -83,7 +83,7 @@ Approach:
 1. Determine how outdated the packages are (major/minor/patch?)
 2. If possible, upgrade only a single package per branch. This is preferable if the version gap is on the larger side.
 3. If the package is very far behind, consider bumping only 1 major at a time and merge. Then perform these steps again in a new branch.
-4. If neccessary, read CHANGELOG and BREAKING CHANGES for any given package.
+4. If necessary, read CHANGELOG and BREAKING CHANGES for any given package.
 5. Fix any issues that may arise.
 
 Normal (non-Backstage) dependencies are maintained through `yarn` and `package.json`.
