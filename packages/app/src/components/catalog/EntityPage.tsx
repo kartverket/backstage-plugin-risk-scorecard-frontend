@@ -66,7 +66,7 @@ import {
   isAlertSelectorAvailable,
   isDashboardSelectorAvailable,
   isOverviewDashboardAvailable,
-} from '@k-phoen/backstage-plugin-grafana';
+} from '@backstage-community/plugin-grafana';
 import { RiScPage } from '@kartverket/backstage-plugin-risk-scorecard';
 import { URLS } from '../../urls';
 

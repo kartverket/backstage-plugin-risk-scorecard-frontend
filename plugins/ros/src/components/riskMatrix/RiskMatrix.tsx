@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import Box from '@mui/material/Box';
