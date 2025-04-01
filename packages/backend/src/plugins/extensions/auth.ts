@@ -9,7 +9,6 @@ import {
 } from '@backstage/plugin-auth-node';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { AuthenticationError } from '@backstage/errors';
-import { getDefaultOwnershipEntityRefs } from '@backstage/plugin-auth-backend';
 import { microsoftAuthenticator } from '@backstage/plugin-auth-backend-module-microsoft-provider';
 import { jwtDecode } from 'jwt-decode';
 
@@ -59,7 +58,8 @@ export const authModuleMicrosoftProvider = createBackendModule({
                   'No user found in catalog',
                 );
               }
-              const ownershipRefs = getDefaultOwnershipEntityRefs(entity);
+              const { ownershipEntityRefs: ownershipRefs } =
+                await ctx.resolveOwnershipEntityRefs(entity);
               return ctx.issueToken({
                 claims: {
                   sub: stringifyEntityRef(entity),

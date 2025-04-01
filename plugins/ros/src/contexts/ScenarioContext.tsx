@@ -103,10 +103,13 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const collapseAllActions = () => {
-    const allCollapsed = Object.keys(expandedActions).reduce((acc, key) => {
-      acc[key] = false;
-      return acc;
-    }, {} as { [key: string]: boolean });
+    const allCollapsed = Object.keys(expandedActions).reduce(
+      (acc, key) => {
+        acc[key] = false;
+        return acc;
+      },
+      {} as { [key: string]: boolean },
+    );
     setExpandedActions(allCollapsed);
   };
 
