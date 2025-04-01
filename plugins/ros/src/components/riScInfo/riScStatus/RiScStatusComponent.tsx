@@ -159,11 +159,7 @@ export const RiScStatusComponent = ({
     ? calculateDaysSince(new Date(lastPublishedDateTime))
     : null;
 
-  const numOfCommitsBehind =
-    typeof lastPublishedNumberOfCommits === 'number' &&
-    lastPublishedNumberOfCommits >= 0
-      ? lastPublishedNumberOfCommits
-      : null;
+  const numOfCommitsBehind = lastPublishedNumberOfCommits ?? null
 
   const updatedStatus = calculateUpdatedStatus(
     daysSinceLastModified,
