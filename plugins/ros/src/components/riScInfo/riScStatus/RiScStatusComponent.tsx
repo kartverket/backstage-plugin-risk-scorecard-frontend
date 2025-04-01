@@ -309,45 +309,27 @@ export const RiScStatusComponent = ({
           {t('rosStatus.statusBadge.error')}
         </Typography>
       )}
-      {daysSinceLastModified !== null ? (
-        <Box mt={2} display="flex" gap={1}>
-          {updatedStatus && (
-            <img
-              src={icons[updatedStatus]}
-              alt="Updated Status Icon"
-              height={24}
-              width={24}
-            />
-          )}
-          {numOfCommitsBehind !== null ? (
-            <Typography paragraph variant="subtitle1">
-              {t('rosStatus.lastModified')}
-              {t('rosStatus.daysSinceLastModified', {
-                days: daysSinceLastModified.toString(),
-                numCommits: numOfCommitsBehind.toString(),
-              })}
-            </Typography>
-          ) : (
-            <Typography paragraph variant="subtitle1">
-              {t('rosStatus.errorMessage')}
-            </Typography>
-          )}
-        </Box>
-      ) : (
-        <Box mt={2} display="flex" gap={1}>
-          {updatedStatus && (
-            <img
-              src={VeryOutdatedIcon}
-              alt="Updated Status Icon"
-              height={24}
-              width={24}
-            />
-          )}
+      <Box mt={2} display="flex" gap={1}>
+        <img
+          src={icons[updatedStatus]}
+          alt="Updated Status Icon"
+          height={24}
+          width={24}
+        />
+        {numOfCommitsBehind !== null && daysSinceLastModified !== null ? (
+          <Typography paragraph variant="subtitle1">
+            {t('rosStatus.lastModified')}
+            {t('rosStatus.daysSinceLastModified', {
+              days: daysSinceLastModified.toString(),
+              numCommits: numOfCommitsBehind.toString(),
+            })}
+          </Typography>
+        ) : (
           <Typography paragraph variant="subtitle1">
             {t('rosStatus.errorMessage')}
           </Typography>
-        </Box>
-      )}
+        )}
+      </Box
     </InfoCard>
   );
 };
