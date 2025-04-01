@@ -159,7 +159,7 @@ export const RiScStatusComponent = ({
     ? calculateDaysSince(new Date(lastPublishedDateTime))
     : null;
 
-  const numOfCommitsBehind = lastPublishedNumberOfCommits ?? null
+  const numOfCommitsBehind = lastPublishedNumberOfCommits ?? null;
 
   const updatedStatus = calculateUpdatedStatus(
     daysSinceLastModified,
@@ -329,7 +329,7 @@ export const RiScStatusComponent = ({
             {t('rosStatus.errorMessage')}
           </Typography>
         )}
-      </Box
+      </Box>
     </InfoCard>
   );
 };
