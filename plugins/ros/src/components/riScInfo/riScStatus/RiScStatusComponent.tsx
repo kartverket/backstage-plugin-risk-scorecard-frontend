@@ -21,6 +21,17 @@ import { RiScPublishDialog } from '../PublishDialog';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import UpdatedIcon from './icons/updated.svg';
+import LittleOutdatedIcon from './icons/little_outdated.svg';
+import OutdatedIcon from './icons/outdated.svg';
+import VeryOutdatedIcon from './icons/very_outdated.svg';
+import {
+  calculateDaysSince,
+  calculateUpdatedStatus,
+  UpdatedStatusEnum,
+  UpdatedStatusEnumType,
+} from '../../../utils/utilityfunctions';
+import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -39,6 +50,20 @@ interface RiScStatusProps {
   selectedRiSc: RiScWithMetadata;
   publishRiScFn: () => void;
 }
+
+interface StatusBadgeProps {
+  icon: React.ElementType;
+  text: string;
+}
+
+const StatusBadge = ({ icon: Icon, text }: StatusBadgeProps) => (
+  <Box display="flex" gap={1} alignItems="center">
+    <Icon />
+    <Typography paragraph variant="subtitle1" mb={0}>
+      {text}
+    </Typography>
+  </Box>
+);
 
 export const RiScStatusComponent = ({
   selectedRiSc,
@@ -108,73 +133,84 @@ export const RiScStatusComponent = ({
     setDifferenceFetchState(emptyDifferenceFetchState);
   }, [selectedRiSc]);
 
-  const [status, setStatus] = useState<0 | 1 | 2 | 3>(0);
+  const [status, setStatus] = useState<RiScStatusEnumType>(
+    RiScStatusEnum.CREATED,
+  );
 
   useEffect(() => {
     if (selectedRiSc.content.scenarios.length === 0) {
-      setStatus(0);
+      setStatus(RiScStatusEnum.CREATED);
     } else if (selectedRiSc.status === RiScStatus.Draft) {
-      setStatus(1);
+      setStatus(RiScStatusEnum.DRAFT);
     } else if (selectedRiSc.status === RiScStatus.SentForApproval) {
-      setStatus(2);
+      setStatus(RiScStatusEnum.WAITING);
     } else if (selectedRiSc.status === RiScStatus.Published) {
-      setStatus(3);
+      setStatus(RiScStatusEnum.PUBLISHED);
     }
   }, [selectedRiSc.status, selectedRiSc.content.scenarios]);
 
   const migration = selectedRiSc.migrationStatus?.migrationChanges;
 
+  const lastPublishedDateTime = selectedRiSc.lastPublished?.dateTime;
+  const lastPublishedNumberOfCommits =
+    selectedRiSc.lastPublished?.numberOfCommits;
+
+  const daysSinceLastModified = lastPublishedDateTime
+    ? calculateDaysSince(new Date(lastPublishedDateTime))
+    : null;
+
+  const numOfCommitsBehind = lastPublishedNumberOfCommits ?? null;
+
+  const updatedStatus = calculateUpdatedStatus(
+    daysSinceLastModified,
+    numOfCommitsBehind,
+  );
+
+  const icons: Record<UpdatedStatusEnumType, string> = {
+    [UpdatedStatusEnum.UPDATED]: UpdatedIcon,
+    [UpdatedStatusEnum.LITTLE_OUTDATED]: LittleOutdatedIcon,
+    [UpdatedStatusEnum.OUTDATED]: OutdatedIcon,
+    [UpdatedStatusEnum.VERY_OUTDATED]: VeryOutdatedIcon,
+  };
+
+  const statusMap: StatusIconMapType = {
+    [RiScStatusEnum.CREATED]: {
+      icon: EditNoteIcon,
+      text: t('rosStatus.statusBadge.created'),
+    },
+    [RiScStatusEnum.DRAFT]: {
+      icon: EditNoteIcon,
+      text: t('rosStatus.statusBadge.draft'),
+    },
+    [RiScStatusEnum.WAITING]: {
+      icon: PendingActionsIcon,
+      text: t('rosStatus.statusBadge.waiting'),
+    },
+    [RiScStatusEnum.PUBLISHED]: {
+      icon: CheckCircleOutlineIcon,
+      text: t('rosStatus.statusBadge.published'),
+    },
+  };
+
   return (
     <InfoCard>
       <Typography variant="h5">Status</Typography>
-
       {!migration && (
         <>
           <Box mt={1}>
             <Progress step={status} />
           </Box>
-
           <Box
             display="flex"
             flexDirection="row"
             justifyContent="space-between"
             mt={2}
           >
-            {status === 0 && (
-              <Box display="flex" gap={1}>
-                <EditNoteIcon />
-                <Typography paragraph variant="subtitle1" mb={0}>
-                  {t('rosStatus.statusBadge.created')}
-                </Typography>
-              </Box>
-            )}
-            {status === 1 && (
-              <Box display="flex" gap={1}>
-                <EditNoteIcon />
-                <Typography paragraph variant="subtitle1" mb={0}>
-                  {t('rosStatus.statusBadge.draft')}
-                </Typography>
-              </Box>
-            )}
-            {status === 2 && (
-              <Box display="flex" gap={1}>
-                <PendingActionsIcon />
-                <Typography paragraph variant="subtitle1" mb={0}>
-                  {t('rosStatus.statusBadge.waiting')}
-                </Typography>
-              </Box>
-            )}
-            {status === 3 && (
-              <Box display="flex" gap={1}>
-                <CheckCircleOutlineIcon />
-                <Typography paragraph variant="subtitle1" mb={0}>
-                  {t('rosStatus.statusBadge.published')}
-                </Typography>
-              </Box>
-            )}
-
-            {/* Created */}
-            {status === 0 && (
+            <StatusBadge
+              icon={statusMap[status].icon}
+              text={statusMap[status].text}
+            />
+            {status === RiScStatusEnum.CREATED && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -185,16 +221,12 @@ export const RiScStatusComponent = ({
                 {t('rosStatus.editing')}
               </Typography>
             )}
-
-            {/* Draft */}
-            {status === 1 && (
+            {status === RiScStatusEnum.DRAFT && (
               <Typography paragraph variant="subtitle1" ml={5} align="right">
                 {t('rosStatus.statusBadge.missing')}
               </Typography>
             )}
-
-            {/* Waiting for approval */}
-            {status === 2 && (
+            {status === RiScStatusEnum.WAITING && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -209,9 +241,7 @@ export const RiScStatusComponent = ({
                 {t('rosStatus.prStatus2')}
               </Typography>
             )}
-
-            {/* Published */}
-            {status === 3 && (
+            {status === RiScStatusEnum.PUBLISHED && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -223,9 +253,7 @@ export const RiScStatusComponent = ({
               </Typography>
             )}
           </Box>
-
-          {/* Draft */}
-          {status === 1 && (
+          {status === RiScStatusEnum.DRAFT && (
             <>
               <Button
                 color="primary"
@@ -245,8 +273,6 @@ export const RiScStatusComponent = ({
           )}
         </>
       )}
-
-      {/* Migration */}
       {migration && (
         <Box>
           <Typography paragraph sx={subtitle1}>
@@ -277,13 +303,33 @@ export const RiScStatusComponent = ({
           />
         </Box>
       )}
-
       {/* Error */}
       {!selectedRiSc && (
         <Typography paragraph variant="subtitle1">
           {t('rosStatus.statusBadge.error')}
         </Typography>
       )}
+      <Box mt={2} display="flex" gap={1}>
+        <img
+          src={icons[updatedStatus]}
+          alt="Updated Status Icon"
+          height={24}
+          width={24}
+        />
+        {numOfCommitsBehind !== null && daysSinceLastModified !== null ? (
+          <Typography paragraph variant="subtitle1">
+            {t('rosStatus.lastModified')}
+            {t('rosStatus.daysSinceLastModified', {
+              days: daysSinceLastModified.toString(),
+              numCommits: numOfCommitsBehind.toString(),
+            })}
+          </Typography>
+        ) : (
+          <Typography paragraph variant="subtitle1">
+            {t('rosStatus.errorMessage')}
+          </Typography>
+        )}
+      </Box>
     </InfoCard>
   );
 };

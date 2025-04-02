@@ -68,6 +68,63 @@ export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
   }, false);
 }
 
+export const calculateDaysSince = (dateString: Date) => {
+  const givenDate = dateString;
+  const now = new Date();
+
+  const diffTime = now.getTime() - givenDate.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  return diffDays;
+};
+
+export const UpdatedStatusEnum = {
+  UPDATED: 'UPDATED',
+  LITTLE_OUTDATED: 'LITTLE_OUTDATED',
+  OUTDATED: 'OUTDATED',
+  VERY_OUTDATED: 'VERY_OUTDATED',
+} as const;
+
+export type UpdatedStatusEnumType =
+  (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
+
+export const calculateUpdatedStatus = (
+  daysSinceLastModified: number | null,
+  numOfCommitsBehind: number | null,
+): UpdatedStatusEnumType => {
+  if (daysSinceLastModified === null || numOfCommitsBehind === null) {
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  const days = daysSinceLastModified;
+  const commits = numOfCommitsBehind;
+
+  if (commits > 50) {
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  if (commits >= 26 && commits <= 50) {
+    if (days <= 30) return UpdatedStatusEnum.LITTLE_OUTDATED;
+    if (days >= 31 && days <= 90) return UpdatedStatusEnum.OUTDATED;
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  if (commits >= 11 && commits <= 25) {
+    if (days <= 30) return UpdatedStatusEnum.UPDATED;
+    if (days >= 31 && days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
+    if (days >= 91 && days <= 180) return UpdatedStatusEnum.OUTDATED;
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  if (commits <= 10) {
+    return days <= 60
+      ? UpdatedStatusEnum.UPDATED
+      : UpdatedStatusEnum.LITTLE_OUTDATED;
+  }
+
+  return UpdatedStatusEnum.VERY_OUTDATED;
+};
+
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
 export const requiresNewApproval = (
   oldRiSc: RiSc,
