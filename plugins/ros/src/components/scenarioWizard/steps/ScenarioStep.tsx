@@ -11,8 +11,9 @@ import Typography from '@mui/material/Typography';
 import { heading2, subtitle2 } from '../../common/typography';
 import { UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import { Input } from '../../common/Input';
 import { Select } from '../../common/Select';
+import { Input } from '../../common/Input';
+import { MarkdownInput } from '../../common/MarkdownInput';
 
 export const ScenarioStep = ({
   formMethods,
@@ -77,7 +78,7 @@ export const ScenarioStep = ({
         />
       </Stack>
 
-      <Input
+      <MarkdownInput
         {...register('description')}
         label={t('dictionary.description')}
         minRows={4}

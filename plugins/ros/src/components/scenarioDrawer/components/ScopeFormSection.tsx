@@ -3,7 +3,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Input } from '../../common/Input';
+import { MarkdownInput } from '../../common/MarkdownInput';
 import {
   threatActorsOptions,
   vulnerabilitiesOptions,
@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import { heading3 } from '../../common/typography';
 import Paper from '@mui/material/Paper';
 import { section } from '../scenarioDrawerComponents';
+import { Input } from '../../common/Input';
 
 const ScopeFormSection = ({
   formMethods,
@@ -65,7 +66,7 @@ const ScopeFormSection = ({
         labelTranslationKey="vulnerabilities"
         options={translatedVulnerabilities}
       />
-      <Input
+      <MarkdownInput
         {...register('description')}
         label={t('dictionary.description')}
         minRows={4}

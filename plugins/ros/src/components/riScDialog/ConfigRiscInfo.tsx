@@ -1,4 +1,4 @@
-import { Input } from '../common/Input';
+import { MarkdownInput } from '../common/MarkdownInput';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -15,6 +15,7 @@ import {
   UseFormRegister,
   UseFormSetValue,
 } from 'react-hook-form/dist/types/form';
+import { Input } from '../common/Input';
 
 interface ConfigRiscInfoProps {
   dialogState: RiScDialogStates;
@@ -46,14 +47,15 @@ const ConfigRiscInfo = ({
         {...register('content.title', { required: true })}
         error={errors?.content?.title !== undefined}
         label={t('dictionary.title')}
+        minRows={4}
       />
-      <Input
+      <MarkdownInput
         required
         {...register('content.scope', { required: true })}
         label={t('dictionary.scope')}
         sublabel={t('rosDialog.scopeDescription')}
         error={errors?.content?.scope !== undefined}
-        minRows={4}
+        minRows={8}
         onMarkdownChange={handleMarkdownChange}
       />
 

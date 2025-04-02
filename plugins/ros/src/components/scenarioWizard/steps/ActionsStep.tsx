@@ -10,7 +10,6 @@ import { heading2, heading3, label, subtitle2 } from '../../common/typography';
 import Box from '@mui/material/Box';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import { Input } from '../../common/Input';
 import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
@@ -19,6 +18,8 @@ import {
 } from '../../../utils/constants';
 import IconButton from '@mui/material/IconButton';
 import { Select } from '../../common/Select';
+import { Input } from '../../common/Input';
+import { MarkdownInput } from '../../common/MarkdownInput';
 
 export const ActionsStep = ({
   formMethods,
@@ -83,7 +84,7 @@ export const ActionsStep = ({
                 label={t('dictionary.title')}
               />
 
-              <Input
+              <MarkdownInput
                 required
                 {...register(`actions.${index}.description`, {
                   required: true,
@@ -101,7 +102,7 @@ export const ActionsStep = ({
                   gap: '24px',
                 }}
               >
-                <Input
+                <MarkdownInput
                   {...register(`actions.${index}.url`, {
                     pattern: {
                       value: urlRegExpPattern,

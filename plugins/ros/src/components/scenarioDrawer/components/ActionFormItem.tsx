@@ -13,8 +13,9 @@ import {
   actionStatusOptions,
   urlRegExpPattern,
 } from '../../../utils/constants';
-import { Input } from '../../common/Input';
 import { Select } from '../../common/Select';
+import { Input } from '../../common/Input';
+import { MarkdownInput } from '../../common/MarkdownInput';
 
 type ActionFormItemProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -75,7 +76,7 @@ export function ActionFormItem({
           {...register(`actions.${index}.title`)}
           label={t('dictionary.title')}
         />
-        <Input
+        <MarkdownInput
           required
           {...register(`actions.${index}.description`, { required: true })}
           error={formState.errors?.actions?.[index]?.description !== undefined}
@@ -88,7 +89,7 @@ export function ActionFormItem({
             gap: '24px',
           }}
         >
-          <Input
+          <MarkdownInput
             {...register(`actions.${index}.url`, {
               pattern: {
                 value: urlRegExpPattern,
