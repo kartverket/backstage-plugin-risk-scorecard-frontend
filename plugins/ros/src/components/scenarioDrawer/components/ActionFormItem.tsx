@@ -81,6 +81,7 @@ export function ActionFormItem({
           {...register(`actions.${index}.description`, { required: true })}
           error={formState.errors?.actions?.[index]?.description !== undefined}
           label={t('dictionary.description')}
+          minRows={4}
         />
         <Box
           sx={{
