@@ -47,9 +47,9 @@ export const RiScInfo = ({ riScWithMetadata, edit }: RiScInfoProps) => {
             <EditButton onClick={edit} />
           </Box>
           <Typography className={label}>{t('dictionary.scope')}</Typography>
-          <ReactMarkdown className={body2}>
-            {riScWithMetadata.content.scope}
-          </ReactMarkdown>
+          <Box className={body2}>
+            <ReactMarkdown>{riScWithMetadata.content.scope}</ReactMarkdown>
+          </Box>
         </InfoCard>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
