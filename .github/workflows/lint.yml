@@ -12,10 +12,10 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Use Node.js 20.x
+      - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x' # From mise.toml
+          node-version: '22.x' # From mise.toml
           cache: 'npm'
 
       - name: Install dependencies
