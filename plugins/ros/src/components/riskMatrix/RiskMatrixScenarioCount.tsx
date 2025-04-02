@@ -8,7 +8,7 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
 import { consequenceOptions, probabilityOptions } from '../../utils/constants';
 import { RiSc } from '../../utils/types';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';

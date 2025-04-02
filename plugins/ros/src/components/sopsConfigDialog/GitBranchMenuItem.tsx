@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import { GitBranchIcon } from '../common/GitBranchIcon';
 import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
-import React from 'react';
+
 import { GitPullRequestIcon } from '../common/GitPullRequestIcon';
 
 interface GitBranchMenuItemProps {

@@ -21,7 +21,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { AddCircle, ExpandMore } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { GcpCryptoKeyObject, SopsConfigDTO } from '../../utils/DTOs';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { RiScDialogStates } from './RiScDialog';

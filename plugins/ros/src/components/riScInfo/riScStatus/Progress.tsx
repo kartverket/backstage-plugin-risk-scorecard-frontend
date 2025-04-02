@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { CircularProgressProps } from '@mui/material/CircularProgress';
 import { LinearProgress } from '@material-ui/core';
 

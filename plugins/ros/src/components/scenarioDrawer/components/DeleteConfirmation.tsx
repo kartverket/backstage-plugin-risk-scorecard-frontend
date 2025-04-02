@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button';
-import React from 'react';
+
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Dialog from '@mui/material/Dialog';

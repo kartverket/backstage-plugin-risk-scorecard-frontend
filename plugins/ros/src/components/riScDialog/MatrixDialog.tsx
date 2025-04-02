@@ -1,4 +1,3 @@
-import React from 'react';
 import { ConsequenceTableInfoWithHeaders } from '../scenarioWizard/components/ConsequenceTable';
 import CloseIcon from '@mui/icons-material/Close';
 import { ProbabilityTableInfoWithHeaders } from '../scenarioWizard/components/ProbabilityTable';

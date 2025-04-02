@@ -1,4 +1,3 @@
-import React from 'react';
 import { Avatar, ListItemButton, ListSubheader, Menu } from '@mui/material';
 import { GcpCryptoKeyObject } from '../../utils/DTOs';
 import { GcpCryptoKeyMenuItem } from './GcpCryptoKeyMenuItem';
@@ -10,6 +9,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import AddIcon from '@mui/icons-material/Add';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { useState, MouseEvent } from 'react';
 
 interface GcpCryptoKeyMenuProps {
   chosenGcpCryptoKey: GcpCryptoKeyObject;
@@ -24,9 +24,9 @@ export const GcpCryptoKeyMenu = ({
 }: GcpCryptoKeyMenuProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClickMenuItem = (gcpCryptoKey: GcpCryptoKeyObject) => {

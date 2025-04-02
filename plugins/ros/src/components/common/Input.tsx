@@ -2,7 +2,7 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { formHelperText, formLabel } from './typography';
 
 type Props = TextFieldProps & {
