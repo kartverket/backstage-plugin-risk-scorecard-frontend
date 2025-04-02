@@ -1,12 +1,11 @@
-import {createBackend} from '@backstage/backend-defaults';
-import {authModuleMicrosoftProvider} from "./plugins/extensions/auth";
-import {msGroupTransformerCatalogModule} from "./plugins/extensions/catalog";
-
+import { createBackend } from '@backstage/backend-defaults';
+import { authModuleMicrosoftProvider } from './plugins/extensions/auth';
+import { msGroupTransformerCatalogModule } from './plugins/extensions/catalog';
 
 const backend = createBackend();
 
 // App
-backend.add(import('@backstage/plugin-app-backend/alpha'));
+backend.add(import('@backstage/plugin-app-backend'));
 
 // Auth
 backend.add(import('@backstage/plugin-auth-backend'));
@@ -16,11 +15,13 @@ backend.add(import('@backstage/plugin-auth-backend-module-google-provider')); //
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 
 // Catalog
-backend.add(import('@backstage/plugin-catalog-backend/alpha'));
-backend.add(import('@backstage/plugin-catalog-backend-module-github/alpha'));
-backend.add(import('@backstage/plugin-catalog-backend-module-msgraph/alpha'));
+backend.add(import('@backstage/plugin-catalog-backend'));
+backend.add(import('@backstage/plugin-catalog-backend-module-github'));
+backend.add(import('@backstage/plugin-catalog-backend-module-msgraph'));
 backend.add(msGroupTransformerCatalogModule);
-backend.add(import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'));
+backend.add(
+  import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
+);
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
 
 // Explore
@@ -33,19 +34,19 @@ backend.add(import('@backstage/plugin-devtools-backend'));
 backend.add(import('@backstage-community/plugin-linguist-backend'));
 
 // Proxy
-backend.add(import('@backstage/plugin-proxy-backend/alpha'));
+backend.add(import('@backstage/plugin-proxy-backend'));
 
 // Scaffolder
-backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
+backend.add(import('@backstage/plugin-scaffolder-backend'));
 backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
 
 // Search
-backend.add(import('@backstage/plugin-search-backend/alpha'));
-backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
-backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
-backend.add(import('@backstage/plugin-search-backend-module-pg/alpha'));
+backend.add(import('@backstage/plugin-search-backend'));
+backend.add(import('@backstage/plugin-search-backend-module-catalog'));
+backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
+backend.add(import('@backstage/plugin-search-backend-module-pg'));
 
 // TechDocs
-backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
+backend.add(import('@backstage/plugin-techdocs-backend'));
 
 backend.start();

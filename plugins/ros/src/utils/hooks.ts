@@ -32,6 +32,7 @@ import {
   SopsConfigUpdateResponse,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
+import { URLS } from '../urls';
 
 export const useGithubRepositoryInformation = (): GithubRepoInfo => {
   const [, org, repo] =
@@ -52,14 +53,15 @@ export const useAuthenticatedFetch = () => {
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
-  const riScUri = `${backendUrl}/api/proxy/risc-proxy/api/risc/${repoInformation.owner}/${repoInformation.name}`;
-  const sopsUri = `${backendUrl}/api/proxy/risc-proxy/api/sops/${repoInformation.owner}/${repoInformation.name}`;
-  const openPullRequestForSopsConfigUri = (branch: string) =>
-    `${sopsUri}/openPullRequest/${branch}`;
-  const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`;
-  const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`;
-  const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`;
-  const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`;
+  const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
+  const sopsUri = `${backendUrl}${URLS.backend.sopsUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.sopsUri
+  function openPullRequestForSopsConfigUri(branch: string) {
+    return `${sopsUri}/openPullRequest/${branch}`; // URLS.backend.open_pr
+  }
+  const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
+  const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`; // URLS.backend.fetchDifference
+  const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`; // URLS.backend.fetchRiSc
+  const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`; // URLS.backend.publishRiSc
 
   const useResponse = (): [
     SubmitResponseObject | null,
@@ -97,9 +99,9 @@ export const useAuthenticatedFetch = () => {
     Promise.all([
       identityApi.getCredentials(),
       googleApi.getAccessToken([
-        'https://www.googleapis.com/auth/cloudkms',
-        'https://www.googleapis.com/auth/cloud-platform',
-        'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
+        URLS.external.www_googleapis_com__cloudkms,
+        URLS.external.www_googleapis_com__cloud_platform,
+        URLS.external.www_googleapis_com__cloudplatformprojects_readonly,
       ]),
       gitHubApi.getAccessToken(['repo']),
     ])
@@ -146,9 +148,9 @@ export const useAuthenticatedFetch = () => {
     Promise.all([
       identityApi.getCredentials(),
       googleApi.getAccessToken([
-        'https://www.googleapis.com/auth/cloudkms',
-        'https://www.googleapis.com/auth/cloud-platform',
-        'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
+        URLS.external.www_googleapis_com__cloudkms,
+        URLS.external.www_googleapis_com__cloud_platform,
+        URLS.external.www_googleapis_com__cloudplatformprojects_readonly,
       ]),
     ])
       .then(([idToken, googleAccessToken]) => {

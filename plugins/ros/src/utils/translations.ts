@@ -86,6 +86,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
         waiting: 'Awaiting approval',
         published: 'Published',
       },
+      lastModified: 'Last published: ',
+      daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
+      errorMessage: 'Failed to retrieve status',
       difference: {
         description: 'Summary of changes that will be approved by risk owner.',
         publishDate: 'Last published changes {{date}}',
@@ -205,6 +208,9 @@ export const pluginRiScTranslationRef = createTranslationRef({
       chooseGcpCryptoKey: 'Choose GCP key',
       gcpCryptoKeyDescription:
         'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk scorecards.',
+      gcpCryptoKeyNoSelectableKey:
+        'You do not have access to any suitable GCP crypto keys.',
+      gcpCryptoKeyNonSelectedErrorMessage: 'A GCP crypto key must be selected.',
       publicAgeKeysAlreadyPresent:
         'The following age keys are already present:',
       publicAgeKeyQuestion:
@@ -521,6 +527,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.draft': 'Utkast',
           'rosStatus.statusBadge.waiting': 'Avventer godkjenning',
           'rosStatus.statusBadge.published': 'Publisert',
+          'rosStatus.lastModified': 'Sist publisert: ',
+          'rosStatus.daysSinceLastModified':
+            '{{days}} dager og {{numCommits}} commits siden',
+          'rosStatus.errorMessage': 'Kunne ikke hente status',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
           'rosStatus.approveButton': 'Godkjenn ROS',
           'rosStatus.prStatus': ' Merge pull requesten i ',
@@ -629,6 +639,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':
             "Fra listen under kan du velge hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med.",
+          'sopsConfigDialog.gcpCryptoKeyNoSelectableKey':
+            'Du har ikke tilgang til noe egnede GCP-nøkler.',
+          'sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage':
+            'En GCP-nøkkel må være valgt.',
           'sopsConfigDialog.publicAgeKeysAlreadyPresent':
             'Følgende age-nøkler er allerede til stede:',
           'sopsConfigDialog.publicAgeKeyQuestion':

@@ -68,6 +68,63 @@ export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
   }, false);
 }
 
+export const calculateDaysSince = (dateString: Date) => {
+  const givenDate = dateString;
+  const now = new Date();
+
+  const diffTime = now.getTime() - givenDate.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  return diffDays;
+};
+
+export const UpdatedStatusEnum = {
+  UPDATED: 'UPDATED',
+  LITTLE_OUTDATED: 'LITTLE_OUTDATED',
+  OUTDATED: 'OUTDATED',
+  VERY_OUTDATED: 'VERY_OUTDATED',
+} as const;
+
+export type UpdatedStatusEnumType =
+  (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
+
+export const calculateUpdatedStatus = (
+  daysSinceLastModified: number | null,
+  numOfCommitsBehind: number | null,
+): UpdatedStatusEnumType => {
+  if (daysSinceLastModified === null || numOfCommitsBehind === null) {
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  const days = daysSinceLastModified;
+  const commits = numOfCommitsBehind;
+
+  if (commits > 50) {
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  if (commits >= 26 && commits <= 50) {
+    if (days <= 30) return UpdatedStatusEnum.LITTLE_OUTDATED;
+    if (days >= 31 && days <= 90) return UpdatedStatusEnum.OUTDATED;
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  if (commits >= 11 && commits <= 25) {
+    if (days <= 30) return UpdatedStatusEnum.UPDATED;
+    if (days >= 31 && days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
+    if (days >= 91 && days <= 180) return UpdatedStatusEnum.OUTDATED;
+    return UpdatedStatusEnum.VERY_OUTDATED;
+  }
+
+  if (commits <= 10) {
+    return days <= 60
+      ? UpdatedStatusEnum.UPDATED
+      : UpdatedStatusEnum.LITTLE_OUTDATED;
+  }
+
+  return UpdatedStatusEnum.VERY_OUTDATED;
+};
+
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
 export const requiresNewApproval = (
   oldRiSc: RiSc,
@@ -319,3 +376,42 @@ export const deleteAction = (
   remove(index);
   onSubmit();
 };
+
+/**
+ * A recursive method for determining if a and b are deeply equal. Keys in the ignoredKeys argument are ignored in the
+ * comparison, i.e., they are considered non-existing in both a and b.
+ */
+export function isDeeplyEqual<T>(
+  a: T,
+  b: T,
+  ignoredKeys: string[] = [],
+): boolean {
+  // If objects are equal, there is no need compare them any further.
+  if (a === b) return true;
+
+  // Only do comparison on objects, ignoring null (which maps to object).
+  if (a && b && typeof a === 'object' && typeof b === 'object') {
+    // Check if a and b are both arrays or not. If only one is, then a and b are not equal. It is necessary to perform
+    // this check, as otherwise the method below will say that [] and {} are equal (or [0] and {0: 0}).
+    if (Array.isArray(a) !== Array.isArray(b)) return false;
+
+    // Check if a and b have the same number of entries
+    if (
+      Object.keys(a).filter(key => !ignoredKeys.includes(key)).length !==
+      Object.keys(b).filter(key => !ignoredKeys.includes(key)).length
+    )
+      return false;
+
+    // Check if every key of a is a key of b and that the entry associated with the key is deeply the same in a and b.
+    // Since a and b has the same number of entries, it is sufficient to check only the keys of a.
+    return Object.entries(a).every(
+      ([key, value]) =>
+        ignoredKeys.includes(key) ||
+        (Object.hasOwn(b, key as keyof T) &&
+          isDeeplyEqual(value, b[key as keyof T])),
+    );
+  }
+
+  // If a or b is null or a primitive type, then they are not equal as a === b should have returned true already.
+  return false;
+}
