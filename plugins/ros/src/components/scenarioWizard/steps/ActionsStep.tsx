@@ -12,10 +12,7 @@ import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
 import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-  actionStatusOptions,
-  urlRegExpPattern,
-} from '../../../utils/constants';
+import { actionStatusOptions } from '../../../utils/constants';
 import IconButton from '@mui/material/IconButton';
 import { Select } from '../../common/Select';
 import { Input } from '../../common/Input';
@@ -115,9 +112,13 @@ export const ActionsStep = ({
                 >
                   <MarkdownInput
                     {...register(`actions.${index}.url`, {
-                      pattern: {
-                        value: urlRegExpPattern,
-                        message: t('scenarioDrawer.action.urlError'),
+                      validate: value => {
+                        // Regex to validate Markdown link syntax: [text](url)
+                        const markdownLinkPattern = /^\[.*\]\(.*\)$/;
+                        if (!markdownLinkPattern.test(value)) {
+                          return t('scenarioDrawer.action.markdownUrlError');
+                        }
+                        return true;
                       },
                     })}
                     value={currentActionUrl}

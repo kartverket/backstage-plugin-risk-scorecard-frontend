@@ -3,16 +3,12 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { heading3 } from '../../common/typography';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import {
-  actionStatusOptions,
-  urlRegExpPattern,
-} from '../../../utils/constants';
+import { actionStatusOptions } from '../../../utils/constants';
 import { Select } from '../../common/Select';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
@@ -99,9 +95,13 @@ export function ActionFormItem({
         >
           <MarkdownInput
             {...register(`actions.${index}.url`, {
-              pattern: {
-                value: urlRegExpPattern,
-                message: t('scenarioDrawer.action.urlError'),
+              validate: value => {
+                // Regex to validate Markdown link syntax: [text](url)
+                const markdownLinkPattern = /^\[.*\]\(.*\)$/;
+                if (!markdownLinkPattern.test(value)) {
+                  return t('scenarioDrawer.action.markdownUrlError');
+                }
+                return true;
               },
             })}
             value={currentActionUrl}

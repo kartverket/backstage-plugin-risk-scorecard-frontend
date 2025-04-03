@@ -277,7 +277,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       action: {
         requiredError: 'Field is required',
         descriptionError: 'Description cannot be empty',
-        urlError: 'Invalid url',
+        markdownUrlError: 'Invalid Markdown URL',
         emptyState: 'This scenario has no defined actions',
       },
       title: 'Risk scenario',
@@ -508,7 +508,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
-          'scenarioDrawer.action.urlError': 'Ugyldig URL',
+          'scenarioDrawer.action.markdownUrlError': 'Ugyldig Markdown-URL',
           'scenarioDrawer.action.requiredError': 'Feltet er påkrevd',
           'scenarioDrawer.action.emptyState':
             'Scenariet har ingen definerte tiltak',
