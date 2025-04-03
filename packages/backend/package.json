@@ -54,7 +54,6 @@
     "@backstage/plugin-techdocs-backend": "backstage:^",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
-    "dockerode": "^3.3.1",
     "isolated-vm": "^5.0.4",
     "jwt-decode": "^4.0.0",
     "node-gyp": "^9.0.0",
@@ -63,7 +62,6 @@
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@types/dockerode": "^3.3.0",
     "@types/luxon": "^2.0.4"
   },
   "files": [
