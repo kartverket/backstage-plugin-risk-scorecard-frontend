@@ -4,7 +4,6 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { body2, emptyState, label } from '../../common/typography';
 import Collapse from '@mui/material/Collapse';
@@ -230,25 +229,7 @@ export const ActionBox = ({
                   wordBreak: 'break-all',
                 }}
               >
-                <ReactMarkdown
-                  components={{
-                    a: ({ href, children }) => (
-                      <Link
-                        href={href}
-                        target="_blank"
-                        rel="noreferrer"
-                        sx={{
-                          ...body2,
-                          wordBreak: 'break-all',
-                        }}
-                      >
-                        {children}
-                      </Link>
-                    ),
-                  }}
-                >
-                  {`[${action.url}](${action.url.startsWith('http') ? action.url : `//${action.url}`})`}
-                </ReactMarkdown>
+                <ReactMarkdown>{action.url}</ReactMarkdown>
               </Box>
             ) : (
               <Typography sx={emptyState}>
