@@ -22,6 +22,7 @@ import { useIsMounted } from '../../../utils/hooks';
 import CircularProgress from '@mui/material/CircularProgress';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteAction } from '../../../utils/utilityfunctions';
+import ReactMarkdown from 'react-markdown';
 
 interface ActionBoxProps {
   action: Action;
@@ -203,14 +204,14 @@ export const ActionBox = ({
         <Typography sx={{ ...label, marginTop: 1 }}>
           {t('dictionary.description')}
         </Typography>
-        <Typography
+        <Box
           sx={{
             ...body2,
             wordBreak: 'break-all',
           }}
         >
-          {action.description}
-        </Typography>
+          <ReactMarkdown>{action.description}</ReactMarkdown>
+        </Box>
 
         <Box
           sx={{
@@ -223,19 +224,32 @@ export const ActionBox = ({
           <Box>
             <Typography sx={label}>{t('dictionary.url')}</Typography>
             {action.url ? (
-              <Link
+              <Box
                 sx={{
                   ...body2,
                   wordBreak: 'break-all',
                 }}
-                target="_blank"
-                rel="noreferrer"
-                href={
-                  action.url.startsWith('http') ? action.url : `//${action.url}`
-                }
               >
-                {action.url}
-              </Link>
+                <ReactMarkdown
+                  components={{
+                    a: ({ href, children }) => (
+                      <Link
+                        href={href}
+                        target="_blank"
+                        rel="noreferrer"
+                        sx={{
+                          ...body2,
+                          wordBreak: 'break-all',
+                        }}
+                      >
+                        {children}
+                      </Link>
+                    ),
+                  }}
+                >
+                  {`[${action.url}](${action.url.startsWith('http') ? action.url : `//${action.url}`})`}
+                </ReactMarkdown>
+              </Box>
             ) : (
               <Typography sx={emptyState}>
                 {t('dictionary.emptyField', {

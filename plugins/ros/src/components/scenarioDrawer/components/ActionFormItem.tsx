@@ -34,13 +34,16 @@ export function ActionFormItem({
 }: ActionFormItemProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const { control, register, formState } = formMethods;
+  const { control, register, setValue, watch, formState } = formMethods;
 
   const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
     value: actionStatus,
     /* @ts-ignore Because ts can't typecheck strings against our keys */
     renderedValue: t(`actionStatus.${actionStatus}`),
   }));
+
+  const currentActionDescription = watch(`actions.${index}.description`);
+  const currentActionUrl = watch(`actions.${index}.url`);
 
   return (
     <>
@@ -81,6 +84,10 @@ export function ActionFormItem({
           {...register(`actions.${index}.description`, { required: true })}
           error={formState.errors?.actions?.[index]?.description !== undefined}
           label={t('dictionary.description')}
+          value={currentActionDescription}
+          onMarkdownChange={value =>
+            setValue(`actions.${index}.description`, value)
+          }
           minRows={4}
         />
         <Box
@@ -97,6 +104,8 @@ export function ActionFormItem({
                 message: t('scenarioDrawer.action.urlError'),
               },
             })}
+            value={currentActionUrl}
+            onMarkdownChange={value => setValue(`actions.${index}.url`, value)}
             label={t('dictionary.url')}
             helperText={formState.errors.actions?.[index]?.url?.message}
             error={!!formState.errors.actions?.[index]?.url?.message}

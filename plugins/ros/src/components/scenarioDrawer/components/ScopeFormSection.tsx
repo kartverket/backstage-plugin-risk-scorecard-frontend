@@ -24,6 +24,8 @@ const ScopeFormSection = ({
   const {
     control,
     register,
+    setValue,
+    watch,
     formState: { errors },
   } = formMethods;
 
@@ -40,6 +42,8 @@ const ScopeFormSection = ({
       renderedValue: t(`vulnerabilities.${vulnerability}`),
     }),
   );
+
+  const currentDescription = watch('description');
 
   return (
     <Paper sx={section}>
@@ -68,6 +72,8 @@ const ScopeFormSection = ({
       />
       <MarkdownInput
         {...register('description')}
+        value={currentDescription}
+        onMarkdownChange={value => setValue('description', value)}
         label={t('dictionary.description')}
         minRows={4}
       />

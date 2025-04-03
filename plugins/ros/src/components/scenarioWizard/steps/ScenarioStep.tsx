@@ -25,6 +25,8 @@ export const ScenarioStep = ({
   const {
     control,
     register,
+    setValue,
+    watch,
     formState: { errors },
   } = formMethods;
 
@@ -41,6 +43,8 @@ export const ScenarioStep = ({
       renderedValue: t(`vulnerabilities.${vulnerability}`),
     }),
   );
+
+  const currentDescription = watch('description');
 
   return (
     <Stack spacing={3}>
@@ -81,6 +85,8 @@ export const ScenarioStep = ({
       <MarkdownInput
         {...register('description')}
         label={t('dictionary.description')}
+        value={currentDescription}
+        onMarkdownChange={value => setValue('description', value)}
         minRows={4}
       />
     </Stack>
