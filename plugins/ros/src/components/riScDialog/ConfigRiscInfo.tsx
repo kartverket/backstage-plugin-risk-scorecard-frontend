@@ -1,21 +1,21 @@
-import { MarkdownInput } from '../common/MarkdownInput';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import Typography from '@mui/material/Typography';
 import React from 'react';
-import { DialogContentText } from '@mui/material';
-import { RiScDialogStates } from './RiScDialog';
-import Box from '@mui/material/Box';
-import { CreateRiScFrom } from './RiScDialog';
-import { RiScWithMetadata } from '../../utils/types';
-import { FieldErrors } from 'react-hook-form/dist/types/errors';
+import { MarkdownInput } from '../common/MarkdownInput';
+import { Input } from '../common/Input';
 import {
   UseFormRegister,
   UseFormSetValue,
+  UseFormWatch,
 } from 'react-hook-form/dist/types/form';
-import { Input } from '../common/Input';
+import { RiScWithMetadata } from '../../utils/types';
+import { CreateRiScFrom, RiScDialogStates } from './RiScDialog';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import Box from '@mui/material/Box';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import Typography from '@mui/material/Typography';
+import { DialogContentText } from '@mui/material';
+import { FieldErrors } from 'react-hook-form/dist/types/errors';
 
 interface ConfigRiscInfoProps {
   dialogState: RiScDialogStates;
@@ -24,6 +24,7 @@ interface ConfigRiscInfoProps {
   register: UseFormRegister<RiScWithMetadata>;
   errors: FieldErrors<RiScWithMetadata>;
   setValue: UseFormSetValue<RiScWithMetadata>;
+  watch: UseFormWatch<RiScWithMetadata>;
 }
 
 const ConfigRiscInfo = ({
@@ -33,12 +34,11 @@ const ConfigRiscInfo = ({
   register,
   errors,
   setValue,
+  watch,
 }: ConfigRiscInfoProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const handleMarkdownChange = (markdown: string) => {
-    setValue('content.scope', markdown);
-  };
+  const currentScope = watch('content.scope');
 
   return (
     <>
@@ -52,11 +52,12 @@ const ConfigRiscInfo = ({
       <MarkdownInput
         required
         {...register('content.scope', { required: true })}
+        value={currentScope}
         label={t('dictionary.scope')}
         sublabel={t('rosDialog.scopeDescription')}
         error={errors?.content?.scope !== undefined}
         minRows={8}
-        onMarkdownChange={handleMarkdownChange}
+        onMarkdownChange={value => setValue('content.scope', value)}
       />
 
       {dialogState === RiScDialogStates.Create && (

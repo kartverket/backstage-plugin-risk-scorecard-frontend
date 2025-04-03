@@ -1,32 +1,44 @@
+import React, { forwardRef, useState, useEffect } from 'react';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
-import React, { forwardRef, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { formHelperText, formLabel } from './typography';
+import { TextFieldProps } from '@material-ui/core';
 
-type Props = {
-  label?: string;
+type Props = TextFieldProps & {
   sublabel?: string;
-  error?: boolean;
-  helperText?: string;
-  required?: boolean;
-  minRows?: number;
+  value?: string;
   onMarkdownChange?: (markdown: string) => void;
+  minRows?: number;
 };
 
 export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
   (
-    { label, sublabel, error, helperText, required, minRows, onMarkdownChange },
+    {
+      label,
+      sublabel,
+      error,
+      helperText,
+      required,
+      minRows,
+      value,
+      onMarkdownChange,
+    },
     ref,
   ) => {
-    const [markdownContent, setMarkdownContent] = useState<string>('');
+    const [markdownContent, setMarkdownContent] = useState<string | undefined>(
+      value,
+    );
+
+    useEffect(() => {
+      setMarkdownContent(value);
+    }, [value]);
 
     const handleMarkdownChange = (value: string | undefined) => {
-      const updatedValue = value || '';
-      setMarkdownContent(updatedValue);
+      setMarkdownContent(value || '');
       if (onMarkdownChange) {
-        onMarkdownChange(updatedValue);
+        onMarkdownChange(value || '');
       }
     };
 
