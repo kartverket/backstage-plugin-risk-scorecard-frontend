@@ -1,4 +1,10 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import {
+  ReactNode,
+  useState,
+  useEffect,
+  useContext,
+  createContext,
+} from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import { Action, FormScenario, Scenario } from '../utils/types';
 import { riScRouteRef, scenarioRouteRef } from '../routes';
@@ -71,7 +77,7 @@ export const scenarioWizardSteps = [
   'restRisk',
 ] as const;
 
-const ScenarioContext = React.createContext<ScenarioDrawerProps | undefined>(
+const ScenarioContext = createContext<ScenarioDrawerProps | undefined>(
   undefined,
 );
 
@@ -299,7 +305,7 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
 };
 
 const useScenario = () => {
-  const context = React.useContext(ScenarioContext);
+  const context = useContext(ScenarioContext);
   if (context === undefined) {
     throw new Error('useScenario must be used within a ScenarioProvider');
   }

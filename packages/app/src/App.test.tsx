@@ -1,5 +1,4 @@
 import { renderWithEffects } from '@backstage/test-utils';
-import React from 'react';
 import App from './App';
 import { URLS } from './urls';
 

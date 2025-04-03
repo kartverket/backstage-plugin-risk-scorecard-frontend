@@ -1,4 +1,3 @@
-import React from 'react';
 import { DifferenceFetchState } from '../../../utils/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';

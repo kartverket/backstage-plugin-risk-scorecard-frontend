@@ -7,8 +7,8 @@
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel --jobs unlimited -v -i run start",
-    "ci//": "echo Installs dependencies without modifying the lockfile",
-    "ci": "yarn install --immutable",
+    "ci//": "echo Installs dependencies without modifying the lockfile.\n`yarn rebuild` was added because folders are randomly missing, this command fixes it.",
+    "ci": "yarn install --immutable && yarn rebuild",
     "iup//": "echo 'Interactive upgrade of dependencies (do not touch packages with `backstage:^?)'",
     "iup": "yarn upgrade-interactive",
     "start": "yarn workspace app start",
@@ -16,6 +16,8 @@
     "build:backend": "yarn workspace backend build",
     "build:all": "backstage-cli repo build --all",
     "build-image": "yarn workspace backend build-image",
+    "install:fresh//": "echo Install without lockfile.\nYarn seems to get stuck on a rouge lockfile sometimes.",
+    "install:fresh": "rm -f yarn.lock && yarn install",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
@@ -37,8 +39,8 @@
     "rm-node-modules": "yarn run _rm-node-modules && yarn workspaces foreach --all --parallel run rm-node-modules",
     "rmnm": "yarn run rm-node-modules",
     "clean-cache": "yarn cache clean --all",
-    "ci:clean//": "echo Removes installed modules before installing packages from lockfile. \n`yarn rebuild` was added because better-sqlite3 was missing a build folder after complete reinstall, this command fixed it. ",
-    "ci:clean": "yarn run clean-cache && yarn run rmnm && yarn run ci && yarn rebuild",
+    "ci:clean//": "echo Removes installed modules before installing packages from lockfile.",
+    "ci:clean": "yarn run clean-cache && yarn run rmnm && yarn run ci",
     "update:clean//": "echo Removes everything before updating packages",
     "update:clean": "yarn run fresh_clean && yarn run ci",
     "fresh_clean//": "echo Removes everything related to dependencies",
@@ -60,8 +62,6 @@
     "typescript": "~5.2.0"
   },
   "resolutions": {
-    "@types/react": "^17",
-    "@types/react-dom": "^17",
     "@mui/material": "5.16.4",
     "swagger-ui-react": "5.10.5",
     "jsonpath-plus": "^10.2.0",
@@ -79,10 +79,6 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@mui/material": "5.16.4",
-    "@types/react": "^17"
   },
   "packageManager": "yarn@4.8.1+sha512.bc946f2a022d7a1a38adfc15b36a66a3807a67629789496c3714dd1703d2e6c6b1c69ff9ec3b43141ac7a1dd853b7685638eb0074300386a59c18df351ef8ff6"
 }

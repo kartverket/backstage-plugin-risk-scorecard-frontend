@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, IconButton, Typography } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
 import { RiSc } from '../../utils/types';

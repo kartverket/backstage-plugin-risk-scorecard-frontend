@@ -4,7 +4,7 @@ import Switch from '@mui/material/Switch';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+
 import { DialogContentText } from '@mui/material';
 import { RiScDialogStates } from './RiScDialog';
 import Box from '@mui/material/Box';

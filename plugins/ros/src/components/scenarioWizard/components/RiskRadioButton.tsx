@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import MUIRadio, { RadioProps } from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { formLabel } from '../../common/typography';
