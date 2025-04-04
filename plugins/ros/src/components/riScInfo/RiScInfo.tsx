@@ -1,4 +1,3 @@
-import React from 'react';
 import { RiScWithMetadata } from '../../utils/types';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';

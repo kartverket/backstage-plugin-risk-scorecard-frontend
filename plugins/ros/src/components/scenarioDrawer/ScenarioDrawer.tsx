@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { RiskSection } from './components/RiskSection';

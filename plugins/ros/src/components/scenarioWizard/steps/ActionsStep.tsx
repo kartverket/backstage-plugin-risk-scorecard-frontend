@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Stack from '@mui/material/Stack';

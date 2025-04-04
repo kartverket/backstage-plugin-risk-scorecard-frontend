@@ -1,4 +1,3 @@
-import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { riskTable, riskCell, riskRow, riskLabelCell } from '../wizardStyles';

@@ -1,5 +1,5 @@
 import { ActionBox } from './ActionBox';
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';

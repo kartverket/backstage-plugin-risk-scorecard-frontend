@@ -2,7 +2,7 @@ import {
   threatActorsOptions,
   vulnerabilitiesOptions,
 } from '../../../utils/constants';
-import React from 'react';
+
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Box from '@mui/material/Box';

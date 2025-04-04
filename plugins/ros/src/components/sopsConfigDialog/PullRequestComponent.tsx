@@ -6,7 +6,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { GitHubIcon } from '@backstage/core-components';
 import ListItemText from '@mui/material/ListItemText';
 import { getPullRequestSecondaryText } from '../../utils/utilityfunctions';
-import React from 'react';
+
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 

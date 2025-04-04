@@ -1,4 +1,3 @@
-import React from 'react';
 import { DifferenceFetchState } from '../../../utils/types';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
