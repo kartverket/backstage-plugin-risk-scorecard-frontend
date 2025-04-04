@@ -27,11 +27,13 @@ export const ActionsSection = ({
 }: ActionSectionProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const { control } = formMethods;
+  const { control, watch } = formMethods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'actions',
   });
+
+  const currentActions = watch('actions');
 
   if (isEditing) {
     return (
@@ -68,7 +70,7 @@ export const ActionsSection = ({
           <Fragment key={field.id}>
             <Divider />
             <ActionBox
-              action={field}
+              action={currentActions[index]}
               index={index}
               formMethods={formMethods}
               remove={remove}
