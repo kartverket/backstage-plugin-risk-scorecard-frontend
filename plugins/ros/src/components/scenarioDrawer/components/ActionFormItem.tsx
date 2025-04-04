@@ -71,7 +71,9 @@ export function ActionFormItem({
           </IconButton>
         </Box>
         <Input
-          {...register(`actions.${index}.title`)}
+          required
+          {...register(`actions.${index}.title`, { required: true })}
+          error={formState.errors?.actions?.[index]?.description !== undefined}
           label={t('dictionary.title')}
         />
         <Input
