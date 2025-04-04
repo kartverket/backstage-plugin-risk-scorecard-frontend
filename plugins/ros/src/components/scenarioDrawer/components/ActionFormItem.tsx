@@ -71,11 +71,11 @@ export function ActionFormItem({
           </IconButton>
         </Box>
         <Input
+          required
           {...register(`actions.${index}.title`)}
           label={t('dictionary.title')}
         />
         <Input
-          required
           {...register(`actions.${index}.description`, { required: true })}
           error={formState.errors?.actions?.[index]?.description !== undefined}
           label={t('dictionary.description')}
