@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import { body2, emptyState, label } from '../../common/typography';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore, Edit } from '@mui/icons-material';
+import Link from '@mui/material/Link';
 import IconButton from '@mui/material/IconButton';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { ActionFormItem } from './ActionFormItem';
@@ -223,14 +224,19 @@ export const ActionBox = ({
           <Box>
             <Typography sx={label}>{t('dictionary.url')}</Typography>
             {action.url ? (
-              <Box
+              <Link
                 sx={{
                   ...body2,
                   wordBreak: 'break-all',
                 }}
+                target="_blank"
+                rel="noreferrer"
+                href={
+                  action.url.startsWith('http') ? action.url : `//${action.url}`
+                }
               >
-                <ReactMarkdown>{action.url}</ReactMarkdown>
-              </Box>
+                {action.url}
+              </Link>
             ) : (
               <Typography sx={emptyState}>
                 {t('dictionary.emptyField', {

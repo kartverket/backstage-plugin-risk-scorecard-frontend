@@ -8,7 +8,10 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { heading3 } from '../../common/typography';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import { actionStatusOptions } from '../../../utils/constants';
+import {
+  actionStatusOptions,
+  urlRegExpPattern,
+} from '../../../utils/constants';
 import { Select } from '../../common/Select';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
@@ -39,7 +42,6 @@ export function ActionFormItem({
   }));
 
   const currentActionDescription = watch(`actions.${index}.description`);
-  const currentActionUrl = watch(`actions.${index}.url`);
 
   return (
     <>
@@ -93,23 +95,13 @@ export function ActionFormItem({
             gap: '24px',
           }}
         >
-          <MarkdownInput
+          <Input
             {...register(`actions.${index}.url`, {
-              validate: value => {
-                // Allow empty strings
-                if (value === '') {
-                  return true;
-                }
-                // Regex to validate Markdown link syntax: [text](url)
-                const markdownLinkPattern = /^\[.*\]\(.*\)$/;
-                if (!markdownLinkPattern.test(value)) {
-                  return t('scenarioDrawer.action.markdownUrlError');
-                }
-                return true;
+              pattern: {
+                value: urlRegExpPattern,
+                message: t('scenarioDrawer.action.urlError'),
               },
             })}
-            value={currentActionUrl}
-            onMarkdownChange={value => setValue(`actions.${index}.url`, value)}
             label={t('dictionary.url')}
             helperText={formState.errors.actions?.[index]?.url?.message}
             error={!!formState.errors.actions?.[index]?.url?.message}

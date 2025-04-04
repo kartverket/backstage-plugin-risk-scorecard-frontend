@@ -12,7 +12,10 @@ import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
 import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { actionStatusOptions } from '../../../utils/constants';
+import {
+  actionStatusOptions,
+  urlRegExpPattern,
+} from '../../../utils/constants';
 import IconButton from '@mui/material/IconButton';
 import { Select } from '../../common/Select';
 import { Input } from '../../common/Input';
@@ -55,7 +58,6 @@ export const ActionsStep = ({
           const currentActionDescription = watch(
             `actions.${index}.description`,
           );
-          const currentActionUrl = watch(`actions.${index}.url`);
 
           return (
             <Paper
@@ -110,25 +112,13 @@ export const ActionsStep = ({
                     gap: '24px',
                   }}
                 >
-                  <MarkdownInput
+                  <Input
                     {...register(`actions.${index}.url`, {
-                      validate: value => {
-                        // Allow empty strings
-                        if (value === '') {
-                          return true;
-                        }
-                        // Regex to validate Markdown link syntax: [text](url)
-                        const markdownLinkPattern = /^\[.*\]\(.*\)$/;
-                        if (!markdownLinkPattern.test(value)) {
-                          return t('scenarioDrawer.action.markdownUrlError');
-                        }
-                        return true;
+                      pattern: {
+                        value: urlRegExpPattern,
+                        message: t('scenarioDrawer.action.urlError'),
                       },
                     })}
-                    value={currentActionUrl}
-                    onMarkdownChange={value =>
-                      setValue(`actions.${index}.url`, value)
-                    }
                     label={t('dictionary.url')}
                     helperText={formState.errors.actions?.[index]?.url?.message}
                     error={!!formState.errors.actions?.[index]?.url?.message}
