@@ -30,6 +30,8 @@
     "prettier:format": "prettier --write .",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
+    "pipeline//": "echo Shorthand to run all checks in the lint.yml pipeline/workflow",
+    "pipeline": "yarn run ci && yarn run prettier:check && yarn run lint:all && yarn run tsc",
     "new": "backstage-cli new --scope internal",
     "self-update//": "Upgrade package manager to the latest version",
     "self-update": "corepack up",
