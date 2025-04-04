@@ -207,8 +207,8 @@ export const RiScStatusComponent = ({
             mt={2}
           >
             <StatusBadge
-              icon={statusMap[status as RiScStatusEnumType].icon}
-              text={statusMap[status as RiScStatusEnumType].text}
+              icon={statusMap[status].icon}
+              text={statusMap[status].text}
             />
             {status === RiScStatusEnum.CREATED && (
               <Typography
