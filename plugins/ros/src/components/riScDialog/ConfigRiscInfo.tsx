@@ -1,4 +1,3 @@
-import React from 'react';
 import { MarkdownInput } from '../common/MarkdownInput';
 import { Input } from '../common/Input';
 import {
