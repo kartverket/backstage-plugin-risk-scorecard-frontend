@@ -96,6 +96,10 @@ export function ActionFormItem({
           <MarkdownInput
             {...register(`actions.${index}.url`, {
               validate: value => {
+                // Allow empty strings
+                if (value === '') {
+                  return true;
+                }
                 // Regex to validate Markdown link syntax: [text](url)
                 const markdownLinkPattern = /^\[.*\]\(.*\)$/;
                 if (!markdownLinkPattern.test(value)) {
