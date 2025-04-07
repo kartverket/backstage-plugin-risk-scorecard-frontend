@@ -37,9 +37,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
 
     const handleMarkdownChange = (newValue: string | undefined) => {
       setMarkdownContent(newValue || '');
-      if (onMarkdownChange) {
-        onMarkdownChange(newValue || '');
-      }
+      onMarkdownChange?.(newValue || '');
     };
 
     return (
