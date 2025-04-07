@@ -73,13 +73,13 @@ export function ActionFormItem({
           </IconButton>
         </Box>
         <Input
-          {...register(`actions.${index}.title`)}
+          required
+          {...register(`actions.${index}.title`, { required: true })}
+          error={formState.errors?.actions?.[index]?.title !== undefined}
           label={t('dictionary.title')}
         />
         <MarkdownInput
-          required
-          {...register(`actions.${index}.description`, { required: true })}
-          error={formState.errors?.actions?.[index]?.description !== undefined}
+          {...register(`actions.${index}.description`)}
           label={t('dictionary.description')}
           value={currentActionDescription}
           onMarkdownChange={value =>
