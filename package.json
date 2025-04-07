@@ -16,8 +16,8 @@
     "build:backend": "yarn workspace backend build",
     "build:all": "backstage-cli repo build --all",
     "build-image": "yarn workspace backend build-image",
-    "install:fresh//": "echo Install without lockfile.\nYarn seems to get stuck on a rouge lockfile sometimes.",
-    "install:fresh": "rm -f yarn.lock && yarn install",
+    "cup//": "echo Custom UPdate - Install without lockfile forces yarn to look for latest version within ranges",
+    "cup": "rm -f yarn.lock && yarn install",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
@@ -61,7 +61,7 @@
     "lerna": "^8.2.1",
     "node-gyp": "^11.2.0",
     "prettier": "^3.5.3",
-    "typescript": "~5.2.2"
+    "typescript": "~5.8.3"
   },
   "resolutions": {
     "@mui/material": "5.16.4",
