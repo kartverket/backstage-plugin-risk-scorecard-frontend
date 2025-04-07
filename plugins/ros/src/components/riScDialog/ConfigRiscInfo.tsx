@@ -26,7 +26,7 @@ interface ConfigRiscInfoProps {
   watch: UseFormWatch<RiScWithMetadata>;
 }
 
-const ConfigRiscInfo = ({
+function ConfigRiscInfo({
   dialogState,
   createRiScFrom,
   handleChangeCreateRiScFrom,
@@ -34,7 +34,7 @@ const ConfigRiscInfo = ({
   errors,
   setValue,
   watch,
-}: ConfigRiscInfoProps) => {
+}: ConfigRiscInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const currentScope = watch('content.scope');
@@ -80,7 +80,7 @@ const ConfigRiscInfo = ({
               {t('rosDialog.generateInitialToggleDescription')}
             </Typography>
             <FormControlLabel
-              control={<Switch onChange={() => handleChangeCreateRiScFrom()} />}
+              control={<Switch onChange={handleChangeCreateRiScFrom} />}
               label={
                 createRiScFrom === CreateRiScFrom.Scratch
                   ? t('dictionary.no')
@@ -92,6 +92,6 @@ const ConfigRiscInfo = ({
       )}
     </>
   );
-};
+}
 
 export default ConfigRiscInfo;

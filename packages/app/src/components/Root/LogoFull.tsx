@@ -7,10 +7,10 @@ type Props = {
   React.ClassAttributes<HTMLImageElement> &
   React.ImgHTMLAttributes<HTMLImageElement>;
 
-const LogoFull = (props: Props) => {
+function LogoFull(props: Props) {
   const logo =
     props.type === 'dark' ? KartverketLogoFull : KartverketLogoFullLight;
   return <img src={logo} alt="Kartverket logo" {...props} />;
-};
+}
 
 export default LogoFull;

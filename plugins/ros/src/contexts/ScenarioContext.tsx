@@ -81,7 +81,7 @@ const ScenarioContext = createContext<ScenarioDrawerProps | undefined>(
   undefined,
 );
 
-const ScenarioProvider = ({ children }: { children: ReactNode }) => {
+export function ScenarioProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const getRiScPath = useRouteRef(riScRouteRef);
@@ -101,14 +101,14 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     [key: string]: boolean;
   }>({});
 
-  const toggleActionExpanded = (actionId: string) => {
+  function toggleActionExpanded(actionId: string) {
     setExpandedActions(prevState => ({
       ...prevState,
       [actionId]: !prevState[actionId],
     }));
-  };
+  }
 
-  const collapseAllActions = () => {
+  function collapseAllActions() {
     const allCollapsed = Object.keys(expandedActions).reduce(
       (acc, key) => {
         acc[key] = false;
@@ -117,25 +117,27 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       {} as { [key: string]: boolean },
     );
     setExpandedActions(allCollapsed);
-  };
+  }
 
-  const isActionExpanded = (actionId: string) => {
+  function isActionExpanded(actionId: string) {
     return expandedActions[actionId] || false;
-  };
+  }
 
-  const emptyFormScenario = (initialScenario: Scenario): FormScenario => ({
-    ...initialScenario,
-    risk: {
-      summary: '',
-      probability: '0.01',
-      consequence: '1000',
-    },
-    remainingRisk: {
-      summary: '',
-      probability: '0.01',
-      consequence: '1000',
-    },
-  });
+  function emptyFormScenario(initialScenario: Scenario): FormScenario {
+    return {
+      ...initialScenario,
+      risk: {
+        summary: '',
+        probability: '0.01',
+        consequence: '1000',
+      },
+      remainingRisk: {
+        summary: '',
+        probability: '0.01',
+        consequence: '1000',
+      },
+    };
+  }
 
   // Open scenario when url changes
   useEffect(() => {
@@ -176,23 +178,23 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
   }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams, t]);
 
   // SCENARIO DRAWER FUNCTIONS
-  const openScenarioDrawer = (id: string) => {
+  function openScenarioDrawer(id: string) {
     if (riSc) {
       navigate(getScenarioPath({ riScId: riSc.id, scenarioId: id }));
     }
-  };
+  }
 
-  const closeScenarioForm = () => {
+  function closeScenarioForm() {
     if (riSc) {
       navigate(getRiScPath({ riScId: riSc.id }));
     }
-  };
+  }
 
-  const submitNewScenario = (
+  function submitNewScenario(
     newScenario: Scenario,
     onSuccess?: () => void,
     onError?: () => void,
-  ) => {
+  ) {
     if (riSc) {
       updateRiSc(
         {
@@ -206,13 +208,13 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
         onError,
       );
     }
-  };
+  }
 
-  const submitEditedScenarioToRiSc = (
+  function submitEditedScenarioToRiSc(
     editedScenario: Scenario,
     onSuccess?: () => void,
     onError?: () => void,
-  ) => {
+  ) {
     if (riSc) {
       updateRiSc(
         {
@@ -228,9 +230,9 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
         onError,
       );
     }
-  };
+  }
 
-  const openNewScenarioWizard = () => {
+  function openNewScenarioWizard() {
     if (riSc) {
       const s = emptyScenario();
       setScenario(s);
@@ -242,9 +244,9 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
         })}?step=scenario`,
       );
     }
-  };
+  }
 
-  const mapFormScenarioToScenario = (formScenario: FormScenario): Scenario => {
+  function mapFormScenarioToScenario(formScenario: FormScenario): Scenario {
     const returnScenario: Scenario = {
       ...formScenario,
       risk: {
@@ -259,9 +261,9 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       },
     };
     return returnScenario;
-  };
+  }
 
-  const mapScenarioToFormScenario = (apiScenario: Scenario): FormScenario => {
+  function mapScenarioToFormScenario(apiScenario: Scenario): FormScenario {
     const returnFormScenario: FormScenario = {
       ...apiScenario,
       risk: {
@@ -276,7 +278,7 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       },
     };
     return returnFormScenario;
-  };
+  }
 
   const value = {
     isDrawerOpen,
@@ -302,14 +304,12 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </ScenarioContext.Provider>
   );
-};
+}
 
-const useScenario = () => {
+export function useScenario() {
   const context = useContext(ScenarioContext);
   if (context === undefined) {
     throw new Error('useScenario must be used within a ScenarioProvider');
   }
   return context;
-};
-
-export { ScenarioProvider, useScenario };
+}

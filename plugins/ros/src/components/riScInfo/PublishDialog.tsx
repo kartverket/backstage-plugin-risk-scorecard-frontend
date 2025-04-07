@@ -30,9 +30,9 @@ export const RiScPublishDialog = ({
 
   const [riskOwnerApproves, setRiskOwnerApproves] = useState<boolean>(false);
 
-  const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  function handleCheckboxInput(event: React.ChangeEvent<HTMLInputElement>) {
     setRiskOwnerApproves(event.target.checked);
-  };
+  }
 
   return (
     <Dialog open={openDialog}>

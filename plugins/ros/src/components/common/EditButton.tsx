@@ -12,7 +12,7 @@ const useEditButtonStyle = makeStyles((theme: Theme) => ({
   },
 }));
 
-const EditButton = (props: IconButtonProps) => {
+function EditButton(props: IconButtonProps) {
   const { icon } = useEditButtonStyle();
 
   return (
@@ -20,6 +20,6 @@ const EditButton = (props: IconButtonProps) => {
       <EditIcon className={icon} aria-label="Edit" />
     </IconButton>
   );
-};
+}
 
 export default EditButton;

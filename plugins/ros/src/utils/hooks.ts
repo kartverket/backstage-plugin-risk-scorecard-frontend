@@ -34,7 +34,7 @@ import {
 import { latestSupportedVersion } from './constants';
 import { URLS } from '../urls';
 
-export const useGithubRepositoryInformation = (): GithubRepoInfo => {
+export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
     useEntity().entity.metadata.annotations?.['backstage.io/view-url'].match(
       /github\.com\/([^\/]+)\/([^\/]+)/,
@@ -44,9 +44,9 @@ export const useGithubRepositoryInformation = (): GithubRepoInfo => {
     owner: org,
     name: repo,
   };
-};
+}
 
-export const useAuthenticatedFetch = () => {
+export function useAuthenticatedFetch() {
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
   const gitHubApi = useApi(githubAuthApiRef);
@@ -59,14 +59,26 @@ export const useAuthenticatedFetch = () => {
     return `${sopsUri}/openPullRequest/${branch}`; // URLS.backend.open_pr
   }
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
-  const uriToFetchDifference = (id: string) => `${riScUri}/${id}/difference`; // URLS.backend.fetchDifference
-  const uriToFetchRiSc = (id: string) => `${riScUri}/${id}`; // URLS.backend.fetchRiSc
-  const uriToPublishRiSc = (id: string) => `${riScUri}/publish/${id}`; // URLS.backend.publishRiSc
 
-  const useResponse = (): [
+  function uriToFetchDifference(id: string) {
+    // URLS.backend.fetchDifference
+    return `${riScUri}/${id}/difference`;
+  }
+
+  function uriToFetchRiSc(id: string) {
+    // URLS.backend.fetchRiSc
+    return `${riScUri}/${id}`;
+  }
+
+  function uriToPublishRiSc(id: string) {
+    // URLS.backend.publishRiSc
+    return `${riScUri}/publish/${id}`;
+  }
+
+  function useResponse(): [
     SubmitResponseObject | null,
     (submitStatus: SubmitResponseObject | null) => void,
-  ] => {
+  ] {
     const [submitResponse, setSubmitResponse] =
       useState<SubmitResponseObject | null>(null);
     // use callback to avoid infinite loop
@@ -81,21 +93,23 @@ export const useAuthenticatedFetch = () => {
     );
 
     return [submitResponse, displaySubmitResponse];
-  };
+  }
 
   const [response, setResponse] = useResponse();
 
   const configApi = useApi(configApiRef);
-  const isDevelopment = () =>
-    configApi.getString('auth.environment') === 'development';
 
-  const fullyAuthenticatedFetch = <T, K>(
+  function isDevelopment() {
+    return configApi.getString('auth.environment') === 'development';
+  }
+
+  function fullyAuthenticatedFetch<T, K>(
     uri: string,
     method: 'GET' | 'POST' | 'PUT',
     onSuccess: (response: T) => void,
     onError: (error: K, rejectedLogin: boolean) => void,
     body?: string,
-  ) => {
+  ) {
     Promise.all([
       identityApi.getCredentials(),
       googleApi.getAccessToken([
@@ -136,15 +150,15 @@ export const useAuthenticatedFetch = () => {
           onError(error, false);
         }
       });
-  };
+  }
 
-  const googleAuthenticatedFetch = <T, K>(
+  function googleAuthenticatedFetch<T, K>(
     uri: string,
     method: 'GET',
     onSuccess: (response: T) => void,
     onError: (error: K, rejectedLogin: boolean) => void,
     body?: string,
-  ) => {
+  ) {
     Promise.all([
       identityApi.getCredentials(),
       googleApi.getAccessToken([
@@ -183,14 +197,14 @@ export const useAuthenticatedFetch = () => {
           onError(error, false);
         }
       });
-  };
+  }
 
-  const fetchDifference = (
+  function fetchDifference(
     selectedRiSc: RiScWithMetadata,
     onSuccess: (response: DifferenceDTO) => void,
     onError?: (loginRejected: boolean) => void,
-  ) =>
-    identityApi.getProfileInfo().then(profile => {
+  ) {
+    return identityApi.getProfileInfo().then(profile => {
       fullyAuthenticatedFetch<DifferenceDTO, DifferenceDTO>(
         uriToFetchDifference(selectedRiSc.id),
         'POST',
@@ -206,11 +220,12 @@ export const useAuthenticatedFetch = () => {
         ),
       );
     });
+  }
 
-  const fetchRiScs = (
+  function fetchRiScs(
     onSuccess: (response: RiScContentResultDTO[]) => void,
     onError?: (loginRejected: boolean) => void,
-  ) => {
+  ) {
     if (isDevelopment()) {
       fullyAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
         uriToFetchAllRiScs,
@@ -230,12 +245,12 @@ export const useAuthenticatedFetch = () => {
         },
       );
     }
-  };
+  }
 
-  const fetchSopsConfig = (
+  function fetchSopsConfig(
     onSuccess: (response: SopsConfigResultDTO) => void,
     onError?: (error: SopsConfigResultDTO, loginRejected: boolean) => void,
-  ) => {
+  ) {
     if (isDevelopment()) {
       fullyAuthenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
         sopsUri,
@@ -255,28 +270,31 @@ export const useAuthenticatedFetch = () => {
         },
       );
     }
-  };
+  }
 
-  const fetchGcpCryptoKeys = (
+  function fetchGcpCryptoKeys(
     onSuccess: (response: GcpCryptoKeyObject[]) => void,
     onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
-  ) => {
+  ) {
     fullyAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
-      `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`,
+      `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
       'GET',
       res => onSuccess(res),
       (error, rejectedLogin) => {
         if (onError) onError(error, rejectedLogin);
       },
     );
-  };
+  }
 
-  const putSopsConfig = (
+  function putSopsConfig(
     sopsConfig: SopsConfigRequestBody,
     onSuccess: (response: SopsConfigCreateResponse) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
-  ) =>
-    fullyAuthenticatedFetch<SopsConfigCreateResponse, SopsConfigCreateResponse>(
+  ) {
+    return fullyAuthenticatedFetch<
+      SopsConfigCreateResponse,
+      SopsConfigCreateResponse
+    >(
       sopsUri,
       'PUT',
       res => {
@@ -288,14 +306,18 @@ export const useAuthenticatedFetch = () => {
       },
       sopsConfigToDTOString(sopsConfig),
     );
+  }
 
-  const postSopsConfig = (
+  function postSopsConfig(
     sopsConfig: SopsConfigRequestBody,
     branch: string,
     onSuccess: (response: SopsConfigUpdateResponse) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
-  ) =>
-    fullyAuthenticatedFetch<SopsConfigUpdateResponse, ProcessRiScResultDTO>(
+  ) {
+    return fullyAuthenticatedFetch<
+      SopsConfigUpdateResponse,
+      ProcessRiScResultDTO
+    >(
       `${sopsUri}?ref=${branch}`,
       'POST',
       res => {
@@ -307,13 +329,14 @@ export const useAuthenticatedFetch = () => {
       },
       sopsConfigToDTOString(sopsConfig),
     );
+  }
 
-  const postOpenPullRequestForSopsConfig = (
+  function postOpenPullRequestForSopsConfig(
     branch: string,
     onSuccess: (response: OpenPullRequestForSopsConfigResponseBody) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
-  ) =>
-    fullyAuthenticatedFetch<
+  ) {
+    return fullyAuthenticatedFetch<
       OpenPullRequestForSopsConfigResponseBody,
       ProcessRiScResultDTO
     >(
@@ -327,13 +350,14 @@ export const useAuthenticatedFetch = () => {
         if (onError) onError(error, rejectedLogin);
       },
     );
+  }
 
-  const publishRiScs = (
+  function publishRiScs(
     riScId: string,
     onSuccess?: (response: PublishRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
-  ) =>
-    identityApi.getProfileInfo().then(profile =>
+  ) {
+    return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<PublishRiScResultDTO, ProcessRiScResultDTO>(
         uriToPublishRiSc(riScId),
         'POST',
@@ -347,15 +371,16 @@ export const useAuthenticatedFetch = () => {
         profileInfoToDTOString(profile),
       ),
     );
+  }
 
-  const postRiScs = (
+  function postRiScs(
     riSc: RiSc,
     generateDefault: boolean,
     sopsConfig: SopsConfigDTO,
     onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
-  ) =>
-    identityApi.getProfileInfo().then(profile =>
+  ) {
+    return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<CreateRiScResultDTO, ProcessRiScResultDTO>(
         `${riScUri}?generateDefault=${generateDefault}`,
         'POST',
@@ -369,12 +394,13 @@ export const useAuthenticatedFetch = () => {
         riScToDTOString(riSc, true, profile, sopsConfig),
       ),
     );
+  }
 
-  const putRiScs = (
+  function putRiScs(
     riSc: RiScWithMetadata,
     onSuccess?: (response: ProcessRiScResultDTO | PublishRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
-  ) => {
+  ) {
     identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<
         ProcessRiScResultDTO | PublishRiScResultDTO,
@@ -397,7 +423,7 @@ export const useAuthenticatedFetch = () => {
         ),
       ),
     );
-  };
+  }
 
   return {
     fetchRiScs,
@@ -413,9 +439,9 @@ export const useAuthenticatedFetch = () => {
     postSopsConfig,
     postOpenPullRequestForSopsConfig,
   };
-};
+}
 
-export const useIsMounted = () => {
+export function useIsMounted() {
   const mountedRef = useRef(false);
 
   useEffect(() => {
@@ -426,4 +452,4 @@ export const useIsMounted = () => {
   }, []);
 
   return useCallback(() => mountedRef.current, []);
-};
+}

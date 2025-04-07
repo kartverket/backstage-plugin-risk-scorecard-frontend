@@ -9,9 +9,7 @@ type DifferenceTextProps = {
   differenceFetchState: DifferenceFetchState;
 };
 
-export const DifferenceText = ({
-  differenceFetchState,
-}: DifferenceTextProps) => {
+export function DifferenceText({ differenceFetchState }: DifferenceTextProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <>
@@ -132,4 +130,4 @@ export const DifferenceText = ({
       </List>
     </>
   );
-};
+}

@@ -15,12 +15,12 @@ interface GcpCryptoKeyMenuItemProps {
   hasAccess: boolean;
 }
 
-export const GcpCryptoKeyMenuItem = ({
+export function GcpCryptoKeyMenuItem({
   value,
   gcpCryptoKey,
   handleClick,
   hasAccess,
-}: GcpCryptoKeyMenuItemProps) => {
+}: GcpCryptoKeyMenuItemProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -51,4 +51,4 @@ export const GcpCryptoKeyMenuItem = ({
       </MenuItem>
     </Tooltip>
   );
-};
+}

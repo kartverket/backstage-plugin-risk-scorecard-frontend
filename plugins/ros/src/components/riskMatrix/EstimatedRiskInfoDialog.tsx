@@ -18,10 +18,10 @@ interface EstimatedRiskInfoDialogProps {
   onClose: () => void;
 }
 
-export const EstimatedRiskInfoDialog = ({
+export function EstimatedRiskInfoDialog({
   isOpen,
   onClose,
-}: EstimatedRiskInfoDialogProps) => {
+}: EstimatedRiskInfoDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { paper, title, text } = useEstimatedRiskInfoDialogStyles();
 
@@ -70,4 +70,4 @@ export const EstimatedRiskInfoDialog = ({
       </Paper>
     </Dialog>
   );
-};
+}

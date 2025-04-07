@@ -49,7 +49,7 @@ const useLogoStyles = makeStyles(theme => ({
   },
 }));
 
-export const HomePage = () => {
+export function HomePage() {
   const classes = useStyles();
 
   const { svg, path, container } = useLogoStyles();
@@ -162,4 +162,4 @@ export const HomePage = () => {
       </Page>
     </SearchContextProvider>
   );
-};
+}

@@ -15,7 +15,7 @@ import {
 } from '../../common/typography';
 import ReactMarkdown from 'react-markdown';
 
-export const ScopeSection = () => {
+export function ScopeSection() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { scenario } = useScenario();
 
@@ -89,4 +89,4 @@ export const ScopeSection = () => {
       </Box>
     </Paper>
   );
-};
+}

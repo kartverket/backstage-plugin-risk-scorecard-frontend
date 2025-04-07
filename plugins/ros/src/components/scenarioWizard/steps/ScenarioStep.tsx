@@ -15,11 +15,11 @@ import { Select } from '../../common/Select';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 
-export const ScenarioStep = ({
+export function ScenarioStep({
   formMethods,
 }: {
   formMethods: UseFormReturn<FormScenario>;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const {
@@ -91,4 +91,4 @@ export const ScenarioStep = ({
       />
     </Stack>
   );
-};
+}

@@ -61,7 +61,7 @@ type RiScDrawerProps = {
 
 const RiScContext = createContext<RiScDrawerProps | undefined>(undefined);
 
-const RiScProvider = ({ children }: { children: ReactNode }) => {
+export function RiScProvider({ children }: { children: ReactNode }) {
   const { riScId: riScIdFromParams } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -253,14 +253,14 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     setResponse(null);
   }, [setResponse]);
 
-  const selectRiSc = (id: string) => {
+  function selectRiSc(id: string) {
     const selectedRiScId = riScs?.find(riSc => riSc.id === id)?.id;
     if (selectedRiScId) {
       navigate(getRiScPath({ riScId: selectedRiScId }));
     }
-  };
+  }
 
-  const createNewRiSc = (riSc: RiScWithMetadata, generateDefault: boolean) => {
+  function createNewRiSc(riSc: RiScWithMetadata, generateDefault: boolean) {
     setIsFetching(true);
     setSelectedRiSc(null);
 
@@ -317,13 +317,13 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         });
       },
     );
-  };
+  }
 
-  const updateRiSc = (
+  function updateRiSc(
     riSc: RiScWithMetadata,
     onSuccess?: () => void,
     onError?: () => void,
-  ) => {
+  ) {
     if (selectedRiSc && riScs) {
       const isRequiresNewApproval =
         selectedRiSc.migrationStatus?.migrationRequiresNewApproval ||
@@ -394,9 +394,9 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         },
       );
     }
-  };
+  }
 
-  const approveRiSc = () => {
+  function approveRiSc() {
     if (selectedRiSc && riScs) {
       setUpdateStatus({
         isLoading: true,
@@ -443,7 +443,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         },
       );
     }
-  };
+  }
 
   const value = {
     riScs,
@@ -472,14 +472,12 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </RiScContext.Provider>
   );
-};
+}
 
-const useRiScs = () => {
+export function useRiScs() {
   const context = useContext(RiScContext);
   if (context === undefined) {
     throw new Error('useRiScs must be used within a RiScProvider');
   }
   return context;
-};
-
-export { RiScProvider, useRiScs };
+}

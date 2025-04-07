@@ -32,13 +32,13 @@ interface ActionBoxProps {
   onSubmit: () => void;
 }
 
-export const ActionBox = ({
+export function ActionBox({
   action,
   index,
   formMethods,
   remove,
   onSubmit,
-}: ActionBoxProps) => {
+}: ActionBoxProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { isActionExpanded, toggleActionExpanded } = useScenario();
@@ -67,15 +67,15 @@ export const ActionBox = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleChipClick = (event: React.MouseEvent<HTMLElement>) => {
+  function handleChipClick(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
-  };
+  }
 
-  const handleMenuClose = () => {
+  function handleMenuClose() {
     setAnchorEl(null);
-  };
+  }
 
-  const handleStatusChange = async (newStatus: string) => {
+  async function handleStatusChange(newStatus: string) {
     const updatedScenario = {
       ...scenario,
       actions: scenario.actions.map(a =>
@@ -88,7 +88,7 @@ export const ActionBox = ({
     if (isMounted()) {
       handleMenuClose();
     }
-  };
+  }
 
   useEffect(() => () => setAnchorEl(null), []);
 
@@ -249,4 +249,4 @@ export const ActionBox = ({
       </Collapse>
     </Box>
   );
-};
+}

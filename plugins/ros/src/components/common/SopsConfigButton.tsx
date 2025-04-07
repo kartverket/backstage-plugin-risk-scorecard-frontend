@@ -11,12 +11,12 @@ interface SopsConfigButtonProps {
   hasOpenedOnce: boolean;
 }
 
-export const SopsConfigButton = ({
+export function SopsConfigButton({
   handleClick,
   disable,
   pullRequestCount,
   hasOpenedOnce,
-}: SopsConfigButtonProps) => {
+}: SopsConfigButtonProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -40,4 +40,4 @@ export const SopsConfigButton = ({
       </Button>
     </Badge>
   );
-};
+}

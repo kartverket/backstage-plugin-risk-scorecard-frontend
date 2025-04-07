@@ -27,7 +27,7 @@ type Props<T extends FieldValues> = SelectProps & {
   options: { value: string | number; renderedValue: string | number }[];
 };
 
-export const Select = <T extends FieldValues>({
+export function Select<T extends FieldValues>({
   label,
   sublabel,
   error,
@@ -39,7 +39,7 @@ export const Select = <T extends FieldValues>({
   labelTranslationKey,
   options,
   ...props
-}: Props<T>) => {
+}: Props<T>) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { field } = useController({
     name,
@@ -48,8 +48,11 @@ export const Select = <T extends FieldValues>({
   });
 
   // values er strengt tatt unknown, men da må vi bruke mye ts-ignore for å komme i mål
-  const renderValue = (values: any) =>
-    multiple ? (
+  function renderValue(values: any) {
+    if (!multiple) {
+      return options.find(option => option.value === values)?.renderedValue;
+    }
+    return (
       <Box
         sx={{
           display: 'flex',
@@ -68,17 +71,18 @@ export const Select = <T extends FieldValues>({
           />
         ))}
       </Box>
-    ) : (
-      options.find(option => option.value === values)?.renderedValue
     );
+  }
 
-  const handleChecked = (
+  function handleChecked(
     fieldValue: UseControllerReturn['field']['value'],
     optionValue: Props<T>['options'][number]['value'],
-  ) => {
-    if (Array.isArray(fieldValue)) return fieldValue.includes(optionValue);
+  ) {
+    if (Array.isArray(fieldValue)) {
+      return fieldValue.includes(optionValue);
+    }
     return fieldValue === optionValue;
-  };
+  }
 
   return (
     <FormControl sx={{ width: '100%', gap: '4px' }}>
@@ -125,4 +129,4 @@ export const Select = <T extends FieldValues>({
       {error && <FormHelperText error>{helperText}</FormHelperText>}
     </FormControl>
   );
-};
+}

@@ -42,19 +42,23 @@ export function getRiskMatrixColor(risiko: Risk) {
   return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
-export const getProbabilityLevel = (risiko: Risk) =>
-  probabilityOptions.indexOf(risiko.probability) + 1;
+export function getProbabilityLevel(risiko: Risk) {
+  return probabilityOptions.indexOf(risiko.probability) + 1;
+}
 
-export const getConsequenceLevel = (risiko: Risk) =>
-  consequenceOptions.indexOf(risiko.consequence) + 1;
+export function getConsequenceLevel(risiko: Risk) {
+  return consequenceOptions.indexOf(risiko.consequence) + 1;
+}
 
-export const emptyRiSc = (): RiSc => ({
-  schemaVersion: latestSupportedVersion,
-  title: '',
-  scope: '',
-  valuations: [],
-  scenarios: [],
-});
+export function emptyRiSc(): RiSc {
+  return {
+    schemaVersion: latestSupportedVersion,
+    title: '',
+    scope: '',
+    valuations: [],
+    scenarios: [],
+  };
+}
 
 export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
   if (array1.length !== array2.length) {
@@ -68,7 +72,7 @@ export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
   }, false);
 }
 
-export const calculateDaysSince = (dateString: Date) => {
+export function calculateDaysSince(dateString: Date) {
   const givenDate = dateString;
   const now = new Date();
 
@@ -76,7 +80,7 @@ export const calculateDaysSince = (dateString: Date) => {
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   return diffDays;
-};
+}
 
 export const UpdatedStatusEnum = {
   UPDATED: 'UPDATED',
@@ -88,10 +92,10 @@ export const UpdatedStatusEnum = {
 export type UpdatedStatusEnumType =
   (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
 
-export const calculateUpdatedStatus = (
+export function calculateUpdatedStatus(
   daysSinceLastModified: number | null,
   numOfCommitsBehind: number | null,
-): UpdatedStatusEnumType => {
+): UpdatedStatusEnumType {
   if (daysSinceLastModified === null || numOfCommitsBehind === null) {
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
@@ -123,13 +127,10 @@ export const calculateUpdatedStatus = (
   }
 
   return UpdatedStatusEnum.VERY_OUTDATED;
-};
+}
 
 // keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
-export const requiresNewApproval = (
-  oldRiSc: RiSc,
-  updatedRiSc: RiSc,
-): boolean => {
+export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
   if (oldRiSc.scenarios.length !== updatedRiSc.scenarios.length) {
     return true;
   }
@@ -187,7 +188,7 @@ export const requiresNewApproval = (
     }
   });
   return requiresApproval;
-};
+}
 
 export function formatNumber(
   cost: number,
@@ -348,7 +349,7 @@ export function getPullRequestSecondaryText(
   )} ${userName}`;
 }
 
-export const deleteScenario = (
+export function deleteScenario(
   riSc: RiScWithMetadata | null,
   updateRiSc: (
     riSc: RiScWithMetadata,
@@ -356,7 +357,7 @@ export const deleteScenario = (
     onError?: () => void,
   ) => void,
   scenario: Scenario,
-) => {
+) {
   if (riSc) {
     const updatedScenarios = riSc.content.scenarios.filter(
       s => s.ID !== scenario.ID,
@@ -366,16 +367,16 @@ export const deleteScenario = (
       content: { ...riSc.content, scenarios: updatedScenarios },
     });
   }
-};
+}
 
-export const deleteAction = (
+export function deleteAction(
   remove: (index?: number | number[]) => void,
   index: number,
   onSubmit: () => void,
-) => {
+) {
   remove(index);
   onSubmit();
-};
+}
 
 /**
  * A recursive method for determining if a and b are deeply equal. Keys in the ignoredKeys argument are ignored in the

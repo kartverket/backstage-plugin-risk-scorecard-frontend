@@ -14,9 +14,9 @@ type RiScDifferenceDialogProps = {
   differenceFetchState: DifferenceFetchState;
 };
 
-export const RiScDifferenceDialog = ({
+export function RiScDifferenceDialog({
   differenceFetchState,
-}: RiScDifferenceDialogProps) => {
+}: RiScDifferenceDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const formatedDateString = parseISODateFromEncryptedROS(
@@ -113,4 +113,4 @@ export const RiScDifferenceDialog = ({
       </Box>
     </Box>
   );
-};
+}

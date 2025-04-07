@@ -10,13 +10,13 @@ import { useScenario } from '../../../contexts/ScenarioContext';
 import { useRiScs } from '../../../contexts/RiScContext';
 import { deleteScenario } from '../../../utils/utilityfunctions';
 
-export const DeleteConfirmation = ({
+export function DeleteConfirmation({
   deleteConfirmationIsOpen,
   setDeleteConfirmationIsOpen,
 }: {
   deleteConfirmationIsOpen: boolean;
   setDeleteConfirmationIsOpen: (deleteConfirmationIsOpen: boolean) => void;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
   const { scenario } = useScenario();
@@ -43,4 +43,4 @@ export const DeleteConfirmation = ({
       </DialogActions>
     </Dialog>
   );
-};
+}
