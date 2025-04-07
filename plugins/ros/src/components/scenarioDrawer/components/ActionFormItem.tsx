@@ -2,7 +2,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { heading3 } from '../../common/typography';
@@ -12,8 +11,9 @@ import {
   actionStatusOptions,
   urlRegExpPattern,
 } from '../../../utils/constants';
-import { Input } from '../../common/Input';
 import { Select } from '../../common/Select';
+import { Input } from '../../common/Input';
+import { MarkdownInput } from '../../common/MarkdownInput';
 
 type ActionFormItemProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -32,13 +32,15 @@ export function ActionFormItem({
 }: ActionFormItemProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const { control, register, formState } = formMethods;
+  const { control, register, setValue, watch, formState } = formMethods;
 
   const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
     value: actionStatus,
     /* @ts-ignore Because ts can't typecheck strings against our keys */
     renderedValue: t(`actionStatus.${actionStatus}`),
   }));
+
+  const currentActionDescription = watch(`actions.${index}.description`);
 
   return (
     <>
@@ -76,9 +78,14 @@ export function ActionFormItem({
           error={formState.errors?.actions?.[index]?.title !== undefined}
           label={t('dictionary.title')}
         />
-        <Input
+        <MarkdownInput
           {...register(`actions.${index}.description`)}
           label={t('dictionary.description')}
+          value={currentActionDescription}
+          onMarkdownChange={value =>
+            setValue(`actions.${index}.description`, value)
+          }
+          minRows={4}
         />
         <Box
           sx={{

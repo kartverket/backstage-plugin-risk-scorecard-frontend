@@ -64,6 +64,7 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     setValue,
   } = useForm<RiScWithMetadata>({
@@ -170,6 +171,8 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
                 handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
                 register={register}
                 errors={errors}
+                setValue={setValue}
+                watch={watch}
               />
             )}
             {activeStep === 1 && (
@@ -219,6 +222,8 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
             handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
             register={register}
             errors={errors}
+            setValue={setValue}
+            watch={watch}
           />
         </DialogContent>
         <DialogActions sx={dialogActions}>

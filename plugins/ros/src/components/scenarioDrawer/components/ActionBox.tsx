@@ -4,11 +4,11 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { body2, emptyState, label } from '../../common/typography';
 import Collapse from '@mui/material/Collapse';
 import { ExpandLess, ExpandMore, Edit } from '@mui/icons-material';
+import Link from '@mui/material/Link';
 import IconButton from '@mui/material/IconButton';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { ActionFormItem } from './ActionFormItem';
@@ -22,6 +22,7 @@ import { useIsMounted } from '../../../utils/hooks';
 import CircularProgress from '@mui/material/CircularProgress';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteAction } from '../../../utils/utilityfunctions';
+import ReactMarkdown from 'react-markdown';
 
 interface ActionBoxProps {
   action: Action;
@@ -203,14 +204,14 @@ export const ActionBox = ({
         <Typography sx={{ ...label, marginTop: 1 }}>
           {t('dictionary.description')}
         </Typography>
-        <Typography
+        <Box
           sx={{
             ...body2,
             wordBreak: 'break-all',
           }}
         >
-          {action.description}
-        </Typography>
+          <ReactMarkdown>{action.description}</ReactMarkdown>
+        </Box>
 
         <Box
           sx={{

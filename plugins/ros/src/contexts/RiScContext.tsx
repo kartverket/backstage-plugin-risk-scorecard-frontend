@@ -1,6 +1,8 @@
-import React, {
+import {
+  createContext,
   ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -57,7 +59,7 @@ type RiScDrawerProps = {
   response: SubmitResponseObject | null;
 };
 
-const RiScContext = React.createContext<RiScDrawerProps | undefined>(undefined);
+const RiScContext = createContext<RiScDrawerProps | undefined>(undefined);
 
 const RiScProvider = ({ children }: { children: ReactNode }) => {
   const { riScId: riScIdFromParams } = useParams();
@@ -473,7 +475,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
 };
 
 const useRiScs = () => {
-  const context = React.useContext(RiScContext);
+  const context = useContext(RiScContext);
   if (context === undefined) {
     throw new Error('useRiScs must be used within a RiScProvider');
   }

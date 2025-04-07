@@ -9,7 +9,6 @@ import { heading2, heading3, label, subtitle2 } from '../../common/typography';
 import Box from '@mui/material/Box';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import { Input } from '../../common/Input';
 import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
@@ -18,6 +17,8 @@ import {
 } from '../../../utils/constants';
 import IconButton from '@mui/material/IconButton';
 import { Select } from '../../common/Select';
+import { Input } from '../../common/Input';
+import { MarkdownInput } from '../../common/MarkdownInput';
 
 export const ActionsStep = ({
   formMethods,
@@ -26,7 +27,7 @@ export const ActionsStep = ({
 }) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const { control, register, formState } = formMethods;
+  const { control, register, setValue, watch, formState } = formMethods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'actions',
@@ -52,76 +53,87 @@ export const ActionsStep = ({
           {t('scenarioDrawer.measureTab.plannedMeasures')}
         </Typography>
 
-        {fields.map((field, index) => (
-          <Paper
-            key={field.ID}
-            sx={{
-              padding: 2,
-              marginBottom: 2,
-            }}
-          >
-            <Stack spacing={1}>
-              <Box
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Typography sx={label}>
-                  {t('dictionary.measure')} {index + 1}
-                </Typography>
+        {fields.map((field, index) => {
+          const currentActionDescription = watch(
+            `actions.${index}.description`,
+          );
 
-                <IconButton onClick={() => remove(index)} color="primary">
-                  <DeleteIcon aria-label="Edit" />
-                </IconButton>
-              </Box>
+          return (
+            <Paper
+              key={field.ID}
+              sx={{
+                padding: 2,
+                marginBottom: 2,
+              }}
+            >
+              <Stack spacing={1}>
+                <Box
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Typography sx={label}>
+                    {t('dictionary.measure')} {index + 1}
+                  </Typography>
 
-              <Input
-                {...register(`actions.${index}.title`)}
-                label={t('dictionary.title')}
-              />
+                  <IconButton onClick={() => remove(index)} color="primary">
+                    <DeleteIcon aria-label="Edit" />
+                  </IconButton>
+                </Box>
 
-              <Input
-                required
-                {...register(`actions.${index}.description`, {
-                  required: true,
-                })}
-                error={
-                  formState.errors?.actions?.[index]?.description !== undefined
-                }
-                label={t('dictionary.description')}
-              />
-
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: '2fr 1fr',
-                  gap: '24px',
-                }}
-              >
                 <Input
-                  {...register(`actions.${index}.url`, {
-                    pattern: {
-                      value: urlRegExpPattern,
-                      message: t('scenarioDrawer.action.urlError'),
-                    },
-                  })}
-                  label={t('dictionary.url')}
-                  helperText={formState.errors.actions?.[index]?.url?.message}
-                  error={!!formState.errors.actions?.[index]?.url?.message}
+                  {...register(`actions.${index}.title`)}
+                  label={t('dictionary.title')}
                 />
-                <Select<FormScenario>
+
+                <MarkdownInput
                   required
-                  control={control}
-                  name={`actions.${index}.status`}
-                  label={t('dictionary.status')}
-                  options={translatedActionStatuses}
+                  {...register(`actions.${index}.description`, {
+                    required: true,
+                  })}
+                  error={
+                    formState.errors?.actions?.[index]?.description !==
+                    undefined
+                  }
+                  value={currentActionDescription}
+                  onMarkdownChange={value =>
+                    setValue(`actions.${index}.description`, value)
+                  }
+                  label={t('dictionary.description')}
                 />
-              </Box>
-            </Stack>
-          </Paper>
-        ))}
+
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: '2fr 1fr',
+                    gap: '24px',
+                  }}
+                >
+                  <Input
+                    {...register(`actions.${index}.url`, {
+                      pattern: {
+                        value: urlRegExpPattern,
+                        message: t('scenarioDrawer.action.urlError'),
+                      },
+                    })}
+                    label={t('dictionary.url')}
+                    helperText={formState.errors.actions?.[index]?.url?.message}
+                    error={!!formState.errors.actions?.[index]?.url?.message}
+                  />
+                  <Select<FormScenario>
+                    required
+                    control={control}
+                    name={`actions.${index}.status`}
+                    label={t('dictionary.status')}
+                    options={translatedActionStatuses}
+                  />
+                </Box>
+              </Stack>
+            </Paper>
+          );
+        })}
 
         <Button
           startIcon={<AddCircle />}

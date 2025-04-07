@@ -277,7 +277,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       action: {
         requiredError: 'Field is required',
         descriptionError: 'Description cannot be empty',
-        urlError: 'Invalid url',
+        urlError: 'Invalid URL',
         emptyState: 'This scenario has no defined actions',
       },
       title: 'Risk scenario',

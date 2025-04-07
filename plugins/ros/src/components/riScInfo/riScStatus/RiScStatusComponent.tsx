@@ -310,11 +310,11 @@ export const RiScStatusComponent = ({
         </Typography>
       )}
       <Box mt={2} display="flex" gap={1}>
-        <img
-          src={icons[updatedStatus]}
+        <Box
+          component="img"
+          src={icons[updatedStatus] as string}
           alt="Updated Status Icon"
-          height={24}
-          width={24}
+          sx={{ height: 24, width: 24 }}
         />
         {numOfCommitsBehind !== null && daysSinceLastModified !== null ? (
           <Typography paragraph variant="subtitle1">
