@@ -13,6 +13,7 @@ import {
   heading3,
   label,
 } from '../../common/typography';
+import ReactMarkdown from 'react-markdown';
 
 export const ScopeSection = () => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -27,7 +28,9 @@ export const ScopeSection = () => {
       <Box>
         <Typography sx={label}>{t('dictionary.description')}</Typography>
         {scenario.description ? (
-          <Typography sx={body2}>{scenario.description}</Typography>
+          <Box sx={body2}>
+            <ReactMarkdown>{scenario.description}</ReactMarkdown>
+          </Box>
         ) : (
           <Typography sx={emptyState}>
             {t('dictionary.emptyField', {
