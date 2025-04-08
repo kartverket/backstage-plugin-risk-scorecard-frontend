@@ -2633,23 +2633,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-explore-backend@npm:^0.1.8":
-  version: 0.1.8
-  resolution: "@backstage-community/plugin-explore-backend@npm:0.1.8"
+"@backstage-community/plugin-explore-backend@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@backstage-community/plugin-explore-backend@npm:0.5.0"
   dependencies:
-    "@backstage-community/plugin-explore-common": "npm:^0.0.7"
-    "@backstage-community/plugin-explore-node": "npm:^0.1.5"
-    "@backstage/backend-common": "npm:^0.25.0"
-    "@backstage/backend-plugin-api": "npm:^1.0.1"
-    "@backstage/config": "npm:^1.2.0"
-    "@backstage/types": "npm:^1.1.1"
+    "@backstage-community/plugin-explore-common": "npm:^0.3.0"
+    "@backstage-community/plugin-explore-node": "npm:^0.4.0"
+    "@backstage/backend-plugin-api": "npm:^1.2.1"
+    "@backstage/config": "npm:^1.3.2"
+    "@backstage/types": "npm:^1.2.1"
     "@types/express": "npm:*"
     express: "npm:^4.18.1"
     express-promise-router: "npm:^4.1.0"
     lodash: "npm:^4.17.21"
     node-fetch: "npm:^2.6.7"
     yn: "npm:^4.0.0"
-  checksum: 10c0/e4a92dc2b5b8fd844a653528ceab6a42c8f277447cad05f624947a01796965d27cccc836bb85922e2c079d3f7e75409ce98990e3dce34e75ccd994505c8d51ae
+  checksum: 10c0/e80d8e09824ce0a66d9f3bdb35efc0fbc7887aa68fa4f961d9ae3e66cfb75cf0bf85697ec3975b0c4c4ab9e0c19b13d78adad9cbe4ce90d4281ef545ef0e9af3
   languageName: node
   linkType: hard
 
@@ -2660,13 +2659,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage-community/plugin-explore-node@npm:^0.1.5":
-  version: 0.1.5
-  resolution: "@backstage-community/plugin-explore-node@npm:0.1.5"
+"@backstage-community/plugin-explore-common@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@backstage-community/plugin-explore-common@npm:0.3.0"
+  checksum: 10c0/81fb0c03bd0eabc9618d51e11121b44518823a96790f77c50d90d57226e7d2bde5c059cc85c9c3e80492475a1cb1f6b9b5bce089b737ed270a7c4e980564150a
+  languageName: node
+  linkType: hard
+
+"@backstage-community/plugin-explore-node@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@backstage-community/plugin-explore-node@npm:0.4.0"
   dependencies:
-    "@backstage-community/plugin-explore-common": "npm:^0.0.7"
-    "@backstage/backend-plugin-api": "npm:^1.0.1"
-  checksum: 10c0/c1108ed1fac457ee67fad7bdf0329080d946b9bcd7a8f5a599e08609511aa7f26ed8b7ec1d5588392fc12414bce6682d909e3c0479ebf5132ffa21910dae1a21
+    "@backstage-community/plugin-explore-common": "npm:^0.3.0"
+    "@backstage/backend-plugin-api": "npm:^1.2.1"
+  checksum: 10c0/ff2284ade71136bcd561b752230284f8b85d77f31d8a6194cee611fb42ec0a1c0c6d9079298453c8a7faff6f9f30d4778b7271ec95d7d4bc230e7e26e23f3906
   languageName: node
   linkType: hard
 
@@ -17572,7 +17578,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:packages/backend"
   dependencies:
-    "@backstage-community/plugin-explore-backend": "npm:^0.1.8"
+    "@backstage-community/plugin-explore-backend": "npm:^0.5.0"
     "@backstage-community/plugin-lighthouse-backend": "npm:^0.4.17"
     "@backstage-community/plugin-linguist-backend": "npm:^0.6.4"
     "@backstage/backend-defaults": "backstage:^"
