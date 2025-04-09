@@ -56,19 +56,21 @@ interface StatusBadgeProps {
   text: string;
 }
 
-const StatusBadge = ({ icon: Icon, text }: StatusBadgeProps) => (
-  <Box display="flex" gap={1} alignItems="center">
-    <Icon />
-    <Typography paragraph variant="subtitle1" mb={0}>
-      {text}
-    </Typography>
-  </Box>
-);
+function StatusBadge({ icon: Icon, text }: StatusBadgeProps) {
+  return (
+    <Box display="flex" gap={1} alignItems="center">
+      <Icon />
+      <Typography paragraph variant="subtitle1" mb={0}>
+        {text}
+      </Typography>
+    </Box>
+  );
+}
 
-export const RiScStatusComponent = ({
+export function RiScStatusComponent({
   selectedRiSc,
   publishRiScFn,
-}: RiScStatusProps) => {
+}: RiScStatusProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { fetchDifference } = useAuthenticatedFetch();
 
@@ -83,12 +85,12 @@ export const RiScStatusComponent = ({
 
   const { updateRiSc } = useRiScs();
 
-  const handleApproveAndPublish = () => {
+  function handleApproveAndPublish() {
     publishRiScFn();
     setPublishRiScDialogIsOpen(false);
-  };
+  }
 
-  const getDifferences = () => {
+  function getDifferences() {
     if (
       !selectedRiSc ||
       differenceFetchState.isLoading ||
@@ -117,17 +119,17 @@ export const RiScStatusComponent = ({
         });
       },
     );
-  };
+  }
 
-  const handleUpdate = () => {
+  function handleUpdate() {
     updateRiSc(selectedRiSc);
     setMigrationDialogIsOpen(false);
-  };
+  }
 
-  const handleOpenPublishRiScDialog = () => {
+  function handleOpenPublishRiScDialog() {
     setPublishRiScDialogIsOpen(true);
     getDifferences();
-  };
+  }
 
   useEffect(() => {
     setDifferenceFetchState(emptyDifferenceFetchState);
@@ -332,4 +334,4 @@ export const RiScStatusComponent = ({
       </Box>
     </InfoCard>
   );
-};
+}

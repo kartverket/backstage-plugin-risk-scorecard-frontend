@@ -13,13 +13,13 @@ interface GitBranchMenuItemProps {
   setBold: boolean;
 }
 
-export const GitBranchMenuItem = ({
+export function GitBranchMenuItem({
   value,
   text,
   handleClick,
   isPullRequest,
   setBold,
-}: GitBranchMenuItemProps) => {
+}: GitBranchMenuItemProps) {
   return (
     <MenuItem onClick={() => handleClick(value)} value={value}>
       <Box
@@ -39,4 +39,4 @@ export const GitBranchMenuItem = ({
       </Box>
     </MenuItem>
   );
-};
+}

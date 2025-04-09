@@ -20,13 +20,13 @@ import {
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 
-const ScenarioForm = ({
+function ScenarioForm({
   formMethods,
   setIsMatrixDialogOpen,
 }: {
   formMethods: UseFormReturn<FormScenario>;
   setIsMatrixDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control } = formMethods;
 
@@ -112,6 +112,6 @@ const ScenarioForm = ({
       </IconButton>
     </Paper>
   );
-};
+}
 
 export default ScenarioForm;

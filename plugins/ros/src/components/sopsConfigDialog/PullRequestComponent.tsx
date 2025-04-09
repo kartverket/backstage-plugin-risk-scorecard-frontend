@@ -14,9 +14,9 @@ interface PullRequestComponentProps {
   pullRequest: PullRequestObject;
 }
 
-export const PullRequestComponent = ({
+export function PullRequestComponent({
   pullRequest,
-}: PullRequestComponentProps) => {
+}: PullRequestComponentProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -43,4 +43,4 @@ export const PullRequestComponent = ({
       </ListItemButton>
     </Tooltip>
   );
-};
+}

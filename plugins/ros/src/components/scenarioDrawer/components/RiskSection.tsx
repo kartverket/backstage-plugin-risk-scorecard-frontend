@@ -20,7 +20,7 @@ interface RiskProps {
   riskType: 'initialRisk' | 'restRisk';
 }
 
-const RiskBox = ({ risk, riskType }: RiskProps) => {
+function RiskBox({ risk, riskType }: RiskProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -69,9 +69,9 @@ const RiskBox = ({ risk, riskType }: RiskProps) => {
       </Box>
     </Paper>
   );
-};
+}
 
-export const RiskSection = () => {
+export function RiskSection() {
   const { scenario } = useScenario();
 
   return (
@@ -81,4 +81,4 @@ export const RiskSection = () => {
       <RiskBox risk={scenario.remainingRisk} riskType="restRisk" />
     </Box>
   );
-};
+}

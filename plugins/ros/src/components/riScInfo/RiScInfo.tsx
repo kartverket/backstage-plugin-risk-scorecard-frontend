@@ -14,7 +14,7 @@ interface RiScInfoProps {
   edit: () => void;
 }
 
-export const RiScInfo = ({ riScWithMetadata, edit }: RiScInfoProps) => {
+export function RiScInfo({ riScWithMetadata, edit }: RiScInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label, body2 } = useFontStyles();
 
@@ -59,4 +59,4 @@ export const RiScInfo = ({ riScWithMetadata, edit }: RiScInfoProps) => {
       </Grid>
     </Grid>
   );
-};
+}

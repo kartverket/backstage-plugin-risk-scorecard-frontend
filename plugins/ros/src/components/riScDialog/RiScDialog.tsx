@@ -33,13 +33,13 @@ export enum CreateRiScFrom {
   Default,
 }
 
-const RiScStepper = ({
+function RiScStepper({
   children,
   activeStep,
 }: {
   children: React.ReactNode;
   activeStep: number;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const steps = [t('rosDialog.stepRiscDetails'), t('rosDialog.stepEncryption')];
@@ -55,9 +55,9 @@ const RiScStepper = ({
       {children}
     </Box>
   );
-};
+}
 
-export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
+export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc, createNewRiSc, updateRiSc, gcpCryptoKeys } = useRiScs();
 
@@ -108,11 +108,11 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     },
   );
 
-  const handleBack = () => {
+  function handleBack() {
     if (activeStep === 1) {
       setActiveStep(0);
     }
-  };
+  }
 
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
     if (dialogState === RiScDialogStates.Create) {
@@ -120,7 +120,6 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
     } else {
       // Do manual comparison of contents, as the sopsConfig field contains many values from the backend that are not
       // used or set by the frontend.
-
       // Check if the additional Age keys are equal, using the single important field, `recipient`
       const areAgeKeysEqual = isDeeplyEqual(
         data.sopsConfig.age?.map(age => age.recipient).sort(),
@@ -267,4 +266,4 @@ export const RiScDialog = ({ onClose, dialogState }: RiScDialogProps) => {
   }
 
   return null;
-};
+}

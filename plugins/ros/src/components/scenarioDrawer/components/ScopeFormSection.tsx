@@ -14,11 +14,11 @@ import Paper from '@mui/material/Paper';
 import { section } from '../scenarioDrawerComponents';
 import { Input } from '../../common/Input';
 
-const ScopeFormSection = ({
+function ScopeFormSection({
   formMethods,
 }: {
   formMethods: UseFormReturn<FormScenario>;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
     control,
@@ -78,6 +78,6 @@ const ScopeFormSection = ({
       />
     </Paper>
   );
-};
+}
 
 export default ScopeFormSection;

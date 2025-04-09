@@ -1,6 +1,6 @@
 import SvgIcon from '@mui/material/SvgIcon';
 
-export const GitPullRequestIcon = () => {
+export function GitPullRequestIcon() {
   return (
     <SvgIcon
       version="1.0"
@@ -49,4 +49,4 @@ l-68 22 0 1097 0 1097 68 22 c111 37 190 87 282 180 93 94 142 175 179 296
       </g>
     </SvgIcon>
   );
-};
+}

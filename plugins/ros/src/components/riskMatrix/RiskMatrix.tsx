@@ -18,7 +18,7 @@ export enum RiskMatrixTabs {
   remainingRisk = 'remainingRisk',
 }
 
-export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
+export function RiskMatrix({ riSc }: { riSc: RiSc }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label2 } = useFontStyles();
   const {
@@ -94,4 +94,4 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
       </TabContext>
     </InfoCard>
   );
-};
+}

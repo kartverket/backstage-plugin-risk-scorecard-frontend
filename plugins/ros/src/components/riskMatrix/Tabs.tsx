@@ -11,7 +11,7 @@ interface TabsProps {
   setTab: (tab: RiskMatrixTabs) => void;
 }
 
-export const Tabs = ({ setTab }: TabsProps) => {
+export function Tabs({ setTab }: TabsProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const tabsStyle = useTabsStyle();
 
@@ -43,4 +43,4 @@ export const Tabs = ({ setTab }: TabsProps) => {
       </TabList>
     </Box>
   );
-};
+}

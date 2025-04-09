@@ -20,11 +20,11 @@ type ActionSectionProps = {
   onSubmit: () => void;
 };
 
-export const ActionsSection = ({
+export function ActionsSection({
   formMethods,
   isEditing,
   onSubmit,
-}: ActionSectionProps) => {
+}: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { control, watch } = formMethods;
@@ -87,4 +87,4 @@ export const ActionsSection = ({
       )}
     </Paper>
   );
-};
+}

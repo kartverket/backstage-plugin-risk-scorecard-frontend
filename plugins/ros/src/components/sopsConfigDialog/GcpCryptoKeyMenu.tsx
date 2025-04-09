@@ -17,22 +17,24 @@ interface GcpCryptoKeyMenuProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
 }
 
-export const GcpCryptoKeyMenu = ({
+export function GcpCryptoKeyMenu({
   chosenGcpCryptoKey,
   onChange,
   gcpCryptoKeys,
-}: GcpCryptoKeyMenuProps) => {
+}: GcpCryptoKeyMenuProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
+
+  function handleClick(event: MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
-  };
-  const handleClickMenuItem = (gcpCryptoKey: GcpCryptoKeyObject) => {
+  }
+
+  function handleClickMenuItem(gcpCryptoKey: GcpCryptoKeyObject) {
     onChange(gcpCryptoKey);
     setAnchorEl(null);
-  };
+  }
 
   const gcpCryptoKeysGroupedByAccess = gcpCryptoKeys.reduce<
     Record<string, GcpCryptoKeyObject[]>
@@ -136,4 +138,4 @@ export const GcpCryptoKeyMenu = ({
       </Menu>
     </Box>
   );
-};
+}

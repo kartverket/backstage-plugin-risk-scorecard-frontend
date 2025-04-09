@@ -39,14 +39,14 @@ interface ConfigEncryptionDialogProps {
   state: RiScDialogStates;
 }
 
-const ConfigEncryptionDialog = ({
+function ConfigEncryptionDialog({
   gcpCryptoKeys,
   sopsData,
   setValue,
   register,
   errors,
   state,
-}: ConfigEncryptionDialogProps) => {
+}: ConfigEncryptionDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [publicAgeKeyHelperText, setPublicKeyTextFieldHelperText] =
     useState('');
@@ -101,11 +101,11 @@ const ConfigEncryptionDialog = ({
     validate: gcpKeys => gcpKeys.length > 0,
   });
 
-  const handleChangeGcpCryptoKey = (newKey: GcpCryptoKeyObject) => {
+  function handleChangeGcpCryptoKey(newKey: GcpCryptoKeyObject) {
     setChosenGcpCryptoKey(newKey);
-  };
+  }
 
-  const handleAddPublicAgeKey = () => {
+  function handleAddPublicAgeKey() {
     if (isPublicAgeKeyValid(newPublicAgeKey)) {
       if (publicAgeKeys.includes(newPublicAgeKey)) {
         setPublicKeyTextFieldHelperText(
@@ -122,7 +122,7 @@ const ConfigEncryptionDialog = ({
       );
       setPublicKeyTextFieldError(true);
     }
-  };
+  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -255,6 +255,6 @@ const ConfigEncryptionDialog = ({
       </Box>
     </Box>
   );
-};
+}
 
 export default ConfigEncryptionDialog;

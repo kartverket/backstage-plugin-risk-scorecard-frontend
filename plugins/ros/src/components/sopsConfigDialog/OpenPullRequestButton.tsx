@@ -9,9 +9,9 @@ interface OpenPullRequestButtonProps {
   handleClick: () => void;
 }
 
-export const OpenPullRequestButton = ({
+export function OpenPullRequestButton({
   handleClick,
-}: OpenPullRequestButtonProps) => {
+}: OpenPullRequestButtonProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -32,4 +32,4 @@ export const OpenPullRequestButton = ({
       </Typography>
     </Button>
   );
-};
+}
