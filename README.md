@@ -94,3 +94,27 @@ Normal (non-Backstage) dependencies are maintained through `yarn` and `package.j
 ```sh
 yarn upgrade-interactive
 ```
+
+## Publishing a new plugin version
+
+Hvis du vil publisere en ny versjon av pluginen, må du oppdatere versjonene i `plugins/ros/package.json`. Følg semantisk versjonering.
+
+Når den nye versjonen er oppdatert på `main`-branch kan du lage en ny release med tags i GitHub-repoet.
+
+For å lage en ny tag kan du enten gjøre det manuelt på Github, ved å 
+- Gå inn på "Releases" i høyre meny på forsiden til repoet
+- Trykke "Draft a new release"
+- Under "Choose a new tag" definerer du samme versjonsnummer som du oppdaterte repoet til (på formatet vx.x.x)
+- Skrive release notes eller trykke "Generate release notes".
+- Trykk "Publish release"
+
+Du kan også kjøre følgende i terminalen:
+
+```bash
+git tag -a v1.2.3 -m "A message explaining the new version"
+git push origin --tags
+```
+
+Når tag'en er laget, så vil en Github Action workflow bygge pluginen og publisere den til npm registry'et til Kartverket. Ny versjon skal bli synlig [her]([https://www.npmjs.com/package/@kartverket/backstage-plugin-security-metrics-frontend?activeTab=versions](https://www.npmjs.com/package/@kartverket/backstage-plugin-risk-scorecard)).
+
+Etter det kan brukerne av pluginen bumpe versjonen for å få med de siste endringene.
