@@ -18,18 +18,12 @@ import {
 import {
   CreateRiScResultDTO,
   GcpCryptoKeyObject,
-  OpenPullRequestForSopsConfigResponseBody,
   ProcessRiScResultDTO,
   profileInfoToDTOString,
   PublishRiScResultDTO,
   RiScContentResultDTO,
   riScToDTOString,
-  SopsConfigCreateResponse,
   SopsConfigDTO,
-  SopsConfigRequestBody,
-  SopsConfigResultDTO,
-  sopsConfigToDTOString,
-  SopsConfigUpdateResponse,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import { URLS } from '../urls';
@@ -54,10 +48,7 @@ export function useAuthenticatedFetch() {
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
-  const sopsUri = `${backendUrl}${URLS.backend.sopsUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.sopsUri
-  function openPullRequestForSopsConfigUri(branch: string) {
-    return `${sopsUri}/openPullRequest/${branch}`; // URLS.backend.open_pr
-  }
+
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
 
   function uriToFetchDifference(id: string) {
@@ -247,31 +238,6 @@ export function useAuthenticatedFetch() {
     }
   }
 
-  function fetchSopsConfig(
-    onSuccess: (response: SopsConfigResultDTO) => void,
-    onError?: (error: SopsConfigResultDTO, loginRejected: boolean) => void,
-  ) {
-    if (isDevelopment()) {
-      fullyAuthenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
-        sopsUri,
-        'GET',
-        res => onSuccess(res),
-        (error, rejectedLogin) => {
-          if (onError) onError(error, rejectedLogin);
-        },
-      );
-    } else {
-      googleAuthenticatedFetch<SopsConfigResultDTO, SopsConfigResultDTO>(
-        sopsUri,
-        'GET',
-        res => onSuccess(res),
-        (error, rejectedLogin) => {
-          if (onError) onError(error, rejectedLogin);
-        },
-      );
-    }
-  }
-
   function fetchGcpCryptoKeys(
     onSuccess: (response: GcpCryptoKeyObject[]) => void,
     onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
@@ -280,72 +246,6 @@ export function useAuthenticatedFetch() {
       `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
       'GET',
       res => onSuccess(res),
-      (error, rejectedLogin) => {
-        if (onError) onError(error, rejectedLogin);
-      },
-    );
-  }
-
-  function putSopsConfig(
-    sopsConfig: SopsConfigRequestBody,
-    onSuccess: (response: SopsConfigCreateResponse) => void,
-    onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
-  ) {
-    return fullyAuthenticatedFetch<
-      SopsConfigCreateResponse,
-      SopsConfigCreateResponse
-    >(
-      sopsUri,
-      'PUT',
-      res => {
-        setResponse(res);
-        if (onSuccess) onSuccess(res);
-      },
-      (error, rejectedLogin) => {
-        if (onError) onError(error, rejectedLogin);
-      },
-      sopsConfigToDTOString(sopsConfig),
-    );
-  }
-
-  function postSopsConfig(
-    sopsConfig: SopsConfigRequestBody,
-    branch: string,
-    onSuccess: (response: SopsConfigUpdateResponse) => void,
-    onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
-  ) {
-    return fullyAuthenticatedFetch<
-      SopsConfigUpdateResponse,
-      ProcessRiScResultDTO
-    >(
-      `${sopsUri}?ref=${branch}`,
-      'POST',
-      res => {
-        setResponse(res);
-        if (onSuccess) onSuccess(res);
-      },
-      (error, rejectedLogin) => {
-        if (onError) onError(error, rejectedLogin);
-      },
-      sopsConfigToDTOString(sopsConfig),
-    );
-  }
-
-  function postOpenPullRequestForSopsConfig(
-    branch: string,
-    onSuccess: (response: OpenPullRequestForSopsConfigResponseBody) => void,
-    onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
-  ) {
-    return fullyAuthenticatedFetch<
-      OpenPullRequestForSopsConfigResponseBody,
-      ProcessRiScResultDTO
-    >(
-      openPullRequestForSopsConfigUri(branch),
-      'POST',
-      res => {
-        setResponse(res);
-        if (onSuccess) onSuccess(res);
-      },
       (error, rejectedLogin) => {
         if (onError) onError(error, rejectedLogin);
       },
@@ -427,7 +327,6 @@ export function useAuthenticatedFetch() {
 
   return {
     fetchRiScs,
-    fetchSopsConfig,
     fetchGcpCryptoKeys,
     postRiScs,
     putRiScs,
@@ -435,9 +334,6 @@ export function useAuthenticatedFetch() {
     response,
     setResponse,
     fetchDifference,
-    putSopsConfig,
-    postSopsConfig,
-    postOpenPullRequestForSopsConfig,
   };
 }
 

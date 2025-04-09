@@ -113,20 +113,14 @@ export enum ProcessingStatus {
   CreatedRiSc = 'CreatedRiSc',
   OpenedPullRequest = 'OpenedPullRequest',
   CreatedPullRequest = 'CreatedPullRequest',
-  CreatedSops = 'Created SOPS configuration successfully',
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
   ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
   ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
   ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
-  ErrorWhenFetchingSopsConfig = 'ErrorWhenFetchingSopsConfig',
-  NoGcpKeyInSopsConfigFound = 'No GCP KMS resource ID was found in sops config',
   ErrorWhenFetchingGcpCryptoKeys = 'ErrorWhenFetchingGcpCryptoKeys',
   FailedToFetchGcpProjectIds = 'Failed to fetch GCP project IDs',
-  NoSopsConfigFound = 'No SOPS configuration found on default branch',
-  FailedToCreateSops = 'Failed to create SOPS configuration',
-  FailedToUpdateSops = 'Failed to create SOPS configuration',
 }
 
 export enum ContentStatus {
