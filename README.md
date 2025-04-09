@@ -94,3 +94,28 @@ Normal (non-Backstage) dependencies are maintained through `yarn` and `package.j
 ```sh
 yarn upgrade-interactive
 ```
+
+## Publishing a new plugin version
+
+If you want to publish a new version of the plugin, you need to update the versions in `plugins/ros/package.json`. Follow [semantic versioning](https://semver.org/).
+
+Once the new version is updated on the `main` branch, you can create a new release with tags in the GitHub repository.
+
+**To create a new tag manually on GitHub:**
+
+- Navigate to **Releases** in the right-hand menu on the repository homepage.
+- Click **Draft a new release**.
+- Under **Choose a new tag**, define the same version number that you updated the repository to (formatted as `vx.x.x`).
+- Write release notes or click **Generate release notes**.
+- Click **Publish release**.
+
+**Alternatively, run the following in the terminal:**
+
+```bash
+git tag -a v1.2.3 -m "A message explaining the new version"
+git push origin --tags
+```
+
+Once the tag is created, a GitHub Action workflow will build the plugin and publish it to Kartverket’s npm registry. The new version should be visible [here](https://www.npmjs.com/package/@kartverket/backstage-plugin-risk-scorecard).
+
+After that, users of the plugin can bump the version to include the latest changes.
