@@ -97,24 +97,24 @@ yarn upgrade-interactive
 
 ## Publishing a new plugin version
 
-Hvis du vil publisere en ny versjon av pluginen, må du oppdatere versjonene i `plugins/ros/package.json`. Følg semantisk versjonering.
+If you want to publish a new version of the plugin, you need to update the versions in `plugins/ros/package.json`. Follow [semantic versioning](https://semver.org/).
 
-Når den nye versjonen er oppdatert på `main`-branch kan du lage en ny release med tags i GitHub-repoet.
+Once the new version is updated on the `main` branch, you can create a new release with tags in the GitHub repository.
 
-For å lage en ny tag kan du enten gjøre det manuelt på Github, ved å 
-- Gå inn på "Releases" i høyre meny på forsiden til repoet
-- Trykke "Draft a new release"
-- Under "Choose a new tag" definerer du samme versjonsnummer som du oppdaterte repoet til (på formatet vx.x.x)
-- Skrive release notes eller trykke "Generate release notes".
-- Trykk "Publish release"
+**To create a new tag manually on GitHub:**
+- Navigate to **Releases** in the right-hand menu on the repository homepage.
+- Click **Draft a new release**.
+- Under **Choose a new tag**, define the same version number that you updated the repository to (formatted as `vx.x.x`).
+- Write release notes or click **Generate release notes**.
+- Click **Publish release**.
 
-Du kan også kjøre følgende i terminalen:
+**Alternatively, run the following in the terminal:**
 
 ```bash
 git tag -a v1.2.3 -m "A message explaining the new version"
 git push origin --tags
 ```
 
-Når tag'en er laget, så vil en Github Action workflow bygge pluginen og publisere den til npm registry'et til Kartverket. Ny versjon skal bli synlig [her]([https://www.npmjs.com/package/@kartverket/backstage-plugin-security-metrics-frontend?activeTab=versions](https://www.npmjs.com/package/@kartverket/backstage-plugin-risk-scorecard)).
+Once the tag is created, a GitHub Action workflow will build the plugin and publish it to Kartverket’s npm registry. The new version should be visible [here](https://www.npmjs.com/package/@kartverket/backstage-plugin-risk-scorecard).
 
-Etter det kan brukerne av pluginen bumpe versjonen for å få med de siste endringene.
+After that, users of the plugin can bump the version to include the latest changes.
