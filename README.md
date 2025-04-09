@@ -102,6 +102,7 @@ If you want to publish a new version of the plugin, you need to update the versi
 Once the new version is updated on the `main` branch, you can create a new release with tags in the GitHub repository.
 
 **To create a new tag manually on GitHub:**
+
 - Navigate to **Releases** in the right-hand menu on the repository homepage.
 - Click **Draft a new release**.
 - Under **Choose a new tag**, define the same version number that you updated the repository to (formatted as `vx.x.x`).
