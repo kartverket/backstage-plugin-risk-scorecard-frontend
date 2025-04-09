@@ -14,7 +14,7 @@ interface RiskStepProps {
   formMethods: UseFormReturn<FormScenario>;
 }
 
-export const RiskStep = ({ formMethods, riskType }: RiskStepProps) => {
+export function RiskStep({ formMethods, riskType }: RiskStepProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const translationKey =
@@ -46,4 +46,4 @@ export const RiskStep = ({ formMethods, riskType }: RiskStepProps) => {
       <ConsequenceTable formMethods={formMethods} riskType={riskType} />
     </Stack>
   );
-};
+}

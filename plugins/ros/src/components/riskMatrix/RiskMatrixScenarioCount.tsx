@@ -24,12 +24,12 @@ interface ScenarioCountProps {
   initialRisk: boolean;
 }
 
-export const RiskMatrixScenarioCount = ({
+export function RiskMatrixScenarioCount({
   riSc,
   probability,
   consequence,
   initialRisk,
-}: ScenarioCountProps) => {
+}: ScenarioCountProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
     circle,
@@ -44,10 +44,10 @@ export const RiskMatrixScenarioCount = ({
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const { openScenarioDrawer } = useScenario();
 
-  const handleScenarioClick = (ID: string) => {
+  function handleScenarioClick(ID: string) {
     setTooltipOpen(false);
     openScenarioDrawer(ID);
-  };
+  }
 
   const scenarios = riSc.scenarios.filter(
     scenario =>
@@ -118,4 +118,4 @@ export const RiskMatrixScenarioCount = ({
       </Tooltip>
     </ClickAwayListener>
   );
-};
+}

@@ -12,11 +12,11 @@ interface CloseConfirmationProps {
   save: () => void;
 }
 
-export const CloseConfirmation = ({
+export function CloseConfirmation({
   isOpen,
   close,
   save,
-}: CloseConfirmationProps) => {
+}: CloseConfirmationProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Dialog open={isOpen}>
@@ -32,4 +32,4 @@ export const CloseConfirmation = ({
       </DialogActions>
     </Dialog>
   );
-};
+}

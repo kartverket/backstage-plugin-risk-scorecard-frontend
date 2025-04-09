@@ -27,7 +27,7 @@ interface ScenarioTableRowProps {
   isEditing: boolean;
 }
 
-export const ScenarioTableRow = ({
+export function ScenarioTableRow({
   scenario,
   viewRow,
   index,
@@ -35,7 +35,7 @@ export const ScenarioTableRow = ({
   moveRowLocal,
   isLastRow,
   isEditing,
-}: ScenarioTableRowProps) => {
+}: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
     riskColor,
@@ -182,4 +182,4 @@ export const ScenarioTableRow = ({
       )}
     </TableRow>
   );
-};
+}

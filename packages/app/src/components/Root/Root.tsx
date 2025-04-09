@@ -48,7 +48,7 @@ const useSidebarLogoStyles = makeStyles({
   },
 });
 
-const SidebarLogo = () => {
+function SidebarLogo() {
   const classes = useSidebarLogoStyles();
   const { isOpen } = useSidebarOpenState();
 
@@ -64,70 +64,76 @@ const SidebarLogo = () => {
       </Link>
     </div>
   );
-};
+}
 
-export const Root = ({ children }: PropsWithChildren<{}>) => (
-  <SidebarPage>
-    <Sidebar>
-      <SidebarLogo />
-      <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
-        <SidebarSearchModal />
-      </SidebarGroup>
-      <SidebarDivider />
-      <SidebarGroup label="Menu" icon={<MenuIcon />}>
-        {/* Global nav, not org-specific */}
-        <SidebarItem icon={HomeIcon} to={URLS.frontend.index} text="Home" />
-        <SidebarItem
-          icon={CategoryIcon}
-          to={URLS.frontend.catalog}
-          text="Catalog"
-        />
-        <MyGroupsSidebarItem
-          singularTitle="My Group"
-          pluralTitle="My Groups"
-          icon={GroupIcon}
-        />
-        <SidebarItem
-          icon={ExtensionIcon}
-          to={URLS.frontend.api_docs}
-          text="APIs"
-        />
-        <SidebarItem
-          icon={LayersIcon}
-          to={URLS.frontend.explore}
-          text="Explore"
-        />
-        <SidebarItem icon={LibraryBooks} to={URLS.frontend.docs} text="Docs" />
-        <SidebarItem
-          icon={CreateComponentIcon}
-          to={URLS.frontend.create}
-          text="Create..."
-        />
-        {/* End global nav */}
+export function Root({ children }: PropsWithChildren<{}>) {
+  return (
+    <SidebarPage>
+      <Sidebar>
+        <SidebarLogo />
+        <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
+          <SidebarSearchModal />
+        </SidebarGroup>
         <SidebarDivider />
-        <SidebarScrollWrapper>
+        <SidebarGroup label="Menu" icon={<MenuIcon />}>
+          {/* Global nav, not org-specific */}
+          <SidebarItem icon={HomeIcon} to={URLS.frontend.index} text="Home" />
           <SidebarItem
-            icon={SpeedIcon}
-            to={URLS.frontend.lighthouse}
-            text="Lighthouse"
+            icon={CategoryIcon}
+            to={URLS.frontend.catalog}
+            text="Catalog"
           />
-        </SidebarScrollWrapper>
-        <SidebarItem
-          icon={WarningIcon}
-          to={URLS.frontend.opencost}
-          text="SKIPcost"
-        />
-      </SidebarGroup>
-      <SidebarSpace />
-      <SidebarDivider />
-      <SidebarGroup
-        label="Settings"
-        icon={<UserSettingsSignInAvatar />}
-        to={URLS.frontend.settings}
-      >
-        <SidebarSettings />
-      </SidebarGroup>
-    </Sidebar>
-    {children}
-  </SidebarPage>
-);
+          <MyGroupsSidebarItem
+            singularTitle="My Group"
+            pluralTitle="My Groups"
+            icon={GroupIcon}
+          />
+          <SidebarItem
+            icon={ExtensionIcon}
+            to={URLS.frontend.api_docs}
+            text="APIs"
+          />
+          <SidebarItem
+            icon={LayersIcon}
+            to={URLS.frontend.explore}
+            text="Explore"
+          />
+          <SidebarItem
+            icon={LibraryBooks}
+            to={URLS.frontend.docs}
+            text="Docs"
+          />
+          <SidebarItem
+            icon={CreateComponentIcon}
+            to={URLS.frontend.create}
+            text="Create..."
+          />
+          {/* End global nav */}
+          <SidebarDivider />
+          <SidebarScrollWrapper>
+            <SidebarItem
+              icon={SpeedIcon}
+              to={URLS.frontend.lighthouse}
+              text="Lighthouse"
+            />
+          </SidebarScrollWrapper>
+          <SidebarItem
+            icon={WarningIcon}
+            to={URLS.frontend.opencost}
+            text="SKIPcost"
+          />
+        </SidebarGroup>
+        <SidebarSpace />
+        <SidebarDivider />
+        <SidebarGroup
+          label="Settings"
+          icon={<UserSettingsSignInAvatar />}
+          to={URLS.frontend.settings}
+        >
+          <SidebarSettings />
+        </SidebarGroup>
+      </Sidebar>
+      {children}
+    </SidebarPage>
+  );
+}

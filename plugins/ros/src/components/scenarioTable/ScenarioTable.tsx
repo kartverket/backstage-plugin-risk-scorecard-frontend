@@ -24,7 +24,7 @@ interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
 }
 
-export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
+export function ScenarioTable({ riScWithMetadata }: ScenarioTableProps) {
   const riSc = riScWithMetadata.content;
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label } = useFontStyles();
@@ -53,14 +53,14 @@ export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [riSc.scenarios, updateStatus.isSuccess]);
 
-  const moveRowLocal = (dragIndex: number, hoverIndex: number) => {
+  function moveRowLocal(dragIndex: number, hoverIndex: number) {
     const updatedScenarios = [...tempScenarios];
     const [removed] = updatedScenarios.splice(dragIndex, 1);
     updatedScenarios.splice(hoverIndex, 0, removed);
     setTempScenarios(updatedScenarios);
-  };
+  }
 
-  const moveRowFinal = (dragIndex: number, dropIndex: number) => {
+  function moveRowFinal(dragIndex: number, dropIndex: number) {
     const updatedScenarios = [...tempScenarios];
     const [removed] = updatedScenarios.splice(dragIndex, 1);
     updatedScenarios.splice(dropIndex, 0, removed);
@@ -74,7 +74,7 @@ export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
       },
     };
     updateRiSc(updatedRiSc, () => {});
-  };
+  }
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -203,15 +203,15 @@ export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
       </Paper>
     </>
   );
-};
+}
 
 interface ScenarioTableWrapperProps {
   riScWithMetadata: RiScWithMetadata;
 }
 
-export const ScenarioTableWrapper = ({
+export function ScenarioTableWrapper({
   riScWithMetadata,
-}: ScenarioTableWrapperProps) => {
+}: ScenarioTableWrapperProps) {
   return (
     <DndProvider backend={HTML5Backend}>
       <ScenarioTable
@@ -220,4 +220,4 @@ export const ScenarioTableWrapper = ({
       />
     </DndProvider>
   );
-};
+}

@@ -15,20 +15,24 @@ const cache = createCache({
   insertionPoint: emotionInsertionPoint,
 });
 
-const ProvidedPlugin = () => (
-  <CacheProvider value={cache}>
-    <RiScProvider>
-      <ScenarioProvider>
-        <RiScPlugin />
-      </ScenarioProvider>
-    </RiScProvider>
-  </CacheProvider>
-);
+function ProvidedPlugin() {
+  return (
+    <CacheProvider value={cache}>
+      <RiScProvider>
+        <ScenarioProvider>
+          <RiScPlugin />
+        </ScenarioProvider>
+      </RiScProvider>
+    </CacheProvider>
+  );
+}
 
-export const PluginRoot = () => (
-  <Routes>
-    <Route path="/" element={<ProvidedPlugin />} />
-    <Route path={riScRouteRef.path} element={<ProvidedPlugin />} />
-    <Route path={scenarioRouteRef.path} element={<ProvidedPlugin />} />
-  </Routes>
-);
+export function PluginRoot() {
+  return (
+    <Routes>
+      <Route path="/" element={<ProvidedPlugin />} />
+      <Route path={riScRouteRef.path} element={<ProvidedPlugin />} />
+      <Route path={scenarioRouteRef.path} element={<ProvidedPlugin />} />
+    </Routes>
+  );
+}

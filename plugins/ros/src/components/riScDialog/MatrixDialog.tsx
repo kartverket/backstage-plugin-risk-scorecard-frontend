@@ -13,13 +13,13 @@ import Typography from '@mui/material/Typography';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 
-export const MatrixDialog = ({
+export function MatrixDialog({
   open,
   close,
 }: {
   open: boolean;
   close: () => void;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -65,4 +65,4 @@ export const MatrixDialog = ({
       </DialogActions>
     </Dialog>
   );
-};
+}

@@ -20,11 +20,11 @@ import { Select } from '../../common/Select';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 
-export const ActionsStep = ({
+export function ActionsStep({
   formMethods,
 }: {
   formMethods: UseFormReturn<FormScenario>;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { control, register, setValue, watch, formState } = formMethods;
@@ -145,4 +145,4 @@ export const ActionsStep = ({
       </Stack>
     </Stack>
   );
-};
+}

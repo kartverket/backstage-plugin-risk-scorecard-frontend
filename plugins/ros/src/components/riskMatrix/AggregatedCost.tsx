@@ -14,7 +14,7 @@ interface AggregatedCostProps {
   initialRisk: boolean;
 }
 
-export const AggregatedCost = ({ riSc, initialRisk }: AggregatedCostProps) => {
+export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { outerBox, innerBox } = useAggregatedCostStyles();
   const { label2, body2 } = useFontStyles();
@@ -50,4 +50,4 @@ export const AggregatedCost = ({ riSc, initialRisk }: AggregatedCostProps) => {
       />
     </Box>
   );
-};
+}

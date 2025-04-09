@@ -33,9 +33,9 @@ export const RiScMigrationDialog = ({
 
   const [saveMigration, setSaveMigration] = useState<boolean>(false);
 
-  const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  function handleCheckboxInput(event: React.ChangeEvent<HTMLInputElement>) {
     setSaveMigration(event.target.checked);
-  };
+  }
 
   return (
     <Dialog open={openDialog}>
