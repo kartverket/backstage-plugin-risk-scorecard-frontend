@@ -53,10 +53,10 @@
     "@backstage/plugin-search-backend-node": "backstage:^",
     "@backstage/plugin-techdocs-backend": "backstage:^",
     "app": "link:../app",
-    "better-sqlite3": "^10",
+    "better-sqlite3": "^10.1.0",
     "isolated-vm": "^5.0.4",
     "jwt-decode": "^4.0.0",
-    "node-gyp": "^9.4.1",
+    "node-gyp": "^11.2.0",
     "pg": "^8.14.1",
     "winston": "^3.17.0"
   },
