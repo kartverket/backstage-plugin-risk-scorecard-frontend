@@ -17,10 +17,10 @@ import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
 
 export enum RiScDialogStates {
-  Closed,
-  Create,
-  EditRiscInfo,
-  EditEncryption,
+  Closed = 0,
+  Create = 1,
+  EditRiscInfo = 2,
+  EditEncryption = 3,
 }
 
 interface RiScDialogProps {
@@ -29,8 +29,8 @@ interface RiScDialogProps {
 }
 
 export enum CreateRiScFrom {
-  Scratch,
-  Default,
+  Scratch = 0,
+  Default = 1,
 }
 
 function RiScStepper({
