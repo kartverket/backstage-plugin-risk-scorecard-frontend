@@ -22,8 +22,7 @@ import { useIsMounted } from '../../../utils/hooks';
 import CircularProgress from '@mui/material/CircularProgress';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteAction } from '../../../utils/utilityfunctions';
-import ReactMarkdown from 'react-markdown';
-import 'github-markdown-css/github-markdown.css';
+import { Markdown } from '../../common/Markdown';
 
 interface ActionBoxProps {
   action: Action;
@@ -205,9 +204,7 @@ export function ActionBox({
         <Typography sx={{ ...label, marginTop: 1 }}>
           {t('dictionary.description')}
         </Typography>
-        <Typography className="markdown-body">
-          <ReactMarkdown>{action.description}</ReactMarkdown>
-        </Typography>
+        <Markdown description={action.description} />
 
         <Box
           sx={{

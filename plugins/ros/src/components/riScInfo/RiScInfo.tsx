@@ -7,8 +7,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useFontStyles } from '../../utils/style';
 import EditButton from '../common/EditButton';
 import { useRiScs } from '../../contexts/RiScContext';
-import ReactMarkdown from 'react-markdown';
-import 'github-markdown-css/github-markdown.css';
+import { Markdown } from '../common/Markdown';
 
 interface RiScInfoProps {
   riScWithMetadata: RiScWithMetadata;
@@ -47,9 +46,7 @@ export function RiScInfo({ riScWithMetadata, edit }: RiScInfoProps) {
             <EditButton onClick={edit} />
           </Box>
           <Typography className={label}>{t('dictionary.scope')}</Typography>
-          <Typography className="markdown-body">
-            <ReactMarkdown>{riScWithMetadata.content.scope}</ReactMarkdown>
-          </Typography>
+          <Markdown description={riScWithMetadata.content.scope} />
         </InfoCard>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
