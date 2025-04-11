@@ -325,7 +325,7 @@ export function RiScStatusComponent({
           <Box
             component="img"
             src={icons[updatedStatus] as string}
-            alt="Updated Status Icon"
+            alt={t(`rosStatus.updatedStatus.${updatedStatus}`)}
             sx={{ height: 24, width: 24 }}
           />
           <Typography paragraph variant="subtitle1">
@@ -345,7 +345,7 @@ export function RiScStatusComponent({
           <Box
             component="img"
             src={VeryOutdatedIcon as string}
-            alt="Error Status Icon"
+            alt={t('rosStatus.updatedStatus.error')}
             sx={{ height: 24, width: 24 }}
           />
           <Typography paragraph variant="subtitle1">
@@ -360,7 +360,7 @@ export function RiScStatusComponent({
         <Box
           component="img"
           src={DisabledIcon as string}
-          alt="Disabled Status Icon"
+          alt={t('rosStatus.updatedStatus.disabled')}
           sx={{ height: 24, width: 24 }}
         />
         <Typography paragraph variant="subtitle1">

@@ -86,6 +86,14 @@ export const pluginRiScTranslationRef = createTranslationRef({
         waiting: 'Awaiting approval',
         published: 'Published',
       },
+      updatedStatus: {
+        UPDATED: 'Updated status icon',
+        LITTLE_OUTDATED: 'Little outdated status icon',
+        OUTDATED: 'Outdated status icon',
+        VERY_OUTDATED: 'Very outdated status icon',
+        error: 'Error status icon',
+        disabled: 'Disabled status icon',
+      },
       lastModified: 'Last published: ',
       daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
       notPublishedYet: 'RiSc is not published yet',
@@ -558,7 +566,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.difference.differences.titleAdded':
             'Lagt til i ROS-analyse',
           'rosStatus.difference.differences.noneAdded': 'Ingenting er lagt til',
-
+          'rosStatus.updatedStatus.UPDATED': 'Oppdatert statusikon',
+          'rosStatus.updatedStatus.LITTLE_OUTDATED': 'Litt utdatert statusikon',
+          'rosStatus.updatedStatus.OUTDATED': 'Utdatert statusikon',
+          'rosStatus.updatedStatus.VERY_OUTDATED': 'Veldig utdatert statusikon',
+          'rosStatus.updatedStatus.error': 'Feil statusikon',
+          'rosStatus.updatedStatus.disabled': 'Deaktivert statusikon',
           'publishDialog.title': 'Godkjenn ROS-analyse',
           'publishDialog.checkboxLabel':
             'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
