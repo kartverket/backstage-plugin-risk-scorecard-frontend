@@ -346,7 +346,7 @@ export function RiScStatusComponent({
             <Box
               component="img"
               src={DisabledIcon as string}
-              alt="Diabled Status Icon"
+              alt="Disabled Status Icon"
               sx={{ height: 24, width: 24 }}
             />
             <Typography paragraph variant="subtitle1">
