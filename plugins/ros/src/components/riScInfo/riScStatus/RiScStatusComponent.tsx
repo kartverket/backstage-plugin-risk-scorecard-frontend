@@ -326,9 +326,13 @@ export function RiScStatusComponent({
               numCommits: numOfCommitsBehind.toString(),
             })}
           </Typography>
-        ) : (
+        ) : differenceFetchState.errorMessage ? (
           <Typography paragraph variant="subtitle1">
             {t('rosStatus.errorMessage')}
+          </Typography>
+        ) : (
+          <Typography paragraph variant="subtitle1">
+            {t('rosStatus.notPublishedYet')}
           </Typography>
         )}
       </Box>
