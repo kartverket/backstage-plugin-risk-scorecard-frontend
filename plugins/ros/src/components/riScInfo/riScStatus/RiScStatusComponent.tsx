@@ -313,48 +313,60 @@ export function RiScStatusComponent({
         </Typography>
       )}
       <Box mt={2} display="flex" gap={1}>
-        {numOfCommitsBehind !== null && daysSinceLastModified !== null ? (
-          <>
-            <Box
-              component="img"
-              src={icons[updatedStatus] as string}
-              alt="Updated Status Icon"
-              sx={{ height: 24, width: 24 }}
-            />
-            <Typography paragraph variant="subtitle1">
-              {t('rosStatus.lastModified')}
-              {t('rosStatus.daysSinceLastModified', {
-                days: daysSinceLastModified.toString(),
-                numCommits: numOfCommitsBehind.toString(),
-              })}
-            </Typography>
-          </>
-        ) : differenceFetchState.errorMessage ? (
-          <>
-            <Box
-              component="img"
-              src={icons[UpdatedStatusEnum.VERY_OUTDATED] as string}
-              alt="Error Status Icon"
-              sx={{ height: 24, width: 24 }}
-            />
-            <Typography paragraph variant="subtitle1">
-              {t('rosStatus.errorMessage')}
-            </Typography>
-          </>
-        ) : (
-          <>
-            <Box
-              component="img"
-              src={DisabledIcon as string}
-              alt="Disabled Status Icon"
-              sx={{ height: 24, width: 24 }}
-            />
-            <Typography paragraph variant="subtitle1">
-              {t('rosStatus.notPublishedYet')}
-            </Typography>
-          </>
-        )}
+        {renderStatusContent()}
       </Box>
     </InfoCard>
   );
+
+  function renderStatusContent() {
+    if (numOfCommitsBehind !== null && daysSinceLastModified !== null) {
+      return (
+        <>
+          <Box
+            component="img"
+            src={icons[updatedStatus] as string}
+            alt="Updated Status Icon"
+            sx={{ height: 24, width: 24 }}
+          />
+          <Typography paragraph variant="subtitle1">
+            {t('rosStatus.lastModified')}
+            {t('rosStatus.daysSinceLastModified', {
+              days: daysSinceLastModified.toString(),
+              numCommits: numOfCommitsBehind.toString(),
+            })}
+          </Typography>
+        </>
+      );
+    }
+
+    if (differenceFetchState.errorMessage) {
+      return (
+        <>
+          <Box
+            component="img"
+            src={icons[UpdatedStatusEnum.VERY_OUTDATED] as string}
+            alt="Error Status Icon"
+            sx={{ height: 24, width: 24 }}
+          />
+          <Typography paragraph variant="subtitle1">
+            {t('rosStatus.errorMessage')}
+          </Typography>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Box
+          component="img"
+          src={DisabledIcon as string}
+          alt="Disabled Status Icon"
+          sx={{ height: 24, width: 24 }}
+        />
+        <Typography paragraph variant="subtitle1">
+          {t('rosStatus.notPublishedYet')}
+        </Typography>
+      </>
+    );
+  }
 }
