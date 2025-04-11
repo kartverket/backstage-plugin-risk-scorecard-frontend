@@ -344,7 +344,7 @@ export function RiScStatusComponent({
         <>
           <Box
             component="img"
-            src={icons[UpdatedStatusEnum.VERY_OUTDATED] as string}
+            src={VeryOutdatedIcon as string}
             alt="Error Status Icon"
             sx={{ height: 24, width: 24 }}
           />
