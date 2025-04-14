@@ -1,4 +1,4 @@
-import { UseFormReturn } from 'react-hook-form';
+import { Controller, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -23,8 +23,6 @@ function ScopeFormSection({
   const {
     control,
     register,
-    setValue,
-    watch,
     formState: { errors },
   } = formMethods;
 
@@ -41,8 +39,6 @@ function ScopeFormSection({
       renderedValue: t(`vulnerabilities.${vulnerability}`),
     }),
   );
-
-  const currentDescription = watch('description');
 
   return (
     <Paper sx={section}>
@@ -69,12 +65,18 @@ function ScopeFormSection({
         labelTranslationKey="vulnerabilities"
         options={translatedVulnerabilities}
       />
-      <MarkdownInput
-        {...register('description')}
-        value={currentDescription}
-        onMarkdownChange={value => setValue('description', value)}
-        label={t('dictionary.description')}
-        minRows={4}
+      <Controller
+        control={control}
+        name="description"
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <MarkdownInput
+            value={value}
+            onMarkdownChange={onChange}
+            label={t('dictionary.description')}
+            minRows={4}
+            error={!!error}
+          />
+        )}
       />
     </Paper>
   );

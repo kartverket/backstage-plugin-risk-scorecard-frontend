@@ -5,7 +5,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { heading3 } from '../../common/typography';
-import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
+import {
+  Controller,
+  UseFieldArrayRemove,
+  UseFormReturn,
+} from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
 import {
   actionStatusOptions,
@@ -32,15 +36,13 @@ export function ActionFormItem({
 }: ActionFormItemProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const { control, register, setValue, watch, formState } = formMethods;
+  const { control, register, formState } = formMethods;
 
   const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
     value: actionStatus,
     /* @ts-ignore Because ts can't typecheck strings against our keys */
     renderedValue: t(`actionStatus.${actionStatus}`),
   }));
-
-  const currentActionDescription = watch(`actions.${index}.description`);
 
   return (
     <>
@@ -78,14 +80,18 @@ export function ActionFormItem({
           error={formState.errors?.actions?.[index]?.title !== undefined}
           label={t('dictionary.title')}
         />
-        <MarkdownInput
-          {...register(`actions.${index}.description`)}
-          label={t('dictionary.description')}
-          value={currentActionDescription}
-          onMarkdownChange={value =>
-            setValue(`actions.${index}.description`, value)
-          }
-          minRows={4}
+        <Controller
+          control={control}
+          name={`actions.${index}.description`}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <MarkdownInput
+              label={t('dictionary.description')}
+              value={value}
+              onMarkdownChange={onChange}
+              error={!!error}
+              minRows={4}
+            />
+          )}
         />
         <Box
           sx={{
