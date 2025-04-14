@@ -32,7 +32,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       value,
     );
 
-    const theme = useTheme(); // Access the theme for dynamic styling
+    const theme = useTheme();
 
     useEffect(() => {
       setMarkdownContent(value);
