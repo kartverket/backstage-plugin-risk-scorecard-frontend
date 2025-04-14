@@ -5,6 +5,7 @@ import FormLabel from '@mui/material/FormLabel';
 import MDEditor from '@uiw/react-md-editor';
 import { formHelperText, formLabel } from './typography';
 import { TextFieldProps } from '@material-ui/core';
+import { useTheme } from '@mui/material/styles';
 
 type Props = TextFieldProps & {
   sublabel?: string;
@@ -24,12 +25,15 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       minRows,
       value,
       onMarkdownChange,
+      disabled,
     },
     ref,
   ) => {
     const [markdownContent, setMarkdownContent] = useState<string | undefined>(
       value,
     );
+
+    const theme = useTheme(); // Access the theme for dynamic styling
 
     useEffect(() => {
       setMarkdownContent(value);
@@ -60,6 +64,17 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
           onChange={handleMarkdownChange}
           preview="edit"
           height={minRows ? minRows * 24 : 64}
+          style={{
+            color: disabled
+              ? theme.palette.mode === 'dark'
+                ? '#FFFFFF80'
+                : '#757575'
+              : 'inherit',
+            backgroundColor: disabled
+              ? theme.palette.action.disabledBackground
+              : 'inherit',
+            cursor: disabled ? 'not-allowed' : 'text',
+          }}
         />
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
