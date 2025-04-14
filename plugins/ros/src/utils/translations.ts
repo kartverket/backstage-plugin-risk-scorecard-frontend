@@ -617,14 +617,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.calculatedHowTitle':
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
-            'Konsekvens måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: K x S.',
+            'Konsekvens måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: 20^(S+K-1) kr/år.',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
-          'infoDialog.probabilityDescription.0': 'ca hvert 100. år',
-          'infoDialog.probabilityDescription.1': 'ca hvert 10. år',
-          'infoDialog.probabilityDescription.2': 'ca årlig',
-          'infoDialog.probabilityDescription.3': 'ca ukentlig',
-          'infoDialog.probabilityDescription.4': 'ca daglig',
+          'infoDialog.probabilityDescription.0': 'ca. én gang hvert 400. år',
+          'infoDialog.probabilityDescription.1': 'ca. én gang hvert 20. år',
+          'infoDialog.probabilityDescription.2': 'ca. årlig',
+          'infoDialog.probabilityDescription.3': 'ca. månedlig',
+          'infoDialog.probabilityDescription.4': 'ca. daglig',
           'infoDialog.example':
             'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr/hendelse x 50 hendelser/år = 1 500 000 kr/år.',
 
