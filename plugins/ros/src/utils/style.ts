@@ -60,12 +60,12 @@ export const useFontStyles = makeStyles(theme => ({
 }));
 
 // Common styles for Input, MarkdownInput, and Markdown components
-export const commonTextColor = (theme: Theme, disabled: boolean) =>
-  disabled
-    ? theme.palette.mode === 'dark'
-      ? '#FFFFFF80'
-      : '#757575'
-    : 'inherit';
+export const commonTextColor = (theme: Theme, disabled: boolean) => {
+  if (disabled) {
+    return theme.palette.mode === 'dark' ? '#FFFFFF80' : '#757575';
+  }
+  return 'inherit';
+};
 
 export const commonBackgroundColor = (theme: Theme, disabled: boolean) =>
   disabled ? theme.palette.action.disabledBackground : 'inherit';
