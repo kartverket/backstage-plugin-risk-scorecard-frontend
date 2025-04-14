@@ -21,7 +21,6 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       sublabel,
       error,
       helperText,
-      required,
       minRows,
       value,
       onMarkdownChange,
@@ -45,16 +44,8 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
     };
 
     return (
-      <FormControl
-        sx={{ width: '100%', gap: '4px' }}
-        error={error}
-        required={required}
-      >
-        {label && (
-          <FormLabel required={required} sx={formLabel}>
-            {label}
-          </FormLabel>
-        )}
+      <FormControl sx={{ width: '100%', gap: '4px' }} error={error}>
+        {label && <FormLabel sx={formLabel}>{label}</FormLabel>}
         {sublabel && (
           <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
         )}

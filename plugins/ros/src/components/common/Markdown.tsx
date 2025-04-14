@@ -2,6 +2,7 @@ import Typography from '@mui/material/Typography';
 import ReactMarkdown from 'react-markdown';
 import { useTheme } from '@mui/material/styles';
 import 'github-markdown-css/github-markdown.css';
+import remarkBreaks from 'remark-breaks';
 
 type Props = {
   description: string;
@@ -26,7 +27,9 @@ export function Markdown({ description, disabled }: Props) {
         cursor: disabled ? 'not-allowed' : 'text',
       }}
     >
-      <ReactMarkdown>{description}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+        {description}
+      </ReactMarkdown>
     </Typography>
   );
 }
