@@ -68,7 +68,6 @@ function ScopeFormSection({
       <Controller
         control={control}
         name="description"
-        rules={{ required: true }}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <MarkdownInput
             value={value}

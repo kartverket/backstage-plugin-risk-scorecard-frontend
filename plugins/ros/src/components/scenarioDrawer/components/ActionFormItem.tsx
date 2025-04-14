@@ -83,10 +83,8 @@ export function ActionFormItem({
         <Controller
           control={control}
           name={`actions.${index}.description`}
-          rules={{ required: true }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <MarkdownInput
-              required
               label={t('dictionary.description')}
               value={value}
               onMarkdownChange={onChange}

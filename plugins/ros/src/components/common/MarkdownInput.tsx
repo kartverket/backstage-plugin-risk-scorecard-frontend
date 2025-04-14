@@ -15,16 +15,7 @@ type Props = TextFieldProps & {
 
 export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
   (
-    {
-      label,
-      sublabel,
-      error,
-      helperText,
-      required,
-      minRows,
-      value,
-      onMarkdownChange,
-    },
+    { label, sublabel, error, helperText, minRows, value, onMarkdownChange },
     ref,
   ) => {
     const [markdownContent, setMarkdownContent] = useState<string | undefined>(
@@ -41,16 +32,8 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
     };
 
     return (
-      <FormControl
-        sx={{ width: '100%', gap: '4px' }}
-        error={error}
-        required={required}
-      >
-        {label && (
-          <FormLabel required={required} sx={formLabel}>
-            {label}
-          </FormLabel>
-        )}
+      <FormControl sx={{ width: '100%', gap: '4px' }} error={error}>
+        {label && <FormLabel sx={formLabel}>{label}</FormLabel>}
         {sublabel && (
           <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
         )}
