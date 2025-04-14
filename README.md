@@ -97,9 +97,9 @@ yarn upgrade-interactive
 
 ## Publishing a new plugin version
 
-If you want to publish a new version of the plugin, you need to update the versions in `plugins/ros/package.json`. Follow [semantic versioning](https://semver.org/).
+If you want to publish a new version of the plugin, you first need to update the version in `plugins/ros/package.json` (line 3). Follow [semantic versioning](https://semver.org/).
 
-Once the new version is updated on the `main` branch, you can create a new release with tags in the GitHub repository.
+Once the new version is updated on the `main` branch, you can create a new release with tags.
 
 **To create a new tag manually on GitHub:**
 
@@ -112,7 +112,7 @@ Once the new version is updated on the `main` branch, you can create a new relea
 **Alternatively, run the following in the terminal:**
 
 ```bash
-git tag -a v1.2.3 -m "A message explaining the new version"
+git tag -a vx.x.x -m "A message explaining the new version"
 git push origin --tags
 ```
 
