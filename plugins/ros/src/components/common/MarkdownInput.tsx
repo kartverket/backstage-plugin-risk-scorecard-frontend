@@ -6,6 +6,11 @@ import MDEditor from '@uiw/react-md-editor';
 import { formHelperText, formLabel } from './typography';
 import { TextFieldProps } from '@material-ui/core';
 import { useTheme } from '@mui/material/styles';
+import {
+  commonTextColor,
+  commonBackgroundColor,
+  formControlStyles,
+} from '../../utils/style';
 
 type Props = TextFieldProps & {
   sublabel?: string;
@@ -43,18 +48,8 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       onMarkdownChange?.(newValue || '');
     };
 
-    const textColor = disabled
-      ? theme.palette.mode === 'dark'
-        ? '#FFFFFF80'
-        : '#757575'
-      : 'inherit';
-
-    const backgroundColor = disabled
-      ? theme.palette.action.disabledBackground
-      : 'inherit';
-
     return (
-      <FormControl sx={{ width: '100%', gap: '4px' }} error={error}>
+      <FormControl sx={formControlStyles} error={error}>
         {label && <FormLabel sx={formLabel}>{label}</FormLabel>}
         {sublabel && (
           <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
@@ -66,8 +61,8 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
           preview="edit"
           height={minRows ? minRows * 24 : 64}
           style={{
-            color: textColor,
-            backgroundColor: backgroundColor,
+            color: commonTextColor(theme, disabled ?? false),
+            backgroundColor: commonBackgroundColor(theme, disabled ?? false),
           }}
         />
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
