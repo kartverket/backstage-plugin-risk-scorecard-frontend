@@ -12,19 +12,22 @@ type Props = {
 export function Markdown({ description, disabled }: Props) {
   const theme = useTheme();
 
+  const textColor = disabled
+    ? theme.palette.mode === 'dark'
+      ? '#FFFFFF80'
+      : '#757575'
+    : 'inherit';
+
+  const backgroundColor = disabled
+    ? theme.palette.action.disabledBackground
+    : 'inherit';
+
   return (
     <Typography
       className="markdown-body"
       sx={{
-        color: disabled
-          ? theme.palette.mode === 'dark'
-            ? '#FFFFFF80'
-            : '#757575'
-          : 'inherit',
-        backgroundColor: disabled
-          ? theme.palette.action.disabledBackground
-          : 'inherit',
-        cursor: disabled ? 'not-allowed' : 'text',
+        color: textColor,
+        backgroundColor: backgroundColor,
       }}
     >
       <ReactMarkdown remarkPlugins={[remarkBreaks]}>

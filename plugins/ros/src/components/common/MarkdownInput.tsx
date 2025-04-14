@@ -43,6 +43,16 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       onMarkdownChange?.(newValue || '');
     };
 
+    const textColor = disabled
+      ? theme.palette.mode === 'dark'
+        ? '#FFFFFF80'
+        : '#757575'
+      : 'inherit';
+
+    const backgroundColor = disabled
+      ? theme.palette.action.disabledBackground
+      : 'inherit';
+
     return (
       <FormControl sx={{ width: '100%', gap: '4px' }} error={error}>
         {label && <FormLabel sx={formLabel}>{label}</FormLabel>}
@@ -56,15 +66,8 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
           preview="edit"
           height={minRows ? minRows * 24 : 64}
           style={{
-            color: disabled
-              ? theme.palette.mode === 'dark'
-                ? '#FFFFFF80'
-                : '#757575'
-              : 'inherit',
-            backgroundColor: disabled
-              ? theme.palette.action.disabledBackground
-              : 'inherit',
-            cursor: disabled ? 'not-allowed' : 'text',
+            color: textColor,
+            backgroundColor: backgroundColor,
           }}
         />
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
