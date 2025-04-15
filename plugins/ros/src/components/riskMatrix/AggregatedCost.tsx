@@ -22,12 +22,16 @@ export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
   const [showDialog, setShowDialog] = useState(false);
 
   const cost = riSc.scenarios
-    .map(scenario =>
-      initialRisk
-        ? scenario.risk.probability * scenario.risk.consequence
-        : scenario.remainingRisk.probability *
-          scenario.remainingRisk.consequence,
-    )
+    .map(scenario => {
+      const probability = initialRisk
+        ? scenario.risk.probability
+        : scenario.remainingRisk.probability;
+      const consequence = initialRisk
+        ? scenario.risk.consequence
+        : scenario.remainingRisk.consequence;
+
+      return Math.pow(20, probability + consequence - 1);
+    })
     .reduce((a, b) => a + b, 0);
 
   return (
