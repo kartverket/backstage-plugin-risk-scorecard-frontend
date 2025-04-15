@@ -178,17 +178,24 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'Consequence is measured in cost (in NOK) per incident and probability is measured in incidents per year. ' +
         'The estimated risk is calculated as C x P.',
       consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
+      consequenceDescriptionGeneral: 'NOK/incident',
+      consequenceDescription: {
+        '0': '1 workday',
+        '1': '1 work month',
+        '2': '1 work year',
+        '3': '50 work years',
+        '4': '1000 work years',
+      },
       probabilityTitle: 'Probability (incidents/year)',
       probabilityDescription: {
-        '0': 'every 100 years', // 100 year intervals?
-        '1': 'every 10 years', // 10 year intervals?
-        '2': 'yearly', // almost yearly?
-        '3': 'weekly',
-        '4': 'daily',
+        '0': 'Once every 400 years',
+        '1': 'Once every 20 years',
+        '2': 'Annually',
+        '3': 'Monthly',
+        '4': 'Daily',
       },
       example:
-        'A scenario with consequence 2 and probability 4 has an estimated risk of ' +
-        '30 000 NOK/incident x 50 incidents/year = 1 500 000 NOK/year.',
+        'A risk scenario with consequence 2 (20^4 = 160,000 NOK/incident) and probability 4 (20^1 = 20 incidents/year) has an estimated risk of 20^(1+4-1) = 160,000 NOK/year.',
     },
     rosDialog: {
       titleNew: 'New risk scorecard',
@@ -619,12 +626,18 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.calculatedHow':
             'Konsekvens måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: 20^(S+K-1) kr/år.',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
+          'infoDialog.consequenceDescriptionGeneral': 'kr/hendelse',
+          'infoDialog.consequenceDescription.0': '1 dagsverk',
+          'infoDialog.consequenceDescription.1': '1 månedsverk',
+          'infoDialog.consequenceDescription.2': '1 årsverk',
+          'infoDialog.consequenceDescription.3': '50 årsverk',
+          'infoDialog.consequenceDescription.4': '1000 årsverk',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
-          'infoDialog.probabilityDescription.0': 'ca. én gang hvert 400. år',
-          'infoDialog.probabilityDescription.1': 'ca. én gang hvert 20. år',
-          'infoDialog.probabilityDescription.2': 'ca. årlig',
-          'infoDialog.probabilityDescription.3': 'ca. månedlig',
-          'infoDialog.probabilityDescription.4': 'ca. daglig',
+          'infoDialog.probabilityDescription.0': '1 gang hvert 400. år',
+          'infoDialog.probabilityDescription.1': '1 gang hvert 20. år',
+          'infoDialog.probabilityDescription.2': 'Årlig',
+          'infoDialog.probabilityDescription.3': 'Månedlig',
+          'infoDialog.probabilityDescription.4': 'Daglig',
           'infoDialog.example':
             'Et risikoscenario med konsekvens 2 (20^4 = 160 000 kr/hendelse) og sannsynlighet 4 (20^1 = 20 hendelser/år) har en estimert risiko på 20^(1+4-1) = 160 000 kr/år.',
 
