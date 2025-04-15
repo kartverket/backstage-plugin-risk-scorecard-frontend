@@ -176,7 +176,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       calculatedHowTitle: 'How do we calculate the estimated risk?',
       calculatedHow:
         'Consequence is measured in cost (in NOK) per incident and probability is measured in incidents per year. ' +
-        'The estimated risk is calculated as C x P.',
+        'The estimated risk is calculated as 20^(P+C-1) NOK/year.',
       consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
       consequenceDescriptionGeneral: 'NOK/incident',
       consequenceDescription: {
