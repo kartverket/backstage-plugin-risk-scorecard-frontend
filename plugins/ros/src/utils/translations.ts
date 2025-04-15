@@ -187,6 +187,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         '4': '1000 work years',
       },
       probabilityTitle: 'Probability (incidents/year)',
+      probabilityDescriptionGeneral: 'incidents/year',
       probabilityDescription: {
         '0': 'Once every 400 years',
         '1': 'Once every 20 years',
@@ -633,6 +634,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.consequenceDescription.3': '50 årsverk',
           'infoDialog.consequenceDescription.4': '1000 årsverk',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
+          'infoDialog.probabilityDescriptionGeneral': 'hendelse/år',
           'infoDialog.probabilityDescription.0': '1 gang hvert 400. år',
           'infoDialog.probabilityDescription.1': '1 gang hvert 20. år',
           'infoDialog.probabilityDescription.2': 'Årlig',
