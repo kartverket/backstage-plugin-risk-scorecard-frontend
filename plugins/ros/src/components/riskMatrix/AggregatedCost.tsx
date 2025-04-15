@@ -8,6 +8,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useFontStyles } from '../../utils/style';
 import { useAggregatedCostStyles } from './aggregatedCostStyle';
+import { probabilityOptions, consequenceOptions } from '../../utils/constants';
 
 interface AggregatedCostProps {
   riSc: RiSc;
@@ -30,7 +31,10 @@ export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
         ? scenario.risk.consequence
         : scenario.remainingRisk.consequence;
 
-      return Math.pow(20, probability + consequence - 1);
+      const probabilityIndex = probabilityOptions.indexOf(probability) + 1;
+      const consequenceIndex = consequenceOptions.indexOf(consequence) + 1;
+
+      return Math.pow(20, probabilityIndex + consequenceIndex - 1);
     })
     .reduce((a, b) => a + b, 0);
 

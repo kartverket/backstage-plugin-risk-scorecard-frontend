@@ -14,6 +14,10 @@ import { useScenario } from '../../../contexts/ScenarioContext';
 import { Risk } from '../../../utils/types';
 import { section } from '../scenarioDrawerComponents';
 import { body1, heading3, label, label2 } from '../../common/typography';
+import {
+  probabilityOptions,
+  consequenceOptions,
+} from '../../../utils/constants';
 
 interface RiskProps {
   risk: Risk;
@@ -24,7 +28,10 @@ function calculateCost(risk: Risk, initialRisk: boolean): number {
   const probability = initialRisk ? risk.probability : risk.probability;
   const consequence = initialRisk ? risk.consequence : risk.consequence;
 
-  return Math.pow(20, probability + consequence - 1);
+  const probabilityIndex = probabilityOptions.indexOf(probability) + 1;
+  const consequenceIndex = consequenceOptions.indexOf(consequence) + 1;
+
+  return Math.pow(20, probabilityIndex + consequenceIndex - 1);
 }
 
 function RiskBox({ risk, riskType }: RiskProps) {
