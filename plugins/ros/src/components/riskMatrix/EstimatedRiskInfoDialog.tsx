@@ -30,7 +30,7 @@ const ConsequenceDescription = ({
   <Fragment key={option}>
     <b>{index + 1}</b>: 20^{index + 3} = {formatNOK(option)}{' '}
     {t('infoDialog.consequenceDescriptionGeneral')} ={' '}
-    {t(`infoDialog.consequenceDescription.${index}`)}
+    <b>{t(`infoDialog.consequenceDescription.${index}`)}</b>
     <br />
   </Fragment>
 );
@@ -45,9 +45,9 @@ const ProbabilityDescription = ({
   t: any;
 }) => (
   <Fragment key={option}>
-    <b>{index + 1}</b>: 20^{index - 2} = {option} ={' '}
+    <b>{index + 1}</b>: 20^{index - 2} = {option}{' '}
     {t('infoDialog.probabilityDescriptionGeneral')} ={' '}
-    {t(`infoDialog.probabilityDescription.${index}`)}
+    <b>{t(`infoDialog.probabilityDescription.${index}`)}</b>
     <br />
   </Fragment>
 );
