@@ -626,7 +626,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.probabilityDescription.3': 'ca. månedlig',
           'infoDialog.probabilityDescription.4': 'ca. daglig',
           'infoDialog.example':
-            'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr/hendelse x 50 hendelser/år = 1 500 000 kr/år.',
+            'Et risikoscenario med konsekvens 2 (20^4 = 160 000 kr/hendelse) og sannsynlighet 4 (20^1 = 20 hendelser/år) har en estimert risiko på 20^(1+4-1) = 160 000 kr/år.',
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
