@@ -45,8 +45,9 @@ export function EstimatedRiskInfoDialog({
           <DialogContentText className={text}>
             {consequenceOptions.map((option, index) => (
               <Fragment key={option}>
-                {index + 1}: {formatNOK(option)} {/* @ts-ignore */}
-                {t(`infoDialog.consequenceDescription`)} = {/* @ts-ignore */}
+                <b>{index + 1}</b>: {formatNOK(option)} {/* @ts-ignore */}
+                {t('infoDialog.consequenceDescriptionGeneral')} ={' '}
+                {/* @ts-ignore */}
                 {t(`infoDialog.consequenceDescription.${index}`)}
                 <br />
               </Fragment>
@@ -58,7 +59,7 @@ export function EstimatedRiskInfoDialog({
           <DialogContentText className={text}>
             {probabilityOptions.map((option, index) => (
               <Fragment key={option}>
-                {index + 1}: {option} = {/* @ts-ignore */}
+                <b>{index + 1}</b>: {option} = {/* @ts-ignore */}
                 {t(`infoDialog.probabilityDescription.${index}`)}
                 <br />
               </Fragment>
