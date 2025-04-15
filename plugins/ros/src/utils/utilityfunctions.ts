@@ -421,8 +421,8 @@ export function calculateScenarioCost(
   probability: number,
   consequence: number,
 ): number {
-  const probabilityIndex = probabilityOptions.indexOf(probability) + 1;
-  const consequenceIndex = consequenceOptions.indexOf(consequence) + 1;
+  const probabilityIndex = probabilityOptions.indexOf(probability) - 2;
+  const consequenceIndex = consequenceOptions.indexOf(consequence) + 3;
 
   return Math.pow(20, probabilityIndex + consequenceIndex - 1);
 }
