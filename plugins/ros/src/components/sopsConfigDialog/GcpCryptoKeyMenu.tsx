@@ -134,6 +134,11 @@ export function GcpCryptoKeyMenu({
                   gcpCryptoKey={gcpCryptoKey}
                   handleClick={handleClickMenuItem}
                   hasAccess={hasAccess === 'true'}
+                  isSelected={
+                    gcpCryptoKey.projectId === chosenGcpCryptoKey.projectId &&
+                    gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing &&
+                    gcpCryptoKey.keyName === chosenGcpCryptoKey.keyName
+                  }
                 />
               ))}
             </ul>
