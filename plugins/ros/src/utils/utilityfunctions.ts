@@ -417,7 +417,7 @@ export function isDeeplyEqual<T>(
   return false;
 }
 
-export function calculateScenarioCost(
+export function calculateRiScCost(
   probability: number,
   consequence: number,
 ): number {

@@ -3,10 +3,7 @@ import { Box, IconButton, Typography } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
 import { RiSc } from '../../utils/types';
 import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
-import {
-  formatNumber,
-  calculateScenarioCost,
-} from '../../utils/utilityfunctions';
+import { formatNumber, calculateRiScCost } from '../../utils/utilityfunctions';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useFontStyles } from '../../utils/style';
@@ -33,7 +30,7 @@ export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
         ? scenario.risk.consequence
         : scenario.remainingRisk.consequence;
 
-      return calculateScenarioCost(probability, consequence);
+      return calculateRiScCost(probability, consequence);
     })
     .reduce((a, b) => a + b, 0);
 

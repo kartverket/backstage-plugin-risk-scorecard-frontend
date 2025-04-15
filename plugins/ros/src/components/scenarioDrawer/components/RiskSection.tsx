@@ -6,7 +6,7 @@ import {
   getConsequenceLevel,
   getRiskMatrixColor,
   getProbabilityLevel,
-  calculateScenarioCost,
+  calculateRiScCost,
 } from '../../../utils/utilityfunctions';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
@@ -25,7 +25,7 @@ function calculateCost(risk: Risk, initialRisk: boolean): number {
   const probability = initialRisk ? risk.probability : risk.probability;
   const consequence = initialRisk ? risk.consequence : risk.consequence;
 
-  return calculateScenarioCost(probability, consequence);
+  return calculateRiScCost(probability, consequence);
 }
 
 function RiskBox({ risk, riskType }: RiskProps) {
