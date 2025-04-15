@@ -84,15 +84,12 @@ export function ActionsStep({
                 </Box>
 
                 <Input
-                  {...register(`actions.${index}.title`)}
+                  required
+                  {...register(`actions.${index}.title`, { required: true })}
                   label={t('dictionary.title')}
                 />
-
                 <MarkdownInput
-                  required
-                  {...register(`actions.${index}.description`, {
-                    required: true,
-                  })}
+                  {...register(`actions.${index}.description`)}
                   error={
                     formState.errors?.actions?.[index]?.description !==
                     undefined
