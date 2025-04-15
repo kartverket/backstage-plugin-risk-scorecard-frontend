@@ -9,6 +9,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import AddIcon from '@mui/icons-material/Add';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState, MouseEvent } from 'react';
 
 interface GcpCryptoKeyMenuProps {
@@ -95,6 +96,7 @@ export function GcpCryptoKeyMenu({
                 </>
               }
             />
+            <ExpandMoreIcon sx={{ marginLeft: 'auto' }} />
             {!chosenGcpCryptoKey.hasEncryptDecryptAccess && (
               <>
                 <WarningAmberIcon sx={{ color: 'red' }} />
