@@ -53,6 +53,10 @@ export function GcpCryptoKeyMenu({
         position: 'relative',
         left: 0,
         marginTop: 1,
+        border: '1px solid',
+        borderColor: theme =>
+          theme.palette.mode === 'dark' ? 'white' : 'grey.300',
+        borderRadius: '4px',
       }}
     >
       <ListItemButton
