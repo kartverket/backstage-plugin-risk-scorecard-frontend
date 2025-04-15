@@ -29,7 +29,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       minRows,
       value,
       onMarkdownChange,
-      disabled,
+      disabled = false,
     },
     ref,
   ) => {
@@ -61,8 +61,8 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
           preview="edit"
           height={minRows ? minRows * 24 : 64}
           style={{
-            color: commonTextColor(theme, disabled ?? false),
-            backgroundColor: commonBackgroundColor(theme, disabled ?? false),
+            color: commonTextColor(theme, disabled),
+            backgroundColor: commonBackgroundColor(theme, disabled),
           }}
         />
         {helperText && <FormHelperText>{helperText}</FormHelperText>}

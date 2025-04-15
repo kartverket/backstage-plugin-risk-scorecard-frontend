@@ -10,15 +10,15 @@ type Props = {
   disabled?: boolean;
 };
 
-export function Markdown({ description, disabled }: Props) {
+export function Markdown({ description, disabled = false }: Props) {
   const theme = useTheme();
 
   return (
     <Typography
       className="markdown-body"
       sx={{
-        color: commonTextColor(theme, disabled ?? false),
-        backgroundColor: commonBackgroundColor(theme, disabled ?? false),
+        color: commonTextColor(theme, disabled),
+        backgroundColor: commonBackgroundColor(theme, disabled),
       }}
     >
       <ReactMarkdown remarkPlugins={[remarkBreaks]}>
