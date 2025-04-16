@@ -4,8 +4,6 @@ import { GcpCryptoKeyObject } from '../../utils/DTOs';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { Avatar } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
 
 interface GcpCryptoKeyMenuItemProps {
   value: string;
@@ -22,8 +20,6 @@ export function GcpCryptoKeyMenuItem({
   hasAccess,
   isSelected,
 }: GcpCryptoKeyMenuItemProps) {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-
   return (
     <MenuItem
       value={value}
