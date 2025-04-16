@@ -237,6 +237,7 @@ function ConfigEncryptionDialog({
                   flexDirection: 'column',
                   alignItems: 'space-between',
                   gap: 2,
+                  marginTop: 2,
                 }}
               >
                 {!isAddPublicAgeKeyVisible && (
