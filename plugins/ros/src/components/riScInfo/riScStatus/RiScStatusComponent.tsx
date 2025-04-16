@@ -130,7 +130,13 @@ export function RiScStatusComponent({
 
   function handleOpenPublishRiScDialog() {
     setPublishRiScDialogIsOpen(true);
+    setDifferenceFetchState(emptyDifferenceFetchState);
     getDifferences();
+  }
+
+  function handleClosePublishRiScDialog() {
+    setPublishRiScDialogIsOpen(false);
+    setDifferenceFetchState(emptyDifferenceFetchState);
   }
 
   useEffect(() => {
@@ -270,7 +276,7 @@ export function RiScStatusComponent({
               <RiScPublishDialog
                 openDialog={publishRiScDialogIsOpen}
                 handlePublish={handleApproveAndPublish}
-                handleCancel={() => setPublishRiScDialogIsOpen(false)}
+                handleCancel={handleClosePublishRiScDialog}
                 differenceFetchState={differenceFetchState}
               />
             </>
