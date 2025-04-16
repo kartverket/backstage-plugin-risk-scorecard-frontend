@@ -33,6 +33,7 @@ import {
   UpdatedStatusEnumType,
 } from '../../../utils/utilityfunctions';
 import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
+import { StatusIconWithText } from './StatusIconWithText';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -321,52 +322,36 @@ export function RiScStatusComponent({
   function renderStatusContent() {
     if (numOfCommitsBehind !== null && daysSinceLastModified !== null) {
       return (
-        <>
-          <Box
-            component="img"
-            src={icons[updatedStatus] as string}
-            alt={t(`rosStatus.updatedStatus.${updatedStatus}`)}
-            sx={{ height: 24, width: 24 }}
-          />
-          <Typography paragraph variant="subtitle1">
-            {t('rosStatus.lastModified')}
-            {t('rosStatus.daysSinceLastModified', {
+        <StatusIconWithText
+          iconSrc={icons[updatedStatus] as string}
+          altText={t(`rosStatus.updatedStatus.${updatedStatus}`)}
+          text={
+            t('rosStatus.lastModified') +
+            t('rosStatus.daysSinceLastModified', {
               days: daysSinceLastModified.toString(),
               numCommits: numOfCommitsBehind.toString(),
-            })}
-          </Typography>
-        </>
+            })
+          }
+        />
       );
     }
 
     if (differenceFetchState.errorMessage) {
       return (
-        <>
-          <Box
-            component="img"
-            src={VeryOutdatedIcon as string}
-            alt={t('rosStatus.updatedStatus.error')}
-            sx={{ height: 24, width: 24 }}
-          />
-          <Typography paragraph variant="subtitle1">
-            {t('rosStatus.errorMessage')}
-          </Typography>
-        </>
+        <StatusIconWithText
+          iconSrc={VeryOutdatedIcon as string}
+          altText={t('rosStatus.updatedStatus.error')}
+          text={t('rosStatus.errorMessage')}
+        />
       );
     }
 
     return (
-      <>
-        <Box
-          component="img"
-          src={DisabledIcon as string}
-          alt={t('rosStatus.updatedStatus.disabled')}
-          sx={{ height: 24, width: 24 }}
-        />
-        <Typography paragraph variant="subtitle1">
-          {t('rosStatus.notPublishedYet')}
-        </Typography>
-      </>
+      <StatusIconWithText
+        iconSrc={DisabledIcon as string}
+        altText={t('rosStatus.updatedStatus.disabled')}
+        text={t('rosStatus.notPublishedYet')}
+      />
     );
   }
 }
