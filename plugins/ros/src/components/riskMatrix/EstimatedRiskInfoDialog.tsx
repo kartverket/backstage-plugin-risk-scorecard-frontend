@@ -12,6 +12,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { consequenceOptions, probabilityOptions } from '../../utils/constants';
 import { formatNOK } from '../../utils/utilityfunctions';
 import { useEstimatedRiskInfoDialogStyles } from './estimatedRiskInfoDialogStyle';
+import parse from 'html-react-parser';
 
 interface EstimatedRiskInfoDialogProps {
   isOpen: boolean;
@@ -28,9 +29,9 @@ const ConsequenceDescription = ({
   t: any;
 }) => (
   <Fragment key={option}>
-    <b>{index + 1}</b>: 20^{index + 3} = {formatNOK(option)}{' '}
+    <b>{index + 1}</b>: 20<sup>{index + 3}</sup> = {formatNOK(option)}{' '}
     {t('infoDialog.consequenceDescriptionGeneral')} ={' '}
-    <b>{t(`infoDialog.consequenceDescription.${index}`)}</b>
+    <b>{parse(t(`infoDialog.consequenceDescription.${index}`))}</b>
     <br />
   </Fragment>
 );
@@ -45,9 +46,9 @@ const ProbabilityDescription = ({
   t: any;
 }) => (
   <Fragment key={option}>
-    <b>{index + 1}</b>: 20^{index - 2} = {option}{' '}
+    <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
     {t('infoDialog.probabilityDescriptionGeneral')} ={' '}
-    <b>{t(`infoDialog.probabilityDescription.${index}`)}</b>
+    <b>{parse(t(`infoDialog.probabilityDescription.${index}`))}</b>
     <br />
   </Fragment>
 );
@@ -71,7 +72,7 @@ export function EstimatedRiskInfoDialog({
             {t('infoDialog.calculatedHowTitle')}
           </Typography>
           <DialogContentText className={text}>
-            {t('infoDialog.calculatedHow')}
+            {parse(t('infoDialog.calculatedHow'))}
           </DialogContentText>
           <Typography style={{ fontWeight: 'bold' }}>
             {t('infoDialog.consequenceTitle')}
@@ -101,7 +102,7 @@ export function EstimatedRiskInfoDialog({
           </DialogContentText>
 
           <DialogContentText className={text}>
-            {t('infoDialog.example')}
+            {parse(t('infoDialog.example'))}
           </DialogContentText>
         </DialogContent>
       </Paper>

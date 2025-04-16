@@ -176,7 +176,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
       calculatedHowTitle: 'How do we calculate the estimated risk?',
       calculatedHow:
         'Consequence is measured in cost (in NOK) per incident and probability is measured in incidents per year. ' +
-        'The estimated risk is calculated as 20^(P+C-1) NOK/year.',
+        'The estimated risk is calculated as 20<sup>P+C-1</sup> NOK/year.',
       consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
       consequenceDescriptionGeneral: 'NOK/incident',
       consequenceDescription: {
@@ -196,7 +196,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         '4': 'Daily',
       },
       example:
-        'A risk scenario with consequence 2 (20^4 = 160,000 NOK/incident) and probability 4 (20^1 = 20 incidents/year) has an estimated risk of 20^(1+4-1) = 160,000 NOK/year.',
+        'A risk scenario with consequence 2 (20<sup>4</sup> = 160,000 NOK/incident) and probability 4 (20<sup>1</sup> = 20 incidents/year) has an estimated risk of 20<sup>1+4-1</sup> = 160,000 NOK/year.',
     },
     rosDialog: {
       titleNew: 'New risk scorecard',
@@ -625,7 +625,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.calculatedHowTitle':
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
-            'Konsekvens måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: 20^(S+K-1) kr/år.',
+            'Konsekvens måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: 20<sup>S+K-1</sup> kr/år.',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
           'infoDialog.consequenceDescriptionGeneral': 'kr/hendelse',
           'infoDialog.consequenceDescription.0': '1 dagsverk',
@@ -641,7 +641,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.probabilityDescription.3': 'Månedlig',
           'infoDialog.probabilityDescription.4': 'Daglig',
           'infoDialog.example':
-            'Et risikoscenario med konsekvens 2 (20^4 = 160 000 kr/hendelse) og sannsynlighet 4 (20^1 = 20 hendelser/år) har en estimert risiko på 20^(1+4-1) = 160 000 kr/år.',
+            'Et risikoscenario med konsekvens 2 (20<sup>4</sup> = 160 000 kr/hendelse) og sannsynlighet 4 (20<sup>1</sup> = 20 hendelser/år) har en estimert risiko på 20<sup>1+4-1</sup> = 160 000 kr/år.',
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
