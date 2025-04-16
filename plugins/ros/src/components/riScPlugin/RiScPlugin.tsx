@@ -22,7 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
-import { Edit } from '@mui/icons-material';
+import { Settings } from '@mui/icons-material';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -138,7 +138,7 @@ export function RiScPlugin() {
                 </Button>
                 {selectedRiSc && (
                   <Button
-                    startIcon={<Edit />}
+                    startIcon={<Settings />}
                     variant="text"
                     color="primary"
                     onClick={openEditEncryptionDialog}
