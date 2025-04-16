@@ -6,6 +6,7 @@ import {
   getConsequenceLevel,
   getRiskMatrixColor,
   getProbabilityLevel,
+  calculateRiScCost,
 } from '../../../utils/utilityfunctions';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
@@ -20,8 +21,17 @@ interface RiskProps {
   riskType: 'initialRisk' | 'restRisk';
 }
 
+function calculateCost(risk: Risk, initialRisk: boolean): number {
+  const probability = initialRisk ? risk.probability : risk.probability;
+  const consequence = initialRisk ? risk.consequence : risk.consequence;
+
+  return calculateRiScCost(probability, consequence);
+}
+
 function RiskBox({ risk, riskType }: RiskProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const cost = calculateCost(risk, riskType === 'initialRisk');
 
   return (
     <Paper sx={section}>
@@ -63,8 +73,7 @@ function RiskBox({ risk, riskType }: RiskProps) {
       <Box>
         <Typography sx={label}>{t('dictionary.estimatedRisk')}</Typography>
         <Typography sx={body1}>
-          {formatNOK(risk.consequence * risk.probability)}{' '}
-          {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+          {formatNOK(cost)} {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
         </Typography>
       </Box>
     </Paper>

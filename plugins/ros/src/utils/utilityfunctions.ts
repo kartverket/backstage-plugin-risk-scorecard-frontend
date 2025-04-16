@@ -416,3 +416,13 @@ export function isDeeplyEqual<T>(
   // If a or b is null or a primitive type, then they are not equal as a === b should have returned true already.
   return false;
 }
+
+export function calculateRiScCost(
+  probability: number,
+  consequence: number,
+): number {
+  const probabilityIndex = probabilityOptions.indexOf(probability) - 2;
+  const consequenceIndex = consequenceOptions.indexOf(consequence) + 3;
+
+  return Math.pow(20, probabilityIndex + consequenceIndex - 1);
+}
