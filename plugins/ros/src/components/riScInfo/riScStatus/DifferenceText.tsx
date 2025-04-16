@@ -4,6 +4,7 @@ import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
+import React from 'react';
 
 type DifferenceTextProps = {
   differenceFetchState: DifferenceFetchState;
@@ -11,6 +12,7 @@ type DifferenceTextProps = {
 
 export function DifferenceText({ differenceFetchState }: DifferenceTextProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
   return (
     <>
       <Typography
@@ -114,17 +116,66 @@ export function DifferenceText({ differenceFetchState }: DifferenceTextProps) {
             </Typography>
           </ListItem>
         )}
-        {differenceFetchState.differenceState.entriesOnRight.map(item => (
+        {Object.entries(
+          differenceFetchState.differenceState.entriesOnRight.reduce(
+            (acc: Record<string, any>, entry) => {
+              const [path, value] = entry.split(': ');
+              const keys = path.split('/');
+              keys.shift();
+              let current: Record<string, any> = acc;
+
+              keys.forEach((key, index) => {
+                if (!current[key]) {
+                  current[key] =
+                    index === keys.length - 1 ? JSON.parse(value) : {};
+                }
+                current = current[key];
+              });
+
+              return acc;
+            },
+            {} as Record<string, any>,
+          ),
+        ).map(([key, value]) => (
           <ListItem
-            key={item}
+            key={key}
             sx={{
-              display: 'list-item',
+              display: 'block',
               marginLeft: '26px',
               paddingTop: '4px',
               paddingBottom: '4px',
             }}
           >
-            <Typography>{item}</Typography>
+            <Typography sx={{ marginBottom: '4px' }}>
+              {key}:{' '}
+              {typeof value === 'object' ? (
+                <br />
+              ) : (
+                String(value).replace(/[{}"]/g, '')
+              )}
+            </Typography>
+            {typeof value === 'object' && value
+              ? Object.entries(value).map(([subKey, subValue]) => (
+                  <Typography
+                    key={subKey}
+                    sx={{ marginLeft: '16px', marginBottom: '4px' }}
+                  >
+                    <strong>{subKey}:</strong>{' '}
+                    {typeof subValue === 'object' && subValue !== null
+                      ? JSON.stringify(subValue, null, 2)
+                          .replace(/[{}"]/g, '')
+                          .replace(/,/g, '\n')
+                          .split('\n')
+                          .map((line, index) => (
+                            <React.Fragment key={index}>
+                              {line}
+                              <br />
+                            </React.Fragment>
+                          ))
+                      : String(subValue).replace(/[{}"]/g, '')}
+                  </Typography>
+                ))
+              : null}
           </ListItem>
         ))}
       </List>
