@@ -5,6 +5,12 @@ import FormLabel from '@mui/material/FormLabel';
 import MDEditor from '@uiw/react-md-editor';
 import { formHelperText, formLabel } from './typography';
 import { TextFieldProps } from '@material-ui/core';
+import { useTheme } from '@mui/material/styles';
+import {
+  commonTextColor,
+  commonBackgroundColor,
+  formControlStyles,
+} from '../../utils/style';
 
 type Props = TextFieldProps & {
   sublabel?: string;
@@ -15,12 +21,23 @@ type Props = TextFieldProps & {
 
 export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
   (
-    { label, sublabel, error, helperText, minRows, value, onMarkdownChange },
+    {
+      label,
+      sublabel,
+      error,
+      helperText,
+      minRows,
+      value,
+      onMarkdownChange,
+      disabled = false,
+    },
     ref,
   ) => {
     const [markdownContent, setMarkdownContent] = useState<string | undefined>(
       value,
     );
+
+    const theme = useTheme();
 
     useEffect(() => {
       setMarkdownContent(value);
@@ -32,7 +49,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
     };
 
     return (
-      <FormControl sx={{ width: '100%', gap: '4px' }} error={error}>
+      <FormControl sx={formControlStyles} error={error}>
         {label && <FormLabel sx={formLabel}>{label}</FormLabel>}
         {sublabel && (
           <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
@@ -43,6 +60,10 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
           onChange={handleMarkdownChange}
           preview="edit"
           height={minRows ? minRows * 24 : 64}
+          style={{
+            color: commonTextColor(theme, disabled),
+            backgroundColor: commonBackgroundColor(theme, disabled),
+          }}
         />
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
