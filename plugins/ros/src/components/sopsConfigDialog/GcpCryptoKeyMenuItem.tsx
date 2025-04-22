@@ -1,5 +1,5 @@
 import MenuItem from '@mui/material/MenuItem';
-import { VpnKey, Check } from '@mui/icons-material';
+import { VpnKey } from '@mui/icons-material';
 import { GcpCryptoKeyObject } from '../../utils/DTOs';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { Avatar } from '@mui/material';
@@ -33,7 +33,14 @@ export function GcpCryptoKeyMenuItem({
       }}
     >
       <ListItemAvatar>
-        <Avatar>{isSelected ? <Check /> : <VpnKey />} </Avatar>
+        <Avatar
+          sx={{
+            backgroundColor: isSelected ? 'primary.main' : 'default',
+            color: isSelected ? 'white' : 'inherit',
+          }}
+        >
+          <VpnKey />
+        </Avatar>
       </ListItemAvatar>
       <ListItemText
         primary={gcpCryptoKey.keyName}

@@ -81,7 +81,16 @@ export function GcpCryptoKeyMenu({
         ) : (
           <>
             <ListItemAvatar>
-              <Avatar>
+              <Avatar
+                sx={{
+                  backgroundColor:
+                    chosenGcpCryptoKey.projectId !== ''
+                      ? 'primary.main'
+                      : 'default',
+                  color:
+                    chosenGcpCryptoKey.projectId !== '' ? 'white' : 'inherit',
+                }}
+              >
                 <VpnKey />
               </Avatar>
             </ListItemAvatar>
