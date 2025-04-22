@@ -26,9 +26,9 @@ export function GcpCryptoKeyMenuItem({
       onClick={() => handleClick(JSON.parse(value) as GcpCryptoKeyObject)}
       disabled={!hasAccess}
       sx={{
-        backgroundColor: isSelected ? 'green.100' : 'inherit',
+        backgroundColor: isSelected ? 'inherit' : undefined,
         '&:hover': {
-          backgroundColor: isSelected ? 'green.200' : 'grey.100',
+          backgroundColor: isSelected ? 'inherit' : 'grey.100',
         },
       }}
     >
@@ -37,13 +37,7 @@ export function GcpCryptoKeyMenuItem({
       </ListItemAvatar>
       <ListItemText
         primary={gcpCryptoKey.keyName}
-        secondary={
-          <>
-            Project ID: {gcpCryptoKey.projectId}
-            <br />
-            Key ring: {gcpCryptoKey.keyRing}
-          </>
-        }
+        secondary={<>Project ID: {gcpCryptoKey.projectId}</>}
       />
     </MenuItem>
   );

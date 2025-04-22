@@ -88,13 +88,7 @@ export function GcpCryptoKeyMenu({
 
             <ListItemText
               primary={chosenGcpCryptoKey.keyName}
-              secondary={
-                <>
-                  Project ID: {chosenGcpCryptoKey.projectId}
-                  <br />
-                  Key ring: {chosenGcpCryptoKey.keyRing}
-                </>
-              }
+              secondary={<>Project ID: {chosenGcpCryptoKey.projectId}</>}
             />
             <ExpandMoreIcon sx={{ marginLeft: 'auto' }} />
             {!chosenGcpCryptoKey.hasEncryptDecryptAccess && (
