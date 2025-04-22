@@ -81,6 +81,13 @@ function ConfigEncryptionDialog({
       return gcpCryptoKeys[0];
     });
 
+  const [isAddPublicAgeKeyVisible, setIsAddPublicAgeKeyVisible] =
+    useState(false);
+
+  function showAddPublicAgeKey() {
+    setIsAddPublicAgeKeyVisible(true);
+  }
+
   useEffect(() => {
     setValue('sopsConfig', {
       shamir_threshold: 2,
@@ -174,24 +181,36 @@ function ConfigEncryptionDialog({
                   {t('sopsConfigDialog.publicAgeKeysAlreadyPresent')}
                 </FormLabel>
               )}
-              <List>
-                {publicAgeKeys.map(key => (
-                  <ListItem key={key} dense>
-                    <ListItemText>{key}</ListItemText>
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        onClick={() => {
-                          setPublicAgeKeys(
-                            publicAgeKeys.filter(k => k !== key),
-                          );
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
+              {publicAgeKeys.length > 0 && (
+                <Box
+                  sx={{
+                    border: '1px solid',
+                    borderColor: theme =>
+                      theme.palette.mode === 'dark' ? 'white' : 'grey.300',
+                    borderRadius: '4px',
+                    marginBottom: 2,
+                  }}
+                >
+                  <List>
+                    {publicAgeKeys.map(key => (
+                      <ListItem key={key} dense>
+                        <ListItemText>{key}</ListItemText>
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            onClick={() => {
+                              setPublicAgeKeys(
+                                publicAgeKeys.filter(k => k !== key),
+                              );
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
               <Typography>
                 {t('dictionary.click')}{' '}
                 <Link
@@ -218,36 +237,60 @@ function ConfigEncryptionDialog({
                   flexDirection: 'column',
                   alignItems: 'space-between',
                   gap: 2,
+                  marginTop: 2,
                 }}
               >
-                <TextField
-                  label={t('sopsConfigDialog.publicAgeKey')}
-                  helperText={publicAgeKeyHelperText}
-                  error={publicAgeKeyError}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') {
-                      handleAddPublicAgeKey();
-                    }
-                  }}
-                  onFocus={() => {
-                    setPublicKeyTextFieldError(false);
-                    setPublicKeyTextFieldHelperText('');
-                  }}
-                  value={newPublicAgeKey}
-                  onChange={e => setNewPublicAgeKey(e.target.value)}
-                />
-                <Button
-                  startIcon={<AddCircle />}
-                  variant="text"
-                  color="primary"
-                  onClick={handleAddPublicAgeKey}
-                  sx={{
-                    maxWidth: 200,
-                    mt: 1,
-                  }}
-                >
-                  {t('sopsConfigDialog.addPublicAgeKey')}
-                </Button>
+                {!isAddPublicAgeKeyVisible && (
+                  <Button
+                    startIcon={<AddCircle />}
+                    variant="text"
+                    color="primary"
+                    onClick={showAddPublicAgeKey}
+                    sx={{
+                      maxWidth: 200,
+                      mt: 1,
+                    }}
+                  >
+                    {t('sopsConfigDialog.addPublicAgeKey')}
+                  </Button>
+                )}
+                {isAddPublicAgeKeyVisible && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    <TextField
+                      label={t('sopsConfigDialog.publicAgeKey')}
+                      helperText={publicAgeKeyHelperText}
+                      error={publicAgeKeyError}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          handleAddPublicAgeKey();
+                        }
+                      }}
+                      onFocus={() => {
+                        setPublicKeyTextFieldError(false);
+                        setPublicKeyTextFieldHelperText('');
+                      }}
+                      value={newPublicAgeKey}
+                      onChange={e => setNewPublicAgeKey(e.target.value)}
+                      sx={{ flex: 1 }}
+                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleAddPublicAgeKey}
+                      sx={{
+                        maxWidth: 200,
+                      }}
+                    >
+                      {t('sopsConfigDialog.addPublicAgeKey')}
+                    </Button>
+                  </Box>
+                )}
               </Box>
             </Box>
           </AccordionDetails>
