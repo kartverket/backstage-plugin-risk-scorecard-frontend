@@ -12,7 +12,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { consequenceOptions, probabilityOptions } from '../../utils/constants';
 import { formatNOK } from '../../utils/utilityfunctions';
 import { useEstimatedRiskInfoDialogStyles } from './estimatedRiskInfoDialogStyle';
-import parse from 'html-react-parser';
 
 interface EstimatedRiskInfoDialogProps {
   isOpen: boolean;
@@ -31,7 +30,11 @@ const ConsequenceDescription = ({
   <Fragment key={option}>
     <b>{index + 1}</b>: 20<sup>{index + 3}</sup> = {formatNOK(option)}{' '}
     {t('infoDialog.consequenceDescriptionGeneral')} ={' '}
-    <b>{parse(t(`infoDialog.consequenceDescription.${index}`))}</b>
+    <b
+      dangerouslySetInnerHTML={{
+        __html: t(`infoDialog.consequenceDescription.${index}`),
+      }}
+    />
     <br />
   </Fragment>
 );
@@ -48,7 +51,11 @@ const ProbabilityDescription = ({
   <Fragment key={option}>
     <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
     {t('infoDialog.probabilityDescriptionGeneral')} ={' '}
-    <b>{parse(t(`infoDialog.probabilityDescription.${index}`))}</b>
+    <b
+      dangerouslySetInnerHTML={{
+        __html: t(`infoDialog.probabilityDescription.${index}`),
+      }}
+    />
     <br />
   </Fragment>
 );
@@ -71,9 +78,12 @@ export function EstimatedRiskInfoDialog({
           <Typography style={{ fontWeight: 'bold' }}>
             {t('infoDialog.calculatedHowTitle')}
           </Typography>
-          <DialogContentText className={text}>
-            {parse(t('infoDialog.calculatedHow'))}
-          </DialogContentText>
+          <DialogContentText
+            className={text}
+            dangerouslySetInnerHTML={{
+              __html: t('infoDialog.calculatedHow'),
+            }}
+          />
           <Typography style={{ fontWeight: 'bold' }}>
             {t('infoDialog.consequenceTitle')}
           </Typography>
@@ -101,9 +111,12 @@ export function EstimatedRiskInfoDialog({
             ))}
           </DialogContentText>
 
-          <DialogContentText className={text}>
-            {parse(t('infoDialog.example'))}
-          </DialogContentText>
+          <DialogContentText
+            className={text}
+            dangerouslySetInnerHTML={{
+              __html: t('infoDialog.example'),
+            }}
+          />
         </DialogContent>
       </Paper>
     </Dialog>
