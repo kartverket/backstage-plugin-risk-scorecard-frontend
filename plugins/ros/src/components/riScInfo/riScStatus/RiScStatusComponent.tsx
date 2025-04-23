@@ -130,13 +130,14 @@ export function RiScStatusComponent({
 
   function handleOpenPublishRiScDialog() {
     setPublishRiScDialogIsOpen(true);
-    setDifferenceFetchState(emptyDifferenceFetchState);
-    getDifferences();
+    if (!differenceFetchState.isLoading) {
+      getDifferences();
+    }
   }
 
   function handleClosePublishRiScDialog() {
     setPublishRiScDialogIsOpen(false);
-    setDifferenceFetchState(emptyDifferenceFetchState);
+    getDifferences();
   }
 
   useEffect(() => {
@@ -342,7 +343,10 @@ export function RiScStatusComponent({
       );
     }
 
-    if (differenceFetchState.errorMessage) {
+    if (
+      differenceFetchState.errorMessage &&
+      differenceFetchState.status !== 'GithubFileNotFound'
+    ) {
       return (
         <StatusIconWithText
           iconSrc={VeryOutdatedIcon as string}
