@@ -67,7 +67,7 @@ export function EstimatedRiskInfoDialog({
             {probabilityOptions.map((option, index) => (
               <Fragment key={index}>
                 <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
-                {t('infoDialog.probabilityUnit')} =
+                {t('infoDialog.probabilityUnit')} ={' '}
                 <span
                   dangerouslySetInnerHTML={{
                     // @ts-ignore
