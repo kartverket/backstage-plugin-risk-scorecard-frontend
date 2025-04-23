@@ -21,17 +21,10 @@ interface RiskProps {
   riskType: 'initialRisk' | 'restRisk';
 }
 
-function calculateCost(risk: Risk, initialRisk: boolean): number {
-  const probability = initialRisk ? risk.probability : risk.probability;
-  const consequence = initialRisk ? risk.consequence : risk.consequence;
-
-  return calculateRiScCost(probability, consequence);
-}
-
 function RiskBox({ risk, riskType }: RiskProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const cost = calculateCost(risk, riskType === 'initialRisk');
+  const cost = calculateRiScCost(risk.probability, risk.consequence);
 
   return (
     <Paper sx={section}>
