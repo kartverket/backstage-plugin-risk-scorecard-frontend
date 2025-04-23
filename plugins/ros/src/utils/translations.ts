@@ -8,6 +8,7 @@ export const pluginRiScMessages = {
     title: 'Risk scorecard',
     createNewButton: 'Create new scorecard',
     editEncryption: 'Edit encryption',
+    deleteButton: 'Delete scoreboard'
   },
   dictionary: {
     click: 'Click',
@@ -459,6 +460,11 @@ export const pluginRiScMessages = {
       'No SOPS configuration present on default branch of the GitHub repository',
     CreatedSops: 'SOPS configuration created successfully',
   },
+  deleteDialog: {
+    title: 'Delete Risk Scorecard',
+    confirmationMessage:
+      'Are you sure you want to delete this risk scorecard?',
+  },
 } as const;
 
 export const pluginRiScTranslationRef = createTranslationRef({
@@ -475,6 +481,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
           'contentHeader.editEncryption': 'Rediger kryptering',
+          'contentHeader.deleteButton': 'Slett analyse',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.click': 'Klikk',
           'dictionary.here': 'her',
@@ -913,6 +920,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.NoSopsConfigFound':
             'Ingen SOPS-konfigurasjon funnet på default branchen til GitHub-repoet',
           'infoMessages.CreatedSops': 'SOPS-konfigurasjon opprettet',
+          'deleteDialog.title': 'Slett risiko- og sårbarhetsanalyse',
+          'deleteDialog.confirmationMessage':
+            'Er du sikker på at du vil slette denne risiko- og sårbarhetsanalysen?',
         },
       }),
   },
