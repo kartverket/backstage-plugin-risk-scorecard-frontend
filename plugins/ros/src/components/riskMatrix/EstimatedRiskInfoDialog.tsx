@@ -12,7 +12,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { consequenceOptions, probabilityOptions } from '../../utils/constants';
 import { formatNOK } from '../../utils/utilityfunctions';
 import { useEstimatedRiskInfoDialogStyles } from './estimatedRiskInfoDialogStyle';
-import parse from 'html-react-parser';
 
 interface EstimatedRiskInfoDialogProps {
   isOpen: boolean;
@@ -37,9 +36,12 @@ export function EstimatedRiskInfoDialog({
           <Typography style={{ fontWeight: 'bold' }}>
             {t('infoDialog.calculatedHowTitle')}
           </Typography>
-          <DialogContentText className={text}>
-            {parse(t('infoDialog.calculatedHow'))}
-          </DialogContentText>
+          <DialogContentText
+            className={text}
+            dangerouslySetInnerHTML={{
+              __html: t('infoDialog.calculatedHow'),
+            }}
+          />
           <Typography style={{ fontWeight: 'bold' }}>
             {t('infoDialog.consequenceTitle')}
           </Typography>
@@ -70,9 +72,12 @@ export function EstimatedRiskInfoDialog({
             ))}
           </DialogContentText>
 
-          <DialogContentText className={text}>
-            {parse(t('infoDialog.example'))}
-          </DialogContentText>
+          <DialogContentText
+            className={text}
+            dangerouslySetInnerHTML={{
+              __html: t('infoDialog.example'),
+            }}
+          />
         </DialogContent>
       </Paper>
     </Dialog>
