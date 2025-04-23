@@ -321,21 +321,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   }
 
   function deleteRiSc(riSc: RiScWithMetadata) {
-    setIsRequesting(true);
-    setUpdateStatus({
-      isLoading: true,
-      isError: false,
-      isSuccess: false,
-    });
-    if (riScs) {
-      const updatedRiScs = riScs.filter(r => r.id !== riSc.id);
-      setRiScs(updatedRiScs);
-      setResponse({
-        statusMessage: t('infoMessages.RiScDeleted'),
-        status: ProcessingStatus.Success,
-      });
-    }
-    setIsRequesting(false);
+    // TODO : Implement delete functionality where a deletion request is sent to the backend and a PR is made with the deletion - needs to be approved?
   }
 
   function updateRiSc(
