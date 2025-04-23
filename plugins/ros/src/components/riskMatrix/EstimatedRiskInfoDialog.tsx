@@ -51,8 +51,12 @@ export function EstimatedRiskInfoDialog({
                 <b>{index + 1}</b>: 20<sup>{index + 3}</sup> ={' '}
                 {formatNOK(option)}{' '}
                 {t('infoDialog.consequenceDescriptionGeneral')} ={' '}
-                {/* @ts-ignore */}
-                <b>{parse(t(`infoDialog.consequenceDescription.${index}`))}</b>
+                <span
+                  dangerouslySetInnerHTML={{
+                    // @ts-ignore
+                    __html: t(`infoDialog.consequenceDescription.${index}`),
+                  }}
+                />
                 <br />
               </Fragment>
             ))}
@@ -65,8 +69,12 @@ export function EstimatedRiskInfoDialog({
               <Fragment key={index}>
                 <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
                 {t('infoDialog.probabilityDescriptionGeneral')} =
-                {/* @ts-ignore */}
-                <b>{parse(t(`infoDialog.probabilityDescription.${index}`))}</b>
+                <span
+                  dangerouslySetInnerHTML={{
+                    // @ts-ignore
+                    __html: t(`infoDialog.probabilityDescription.${index}`),
+                  }}
+                />
                 <br />
               </Fragment>
             ))}
