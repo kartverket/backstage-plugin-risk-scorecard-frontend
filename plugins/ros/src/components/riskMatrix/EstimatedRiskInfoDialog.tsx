@@ -49,8 +49,7 @@ export function EstimatedRiskInfoDialog({
             {consequenceOptions.map((option, index) => (
               <Fragment key={index}>
                 <b>{index + 1}</b>: 20<sup>{index + 3}</sup> ={' '}
-                {formatNOK(option)}{' '}
-                {t('infoDialog.consequenceDescriptionGeneral')} ={' '}
+                {formatNOK(option)} {t('infoDialog.consequenceUnit')} ={' '}
                 <span
                   dangerouslySetInnerHTML={{
                     // @ts-ignore
@@ -68,7 +67,7 @@ export function EstimatedRiskInfoDialog({
             {probabilityOptions.map((option, index) => (
               <Fragment key={index}>
                 <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
-                {t('infoDialog.probabilityDescriptionGeneral')} =
+                {t('infoDialog.probabilityUnit')} =
                 <span
                   dangerouslySetInnerHTML={{
                     // @ts-ignore

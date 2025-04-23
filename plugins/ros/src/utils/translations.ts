@@ -178,7 +178,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         'Consequence is measured in cost (in NOK) per incident and probability is measured in incidents per year. ' +
         'The estimated risk is calculated as 20<sup>P+C-1</sup> NOK/year.',
       consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
-      consequenceDescriptionGeneral: 'NOK/incident',
+      consequenceUnit: 'NOK/incident',
       consequenceDescription: {
         '0': '1 workday',
         '1': '1 work month',
@@ -187,7 +187,7 @@ export const pluginRiScTranslationRef = createTranslationRef({
         '4': '1000 work years',
       },
       probabilityTitle: 'Probability (incidents/year)',
-      probabilityDescriptionGeneral: 'incidents/year',
+      probabilityUnit: 'incidents/year',
       probabilityDescription: {
         '0': 'Once every 400 years',
         '1': 'Once every 20 years',
@@ -627,14 +627,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.calculatedHow':
             'Konsekvens måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: 20<sup>S+K-1</sup> kr/år.',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
-          'infoDialog.consequenceDescriptionGeneral': 'kr/hendelse',
+          'infoDialog.consequenceUnit': 'kr/hendelse',
           'infoDialog.consequenceDescription.0': '1 dagsverk',
           'infoDialog.consequenceDescription.1': '1 månedsverk',
           'infoDialog.consequenceDescription.2': '1 årsverk',
           'infoDialog.consequenceDescription.3': '50 årsverk',
           'infoDialog.consequenceDescription.4': '1000 årsverk',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
-          'infoDialog.probabilityDescriptionGeneral': 'hendelse/år',
+          'infoDialog.probabilityUnit': 'hendelse/år',
           'infoDialog.probabilityDescription.0': '1 gang hvert 400. år',
           'infoDialog.probabilityDescription.1': '1 gang hvert 20. år',
           'infoDialog.probabilityDescription.2': 'Årlig',
