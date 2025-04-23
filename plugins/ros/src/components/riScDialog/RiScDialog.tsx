@@ -60,7 +60,8 @@ function RiScStepper({
 
 export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { selectedRiSc, createNewRiSc, updateRiSc, gcpCryptoKeys } = useRiScs();
+  const { selectedRiSc, createNewRiSc, deleteRiSc, updateRiSc, gcpCryptoKeys } =
+    useRiScs();
 
   const {
     register,
