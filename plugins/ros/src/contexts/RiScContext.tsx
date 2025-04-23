@@ -43,6 +43,7 @@ type RiScDrawerProps = {
   selectRiSc: (title: string) => void;
   selectedRiSc: RiScWithMetadata | null;
   createNewRiSc: (riSc: RiScWithMetadata, generateDefault: boolean) => void;
+  deleteRiSc: (riSc: RiScWithMetadata) => void;
   updateRiSc: (
     riSc: RiScWithMetadata,
     onSuccess?: () => void,
@@ -319,6 +320,24 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     );
   }
 
+  function deleteRiSc(riSc: RiScWithMetadata) {
+    setIsRequesting(true);
+    setUpdateStatus({
+      isLoading: true,
+      isError: false,
+      isSuccess: false,
+    });
+    if (riScs) {
+      const updatedRiScs = riScs.filter(r => r.id !== riSc.id);
+      setRiScs(updatedRiScs);
+      setResponse({
+        statusMessage: t('infoMessages.RiScDeleted'),
+        status: ProcessingStatus.Success,
+      });
+    }
+    setIsRequesting(false);
+  }
+
   function updateRiSc(
     riSc: RiScWithMetadata,
     onSuccess?: () => void,
@@ -450,6 +469,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     selectRiSc,
     selectedRiSc,
     createNewRiSc,
+    deleteRiSc,
     updateRiSc,
     approveRiSc,
     updateStatus,
