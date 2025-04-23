@@ -19,40 +19,6 @@ interface EstimatedRiskInfoDialogProps {
   onClose: () => void;
 }
 
-const ConsequenceDescription = ({
-  option,
-  index,
-  t,
-}: {
-  option: number;
-  index: number;
-  t: any;
-}) => (
-  <Fragment key={option}>
-    <b>{index + 1}</b>: 20<sup>{index + 3}</sup> = {formatNOK(option)}{' '}
-    {t('infoDialog.consequenceDescriptionGeneral')} ={' '}
-    <b>{parse(t(`infoDialog.consequenceDescription.${index}`))}</b>
-    <br />
-  </Fragment>
-);
-
-const ProbabilityDescription = ({
-  option,
-  index,
-  t,
-}: {
-  option: number;
-  index: number;
-  t: any;
-}) => (
-  <Fragment key={option}>
-    <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
-    {t('infoDialog.probabilityDescriptionGeneral')} ={' '}
-    <b>{parse(t(`infoDialog.probabilityDescription.${index}`))}</b>
-    <br />
-  </Fragment>
-);
-
 export function EstimatedRiskInfoDialog({
   isOpen,
   onClose,
@@ -79,12 +45,14 @@ export function EstimatedRiskInfoDialog({
           </Typography>
           <DialogContentText className={text}>
             {consequenceOptions.map((option, index) => (
-              <ConsequenceDescription
-                key={index}
-                option={option}
-                index={index}
-                t={t}
-              />
+              <Fragment key={index}>
+                <b>{index + 1}</b>: 20<sup>{index + 3}</sup> ={' '}
+                {formatNOK(option)}{' '}
+                {t('infoDialog.consequenceDescriptionGeneral')} ={' '}
+                {/* @ts-ignore */}
+                <b>{parse(t(`infoDialog.consequenceDescription.${index}`))}</b>
+                <br />
+              </Fragment>
             ))}
           </DialogContentText>
           <Typography style={{ fontWeight: 'bold' }}>
@@ -92,12 +60,13 @@ export function EstimatedRiskInfoDialog({
           </Typography>
           <DialogContentText className={text}>
             {probabilityOptions.map((option, index) => (
-              <ProbabilityDescription
-                key={index}
-                option={option}
-                index={index}
-                t={t}
-              />
+              <Fragment key={index}>
+                <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
+                {t('infoDialog.probabilityDescriptionGeneral')} =
+                {/* @ts-ignore */}
+                <b>{parse(t(`infoDialog.probabilityDescription.${index}`))}</b>
+                <br />
+              </Fragment>
             ))}
           </DialogContentText>
 
