@@ -3,6 +3,7 @@ import {
   DifferenceFetchState,
   RiScStatus,
   RiScWithMetadata,
+  DifferenceStatus,
 } from '../../../utils/types';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
@@ -33,6 +34,7 @@ import {
   UpdatedStatusEnumType,
 } from '../../../utils/utilityfunctions';
 import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
+import { StatusIconWithText } from './StatusIconWithText';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -116,7 +118,7 @@ export function RiScStatusComponent({
         setDifferenceFetchState({
           ...emptyDifferenceFetchState,
           errorMessage: t('rosStatus.difference.error'),
-          status: 'FrontendFallback', // Fallback when the backend does not deliver a response with status
+          status: DifferenceStatus.FrontendFallback, // Fallback when the backend does not deliver a response with status
         });
       },
     );
@@ -130,6 +132,10 @@ export function RiScStatusComponent({
   function handleOpenPublishRiScDialog() {
     setPublishRiScDialogIsOpen(true);
     getDifferences();
+  }
+
+  function handleClosePublishRiScDialog() {
+    setPublishRiScDialogIsOpen(false);
   }
 
   useEffect(() => {
@@ -269,7 +275,7 @@ export function RiScStatusComponent({
               <RiScPublishDialog
                 openDialog={publishRiScDialogIsOpen}
                 handlePublish={handleApproveAndPublish}
-                handleCancel={() => setPublishRiScDialogIsOpen(false)}
+                handleCancel={handleClosePublishRiScDialog}
                 differenceFetchState={differenceFetchState}
               />
             </>
@@ -321,52 +327,39 @@ export function RiScStatusComponent({
   function renderStatusContent() {
     if (numOfCommitsBehind !== null && daysSinceLastModified !== null) {
       return (
-        <>
-          <Box
-            component="img"
-            src={icons[updatedStatus] as string}
-            alt={t(`rosStatus.updatedStatus.${updatedStatus}`)}
-            sx={{ height: 24, width: 24 }}
-          />
-          <Typography paragraph variant="subtitle1">
-            {t('rosStatus.lastModified')}
-            {t('rosStatus.daysSinceLastModified', {
+        <StatusIconWithText
+          iconSrc={icons[updatedStatus] as string}
+          altText={t(`rosStatus.updatedStatus.${updatedStatus}`)}
+          text={
+            t('rosStatus.lastModified') +
+            t('rosStatus.daysSinceLastModified', {
               days: daysSinceLastModified.toString(),
               numCommits: numOfCommitsBehind.toString(),
-            })}
-          </Typography>
-        </>
+            })
+          }
+        />
       );
     }
 
-    if (differenceFetchState.errorMessage) {
+    if (
+      differenceFetchState.errorMessage &&
+      differenceFetchState.status !== DifferenceStatus.GithubFileNotFound
+    ) {
       return (
-        <>
-          <Box
-            component="img"
-            src={VeryOutdatedIcon as string}
-            alt={t('rosStatus.updatedStatus.error')}
-            sx={{ height: 24, width: 24 }}
-          />
-          <Typography paragraph variant="subtitle1">
-            {t('rosStatus.errorMessage')}
-          </Typography>
-        </>
+        <StatusIconWithText
+          iconSrc={VeryOutdatedIcon as string}
+          altText={t('rosStatus.updatedStatus.error')}
+          text={t('rosStatus.errorMessage')}
+        />
       );
     }
 
     return (
-      <>
-        <Box
-          component="img"
-          src={DisabledIcon as string}
-          alt={t('rosStatus.updatedStatus.disabled')}
-          sx={{ height: 24, width: 24 }}
-        />
-        <Typography paragraph variant="subtitle1">
-          {t('rosStatus.notPublishedYet')}
-        </Typography>
-      </>
+      <StatusIconWithText
+        iconSrc={DisabledIcon as string}
+        altText={t('rosStatus.updatedStatus.disabled')}
+        text={t('rosStatus.notPublishedYet')}
+      />
     );
   }
 }
