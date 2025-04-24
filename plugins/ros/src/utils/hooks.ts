@@ -96,7 +96,7 @@ export function useAuthenticatedFetch() {
 
   function fullyAuthenticatedFetch<T, K>(
     uri: string,
-    method: 'GET' | 'POST' | 'PUT',
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     onSuccess: (response: T) => void,
     onError: (error: K, rejectedLogin: boolean) => void,
     body?: string,
@@ -325,11 +325,29 @@ export function useAuthenticatedFetch() {
     );
   }
 
+  function deleteRiScs(
+    riSc: RiScWithMetadata,
+    onSuccess?: () => void,
+    onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
+  ) {
+    fullyAuthenticatedFetch<void, ProcessRiScResultDTO>(
+      uriToFetchRiSc(riSc.id),
+      'DELETE',
+      () => {
+        if (onSuccess) onSuccess();
+      },
+      (error, rejectedLogin) => {
+        if (onError) onError(error, rejectedLogin);
+      },
+    );
+  }
+
   return {
     fetchRiScs,
     fetchGcpCryptoKeys,
     postRiScs,
     putRiScs,
+    deleteRiScs,
     publishRiScs,
     response,
     setResponse,
