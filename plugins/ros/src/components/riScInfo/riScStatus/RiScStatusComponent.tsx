@@ -131,14 +131,11 @@ export function RiScStatusComponent({
 
   function handleOpenPublishRiScDialog() {
     setPublishRiScDialogIsOpen(true);
-    if (!differenceFetchState.isLoading) {
-      getDifferences();
-    }
+    getDifferences();
   }
 
   function handleClosePublishRiScDialog() {
     setPublishRiScDialogIsOpen(false);
-    getDifferences();
   }
 
   useEffect(() => {
