@@ -74,6 +74,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     fetchRiScs,
     fetchGcpCryptoKeys,
     postRiScs,
+    deleteRiScs,
     putRiScs,
     publishRiScs,
     response,
@@ -321,6 +322,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   }
 
   function deleteRiSc(riSc: RiScWithMetadata) {
+    setIsFetching(true);
+    setSelectedRiSc(riSc);
+    deleteRiScs(riSc);
     // TODO : Implement delete functionality where a deletion request is sent to the backend and a PR is made with the deletion - needs to be approved?
   }
 
