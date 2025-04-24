@@ -69,7 +69,9 @@
     "@backstage/cli": "backstage:^",
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
+    "@backstage/test-utils": "^1.7.7",
     "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react-hooks": "^8.0.1",
     "@types/react": "^18.3.20",
     "prettier": "^3.5.3"
   },

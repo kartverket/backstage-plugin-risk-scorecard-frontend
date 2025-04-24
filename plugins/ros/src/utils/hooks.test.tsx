@@ -16,6 +16,10 @@ jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: jest.fn(),
 }));
 
+const MOCK_ID_TOKEN = '<fake-id-token>';
+const MOCK_GCP_TOKEN = '<fake-google-token>';
+const MOCK_GITHUB_TOKEN = '<fake-github-token>';
+
 describe('useGithubRepositoryInformation', () => {
   it('extracts the org and repo from annotations', () => {
     (useEntity as jest.Mock).mockReturnValue({
@@ -72,9 +76,11 @@ describe('useAuthenticatedFetch', () => {
 
   describe('uriToFetchRiSc', () => {
     it('calls fetch with bearer token and GCP access token', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
         json: async () => [{ ID: '1' }],
@@ -95,8 +101,8 @@ describe('useAuthenticatedFetch', () => {
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
-            Authorization: 'Bearer id-token',
-            'GCP-Access-Token': 'google-token',
+            Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+            'GCP-Access-Token': MOCK_GCP_TOKEN,
           }),
         }),
       );
@@ -105,9 +111,11 @@ describe('useAuthenticatedFetch', () => {
     });
 
     it('onSuccess is not called and no error is thrown when fetch fails', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
 
       mockFetchApi.fetch.mockResolvedValue({
         ok: false,
@@ -155,9 +163,11 @@ describe('useAuthenticatedFetch', () => {
 
   describe('postRiScs', () => {
     it('calls fetch with correct headers', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -201,9 +211,9 @@ describe('useAuthenticatedFetch', () => {
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
-            Authorization: 'Bearer id-token',
-            'GCP-Access-Token': 'google-token',
-            'GitHub-Access-Token': 'github-token',
+            Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+            'GCP-Access-Token': MOCK_GCP_TOKEN,
+            'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
           }),
         }),
       );
@@ -213,18 +223,20 @@ describe('useAuthenticatedFetch', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            Authorization: 'Bearer id-token',
-            'GCP-Access-Token': 'google-token',
-            'GitHub-Access-Token': 'github-token',
+            Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+            'GCP-Access-Token': MOCK_GCP_TOKEN,
+            'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
           }),
         }),
       );
     });
 
     it('calls fetch with correct body', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -281,9 +293,11 @@ describe('useAuthenticatedFetch', () => {
     });
 
     it('calls onError on fetch failure', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -334,9 +348,11 @@ describe('useAuthenticatedFetch', () => {
 
   describe('putRiSc', () => {
     it('calls fetch with correct data', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -390,9 +406,11 @@ describe('useAuthenticatedFetch', () => {
     });
 
     it('calls fetch with correct headers', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -438,17 +456,19 @@ describe('useAuthenticatedFetch', () => {
       const [, putOptions] = putCall!;
       expect(putOptions.headers).toEqual(
         expect.objectContaining({
-          Authorization: 'Bearer id-token',
-          'GCP-Access-Token': 'google-token',
-          'GitHub-Access-Token': 'github-token',
+          Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+          'GCP-Access-Token': MOCK_GCP_TOKEN,
+          'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
         }),
       );
     });
 
     it('calls onError on fetch failure', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -494,9 +514,11 @@ describe('useAuthenticatedFetch', () => {
 
   describe('publishRiScs', () => {
     it('calls fetch with correct headers', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -529,17 +551,19 @@ describe('useAuthenticatedFetch', () => {
       const [, postOptions] = postCall!;
       expect(postOptions.headers).toEqual(
         expect.objectContaining({
-          Authorization: 'Bearer id-token',
-          'GCP-Access-Token': 'google-token',
-          'GitHub-Access-Token': 'github-token',
+          Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+          'GCP-Access-Token': MOCK_GCP_TOKEN,
+          'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
         }),
       );
     });
 
     it('calls fetch with correct body', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -580,9 +604,11 @@ describe('useAuthenticatedFetch', () => {
     });
 
     it('onError is called on fetch failure', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -615,9 +641,11 @@ describe('useAuthenticatedFetch', () => {
 
   describe('fetchDifference', () => {
     it('calls fetch with correct headers', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -667,17 +695,19 @@ describe('useAuthenticatedFetch', () => {
       const [, postOptions] = postCall!;
       expect(postOptions.headers).toEqual(
         expect.objectContaining({
-          Authorization: 'Bearer id-token',
-          'GCP-Access-Token': 'google-token',
-          'GitHub-Access-Token': 'github-token',
+          Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+          'GCP-Access-Token': MOCK_GCP_TOKEN,
+          'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
         }),
       );
     });
 
     it('calls fetch with correct body', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -735,9 +765,11 @@ describe('useAuthenticatedFetch', () => {
     });
 
     it('onError is called on fetch failure', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -782,9 +814,11 @@ describe('useAuthenticatedFetch', () => {
 
   describe('fetchGcpCryptoKeys', () => {
     it('calls fetch with correct headers', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -817,17 +851,19 @@ describe('useAuthenticatedFetch', () => {
       const [, postOptions] = postCall!;
       expect(postOptions.headers).toEqual(
         expect.objectContaining({
-          Authorization: 'Bearer id-token',
-          'GCP-Access-Token': 'google-token',
-          'GitHub-Access-Token': 'github-token',
+          Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+          'GCP-Access-Token': MOCK_GCP_TOKEN,
+          'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
         }),
       );
     });
 
     it('onSuccess is called with GcpKryptoKeys', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
@@ -857,9 +893,11 @@ describe('useAuthenticatedFetch', () => {
     });
 
     it('onError is called on fetch failure', async () => {
-      mockGoogleApi.getAccessToken.mockResolvedValue('google-token');
-      mockGithubApi.getAccessToken.mockResolvedValue('github-token');
-      mockIdentityApi.getCredentials.mockResolvedValue({ token: 'id-token' });
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
         email: 'email',
         displayName: 'name',
