@@ -36,12 +36,11 @@ export function EstimatedRiskInfoDialog({
           <Typography style={{ fontWeight: 'bold' }}>
             {t('infoDialog.calculatedHowTitle')}
           </Typography>
-          <DialogContentText
-            className={text}
-            dangerouslySetInnerHTML={{
-              __html: t('infoDialog.calculatedHow'),
-            }}
-          />
+          <DialogContentText className={text}>
+            {t('infoDialog.calculatedHow')}
+            <sup>{t('infoDialog.calculatedHowExponent')}</sup>{' '}
+            {t('riskMatrix.estimatedRisk.unit.nokPerYear')}.
+          </DialogContentText>
           <Typography style={{ fontWeight: 'bold' }}>
             {t('infoDialog.consequenceTitle')}
           </Typography>
@@ -50,12 +49,9 @@ export function EstimatedRiskInfoDialog({
               <Fragment key={index}>
                 <b>{index + 1}</b>: 20<sup>{index + 3}</sup> ={' '}
                 {formatNOK(option)} {t('infoDialog.consequenceUnit')} ={' '}
-                <span
-                  dangerouslySetInnerHTML={{
-                    // @ts-ignore
-                    __html: t(`infoDialog.consequenceDescription.${index}`),
-                  }}
-                />
+                <b>
+                  {t(`infoDialog.consequenceDescription.${index}` as any, {})}
+                </b>
                 <br />
               </Fragment>
             ))}
@@ -68,23 +64,23 @@ export function EstimatedRiskInfoDialog({
               <Fragment key={index}>
                 <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
                 {t('infoDialog.probabilityUnit')} ={' '}
-                <span
-                  dangerouslySetInnerHTML={{
-                    // @ts-ignore
-                    __html: t(`infoDialog.probabilityDescription.${index}`),
-                  }}
-                />
+                <b>
+                  {t(`infoDialog.probabilityDescription.${index}` as any, {})}
+                </b>
                 <br />
               </Fragment>
             ))}
           </DialogContentText>
 
-          <DialogContentText
-            className={text}
-            dangerouslySetInnerHTML={{
-              __html: t('infoDialog.example'),
-            }}
-          />
+          <DialogContentText className={text}>
+            {t('infoDialog.example.part1')}
+            <b>2</b> (20<sup>4</sup> = 160,000 {t('infoDialog.consequenceUnit')}
+            ){t('infoDialog.example.part2')}
+            <b>4</b> (20<sup>1</sup> = 20 {t('infoDialog.probabilityUnit')})
+            {t('infoDialog.example.part3')}
+            20<sup>1+4-1</sup> = 160,000{' '}
+            {t('riskMatrix.estimatedRisk.unit.nokPerYear')}.
+          </DialogContentText>
         </DialogContent>
       </Paper>
     </Dialog>
