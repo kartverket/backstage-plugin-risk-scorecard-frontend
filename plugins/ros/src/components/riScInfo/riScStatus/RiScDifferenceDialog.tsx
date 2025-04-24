@@ -1,4 +1,4 @@
-import { DifferenceFetchState } from '../../../utils/types';
+import { DifferenceFetchState, DifferenceStatus } from '../../../utils/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
@@ -66,8 +66,9 @@ export function RiScDifferenceDialog({
             </Box>
           )}
           {differenceFetchState.status !== null &&
-            differenceFetchState.status !== 'Success' &&
-            differenceFetchState.status !== 'GithubFileNotFound' && (
+            differenceFetchState.status !== DifferenceStatus.Success &&
+            differenceFetchState.status !==
+              DifferenceStatus.GithubFileNotFound && (
               <Box
                 sx={{
                   display: 'flex',
@@ -87,7 +88,8 @@ export function RiScDifferenceDialog({
               </Box>
             )}
           {differenceFetchState.status !== null &&
-            differenceFetchState.status === 'GithubFileNotFound' && (
+            differenceFetchState.status ===
+              DifferenceStatus.GithubFileNotFound && (
               <Box
                 sx={{
                   display: 'flex',
@@ -106,7 +108,7 @@ export function RiScDifferenceDialog({
                 {t('rosStatus.difference.newROS')}
               </Box>
             )}
-          {differenceFetchState.status === 'Success' && (
+          {differenceFetchState.status === DifferenceStatus.Success && (
             <DifferenceText differenceFetchState={differenceFetchState} />
           )}
         </Card>
