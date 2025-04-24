@@ -3,6 +3,7 @@ import {
   DifferenceFetchState,
   RiScStatus,
   RiScWithMetadata,
+  DifferenceStatus,
 } from '../../../utils/types';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
@@ -117,7 +118,7 @@ export function RiScStatusComponent({
         setDifferenceFetchState({
           ...emptyDifferenceFetchState,
           errorMessage: t('rosStatus.difference.error'),
-          status: 'FrontendFallback', // Fallback when the backend does not deliver a response with status
+          status: DifferenceStatus.FrontendFallback, // Fallback when the backend does not deliver a response with status
         });
       },
     );
@@ -345,7 +346,7 @@ export function RiScStatusComponent({
 
     if (
       differenceFetchState.errorMessage &&
-      differenceFetchState.status !== 'GithubFileNotFound'
+      differenceFetchState.status !== DifferenceStatus.GithubFileNotFound
     ) {
       return (
         <StatusIconWithText
