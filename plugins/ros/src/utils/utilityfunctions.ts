@@ -1,12 +1,12 @@
-import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
+import { formatISO } from 'date-fns';
+import { UpdateStatus } from '../contexts/RiScContext';
 import {
   consequenceOptions,
   latestSupportedVersion,
   probabilityOptions,
   riskMatrix,
 } from './constants';
-import { formatISO } from 'date-fns';
-import { UpdateStatus } from '../contexts/RiScContext';
+import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
 
 export function generateRandomId(): string {
   return [...Array(5)]
