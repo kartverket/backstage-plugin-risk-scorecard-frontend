@@ -60,18 +60,6 @@ export function emptyRiSc(): RiSc {
   };
 }
 
-export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
-  if (array1.length !== array2.length) {
-    return true;
-  }
-  return array1.reduce((returnValue, currentElement, index) => {
-    if (currentElement !== array2[index]) {
-      return true;
-    }
-    return returnValue;
-  }, false);
-}
-
 export function calculateDaysSince(dateString: Date) {
   const givenDate = dateString;
   const now = new Date();
@@ -149,13 +137,13 @@ export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
     }
 
     if (
-      arrayNotEquals(oldScenario.threatActors, updatedScenario.threatActors)
+      !isDeeplyEqual(oldScenario.threatActors, updatedScenario.threatActors)
     ) {
       requiresApproval = true;
     }
 
     if (
-      arrayNotEquals(
+      !isDeeplyEqual(
         oldScenario.vulnerabilities,
         updatedScenario.vulnerabilities,
       )

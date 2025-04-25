@@ -1,7 +1,6 @@
 import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
 import {
   UpdatedStatusEnum,
-  arrayNotEquals,
   calculateDaysSince,
   calculateUpdatedStatus,
   deleteScenario,
@@ -29,20 +28,6 @@ describe('formatNOK', () => {
   it('formats numbers without decimal digits', () => {
     expect(formatNOK(1000)).toBe('1 000');
     expect(formatNOK(1000000)).toBe('1 000 000');
-  });
-});
-
-describe('arrayNotEquals', () => {
-  it('returns false for equal arrays', () => {
-    expect(arrayNotEquals([1, 2, 3], [1, 2, 3])).toBe(false);
-  });
-
-  it('returns true for different length arrays', () => {
-    expect(arrayNotEquals([1, 2], [1, 2, 3])).toBe(true);
-  });
-
-  it('returns true for different content arrays', () => {
-    expect(arrayNotEquals([1, 2, 3], [1, 2, 4])).toBe(true);
   });
 });
 
@@ -213,8 +198,8 @@ describe('formatNumber', () => {
   const mockT = (key: string, { count }: any) =>
     `${count} ${key.split('.').pop()}`;
 
-  it('formats small numbers with NOK', () => {
-    expect(formatNumber(9000, mockT)).toBe('9 000');
+  it('formats small numbers', () => {
+    expect(formatNumber(9200, mockT)).toBe('9 200');
   });
 
   it('formats thousands correctly', () => {
@@ -226,7 +211,11 @@ describe('formatNumber', () => {
   });
 
   it('formats billions correctly', () => {
-    expect(formatNumber(3_000_000_000, mockT)).toBe('3 billion');
+    expect(formatNumber(3_200_000_000, mockT)).toBe('3 billion');
+  });
+
+  it('formats trillions correctly', () => {
+    expect(formatNumber(3_200_000_000_000, mockT)).toBe('3 trillion');
   });
 });
 
