@@ -33,13 +33,13 @@ function ScenarioForm({
   const probabilityValues = probabilityOptions.map((value, index) => ({
     value: `${value}`,
     /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`probabilityTable.rows.${index + 1}`)}`,
+    renderedValue: `${index + 1}: ${t(`probabilityTable.rows.${index + 1}`)} (${t(`infoDialog.probabilityDescription.${index}`)})`,
   }));
 
   const consequenceValues = consequenceOptions.map((value, index) => ({
     value: `${value}`,
     /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`consequenceTable.rows.${index + 1}`)}`,
+    renderedValue: `${index + 1}: ${t(`consequenceTable.rows.${index + 1}`)} (${t(`infoDialog.consequenceDescription.${index}`)})`,
   }));
 
   return (
