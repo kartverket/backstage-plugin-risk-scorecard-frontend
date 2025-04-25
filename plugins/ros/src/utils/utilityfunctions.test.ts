@@ -26,8 +26,8 @@ describe('generateRandomId', () => {
 
 describe('formatNOK', () => {
   it('formats numbers without decimal digits', () => {
-    expect(formatNOK(1000)).toBe('1 000');
-    expect(formatNOK(1000000)).toBe('1 000 000');
+    expect(formatNOK(1000.3)).toBe('1 000');
+    expect(formatNOK(1000000.23)).toBe('1 000 000');
   });
 });
 
@@ -257,8 +257,6 @@ describe('deleteScenario', () => {
     });
   });
 });
-
-describe('deleteAction', () => {});
 
 describe('isDeeplyEqual', () => {
   const testCases: [unknown, unknown, boolean][] = [
