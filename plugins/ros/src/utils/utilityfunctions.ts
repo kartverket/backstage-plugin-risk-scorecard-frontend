@@ -159,6 +159,24 @@ export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
       requiresApproval = true;
     }
 
+    if (oldScenario.actions.length !== updatedScenario.actions.length) {
+      requiresApproval = true;
+    }
+
+    oldScenario.actions.forEach(oldAction => {
+      const updatedAction = updatedScenario.actions.find(
+        action => action.ID === oldAction.ID,
+      );
+
+      if (!updatedAction) {
+        requiresApproval = true;
+      }
+
+      if (!isDeeplyEqual(oldAction, updatedAction)) {
+        requiresApproval = true;
+      }
+    });
+
     if (!isDeeplyEqual(oldScenario.actions, updatedScenario.actions)) {
       requiresApproval = true;
     }
