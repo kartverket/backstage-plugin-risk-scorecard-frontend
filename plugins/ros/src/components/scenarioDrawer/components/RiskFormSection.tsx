@@ -63,13 +63,13 @@ function ScenarioForm({
             <Select<FormScenario>
               control={control}
               name="risk.probability"
-              label={t('dictionary.probability')}
+              label={t('infoDialog.probabilityTitle')}
               options={probabilityValues}
             />
             <Select<FormScenario>
               control={control}
               name="risk.consequence"
-              label={t('dictionary.consequence')}
+              label={t('infoDialog.consequenceTitle')}
               options={consequenceValues}
             />
           </Box>
@@ -87,13 +87,13 @@ function ScenarioForm({
             <Select<FormScenario>
               control={control}
               name="remainingRisk.probability"
-              label={t('dictionary.probability')}
+              label={t('infoDialog.probabilityTitle')}
               options={probabilityValues}
             />
             <Select<FormScenario>
               control={control}
               name="remainingRisk.consequence"
-              label={t('dictionary.consequence')}
+              label={t('infoDialog.consequenceTitle')}
               options={consequenceValues}
             />
           </Box>
