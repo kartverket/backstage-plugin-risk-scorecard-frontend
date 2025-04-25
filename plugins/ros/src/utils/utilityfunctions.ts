@@ -159,9 +159,10 @@ export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
       requiresApproval = true;
     }
 
-    if (oldScenario.actions.length !== updatedScenario.actions.length) {
+    if (!isDeeplyEqual(oldScenario.actions, updatedScenario.actions)) {
       requiresApproval = true;
     }
+
     if (
       oldScenario.remainingRisk.probability !==
       updatedScenario.remainingRisk.probability
