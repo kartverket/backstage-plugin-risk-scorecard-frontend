@@ -1,12 +1,12 @@
-import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
+import { formatISO } from 'date-fns';
+import { UpdateStatus } from '../contexts/RiScContext';
 import {
   consequenceOptions,
   latestSupportedVersion,
   probabilityOptions,
   riskMatrix,
 } from './constants';
-import { formatISO } from 'date-fns';
-import { UpdateStatus } from '../contexts/RiScContext';
+import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
 
 export function generateRandomId(): string {
   return [...Array(5)]
@@ -58,18 +58,6 @@ export function emptyRiSc(): RiSc {
     valuations: [],
     scenarios: [],
   };
-}
-
-export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
-  if (array1.length !== array2.length) {
-    return true;
-  }
-  return array1.reduce((returnValue, currentElement, index) => {
-    if (currentElement !== array2[index]) {
-      return true;
-    }
-    return returnValue;
-  }, false);
 }
 
 export function calculateDaysSince(dateString: Date) {
@@ -149,13 +137,13 @@ export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
     }
 
     if (
-      arrayNotEquals(oldScenario.threatActors, updatedScenario.threatActors)
+      !isDeeplyEqual(oldScenario.threatActors, updatedScenario.threatActors)
     ) {
       requiresApproval = true;
     }
 
     if (
-      arrayNotEquals(
+      !isDeeplyEqual(
         oldScenario.vulnerabilities,
         updatedScenario.vulnerabilities,
       )
