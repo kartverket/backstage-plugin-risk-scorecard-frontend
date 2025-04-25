@@ -30,16 +30,82 @@ function ScenarioForm({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control } = formMethods;
 
-  const probabilityValues = probabilityOptions.map((value, index) => ({
+  const probabilityValues: {
+    value: string | number;
+    renderedValue: JSX.Element;
+  }[] = probabilityOptions.map((value, index) => ({
     value: `${value}`,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`probabilityTable.rows.${index + 1}`)} (${t(`infoDialog.probabilityDescription.${index}`)})`,
+    renderedValue: (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            backgroundColor: 'primary.main',
+            color: 'white',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          }}
+        >
+          {index + 1}
+        </Box>
+        <span>
+          {/* @ts-ignore Because ts can't typecheck strings against our keys */}
+          {`${t(`probabilityTable.rows.${index + 1}`)} (${t(
+            `infoDialog.probabilityDescription.${index}`,
+          )})`}
+        </span>
+      </Box>
+    ),
   }));
 
-  const consequenceValues = consequenceOptions.map((value, index) => ({
+  const consequenceValues: {
+    value: string | number;
+    renderedValue: React.ReactNode;
+  }[] = consequenceOptions.map((value, index) => ({
     value: `${value}`,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`consequenceTable.rows.${index + 1}`)} (${t(`infoDialog.consequenceDescription.${index}`)})`,
+    renderedValue: (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            backgroundColor: 'primary.main',
+            color: 'white',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          }}
+        >
+          {index + 1}
+        </Box>
+        <span>
+          {/* @ts-ignore Because ts can't typecheck strings against our keys */}
+          {`${t(`consequenceTable.rows.${index + 1}`)} (${t(
+            `infoDialog.consequenceDescription.${index}`,
+          )})`}
+        </span>
+      </Box>
+    ),
   }));
 
   return (
