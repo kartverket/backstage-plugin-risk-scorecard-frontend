@@ -8,7 +8,7 @@ Contains frontend on port `3000` and Backstage backend on port `7007`.
 
 In order to use the features of the application, you will need access to the spire-test GitHub organization, as well as GCP.
 
-Furhtermore, you will need access to the 1Password vault in order to populate the repositories with environment variables.
+Furhtermore, you will need access to the Kodenær RoS 1Password vault in order to populate the repositories with environment variables.
 
 ## Tooling
 
