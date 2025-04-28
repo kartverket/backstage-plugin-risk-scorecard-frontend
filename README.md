@@ -4,6 +4,12 @@ Contains frontend on port `3000` and Backstage backend on port `7007`.
 
 <br>
 
+## Prerequisites
+
+In order to use the features of the application, you will need access to the spire-test GitHub organization, as well as GCP.
+
+Furhtermore, you will need access to the 1Password vault in order to populate the repositories with environment variables.
+
 ## Tooling
 
 This project currently uses node v22. It is up to each developer how to install and setup their tools.
