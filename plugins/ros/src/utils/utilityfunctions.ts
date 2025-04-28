@@ -131,55 +131,11 @@ export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
   oldRiSc.scenarios.forEach(oldScenario => {
     const updatedScenario = updatedScenarioMap.get(oldScenario.ID);
 
-    if (!updatedScenario) {
-      requiresApproval = true;
-      return;
-    }
-
-    if (
-      !isDeeplyEqual(oldScenario.threatActors, updatedScenario.threatActors)
-    ) {
-      requiresApproval = true;
-    }
-
-    if (
-      !isDeeplyEqual(
-        oldScenario.vulnerabilities,
-        updatedScenario.vulnerabilities,
-      )
-    ) {
-      requiresApproval = true;
-    }
-
-    if (oldScenario.risk.probability !== updatedScenario.risk.probability) {
-      requiresApproval = true;
-    }
-
-    if (oldScenario.risk.consequence !== updatedScenario.risk.consequence) {
-      requiresApproval = true;
-    }
-
-    if (oldScenario.actions.length !== updatedScenario.actions.length) {
-      requiresApproval = true;
-    }
-
-    if (!isDeeplyEqual(oldScenario.actions, updatedScenario.actions)) {
-      requiresApproval = true;
-    }
-
-    if (
-      oldScenario.remainingRisk.probability !==
-      updatedScenario.remainingRisk.probability
-    ) {
-      requiresApproval = true;
-    }
-    if (
-      oldScenario.remainingRisk.consequence !==
-      updatedScenario.remainingRisk.consequence
-    ) {
+    if (!isDeeplyEqual(oldScenario, updatedScenario)) {
       requiresApproval = true;
     }
   });
+
   return requiresApproval;
 }
 
