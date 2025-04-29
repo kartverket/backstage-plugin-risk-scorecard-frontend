@@ -117,65 +117,15 @@ export function calculateUpdatedStatus(
   return UpdatedStatusEnum.VERY_OUTDATED;
 }
 
-// keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
 export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
-  if (oldRiSc.scenarios.length !== updatedRiSc.scenarios.length) {
-    return true;
-  }
-  let requiresApproval = false;
-
-  const updatedScenarioMap = new Map<string, Scenario>(
-    updatedRiSc.scenarios.map(scenario => [scenario.ID, scenario]),
+  return !isDeeplyEqual(
+    oldRiSc.scenarios.sort(
+      (scenario1, scenario2) => Number(scenario1.ID) - Number(scenario2.ID),
+    ),
+    updatedRiSc.scenarios.sort(
+      (scenario1, scenario2) => Number(scenario1.ID) - Number(scenario2.ID),
+    ),
   );
-
-  oldRiSc.scenarios.forEach(oldScenario => {
-    const updatedScenario = updatedScenarioMap.get(oldScenario.ID);
-
-    if (!updatedScenario) {
-      requiresApproval = true;
-      return;
-    }
-
-    if (
-      !isDeeplyEqual(oldScenario.threatActors, updatedScenario.threatActors)
-    ) {
-      requiresApproval = true;
-    }
-
-    if (
-      !isDeeplyEqual(
-        oldScenario.vulnerabilities,
-        updatedScenario.vulnerabilities,
-      )
-    ) {
-      requiresApproval = true;
-    }
-
-    if (oldScenario.risk.probability !== updatedScenario.risk.probability) {
-      requiresApproval = true;
-    }
-
-    if (oldScenario.risk.consequence !== updatedScenario.risk.consequence) {
-      requiresApproval = true;
-    }
-
-    if (oldScenario.actions.length !== updatedScenario.actions.length) {
-      requiresApproval = true;
-    }
-    if (
-      oldScenario.remainingRisk.probability !==
-      updatedScenario.remainingRisk.probability
-    ) {
-      requiresApproval = true;
-    }
-    if (
-      oldScenario.remainingRisk.consequence !==
-      updatedScenario.remainingRisk.consequence
-    ) {
-      requiresApproval = true;
-    }
-  });
-  return requiresApproval;
 }
 
 export function formatNumber(

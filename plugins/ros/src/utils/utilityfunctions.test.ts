@@ -118,79 +118,269 @@ describe('requiresNewApproval', () => {
     ],
   };
 
-  it('returns false if scenarios are equal', () => {
+  it('returns false if risc is equal', () => {
     expect(requiresNewApproval(riSc, riSc)).toBe(false);
   });
 
-  it('returns false if diff on title, description, summary, action.description, or action.status', () => {
-    const updatedScenario = {
-      ...scenario,
-      risk: { ...scenario.risk, summary: 'New summary' },
-      remainingRisk: { ...scenario.remainingRisk, summary: 'New summary' },
-    };
-    const updatedRiSc = {
+  it('returns false if risc is equal for several scenarios', () => {
+    const riScWithSeveralScenarios: RiSc = {
       ...riSc,
-      title: 'New title',
-      scenarios: [updatedScenario],
-    };
-    expect(requiresNewApproval(riSc, updatedRiSc)).toBe(false);
-  });
-
-  it('returns false for any diff in action', () => {
-    const updatedScenario = {
-      ...scenario,
-      actions: [
-        {
-          ...action,
-          description: 'New description',
-          status: 'New status',
-          title: 'New title',
-          url: 'New url',
-          ID: 'New ID',
-        },
+      scenarios: [
+        scenario,
+        { ...scenario, ID: '2', actions: [action, { ...action, ID: '2' }] },
       ],
     };
-    const updatedRiSc = {
-      ...riSc,
-      scenarios: [updatedScenario],
-    };
-    expect(requiresNewApproval(riSc, updatedRiSc)).toBe(false);
+    expect(
+      requiresNewApproval(riScWithSeveralScenarios, riScWithSeveralScenarios),
+    ).toBe(false);
+  });
+
+  it('returns true for diff on scenario title, description or url', () => {
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [{ ...scenario, title: 'new title' }],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [{ ...scenario, description: 'new description' }],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [{ ...scenario, url: 'new url' }],
+      }),
+    ).toBe(true);
+  });
+
+  it('returns true for diff on action', () => {
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            actions: [{ ...action, ID: 'new id' }],
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            actions: [{ ...action, title: 'new title' }],
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            actions: [{ ...action, description: 'new description' }],
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            actions: [{ ...action, status: 'new status' }],
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            actions: [{ ...action, url: 'new url' }],
+          },
+        ],
+      }),
+    ).toBe(true);
+  });
+
+  it('returns true if number of scenarios differ', () => {
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [scenario, scenario],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(
+        {
+          ...riSc,
+          scenarios: [scenario, scenario],
+        },
+        riSc,
+      ),
+    ).toBe(true);
   });
 
   it('returns true if number of actions differ', () => {
-    const updatedScenario = {
-      ...scenario,
-      actions: [action, action, action],
-    };
-    const updatedRiSc = {
-      ...riSc,
-      scenarios: [updatedScenario],
-    };
-    expect(requiresNewApproval(riSc, updatedRiSc)).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [{ ...scenario, actions: [action, action, action] }],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(
+        {
+          ...riSc,
+          scenarios: [{ ...scenario, actions: [action, action, action] }],
+        },
+        riSc,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns true if riSc doesnt contain previously existing scenarios', () => {
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [{ ...scenario, ID: 'new Id' }],
+      }),
+    ).toBe(true);
   });
 
   it('returns true if diff on threatActors', () => {
-    const updatedScenario = { ...scenario, threatActors: ['actor2'] };
-    const updatedRiSc = { ...riSc, scenarios: [updatedScenario] };
-    expect(requiresNewApproval(riSc, updatedRiSc)).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [{ ...scenario, threatActors: ['new threat actor'] }],
+      }),
+    ).toBe(true);
+
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            threatActors: [scenario.threatActors[0], scenario.threatActors[0]],
+          },
+        ],
+      }),
+    ).toBe(true);
+  });
+
+  it('returns true if diff on vulnerabilities', () => {
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            vulnerabilities: ['new vulnerability'],
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            vulnerabilities: [
+              scenario.vulnerabilities[0],
+              scenario.vulnerabilities[0],
+            ],
+          },
+        ],
+      }),
+    ).toBe(true);
   });
 
   it('returns true if diff on risk', () => {
-    const updatedScenario = {
-      ...scenario,
-      risk: { ...scenario.risk, probability: 5 },
-    };
-    const updatedRiSc = { ...riSc, scenarios: [updatedScenario] };
-    expect(requiresNewApproval(riSc, updatedRiSc)).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            risk: { ...scenario.risk, summary: 'new summary' },
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            risk: { ...scenario.risk, probability: 5 },
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            risk: { ...scenario.risk, consequence: 5 },
+          },
+        ],
+      }),
+    ).toBe(true);
   });
 
   it('returns true if diff on remaining risk', () => {
-    const updatedScenario = {
-      ...scenario,
-      remainingRisk: { ...scenario.remainingRisk, consequence: 5 },
-    };
-    const updatedRiSc = { ...riSc, scenarios: [updatedScenario] };
-    expect(requiresNewApproval(riSc, updatedRiSc)).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            remainingRisk: {
+              ...scenario.remainingRisk,
+              summary: 'new summary',
+            },
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            remainingRisk: { ...scenario.remainingRisk, probability: 5 },
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        scenarios: [
+          {
+            ...scenario,
+            remainingRisk: { ...scenario.remainingRisk, consequence: 5 },
+          },
+        ],
+      }),
+    ).toBe(true);
   });
 });
 
