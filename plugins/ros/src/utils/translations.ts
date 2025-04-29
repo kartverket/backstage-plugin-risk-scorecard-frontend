@@ -364,11 +364,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
           '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.',
         },
         economical: {
-          '1': 'Temporary minor financial loss.\n\nMay be fixed within an hour by one employee',
-          '2': 'Temporary financial loss.\n\nMay be fixed within three days by one employee',
-          '3': 'Financial loss of some duration.\n\nMay be fixed within a month by three employees',
-          '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed within a year by 10 employees',
-          '5': 'Permanent and severe financial loss.\n\nMay be fixed within three years by 100 employees',
+          '1': 'Temporary minor financial loss.\n\May be fixed with 1 workday.',
+          '2': 'Temporary financial loss.\n\May be fixed with 1 work month.',
+          '3': 'Financial loss of some duration.\n\May be fixed with 1 work year.',
+          '4': 'Financial loss of considerable duration for the organization and any third parties.\n\May be fixed with 50 work years.',
+          '5': 'Permanent and severe financial loss.\n\May be fixed with 1000 work years.',
         },
         privacy: {
           '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
@@ -395,10 +395,10 @@ export const pluginRiScTranslationRef = createTranslationRef({
         '5': 'Very high', // svært stor
       },
       cells: {
-        '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 100 years',
-        '2': 'The scenario is unlikely to occur.\n\nIt can occur every 10 years',
+        '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 400 years',
+        '2': 'The scenario is unlikely to occur.\n\nIt can occur every 40 years',
         '3': 'The scenario can occur.\n\nIt can occur almost every year',
-        '4': 'The scenario will very likely occur.\n\nIt can occur almost weekly',
+        '4': 'The scenario will very likely occur.\n\nIt can occur almost monthly',
         '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur almost daily',
       },
     },
@@ -796,15 +796,15 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.cells.health.5':
             'Dødsfall. Svært alvorlig skade på milhø over store områder.',
           'consequenceTable.cells.economical.1':
-            'Ubetydelig økonomisk tap.\n\nKan fikses i løpet av en time av én ansatt.',
+            'Ubetydelig økonomisk tap.\n\nKan fikses med 1 dagsverk.',
           'consequenceTable.cells.economical.2':
-            'Mindre økonomisk tap.\n\nKan fikses i løpet av tre dager av én ansatt.',
+            'Mindre økonomisk tap.\n\nKan fikses med 1 månedsverk.',
           'consequenceTable.cells.economical.3':
-            'Moderat økonomisk tap.\n\nKan fikses i løpet av en måned av tre ansatte.',
+            'Moderat økonomisk tap.\n\nKan fikses med 1 årsverk.',
           'consequenceTable.cells.economical.4':
-            'Større økonomisk tap.\n\nKan fikses i løpet av et år av 10 ansatte.',
+            'Større økonomisk tap.\n\nKan fikses med 50 årsverk.',
           'consequenceTable.cells.economical.5':
-            'Kritisk økonomisk tap.\n\nKan fikses i løpet av tre år av 100 ansatte.',
+            'Kritisk økonomisk tap.\n\nKan fikses med 1000 årsverk.',
           'consequenceTable.cells.privacy.1': 'Ingen brudd.',
           'consequenceTable.cells.privacy.2': 'Mindre brudd.',
           'consequenceTable.cells.privacy.3':
