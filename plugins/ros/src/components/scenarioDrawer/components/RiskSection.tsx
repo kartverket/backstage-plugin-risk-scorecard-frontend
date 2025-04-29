@@ -6,7 +6,7 @@ import {
   getConsequenceLevel,
   getRiskMatrixColor,
   getProbabilityLevel,
-  calculateRiScCost,
+  calculateCost,
 } from '../../../utils/utilityfunctions';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
@@ -24,7 +24,7 @@ interface RiskProps {
 function RiskBox({ risk, riskType }: RiskProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const cost = calculateRiScCost(risk.probability, risk.consequence);
+  const cost = calculateCost(risk.probability, risk.consequence);
 
   return (
     <Paper sx={section}>

@@ -1,10 +1,5 @@
 import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
-import {
-  consequenceOptions,
-  latestSupportedVersion,
-  probabilityOptions,
-  riskMatrix,
-} from './constants';
+import { BASE_NUMBER, latestSupportedVersion, riskMatrix } from './constants';
 import { formatISO } from 'date-fns';
 import { UpdateStatus } from '../contexts/RiScContext';
 
@@ -37,17 +32,18 @@ export function getAlertSeverity(
 }
 
 export function getRiskMatrixColor(risiko: Risk) {
-  const sannsynlighet = probabilityOptions.indexOf(risiko.probability);
-  const konsekvens = consequenceOptions.indexOf(risiko.consequence);
+  const sannsynlighet = findProbabilityIndex(risiko.probability);
+  const konsekvens = findConsequenceIndex(risiko.consequence);
+  console.log('sannsynlighet:', sannsynlighet, 'konsekvens:', konsekvens);
   return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
 export function getProbabilityLevel(risiko: Risk) {
-  return probabilityOptions.indexOf(risiko.probability) + 1;
+  return findProbabilityIndex(risiko.probability) + 1;
 }
 
 export function getConsequenceLevel(risiko: Risk) {
-  return consequenceOptions.indexOf(risiko.consequence) + 1;
+  return findConsequenceIndex(risiko.consequence) + 1;
 }
 
 export function emptyRiSc(): RiSc {
@@ -417,12 +413,30 @@ export function isDeeplyEqual<T>(
   return false;
 }
 
-export function calculateRiScCost(
+function logBase(value: number, base: number): number {
+  return Math.log(value) / Math.log(base);
+}
+
+export function findProbabilityIndex(probability: number): number {
+  const probabilityIndex = Math.round(
+    logBase(probability, BASE_NUMBER) + 3 - 1,
+  );
+  return Math.min(4, Math.max(0, probabilityIndex));
+}
+
+export function findConsequenceIndex(consequence: number): number {
+  const consequenceIndex = Math.round(
+    logBase(consequence, BASE_NUMBER) - 2 - 1,
+  );
+  return Math.min(4, Math.max(0, consequenceIndex));
+}
+
+export function calculateCost(
   probability: number,
   consequence: number,
 ): number {
-  const probabilityIndex = probabilityOptions.indexOf(probability) - 2;
-  const consequenceIndex = consequenceOptions.indexOf(consequence) + 3;
+  const probabilityIndex = findProbabilityIndex(probability);
+  const consequenceIndex = findConsequenceIndex(consequence);
 
   return Math.pow(20, probabilityIndex + consequenceIndex - 1);
 }
