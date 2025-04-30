@@ -364,11 +364,11 @@ export const pluginRiScTranslationRef = createTranslationRef({
           '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.',
         },
         economical: {
-          '1': 'Temporary minor financial loss.\n\May be fixed with 1 workday.',
-          '2': 'Temporary financial loss.\n\May be fixed with 1 work month.',
-          '3': 'Financial loss of some duration.\n\May be fixed with 1 work year.',
-          '4': 'Financial loss of considerable duration for the organization and any third parties.\n\May be fixed with 50 work years.',
-          '5': 'Permanent and severe financial loss.\n\May be fixed with 1000 work years.',
+          '1': 'Temporary minor financial loss.\n\nMay be fixed with 1 workday.',
+          '2': 'Temporary financial loss.\n\nMay be fixed with 1 work month.',
+          '3': 'Financial loss of some duration.\n\nMay be fixed with 1 work year.',
+          '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed with 50 work years.',
+          '5': 'Permanent and severe financial loss.\n\nMay be fixed with 1000 work years.',
         },
         privacy: {
           '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
@@ -794,7 +794,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.cells.health.4':
             'Et fåtall alvorlige personskader.\n\nModerat skade på miljø på et begrenset område.',
           'consequenceTable.cells.health.5':
-            'Dødsfall. Svært alvorlig skade på milhø over store områder.',
+            'Dødsfall. Svært alvorlig skade på miljø over store områder.',
           'consequenceTable.cells.economical.1':
             'Ubetydelig økonomisk tap.\n\nKan fikses med 1 dagsverk.',
           'consequenceTable.cells.economical.2':
