@@ -71,7 +71,7 @@ function ScenarioForm({
 
   const consequenceValues: {
     value: string | number;
-    renderedValue: React.ReactNode;
+    renderedValue: JSX.Element;
   }[] = consequenceOptions.map((value, index) => ({
     value: `${value}`,
     renderedValue: (
