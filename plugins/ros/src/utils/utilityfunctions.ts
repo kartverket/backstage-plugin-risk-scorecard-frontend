@@ -425,9 +425,7 @@ export function findProbabilityIndex(probability: number): number {
 }
 
 export function findConsequenceIndex(consequence: number): number {
-  const consequenceIndex = Math.round(
-    logBase(consequence, BASE_NUMBER) - 2 - 1,
-  );
+  const consequenceIndex = Math.ceil(logBase(consequence, BASE_NUMBER) - 2 - 1);
   return Math.min(4, Math.max(0, consequenceIndex));
 }
 
