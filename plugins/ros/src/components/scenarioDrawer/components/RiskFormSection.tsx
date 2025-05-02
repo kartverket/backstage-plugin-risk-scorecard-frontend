@@ -19,6 +19,10 @@ import {
 } from '../scenarioDrawerComponents';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
+import {
+  findProbabilityIndex,
+  findConsequenceIndex,
+} from '../../../utils/utilityfunctions';
 
 function ScenarioForm({
   formMethods,
@@ -131,12 +135,38 @@ function ScenarioForm({
               name="risk.probability"
               label={t('infoDialog.probabilityTitle')}
               options={probabilityValues}
+              value={
+                probabilityValues.find(
+                  option =>
+                    option.value ===
+                    `${
+                      probabilityOptions[
+                        findProbabilityIndex(
+                          Number(formMethods.getValues('risk.probability')),
+                        )
+                      ]
+                    }`,
+                )?.value || `${probabilityOptions[0]}`
+              }
             />
             <Select<FormScenario>
               control={control}
               name="risk.consequence"
               label={t('infoDialog.consequenceTitle')}
               options={consequenceValues}
+              value={
+                consequenceValues.find(
+                  option =>
+                    option.value ===
+                    `${
+                      consequenceOptions[
+                        findConsequenceIndex(
+                          Number(formMethods.getValues('risk.consequence')),
+                        )
+                      ]
+                    }`,
+                )?.value || `${consequenceOptions[0]}`
+              }
             />
           </Box>
         </Paper>
@@ -155,12 +185,42 @@ function ScenarioForm({
               name="remainingRisk.probability"
               label={t('infoDialog.probabilityTitle')}
               options={probabilityValues}
+              value={
+                probabilityValues.find(
+                  option =>
+                    option.value ===
+                    `${
+                      probabilityOptions[
+                        findProbabilityIndex(
+                          Number(
+                            formMethods.getValues('remainingRisk.probability'),
+                          ),
+                        )
+                      ]
+                    }`,
+                )?.value || `${probabilityOptions[0]}`
+              }
             />
             <Select<FormScenario>
               control={control}
               name="remainingRisk.consequence"
               label={t('infoDialog.consequenceTitle')}
               options={consequenceValues}
+              value={
+                consequenceValues.find(
+                  option =>
+                    option.value ===
+                    `${
+                      consequenceOptions[
+                        findConsequenceIndex(
+                          Number(
+                            formMethods.getValues('remainingRisk.consequence'),
+                          ),
+                        )
+                      ]
+                    }`,
+                )?.value || `${consequenceOptions[0]}`
+              }
             />
           </Box>
         </Paper>
