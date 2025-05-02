@@ -373,5 +373,5 @@ export function calculateCost(
   const probabilityLevel = findProbabilityIndex(probability) + 1;
   const consequenceLevel = findConsequenceIndex(consequence) + 1;
 
-  return Math.pow(20, probabilityLevel + consequenceLevel - 1);
+  return Math.pow(BASE_NUMBER, probabilityLevel + consequenceLevel - 1);
 }
