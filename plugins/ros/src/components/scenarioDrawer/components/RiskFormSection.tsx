@@ -24,6 +24,51 @@ import {
   findConsequenceIndex,
 } from '../../../utils/utilityfunctions';
 
+const createValues = (
+  options: string[] | number[],
+  translationKey: string,
+  descriptionKey: string,
+  t: (key: string) => string,
+) => {
+  return options.map((value, index) => ({
+    value: `${value}`,
+    renderedValue: (isSelected: boolean) => (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            backgroundColor: isSelected ? 'primary.main' : 'transparent',
+            border: '1px solid',
+            borderColor: isSelected ? 'primary.main' : 'primary.main',
+            color: isSelected ? 'white' : 'primary.main',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          }}
+        >
+          {index + 1}
+        </Box>
+        <span>
+          {/* @ts-ignore Because ts can't typecheck strings against our keys */}
+          {`${t(`${translationKey}.rows.${index + 1}`)} (${t(
+            `${descriptionKey}.${index}`,
+          )})`}
+        </span>
+      </Box>
+    ),
+  }));
+};
+
 function ScenarioForm({
   formMethods,
   setIsMatrixDialogOpen,
@@ -34,87 +79,19 @@ function ScenarioForm({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control } = formMethods;
 
-  const probabilityValues: {
-    value: string | number;
-    renderedValue: (isSelected: boolean) => JSX.Element;
-  }[] = probabilityOptions.map((value, index) => ({
-    value: `${value}`,
-    renderedValue: (isSelected: boolean) => (
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'inline-flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '24px',
-            height: '24px',
-            borderRadius: '50%',
-            backgroundColor: isSelected ? 'primary.main' : 'transparent',
-            border: '1px solid',
-            borderColor: isSelected ? 'primary.main' : 'primary.main',
-            color: isSelected ? 'white' : 'primary.main',
-            fontSize: '14px',
-            fontWeight: 'bold',
-          }}
-        >
-          {index + 1}
-        </Box>
-        <span>
-          {/* @ts-ignore Because ts can't typecheck strings against our keys */}
-          {`${t(`probabilityTable.rows.${index + 1}`)} (${t(
-            `infoDialog.probabilityDescription.${index}`,
-          )})`}
-        </span>
-      </Box>
-    ),
-  }));
+  const probabilityValues = createValues(
+    probabilityOptions,
+    'probabilityTable',
+    'infoDialog.probabilityDescription',
+    t as (key: string) => string,
+  );
 
-  const consequenceValues: {
-    value: string | number;
-    renderedValue: (isSelected: boolean) => JSX.Element;
-  }[] = consequenceOptions.map((value, index) => ({
-    value: `${value}`,
-    renderedValue: (isSelected: boolean) => (
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'inline-flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '24px',
-            height: '24px',
-            borderRadius: '50%',
-            backgroundColor: isSelected ? 'primary.main' : 'transparent',
-            border: '1px solid',
-            borderColor: isSelected ? 'primary.main' : 'primary.main',
-            color: isSelected ? 'white' : 'primary.main',
-            fontSize: '14px',
-            fontWeight: 'bold',
-          }}
-        >
-          {index + 1}
-        </Box>
-        <span>
-          {/* @ts-ignore Because ts can't typecheck strings against our keys */}
-          {`${t(`consequenceTable.rows.${index + 1}`)} (${t(
-            `infoDialog.consequenceDescription.${index}`,
-          )})`}
-        </span>
-      </Box>
-    ),
-  }));
+  const consequenceValues = createValues(
+    consequenceOptions,
+    'consequenceTable',
+    'infoDialog.consequenceDescription',
+    t as (key: string) => string,
+  );
 
   return (
     <Paper sx={section}>
