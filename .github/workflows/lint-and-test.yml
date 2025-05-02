@@ -1,4 +1,4 @@
-name: Lint and compile plugin
+name: Lint, test and compile plugin
 
 on:
   pull_request:
@@ -26,6 +26,9 @@ jobs:
 
       - name: Run lint
         run: yarn run lint:all
+
+      - name: Run tests
+        run: yarn test:all --ci
 
       - name: Run tsc
         run: yarn run tsc
