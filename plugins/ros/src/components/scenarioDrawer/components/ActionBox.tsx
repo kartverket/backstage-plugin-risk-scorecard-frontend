@@ -78,10 +78,6 @@ export function ActionBox({
     setDeleteActionConfirmationIsOpen(false);
   };
 
-  const cancelDeleteAction = () => {
-    setDeleteActionConfirmationIsOpen(false);
-  };
-
   function handleChipClick(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
   }
