@@ -165,8 +165,8 @@ export function ActionsStep({
       </Stack>
 
       <DeleteActionConfirmation
-        deleteActionConfirmationIsOpen={deleteActionConfirmationIsOpen}
-        setDeleteActionConfirmationIsOpen={setDeleteActionConfirmationIsOpen}
+        isOpen={deleteActionConfirmationIsOpen}
+        setIsOpen={setDeleteActionConfirmationIsOpen}
         onConfirm={confirmDeleteAction}
       />
     </Stack>

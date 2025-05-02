@@ -249,8 +249,8 @@ export function ActionBox({
       </Collapse>
 
       <DeleteActionConfirmation
-        deleteActionConfirmationIsOpen={deleteActionConfirmationIsOpen}
-        setDeleteActionConfirmationIsOpen={setDeleteActionConfirmationIsOpen}
+        isOpen={deleteActionConfirmationIsOpen}
+        setIsOpen={setDeleteActionConfirmationIsOpen}
         onConfirm={confirmDeleteAction}
       />
     </Box>
