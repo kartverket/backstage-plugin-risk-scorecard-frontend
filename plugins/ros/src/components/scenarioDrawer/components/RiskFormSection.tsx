@@ -24,12 +24,12 @@ import {
   findConsequenceIndex,
 } from '../../../utils/utilityfunctions';
 
-const createValues = (
+function createValues(
   options: string[] | number[],
   translationKey: string,
   descriptionKey: string,
   t: (key: string) => string,
-) => {
+): { value: string; renderedValue: (isSelected: boolean) => JSX.Element }[] {
   return options.map((value, index) => ({
     value: `${value}`,
     renderedValue: (isSelected: boolean) => (
@@ -67,7 +67,7 @@ const createValues = (
       </Box>
     ),
   }));
-};
+}
 
 function ScenarioForm({
   formMethods,
