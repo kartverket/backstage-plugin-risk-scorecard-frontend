@@ -41,6 +41,33 @@ function ConfirmationDialog({
   );
 }
 
+export function DeleteConfirmationWrapper({
+  isOpen,
+  setIsOpen,
+  onConfirm,
+  titleKey,
+  confirmButtonKey,
+}: {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  onConfirm: () => void;
+  titleKey: string;
+  confirmButtonKey: string;
+}) {
+  return (
+    <ConfirmationDialog
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      onConfirm={() => {
+        setIsOpen(false);
+        onConfirm();
+      }}
+      titleKey={titleKey}
+      confirmButtonKey={confirmButtonKey}
+    />
+  );
+}
+
 export function DeleteConfirmation({
   deleteConfirmationIsOpen,
   setDeleteConfirmationIsOpen,
@@ -52,14 +79,13 @@ export function DeleteConfirmation({
   const { scenario } = useScenario();
 
   const handleConfirm = () => {
-    setDeleteConfirmationIsOpen(false);
     deleteScenario(riSc, updateRiSc, scenario);
   };
 
   return (
-    <ConfirmationDialog
+    <DeleteConfirmationWrapper
       isOpen={deleteConfirmationIsOpen}
-      onClose={() => setDeleteConfirmationIsOpen(false)}
+      setIsOpen={setDeleteConfirmationIsOpen}
       onConfirm={handleConfirm}
       titleKey="scenarioDrawer.deleteScenarioConfirmation"
       confirmButtonKey="scenarioDrawer.deleteScenarioButton"
@@ -77,13 +103,10 @@ export function DeleteActionConfirmation({
   onConfirm: () => void;
 }) {
   return (
-    <ConfirmationDialog
+    <DeleteConfirmationWrapper
       isOpen={deleteActionConfirmationIsOpen}
-      onClose={() => setDeleteActionConfirmationIsOpen(false)}
-      onConfirm={() => {
-        setDeleteActionConfirmationIsOpen(false);
-        onConfirm();
-      }}
+      setIsOpen={setDeleteActionConfirmationIsOpen}
+      onConfirm={onConfirm}
       titleKey="scenarioDrawer.deleteActionConfirmation"
       confirmButtonKey="scenarioDrawer.deleteActionButton"
     />
