@@ -26,7 +26,7 @@ export function CloseConfirmation({
           {t('dictionary.discardChanges')}
         </Button>
 
-        <Button variant="outlined" onClick={save}>
+        <Button variant="contained" onClick={save}>
           {t('dictionary.save')}
         </Button>
       </DialogActions>
