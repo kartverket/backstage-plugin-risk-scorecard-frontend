@@ -49,8 +49,7 @@ function ConfigRiscInfo({
         minRows={4}
       />
       <MarkdownInput
-        required
-        {...register('content.scope', { required: true })}
+        {...register('content.scope')}
         value={currentScope}
         label={t('dictionary.scope')}
         sublabel={t('rosDialog.scopeDescription')}
