@@ -36,10 +36,10 @@ function ScenarioForm({
 
   const probabilityValues: {
     value: string | number;
-    renderedValue: JSX.Element;
+    renderedValue: (isSelected: boolean) => JSX.Element;
   }[] = probabilityOptions.map((value, index) => ({
     value: `${value}`,
-    renderedValue: (
+    renderedValue: (isSelected: boolean) => (
       <Box
         sx={{
           display: 'flex',
@@ -55,8 +55,10 @@ function ScenarioForm({
             width: '24px',
             height: '24px',
             borderRadius: '50%',
-            backgroundColor: 'primary.main',
-            color: 'white',
+            backgroundColor: isSelected ? 'primary.main' : 'transparent',
+            border: '1px solid',
+            borderColor: isSelected ? 'primary.main' : 'primary.main',
+            color: isSelected ? 'white' : 'primary.main',
             fontSize: '14px',
             fontWeight: 'bold',
           }}
@@ -75,10 +77,10 @@ function ScenarioForm({
 
   const consequenceValues: {
     value: string | number;
-    renderedValue: JSX.Element;
+    renderedValue: (isSelected: boolean) => JSX.Element;
   }[] = consequenceOptions.map((value, index) => ({
     value: `${value}`,
-    renderedValue: (
+    renderedValue: (isSelected: boolean) => (
       <Box
         sx={{
           display: 'flex',
@@ -94,8 +96,10 @@ function ScenarioForm({
             width: '24px',
             height: '24px',
             borderRadius: '50%',
-            backgroundColor: 'primary.main',
-            color: 'white',
+            backgroundColor: isSelected ? 'primary.main' : 'transparent',
+            border: '1px solid',
+            borderColor: isSelected ? 'primary.main' : 'primary.main',
+            color: isSelected ? 'white' : 'primary.main',
             fontSize: '14px',
             fontWeight: 'bold',
           }}
@@ -134,7 +138,19 @@ function ScenarioForm({
               control={control}
               name="risk.probability"
               label={t('infoDialog.probabilityTitle')}
-              options={probabilityValues}
+              options={probabilityValues.map(option => ({
+                ...option,
+                renderedValue: option.renderedValue(
+                  option.value ===
+                    `${
+                      probabilityOptions[
+                        findProbabilityIndex(
+                          Number(formMethods.getValues('risk.probability')),
+                        )
+                      ]
+                    }`,
+                ),
+              }))}
               value={
                 probabilityValues.find(
                   option =>
@@ -153,7 +169,19 @@ function ScenarioForm({
               control={control}
               name="risk.consequence"
               label={t('infoDialog.consequenceTitle')}
-              options={consequenceValues}
+              options={consequenceValues.map(option => ({
+                ...option,
+                renderedValue: option.renderedValue(
+                  option.value ===
+                    `${
+                      consequenceOptions[
+                        findConsequenceIndex(
+                          Number(formMethods.getValues('risk.consequence')),
+                        )
+                      ]
+                    }`,
+                ),
+              }))}
               value={
                 consequenceValues.find(
                   option =>
@@ -184,7 +212,21 @@ function ScenarioForm({
               control={control}
               name="remainingRisk.probability"
               label={t('infoDialog.probabilityTitle')}
-              options={probabilityValues}
+              options={probabilityValues.map(option => ({
+                ...option,
+                renderedValue: option.renderedValue(
+                  option.value ===
+                    `${
+                      probabilityOptions[
+                        findProbabilityIndex(
+                          Number(
+                            formMethods.getValues('remainingRisk.probability'),
+                          ),
+                        )
+                      ]
+                    }`,
+                ),
+              }))}
               value={
                 probabilityValues.find(
                   option =>
@@ -205,7 +247,21 @@ function ScenarioForm({
               control={control}
               name="remainingRisk.consequence"
               label={t('infoDialog.consequenceTitle')}
-              options={consequenceValues}
+              options={consequenceValues.map(option => ({
+                ...option,
+                renderedValue: option.renderedValue(
+                  option.value ===
+                    `${
+                      consequenceOptions[
+                        findConsequenceIndex(
+                          Number(
+                            formMethods.getValues('remainingRisk.consequence'),
+                          ),
+                        )
+                      ]
+                    }`,
+                ),
+              }))}
               value={
                 consequenceValues.find(
                   option =>
