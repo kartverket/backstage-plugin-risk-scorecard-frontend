@@ -68,15 +68,15 @@ export function ActionBox({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleDeleteAction = () => {
+  function handleDeleteAction(): void {
     setDeleteActionConfirmationIsOpen(true);
-  };
+  }
 
-  const confirmDeleteAction = () => {
+  function confirmDeleteAction(): void {
     remove(index);
     deleteAction(remove, index, onSubmit);
     setDeleteActionConfirmationIsOpen(false);
-  };
+  }
 
   function handleChipClick(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);

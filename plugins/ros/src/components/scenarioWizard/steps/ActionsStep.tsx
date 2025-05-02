@@ -39,17 +39,17 @@ export function ActionsStep({
     useState(false);
   const [actionToDelete, setActionToDelete] = useState<number | null>(null);
 
-  const handleDeleteAction = (index: number) => {
+  function handleDeleteAction(index: number): void {
     setActionToDelete(index);
     setDeleteActionConfirmationIsOpen(true);
-  };
+  }
 
-  const confirmDeleteAction = () => {
+  function confirmDeleteAction(): void {
     if (actionToDelete !== null) {
       remove(actionToDelete);
       setActionToDelete(null);
     }
-  };
+  }
 
   const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
     value: actionStatus,
