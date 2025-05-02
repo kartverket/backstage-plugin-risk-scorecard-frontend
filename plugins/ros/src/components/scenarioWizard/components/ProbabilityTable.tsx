@@ -3,8 +3,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { riskTable, riskCell, riskRow, riskLabelCell } from '../wizardStyles';
 import { useController, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import { RiskRadioButton } from './RiskRadioButton';
-import RadioGroup from '@mui/material/RadioGroup';
 import Box from '@mui/material/Box';
 import { probabilityOptions } from '../../../utils/constants';
 import Typography from '@mui/material/Typography';
