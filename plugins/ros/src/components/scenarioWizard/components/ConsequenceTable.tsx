@@ -12,9 +12,7 @@ import {
 import { SxProps, Theme } from '@mui/material/styles';
 import { useController, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import { RiskRadioButton } from './RiskRadioButton';
 import Box from '@mui/material/Box';
-import RadioGroup from '@mui/material/RadioGroup';
 import { consequenceOptions } from '../../../utils/constants';
 
 const consequenceRow: SxProps<Theme> = {
@@ -105,47 +103,50 @@ export function ConsequenceTable({
     control: formMethods.control,
   });
 
-  function getRadioLabel(row: number) {
-    /* @ts-ignore Because ts can't typecheck strings agains our keys */
-    return `${row}: ${t(`consequenceTable.rows.${row}`)}`;
+  function handleColumnClick(value: string) {
+    field.onChange(value);
   }
 
-  function getRadioCell(row: number) {
+  function getClickableCell(row: number) {
+    const value = consequenceOptions[row];
+    const isSelected = Number(field.value) === value;
+
     return (
-      <RiskRadioButton
-        value={consequenceOptions[row]}
-        ref={field.ref}
-        label={getRadioLabel(row + 1)}
-      />
+      <Box
+        sx={{
+          ...riskCell,
+          cursor: 'pointer',
+          backgroundColor: isSelected ? 'primary.main' : 'transparent',
+          color: isSelected ? 'white' : 'inherit',
+          textAlign: 'center',
+          padding: '8px',
+          border: '1px solid',
+          borderColor: isSelected ? 'primary.main' : 'grey.300',
+        }}
+        onClick={() => handleColumnClick(value.toString())}
+      >
+        {/* @ts-ignore */}
+        {`${row + 1}: ${t(`consequenceTable.rows.${row + 1}`)}`}
+      </Box>
     );
   }
 
   return (
     <Box sx={riskTable}>
-      <RadioGroup {...field} sx={consequenceRow}>
+      <Box sx={consequenceRow}>
         <Box sx={riskLabelCell} />
-        {getRadioCell(0)}
-        {getRadioCell(1)}
-        {getRadioCell(2)}
-        {getRadioCell(3)}
-        {getRadioCell(4)}
-      </RadioGroup>
+        {getClickableCell(0)}
+        {getClickableCell(1)}
+        {getClickableCell(2)}
+        {getClickableCell(3)}
+        {getClickableCell(4)}
+      </Box>
       <ConsequenceTableInfo />
     </Box>
   );
 }
 
 export function ConsequenceTableInfoWithHeaders() {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-
-  function getRadioLabel(row: number) {
-    return (
-      /* @ts-ignore Because ts can't typecheck strings agains our keys */
-      <Typography fontWeight={500}>{`${row}: ${t(
-        `consequenceTable.rows.${row}`,
-      )}`}</Typography>
-    );
-  }
   return (
     <Box sx={riskTable}>
       <Box
@@ -157,11 +158,9 @@ export function ConsequenceTableInfoWithHeaders() {
         }}
       >
         <Box sx={riskLabelCell} />
-        {getRadioLabel(1)}
-        {getRadioLabel(2)}
-        {getRadioLabel(3)}
-        {getRadioLabel(4)}
-        {getRadioLabel(5)}
+        {consequenceOptions.map((option, row) => (
+          <Box key={row}>{option}</Box>
+        ))}
       </Box>
       <ConsequenceTableInfo />
     </Box>

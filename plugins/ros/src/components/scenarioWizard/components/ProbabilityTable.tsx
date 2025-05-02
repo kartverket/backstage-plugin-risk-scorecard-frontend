@@ -45,30 +45,43 @@ export function ProbabilityTable({
     control: formMethods.control,
   });
 
-  function getRadioLabel(row: number) {
-    /* @ts-ignore Because ts can't typecheck strings agains our keys */
-    return `${row}: ${t(`probabilityTable.rows.${row}`)}`;
+  function handleColumnClick(value: string) {
+    field.onChange(value);
   }
 
-  function getRadioCell(row: number) {
+  function getClickableCell(row: number) {
+    const value = probabilityOptions[row];
+    const isSelected = Number(field.value) === value;
+
     return (
-      <RiskRadioButton
-        value={probabilityOptions[row]}
-        ref={field.ref}
-        label={getRadioLabel(row + 1)}
-      />
+      <Box
+        sx={{
+          ...riskCell,
+          cursor: 'pointer',
+          backgroundColor: isSelected ? 'primary.main' : 'transparent',
+          color: isSelected ? 'white' : 'inherit',
+          textAlign: 'center',
+          padding: '8px',
+          border: '1px solid',
+          borderColor: isSelected ? 'primary.main' : 'grey.300',
+        }}
+        onClick={() => handleColumnClick(value.toString())}
+      >
+        {/* @ts-ignore */}
+        {`${row + 1}: ${t(`probabilityTable.rows.${row + 1}`)}`}
+      </Box>
     );
   }
 
   return (
     <Box sx={riskTable}>
-      <RadioGroup {...field} sx={riskRow}>
-        {getRadioCell(0)}
-        {getRadioCell(1)}
-        {getRadioCell(2)}
-        {getRadioCell(3)}
-        {getRadioCell(4)}
-      </RadioGroup>
+      <Box sx={riskRow}>
+        {getClickableCell(0)}
+        {getClickableCell(1)}
+        {getClickableCell(2)}
+        {getClickableCell(3)}
+        {getClickableCell(4)}
+      </Box>
       <ProbabilityTableInfo />
     </Box>
   );
