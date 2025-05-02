@@ -55,6 +55,9 @@ export const RiScPublishDialog = ({
         </>
       </DialogContent>
       <DialogActions sx={dialogActions}>
+        <Button variant="outlined" color="primary" onClick={handleCancel}>
+          {t('dictionary.cancel')}
+        </Button>
         <Button
           variant="contained"
           color="primary"
@@ -62,9 +65,6 @@ export const RiScPublishDialog = ({
           disabled={!riskOwnerApproves}
         >
           {t('dictionary.confirm')}
-        </Button>
-        <Button variant="outlined" color="primary" onClick={handleCancel}>
-          {t('dictionary.cancel')}
         </Button>
       </DialogActions>
     </Dialog>

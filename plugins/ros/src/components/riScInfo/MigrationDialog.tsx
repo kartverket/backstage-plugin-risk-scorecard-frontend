@@ -70,15 +70,15 @@ export const RiScMigrationDialog = ({
         </Alert>
       </DialogContent>
       <DialogActions sx={dialogActions}>
+        <Button variant="outlined" color="primary" onClick={handleCancel}>
+          {t('dictionary.cancel')}
+        </Button>
         <Button
           variant="contained"
           onClick={handleUpdate}
           disabled={!saveMigration}
         >
           {t('dictionary.confirm')}
-        </Button>
-        <Button variant="outlined" color="primary" onClick={handleCancel}>
-          {t('dictionary.cancel')}
         </Button>
       </DialogActions>
     </Dialog>
