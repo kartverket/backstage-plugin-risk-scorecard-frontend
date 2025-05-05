@@ -19,6 +19,8 @@ import IconButton from '@mui/material/IconButton';
 import { Select } from '../../common/Select';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
+import { useState } from 'react';
+import { DeleteActionConfirmation } from '../../scenarioDrawer/components/DeleteConfirmation';
 
 export function ActionsStep({
   formMethods,
@@ -32,6 +34,22 @@ export function ActionsStep({
     control,
     name: 'actions',
   });
+
+  const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
+    useState(false);
+  const [actionToDelete, setActionToDelete] = useState<number | null>(null);
+
+  function handleDeleteAction(index: number): void {
+    setActionToDelete(index);
+    setDeleteActionConfirmationIsOpen(true);
+  }
+
+  function confirmDeleteAction(): void {
+    if (actionToDelete !== null) {
+      remove(actionToDelete);
+      setActionToDelete(null);
+    }
+  }
 
   const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
     value: actionStatus,
@@ -78,8 +96,13 @@ export function ActionsStep({
                     {t('dictionary.measure')} {index + 1}
                   </Typography>
 
-                  <IconButton onClick={() => remove(index)} color="primary">
-                    <DeleteIcon aria-label="Edit" />
+                  <IconButton
+                    onClick={() => handleDeleteAction(index)}
+                    color="primary"
+                  >
+                    <DeleteIcon
+                      aria-label={t('scenarioDrawer.deleteActionButton')}
+                    />
                   </IconButton>
                 </Box>
 
@@ -140,6 +163,12 @@ export function ActionsStep({
           {t('scenarioDrawer.measureTab.addMeasureButton')}
         </Button>
       </Stack>
+
+      <DeleteActionConfirmation
+        isOpen={deleteActionConfirmationIsOpen}
+        setIsOpen={setDeleteActionConfirmationIsOpen}
+        onConfirm={confirmDeleteAction}
+      />
     </Stack>
   );
 }

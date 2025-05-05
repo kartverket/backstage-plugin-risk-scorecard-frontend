@@ -202,8 +202,8 @@ export function ScenarioDrawer() {
         )}
 
       <DeleteConfirmation
-        deleteConfirmationIsOpen={deleteConfirmationIsOpen}
-        setDeleteConfirmationIsOpen={setDeleteConfirmationIsOpen}
+        isOpen={deleteConfirmationIsOpen}
+        setIsOpen={setDeleteConfirmationIsOpen}
       />
       <MatrixDialog
         open={isMatrixDialogOpen}

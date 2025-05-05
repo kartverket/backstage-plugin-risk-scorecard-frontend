@@ -18,11 +18,12 @@ import { useRiScs } from '../../../contexts/RiScContext';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { actionStatusOptions } from '../../../utils/constants';
-import { useIsMounted } from '../../../utils/hooks';
 import CircularProgress from '@mui/material/CircularProgress';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteAction } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
+import { DeleteActionConfirmation } from './DeleteConfirmation';
+import { deleteAction } from '../../../utils/utilityfunctions';
+import { useIsMounted } from '../../../utils/hooks';
 
 interface ActionBoxProps {
   action: Action;
@@ -42,13 +43,13 @@ export function ActionBox({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { isActionExpanded, toggleActionExpanded } = useScenario();
-
   const isExpanded = isActionExpanded(action.ID);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
+    useState(false);
 
   const { updateStatus } = useRiScs();
-
   const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
     useScenario();
 
@@ -66,6 +67,16 @@ export function ActionBox({
   const isMounted = useIsMounted();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  function handleDeleteAction(): void {
+    setDeleteActionConfirmationIsOpen(true);
+  }
+
+  function confirmDeleteAction(): void {
+    remove(index);
+    deleteAction(remove, index, onSubmit);
+    setDeleteActionConfirmationIsOpen(false);
+  }
 
   function handleChipClick(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -98,7 +109,7 @@ export function ActionBox({
         <ActionFormItem
           formMethods={formMethods}
           index={index}
-          handleDelete={() => deleteAction(remove, index, onSubmit)}
+          handleDelete={handleDeleteAction}
           showTitleNumber={false}
           remove={remove}
         />
@@ -192,11 +203,7 @@ export function ActionBox({
             </MenuItem>
           ))}
         </Menu>
-        <IconButton
-          onClick={() => {
-            deleteAction(remove, index, onSubmit);
-          }}
-        >
+        <IconButton onClick={handleDeleteAction}>
           <DeleteIcon />
         </IconButton>
       </Box>
@@ -240,6 +247,12 @@ export function ActionBox({
           </Box>
         </Box>
       </Collapse>
+
+      <DeleteActionConfirmation
+        isOpen={deleteActionConfirmationIsOpen}
+        setIsOpen={setDeleteActionConfirmationIsOpen}
+        onConfirm={confirmDeleteAction}
+      />
     </Box>
   );
 }
