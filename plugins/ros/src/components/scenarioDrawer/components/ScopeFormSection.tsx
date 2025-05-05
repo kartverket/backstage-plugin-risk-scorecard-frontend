@@ -73,7 +73,7 @@ function ScopeFormSection({
             value={value}
             onMarkdownChange={onChange}
             label={t('dictionary.description')}
-            minRows={4}
+            minRows={8}
             error={!!error}
           />
         )}

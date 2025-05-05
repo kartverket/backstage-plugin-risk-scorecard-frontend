@@ -87,7 +87,7 @@ export function ScenarioStep({
         label={t('dictionary.description')}
         value={currentDescription}
         onMarkdownChange={value => setValue('description', value)}
-        minRows={4}
+        minRows={8}
       />
     </Stack>
   );
