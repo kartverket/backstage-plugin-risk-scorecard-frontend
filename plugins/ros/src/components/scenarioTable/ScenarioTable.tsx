@@ -1,24 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Box, Button, Paper, Typography } from '@material-ui/core';
-import TableRow from '@mui/material/TableRow';
+import AddCircle from '@material-ui/icons/AddCircle';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { CheckCircle, Edit } from '@mui/icons-material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import { ScenarioTableRow } from './ScenarioTableRow';
-import AddCircle from '@material-ui/icons/AddCircle';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { useTableStyles } from './ScenarioTableStyles';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useScenario } from '../../contexts/ScenarioContext';
-import { RiSc, RiScWithMetadata } from '../../utils/types';
-import { useFontStyles } from '../../utils/style';
-import { useRiScs } from '../../contexts/RiScContext';
+import TableRow from '@mui/material/TableRow';
+import { useEffect, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { CheckCircle, Edit } from '@mui/icons-material';
+import { useRiScs } from '../../contexts/RiScContext';
+import { useScenario } from '../../contexts/ScenarioContext';
+import { useFontStyles } from '../../utils/style';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { RiSc, RiScWithMetadata } from '../../utils/types';
+import { ScenarioTableRow } from './ScenarioTableRow';
+import { useTableStyles } from './ScenarioTableStyles';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;

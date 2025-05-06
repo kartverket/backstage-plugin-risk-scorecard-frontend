@@ -1,21 +1,22 @@
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { IconButton, Paper, Typography } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import { IconButton, Paper, Typography } from '@material-ui/core';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { useRiScs } from '../../contexts/RiScContext';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Scenario } from '../../utils/types';
-import { useTableStyles } from './ScenarioTableStyles';
 import {
   deleteScenario,
   getConsequenceLevel,
   getProbabilityLevel,
   getRiskMatrixColor,
 } from '../../utils/utilityfunctions';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useRiScs } from '../../contexts/RiScContext';
+import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
+import { useTableStyles } from './ScenarioTableStyles';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -96,10 +97,6 @@ export function ScenarioTableRow({
 
   preview(drop(ref));
 
-  const remainingActions = scenario.actions.filter(
-    a => a.status !== 'Completed',
-  );
-
   return (
     <TableRow
       ref={ref}
@@ -139,19 +136,17 @@ export function ScenarioTableRow({
       <TableCell className={tableCell}>
         <div className={tableCellContainer}>
           {(() => {
-            if (remainingActions.length > 0) {
+            if (scenario.actions.length > 0) {
               return (
-                <>
-                  {remainingActions.length}{' '}
-                  {t('dictionary.planned').toLowerCase()}
-                </>
+                <ScenarioTableProgressBar
+                  completedCount={
+                    scenario.actions.filter(a => a.status === 'Completed')
+                      .length
+                  }
+                  totalCount={scenario.actions.length}
+                />
               );
             }
-
-            if (scenario.actions.length > 0) {
-              return t('dictionary.completed');
-            }
-
             return t('scenarioTable.noActions');
           })()}
         </div>
