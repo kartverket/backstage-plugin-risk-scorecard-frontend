@@ -158,7 +158,7 @@ export function ScenarioTable({ riScWithMetadata }: ScenarioTableProps) {
                     <TableCell className={tableCell}>
                       <Typography
                         className={label}
-                        style={{ paddingBottom: 0 }}
+                        style={{ paddingBottom: 0, textAlign: 'center' }}
                       >
                         {t('dictionary.initialRisk')}
                       </Typography>
@@ -167,7 +167,7 @@ export function ScenarioTable({ riScWithMetadata }: ScenarioTableProps) {
                     <TableCell className={tableCell}>
                       <Typography
                         className={label}
-                        style={{ paddingBottom: 0 }}
+                        style={{ paddingBottom: 0, textAlign: 'center' }}
                       >
                         {t('dictionary.measures')}
                       </Typography>
@@ -175,7 +175,7 @@ export function ScenarioTable({ riScWithMetadata }: ScenarioTableProps) {
                     <TableCell className={tableCell}>
                       <Typography
                         className={label}
-                        style={{ paddingBottom: 0 }}
+                        style={{ paddingBottom: 0, textAlign: 'center' }}
                       >
                         {t('dictionary.restRisk')}
                       </Typography>
