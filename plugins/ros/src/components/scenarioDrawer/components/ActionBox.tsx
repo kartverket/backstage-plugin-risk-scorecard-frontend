@@ -1,29 +1,29 @@
-import { useState, useEffect } from 'react';
-import { Action, FormScenario } from '../../../utils/types';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import Chip from '@mui/material/Chip';
+import { Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { body2, emptyState, label } from '../../common/typography';
-import Collapse from '@mui/material/Collapse';
-import { ExpandLess, ExpandMore, Edit } from '@mui/icons-material';
-import Link from '@mui/material/Link';
-import IconButton from '@mui/material/IconButton';
-import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
-import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
-import { useScenario } from '../../../contexts/ScenarioContext';
-import { useRiScs } from '../../../contexts/RiScContext';
+import Chip from '@mui/material/Chip';
+import CircularProgress from '@mui/material/CircularProgress';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { actionStatusOptions } from '../../../utils/constants';
-import CircularProgress from '@mui/material/CircularProgress';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Markdown } from '../../common/Markdown';
-import { DeleteActionConfirmation } from './DeleteConfirmation';
-import { deleteAction } from '../../../utils/utilityfunctions';
+import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
+import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
+import { useRiScs } from '../../../contexts/RiScContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
+import { ActionStatusOptions } from '../../../utils/constants';
 import { useIsMounted } from '../../../utils/hooks';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { Action, FormScenario } from '../../../utils/types';
+import { deleteAction } from '../../../utils/utilityfunctions';
+import { Markdown } from '../../common/Markdown';
+import { body2, emptyState, label } from '../../common/typography';
+import { ActionFormItem } from './ActionFormItem';
+import { DeleteActionConfirmation } from './DeleteConfirmation';
 
 interface ActionBoxProps {
   action: Action;
@@ -58,11 +58,13 @@ export function ActionBox({
   /* @ts-ignore Because ts can't typecheck strings against our keys */
   const translatedActionStatus = t(`actionStatus.${action.status}`);
 
-  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
-    value: actionStatus,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: t(`actionStatus.${actionStatus}`),
-  }));
+  const translatedActionStatuses = Object.values(ActionStatusOptions).map(
+    actionStatus => ({
+      value: actionStatus,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(`actionStatus.${actionStatus}`),
+    }),
+  );
 
   const isMounted = useIsMounted();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -182,7 +184,7 @@ export function ActionBox({
           sx={{
             margin: 0,
             backgroundColor:
-              action.status === 'Completed'
+              action.status === ActionStatusOptions.Completed
                 ? { backgroundColor: '#6BC6A4' }
                 : undefined,
           }}

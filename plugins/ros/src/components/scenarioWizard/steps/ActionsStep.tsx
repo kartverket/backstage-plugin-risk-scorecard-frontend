@@ -1,25 +1,25 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import AddCircle from '@mui/icons-material/AddCircle';
-import { emptyAction } from '../../../contexts/ScenarioContext';
-import { heading2, heading3, label, subtitle2 } from '../../common/typography';
-import Box from '@mui/material/Box';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
-import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import { UseFormReturn, useFieldArray } from 'react-hook-form';
+import { emptyAction } from '../../../contexts/ScenarioContext';
 import {
-  actionStatusOptions,
+  ActionStatusOptions,
   urlRegExpPattern,
 } from '../../../utils/constants';
-import IconButton from '@mui/material/IconButton';
-import { Select } from '../../common/Select';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { FormScenario } from '../../../utils/types';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
-import { useState } from 'react';
+import { Select } from '../../common/Select';
+import { heading2, heading3, label, subtitle2 } from '../../common/typography';
 import { DeleteActionConfirmation } from '../../scenarioDrawer/components/DeleteConfirmation';
 
 export function ActionsStep({
@@ -51,11 +51,13 @@ export function ActionsStep({
     }
   }
 
-  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
-    value: actionStatus,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: t(`actionStatus.${actionStatus}`),
-  }));
+  const translatedActionStatuses = Object.values(ActionStatusOptions).map(
+    actionStatus => ({
+      value: actionStatus,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(`actionStatus.${actionStatus}`),
+    }),
+  );
 
   return (
     <Stack spacing={3}>

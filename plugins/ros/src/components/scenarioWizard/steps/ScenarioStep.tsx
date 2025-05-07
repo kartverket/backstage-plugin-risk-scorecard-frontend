@@ -1,19 +1,19 @@
 import {
-  threatActorsOptions,
-  vulnerabilitiesOptions,
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
 } from '../../../utils/constants';
 
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { heading2, subtitle2 } from '../../common/typography';
 import { UseFormReturn } from 'react-hook-form';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { FormScenario } from '../../../utils/types';
-import { Select } from '../../common/Select';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
+import { Select } from '../../common/Select';
+import { heading2, subtitle2 } from '../../common/typography';
 
 export function ScenarioStep({
   formMethods,
@@ -30,13 +30,15 @@ export function ScenarioStep({
     formState: { errors },
   } = formMethods;
 
-  const translatedThreatActors = threatActorsOptions.map(threatActor => ({
-    value: threatActor,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: t(`threatActors.${threatActor}`),
-  }));
+  const translatedThreatActors = Object.values(ThreatActorsOptions).map(
+    threatActor => ({
+      value: threatActor,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(`threatActors.${threatActor}`),
+    }),
+  );
 
-  const translatedVulnerabilities = vulnerabilitiesOptions.map(
+  const translatedVulnerabilities = Object.values(VulnerabilitiesOptions).map(
     vulnerability => ({
       value: vulnerability,
       /* @ts-ignore Because ts can't typecheck strings against our keys */

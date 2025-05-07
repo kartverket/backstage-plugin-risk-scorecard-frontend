@@ -1,18 +1,18 @@
-import { Controller, UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { MarkdownInput } from '../../common/MarkdownInput';
-import {
-  threatActorsOptions,
-  vulnerabilitiesOptions,
-} from '../../../utils/constants';
-import { Select } from '../../common/Select';
-import Typography from '@mui/material/Typography';
-import { heading3 } from '../../common/typography';
 import Paper from '@mui/material/Paper';
-import { section } from '../scenarioDrawerComponents';
+import Typography from '@mui/material/Typography';
+import { Controller, UseFormReturn } from 'react-hook-form';
+import {
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
+} from '../../../utils/constants';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { FormScenario } from '../../../utils/types';
 import { Input } from '../../common/Input';
+import { MarkdownInput } from '../../common/MarkdownInput';
+import { Select } from '../../common/Select';
+import { heading3 } from '../../common/typography';
+import { section } from '../scenarioDrawerComponents';
 
 function ScopeFormSection({
   formMethods,
@@ -26,13 +26,15 @@ function ScopeFormSection({
     formState: { errors },
   } = formMethods;
 
-  const translatedThreatActors = threatActorsOptions.map(threatActor => ({
-    value: threatActor,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: t(`threatActors.${threatActor}`),
-  }));
+  const translatedThreatActors = Object.values(ThreatActorsOptions).map(
+    threatActor => ({
+      value: threatActor,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(`threatActors.${threatActor}`),
+    }),
+  );
 
-  const translatedVulnerabilities = vulnerabilitiesOptions.map(
+  const translatedVulnerabilities = Object.values(VulnerabilitiesOptions).map(
     vulnerability => ({
       value: vulnerability,
       /* @ts-ignore Because ts can't typecheck strings against our keys */

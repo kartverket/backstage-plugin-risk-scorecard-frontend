@@ -7,6 +7,7 @@ import TableRow from '@mui/material/TableRow';
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useRiScs } from '../../contexts/RiScContext';
+import { ActionStatusOptions } from '../../utils/constants';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Scenario } from '../../utils/types';
 import {
@@ -140,8 +141,9 @@ export function ScenarioTableRow({
               return (
                 <ScenarioTableProgressBar
                   completedCount={
-                    scenario.actions.filter(a => a.status === 'Completed')
-                      .length
+                    scenario.actions.filter(
+                      a => a.status === ActionStatusOptions.Completed,
+                    ).length
                   }
                   totalCount={scenario.actions.length}
                 />
