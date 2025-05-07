@@ -193,7 +193,10 @@ export function ActionBox({
         >
           {Object.values(ActionStatusOptions).map(value => (
             <MenuItem key={value} onClick={() => handleStatusChange(value)}>
-              {t(actionStatusOptionsToTranslationKeys[value])}
+              {
+                /* @ts-ignore Because ts can't typecheck strings against our keys */
+                t(actionStatusOptionsToTranslationKeys[value])
+              }
             </MenuItem>
           ))}
         </Menu>
