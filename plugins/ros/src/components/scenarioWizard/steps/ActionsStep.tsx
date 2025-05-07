@@ -16,6 +16,7 @@ import {
 } from '../../../utils/constants';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { FormScenario } from '../../../utils/types';
+import { translatedActionStatusOptions } from '../../../utils/utilityfunctions';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
@@ -51,11 +52,11 @@ export function ActionsStep({
     }
   }
 
-  const translatedActionStatuses = Object.values(ActionStatusOptions).map(
+  const actionStatusOptions = Object.values(ActionStatusOptions).map(
     actionStatus => ({
       value: actionStatus,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(`actionStatus.${actionStatus}`),
+      renderedValue: t(translatedActionStatusOptions[actionStatus]),
     }),
   );
 
@@ -149,7 +150,7 @@ export function ActionsStep({
                     control={control}
                     name={`actions.${index}.status`}
                     label={t('dictionary.status')}
-                    options={translatedActionStatuses}
+                    options={actionStatusOptions}
                   />
                 </Box>
               </Stack>

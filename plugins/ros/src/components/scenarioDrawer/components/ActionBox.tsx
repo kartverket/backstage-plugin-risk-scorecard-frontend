@@ -19,7 +19,10 @@ import { ActionStatusOptions } from '../../../utils/constants';
 import { useIsMounted } from '../../../utils/hooks';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { Action, FormScenario } from '../../../utils/types';
-import { deleteAction } from '../../../utils/utilityfunctions';
+import {
+  deleteAction,
+  translatedActionStatusOptions,
+} from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
 import { ActionFormItem } from './ActionFormItem';
@@ -55,16 +58,7 @@ export function ActionBox({
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
-  /* @ts-ignore Because ts can't typecheck strings against our keys */
-  const translatedActionStatus = t(`actionStatus.${action.status}`);
-
-  const translatedActionStatuses = Object.values(ActionStatusOptions).map(
-    actionStatus => ({
-      value: actionStatus,
-      /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(`actionStatus.${actionStatus}`),
-    }),
-  );
+  const translatedActionStatus = translatedActionStatusOptions[action.status];
 
   const isMounted = useIsMounted();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -196,12 +190,9 @@ export function ActionBox({
           onClose={handleMenuClose}
           onClick={handleMenuClose}
         >
-          {translatedActionStatuses.map(option => (
-            <MenuItem
-              key={option.value}
-              onClick={() => handleStatusChange(option.value)}
-            >
-              {option.renderedValue}
+          {Object.values(ActionStatusOptions).map(value => (
+            <MenuItem key={value} onClick={() => handleStatusChange(value)}>
+              {t(translatedActionStatusOptions[value])}
             </MenuItem>
           ))}
         </Menu>

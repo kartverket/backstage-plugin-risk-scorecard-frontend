@@ -8,6 +8,10 @@ import {
 } from '../../../utils/constants';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { FormScenario } from '../../../utils/types';
+import {
+  translatedThreatActorOptions,
+  translatedVulnerabilitiesOptions,
+} from '../../../utils/utilityfunctions';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
@@ -26,19 +30,19 @@ function ScopeFormSection({
     formState: { errors },
   } = formMethods;
 
-  const translatedThreatActors = Object.values(ThreatActorsOptions).map(
+  const threatActorOptions = Object.values(ThreatActorsOptions).map(
     threatActor => ({
       value: threatActor,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(`threatActors.${threatActor}`),
+      renderedValue: t(translatedThreatActorOptions[threatActor]),
     }),
   );
 
-  const translatedVulnerabilities = Object.values(VulnerabilitiesOptions).map(
+  const vulnerabilitiesOptions = Object.values(VulnerabilitiesOptions).map(
     vulnerability => ({
       value: vulnerability,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(`vulnerabilities.${vulnerability}`),
+      renderedValue: t(translatedVulnerabilitiesOptions[vulnerability]),
     }),
   );
 
@@ -57,7 +61,7 @@ function ScopeFormSection({
         name="threatActors"
         label={t('dictionary.threatActors')}
         labelTranslationKey="threatActors"
-        options={translatedThreatActors}
+        options={threatActorOptions}
       />
       <Select<FormScenario>
         multiple
@@ -65,7 +69,7 @@ function ScopeFormSection({
         name="vulnerabilities"
         label={t('dictionary.vulnerabilities')}
         labelTranslationKey="vulnerabilities"
-        options={translatedVulnerabilities}
+        options={vulnerabilitiesOptions}
       />
       <Controller
         control={control}
