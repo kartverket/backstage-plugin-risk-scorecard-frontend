@@ -59,7 +59,7 @@ export function ActionBox({
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
   const translatedActionStatus =
-    actionStatusOptionsToTranslationKeys[action.status];
+    actionStatusOptionsToTranslationKeys[action.status as ActionStatusOptions];
 
   const isMounted = useIsMounted();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -195,7 +195,11 @@ export function ActionBox({
             <MenuItem key={value} onClick={() => handleStatusChange(value)}>
               {
                 /* @ts-ignore Because ts can't typecheck strings against our keys */
-                t(actionStatusOptionsToTranslationKeys[value])
+                t(
+                  actionStatusOptionsToTranslationKeys[
+                    value as ActionStatusOptions
+                  ],
+                )
               }
             </MenuItem>
           ))}
