@@ -9,8 +9,8 @@ import {
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { FormScenario } from '../../../utils/types';
 import {
-  translatedThreatActorOptions,
-  translatedVulnerabilitiesOptions,
+  threatActorOptionsToTranslationKeys,
+  vulnerabiltiesOptionsToTranslationKeys,
 } from '../../../utils/utilityfunctions';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
@@ -34,7 +34,7 @@ function ScopeFormSection({
     threatActor => ({
       value: threatActor,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(translatedThreatActorOptions[threatActor]),
+      renderedValue: t(threatActorOptionsToTranslationKeys[threatActor]),
     }),
   );
 
@@ -42,7 +42,7 @@ function ScopeFormSection({
     vulnerability => ({
       value: vulnerability,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(translatedVulnerabilitiesOptions[vulnerability]),
+      renderedValue: t(vulnerabiltiesOptionsToTranslationKeys[vulnerability]),
     }),
   );
 

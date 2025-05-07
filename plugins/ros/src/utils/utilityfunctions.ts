@@ -358,7 +358,7 @@ export function isDeeplyEqual<T>(
   return false;
 }
 
-export const translatedActionStatusOptions: Record<
+export const actionStatusOptionsToTranslationKeys: Record<
   ActionStatusOptions,
   string
 > = {
@@ -369,19 +369,21 @@ export const translatedActionStatusOptions: Record<
   [ActionStatusOptions.Aborted]: 'actionStatus.Aborted',
 };
 
-export const translatedThreatActorOptions: Record<ThreatActorsOptions, string> =
-  {
-    [ThreatActorsOptions.ScriptKiddie]: 'threatActors.Script kiddie',
-    [ThreatActorsOptions.Hacktivist]: 'threatActors.Hacktivist',
-    [ThreatActorsOptions.RecklessEmployee]: 'threatActors.Reckless employee',
-    [ThreatActorsOptions.Insider]: 'threatActors.Insider',
-    [ThreatActorsOptions.OrganisedCrime]: 'threatActors.Organised crime',
-    [ThreatActorsOptions.TerroristOrganisation]:
-      'threatActors.Terrorist organisation',
-    [ThreatActorsOptions.NationGovernment]: 'threatActors.Nation/government',
-  };
+export const threatActorOptionsToTranslationKeys: Record<
+  ThreatActorsOptions,
+  string
+> = {
+  [ThreatActorsOptions.ScriptKiddie]: 'threatActors.Script kiddie',
+  [ThreatActorsOptions.Hacktivist]: 'threatActors.Hacktivist',
+  [ThreatActorsOptions.RecklessEmployee]: 'threatActors.Reckless employee',
+  [ThreatActorsOptions.Insider]: 'threatActors.Insider',
+  [ThreatActorsOptions.OrganisedCrime]: 'threatActors.Organised crime',
+  [ThreatActorsOptions.TerroristOrganisation]:
+    'threatActors.Terrorist organisation',
+  [ThreatActorsOptions.NationGovernment]: 'threatActors.Nation/government',
+};
 
-export const translatedVulnerabilitiesOptions: Record<
+export const vulnerabiltiesOptionsToTranslationKeys: Record<
   VulnerabilitiesOptions,
   string
 > = {

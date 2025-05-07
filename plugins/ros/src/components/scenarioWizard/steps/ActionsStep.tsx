@@ -16,7 +16,7 @@ import {
 } from '../../../utils/constants';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { FormScenario } from '../../../utils/types';
-import { translatedActionStatusOptions } from '../../../utils/utilityfunctions';
+import { actionStatusOptionsToTranslationKeys } from '../../../utils/utilityfunctions';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
@@ -56,7 +56,7 @@ export function ActionsStep({
     actionStatus => ({
       value: actionStatus,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(translatedActionStatusOptions[actionStatus]),
+      renderedValue: t(actionStatusOptionsToTranslationKeys[actionStatus]),
     }),
   );
 

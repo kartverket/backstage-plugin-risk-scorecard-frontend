@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import { UseFormReturn } from 'react-hook-form';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { FormScenario } from '../../../utils/types';
-import { translatedThreatActorOptions } from '../../../utils/utilityfunctions';
+import { threatActorOptionsToTranslationKeys } from '../../../utils/utilityfunctions';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
@@ -35,7 +35,7 @@ export function ScenarioStep({
     threatActor => ({
       value: threatActor,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(translatedThreatActorOptions[threatActor]),
+      renderedValue: t(threatActorOptionsToTranslationKeys[threatActor]),
     }),
   );
 

@@ -20,8 +20,8 @@ import { useIsMounted } from '../../../utils/hooks';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { Action, FormScenario } from '../../../utils/types';
 import {
+  actionStatusOptionsToTranslationKeys,
   deleteAction,
-  translatedActionStatusOptions,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
@@ -58,7 +58,8 @@ export function ActionBox({
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
-  const translatedActionStatus = translatedActionStatusOptions[action.status];
+  const translatedActionStatus =
+    actionStatusOptionsToTranslationKeys[action.status];
 
   const isMounted = useIsMounted();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -192,7 +193,7 @@ export function ActionBox({
         >
           {Object.values(ActionStatusOptions).map(value => (
             <MenuItem key={value} onClick={() => handleStatusChange(value)}>
-              {t(translatedActionStatusOptions[value])}
+              {t(actionStatusOptionsToTranslationKeys[value])}
             </MenuItem>
           ))}
         </Menu>

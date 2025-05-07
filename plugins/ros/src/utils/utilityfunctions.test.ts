@@ -7,6 +7,7 @@ import { pluginRiScMessages } from './translations';
 import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
 import {
   UpdatedStatusEnum,
+  actionStatusOptionsToTranslationKeys,
   calculateDaysSince,
   calculateUpdatedStatus,
   deleteScenario,
@@ -15,9 +16,8 @@ import {
   generateRandomId,
   isDeeplyEqual,
   requiresNewApproval,
-  translatedActionStatusOptions,
-  translatedThreatActorOptions,
-  translatedVulnerabilitiesOptions,
+  threatActorOptionsToTranslationKeys,
+  vulnerabiltiesOptionsToTranslationKeys,
 } from './utilityfunctions';
 
 describe('generateRandomId', () => {
@@ -523,21 +523,21 @@ describe('isDeeplyEqual', () => {
 describe('Translation mappings cover all enum values', () => {
   it('translatedActionStatuses covers all ActionStatusOptions', () => {
     const enumValues = Object.values(ActionStatusOptions);
-    const translatedKeys = Object.keys(translatedActionStatusOptions);
+    const translatedKeys = Object.keys(actionStatusOptionsToTranslationKeys);
 
     expect(translatedKeys.sort()).toEqual(enumValues.sort());
   });
 
   it('translatedThreatActors covers all ThreatActorsOptions', () => {
     const enumValues = Object.values(ThreatActorsOptions);
-    const translatedKeys = Object.keys(translatedThreatActorOptions);
+    const translatedKeys = Object.keys(threatActorOptionsToTranslationKeys);
 
     expect(translatedKeys.sort()).toEqual(enumValues.sort());
   });
 
   it('translatedVulnerabilities covers all VulnerabilitiesOptions', () => {
     const enumValues = Object.values(VulnerabilitiesOptions);
-    const translatedKeys = Object.keys(translatedVulnerabilitiesOptions);
+    const translatedKeys = Object.keys(vulnerabiltiesOptionsToTranslationKeys);
 
     expect(translatedKeys.sort()).toEqual(enumValues.sort());
   });
@@ -546,7 +546,7 @@ describe('Translation mappings cover all enum values', () => {
 describe('Translation mappings match translation keys', () => {
   it('translatedActionStatusOptions values should match corresponding keys in translations', () => {
     const optionToTranslationValues = Object.values(
-      translatedActionStatusOptions,
+      actionStatusOptionsToTranslationKeys,
     ).sort();
     const translationKeys = Object.keys(pluginRiScMessages.actionStatus).sort();
 
@@ -558,7 +558,7 @@ describe('Translation mappings match translation keys', () => {
 
   it('translatedThreatActorOptions values should match corresponding keys in translations', () => {
     const optionToTranslationValues = Object.values(
-      translatedThreatActorOptions,
+      threatActorOptionsToTranslationKeys,
     ).sort();
     const translationKeys = Object.keys(pluginRiScMessages.threatActors).sort();
 
@@ -570,7 +570,7 @@ describe('Translation mappings match translation keys', () => {
 
   it('translatedVulnerabilitiesOptions values should match corresponding keys in translations', () => {
     const optionToTranslationValues = Object.values(
-      translatedVulnerabilitiesOptions,
+      vulnerabiltiesOptionsToTranslationKeys,
     ).sort();
     const translationKeys = Object.keys(
       pluginRiScMessages.vulnerabilities,
