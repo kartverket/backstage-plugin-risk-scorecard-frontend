@@ -440,7 +440,7 @@ export const pluginRiScMessages = {
       'No SOPS configuration present on default branch of the GitHub repository',
     CreatedSops: 'SOPS configuration created successfully',
   },
-};
+} as const;
 
 export const pluginRiScTranslationRef = createTranslationRef({
   id: 'plugin.riSc',
