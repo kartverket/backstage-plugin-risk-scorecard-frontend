@@ -1,4 +1,4 @@
-import schema from '../risc_schema_en_v4_0.json';
+import schema from '../risc_schema_en_v4_1.json';
 
 export const BASE_NUMBER = 20.0;
 
@@ -22,7 +22,7 @@ export const riskMatrix = [
   ['#6CC6A4', '#6CC6A4', '#6CC6A4', '#FBE36A', '#FBE36A'],
 ];
 
-export const latestSupportedVersion = '4.0';
+export const latestSupportedVersion = '4.1';
 
 export const urlRegExpPattern: RegExp =
   /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;

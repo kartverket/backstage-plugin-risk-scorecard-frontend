@@ -354,6 +354,13 @@ function logBase(value: number, base: number): number {
   return Math.log(value) / Math.log(base);
 }
 
+/*
+  0 = 20^-2 = 1 / 400
+  1 = 20^-1 = 1 / 20
+  2 = 20^-0 = 1
+  3 = 20^1  = 20
+  4 = 20^2  = 400
+*/
 export function findProbabilityIndex(probability: number): number {
   const probabilityIndex = Math.round(
     logBase(probability, BASE_NUMBER) + 3 - 1,
@@ -361,8 +368,17 @@ export function findProbabilityIndex(probability: number): number {
   return Math.min(4, Math.max(0, probabilityIndex));
 }
 
+/*
+  0 = 20^3 = 8 000
+  1 = 20^4 = 160 000
+  2 = 20^5 = 3 200 000
+  3 = 20^6 = 64 000 000
+  4 = 20^7 = 1 280 000 000
+*/
 export function findConsequenceIndex(consequence: number): number {
-  const consequenceIndex = Math.ceil(logBase(consequence, BASE_NUMBER) - 2 - 1);
+  const consequenceIndex = Math.round(
+    logBase(consequence, BASE_NUMBER) - 2 - 1,
+  );
   return Math.min(4, Math.max(0, consequenceIndex));
 }
 
@@ -375,3 +391,19 @@ export function calculateCost(
 
   return Math.pow(BASE_NUMBER, probabilityLevel + consequenceLevel - 1);
 }
+
+export const consequenceIndexToTranslationKeys: Record<number, string> = {
+  0: 'infoDialog.consequenceDescription.oneworkday',
+  1: 'infoDialog.consequenceDescription.oneworkmonth',
+  2: 'infoDialog.consequenceDescription.oneworkyear',
+  3: 'infoDialog.consequenceDescription.50workyears',
+  4: 'infoDialog.consequenceDescription.1000workyears',
+};
+
+export const probabilityIndexToTranslationKeys: Record<number, string> = {
+  0: 'infoDialog.probabilityDescription.every400years',
+  1: 'infoDialog.probabilityDescription.every20years',
+  2: 'infoDialog.probabilityDescription.annualy',
+  3: 'infoDialog.probabilityDescription.monthly',
+  4: 'infoDialog.probabilityDescription.daily',
+};

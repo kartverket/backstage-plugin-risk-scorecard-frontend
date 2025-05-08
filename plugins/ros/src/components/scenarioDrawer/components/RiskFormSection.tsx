@@ -1,15 +1,23 @@
-import { UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import InfoIcon from '@mui/icons-material/Info';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import { UseFormReturn } from 'react-hook-form';
 import {
   consequenceOptions,
   probabilityOptions,
 } from '../../../utils/constants';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { FormScenario } from '../../../utils/types';
+import {
+  consequenceIndexToTranslationKeys,
+  findConsequenceIndex,
+  findProbabilityIndex,
+  probabilityIndexToTranslationKeys,
+} from '../../../utils/utilityfunctions';
 import { Select } from '../../common/Select';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { heading3 } from '../../common/typography';
 import {
   headerSection,
@@ -17,17 +25,11 @@ import {
   section,
   selectSection,
 } from '../scenarioDrawerComponents';
-import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
-import {
-  findProbabilityIndex,
-  findConsequenceIndex,
-} from '../../../utils/utilityfunctions';
 
 function createValues(
   options: string[] | number[],
   translationKey: string,
-  descriptionKey: string,
+  indexToTranslationKeyMap: Record<string, string>,
   t: (key: string) => string,
 ): { value: string; renderedValue: (isSelected: boolean) => JSX.Element }[] {
   return options.map((value, index) => ({
@@ -61,7 +63,7 @@ function createValues(
         <span>
           {/* @ts-ignore Because ts can't typecheck strings against our keys */}
           {`${t(`${translationKey}.rows.${index + 1}`)} (${t(
-            `${descriptionKey}.${index}`,
+            indexToTranslationKeyMap[index],
           )})`}
         </span>
       </Box>
@@ -82,14 +84,14 @@ function ScenarioForm({
   const probabilityValues = createValues(
     probabilityOptions,
     'probabilityTable',
-    'infoDialog.probabilityDescription',
+    probabilityIndexToTranslationKeys,
     t as (key: string) => string,
   );
 
   const consequenceValues = createValues(
     consequenceOptions,
     'consequenceTable',
-    'infoDialog.consequenceDescription',
+    consequenceIndexToTranslationKeys,
     t as (key: string) => string,
   );
 

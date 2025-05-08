@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import {
   Dialog,
   DialogContent,
@@ -7,10 +7,14 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { Fragment } from 'react';
 import { consequenceOptions, probabilityOptions } from '../../utils/constants';
-import { formatNOK } from '../../utils/utilityfunctions';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import {
+  consequenceIndexToTranslationKeys,
+  formatNOK,
+  probabilityIndexToTranslationKeys,
+} from '../../utils/utilityfunctions';
 import { useEstimatedRiskInfoDialogStyles } from './estimatedRiskInfoDialogStyle';
 
 interface EstimatedRiskInfoDialogProps {
@@ -49,9 +53,7 @@ export function EstimatedRiskInfoDialog({
               <Fragment key={index}>
                 <b>{index + 1}</b>: 20<sup>{index + 3}</sup> ={' '}
                 {formatNOK(option)} {t('infoDialog.consequenceUnit')} ={' '}
-                <b>
-                  {t(`infoDialog.consequenceDescription.${index}` as any, {})}
-                </b>
+                <b>{t(consequenceIndexToTranslationKeys[index] as any, {})}</b>
                 <br />
               </Fragment>
             ))}
@@ -64,9 +66,7 @@ export function EstimatedRiskInfoDialog({
               <Fragment key={index}>
                 <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
                 {t('infoDialog.probabilityUnit')} ={' '}
-                <b>
-                  {t(`infoDialog.probabilityDescription.${index}` as any, {})}
-                </b>
+                <b>{t(probabilityIndexToTranslationKeys[index] as any, {})}</b>
                 <br />
               </Fragment>
             ))}
