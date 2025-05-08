@@ -10,12 +10,15 @@ import {
 } from '@material-ui/core';
 import { useState } from 'react';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
-import { consequenceOptions, probabilityOptions } from '../../utils/constants';
 import { RiSc } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
 import { useScenario } from '../../contexts/ScenarioContext';
+import {
+  findConsequenceIndex,
+  findProbabilityIndex,
+} from '../../utils/utilityfunctions';
 
 interface ScenarioCountProps {
   riSc: RiSc;
@@ -51,12 +54,12 @@ export function RiskMatrixScenarioCount({
 
   const scenarios = riSc.scenarios.filter(
     scenario =>
-      probabilityOptions.indexOf(
+      findProbabilityIndex(
         initialRisk
           ? scenario.risk.probability
           : scenario.remainingRisk.probability,
       ) === probability &&
-      consequenceOptions.indexOf(
+      findConsequenceIndex(
         initialRisk
           ? scenario.risk.consequence
           : scenario.remainingRisk.consequence,

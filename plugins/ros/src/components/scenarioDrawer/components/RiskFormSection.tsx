@@ -1,15 +1,23 @@
-import { UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import InfoIcon from '@mui/icons-material/Info';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import { UseFormReturn } from 'react-hook-form';
 import {
   consequenceOptions,
   probabilityOptions,
 } from '../../../utils/constants';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { FormScenario } from '../../../utils/types';
+import {
+  consequenceIndexToTranslationKeys,
+  findConsequenceIndex,
+  findProbabilityIndex,
+  probabilityIndexToTranslationKeys,
+} from '../../../utils/utilityfunctions';
 import { Select } from '../../common/Select';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { heading3 } from '../../common/typography';
 import {
   headerSection,
@@ -17,8 +25,51 @@ import {
   section,
   selectSection,
 } from '../scenarioDrawerComponents';
-import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
+
+function createValues(
+  options: string[] | number[],
+  translationKey: string,
+  indexToTranslationKeyMap: Record<string, string>,
+  t: (key: string) => string,
+): { value: string; renderedValue: (isSelected: boolean) => JSX.Element }[] {
+  return options.map((value, index) => ({
+    value: `${value}`,
+    renderedValue: (isSelected: boolean) => (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            backgroundColor: isSelected ? 'primary.main' : 'transparent',
+            border: '1px solid',
+            borderColor: isSelected ? 'primary.main' : 'primary.main',
+            color: isSelected ? 'white' : 'primary.main',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          }}
+        >
+          {index + 1}
+        </Box>
+        <span>
+          {/* @ts-ignore Because ts can't typecheck strings against our keys */}
+          {`${t(`${translationKey}.rows.${index + 1}`)} (${t(
+            indexToTranslationKeyMap[index],
+          )})`}
+        </span>
+      </Box>
+    ),
+  }));
+}
 
 function ScenarioForm({
   formMethods,
@@ -30,17 +81,19 @@ function ScenarioForm({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { control } = formMethods;
 
-  const probabilityValues = probabilityOptions.map((value, index) => ({
-    value: `${value}`,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`probabilityTable.rows.${index + 1}`)}`,
-  }));
+  const probabilityValues = createValues(
+    probabilityOptions,
+    'probabilityTable',
+    probabilityIndexToTranslationKeys,
+    t as (key: string) => string,
+  );
 
-  const consequenceValues = consequenceOptions.map((value, index) => ({
-    value: `${value}`,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`consequenceTable.rows.${index + 1}`)}`,
-  }));
+  const consequenceValues = createValues(
+    consequenceOptions,
+    'consequenceTable',
+    consequenceIndexToTranslationKeys,
+    t as (key: string) => string,
+  );
 
   return (
     <Paper sx={section}>
@@ -63,14 +116,64 @@ function ScenarioForm({
             <Select<FormScenario>
               control={control}
               name="risk.probability"
-              label={t('dictionary.probability')}
-              options={probabilityValues}
+              label={t('infoDialog.probabilityTitle')}
+              options={probabilityValues.map(option => ({
+                ...option,
+                renderedValue: option.renderedValue(
+                  option.value ===
+                    `${
+                      probabilityOptions[
+                        findProbabilityIndex(
+                          Number(formMethods.getValues('risk.probability')),
+                        )
+                      ]
+                    }`,
+                ),
+              }))}
+              value={
+                probabilityValues.find(
+                  option =>
+                    option.value ===
+                    `${
+                      probabilityOptions[
+                        findProbabilityIndex(
+                          Number(formMethods.getValues('risk.probability')),
+                        )
+                      ]
+                    }`,
+                )?.value || `${probabilityOptions[0]}`
+              }
             />
             <Select<FormScenario>
               control={control}
               name="risk.consequence"
-              label={t('dictionary.consequence')}
-              options={consequenceValues}
+              label={t('infoDialog.consequenceTitle')}
+              options={consequenceValues.map(option => ({
+                ...option,
+                renderedValue: option.renderedValue(
+                  option.value ===
+                    `${
+                      consequenceOptions[
+                        findConsequenceIndex(
+                          Number(formMethods.getValues('risk.consequence')),
+                        )
+                      ]
+                    }`,
+                ),
+              }))}
+              value={
+                consequenceValues.find(
+                  option =>
+                    option.value ===
+                    `${
+                      consequenceOptions[
+                        findConsequenceIndex(
+                          Number(formMethods.getValues('risk.consequence')),
+                        )
+                      ]
+                    }`,
+                )?.value || `${consequenceOptions[0]}`
+              }
             />
           </Box>
         </Paper>
@@ -87,14 +190,72 @@ function ScenarioForm({
             <Select<FormScenario>
               control={control}
               name="remainingRisk.probability"
-              label={t('dictionary.probability')}
-              options={probabilityValues}
+              label={t('infoDialog.probabilityTitle')}
+              options={probabilityValues.map(option => ({
+                ...option,
+                renderedValue: option.renderedValue(
+                  option.value ===
+                    `${
+                      probabilityOptions[
+                        findProbabilityIndex(
+                          Number(
+                            formMethods.getValues('remainingRisk.probability'),
+                          ),
+                        )
+                      ]
+                    }`,
+                ),
+              }))}
+              value={
+                probabilityValues.find(
+                  option =>
+                    option.value ===
+                    `${
+                      probabilityOptions[
+                        findProbabilityIndex(
+                          Number(
+                            formMethods.getValues('remainingRisk.probability'),
+                          ),
+                        )
+                      ]
+                    }`,
+                )?.value || `${probabilityOptions[0]}`
+              }
             />
             <Select<FormScenario>
               control={control}
               name="remainingRisk.consequence"
-              label={t('dictionary.consequence')}
-              options={consequenceValues}
+              label={t('infoDialog.consequenceTitle')}
+              options={consequenceValues.map(option => ({
+                ...option,
+                renderedValue: option.renderedValue(
+                  option.value ===
+                    `${
+                      consequenceOptions[
+                        findConsequenceIndex(
+                          Number(
+                            formMethods.getValues('remainingRisk.consequence'),
+                          ),
+                        )
+                      ]
+                    }`,
+                ),
+              }))}
+              value={
+                consequenceValues.find(
+                  option =>
+                    option.value ===
+                    `${
+                      consequenceOptions[
+                        findConsequenceIndex(
+                          Number(
+                            formMethods.getValues('remainingRisk.consequence'),
+                          ),
+                        )
+                      ]
+                    }`,
+                )?.value || `${consequenceOptions[0]}`
+              }
             />
           </Box>
         </Paper>
