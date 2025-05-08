@@ -17478,7 +17478,6 @@ __metadata:
     better-sqlite3: "npm:^11.9.1"
     isolated-vm: "npm:^5.0.4"
     jwt-decode: "npm:^4.0.0"
-    node-gyp: "npm:^11.2.0"
     pg: "npm:^8.14.1"
     winston: "npm:^3.17.0"
   languageName: unknown
@@ -29740,7 +29739,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:^11.2.0, node-gyp@npm:latest":
+"node-gyp@npm:latest":
   version: 11.2.0
   resolution: "node-gyp@npm:11.2.0"
   dependencies:
@@ -34574,7 +34573,6 @@ __metadata:
     "@testing-library/dom": "npm:^10.4.0"
     github-markdown-css: "npm:^5.8.1"
     lerna: "npm:^8.2.2"
-    node-gyp: "npm:^11.2.0"
     prettier: "npm:^3.5.3"
     typescript: "npm:~5.8.3"
   languageName: unknown
