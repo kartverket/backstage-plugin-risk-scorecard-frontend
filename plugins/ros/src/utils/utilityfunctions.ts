@@ -1,6 +1,13 @@
 import { formatISO } from 'date-fns';
 import { UpdateStatus } from '../contexts/RiScContext';
-import { BASE_NUMBER, latestSupportedVersion, riskMatrix } from './constants';
+import {
+  ActionStatusOptions,
+  BASE_NUMBER,
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
+  latestSupportedVersion,
+  riskMatrix,
+} from './constants';
 import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
 
 export function generateRandomId(): string {
@@ -406,4 +413,45 @@ export const probabilityIndexToTranslationKeys: Record<number, string> = {
   2: 'infoDialog.probabilityDescription.annualy',
   3: 'infoDialog.probabilityDescription.monthly',
   4: 'infoDialog.probabilityDescription.daily',
+};
+
+export const actionStatusOptionsToTranslationKeys: Record<
+  ActionStatusOptions,
+  string
+> = {
+  [ActionStatusOptions.NotStarted]: 'actionStatus.Not started',
+  [ActionStatusOptions.InProgress]: 'actionStatus.In progress',
+  [ActionStatusOptions.OnHold]: 'actionStatus.On hold',
+  [ActionStatusOptions.Completed]: 'actionStatus.Completed',
+  [ActionStatusOptions.Aborted]: 'actionStatus.Aborted',
+};
+
+export const threatActorOptionsToTranslationKeys: Record<
+  ThreatActorsOptions,
+  string
+> = {
+  [ThreatActorsOptions.ScriptKiddie]: 'threatActors.Script kiddie',
+  [ThreatActorsOptions.Hacktivist]: 'threatActors.Hacktivist',
+  [ThreatActorsOptions.RecklessEmployee]: 'threatActors.Reckless employee',
+  [ThreatActorsOptions.Insider]: 'threatActors.Insider',
+  [ThreatActorsOptions.OrganisedCrime]: 'threatActors.Organised crime',
+  [ThreatActorsOptions.TerroristOrganisation]:
+    'threatActors.Terrorist organisation',
+  [ThreatActorsOptions.NationGovernment]: 'threatActors.Nation/government',
+};
+
+export const vulnerabiltiesOptionsToTranslationKeys: Record<
+  VulnerabilitiesOptions,
+  string
+> = {
+  [VulnerabilitiesOptions.FlawedDesign]: 'vulnerabilities.Flawed design',
+  [VulnerabilitiesOptions.Misconfiguration]: 'vulnerabilities.Misconfiguration',
+  [VulnerabilitiesOptions.DependencyVulnerability]:
+    'vulnerabilities.Dependency vulnerability',
+  [VulnerabilitiesOptions.UnauthorizedAccess]:
+    'vulnerabilities.Unauthorized access',
+  [VulnerabilitiesOptions.UnmonitoredUse]: 'vulnerabilities.Unmonitored use',
+  [VulnerabilitiesOptions.InputTampering]: 'vulnerabilities.Input tampering',
+  [VulnerabilitiesOptions.InformationLeak]: 'vulnerabilities.Information leak',
+  [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
 };

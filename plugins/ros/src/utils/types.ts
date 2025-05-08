@@ -1,3 +1,4 @@
+import type { Dispatch } from 'react';
 import { GcpCryptoKeyObject, SopsConfigDTO } from './DTOs';
 
 /**
@@ -7,6 +8,9 @@ import { GcpCryptoKeyObject, SopsConfigDTO } from './DTOs';
  * @template R New type to set field of key to
  */
 export type Modify<O, K extends keyof any, R> = Omit<O, K> & { [P in K]: R };
+
+/** Type of the setter from `useState` */
+export type SetState<T extends any> = Dispatch<React.SetStateAction<T>>;
 
 export type LastPublished = {
   dateTime: Date;

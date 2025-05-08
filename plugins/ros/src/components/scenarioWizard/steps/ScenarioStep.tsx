@@ -1,19 +1,20 @@
 import {
-  threatActorsOptions,
-  vulnerabilitiesOptions,
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
 } from '../../../utils/constants';
 
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { heading2, subtitle2 } from '../../common/typography';
 import { UseFormReturn } from 'react-hook-form';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { FormScenario } from '../../../utils/types';
-import { Select } from '../../common/Select';
+import { threatActorOptionsToTranslationKeys } from '../../../utils/utilityfunctions';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
+import { Select } from '../../common/Select';
+import { heading2, subtitle2 } from '../../common/typography';
 
 export function ScenarioStep({
   formMethods,
@@ -30,17 +31,19 @@ export function ScenarioStep({
     formState: { errors },
   } = formMethods;
 
-  const translatedThreatActors = threatActorsOptions.map(threatActor => ({
-    value: threatActor,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: t(`threatActors.${threatActor}`),
-  }));
+  const threatActorOptions = Object.values(ThreatActorsOptions).map(
+    threatActor => ({
+      value: threatActor,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(threatActorOptionsToTranslationKeys[threatActor]),
+    }),
+  );
 
-  const translatedVulnerabilities = vulnerabilitiesOptions.map(
+  const vulnerabilitiesOptions = Object.values(VulnerabilitiesOptions).map(
     vulnerability => ({
       value: vulnerability,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(`vulnerabilities.${vulnerability}`),
+      renderedValue: t(translatedVulnerabilitiesOptions[vulnerability]),
     }),
   );
 
@@ -68,7 +71,7 @@ export function ScenarioStep({
           label={t('dictionary.threatActors')}
           sublabel={t('scenarioDrawer.threatActorSubtitle')}
           labelTranslationKey="threatActors"
-          options={translatedThreatActors}
+          options={threatActorOptions}
         />
 
         <Select<FormScenario>
@@ -78,7 +81,7 @@ export function ScenarioStep({
           label={t('dictionary.vulnerabilities')}
           sublabel={t('scenarioDrawer.vulnerabilitySubtitle')}
           labelTranslationKey="vulnerabilities"
-          options={translatedVulnerabilities}
+          options={vulnerabilitiesOptions}
         />
       </Stack>
 
@@ -87,7 +90,7 @@ export function ScenarioStep({
         label={t('dictionary.description')}
         value={currentDescription}
         onMarkdownChange={value => setValue('description', value)}
-        minRows={4}
+        minRows={8}
       />
     </Stack>
   );
