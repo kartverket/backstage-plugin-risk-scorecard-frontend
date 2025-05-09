@@ -309,6 +309,7 @@ export const pluginRiScMessages = {
         'Decide who will be responsible for completion of this action',
       addMeasureButton: 'Add planned action',
       plannedMeasures: 'Planned actions',
+      addMeasureTitleError: 'Action title is required',
     },
     restRiskTab: {
       subtitle:
@@ -747,6 +748,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.deleteActionConfirmation':
             'Er du sikker på at du vil slette tiltak?',
           'scenarioDrawer.closeConfirmation': 'Vil du lagre endringene dine?',
+          'scenarioDrawer.measureTab.addMeasureTitleError':
+            'Tiltak må ha en tittel',
 
           'consequenceTable.rows.1': 'Ubetydelig',
           'consequenceTable.rows.2': 'Liten',
