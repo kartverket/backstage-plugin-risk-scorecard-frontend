@@ -82,6 +82,10 @@ export function ActionFormItem({
           {...register(`actions.${index}.title`, { required: true })}
           error={formState.errors?.actions?.[index]?.title !== undefined}
           label={t('dictionary.title')}
+          helperText={
+            formState.errors?.actions?.[index]?.title &&
+            t('scenarioDrawer.measureTab.addMeasureTitleError')
+          }
         />
         <Controller
           control={control}
