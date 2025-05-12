@@ -582,3 +582,23 @@ describe('Translation mappings match translation keys', () => {
     });
   });
 });
+
+describe('Enum to translation key maps', () => {
+  it('actionStatusOptionsToTranslationKeys keys should match ActionStatusOptions values', () => {
+    const enumValues = Object.values(ActionStatusOptions);
+    const mapKeys = Object.keys(actionStatusOptionsToTranslationKeys);
+    expect(mapKeys.sort()).toEqual(enumValues.sort());
+  });
+
+  it('threatActorOptionsToTranslationKeys keys should match ThreatActorsOptions values', () => {
+    const enumValues = Object.values(ThreatActorsOptions);
+    const mapKeys = Object.keys(threatActorOptionsToTranslationKeys);
+    expect(mapKeys.sort()).toEqual(enumValues.sort());
+  });
+
+  it('vulnerabiltiesOptionsToTranslationKeys keys should match VulnerabilitiesOptions values', () => {
+    const enumValues = Object.values(VulnerabilitiesOptions);
+    const mapKeys = Object.keys(vulnerabiltiesOptionsToTranslationKeys);
+    expect(mapKeys.sort()).toEqual(enumValues.sort());
+  });
+});

@@ -362,6 +362,7 @@ function logBase(value: number, base: number): number {
 }
 
 /*
+  Probability is categorized in 5 levels on a logarithmic scale with base 20:
   0 = 20^-2 = 1 / 400
   1 = 20^-1 = 1 / 20
   2 = 20^-0 = 1
@@ -376,6 +377,7 @@ export function findProbabilityIndex(probability: number): number {
 }
 
 /*
+  Consequence  is categorized in 5 levels on a logarithmic scale with base 20:
   0 = 20^3 = 8 000
   1 = 20^4 = 160 000
   2 = 20^5 = 3 200 000
@@ -389,6 +391,10 @@ export function findConsequenceIndex(consequence: number): number {
   return Math.min(4, Math.max(0, consequenceIndex));
 }
 
+/*
+  Cost is calculated as probability in events per year multiplied by consequence in NOK per event.
+  The unit of cost is NOK per year.
+*/
 export function calculateCost(
   probability: number,
   consequence: number,
