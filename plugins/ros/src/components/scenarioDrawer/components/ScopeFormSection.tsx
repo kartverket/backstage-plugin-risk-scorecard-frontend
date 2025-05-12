@@ -54,6 +54,7 @@ function ScopeFormSection({
         {...register('title', { required: true })}
         error={errors.title !== undefined}
         label={t('dictionary.title')}
+        helperText={errors.title && t('scenarioDrawer.titleError')}
       />
       <Select<FormScenario>
         multiple
