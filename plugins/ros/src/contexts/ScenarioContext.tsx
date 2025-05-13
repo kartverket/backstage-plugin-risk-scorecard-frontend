@@ -49,6 +49,9 @@ type ScenarioDrawerProps = {
   toggleActionExpanded: (actionId: string) => void;
   collapseAllActions: () => void;
 
+  hoveredScenarios: Scenario[];
+  setHoveredScenarios: (riSc: Scenario[]) => void;
+
   emptyFormScenario: (scenario: Scenario) => FormScenario;
   scenario: Scenario;
   submitNewScenario: (
@@ -92,6 +95,8 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
   const riSc = selectedRiSc ?? null;
 
   const [scenario, setScenario] = useState(emptyScenario());
+
+  const [hoveredScenarios, setHoveredScenarios] = useState<Scenario[]>([]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -286,6 +291,9 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
     isActionExpanded,
     toggleActionExpanded,
     collapseAllActions,
+
+    hoveredScenarios,
+    setHoveredScenarios,
 
     emptyFormScenario,
     scenario,
