@@ -7,7 +7,6 @@ import { useScenario } from '../../../contexts/ScenarioContext';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { Risk } from '../../../utils/types';
 import {
-  calculateCost,
   formatNOK,
   getConsequenceLevel,
   getProbabilityLevel,
@@ -24,7 +23,7 @@ interface RiskProps {
 function RiskBox({ risk, heading }: RiskProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const cost = calculateCost(risk.probability, risk.consequence);
+  const cost = risk.probability * risk.consequence;
 
   return (
     <Paper sx={section}>

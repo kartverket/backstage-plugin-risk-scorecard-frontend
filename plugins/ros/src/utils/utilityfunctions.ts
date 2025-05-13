@@ -370,9 +370,7 @@ function logBase(value: number, base: number): number {
   4 = 20^2  = 400
 */
 export function findProbabilityIndex(probability: number): number {
-  const probabilityIndex = Math.round(
-    logBase(probability, BASE_NUMBER) + 3 - 1,
-  );
+  const probabilityIndex = Math.round(logBase(probability, BASE_NUMBER) + 2);
   return Math.min(4, Math.max(0, probabilityIndex));
 }
 
@@ -385,32 +383,34 @@ export function findProbabilityIndex(probability: number): number {
   4 = 20^7 = 1 280 000 000
 */
 export function findConsequenceIndex(consequence: number): number {
-  const consequenceIndex = Math.round(
-    logBase(consequence, BASE_NUMBER) - 2 - 1,
-  );
+  const consequenceIndex = Math.round(logBase(consequence, BASE_NUMBER) - 3);
   return Math.min(4, Math.max(0, consequenceIndex));
 }
 
 /*
-  Cost is calculated as probability in events per year multiplied by consequence in NOK per event.
-  The unit of cost is NOK per year.
+  Logarithmically round the consequence to the nearest consequence option.
 */
-export function calculateCost(
-  probability: number,
+export function roundConsequenceToNearestConsequenceOption(
   consequence: number,
 ): number {
-  const probabilityLevel = findProbabilityIndex(probability) + 1;
-  const consequenceLevel = findConsequenceIndex(consequence) + 1;
+  return Math.pow(BASE_NUMBER, findConsequenceIndex(consequence) + 3);
+}
 
-  return Math.pow(BASE_NUMBER, probabilityLevel + consequenceLevel - 1);
+/*
+  Logarithmically round the probability to the nearest probability option.
+*/
+export function roundProbabilityToNearestProbabilityOption(
+  probability: number,
+): number {
+  return Math.pow(BASE_NUMBER, findProbabilityIndex(probability) - 2);
 }
 
 export const consequenceIndexToTranslationKeys: Record<number, string> = {
   0: 'infoDialog.consequenceDescription.oneworkday',
   1: 'infoDialog.consequenceDescription.oneworkmonth',
   2: 'infoDialog.consequenceDescription.oneworkyear',
-  3: 'infoDialog.consequenceDescription.50workyears',
-  4: 'infoDialog.consequenceDescription.1000workyears',
+  3: 'infoDialog.consequenceDescription.20workyears',
+  4: 'infoDialog.consequenceDescription.400workyears',
 };
 
 export const probabilityIndexToTranslationKeys: Record<number, string> = {

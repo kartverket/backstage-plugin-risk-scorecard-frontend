@@ -182,8 +182,8 @@ export const pluginRiScMessages = {
       oneworkday: '1 workday',
       oneworkmonth: '1 work month',
       oneworkyear: '1 work year',
-      '50workyears': '50 work years',
-      '1000workyears': '1000 work years',
+      '20workyears': '20 work years',
+      '400workyears': '400 work years',
     },
     probabilityTitle: 'Probability (incidents/year)',
     probabilityUnit: 'incidents/year',
@@ -361,8 +361,8 @@ export const pluginRiScMessages = {
         '1': 'Temporary minor financial loss.\n\nMay be fixed with 1 workday.',
         '2': 'Temporary financial loss.\n\nMay be fixed with 1 work month.',
         '3': 'Financial loss of some duration.\n\nMay be fixed with 1 work year.',
-        '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed with 50 work years.',
-        '5': 'Permanent and severe financial loss.\n\nMay be fixed with 1000 work years.',
+        '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed with 20 work years.',
+        '5': 'Permanent and severe financial loss.\n\nMay be fixed with 400 work years.',
       },
       privacy: {
         '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
@@ -390,10 +390,10 @@ export const pluginRiScMessages = {
     },
     cells: {
       '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 400 years',
-      '2': 'The scenario is unlikely to occur.\n\nIt can occur every 40 years',
-      '3': 'The scenario can occur.\n\nIt can occur almost every year',
-      '4': 'The scenario will very likely occur.\n\nIt can occur almost monthly',
-      '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur almost daily',
+      '2': 'The scenario is unlikely to occur.\n\nIt can occur every 20 years',
+      '3': 'The scenario can occur.\n\nIt can occur yearly',
+      '4': 'The scenario will very likely occur.\n\nIt can occur monthly',
+      '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur daily',
     },
   },
   threatActors: {
@@ -633,8 +633,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.consequenceDescription.oneworkday': '1 dagsverk',
           'infoDialog.consequenceDescription.oneworkmonth': '1 månedsverk',
           'infoDialog.consequenceDescription.oneworkyear': '1 årsverk',
-          'infoDialog.consequenceDescription.50workyears': '50 årsverk',
-          'infoDialog.consequenceDescription.1000workyears': '1000 årsverk',
+          'infoDialog.consequenceDescription.20workyears': '20 årsverk',
+          'infoDialog.consequenceDescription.400workyears': '400 årsverk',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
           'infoDialog.probabilityUnit': 'hendelse/år',
           'infoDialog.probabilityDescription.every400years':
@@ -803,9 +803,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.cells.economical.3':
             'Moderat økonomisk tap.\n\nKan fikses med 1 årsverk.',
           'consequenceTable.cells.economical.4':
-            'Større økonomisk tap.\n\nKan fikses med 50 årsverk.',
+            'Større økonomisk tap.\n\nKan fikses med 20 årsverk.',
           'consequenceTable.cells.economical.5':
-            'Kritisk økonomisk tap.\n\nKan fikses med 1000 årsverk.',
+            'Kritisk økonomisk tap.\n\nKan fikses med 400 årsverk.',
           'consequenceTable.cells.privacy.1': 'Ingen brudd.',
           'consequenceTable.cells.privacy.2': 'Mindre brudd.',
           'consequenceTable.cells.privacy.3':

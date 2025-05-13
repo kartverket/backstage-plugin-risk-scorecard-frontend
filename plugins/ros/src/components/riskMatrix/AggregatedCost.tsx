@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Box, IconButton, Typography } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
-import { RiSc } from '../../utils/types';
-import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
-import { formatNumber, calculateCost } from '../../utils/utilityfunctions';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { useState } from 'react';
 import { useFontStyles } from '../../utils/style';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { RiSc } from '../../utils/types';
+import { formatNumber } from '../../utils/utilityfunctions';
+import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
 import { useAggregatedCostStyles } from './aggregatedCostStyle';
 
 interface AggregatedCostProps {
@@ -23,14 +23,10 @@ export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
 
   const cost = riSc.scenarios
     .map(scenario => {
-      const probability = initialRisk
-        ? scenario.risk.probability
-        : scenario.remainingRisk.probability;
-      const consequence = initialRisk
-        ? scenario.risk.consequence
-        : scenario.remainingRisk.consequence;
-
-      return calculateCost(probability, consequence);
+      return initialRisk
+        ? scenario.risk.probability * scenario.risk.consequence
+        : scenario.remainingRisk.probability *
+            scenario.remainingRisk.consequence;
     })
     .reduce((a, b) => a + b, 0);
 
