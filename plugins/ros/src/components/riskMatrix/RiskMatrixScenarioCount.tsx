@@ -42,7 +42,8 @@ export function RiskMatrixScenarioCount({
   } = useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const { openScenarioDrawer } = useScenario();
+  const { openScenarioDrawer, hoveredScenarios, setHoveredScenarios } =
+    useScenario();
 
   function handleScenarioClick(ID: string) {
     setTooltipOpen(false);
@@ -66,6 +67,8 @@ export function RiskMatrixScenarioCount({
   if (scenarios.length === 0) {
     return null;
   }
+
+  console.log({ hoveredScenarios });
 
   const tooltipList = (
     <List dense>
@@ -110,6 +113,16 @@ export function RiskMatrixScenarioCount({
           className={`${circle} ${centered}`}
           elevation={10}
           onClick={() => setTooltipOpen(!tooltipOpen)}
+          onMouseEnter={() =>
+            setHoveredScenarios([...hoveredScenarios, ...scenarios])
+          }
+          onMouseLeave={() =>
+            setHoveredScenarios(
+              hoveredScenarios.filter(
+                scenario => !scenarios.some(s => s.ID === scenario.ID),
+              ),
+            )
+          }
         >
           <Typography className={`${circleText} ${text}`}>
             {scenarios.length}
