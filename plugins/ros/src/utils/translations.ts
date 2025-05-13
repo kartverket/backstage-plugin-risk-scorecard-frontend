@@ -322,6 +322,12 @@ export const pluginRiScMessages = {
     deleteActionButton: 'Delete action',
     deleteActionConfirmation: 'Are you sure you want to delete this action?',
     closeConfirmation: 'Do you want to save your changes?',
+    errors: {
+      remainingProbabilityTooHigh:
+        'Remaining probability cannot be higher than initial probability',
+      remainingConsequenceTooHigh:
+        'Remaining consequence cannot be higher than initial consequence',
+    },
   },
   consequenceTable: {
     rows: {
@@ -518,6 +524,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.action.requiredError': 'Feltet er påkrevd',
           'scenarioDrawer.action.emptyState':
             'Scenariet har ingen definerte tiltak',
+          'scenarioDrawer.errors.remainingConsequenceTooHigh':
+            'Restkonsekvens kan ikke være høyere enn startkonsekvens',
+          'scenarioDrawer.errors.remainingProbabilityTooHigh':
+            'Restsannsynlighet kan ikke være høyere enn startsannsynlighet',
 
           'encryption.title': 'Kryptering',
 

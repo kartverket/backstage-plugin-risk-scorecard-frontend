@@ -1,15 +1,17 @@
-import { UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import InfoIcon from '@mui/icons-material/Info';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import { UseFormReturn } from 'react-hook-form';
 import {
   consequenceOptions,
   probabilityOptions,
 } from '../../../utils/constants';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { FormScenario } from '../../../utils/types';
 import { Select } from '../../common/Select';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { heading3 } from '../../common/typography';
 import {
   headerSection,
@@ -17,8 +19,6 @@ import {
   section,
   selectSection,
 } from '../scenarioDrawerComponents';
-import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
 
 function ScenarioForm({
   formMethods,
@@ -89,12 +89,24 @@ function ScenarioForm({
               name="remainingRisk.probability"
               label={t('dictionary.probability')}
               options={probabilityValues}
+              rules={{
+                validate: (value, _) =>
+                  Number(value) <=
+                    Number(control._formValues.risk?.probability) ||
+                  t('scenarioDrawer.errors.remainingProbabilityTooHigh'),
+              }}
             />
             <Select<FormScenario>
               control={control}
               name="remainingRisk.consequence"
               label={t('dictionary.consequence')}
               options={consequenceValues}
+              rules={{
+                validate: (value, _) =>
+                  Number(value) <=
+                    Number(control._formValues.risk?.consequence) ||
+                  t('scenarioDrawer.errors.remainingConsequenceTooHigh'),
+              }}
             />
           </Box>
         </Paper>

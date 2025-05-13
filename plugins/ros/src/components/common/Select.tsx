@@ -1,21 +1,22 @@
-import {
-  Control,
-  FieldValues,
-  Path,
-  useController,
-  type UseControllerReturn,
-} from 'react-hook-form';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
 import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
-import MUISelect, { SelectProps } from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
-import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
+import MUISelect, { SelectProps } from '@mui/material/Select';
+import {
+  Control,
+  FieldValues,
+  Path,
+  RegisterOptions,
+  useController,
+  type UseControllerReturn,
+} from 'react-hook-form';
+import { pluginRiScTranslationRef } from '../../utils/translations';
 import { formHelperText, formLabel } from './typography';
 
 type Props<T extends FieldValues> = SelectProps & {
@@ -25,6 +26,10 @@ type Props<T extends FieldValues> = SelectProps & {
   name: Path<T>;
   labelTranslationKey?: string;
   options: { value: string | number; renderedValue: string | number }[];
+  rules?: Omit<
+    RegisterOptions<T, string & Path<T>>,
+    'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'
+  >;
 };
 
 export function Select<T extends FieldValues>({
@@ -38,13 +43,15 @@ export function Select<T extends FieldValues>({
   multiple,
   labelTranslationKey,
   options,
+  rules,
   ...props
 }: Props<T>) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
   const { field } = useController({
     name,
     control,
-    rules: { required },
+    rules: { ...rules, required },
   });
 
   // values er strengt tatt unknown, men da må vi bruke mye ts-ignore for å komme i mål
