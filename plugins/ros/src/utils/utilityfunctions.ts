@@ -3,6 +3,8 @@ import { UpdateStatus } from '../contexts/RiScContext';
 import {
   ActionStatusOptions,
   BASE_NUMBER,
+  CONSEQUENCE_SCALE_OFFSET,
+  PROBABILITY_SCALE_OFFSET,
   ThreatActorsOptions,
   VulnerabilitiesOptions,
   latestSupportedVersion,
@@ -39,9 +41,9 @@ export function getAlertSeverity(
 }
 
 export function getRiskMatrixColor(risiko: Risk) {
-  const probability = findProbabilityIndex(risiko.probability);
-  const consequence = findConsequenceIndex(risiko.consequence);
-  return riskMatrix[4 - consequence][probability];
+  const sannsynlighet = findProbabilityIndex(risiko.probability);
+  const konsekvens = findConsequenceIndex(risiko.consequence);
+  return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
 export function getProbabilityLevel(risiko: Risk) {
@@ -370,7 +372,9 @@ function logBase(value: number, base: number): number {
   4 = 20^2  = 400
 */
 export function findProbabilityIndex(probability: number): number {
-  const probabilityIndex = Math.round(logBase(probability, BASE_NUMBER) + 2);
+  const probabilityIndex = Math.round(
+    logBase(probability, BASE_NUMBER) - PROBABILITY_SCALE_OFFSET,
+  );
   return Math.min(4, Math.max(0, probabilityIndex));
 }
 
@@ -383,7 +387,9 @@ export function findProbabilityIndex(probability: number): number {
   4 = 20^7 = 1 280 000 000
 */
 export function findConsequenceIndex(consequence: number): number {
-  const consequenceIndex = Math.round(logBase(consequence, BASE_NUMBER) - 3);
+  const consequenceIndex = Math.round(
+    logBase(consequence, BASE_NUMBER) - CONSEQUENCE_SCALE_OFFSET,
+  );
   return Math.min(4, Math.max(0, consequenceIndex));
 }
 

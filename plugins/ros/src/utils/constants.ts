@@ -3,13 +3,15 @@ export const schemaPath = '../risc_schema_en_v4_1.json';
 export const latestSupportedVersion = '4.1';
 
 export const BASE_NUMBER = 20.0;
+export const CONSEQUENCE_SCALE_OFFSET = 3;
+export const PROBABILITY_SCALE_OFFSET = -2;
 
 export const consequenceOptions = Array.from({ length: 5 }, (_, i) =>
-  Math.pow(BASE_NUMBER, i + 3),
+  Math.pow(BASE_NUMBER, i + CONSEQUENCE_SCALE_OFFSET),
 );
 
 export const probabilityOptions = Array.from({ length: 5 }, (_, i) =>
-  Math.pow(BASE_NUMBER, i - 2),
+  Math.pow(BASE_NUMBER, i + PROBABILITY_SCALE_OFFSET),
 );
 
 export enum ThreatActorsOptions {
