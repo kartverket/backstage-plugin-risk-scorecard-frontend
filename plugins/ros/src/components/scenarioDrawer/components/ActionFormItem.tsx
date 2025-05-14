@@ -1,23 +1,24 @@
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { heading3 } from '../../common/typography';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import {
   Controller,
   UseFieldArrayRemove,
   UseFormReturn,
 } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
 import {
-  actionStatusOptions,
+  ActionStatusOptions,
   urlRegExpPattern,
 } from '../../../utils/constants';
-import { Select } from '../../common/Select';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { FormScenario } from '../../../utils/types';
+import { actionStatusOptionsToTranslationKeys } from '../../../utils/utilityfunctions';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
+import { Select } from '../../common/Select';
+import { heading3 } from '../../common/typography';
 
 type ActionFormItemProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -38,11 +39,13 @@ export function ActionFormItem({
 
   const { control, register, formState } = formMethods;
 
-  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
-    value: actionStatus,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: t(`actionStatus.${actionStatus}`),
-  }));
+  const actionStatusOptions = Object.values(ActionStatusOptions).map(
+    actionStatus => ({
+      value: actionStatus,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(actionStatusOptionsToTranslationKeys[actionStatus]),
+    }),
+  );
 
   return (
     <>
@@ -79,6 +82,10 @@ export function ActionFormItem({
           {...register(`actions.${index}.title`, { required: true })}
           error={formState.errors?.actions?.[index]?.title !== undefined}
           label={t('dictionary.title')}
+          helperText={
+            formState.errors?.actions?.[index]?.title &&
+            t('scenarioDrawer.measureTab.addMeasureTitleError')
+          }
         />
         <Controller
           control={control}
@@ -116,7 +123,7 @@ export function ActionFormItem({
             control={control}
             name={`actions.${index}.status`}
             label={t('dictionary.status')}
-            options={translatedActionStatuses}
+            options={actionStatusOptions}
           />
         </Box>
       </Box>

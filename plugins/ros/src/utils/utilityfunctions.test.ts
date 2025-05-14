@@ -1,6 +1,13 @@
+import {
+  ActionStatusOptions,
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
+} from './constants';
+import { pluginRiScMessages } from './translations';
 import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
 import {
   UpdatedStatusEnum,
+  actionStatusOptionsToTranslationKeys,
   calculateDaysSince,
   calculateUpdatedStatus,
   deleteScenario,
@@ -9,6 +16,8 @@ import {
   generateRandomId,
   isDeeplyEqual,
   requiresNewApproval,
+  threatActorOptionsToTranslationKeys,
+  vulnerabiltiesOptionsToTranslationKeys,
 } from './utilityfunctions';
 
 describe('generateRandomId', () => {
@@ -509,4 +518,67 @@ describe('isDeeplyEqual', () => {
       expect(isDeeplyEqual(a, b, ignored)).toBe(result);
     }),
   );
+});
+
+describe('Translation mappings cover all enum values', () => {
+  it('translatedActionStatuses covers all ActionStatusOptions', () => {
+    const enumValues = Object.values(ActionStatusOptions);
+    const translatedKeys = Object.keys(actionStatusOptionsToTranslationKeys);
+
+    expect(translatedKeys.sort()).toEqual(enumValues.sort());
+  });
+
+  it('translatedThreatActors covers all ThreatActorsOptions', () => {
+    const enumValues = Object.values(ThreatActorsOptions);
+    const translatedKeys = Object.keys(threatActorOptionsToTranslationKeys);
+
+    expect(translatedKeys.sort()).toEqual(enumValues.sort());
+  });
+
+  it('translatedVulnerabilities covers all VulnerabilitiesOptions', () => {
+    const enumValues = Object.values(VulnerabilitiesOptions);
+    const translatedKeys = Object.keys(vulnerabiltiesOptionsToTranslationKeys);
+
+    expect(translatedKeys.sort()).toEqual(enumValues.sort());
+  });
+});
+
+describe('Translation mappings match translation keys', () => {
+  it('translatedActionStatusOptions values should match corresponding keys in translations', () => {
+    const optionToTranslationValues = Object.values(
+      actionStatusOptionsToTranslationKeys,
+    ).sort();
+    const translationKeys = Object.keys(pluginRiScMessages.actionStatus).sort();
+
+    optionToTranslationValues.forEach((value, index) => {
+      const translationKey = translationKeys[index];
+      expect(value).toBe(`actionStatus.${translationKey}`);
+    });
+  });
+
+  it('translatedThreatActorOptions values should match corresponding keys in translations', () => {
+    const optionToTranslationValues = Object.values(
+      threatActorOptionsToTranslationKeys,
+    ).sort();
+    const translationKeys = Object.keys(pluginRiScMessages.threatActors).sort();
+
+    optionToTranslationValues.forEach((value, index) => {
+      const translationKey = translationKeys[index];
+      expect(value).toBe(`threatActors.${translationKey}`);
+    });
+  });
+
+  it('translatedVulnerabilitiesOptions values should match corresponding keys in translations', () => {
+    const optionToTranslationValues = Object.values(
+      vulnerabiltiesOptionsToTranslationKeys,
+    ).sort();
+    const translationKeys = Object.keys(
+      pluginRiScMessages.vulnerabilities,
+    ).sort();
+
+    optionToTranslationValues.forEach((value, index) => {
+      const translationKey = translationKeys[index];
+      expect(value).toBe(`vulnerabilities.${translationKey}`);
+    });
+  });
 });

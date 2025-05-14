@@ -1,6 +1,9 @@
 import { formatISO } from 'date-fns';
 import { UpdateStatus } from '../contexts/RiScContext';
 import {
+  ActionStatusOptions,
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
   consequenceOptions,
   latestSupportedVersion,
   probabilityOptions,
@@ -354,3 +357,44 @@ export function isDeeplyEqual<T>(
   // If a or b is null or a primitive type, then they are not equal as a === b should have returned true already.
   return false;
 }
+
+export const actionStatusOptionsToTranslationKeys: Record<
+  ActionStatusOptions,
+  string
+> = {
+  [ActionStatusOptions.NotStarted]: 'actionStatus.Not started',
+  [ActionStatusOptions.InProgress]: 'actionStatus.In progress',
+  [ActionStatusOptions.OnHold]: 'actionStatus.On hold',
+  [ActionStatusOptions.Completed]: 'actionStatus.Completed',
+  [ActionStatusOptions.Aborted]: 'actionStatus.Aborted',
+};
+
+export const threatActorOptionsToTranslationKeys: Record<
+  ThreatActorsOptions,
+  string
+> = {
+  [ThreatActorsOptions.ScriptKiddie]: 'threatActors.Script kiddie',
+  [ThreatActorsOptions.Hacktivist]: 'threatActors.Hacktivist',
+  [ThreatActorsOptions.RecklessEmployee]: 'threatActors.Reckless employee',
+  [ThreatActorsOptions.Insider]: 'threatActors.Insider',
+  [ThreatActorsOptions.OrganisedCrime]: 'threatActors.Organised crime',
+  [ThreatActorsOptions.TerroristOrganisation]:
+    'threatActors.Terrorist organisation',
+  [ThreatActorsOptions.NationGovernment]: 'threatActors.Nation/government',
+};
+
+export const vulnerabiltiesOptionsToTranslationKeys: Record<
+  VulnerabilitiesOptions,
+  string
+> = {
+  [VulnerabilitiesOptions.FlawedDesign]: 'vulnerabilities.Flawed design',
+  [VulnerabilitiesOptions.Misconfiguration]: 'vulnerabilities.Misconfiguration',
+  [VulnerabilitiesOptions.DependencyVulnerability]:
+    'vulnerabilities.Dependency vulnerability',
+  [VulnerabilitiesOptions.UnauthorizedAccess]:
+    'vulnerabilities.Unauthorized access',
+  [VulnerabilitiesOptions.UnmonitoredUse]: 'vulnerabilities.Unmonitored use',
+  [VulnerabilitiesOptions.InputTampering]: 'vulnerabilities.Input tampering',
+  [VulnerabilitiesOptions.InformationLeak]: 'vulnerabilities.Information leak',
+  [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
+};

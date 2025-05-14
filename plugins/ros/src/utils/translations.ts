@@ -3,452 +3,449 @@ import {
   createTranslationResource,
 } from '@backstage/core-plugin-api/alpha';
 
-export const pluginRiScTranslationRef = createTranslationRef({
-  id: 'plugin.riSc',
-  messages: {
-    contentHeader: {
-      title: 'Risk scorecard',
-      createNewButton: 'Create new scorecard',
-      editEncryption: 'Edit encryption',
-    },
-    dictionary: {
-      click: 'Click',
-      here: 'here',
-      rejectedLogin: 'Login rejected by user.',
-      yes: 'Yes',
-      no: 'No',
-      summary: 'Summary',
-      noAccess: 'No access',
-      optional: 'optional',
-      month: 'month',
-      week: 'week',
-      day: 'day',
-      hour: 'hour',
-      minute: 'minute',
-      second: 'second',
-      months: 'months',
-      weeks: 'weeks',
-      days: 'days',
-      hours: 'hours',
-      minutes: 'minutes',
-      seconds: 'seconds',
-      add: 'Add',
-      copy: 'Copy',
-      copied: 'Copied',
-      cancel: 'Cancel',
-      close: 'Close',
-      completed: 'Completed',
-      confirm: 'Confirm',
-      consequence: 'Consequence', // Severity, Impact, Effect or Consequence
-      deadline: 'Deadline', // Deadline or Due date
-      delete: 'Delete',
-      description: 'Description',
-      discardChanges: 'Discard changes',
-      edit: 'Edit',
-      estimatedRisk: 'Estimated risk',
-      initialRisk: 'Initial risk', // Starting or Initial risk
-      measure: 'Action', // Measure, Action or Initiative
-      measures: 'Actions', // Measure, Action or Initiative
-      measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
-      next: 'Next',
-      planned: 'Planned',
-      previous: 'Previous',
-      probability: 'Probability', // Likelihood or Probability
-      restRisk: 'Remaining risk', // Residual or Remaining risk
-      risk: 'Risk',
-      save: 'Save',
-      saveAndClose: 'Save and close',
-      scenario: 'Scenario',
-      scope: 'Scope',
-      status: 'Status',
-      threatActors: 'Threat actors',
-      title: 'Title',
-      url: 'URL',
-      emptyField: 'No {{field}} specified',
-      vulnerabilities: 'Vulnerabilities',
-    },
-    encryption: {
-      title: 'Encryption',
-    },
-    rosStatus: {
-      statusBadge: {
-        missing:
-          'Once the draft is complete, the risk owner can review and accept the changes.', // Mangler godkjenning av risikoeier
-        approved: 'Accepted by risk owner', // Godkjent av risikoeier
-        error: 'Failed to retrieve status', // Kunne ikke hente status
-        migration: {
-          title: 'You are required to review and save changes',
-          description:
-            'There has been done changes to the risk scorecard, as a result of a migration to the newest version. The changes may include deletion and modification of information. It will not be possible to save edits of the scorecard without including and accepting the changes.', // Automatisk migrering av ROS
-        },
-        created: 'Empty scorecard created',
-        draft: 'Draft',
-        waiting: 'Awaiting approval',
-        published: 'Published',
+export const pluginRiScMessages = {
+  contentHeader: {
+    title: 'Risk scorecard',
+    createNewButton: 'Create new scorecard',
+    editEncryption: 'Edit encryption',
+  },
+  dictionary: {
+    click: 'Click',
+    here: 'here',
+    rejectedLogin: 'Login rejected by user.',
+    yes: 'Yes',
+    no: 'No',
+    summary: 'Summary',
+    noAccess: 'No access',
+    optional: 'optional',
+    month: 'month',
+    week: 'week',
+    day: 'day',
+    hour: 'hour',
+    minute: 'minute',
+    second: 'second',
+    months: 'months',
+    weeks: 'weeks',
+    days: 'days',
+    hours: 'hours',
+    minutes: 'minutes',
+    seconds: 'seconds',
+    add: 'Add',
+    copy: 'Copy',
+    copied: 'Copied',
+    cancel: 'Cancel',
+    close: 'Close',
+    completed: 'Completed',
+    confirm: 'Confirm',
+    consequence: 'Consequence', // Severity, Impact, Effect or Consequence
+    deadline: 'Deadline', // Deadline or Due date
+    delete: 'Delete',
+    description: 'Description',
+    discardChanges: 'Discard changes',
+    edit: 'Edit',
+    estimatedRisk: 'Estimated risk',
+    initialRisk: 'Initial risk', // Starting or Initial risk
+    measure: 'Action', // Measure, Action or Initiative
+    measures: 'Actions', // Measure, Action or Initiative
+    measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
+    next: 'Next',
+    planned: 'Planned',
+    previous: 'Previous',
+    probability: 'Probability', // Likelihood or Probability
+    restRisk: 'Remaining risk', // Residual or Remaining risk
+    risk: 'Risk',
+    save: 'Save',
+    saveAndClose: 'Save and close',
+    scenario: 'Scenario',
+    scope: 'Scope',
+    status: 'Status',
+    threatActors: 'Threat actors',
+    title: 'Title',
+    url: 'URL',
+    emptyField: 'No {{field}} specified',
+    vulnerabilities: 'Vulnerabilities',
+  },
+  encryption: {
+    title: 'Encryption',
+  },
+  rosStatus: {
+    statusBadge: {
+      missing:
+        'Once the draft is complete, the risk owner can review and accept the changes.', // Mangler godkjenning av risikoeier
+      approved: 'Accepted by risk owner', // Godkjent av risikoeier
+      error: 'Failed to retrieve status', // Kunne ikke hente status
+      migration: {
+        title: 'You are required to review and save changes',
+        description:
+          'There has been done changes to the risk scorecard, as a result of a migration to the newest version. The changes may include deletion and modification of information. It will not be possible to save edits of the scorecard without including and accepting the changes.', // Automatisk migrering av ROS
       },
-      updatedStatus: {
-        UPDATED: 'Updated status icon',
-        LITTLE_OUTDATED: 'Little outdated status icon',
-        OUTDATED: 'Outdated status icon',
-        VERY_OUTDATED: 'Very outdated status icon',
-        error: 'Error status icon',
-        disabled: 'Disabled status icon',
-      },
-      lastModified: 'Last published: ',
-      daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
-      notPublishedYet: 'RiSc is not published yet',
-      errorMessage: 'Failed to retrieve status',
-      difference: {
-        description: 'Summary of changes that will be approved by risk owner.',
-        publishDate: 'Last published changes {{date}}',
-        fetching: 'Fetching changes',
-        error: 'Error while fetching changes',
-        newROS: 'No published Risk scorecards to compare with',
-        differences: {
-          title: 'CHANGES',
-          noneRemoved: 'Nothing is removed',
-          titleRemoved: 'Removed from risk scorecard',
-          titleExisting: 'Changed in existing risk scorecard',
-          noneExisting: 'Nothing is changed',
-          titleAdded: 'Added to risk scorecard',
-          noneAdded: 'Nothing is added',
-        },
-      },
-      editing: 'You can now start editing',
-      approveButton: 'Accept risks', // Godkjenn ROS
-      prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
-      prStatus2: ' to publish the scorecard.',
-      moreInformationButton: 'More information', // Lagre ROS migrering
+      created: 'Empty scorecard created',
+      draft: 'Draft',
+      waiting: 'Awaiting approval',
+      published: 'Published',
     },
-    publishDialog: {
-      title: 'Accept risks', // Godkjenn ROS
-      checkboxLabel:
-        'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
+    updatedStatus: {
+      UPDATED: 'Updated status icon',
+      LITTLE_OUTDATED: 'Little outdated status icon',
+      OUTDATED: 'Outdated status icon',
+      VERY_OUTDATED: 'Very outdated status icon',
+      error: 'Error status icon',
+      disabled: 'Disabled status icon',
     },
-    migrationDialog: {
-      description:
-        'The changes have been done to adhere to the latest schema version. In this case, the RiSc was update to ',
-      description2: 'from',
-      description3: '. Review the ',
-      description4: 'for more information.',
-      changelog: 'schema changelog',
-      title: 'Save changes', // Lagre ROS migrering
-      checkboxLabel:
-        'I confirm that I have reviewed and wish to save the changes made during the migration.',
-    },
-    scenarioTable: {
-      title: 'Risk scenarios',
-      addScenarioButton: 'Add scenario',
-      noActions: 'No actions',
-      columns: {
-        consequenceChar: 'C',
-        probabilityChar: 'P',
-        completed: 'complete',
-      },
-      editButton: 'Edit list',
-      doneEditing: 'Finish editing',
-    },
-    riskMatrix: {
-      title: 'Risk matrix', // Risk matrix or Risk overview
-      estimatedRisk: {
-        title: 'Estimated risk',
-        suffix: {
-          thousand: '{{count}} thousand',
-          million_one: '{{count}} million',
-          million_other: '{{count}} million',
-          billion_one: '{{count}} billion',
-          billion_other: '{{count}} billion',
-          trillion_one: '{{count}} trillion',
-          trillion_other: '{{count}} trillion',
-        },
-        unit: {
-          nokPerYear: 'NOK/year',
-        },
-      },
-      tooltip: {
-        title: 'Risk scenarios',
+    lastModified: 'Last published: ',
+    daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
+    notPublishedYet: 'RiSc is not published yet',
+    errorMessage: 'Failed to retrieve status',
+    difference: {
+      description: 'Summary of changes that will be approved by risk owner.',
+      publishDate: 'Last published changes {{date}}',
+      fetching: 'Fetching changes',
+      error: 'Error while fetching changes',
+      newROS: 'No published Risk scorecards to compare with',
+      differences: {
+        title: 'CHANGES',
+        noneRemoved: 'Nothing is removed',
+        titleRemoved: 'Removed from risk scorecard',
+        titleExisting: 'Changed in existing risk scorecard',
+        noneExisting: 'Nothing is changed',
+        titleAdded: 'Added to risk scorecard',
+        noneAdded: 'Nothing is added',
       },
     },
-    infoDialog: {
+    editing: 'You can now start editing',
+    approveButton: 'Accept risks', // Godkjenn ROS
+    prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
+    prStatus2: ' to publish the scorecard.',
+    moreInformationButton: 'More information', // Lagre ROS migrering
+  },
+  publishDialog: {
+    title: 'Accept risks', // Godkjenn ROS
+    checkboxLabel:
+      'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
+  },
+  migrationDialog: {
+    description:
+      'The changes have been done to adhere to the latest schema version. In this case, the RiSc was update to ',
+    description2: 'from',
+    description3: '. Review the ',
+    description4: 'for more information.',
+    changelog: 'schema changelog',
+    title: 'Save changes', // Lagre ROS migrering
+    checkboxLabel:
+      'I confirm that I have reviewed and wish to save the changes made during the migration.',
+  },
+  scenarioTable: {
+    title: 'Risk scenarios',
+    addScenarioButton: 'Add scenario',
+    noActions: 'No actions',
+    columns: {
+      consequenceChar: 'C',
+      probabilityChar: 'P',
+      completed: 'complete',
+    },
+    editButton: 'Edit list',
+    doneEditing: 'Finish editing',
+  },
+  riskMatrix: {
+    title: 'Risk matrix', // Risk matrix or Risk overview
+    estimatedRisk: {
       title: 'Estimated risk',
-      description:
-        'The estimated risk is a calculation based on the risks the different scenarios pose. If there is a high probability that a serious consequence will occur, this could potentially become a large cost for the organization. In other words, the cost is an attempt to make the risk value more tangible and is the sum of the estimated risk for all the risk scenarios in this risk scorecard.',
-      calculatedHowTitle: 'How do we calculate the estimated risk?',
-      calculatedHow:
-        'Consequence is measured in cost (in NOK) per incident and probability is measured in incidents per year. ' +
-        'The estimated risk is calculated as C x P.',
-      consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
-      probabilityTitle: 'Probability (incidents/year)',
-      probabilityDescription: {
-        '0': 'every 100 years', // 100 year intervals?
-        '1': 'every 10 years', // 10 year intervals?
-        '2': 'yearly', // almost yearly?
-        '3': 'weekly',
-        '4': 'daily',
+      suffix: {
+        thousand: '{{count}} thousand',
+        million_one: '{{count}} million',
+        million_other: '{{count}} million',
+        billion_one: '{{count}} billion',
+        billion_other: '{{count}} billion',
+        trillion_one: '{{count}} trillion',
+        trillion_other: '{{count}} trillion',
       },
-      example:
-        'A scenario with consequence 2 and probability 4 has an estimated risk of ' +
-        '30 000 NOK/incident x 50 incidents/year = 1 500 000 NOK/year.',
-    },
-    rosDialog: {
-      titleNew: 'New risk scorecard',
-      titleEdit: 'Edit scorecard',
-      editEncryption: 'Edit encryption',
-      titleError: 'The scorecard has to have a title',
-      scopeDescription:
-        'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
-      scopeError: 'The scorecard has to have a description of the scope',
-      generateInitialDescription:
-        'RiSc Scorecard lets you generate a default RiSc based on information about the codebase in kartverket.dev, security metrics and security controls.',
-      generateInitialToggleDescription:
-        'Do you want to generate a default RiSc?',
-      fromScratch: 'Empty',
-      generateDefault: 'Default',
-      stepRiscDetails: 'Risk Scorecard Details',
-      stepEncryption: 'Configure Encryption',
-    },
-    sopsConfigDialog: {
-      title: 'Encryption',
-      description: {
-        new: 'The Risc Scorecard will be encrypted to limit access. Below please choose a key from Google Cloud Platform which you and your team can access.',
-        edit: 'The Risc Scorecard will be encrypted to limit access. You can change which key is utilized from Google Cloud platform, make sure the correct people have access to the new key.',
-      },
-      selectKeysTitle: 'Select keys',
-      chooseGcpCryptoKey: 'Choose GCP key',
-      gcpCryptoKeyDescription:
-        'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk scorecards.',
-      gcpCryptoKeyNoSelectableKey:
-        'You do not have access to any suitable GCP crypto keys.',
-      gcpCryptoKeyNonSelectedErrorMessage: 'A GCP crypto key must be selected.',
-      publicAgeKeysAlreadyPresent:
-        'The following age keys are already present:',
-      publicAgeKeyQuestion:
-        'Does anyone need to write Risk scorecards locally using their editor?',
-      writeLocalRiscSuffix: "to learn more about writing RiSc's locally.",
-      publicAgeKeyDescription:
-        'Provide a public age key below for individuals allowed local editing',
-      addPublicAgeKey: 'Add public age key',
-      publicAgeKey: 'Public age key',
-      update: 'Update',
-      createPRTitle: 'Create a Pull Request with the new encryption scheme',
-      createPRContent:
-        'Your encryption configuration is now ready and has been created in a new branch. Below you can create a PR with these changes. Alternatively, you can move the changes to a different branch by clicking the "Branch" button and selecting another active branch.',
-      PRTitle: 'Review and merge the Pull Request',
-      SummaryDescription:
-        'A PR with the encryption scheme has now been created.',
-      SummaryGCP: 'The selected GCP key is ',
-      SummaryAgeKeys: 'The following public age keys have also been added: ',
-      PRContent:
-        'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk scorecards.',
-      required: 'This field is required',
-      publicKeyHelperTextKeyAlreadyExists: 'Public key already added',
-      publicKeyHelperTextKeyAlreadyExistInSopsConfig:
-        'Public key already present in existing SOPS configuration',
-      publicKeyHelperTextKeyNotValid:
-        'Public key is not a valid age public key',
-      pendingTitle: 'Pending SOPS configuration',
-      pendingDescription:
-        'The following pull requests are opened to include a SOPS configuration in the GitHub-repo',
-      secondaryPullRequestText: 'Opened _n_ ago by',
-      reEncryptTitle: "Re-encryption of existing RiSc's",
-      reEncryptDescription:
-        "When updating SOPS configuration, you will not be able to decrypt old RiSc's encrypted with the previous SOPS configuration. We therefore encourage you to re-encrypt the existing RiSc's on the default branch of your GitHub-repository for you to be able to use them with your updated SOPS configuration.",
-      reEncryptConsentDescription:
-        "Do you want to re-encrypt the RiSc's on the default branch of ",
-      openPR: 'Create pull request',
-      gotoPullRequest: 'Go to pull request',
-      gcpKeyHaveAccess: 'Has access',
-      gcpKeyDoNotHaveAccess: 'Do not have access',
-      gcpKeyDoNotHaveAccessDescription:
-        'You cannot choose this key as you do not have the role Cloud KMS CryptoKey Encrypter/Decrypter on it.',
-    },
-    scenarioStepper: {
-      initialRiskStep: {
-        title: 'Initial risk',
-        subtitle:
-          'The initial risk is defined by the consequence of the scenario and the probability of it occurring.',
-        consequenceSubtitle:
-          'How severe is the potential impact? If the scenario can impact more than one category, choose the highest level of consequence.',
-        probabilitySubtitle:
-          'How likely is it that this scenario will occur? If you are between two probability values, choose the higher one.',
-      },
-      restRiskStep: {
-        title: 'Remaining risk',
-        subtitle:
-          'What is the risk reduced to when all the planned actions have been completed?',
-        consequenceSubtitle:
-          'How severe is the consequence of this scenario after all actions are complete?',
-        probabilitySubtitle:
-          'What is the likelihood of this scenario after all actions are complete?',
+      unit: {
+        nokPerYear: 'NOK/year',
       },
     },
-    scenarioDrawer: {
-      action: {
-        requiredError: 'Field is required',
-        descriptionError: 'Description cannot be empty',
-        urlError: 'Invalid URL',
-        emptyState: 'This scenario has no defined actions',
-      },
-      title: 'Risk scenario',
-      titleError: 'Scenario title is required',
-      subtitle:
-        'An unwanted incident that could potentially harm the component.', // harm or affect negatively?
-      threatActorSubtitle: 'Someone who attempts to access or abuse the system', // system or component or both?
-      vulnerabilitySubtitle:
-        'Weakness in the system that the threat actor can exploit',
-      riskMatrixModal: {
-        startRisk: 'What is the risk before any mitigating actions are taken?',
-        restRisk: 'What is the risk after all planned actions are completed?',
-        title: 'Risk matrixes',
-      },
-      consequenceTab: {
-        subtitle:
-          'How severe is the potential impact? If the scenario can impact more than one category, choose the highest level of consequence.',
-      },
-      probabilityTab: {
-        subtitle:
-          'How likely is it that this scenario will occur? If you are between two probability values, choose the higher one.',
-      },
-      measureTab: {
-        subtitle:
-          'What actions should be taken to avoid or reduce the risk of this scenario?',
-        measureOwnerDescription:
-          'Decide who will be responsible for completion of this action',
-        addMeasureButton: 'Add planned action',
-        plannedMeasures: 'Planned actions',
-      },
-      restRiskTab: {
-        subtitle:
-          'Define the remaining risk for the scenario. Remaining risk is the consequence and probability for this ' +
-          'scenario after all planned actions have been completed.',
-      },
-      deleteScenarioButton: 'Delete scenario',
-      deleteScenarioConfirmation:
-        'Are you sure you want to delete this scenario?',
-      deleteActionButton: 'Delete action',
-      deleteActionConfirmation: 'Are you sure you want to delete this action?',
-      closeConfirmation: 'Do you want to save your changes?',
-    },
-    consequenceTable: {
-      rows: {
-        '1': 'Negligible', // Insignificant, negligible (ubetydelig)
-        '2': 'Small', // Liten
-        '3': 'Moderate',
-        '4': 'Severe', // Alvorlig
-        '5': 'Critical', // Catastrophic eller Critical
-      },
-      columns: {
-        health: 'Life and health', // Health and safety, Life and limb, Health and lives (Liv og helse)
-        economical: 'Financial', // Financial consequences, economic implications
-        privacy: 'Privacy', // Personvern
-        reputation: 'Reputation and trust', // Reputation and trust, confidence, faith (Omdømme og tillit)
-      },
-      cells: {
-        health: {
-          '1': 'Impact on life and health cannot be rated less severe than 3', // Liv og helse kan ikke være mindre alvorlig enn 3
-          '2': 'Impact on life and health cannot be rated less severe than 3',
-          '3': 'Temporary or less severe health implications. Temporary or minor damage to local environment.', // implications, effects or consequence? Temporary or minor? Midlertidige eller mindre alvorlige helsemessige konsekvenser. Midlertidig eller mindre skade på miljøet
-          '4': 'Permanent or severe health implications for a few people. Moderate damage to the environment in a limited area.',
-          '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.',
-        },
-        economical: {
-          '1': 'Temporary minor financial loss.\n\nMay be fixed within an hour by one employee',
-          '2': 'Temporary financial loss.\n\nMay be fixed within three days by one employee',
-          '3': 'Financial loss of some duration.\n\nMay be fixed within a month by three employees',
-          '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed within a year by 10 employees',
-          '5': 'Permanent and severe financial loss.\n\nMay be fixed within three years by 100 employees',
-        },
-        privacy: {
-          '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
-          '2': 'The right to privacy is violated for a longer period and involves sensitive categories or vulnerable groups.',
-          '3': 'Violations of the rights and freedoms for the registered people.',
-          '4': 'Severe violations and breaches of the rights and freedoms for the registered people, as well as violations of the law.',
-          '5': 'Impact on privacy cannot be rated more severe than 4',
-        },
-        reputation: {
-          '1': 'Temporary loss of reputation and little impact on trust',
-          '2': 'Negative attention in national media that leads to loss of reputation.\n\nMay reduce trust.',
-          '3': 'Lasting negative attention in national and international media that leads to severe loss of reputation.\n\nSevere loss of trust from authorities.\n\nUsers who do not dare or want to use the services.', // lasting, severe, severe loss, severe loss of trust, do not dare or want to use the services
-          '4': 'Impact on reputation and trust cannot be rated more severe than 3',
-          '5': 'Impact on reputation and trust cannot be rated more severe than 3',
-        },
-      },
-    },
-    probabilityTable: {
-      rows: {
-        '1': 'Very low', // svært liten
-        '2': 'Low', // liten
-        '3': 'Moderate', // moderat
-        '4': 'High', // stor
-        '5': 'Very high', // svært stor
-      },
-      cells: {
-        '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 100 years',
-        '2': 'The scenario is unlikely to occur.\n\nIt can occur every 10 years',
-        '3': 'The scenario can occur.\n\nIt can occur almost every year',
-        '4': 'The scenario will very likely occur.\n\nIt can occur almost weekly',
-        '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur almost daily',
-      },
-    },
-    threatActors: {
-      'Script kiddie': 'Script kiddie',
-      Hacktivist: 'Hacktivist',
-      'Reckless employee': 'Reckless employee',
-      Insider: 'Insider',
-      'Organised crime': 'Organised crime',
-      'Terrorist organisation': 'Terrorist organisation',
-      'Nation/government': 'Nation/government',
-    },
-    vulnerabilities: {
-      'Flawed design': 'Flawed design',
-      Misconfiguration: 'Misconfiguration',
-      'Dependency vulnerability': 'Dependency vulnerability',
-      'Unauthorized access': 'Unauthorized use',
-      'Unmonitored use': 'Unmonitored use',
-      'Input tampering': 'Input tampering',
-      'Information leak': 'Information leak',
-      'Excessive use': 'Excessive use',
-    },
-    actionStatus: {
-      'Not started': 'Not started',
-      'In progress': 'In progress',
-      'On hold': 'On hold',
-      Completed: 'Completed',
-      Aborted: 'Aborted',
-    },
-    errorMessages: {
-      DefaultErrorMessage: 'An error occured',
-      NoWriteAccessToRepository:
-        'Unable to update RiSc. You do not have write access to this repository.',
-      ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
-      ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
-      ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
-      ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
-      FailedToFetchRiScs: 'Failed to fetch risk scorecards',
-      RiScDoesNotExist:
-        'The risk scorecard you are trying to open does not exist',
-      ScenarioDoesNotExist:
-        'The scenario you are trying to open does not exist',
-      ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration',
-      FailedToCreateSops: 'Failed to create SOPS configuration',
-      FailedToUpdateSops: 'SOPS configuration could not be updated',
-      ErrorWhenFetchingGcpCryptoKeys: 'Failed to fetch GCP crypto keys',
-    },
-    infoMessages: {
-      OpenedPullRequest: 'Successfully opened pull request',
-      CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
-      UpdatedRiSc: 'Risk scorecard updated',
-      UpdatedSops: 'SOPS configuration updated',
-      UpdatedRiScRequiresNewApproval:
-        'Risk scorecard update and requires new approval',
-      CreatedRiSc: 'Created new risk scorecard successfully',
-      UpdatedRiScAndCreatedPullRequest:
-        'Risk scorecard updated and ready for approval in Github',
-      NoSopsConfigFound:
-        'No SOPS configuration present on default branch of the GitHub repository',
-      CreatedSops: 'SOPS configuration created successfully',
+    tooltip: {
+      title: 'Risk scenarios',
     },
   },
+  infoDialog: {
+    title: 'Estimated risk',
+    description:
+      'The estimated risk is a calculation based on the risks the different scenarios pose. If there is a high probability that a serious consequence will occur, this could potentially become a large cost for the organization. In other words, the cost is an attempt to make the risk value more tangible and is the sum of the estimated risk for all the risk scenarios in this risk scorecard.',
+    calculatedHowTitle: 'How do we calculate the estimated risk?',
+    calculatedHow:
+      'Consequence is measured in cost (in NOK) per incident and probability is measured in incidents per year. ' +
+      'The estimated risk is calculated as C x P.',
+    consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
+    probabilityTitle: 'Probability (incidents/year)',
+    probabilityDescription: {
+      '0': 'every 100 years', // 100 year intervals?
+      '1': 'every 10 years', // 10 year intervals?
+      '2': 'yearly', // almost yearly?
+      '3': 'weekly',
+      '4': 'daily',
+    },
+    example:
+      'A scenario with consequence 2 and probability 4 has an estimated risk of ' +
+      '30 000 NOK/incident x 50 incidents/year = 1 500 000 NOK/year.',
+  },
+  rosDialog: {
+    titleNew: 'New risk scorecard',
+    titleEdit: 'Edit scorecard',
+    editEncryption: 'Edit encryption',
+    titleError: 'The scorecard has to have a title',
+    scopeDescription:
+      'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
+    scopeError: 'The scorecard has to have a description of the scope',
+    generateInitialDescription:
+      'RiSc Scorecard lets you generate a default RiSc based on information about the codebase in kartverket.dev, security metrics and security controls.',
+    generateInitialToggleDescription: 'Do you want to generate a default RiSc?',
+    fromScratch: 'Empty',
+    generateDefault: 'Default',
+    stepRiscDetails: 'Risk Scorecard Details',
+    stepEncryption: 'Configure Encryption',
+  },
+  sopsConfigDialog: {
+    title: 'Encryption',
+    description: {
+      new: 'The Risc Scorecard will be encrypted to limit access. Below please choose a key from Google Cloud Platform which you and your team can access.',
+      edit: 'The Risc Scorecard will be encrypted to limit access. You can change which key is utilized from Google Cloud platform, make sure the correct people have access to the new key.',
+    },
+    selectKeysTitle: 'Select keys',
+    chooseGcpCryptoKey: 'Choose GCP key',
+    gcpCryptoKeyDescription:
+      'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk scorecards.',
+    gcpCryptoKeyNoSelectableKey:
+      'You do not have access to any suitable GCP crypto keys.',
+    gcpCryptoKeyNonSelectedErrorMessage: 'A GCP crypto key must be selected.',
+    publicAgeKeysAlreadyPresent: 'The following age keys are already present:',
+    publicAgeKeyQuestion:
+      'Does anyone need to write Risk scorecards locally using their editor?',
+    writeLocalRiscSuffix: "to learn more about writing RiSc's locally.",
+    publicAgeKeyDescription:
+      'Provide a public age key below for individuals allowed local editing',
+    addPublicAgeKey: 'Add public age key',
+    publicAgeKey: 'Public age key',
+    update: 'Update',
+    createPRTitle: 'Create a Pull Request with the new encryption scheme',
+    createPRContent:
+      'Your encryption configuration is now ready and has been created in a new branch. Below you can create a PR with these changes. Alternatively, you can move the changes to a different branch by clicking the "Branch" button and selecting another active branch.',
+    PRTitle: 'Review and merge the Pull Request',
+    SummaryDescription: 'A PR with the encryption scheme has now been created.',
+    SummaryGCP: 'The selected GCP key is ',
+    SummaryAgeKeys: 'The following public age keys have also been added: ',
+    PRContent:
+      'Click the button below to view the changes, review them, and merge the PR. After you merge the PR, you can start creating and managing Risk scorecards.',
+    required: 'This field is required',
+    publicKeyHelperTextKeyAlreadyExists: 'Public key already added',
+    publicKeyHelperTextKeyAlreadyExistInSopsConfig:
+      'Public key already present in existing SOPS configuration',
+    publicKeyHelperTextKeyNotValid: 'Public key is not a valid age public key',
+    pendingTitle: 'Pending SOPS configuration',
+    pendingDescription:
+      'The following pull requests are opened to include a SOPS configuration in the GitHub-repo',
+    secondaryPullRequestText: 'Opened _n_ ago by',
+    reEncryptTitle: "Re-encryption of existing RiSc's",
+    reEncryptDescription:
+      "When updating SOPS configuration, you will not be able to decrypt old RiSc's encrypted with the previous SOPS configuration. We therefore encourage you to re-encrypt the existing RiSc's on the default branch of your GitHub-repository for you to be able to use them with your updated SOPS configuration.",
+    reEncryptConsentDescription:
+      "Do you want to re-encrypt the RiSc's on the default branch of ",
+    openPR: 'Create pull request',
+    gotoPullRequest: 'Go to pull request',
+    gcpKeyHaveAccess: 'Has access',
+    gcpKeyDoNotHaveAccess: 'Do not have access',
+    gcpKeyDoNotHaveAccessDescription:
+      'You cannot choose this key as you do not have the role Cloud KMS CryptoKey Encrypter/Decrypter on it.',
+  },
+  scenarioStepper: {
+    initialRiskStep: {
+      title: 'Initial risk',
+      subtitle:
+        'The initial risk is defined by the consequence of the scenario and the probability of it occurring.',
+      consequenceSubtitle:
+        'How severe is the potential impact? If the scenario can impact more than one category, choose the highest level of consequence.',
+      probabilitySubtitle:
+        'How likely is it that this scenario will occur? If you are between two probability values, choose the higher one.',
+    },
+    restRiskStep: {
+      title: 'Remaining risk',
+      subtitle:
+        'What is the risk reduced to when all the planned actions have been completed?',
+      consequenceSubtitle:
+        'How severe is the consequence of this scenario after all actions are complete?',
+      probabilitySubtitle:
+        'What is the likelihood of this scenario after all actions are complete?',
+    },
+  },
+  scenarioDrawer: {
+    action: {
+      requiredError: 'Field is required',
+      descriptionError: 'Description cannot be empty',
+      urlError: 'Invalid URL',
+      emptyState: 'This scenario has no defined actions',
+    },
+    title: 'Risk scenario',
+    titleError: 'Scenario title is required',
+    subtitle: 'An unwanted incident that could potentially harm the component.', // harm or affect negatively?
+    threatActorSubtitle: 'Someone who attempts to access or abuse the system', // system or component or both?
+    vulnerabilitySubtitle:
+      'Weakness in the system that the threat actor can exploit',
+    riskMatrixModal: {
+      startRisk: 'What is the risk before any mitigating actions are taken?',
+      restRisk: 'What is the risk after all planned actions are completed?',
+      title: 'Risk matrixes',
+    },
+    consequenceTab: {
+      subtitle:
+        'How severe is the potential impact? If the scenario can impact more than one category, choose the highest level of consequence.',
+    },
+    probabilityTab: {
+      subtitle:
+        'How likely is it that this scenario will occur? If you are between two probability values, choose the higher one.',
+    },
+    measureTab: {
+      subtitle:
+        'What actions should be taken to avoid or reduce the risk of this scenario?',
+      measureOwnerDescription:
+        'Decide who will be responsible for completion of this action',
+      addMeasureButton: 'Add planned action',
+      plannedMeasures: 'Planned actions',
+      addMeasureTitleError: 'Action title is required',
+    },
+    restRiskTab: {
+      subtitle:
+        'Define the remaining risk for the scenario. Remaining risk is the consequence and probability for this ' +
+        'scenario after all planned actions have been completed.',
+    },
+    deleteScenarioButton: 'Delete scenario',
+    deleteScenarioConfirmation:
+      'Are you sure you want to delete this scenario?',
+    deleteActionButton: 'Delete action',
+    deleteActionConfirmation: 'Are you sure you want to delete this action?',
+    closeConfirmation: 'Do you want to save your changes?',
+  },
+  consequenceTable: {
+    rows: {
+      '1': 'Negligible', // Insignificant, negligible (ubetydelig)
+      '2': 'Small', // Liten
+      '3': 'Moderate',
+      '4': 'Severe', // Alvorlig
+      '5': 'Critical', // Catastrophic eller Critical
+    },
+    columns: {
+      health: 'Life and health', // Health and safety, Life and limb, Health and lives (Liv og helse)
+      economical: 'Financial', // Financial consequences, economic implications
+      privacy: 'Privacy', // Personvern
+      reputation: 'Reputation and trust', // Reputation and trust, confidence, faith (Omdømme og tillit)
+    },
+    cells: {
+      health: {
+        '1': 'Impact on life and health cannot be rated less severe than 3', // Liv og helse kan ikke være mindre alvorlig enn 3
+        '2': 'Impact on life and health cannot be rated less severe than 3',
+        '3': 'Temporary or less severe health implications. Temporary or minor damage to local environment.', // implications, effects or consequence? Temporary or minor? Midlertidige eller mindre alvorlige helsemessige konsekvenser. Midlertidig eller mindre skade på miljøet
+        '4': 'Permanent or severe health implications for a few people. Moderate damage to the environment in a limited area.',
+        '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.',
+      },
+      economical: {
+        '1': 'Temporary minor financial loss.\n\nMay be fixed within an hour by one employee',
+        '2': 'Temporary financial loss.\n\nMay be fixed within three days by one employee',
+        '3': 'Financial loss of some duration.\n\nMay be fixed within a month by three employees',
+        '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed within a year by 10 employees',
+        '5': 'Permanent and severe financial loss.\n\nMay be fixed within three years by 100 employees',
+      },
+      privacy: {
+        '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
+        '2': 'The right to privacy is violated for a longer period and involves sensitive categories or vulnerable groups.',
+        '3': 'Violations of the rights and freedoms for the registered people.',
+        '4': 'Severe violations and breaches of the rights and freedoms for the registered people, as well as violations of the law.',
+        '5': 'Impact on privacy cannot be rated more severe than 4',
+      },
+      reputation: {
+        '1': 'Temporary loss of reputation and little impact on trust',
+        '2': 'Negative attention in national media that leads to loss of reputation.\n\nMay reduce trust.',
+        '3': 'Lasting negative attention in national and international media that leads to severe loss of reputation.\n\nSevere loss of trust from authorities.\n\nUsers who do not dare or want to use the services.', // lasting, severe, severe loss, severe loss of trust, do not dare or want to use the services
+        '4': 'Impact on reputation and trust cannot be rated more severe than 3',
+        '5': 'Impact on reputation and trust cannot be rated more severe than 3',
+      },
+    },
+  },
+  probabilityTable: {
+    rows: {
+      '1': 'Very low', // svært liten
+      '2': 'Low', // liten
+      '3': 'Moderate', // moderat
+      '4': 'High', // stor
+      '5': 'Very high', // svært stor
+    },
+    cells: {
+      '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 100 years',
+      '2': 'The scenario is unlikely to occur.\n\nIt can occur every 10 years',
+      '3': 'The scenario can occur.\n\nIt can occur almost every year',
+      '4': 'The scenario will very likely occur.\n\nIt can occur almost weekly',
+      '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur almost daily',
+    },
+  },
+  threatActors: {
+    'Script kiddie': 'Script kiddie',
+    Hacktivist: 'Hacktivist',
+    'Reckless employee': 'Reckless employee',
+    Insider: 'Insider',
+    'Organised crime': 'Organised crime',
+    'Terrorist organisation': 'Terrorist organisation',
+    'Nation/government': 'Nation/government',
+  },
+  vulnerabilities: {
+    'Flawed design': 'Flawed design',
+    Misconfiguration: 'Misconfiguration',
+    'Dependency vulnerability': 'Dependency vulnerability',
+    'Unauthorized access': 'Unauthorized use',
+    'Unmonitored use': 'Unmonitored use',
+    'Input tampering': 'Input tampering',
+    'Information leak': 'Information leak',
+    'Excessive use': 'Excessive use',
+  },
+  actionStatus: {
+    'Not started': 'Not started',
+    'In progress': 'In progress',
+    'On hold': 'On hold',
+    Completed: 'Completed',
+    Aborted: 'Aborted',
+  },
+  errorMessages: {
+    DefaultErrorMessage: 'An error occured',
+    NoWriteAccessToRepository:
+      'Unable to update RiSc. You do not have write access to this repository.',
+    ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
+    ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
+    ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
+    ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
+    FailedToFetchRiScs: 'Failed to fetch risk scorecards',
+    RiScDoesNotExist:
+      'The risk scorecard you are trying to open does not exist',
+    ScenarioDoesNotExist: 'The scenario you are trying to open does not exist',
+    ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration',
+    FailedToCreateSops: 'Failed to create SOPS configuration',
+    FailedToUpdateSops: 'SOPS configuration could not be updated',
+    ErrorWhenFetchingGcpCryptoKeys: 'Failed to fetch GCP crypto keys',
+  },
+  infoMessages: {
+    OpenedPullRequest: 'Successfully opened pull request',
+    CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
+    UpdatedRiSc: 'Risk scorecard updated',
+    UpdatedSops: 'SOPS configuration updated',
+    UpdatedRiScRequiresNewApproval:
+      'Risk scorecard update and requires new approval',
+    CreatedRiSc: 'Created new risk scorecard successfully',
+    UpdatedRiScAndCreatedPullRequest:
+      'Risk scorecard updated and ready for approval in Github',
+    NoSopsConfigFound:
+      'No SOPS configuration present on default branch of the GitHub repository',
+    CreatedSops: 'SOPS configuration created successfully',
+  },
+} as const;
+
+export const pluginRiScTranslationRef = createTranslationRef({
+  id: 'plugin.riSc',
+  messages: pluginRiScMessages,
 });
 
 export const pluginRiScNorwegianTranslation = createTranslationResource({
@@ -751,6 +748,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.deleteActionConfirmation':
             'Er du sikker på at du vil slette tiltak?',
           'scenarioDrawer.closeConfirmation': 'Vil du lagre endringene dine?',
+          'scenarioDrawer.measureTab.addMeasureTitleError':
+            'Tiltak må ha en tittel',
 
           'consequenceTable.rows.1': 'Ubetydelig',
           'consequenceTable.rows.2': 'Liten',

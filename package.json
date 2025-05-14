@@ -62,7 +62,6 @@
     "dotenv": "^16.5.0",
     "github-markdown-css": "^5.8.1",
     "lerna": "^8.2.2",
-    "node-gyp": "^11.2.0",
     "prettier": "^3.5.3",
     "typescript": "~5.8.3"
   },
@@ -71,8 +70,7 @@
     "jsonpath-plus": "^10.2.0",
     "koa": "2.15.4",
     "@module-federation/dts-plugin": "0.9.1",
-    "@node-saml/node-saml": "5.0.1",
-    "xml-crypto": "6.0.1"
+    "@node-saml/node-saml": "5.0.1"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
