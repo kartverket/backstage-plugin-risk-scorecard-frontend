@@ -39,9 +39,9 @@ export function getAlertSeverity(
 }
 
 export function getRiskMatrixColor(risiko: Risk) {
-  const sannsynlighet = findProbabilityIndex(risiko.probability);
-  const konsekvens = findConsequenceIndex(risiko.consequence);
-  return riskMatrix[4 - konsekvens][sannsynlighet];
+  const probability = findProbabilityIndex(risiko.probability);
+  const consequence = findConsequenceIndex(risiko.consequence);
+  return riskMatrix[4 - consequence][probability];
 }
 
 export function getProbabilityLevel(risiko: Risk) {
