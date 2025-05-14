@@ -92,7 +92,7 @@ export function Select<T extends FieldValues>({
   }
 
   return (
-    <FormControl sx={{ width: '100%', gap: '4px' }}>
+    <FormControl error={error} sx={{ width: '100%', gap: '4px' }}>
       {label && (
         <FormLabel sx={formLabel} required={required}>
           {label}
@@ -106,6 +106,7 @@ export function Select<T extends FieldValues>({
         MenuProps={{
           disablePortal: true,
         }}
+        error={error}
         variant="outlined"
         renderValue={renderValue}
         multiple={multiple}

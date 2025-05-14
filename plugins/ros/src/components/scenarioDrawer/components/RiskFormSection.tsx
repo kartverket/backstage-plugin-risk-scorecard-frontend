@@ -28,7 +28,10 @@ function ScenarioForm({
   setIsMatrixDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { control } = formMethods;
+  const {
+    control,
+    formState: { errors },
+  } = formMethods;
 
   const probabilityValues = probabilityOptions.map((value, index) => ({
     value: `${value}`,
@@ -51,39 +54,32 @@ function ScenarioForm({
         }}
       >
         <Paper sx={riscSection}>
-          <Box sx={headerSection}>
-            <Typography sx={{ ...heading3, justifySelf: 'start' }}>
-              {t('dictionary.initialRisk')}
-            </Typography>
-            <Typography>
-              {t('scenarioDrawer.riskMatrixModal.startRisk')}
-            </Typography>
-          </Box>
           <Box sx={selectSection}>
+            {/* Row 1 */}
+            <Box sx={headerSection}>
+              <Typography sx={{ ...heading3, justifySelf: 'start' }}>
+                {t('dictionary.initialRisk')}
+              </Typography>
+              <Typography>
+                {t('scenarioDrawer.riskMatrixModal.startRisk')}
+              </Typography>
+            </Box>
+            <Box sx={headerSection}>
+              <Typography sx={{ ...heading3, justifySelf: 'flex-start' }}>
+                {t('dictionary.restRisk')}
+              </Typography>
+              <Typography>
+                {t('scenarioDrawer.riskMatrixModal.restRisk')}
+              </Typography>
+            </Box>
+
+            {/* Row 2 */}
             <Select<FormScenario>
               control={control}
               name="risk.probability"
               label={t('dictionary.probability')}
               options={probabilityValues}
             />
-            <Select<FormScenario>
-              control={control}
-              name="risk.consequence"
-              label={t('dictionary.consequence')}
-              options={consequenceValues}
-            />
-          </Box>
-        </Paper>
-        <Paper sx={riscSection}>
-          <Box sx={headerSection}>
-            <Typography sx={{ ...heading3, justifySelf: 'flex-start' }}>
-              {t('dictionary.restRisk')}
-            </Typography>
-            <Typography>
-              {t('scenarioDrawer.riskMatrixModal.restRisk')}
-            </Typography>
-          </Box>
-          <Box sx={selectSection}>
             <Select<FormScenario>
               control={control}
               name="remainingRisk.probability"
@@ -95,6 +91,16 @@ function ScenarioForm({
                     Number(control._formValues.risk?.probability) ||
                   t('scenarioDrawer.errors.remainingProbabilityTooHigh'),
               }}
+              error={errors.remainingRisk?.probability !== undefined}
+              helperText={errors.remainingRisk?.probability?.message}
+            />
+
+            {/* Row 3 */}
+            <Select<FormScenario>
+              control={control}
+              name="risk.consequence"
+              label={t('dictionary.consequence')}
+              options={consequenceValues}
             />
             <Select<FormScenario>
               control={control}
@@ -107,6 +113,8 @@ function ScenarioForm({
                     Number(control._formValues.risk?.consequence) ||
                   t('scenarioDrawer.errors.remainingConsequenceTooHigh'),
               }}
+              error={errors.remainingRisk?.consequence !== undefined}
+              helperText={errors.remainingRisk?.consequence?.message}
             />
           </Box>
         </Paper>
