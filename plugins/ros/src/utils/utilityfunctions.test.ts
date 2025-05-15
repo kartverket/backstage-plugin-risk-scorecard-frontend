@@ -17,6 +17,7 @@ import {
   formatNumber,
   generateRandomId,
   isDeeplyEqual,
+  parseISODateFromEncryptedROS,
   requiresNewApproval,
   roundConsequenceToNearestConsequenceOption,
   roundProbabilityToNearestProbabilityOption,
@@ -419,6 +420,32 @@ describe('formatNumber', () => {
 
   it('formats trillions correctly', () => {
     expect(formatNumber(3_200_000_000_000, mockT)).toBe('3 trillion');
+  });
+});
+
+describe('parseISODateFromEncryptedROS', () => {
+  it('should parse a valid ISO date string', () => {
+    const isoDate = '2023-10-01T12:00:00Z';
+    const result = parseISODateFromEncryptedROS(isoDate);
+    expect(result).toBe('2023-10-01T12:00:00Z');
+  });
+
+  it('should parse a valid ISO date string with extra escaped quotations', () => {
+    const isoDate = '\"2023-10-01T12:00:00Z\"';
+    const result = parseISODateFromEncryptedROS(isoDate);
+    expect(result).toBe('2023-10-01T12:00:00Z');
+  });
+
+  it('should return null for an invalid date string', () => {
+    const invalidDate = 'invalid-date';
+    const result = parseISODateFromEncryptedROS(invalidDate);
+    expect(result).toBeNull();
+  });
+
+  it('should return null for an empty string', () => {
+    const emptyString = '';
+    const result = parseISODateFromEncryptedROS(emptyString);
+    expect(result).toBeNull();
   });
 });
 
