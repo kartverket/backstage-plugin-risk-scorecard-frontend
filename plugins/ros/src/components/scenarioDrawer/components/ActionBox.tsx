@@ -1,28 +1,32 @@
-import { useState, useEffect } from 'react';
-import { Action, FormScenario } from '../../../utils/types';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import Chip from '@mui/material/Chip';
+import { Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { body2, emptyState, label } from '../../common/typography';
-import Collapse from '@mui/material/Collapse';
-import { ExpandLess, ExpandMore, Edit } from '@mui/icons-material';
-import Link from '@mui/material/Link';
-import IconButton from '@mui/material/IconButton';
-import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
-import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
-import { useScenario } from '../../../contexts/ScenarioContext';
-import { useRiScs } from '../../../contexts/RiScContext';
+import Chip from '@mui/material/Chip';
+import CircularProgress from '@mui/material/CircularProgress';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { actionStatusOptions } from '../../../utils/constants';
+import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
+import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
+import { useRiScs } from '../../../contexts/RiScContext';
+import { useScenario } from '../../../contexts/ScenarioContext';
+import { ActionStatusOptions } from '../../../utils/constants';
 import { useIsMounted } from '../../../utils/hooks';
-import CircularProgress from '@mui/material/CircularProgress';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteAction } from '../../../utils/utilityfunctions';
-import ReactMarkdown from 'react-markdown';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { Action, FormScenario } from '../../../utils/types';
+import {
+  actionStatusOptionsToTranslationKeys,
+  deleteAction,
+} from '../../../utils/utilityfunctions';
+import { Markdown } from '../../common/Markdown';
+import { body2, emptyState, label } from '../../common/typography';
+import { ActionFormItem } from './ActionFormItem';
+import { DeleteActionConfirmation } from './DeleteConfirmation';
 
 interface ActionBoxProps {
   action: Action;
@@ -42,30 +46,36 @@ export function ActionBox({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { isActionExpanded, toggleActionExpanded } = useScenario();
-
   const isExpanded = isActionExpanded(action.ID);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
+    useState(false);
 
   const { updateStatus } = useRiScs();
-
   const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
     useScenario();
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
   /* @ts-ignore Because ts can't typecheck strings against our keys */
-  const translatedActionStatus = t(`actionStatus.${action.status}`);
-
-  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
-    value: actionStatus,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: t(`actionStatus.${actionStatus}`),
-  }));
+  const translatedActionStatus = t(
+    actionStatusOptionsToTranslationKeys[action.status as ActionStatusOptions],
+  );
 
   const isMounted = useIsMounted();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  function handleDeleteAction(): void {
+    setDeleteActionConfirmationIsOpen(true);
+  }
+
+  function confirmDeleteAction(): void {
+    remove(index);
+    deleteAction(remove, index, onSubmit);
+    setDeleteActionConfirmationIsOpen(false);
+  }
 
   function handleChipClick(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -98,7 +108,7 @@ export function ActionBox({
         <ActionFormItem
           formMethods={formMethods}
           index={index}
-          handleDelete={() => deleteAction(remove, index, onSubmit)}
+          handleDelete={handleDeleteAction}
           showTitleNumber={false}
           remove={remove}
         />
@@ -171,7 +181,7 @@ export function ActionBox({
           sx={{
             margin: 0,
             backgroundColor:
-              action.status === 'Completed'
+              action.status === ActionStatusOptions.Completed
                 ? { backgroundColor: '#6BC6A4' }
                 : undefined,
           }}
@@ -183,20 +193,20 @@ export function ActionBox({
           onClose={handleMenuClose}
           onClick={handleMenuClose}
         >
-          {translatedActionStatuses.map(option => (
-            <MenuItem
-              key={option.value}
-              onClick={() => handleStatusChange(option.value)}
-            >
-              {option.renderedValue}
+          {Object.values(ActionStatusOptions).map(value => (
+            <MenuItem key={value} onClick={() => handleStatusChange(value)}>
+              {
+                /* @ts-ignore Because ts can't typecheck strings against our keys */
+                t(
+                  actionStatusOptionsToTranslationKeys[
+                    value as ActionStatusOptions
+                  ],
+                )
+              }
             </MenuItem>
           ))}
         </Menu>
-        <IconButton
-          onClick={() => {
-            deleteAction(remove, index, onSubmit);
-          }}
-        >
+        <IconButton onClick={handleDeleteAction}>
           <DeleteIcon />
         </IconButton>
       </Box>
@@ -204,14 +214,7 @@ export function ActionBox({
         <Typography sx={{ ...label, marginTop: 1 }}>
           {t('dictionary.description')}
         </Typography>
-        <Box
-          sx={{
-            ...body2,
-            wordBreak: 'break-all',
-          }}
-        >
-          <ReactMarkdown>{action.description}</ReactMarkdown>
-        </Box>
+        <Markdown description={action.description} />
 
         <Box
           sx={{
@@ -247,6 +250,12 @@ export function ActionBox({
           </Box>
         </Box>
       </Collapse>
+
+      <DeleteActionConfirmation
+        isOpen={deleteActionConfirmationIsOpen}
+        setIsOpen={setDeleteActionConfirmationIsOpen}
+        onConfirm={confirmDeleteAction}
+      />
     </Box>
   );
 }

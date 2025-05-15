@@ -13,6 +13,7 @@ import { FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
+import Box from '@mui/material/Box';
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -38,7 +39,16 @@ export function ActionsSection({
   if (isEditing) {
     return (
       <Paper sx={section}>
-        <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
+          <Button
+            startIcon={<AddCircle />}
+            color="primary"
+            onClick={() => append(emptyAction())}
+          >
+            {t('scenarioDrawer.measureTab.addMeasureButton')}
+          </Button>
+        </Box>
         {fields.map((field, index) => (
           <Fragment key={field.id}>
             <Divider variant="fullWidth" />
@@ -50,13 +60,6 @@ export function ActionsSection({
             />
           </Fragment>
         ))}
-        <Button
-          startIcon={<AddCircle />}
-          color="primary"
-          onClick={() => append(emptyAction())}
-        >
-          {t('scenarioDrawer.measureTab.addMeasureButton')}
-        </Button>
       </Paper>
     );
   }

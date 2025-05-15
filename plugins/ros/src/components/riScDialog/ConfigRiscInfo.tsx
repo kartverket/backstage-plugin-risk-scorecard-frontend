@@ -47,10 +47,10 @@ function ConfigRiscInfo({
         error={errors?.content?.title !== undefined}
         label={t('dictionary.title')}
         minRows={4}
+        helperText={errors?.content?.title && t('rosDialog.titleError')}
       />
       <MarkdownInput
-        required
-        {...register('content.scope', { required: true })}
+        {...register('content.scope')}
         value={currentScope}
         label={t('dictionary.scope')}
         sublabel={t('rosDialog.scopeDescription')}

@@ -1,24 +1,27 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import AddCircle from '@mui/icons-material/AddCircle';
-import { emptyAction } from '../../../contexts/ScenarioContext';
-import { heading2, heading3, label, subtitle2 } from '../../common/typography';
-import Box from '@mui/material/Box';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
-import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import { UseFormReturn, useFieldArray } from 'react-hook-form';
+import { emptyAction } from '../../../contexts/ScenarioContext';
 import {
-  actionStatusOptions,
+  ActionStatusOptions,
   urlRegExpPattern,
 } from '../../../utils/constants';
-import IconButton from '@mui/material/IconButton';
-import { Select } from '../../common/Select';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { FormScenario } from '../../../utils/types';
+import { actionStatusOptionsToTranslationKeys } from '../../../utils/utilityfunctions';
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
+import { Select } from '../../common/Select';
+import { heading2, heading3, label, subtitle2 } from '../../common/typography';
+import { DeleteActionConfirmation } from '../../scenarioDrawer/components/DeleteConfirmation';
 
 export function ActionsStep({
   formMethods,
@@ -33,11 +36,29 @@ export function ActionsStep({
     name: 'actions',
   });
 
-  const translatedActionStatuses = actionStatusOptions.map(actionStatus => ({
-    value: actionStatus,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: t(`actionStatus.${actionStatus}`),
-  }));
+  const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
+    useState(false);
+  const [actionToDelete, setActionToDelete] = useState<number | null>(null);
+
+  function handleDeleteAction(index: number): void {
+    setActionToDelete(index);
+    setDeleteActionConfirmationIsOpen(true);
+  }
+
+  function confirmDeleteAction(): void {
+    if (actionToDelete !== null) {
+      remove(actionToDelete);
+      setActionToDelete(null);
+    }
+  }
+
+  const actionStatusOptions = Object.values(ActionStatusOptions).map(
+    actionStatus => ({
+      value: actionStatus,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(actionStatusOptionsToTranslationKeys[actionStatus]),
+    }),
+  );
 
   return (
     <Stack spacing={3}>
@@ -78,21 +99,23 @@ export function ActionsStep({
                     {t('dictionary.measure')} {index + 1}
                   </Typography>
 
-                  <IconButton onClick={() => remove(index)} color="primary">
-                    <DeleteIcon aria-label="Edit" />
+                  <IconButton
+                    onClick={() => handleDeleteAction(index)}
+                    color="primary"
+                  >
+                    <DeleteIcon
+                      aria-label={t('scenarioDrawer.deleteActionButton')}
+                    />
                   </IconButton>
                 </Box>
 
                 <Input
-                  {...register(`actions.${index}.title`)}
+                  required
+                  {...register(`actions.${index}.title`, { required: true })}
                   label={t('dictionary.title')}
                 />
-
                 <MarkdownInput
-                  required
-                  {...register(`actions.${index}.description`, {
-                    required: true,
-                  })}
+                  {...register(`actions.${index}.description`)}
                   error={
                     formState.errors?.actions?.[index]?.description !==
                     undefined
@@ -127,7 +150,7 @@ export function ActionsStep({
                     control={control}
                     name={`actions.${index}.status`}
                     label={t('dictionary.status')}
-                    options={translatedActionStatuses}
+                    options={actionStatusOptions}
                   />
                 </Box>
               </Stack>
@@ -143,6 +166,12 @@ export function ActionsStep({
           {t('scenarioDrawer.measureTab.addMeasureButton')}
         </Button>
       </Stack>
+
+      <DeleteActionConfirmation
+        isOpen={deleteActionConfirmationIsOpen}
+        setIsOpen={setDeleteActionConfirmationIsOpen}
+        onConfirm={confirmDeleteAction}
+      />
     </Stack>
   );
 }

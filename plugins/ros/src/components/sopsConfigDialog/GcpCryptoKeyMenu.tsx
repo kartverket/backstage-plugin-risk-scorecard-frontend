@@ -9,6 +9,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import AddIcon from '@mui/icons-material/Add';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState, MouseEvent } from 'react';
 
 interface GcpCryptoKeyMenuProps {
@@ -53,6 +54,10 @@ export function GcpCryptoKeyMenu({
         position: 'relative',
         left: 0,
         marginTop: 1,
+        border: '1px solid',
+        borderColor: theme =>
+          theme.palette.mode === 'dark' ? 'white' : 'grey.300',
+        borderRadius: '4px',
       }}
     >
       <ListItemButton
@@ -76,21 +81,25 @@ export function GcpCryptoKeyMenu({
         ) : (
           <>
             <ListItemAvatar>
-              <Avatar>
+              <Avatar
+                sx={{
+                  backgroundColor:
+                    chosenGcpCryptoKey.projectId !== ''
+                      ? 'primary.main'
+                      : 'default',
+                  color:
+                    chosenGcpCryptoKey.projectId !== '' ? 'white' : 'inherit',
+                }}
+              >
                 <VpnKey />
               </Avatar>
             </ListItemAvatar>
 
             <ListItemText
               primary={chosenGcpCryptoKey.keyName}
-              secondary={
-                <>
-                  Project ID: {chosenGcpCryptoKey.projectId}
-                  <br />
-                  Key ring: {chosenGcpCryptoKey.keyRing}
-                </>
-              }
+              secondary={<>Project ID: {chosenGcpCryptoKey.projectId}</>}
             />
+            <ExpandMoreIcon sx={{ marginLeft: 'auto' }} />
             {!chosenGcpCryptoKey.hasEncryptDecryptAccess && (
               <>
                 <WarningAmberIcon sx={{ color: 'red' }} />
@@ -130,6 +139,11 @@ export function GcpCryptoKeyMenu({
                   gcpCryptoKey={gcpCryptoKey}
                   handleClick={handleClickMenuItem}
                   hasAccess={hasAccess === 'true'}
+                  isSelected={
+                    gcpCryptoKey.projectId === chosenGcpCryptoKey.projectId &&
+                    gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing &&
+                    gcpCryptoKey.keyName === chosenGcpCryptoKey.keyName
+                  }
                 />
               ))}
             </ul>

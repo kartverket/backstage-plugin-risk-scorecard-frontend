@@ -3,6 +3,7 @@ import {
   DifferenceFetchState,
   RiScStatus,
   RiScWithMetadata,
+  DifferenceStatus,
 } from '../../../utils/types';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
@@ -25,6 +26,7 @@ import UpdatedIcon from './icons/updated.svg';
 import LittleOutdatedIcon from './icons/little_outdated.svg';
 import OutdatedIcon from './icons/outdated.svg';
 import VeryOutdatedIcon from './icons/very_outdated.svg';
+import DisabledIcon from './icons/disabled.svg';
 import {
   calculateDaysSince,
   calculateUpdatedStatus,
@@ -32,6 +34,7 @@ import {
   UpdatedStatusEnumType,
 } from '../../../utils/utilityfunctions';
 import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
+import { StatusIconWithText } from './StatusIconWithText';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -115,7 +118,7 @@ export function RiScStatusComponent({
         setDifferenceFetchState({
           ...emptyDifferenceFetchState,
           errorMessage: t('rosStatus.difference.error'),
-          status: 'FrontendFallback', // Fallback when the backend does not deliver a response with status
+          status: DifferenceStatus.FrontendFallback, // Fallback when the backend does not deliver a response with status
         });
       },
     );
@@ -129,6 +132,10 @@ export function RiScStatusComponent({
   function handleOpenPublishRiScDialog() {
     setPublishRiScDialogIsOpen(true);
     getDifferences();
+  }
+
+  function handleClosePublishRiScDialog() {
+    setPublishRiScDialogIsOpen(false);
   }
 
   useEffect(() => {
@@ -268,7 +275,7 @@ export function RiScStatusComponent({
               <RiScPublishDialog
                 openDialog={publishRiScDialogIsOpen}
                 handlePublish={handleApproveAndPublish}
-                handleCancel={() => setPublishRiScDialogIsOpen(false)}
+                handleCancel={handleClosePublishRiScDialog}
                 differenceFetchState={differenceFetchState}
               />
             </>
@@ -312,26 +319,47 @@ export function RiScStatusComponent({
         </Typography>
       )}
       <Box mt={2} display="flex" gap={1}>
-        <Box
-          component="img"
-          src={icons[updatedStatus] as string}
-          alt="Updated Status Icon"
-          sx={{ height: 24, width: 24 }}
-        />
-        {numOfCommitsBehind !== null && daysSinceLastModified !== null ? (
-          <Typography paragraph variant="subtitle1">
-            {t('rosStatus.lastModified')}
-            {t('rosStatus.daysSinceLastModified', {
-              days: daysSinceLastModified.toString(),
-              numCommits: numOfCommitsBehind.toString(),
-            })}
-          </Typography>
-        ) : (
-          <Typography paragraph variant="subtitle1">
-            {t('rosStatus.errorMessage')}
-          </Typography>
-        )}
+        {renderStatusContent()}
       </Box>
     </InfoCard>
   );
+
+  function renderStatusContent() {
+    if (numOfCommitsBehind !== null && daysSinceLastModified !== null) {
+      return (
+        <StatusIconWithText
+          iconSrc={icons[updatedStatus] as string}
+          altText={t(`rosStatus.updatedStatus.${updatedStatus}`)}
+          text={
+            t('rosStatus.lastModified') +
+            t('rosStatus.daysSinceLastModified', {
+              days: daysSinceLastModified.toString(),
+              numCommits: numOfCommitsBehind.toString(),
+            })
+          }
+        />
+      );
+    }
+
+    if (
+      differenceFetchState.errorMessage &&
+      differenceFetchState.status !== DifferenceStatus.GithubFileNotFound
+    ) {
+      return (
+        <StatusIconWithText
+          iconSrc={VeryOutdatedIcon as string}
+          altText={t('rosStatus.updatedStatus.error')}
+          text={t('rosStatus.errorMessage')}
+        />
+      );
+    }
+
+    return (
+      <StatusIconWithText
+        iconSrc={DisabledIcon as string}
+        altText={t('rosStatus.updatedStatus.disabled')}
+        text={t('rosStatus.notPublishedYet')}
+      />
+    );
+  }
 }

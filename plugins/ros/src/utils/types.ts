@@ -1,3 +1,4 @@
+import type { Dispatch } from 'react';
 import { GcpCryptoKeyObject, SopsConfigDTO } from './DTOs';
 
 /**
@@ -7,6 +8,9 @@ import { GcpCryptoKeyObject, SopsConfigDTO } from './DTOs';
  * @template R New type to set field of key to
  */
 export type Modify<O, K extends keyof any, R> = Omit<O, K> & { [P in K]: R };
+
+/** Type of the setter from `useState` */
+export type SetState<T extends any> = Dispatch<React.SetStateAction<T>>;
 
 export type LastPublished = {
   dateTime: Date;
@@ -131,6 +135,16 @@ export enum ContentStatus {
   NoReadAccess = 'NoReadAccess',
 }
 
+export enum DifferenceStatus {
+  Success = 'Success',
+  GithubFailure = 'GithubFailure',
+  JsonFailure = 'JsonFailure',
+  DecryptionFailure = 'DecryptionFailure',
+  NoReadAccess = 'NoReadAccess',
+  GithubFileNotFound = 'GithubFileNotFound',
+  FrontendFallback = 'FrontendFallback',
+}
+
 type FormRisk = Modify<
   Modify<Risk, 'probability', string>,
   'consequence',
@@ -150,14 +164,7 @@ export type Difference = {
 };
 
 export type DifferenceDTO = {
-  status:
-    | 'Success'
-    | 'GithubFailure'
-    | 'JsonFailure'
-    | 'DecryptionFailure'
-    | 'NoReadAccess'
-    | 'GithubFileNotFound'
-    | 'FrontendFallback';
+  status: DifferenceStatus;
   differenceState: Difference;
   errorMessage?: string;
   defaultLastModifiedDateString: string;
@@ -166,7 +173,7 @@ export type DifferenceDTO = {
 export type DifferenceFetchState = Modify<
   DifferenceDTO,
   'status',
-  DifferenceDTO['status'] | null
+  DifferenceStatus | null
 > & { isLoading: boolean; currentDifferenceId: string };
 
 export interface SopsConfigDialogFormData {

@@ -12,11 +12,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useFontStyles } from '../../utils/style';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
-
-export enum RiskMatrixTabs {
-  initialRisk = 'initialRisk',
-  remainingRisk = 'remainingRisk',
-}
+import { RiskMatrixTabs } from './utils';
 
 export function RiskMatrix({ riSc }: { riSc: RiSc }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);

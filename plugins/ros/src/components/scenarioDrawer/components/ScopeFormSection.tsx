@@ -1,18 +1,22 @@
-import { UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { MarkdownInput } from '../../common/MarkdownInput';
-import {
-  threatActorsOptions,
-  vulnerabilitiesOptions,
-} from '../../../utils/constants';
-import { Select } from '../../common/Select';
-import Typography from '@mui/material/Typography';
-import { heading3 } from '../../common/typography';
 import Paper from '@mui/material/Paper';
-import { section } from '../scenarioDrawerComponents';
+import Typography from '@mui/material/Typography';
+import { Controller, UseFormReturn } from 'react-hook-form';
+import {
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
+} from '../../../utils/constants';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { FormScenario } from '../../../utils/types';
+import {
+  threatActorOptionsToTranslationKeys,
+  vulnerabiltiesOptionsToTranslationKeys,
+} from '../../../utils/utilityfunctions';
 import { Input } from '../../common/Input';
+import { MarkdownInput } from '../../common/MarkdownInput';
+import { Select } from '../../common/Select';
+import { heading3 } from '../../common/typography';
+import { section } from '../scenarioDrawerComponents';
 
 function ScopeFormSection({
   formMethods,
@@ -23,26 +27,24 @@ function ScopeFormSection({
   const {
     control,
     register,
-    setValue,
-    watch,
     formState: { errors },
   } = formMethods;
 
-  const translatedThreatActors = threatActorsOptions.map(threatActor => ({
-    value: threatActor,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: t(`threatActors.${threatActor}`),
-  }));
-
-  const translatedVulnerabilities = vulnerabilitiesOptions.map(
-    vulnerability => ({
-      value: vulnerability,
+  const threatActorOptions = Object.values(ThreatActorsOptions).map(
+    threatActor => ({
+      value: threatActor,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
-      renderedValue: t(`vulnerabilities.${vulnerability}`),
+      renderedValue: t(threatActorOptionsToTranslationKeys[threatActor]),
     }),
   );
 
-  const currentDescription = watch('description');
+  const vulnerabilitiesOptions = Object.values(VulnerabilitiesOptions).map(
+    vulnerability => ({
+      value: vulnerability,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(vulnerabiltiesOptionsToTranslationKeys[vulnerability]),
+    }),
+  );
 
   return (
     <Paper sx={section}>
@@ -52,6 +54,7 @@ function ScopeFormSection({
         {...register('title', { required: true })}
         error={errors.title !== undefined}
         label={t('dictionary.title')}
+        helperText={errors.title && t('scenarioDrawer.titleError')}
       />
       <Select<FormScenario>
         multiple
@@ -59,7 +62,7 @@ function ScopeFormSection({
         name="threatActors"
         label={t('dictionary.threatActors')}
         labelTranslationKey="threatActors"
-        options={translatedThreatActors}
+        options={threatActorOptions}
       />
       <Select<FormScenario>
         multiple
@@ -67,14 +70,20 @@ function ScopeFormSection({
         name="vulnerabilities"
         label={t('dictionary.vulnerabilities')}
         labelTranslationKey="vulnerabilities"
-        options={translatedVulnerabilities}
+        options={vulnerabilitiesOptions}
       />
-      <MarkdownInput
-        {...register('description')}
-        value={currentDescription}
-        onMarkdownChange={value => setValue('description', value)}
-        label={t('dictionary.description')}
-        minRows={4}
+      <Controller
+        control={control}
+        name="description"
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <MarkdownInput
+            value={value}
+            onMarkdownChange={onChange}
+            label={t('dictionary.description')}
+            minRows={8}
+            error={!!error}
+          />
+        )}
       />
     </Paper>
   );

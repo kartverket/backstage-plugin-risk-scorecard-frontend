@@ -1,19 +1,23 @@
+import { useRouteRef } from '@backstage/core-plugin-api';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import {
   ReactNode,
-  useState,
-  useEffect,
-  useContext,
   createContext,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { Action, FormScenario, Scenario } from '../utils/types';
-import { riScRouteRef, scenarioRouteRef } from '../routes';
 import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { generateRandomId } from '../utils/utilityfunctions';
-import { useRiScs } from './RiScContext';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { riScRouteRef, scenarioRouteRef } from '../routes';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { Action, FormScenario, Scenario } from '../utils/types';
+import {
+  generateRandomId,
+  roundConsequenceToNearestConsequenceOption,
+  roundProbabilityToNearestProbabilityOption,
+} from '../utils/utilityfunctions';
+import { useRiScs } from './RiScContext';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
@@ -268,13 +272,13 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       ...apiScenario,
       risk: {
         ...apiScenario.risk,
-        probability: `${apiScenario.risk.probability}`,
-        consequence: `${apiScenario.risk.consequence}`,
+        probability: `${roundProbabilityToNearestProbabilityOption(apiScenario.risk.probability)}`,
+        consequence: `${roundConsequenceToNearestConsequenceOption(apiScenario.risk.consequence)}`,
       },
       remainingRisk: {
         ...apiScenario.remainingRisk,
-        probability: `${apiScenario.remainingRisk.probability}`,
-        consequence: `${apiScenario.remainingRisk.consequence}`,
+        probability: `${roundProbabilityToNearestProbabilityOption(apiScenario.remainingRisk.probability)}`,
+        consequence: `${roundConsequenceToNearestConsequenceOption(apiScenario.remainingRisk.consequence)}`,
       },
     };
     return returnFormScenario;

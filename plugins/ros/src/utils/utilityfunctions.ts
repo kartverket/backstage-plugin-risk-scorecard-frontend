@@ -1,12 +1,16 @@
-import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
-import {
-  consequenceOptions,
-  latestSupportedVersion,
-  probabilityOptions,
-  riskMatrix,
-} from './constants';
 import { formatISO } from 'date-fns';
 import { UpdateStatus } from '../contexts/RiScContext';
+import {
+  ActionStatusOptions,
+  BASE_NUMBER,
+  CONSEQUENCE_SCALE_OFFSET,
+  PROBABILITY_SCALE_OFFSET,
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
+  latestSupportedVersion,
+  riskMatrix,
+} from './constants';
+import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
 
 export function generateRandomId(): string {
   return [...Array(5)]
@@ -37,17 +41,17 @@ export function getAlertSeverity(
 }
 
 export function getRiskMatrixColor(risiko: Risk) {
-  const sannsynlighet = probabilityOptions.indexOf(risiko.probability);
-  const konsekvens = consequenceOptions.indexOf(risiko.consequence);
+  const sannsynlighet = findProbabilityIndex(risiko.probability);
+  const konsekvens = findConsequenceIndex(risiko.consequence);
   return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
 export function getProbabilityLevel(risiko: Risk) {
-  return probabilityOptions.indexOf(risiko.probability) + 1;
+  return findProbabilityIndex(risiko.probability) + 1;
 }
 
 export function getConsequenceLevel(risiko: Risk) {
-  return consequenceOptions.indexOf(risiko.consequence) + 1;
+  return findConsequenceIndex(risiko.consequence) + 1;
 }
 
 export function emptyRiSc(): RiSc {
@@ -58,18 +62,6 @@ export function emptyRiSc(): RiSc {
     valuations: [],
     scenarios: [],
   };
-}
-
-export function arrayNotEquals<T>(array1: T[], array2: T[]): boolean {
-  if (array1.length !== array2.length) {
-    return true;
-  }
-  return array1.reduce((returnValue, currentElement, index) => {
-    if (currentElement !== array2[index]) {
-      return true;
-    }
-    return returnValue;
-  }, false);
 }
 
 export function calculateDaysSince(dateString: Date) {
@@ -129,65 +121,15 @@ export function calculateUpdatedStatus(
   return UpdatedStatusEnum.VERY_OUTDATED;
 }
 
-// keys that does not change the approval status: tittel, beskrivelse, oppsummering, tiltak.beskrivelse, tiltak.tiltakseier, tiltak.status
 export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
-  if (oldRiSc.scenarios.length !== updatedRiSc.scenarios.length) {
-    return true;
-  }
-  let requiresApproval = false;
-
-  const updatedScenarioMap = new Map<string, Scenario>(
-    updatedRiSc.scenarios.map(scenario => [scenario.ID, scenario]),
+  return !isDeeplyEqual(
+    oldRiSc.scenarios.sort(
+      (scenario1, scenario2) => Number(scenario1.ID) - Number(scenario2.ID),
+    ),
+    updatedRiSc.scenarios.sort(
+      (scenario1, scenario2) => Number(scenario1.ID) - Number(scenario2.ID),
+    ),
   );
-
-  oldRiSc.scenarios.forEach(oldScenario => {
-    const updatedScenario = updatedScenarioMap.get(oldScenario.ID);
-
-    if (!updatedScenario) {
-      requiresApproval = true;
-      return;
-    }
-
-    if (
-      arrayNotEquals(oldScenario.threatActors, updatedScenario.threatActors)
-    ) {
-      requiresApproval = true;
-    }
-
-    if (
-      arrayNotEquals(
-        oldScenario.vulnerabilities,
-        updatedScenario.vulnerabilities,
-      )
-    ) {
-      requiresApproval = true;
-    }
-
-    if (oldScenario.risk.probability !== updatedScenario.risk.probability) {
-      requiresApproval = true;
-    }
-
-    if (oldScenario.risk.consequence !== updatedScenario.risk.consequence) {
-      requiresApproval = true;
-    }
-
-    if (oldScenario.actions.length !== updatedScenario.actions.length) {
-      requiresApproval = true;
-    }
-    if (
-      oldScenario.remainingRisk.probability !==
-      updatedScenario.remainingRisk.probability
-    ) {
-      requiresApproval = true;
-    }
-    if (
-      oldScenario.remainingRisk.consequence !==
-      updatedScenario.remainingRisk.consequence
-    ) {
-      requiresApproval = true;
-    }
-  });
-  return requiresApproval;
 }
 
 export function formatNumber(
@@ -416,3 +358,112 @@ export function isDeeplyEqual<T>(
   // If a or b is null or a primitive type, then they are not equal as a === b should have returned true already.
   return false;
 }
+
+function logBase(value: number, base: number): number {
+  return Math.log(value) / Math.log(base);
+}
+
+/*
+  Probability is categorized in 5 levels on a logarithmic scale with base 20:
+  0 = 20^-2 = 1 / 400
+  1 = 20^-1 = 1 / 20
+  2 = 20^-0 = 1
+  3 = 20^1  = 20
+  4 = 20^2  = 400
+*/
+export function findProbabilityIndex(probability: number): number {
+  const probabilityIndex = Math.round(
+    logBase(probability, BASE_NUMBER) - PROBABILITY_SCALE_OFFSET,
+  );
+  return Math.min(4, Math.max(0, probabilityIndex));
+}
+
+/*
+  Consequence  is categorized in 5 levels on a logarithmic scale with base 20:
+  0 = 20^3 = 8 000
+  1 = 20^4 = 160 000
+  2 = 20^5 = 3 200 000
+  3 = 20^6 = 64 000 000
+  4 = 20^7 = 1 280 000 000
+*/
+export function findConsequenceIndex(consequence: number): number {
+  const consequenceIndex = Math.round(
+    logBase(consequence, BASE_NUMBER) - CONSEQUENCE_SCALE_OFFSET,
+  );
+  return Math.min(4, Math.max(0, consequenceIndex));
+}
+
+/*
+  Logarithmically round the consequence to the nearest consequence option.
+*/
+export function roundConsequenceToNearestConsequenceOption(
+  consequence: number,
+): number {
+  return Math.pow(BASE_NUMBER, findConsequenceIndex(consequence) + 3);
+}
+
+/*
+  Logarithmically round the probability to the nearest probability option.
+*/
+export function roundProbabilityToNearestProbabilityOption(
+  probability: number,
+): number {
+  return Math.pow(BASE_NUMBER, findProbabilityIndex(probability) - 2);
+}
+
+export const consequenceIndexToTranslationKeys: Record<number, string> = {
+  0: 'infoDialog.consequenceDescription.oneworkday',
+  1: 'infoDialog.consequenceDescription.oneworkmonth',
+  2: 'infoDialog.consequenceDescription.oneworkyear',
+  3: 'infoDialog.consequenceDescription.20workyears',
+  4: 'infoDialog.consequenceDescription.400workyears',
+};
+
+export const probabilityIndexToTranslationKeys: Record<number, string> = {
+  0: 'infoDialog.probabilityDescription.every400years',
+  1: 'infoDialog.probabilityDescription.every20years',
+  2: 'infoDialog.probabilityDescription.annualy',
+  3: 'infoDialog.probabilityDescription.monthly',
+  4: 'infoDialog.probabilityDescription.daily',
+};
+
+export const actionStatusOptionsToTranslationKeys: Record<
+  ActionStatusOptions,
+  string
+> = {
+  [ActionStatusOptions.NotStarted]: 'actionStatus.Not started',
+  [ActionStatusOptions.InProgress]: 'actionStatus.In progress',
+  [ActionStatusOptions.OnHold]: 'actionStatus.On hold',
+  [ActionStatusOptions.Completed]: 'actionStatus.Completed',
+  [ActionStatusOptions.Aborted]: 'actionStatus.Aborted',
+};
+
+export const threatActorOptionsToTranslationKeys: Record<
+  ThreatActorsOptions,
+  string
+> = {
+  [ThreatActorsOptions.ScriptKiddie]: 'threatActors.Script kiddie',
+  [ThreatActorsOptions.Hacktivist]: 'threatActors.Hacktivist',
+  [ThreatActorsOptions.RecklessEmployee]: 'threatActors.Reckless employee',
+  [ThreatActorsOptions.Insider]: 'threatActors.Insider',
+  [ThreatActorsOptions.OrganisedCrime]: 'threatActors.Organised crime',
+  [ThreatActorsOptions.TerroristOrganisation]:
+    'threatActors.Terrorist organisation',
+  [ThreatActorsOptions.NationGovernment]: 'threatActors.Nation/government',
+};
+
+export const vulnerabiltiesOptionsToTranslationKeys: Record<
+  VulnerabilitiesOptions,
+  string
+> = {
+  [VulnerabilitiesOptions.FlawedDesign]: 'vulnerabilities.Flawed design',
+  [VulnerabilitiesOptions.Misconfiguration]: 'vulnerabilities.Misconfiguration',
+  [VulnerabilitiesOptions.DependencyVulnerability]:
+    'vulnerabilities.Dependency vulnerability',
+  [VulnerabilitiesOptions.UnauthorizedAccess]:
+    'vulnerabilities.Unauthorized access',
+  [VulnerabilitiesOptions.UnmonitoredUse]: 'vulnerabilities.Unmonitored use',
+  [VulnerabilitiesOptions.InputTampering]: 'vulnerabilities.Input tampering',
+  [VulnerabilitiesOptions.InformationLeak]: 'vulnerabilities.Information leak',
+  [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
+};
