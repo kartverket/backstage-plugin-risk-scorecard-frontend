@@ -11,6 +11,12 @@ import {
 } from '../../../utils/constants';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { FormScenario } from '../../../utils/types';
+import {
+  consequenceIndexToTranslationKeys,
+  findConsequenceIndex,
+  findProbabilityIndex,
+  probabilityIndexToTranslationKeys,
+} from '../../../utils/utilityfunctions';
 import { Select } from '../../common/Select';
 import { heading3 } from '../../common/typography';
 import {
@@ -19,6 +25,7 @@ import {
   section,
   selectSection,
 } from '../scenarioDrawerComponents';
+import RiskOptionDisplay from './RiskOptionDisplay';
 
 function ScenarioForm({
   formMethods,
@@ -29,21 +36,62 @@ function ScenarioForm({
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
+    watch,
     control,
     formState: { errors },
   } = formMethods;
 
-  const probabilityValues = probabilityOptions.map((value, index) => ({
-    value: `${value}`,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`probabilityTable.rows.${index + 1}`)}`,
-  }));
+  const [
+    riskProbability,
+    riskConsequence,
+    remainingRiskProbability,
+    remainingRiskConsequence,
+  ] = watch([
+    'risk.probability',
+    'risk.consequence',
+    'remainingRisk.probability',
+    'remainingRisk.consequence',
+  ]);
 
-  const consequenceValues = consequenceOptions.map((value, index) => ({
-    value: `${value}`,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`consequenceTable.rows.${index + 1}`)}`,
-  }));
+  const probabilityValues = (selectedValue: number) => {
+    return probabilityOptions.map((value, index) => ({
+      value: `${value}`,
+      renderedValue: (
+        <RiskOptionDisplay
+          isSelected={
+            findProbabilityIndex(value) === findProbabilityIndex(selectedValue)
+          }
+          level={index + 1}
+          label={
+            /* @ts-ignore Because ts can't typecheck strings against our keys */
+            `${t(`probabilityTable.rows.${index + 1}`)} (${t(
+              probabilityIndexToTranslationKeys[index],
+            )})`
+          }
+        />
+      ),
+    }));
+  };
+
+  const consequenceValues = (selectedValue: number) => {
+    return consequenceOptions.map((value, index) => ({
+      value: `${value}`,
+      renderedValue: (
+        <RiskOptionDisplay
+          isSelected={
+            findConsequenceIndex(value) === findConsequenceIndex(selectedValue)
+          }
+          level={index + 1}
+          label={
+            /* @ts-ignore Because ts can't typecheck strings against our keys */
+            `${t(`consequenceTable.rows.${index + 1}`)} (${t(
+              consequenceIndexToTranslationKeys[index],
+            )})`
+          }
+        />
+      ),
+    }));
+  };
 
   return (
     <Paper sx={section}>
@@ -77,14 +125,14 @@ function ScenarioForm({
             <Select<FormScenario>
               control={control}
               name="risk.probability"
-              label={t('dictionary.probability')}
-              options={probabilityValues}
+              label={t('infoDialog.probabilityTitle')}
+              options={probabilityValues(Number(riskProbability))}
             />
             <Select<FormScenario>
               control={control}
               name="remainingRisk.probability"
-              label={t('dictionary.probability')}
-              options={probabilityValues}
+              label={t('infoDialog.probabilityTitle')}
+              options={probabilityValues(Number(remainingRiskProbability))}
               rules={{
                 validate: (value, _) =>
                   Number(value) <=
@@ -99,14 +147,14 @@ function ScenarioForm({
             <Select<FormScenario>
               control={control}
               name="risk.consequence"
-              label={t('dictionary.consequence')}
-              options={consequenceValues}
+              label={t('infoDialog.consequenceTitle')}
+              options={consequenceValues(Number(riskConsequence))}
             />
             <Select<FormScenario>
               control={control}
               name="remainingRisk.consequence"
-              label={t('dictionary.consequence')}
-              options={consequenceValues}
+              label={t('infoDialog.consequenceTitle')}
+              options={consequenceValues(Number(remainingRiskConsequence))}
               rules={{
                 validate: (value, _) =>
                   Number(value) <=

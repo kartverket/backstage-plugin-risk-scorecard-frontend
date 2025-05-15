@@ -1,10 +1,18 @@
-export const schemaPath = '../risc_schema_en_v4_0.json';
+export const schemaPath = '../risc_schema_en_v4_1.json';
 
-export const latestSupportedVersion = '4.0';
+export const latestSupportedVersion = '4.1';
 
-export const consequenceOptions = [1000, 30000, 1000000, 30000000, 1000000000];
+export const BASE_NUMBER = 20.0;
+export const CONSEQUENCE_SCALE_OFFSET = 3;
+export const PROBABILITY_SCALE_OFFSET = -2;
 
-export const probabilityOptions = [0.01, 0.1, 1, 50, 300];
+export const consequenceOptions = Array.from({ length: 5 }, (_, i) =>
+  Math.pow(BASE_NUMBER, i + CONSEQUENCE_SCALE_OFFSET),
+);
+
+export const probabilityOptions = Array.from({ length: 5 }, (_, i) =>
+  Math.pow(BASE_NUMBER, i + PROBABILITY_SCALE_OFFSET),
+);
 
 export enum ThreatActorsOptions {
   ScriptKiddie = 'Script kiddie',
