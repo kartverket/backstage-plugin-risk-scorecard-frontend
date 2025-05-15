@@ -28,8 +28,8 @@ export const headerSection: SxProps<Theme> = {
 };
 
 export const selectSection: SxProps<Theme> = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '16px',
-  width: '100%',
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: '24px',
+  rowGap: '16px',
 };
