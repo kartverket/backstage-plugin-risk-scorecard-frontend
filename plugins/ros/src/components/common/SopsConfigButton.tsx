@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import Button from '@mui/material/Button';
@@ -12,12 +11,12 @@ interface SopsConfigButtonProps {
   hasOpenedOnce: boolean;
 }
 
-export const SopsConfigButton = ({
+export function SopsConfigButton({
   handleClick,
   disable,
   pullRequestCount,
   hasOpenedOnce,
-}: SopsConfigButtonProps) => {
+}: SopsConfigButtonProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -41,4 +40,4 @@ export const SopsConfigButton = ({
       </Button>
     </Badge>
   );
-};
+}

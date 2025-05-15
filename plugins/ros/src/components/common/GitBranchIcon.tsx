@@ -1,7 +1,6 @@
 import SvgIcon from '@mui/material/SvgIcon';
-import React from 'react';
 
-export const GitBranchIcon = () => {
+export function GitBranchIcon() {
   return (
     <SvgIcon
       version="1.0"
@@ -50,4 +49,4 @@ l-50 -24 -825 -5 c-895 -6 -859 -4 -972 -61 -21 -10 -40 -19 -43 -19 -3 0 -5
       </g>
     </SvgIcon>
   );
-};
+}

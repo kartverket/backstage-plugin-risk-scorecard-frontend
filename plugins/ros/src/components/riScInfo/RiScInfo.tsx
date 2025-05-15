@@ -1,4 +1,3 @@
-import React from 'react';
 import { RiScWithMetadata } from '../../utils/types';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';
@@ -8,15 +7,16 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useFontStyles } from '../../utils/style';
 import EditButton from '../common/EditButton';
 import { useRiScs } from '../../contexts/RiScContext';
+import { Markdown } from '../common/Markdown';
 
 interface RiScInfoProps {
   riScWithMetadata: RiScWithMetadata;
   edit: () => void;
 }
 
-export const RiScInfo = ({ riScWithMetadata, edit }: RiScInfoProps) => {
+export function RiScInfo({ riScWithMetadata, edit }: RiScInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { label, body2 } = useFontStyles();
+  const { label } = useFontStyles();
 
   const { approveRiSc } = useRiScs();
 
@@ -46,9 +46,7 @@ export const RiScInfo = ({ riScWithMetadata, edit }: RiScInfoProps) => {
             <EditButton onClick={edit} />
           </Box>
           <Typography className={label}>{t('dictionary.scope')}</Typography>
-          <Typography className={body2}>
-            {riScWithMetadata.content.scope}
-          </Typography>
+          <Markdown description={riScWithMetadata.content.scope} />
         </InfoCard>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
@@ -59,4 +57,4 @@ export const RiScInfo = ({ riScWithMetadata, edit }: RiScInfoProps) => {
       </Grid>
     </Grid>
   );
-};
+}

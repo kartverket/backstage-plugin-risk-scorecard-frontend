@@ -1,4 +1,3 @@
-import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { riskTable, riskCell, riskRow, riskLabelCell } from '../wizardStyles';
@@ -10,14 +9,16 @@ import Box from '@mui/material/Box';
 import { probabilityOptions } from '../../../utils/constants';
 import Typography from '@mui/material/Typography';
 
-export const ProbabilityTableInfo = () => {
+export function ProbabilityTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const getContentCell = (row: number) => (
-    <Box sx={riskCell}>
-      {/* @ts-ignore */}
-      {t(`probabilityTable.cells.${row + 1}`)}
-    </Box>
-  );
+  function getContentCell(row: number) {
+    return (
+      <Box sx={riskCell}>
+        {/* @ts-ignore */}
+        {t(`probabilityTable.cells.${row + 1}`)}
+      </Box>
+    );
+  }
 
   return (
     <Box sx={riskRow}>
@@ -28,15 +29,15 @@ export const ProbabilityTableInfo = () => {
       {getContentCell(4)}
     </Box>
   );
-};
+}
 
-export const ProbabilityTable = ({
+export function ProbabilityTable({
   formMethods,
   riskType,
 }: {
   formMethods: UseFormReturn<FormScenario>;
   riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { field } = useController({
@@ -44,18 +45,20 @@ export const ProbabilityTable = ({
     control: formMethods.control,
   });
 
-  const getRadioLabel = (row: number) => {
+  function getRadioLabel(row: number) {
     /* @ts-ignore Because ts can't typecheck strings agains our keys */
     return `${row}: ${t(`probabilityTable.rows.${row}`)}`;
-  };
+  }
 
-  const getRadioCell = (row: number) => (
-    <RiskRadioButton
-      value={probabilityOptions[row]}
-      ref={field.ref}
-      label={getRadioLabel(row + 1)}
-    />
-  );
+  function getRadioCell(row: number) {
+    return (
+      <RiskRadioButton
+        value={probabilityOptions[row]}
+        ref={field.ref}
+        label={getRadioLabel(row + 1)}
+      />
+    );
+  }
 
   return (
     <Box sx={riskTable}>
@@ -69,19 +72,19 @@ export const ProbabilityTable = ({
       <ProbabilityTableInfo />
     </Box>
   );
-};
+}
 
-export const ProbabilityTableInfoWithHeaders = () => {
+export function ProbabilityTableInfoWithHeaders() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const getRadioLabel = (row: number) => {
+  function getRadioLabel(row: number) {
     return (
       /* @ts-ignore Because ts can't typecheck strings agains our keys */
       <Typography fontWeight={500}>{`${row}: ${t(
         `probabilityTable.rows.${row}`,
       )}`}</Typography>
     );
-  };
+  }
   return (
     <Box sx={riskTable}>
       <Box
@@ -102,4 +105,4 @@ export const ProbabilityTableInfoWithHeaders = () => {
       <ProbabilityTableInfo />
     </Box>
   );
-};
+}

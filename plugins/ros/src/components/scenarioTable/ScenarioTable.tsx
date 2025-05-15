@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Box, Button, Paper, Typography } from '@material-ui/core';
-import TableRow from '@mui/material/TableRow';
+import AddCircle from '@material-ui/icons/AddCircle';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { CheckCircle, Edit } from '@mui/icons-material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import { ScenarioTableRow } from './ScenarioTableRow';
-import AddCircle from '@material-ui/icons/AddCircle';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { useTableStyles } from './ScenarioTableStyles';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useScenario } from '../../contexts/ScenarioContext';
-import { RiSc, RiScWithMetadata } from '../../utils/types';
-import { useFontStyles } from '../../utils/style';
-import { useRiScs } from '../../contexts/RiScContext';
+import TableRow from '@mui/material/TableRow';
+import { useEffect, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { CheckCircle, Edit } from '@mui/icons-material';
+import { useRiScs } from '../../contexts/RiScContext';
+import { useScenario } from '../../contexts/ScenarioContext';
+import { useFontStyles } from '../../utils/style';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { RiSc, RiScWithMetadata } from '../../utils/types';
+import { ScenarioTableRow } from './ScenarioTableRow';
+import { useTableStyles } from './ScenarioTableStyles';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
 }
 
-export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
+export function ScenarioTable({ riScWithMetadata }: ScenarioTableProps) {
   const riSc = riScWithMetadata.content;
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label } = useFontStyles();
@@ -53,14 +53,14 @@ export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [riSc.scenarios, updateStatus.isSuccess]);
 
-  const moveRowLocal = (dragIndex: number, hoverIndex: number) => {
+  function moveRowLocal(dragIndex: number, hoverIndex: number) {
     const updatedScenarios = [...tempScenarios];
     const [removed] = updatedScenarios.splice(dragIndex, 1);
     updatedScenarios.splice(hoverIndex, 0, removed);
     setTempScenarios(updatedScenarios);
-  };
+  }
 
-  const moveRowFinal = (dragIndex: number, dropIndex: number) => {
+  function moveRowFinal(dragIndex: number, dropIndex: number) {
     const updatedScenarios = [...tempScenarios];
     const [removed] = updatedScenarios.splice(dragIndex, 1);
     updatedScenarios.splice(dropIndex, 0, removed);
@@ -74,7 +74,7 @@ export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
       },
     };
     updateRiSc(updatedRiSc, () => {});
-  };
+  }
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -158,7 +158,7 @@ export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
                     <TableCell className={tableCell}>
                       <Typography
                         className={label}
-                        style={{ paddingBottom: 0 }}
+                        style={{ paddingBottom: 0, textAlign: 'center' }}
                       >
                         {t('dictionary.initialRisk')}
                       </Typography>
@@ -167,7 +167,7 @@ export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
                     <TableCell className={tableCell}>
                       <Typography
                         className={label}
-                        style={{ paddingBottom: 0 }}
+                        style={{ paddingBottom: 0, textAlign: 'center' }}
                       >
                         {t('dictionary.measures')}
                       </Typography>
@@ -175,7 +175,7 @@ export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
                     <TableCell className={tableCell}>
                       <Typography
                         className={label}
-                        style={{ paddingBottom: 0 }}
+                        style={{ paddingBottom: 0, textAlign: 'center' }}
                       >
                         {t('dictionary.restRisk')}
                       </Typography>
@@ -203,15 +203,15 @@ export const ScenarioTable = ({ riScWithMetadata }: ScenarioTableProps) => {
       </Paper>
     </>
   );
-};
+}
 
 interface ScenarioTableWrapperProps {
   riScWithMetadata: RiScWithMetadata;
 }
 
-export const ScenarioTableWrapper = ({
+export function ScenarioTableWrapper({
   riScWithMetadata,
-}: ScenarioTableWrapperProps) => {
+}: ScenarioTableWrapperProps) {
   return (
     <DndProvider backend={HTML5Backend}>
       <ScenarioTable
@@ -220,4 +220,4 @@ export const ScenarioTableWrapper = ({
       />
     </DndProvider>
   );
-};
+}

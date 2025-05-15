@@ -1,5 +1,4 @@
-import React from 'react';
-import { DifferenceFetchState } from '../../../utils/types';
+import { DifferenceFetchState, DifferenceStatus } from '../../../utils/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
@@ -15,9 +14,9 @@ type RiScDifferenceDialogProps = {
   differenceFetchState: DifferenceFetchState;
 };
 
-export const RiScDifferenceDialog = ({
+export function RiScDifferenceDialog({
   differenceFetchState,
-}: RiScDifferenceDialogProps) => {
+}: RiScDifferenceDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const formatedDateString = parseISODateFromEncryptedROS(
@@ -67,8 +66,9 @@ export const RiScDifferenceDialog = ({
             </Box>
           )}
           {differenceFetchState.status !== null &&
-            differenceFetchState.status !== 'Success' &&
-            differenceFetchState.status !== 'GithubFileNotFound' && (
+            differenceFetchState.status !== DifferenceStatus.Success &&
+            differenceFetchState.status !==
+              DifferenceStatus.GithubFileNotFound && (
               <Box
                 sx={{
                   display: 'flex',
@@ -88,7 +88,8 @@ export const RiScDifferenceDialog = ({
               </Box>
             )}
           {differenceFetchState.status !== null &&
-            differenceFetchState.status === 'GithubFileNotFound' && (
+            differenceFetchState.status ===
+              DifferenceStatus.GithubFileNotFound && (
               <Box
                 sx={{
                   display: 'flex',
@@ -107,11 +108,11 @@ export const RiScDifferenceDialog = ({
                 {t('rosStatus.difference.newROS')}
               </Box>
             )}
-          {differenceFetchState.status === 'Success' && (
+          {differenceFetchState.status === DifferenceStatus.Success && (
             <DifferenceText differenceFetchState={differenceFetchState} />
           )}
         </Card>
       </Box>
     </Box>
   );
-};
+}

@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import Box from '@mui/material/Box';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
@@ -29,7 +29,7 @@ import { FormScenario, Scenario } from '../../utils/types';
 import { useSearchParams } from 'react-router-dom';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
 
-export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
+export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { isFetching, response, updateStatus } = useRiScs();
   const [, setSearchParams] = useSearchParams();
@@ -75,35 +75,35 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
     setShowCloseConfirmation(false);
   }, [closeScenarioForm]);
 
-  const handleCloseStepper = () => {
+  function handleCloseStepper() {
     if (isDirty) {
       setShowCloseConfirmation(true);
     } else {
       close();
     }
-  };
+  }
 
-  const selectStep = (newStep: ScenarioWizardSteps) => {
+  function selectStep(newStep: ScenarioWizardSteps) {
     if (isValid) {
       setSearchParams({ step: newStep });
     } else {
       formMethods.trigger();
     }
-  };
+  }
 
-  const nextStep = () => {
+  function nextStep() {
     const currentIndex = scenarioWizardSteps.indexOf(step);
     if (currentIndex < scenarioWizardSteps.length - 1) {
       selectStep(scenarioWizardSteps[currentIndex + 1]);
     }
-  };
+  }
 
-  const previousStep = () => {
+  function previousStep() {
     const currentIndex = scenarioWizardSteps.indexOf(step);
     if (currentIndex > 0) {
       selectStep(scenarioWizardSteps[currentIndex - 1]);
     }
-  };
+  }
 
   const isFirstStep = step === scenarioWizardSteps.at(0);
   const isLastStep = step === scenarioWizardSteps.at(-1);
@@ -199,4 +199,4 @@ export const ScenarioWizard = ({ step }: { step: ScenarioWizardSteps }) => {
       />
     </Container>
   );
-};
+}

@@ -1,17 +1,16 @@
 import TabList from '@material-ui/lab/TabList/TabList';
 import { Tab, Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
-import React from 'react';
 import { useTabsStyle } from './tabsStyle';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { RiskMatrixTabs } from './RiskMatrix';
+import { RiskMatrixTabs } from './utils';
 
 interface TabsProps {
   setTab: (tab: RiskMatrixTabs) => void;
 }
 
-export const Tabs = ({ setTab }: TabsProps) => {
+export function Tabs({ setTab }: TabsProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const tabsStyle = useTabsStyle();
 
@@ -43,4 +42,4 @@ export const Tabs = ({ setTab }: TabsProps) => {
       </TabList>
     </Box>
   );
-};
+}

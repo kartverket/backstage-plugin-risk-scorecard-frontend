@@ -1,4 +1,3 @@
-import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Typography from '@mui/material/Typography';
@@ -23,35 +22,39 @@ const consequenceRow: SxProps<Theme> = {
   gridTemplateColumns: 'auto repeat(5, 1fr)',
 };
 
-export const ConsequenceTableInfo = () => {
+export function ConsequenceTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const getTextCell = (
+  function getTextCell(
     resourceKey: string,
     row: number,
     cellType: SxProps<Theme>,
-  ) => (
-    <Box sx={cellType}>
-      {/* @ts-ignore */}
-      {t(`consequenceTable.cells.${resourceKey}.${row + 1}`)}
-    </Box>
-  );
-
-  const getRow = (resourceKey: string, cellType: SxProps<Theme>[]) => (
-    <>
-      <Box sx={riskLabelCell}>
-        <Typography sx={{ ...subtitle1, lineHeight: 1 }}>
-          {/* @ts-ignore */}
-          {t(`consequenceTable.columns.${resourceKey}`)}
-        </Typography>
+  ) {
+    return (
+      <Box sx={cellType}>
+        {/* @ts-ignore */}
+        {t(`consequenceTable.cells.${resourceKey}.${row + 1}`)}
       </Box>
-      {getTextCell(resourceKey, 0, cellType[0])}
-      {getTextCell(resourceKey, 1, cellType[1])}
-      {getTextCell(resourceKey, 2, cellType[2])}
-      {getTextCell(resourceKey, 3, cellType[3])}
-      {getTextCell(resourceKey, 4, cellType[4])}
-    </>
-  );
+    );
+  }
+
+  function getRow(resourceKey: string, cellType: SxProps<Theme>[]) {
+    return (
+      <>
+        <Box sx={riskLabelCell}>
+          <Typography sx={{ ...subtitle1, lineHeight: 1 }}>
+            {/* @ts-ignore */}
+            {t(`consequenceTable.columns.${resourceKey}`)}
+          </Typography>
+        </Box>
+        {getTextCell(resourceKey, 0, cellType[0])}
+        {getTextCell(resourceKey, 1, cellType[1])}
+        {getTextCell(resourceKey, 2, cellType[2])}
+        {getTextCell(resourceKey, 3, cellType[3])}
+        {getTextCell(resourceKey, 4, cellType[4])}
+      </>
+    );
+  }
 
   return (
     <Box
@@ -86,15 +89,15 @@ export const ConsequenceTableInfo = () => {
       ])}
     </Box>
   );
-};
+}
 
-export const ConsequenceTable = ({
+export function ConsequenceTable({
   formMethods,
   riskType,
 }: {
   formMethods: UseFormReturn<FormScenario>;
   riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { field } = useController({
@@ -102,18 +105,20 @@ export const ConsequenceTable = ({
     control: formMethods.control,
   });
 
-  const getRadioLabel = (row: number) => {
+  function getRadioLabel(row: number) {
     /* @ts-ignore Because ts can't typecheck strings agains our keys */
     return `${row}: ${t(`consequenceTable.rows.${row}`)}`;
-  };
+  }
 
-  const getRadioCell = (row: number) => (
-    <RiskRadioButton
-      value={consequenceOptions[row]}
-      ref={field.ref}
-      label={getRadioLabel(row + 1)}
-    />
-  );
+  function getRadioCell(row: number) {
+    return (
+      <RiskRadioButton
+        value={consequenceOptions[row]}
+        ref={field.ref}
+        label={getRadioLabel(row + 1)}
+      />
+    );
+  }
 
   return (
     <Box sx={riskTable}>
@@ -128,19 +133,19 @@ export const ConsequenceTable = ({
       <ConsequenceTableInfo />
     </Box>
   );
-};
+}
 
-export const ConsequenceTableInfoWithHeaders = () => {
+export function ConsequenceTableInfoWithHeaders() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const getRadioLabel = (row: number) => {
+  function getRadioLabel(row: number) {
     return (
       /* @ts-ignore Because ts can't typecheck strings agains our keys */
       <Typography fontWeight={500}>{`${row}: ${t(
         `consequenceTable.rows.${row}`,
       )}`}</Typography>
     );
-  };
+  }
   return (
     <Box sx={riskTable}>
       <Box
@@ -161,4 +166,4 @@ export const ConsequenceTableInfoWithHeaders = () => {
       <ConsequenceTableInfo />
     </Box>
   );
-};
+}

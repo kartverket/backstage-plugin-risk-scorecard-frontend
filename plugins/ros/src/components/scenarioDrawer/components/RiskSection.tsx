@@ -1,32 +1,33 @@
-import React from 'react';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { useScenario } from '../../../contexts/ScenarioContext';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { Risk } from '../../../utils/types';
 import {
   formatNOK,
   getConsequenceLevel,
-  getRiskMatrixColor,
   getProbabilityLevel,
+  getRiskMatrixColor,
 } from '../../../utils/utilityfunctions';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useScenario } from '../../../contexts/ScenarioContext';
-import { Risk } from '../../../utils/types';
-import { section } from '../scenarioDrawerComponents';
 import { body1, heading3, label, label2 } from '../../common/typography';
+import { section } from '../scenarioDrawerComponents';
 
 interface RiskProps {
   risk: Risk;
-  riskType: 'initialRisk' | 'restRisk';
+  heading: string;
 }
 
-const RiskBox = ({ risk, riskType }: RiskProps) => {
+function RiskBox({ risk, heading }: RiskProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const cost = risk.probability * risk.consequence;
 
   return (
     <Paper sx={section}>
-      <Typography sx={heading3}>{t(`dictionary.${riskType}`)}</Typography>
+      <Typography sx={heading3}>{heading}</Typography>
 
       <Box>
         <Box
@@ -64,22 +65,25 @@ const RiskBox = ({ risk, riskType }: RiskProps) => {
       <Box>
         <Typography sx={label}>{t('dictionary.estimatedRisk')}</Typography>
         <Typography sx={body1}>
-          {formatNOK(risk.consequence * risk.probability)}{' '}
-          {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+          {formatNOK(cost)} {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
         </Typography>
       </Box>
     </Paper>
   );
-};
+}
 
-export const RiskSection = () => {
+export function RiskSection() {
   const { scenario } = useScenario();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <RiskBox risk={scenario.risk} riskType="initialRisk" />
+      <RiskBox risk={scenario.risk} heading={t('dictionary.initialRisk')} />
       <KeyboardDoubleArrowRightIcon sx={{ fontSize: '48px' }} />
-      <RiskBox risk={scenario.remainingRisk} riskType="restRisk" />
+      <RiskBox
+        risk={scenario.remainingRisk}
+        heading={t('dictionary.restRisk')}
+      />
     </Box>
   );
-};
+}

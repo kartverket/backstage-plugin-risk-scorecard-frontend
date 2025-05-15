@@ -2,8 +2,9 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { formHelperText, formLabel } from './typography';
+import { commonTextColor, formControlStyles } from '../../utils/style';
 
 type Props = TextFieldProps & {
   sublabel?: string;
@@ -12,11 +13,7 @@ type Props = TextFieldProps & {
 export const Input = forwardRef<HTMLInputElement, Props>(
   ({ label, sublabel, error, helperText, required, ...props }, ref) => {
     return (
-      <FormControl
-        sx={{ width: '100%', gap: '4px' }}
-        error={error}
-        required={required}
-      >
+      <FormControl sx={formControlStyles} error={error} required={required}>
         {label && (
           <FormLabel required={required} sx={formLabel}>
             {label}
@@ -35,7 +32,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
           InputProps={{
             sx: theme => ({
               '&.Mui-disabled': {
-                color: theme.palette.mode === 'dark' ? '#FFFFFF80' : '#757575',
+                color: commonTextColor(theme, true),
               },
             }),
           }}

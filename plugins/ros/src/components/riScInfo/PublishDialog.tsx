@@ -1,4 +1,4 @@
-import React, { ReactComponentElement, useState } from 'react';
+import { ReactComponentElement, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -30,9 +30,9 @@ export const RiScPublishDialog = ({
 
   const [riskOwnerApproves, setRiskOwnerApproves] = useState<boolean>(false);
 
-  const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  function handleCheckboxInput(event: React.ChangeEvent<HTMLInputElement>) {
     setRiskOwnerApproves(event.target.checked);
-  };
+  }
 
   return (
     <Dialog open={openDialog}>
@@ -55,6 +55,9 @@ export const RiScPublishDialog = ({
         </>
       </DialogContent>
       <DialogActions sx={dialogActions}>
+        <Button variant="outlined" color="primary" onClick={handleCancel}>
+          {t('dictionary.cancel')}
+        </Button>
         <Button
           variant="contained"
           color="primary"
@@ -62,9 +65,6 @@ export const RiScPublishDialog = ({
           disabled={!riskOwnerApproves}
         >
           {t('dictionary.confirm')}
-        </Button>
-        <Button variant="outlined" color="primary" onClick={handleCancel}>
-          {t('dictionary.cancel')}
         </Button>
       </DialogActions>
     </Dialog>

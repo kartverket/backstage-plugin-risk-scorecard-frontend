@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Typography } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import Box from '@mui/material/Box';
@@ -12,13 +12,9 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useFontStyles } from '../../utils/style';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
+import { RiskMatrixTabs } from './utils';
 
-export enum RiskMatrixTabs {
-  initialRisk = 'initialRisk',
-  remainingRisk = 'remainingRisk',
-}
-
-export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
+export function RiskMatrix({ riSc }: { riSc: RiSc }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label2 } = useFontStyles();
   const {
@@ -94,4 +90,4 @@ export const RiskMatrix = ({ riSc }: { riSc: RiSc }) => {
       </TabContext>
     </InfoCard>
   );
-};
+}

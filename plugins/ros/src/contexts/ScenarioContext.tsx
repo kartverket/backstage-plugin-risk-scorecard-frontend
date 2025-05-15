@@ -1,13 +1,23 @@
-import React, { ReactNode, useState, useEffect } from 'react';
 import { useRouteRef } from '@backstage/core-plugin-api';
-import { Action, FormScenario, Scenario } from '../utils/types';
-import { riScRouteRef, scenarioRouteRef } from '../routes';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { generateRandomId } from '../utils/utilityfunctions';
-import { useRiScs } from './RiScContext';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { riScRouteRef, scenarioRouteRef } from '../routes';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { Action, FormScenario, Scenario } from '../utils/types';
+import {
+  generateRandomId,
+  roundConsequenceToNearestConsequenceOption,
+  roundProbabilityToNearestProbabilityOption,
+} from '../utils/utilityfunctions';
+import { useRiScs } from './RiScContext';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
@@ -71,11 +81,11 @@ export const scenarioWizardSteps = [
   'restRisk',
 ] as const;
 
-const ScenarioContext = React.createContext<ScenarioDrawerProps | undefined>(
+const ScenarioContext = createContext<ScenarioDrawerProps | undefined>(
   undefined,
 );
 
-const ScenarioProvider = ({ children }: { children: ReactNode }) => {
+export function ScenarioProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const getRiScPath = useRouteRef(riScRouteRef);
@@ -95,38 +105,43 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
     [key: string]: boolean;
   }>({});
 
-  const toggleActionExpanded = (actionId: string) => {
+  function toggleActionExpanded(actionId: string) {
     setExpandedActions(prevState => ({
       ...prevState,
       [actionId]: !prevState[actionId],
     }));
-  };
+  }
 
-  const collapseAllActions = () => {
-    const allCollapsed = Object.keys(expandedActions).reduce((acc, key) => {
-      acc[key] = false;
-      return acc;
-    }, {} as { [key: string]: boolean });
+  function collapseAllActions() {
+    const allCollapsed = Object.keys(expandedActions).reduce(
+      (acc, key) => {
+        acc[key] = false;
+        return acc;
+      },
+      {} as { [key: string]: boolean },
+    );
     setExpandedActions(allCollapsed);
-  };
+  }
 
-  const isActionExpanded = (actionId: string) => {
+  function isActionExpanded(actionId: string) {
     return expandedActions[actionId] || false;
-  };
+  }
 
-  const emptyFormScenario = (initialScenario: Scenario): FormScenario => ({
-    ...initialScenario,
-    risk: {
-      summary: '',
-      probability: '0.01',
-      consequence: '1000',
-    },
-    remainingRisk: {
-      summary: '',
-      probability: '0.01',
-      consequence: '1000',
-    },
-  });
+  function emptyFormScenario(initialScenario: Scenario): FormScenario {
+    return {
+      ...initialScenario,
+      risk: {
+        summary: '',
+        probability: '0.01',
+        consequence: '1000',
+      },
+      remainingRisk: {
+        summary: '',
+        probability: '0.01',
+        consequence: '1000',
+      },
+    };
+  }
 
   // Open scenario when url changes
   useEffect(() => {
@@ -167,23 +182,23 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
   }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams, t]);
 
   // SCENARIO DRAWER FUNCTIONS
-  const openScenarioDrawer = (id: string) => {
+  function openScenarioDrawer(id: string) {
     if (riSc) {
       navigate(getScenarioPath({ riScId: riSc.id, scenarioId: id }));
     }
-  };
+  }
 
-  const closeScenarioForm = () => {
+  function closeScenarioForm() {
     if (riSc) {
       navigate(getRiScPath({ riScId: riSc.id }));
     }
-  };
+  }
 
-  const submitNewScenario = (
+  function submitNewScenario(
     newScenario: Scenario,
     onSuccess?: () => void,
     onError?: () => void,
-  ) => {
+  ) {
     if (riSc) {
       updateRiSc(
         {
@@ -197,13 +212,13 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
         onError,
       );
     }
-  };
+  }
 
-  const submitEditedScenarioToRiSc = (
+  function submitEditedScenarioToRiSc(
     editedScenario: Scenario,
     onSuccess?: () => void,
     onError?: () => void,
-  ) => {
+  ) {
     if (riSc) {
       updateRiSc(
         {
@@ -219,9 +234,9 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
         onError,
       );
     }
-  };
+  }
 
-  const openNewScenarioWizard = () => {
+  function openNewScenarioWizard() {
     if (riSc) {
       const s = emptyScenario();
       setScenario(s);
@@ -233,9 +248,9 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
         })}?step=scenario`,
       );
     }
-  };
+  }
 
-  const mapFormScenarioToScenario = (formScenario: FormScenario): Scenario => {
+  function mapFormScenarioToScenario(formScenario: FormScenario): Scenario {
     const returnScenario: Scenario = {
       ...formScenario,
       risk: {
@@ -250,24 +265,24 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       },
     };
     return returnScenario;
-  };
+  }
 
-  const mapScenarioToFormScenario = (apiScenario: Scenario): FormScenario => {
+  function mapScenarioToFormScenario(apiScenario: Scenario): FormScenario {
     const returnFormScenario: FormScenario = {
       ...apiScenario,
       risk: {
         ...apiScenario.risk,
-        probability: `${apiScenario.risk.probability}`,
-        consequence: `${apiScenario.risk.consequence}`,
+        probability: `${roundProbabilityToNearestProbabilityOption(apiScenario.risk.probability)}`,
+        consequence: `${roundConsequenceToNearestConsequenceOption(apiScenario.risk.consequence)}`,
       },
       remainingRisk: {
         ...apiScenario.remainingRisk,
-        probability: `${apiScenario.remainingRisk.probability}`,
-        consequence: `${apiScenario.remainingRisk.consequence}`,
+        probability: `${roundProbabilityToNearestProbabilityOption(apiScenario.remainingRisk.probability)}`,
+        consequence: `${roundConsequenceToNearestConsequenceOption(apiScenario.remainingRisk.consequence)}`,
       },
     };
     return returnFormScenario;
-  };
+  }
 
   const value = {
     isDrawerOpen,
@@ -293,14 +308,12 @@ const ScenarioProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </ScenarioContext.Provider>
   );
-};
+}
 
-const useScenario = () => {
-  const context = React.useContext(ScenarioContext);
+export function useScenario() {
+  const context = useContext(ScenarioContext);
   if (context === undefined) {
     throw new Error('useScenario must be used within a ScenarioProvider');
   }
   return context;
-};
-
-export { ScenarioProvider, useScenario };
+}

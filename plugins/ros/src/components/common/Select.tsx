@@ -1,10 +1,9 @@
-import React from 'react';
 import {
   Control,
   FieldValues,
   Path,
-  PathValue,
   useController,
+  type UseControllerReturn,
 } from 'react-hook-form';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -25,10 +24,13 @@ type Props<T extends FieldValues> = SelectProps & {
   control?: Control<T, any>;
   name: Path<T>;
   labelTranslationKey?: string;
-  options: { value: string | number; renderedValue: string | number }[];
+  options: {
+    value: string | number;
+    renderedValue: React.ReactNode | string | number;
+  }[];
 };
 
-export const Select = <T extends FieldValues>({
+export function Select<T extends FieldValues>({
   label,
   sublabel,
   error,
@@ -40,7 +42,7 @@ export const Select = <T extends FieldValues>({
   labelTranslationKey,
   options,
   ...props
-}: Props<T>) => {
+}: Props<T>) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { field } = useController({
     name,
@@ -49,8 +51,11 @@ export const Select = <T extends FieldValues>({
   });
 
   // values er strengt tatt unknown, men da må vi bruke mye ts-ignore for å komme i mål
-  const renderValue = (values: any) =>
-    multiple ? (
+  function renderValue(values: any) {
+    if (!multiple) {
+      return options.find(option => option.value === values)?.renderedValue;
+    }
+    return (
       <Box
         sx={{
           display: 'flex',
@@ -69,17 +74,18 @@ export const Select = <T extends FieldValues>({
           />
         ))}
       </Box>
-    ) : (
-      options.find(option => option.value === values)?.renderedValue
     );
+  }
 
-  const handleChecked = (
-    fieldValue: PathValue<T, (string | undefined) & Path<T>>,
-    optionValue: Props<T>['options'][0]['value'],
-  ) => {
-    if (Array.isArray(fieldValue)) return fieldValue.includes(optionValue);
+  function handleChecked(
+    fieldValue: UseControllerReturn['field']['value'],
+    optionValue: Props<T>['options'][number]['value'],
+  ) {
+    if (Array.isArray(fieldValue)) {
+      return fieldValue.includes(optionValue);
+    }
     return fieldValue === optionValue;
-  };
+  }
 
   return (
     <FormControl sx={{ width: '100%', gap: '4px' }}>
@@ -126,4 +132,4 @@ export const Select = <T extends FieldValues>({
       {error && <FormHelperText error>{helperText}</FormHelperText>}
     </FormControl>
   );
-};
+}

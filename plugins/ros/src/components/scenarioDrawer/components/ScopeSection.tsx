@@ -1,4 +1,3 @@
-import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
@@ -14,8 +13,9 @@ import {
   heading3,
   label,
 } from '../../common/typography';
+import { Markdown } from '../../common/Markdown';
 
-export const ScopeSection = () => {
+export function ScopeSection() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { scenario } = useScenario();
 
@@ -28,7 +28,7 @@ export const ScopeSection = () => {
       <Box>
         <Typography sx={label}>{t('dictionary.description')}</Typography>
         {scenario.description ? (
-          <Typography sx={body2}>{scenario.description}</Typography>
+          <Markdown description={scenario.description} />
         ) : (
           <Typography sx={emptyState}>
             {t('dictionary.emptyField', {
@@ -87,4 +87,4 @@ export const ScopeSection = () => {
       </Box>
     </Paper>
   );
-};
+}

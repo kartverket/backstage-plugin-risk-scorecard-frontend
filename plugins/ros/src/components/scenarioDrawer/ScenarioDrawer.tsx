@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { RiskSection } from './components/RiskSection';
@@ -22,7 +22,7 @@ import Typography from '@mui/material/Typography';
 import { MatrixDialog } from '../riScDialog/MatrixDialog';
 import { CloseConfirmation } from '../scenarioWizard/components/CloseConfirmation';
 
-export const ScenarioDrawer = () => {
+export function ScenarioDrawer() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [isEditing, setIsEditing] = useState(false);
   const {
@@ -53,19 +53,19 @@ export const ScenarioDrawer = () => {
     mode: 'onBlur',
   });
 
-  const onCancel = () => {
+  function onCancel() {
     formMethods.reset(mapScenarioToFormScenario(scenario));
     setIsEditing(false);
-  };
+  }
 
-  const handleClose = () => {
+  function handleClose() {
     closeScenarioForm();
     setIsEditing(false);
     setShowCloseConfirmation(false);
     collapseAllActions();
-  };
+  }
 
-  const onClose = () => {
+  function onClose() {
     if (formMethods.formState.isDirty) {
       setShowCloseConfirmation(true);
     } else {
@@ -73,7 +73,7 @@ export const ScenarioDrawer = () => {
       setIsEditing(false);
       collapseAllActions();
     }
-  };
+  }
 
   const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
     submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), () =>
@@ -81,14 +81,14 @@ export const ScenarioDrawer = () => {
     );
   });
 
-  const onSubmitAndCloseDialog = () => {
+  function onSubmitAndCloseDialog() {
     onSubmit();
     setShowCloseConfirmation(false);
 
     if (deleteScenarioRef.current) {
       deleteScenarioRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  }
 
   useEffect(() => {
     formMethods.reset(mapScenarioToFormScenario(scenario));
@@ -202,8 +202,8 @@ export const ScenarioDrawer = () => {
         )}
 
       <DeleteConfirmation
-        deleteConfirmationIsOpen={deleteConfirmationIsOpen}
-        setDeleteConfirmationIsOpen={setDeleteConfirmationIsOpen}
+        isOpen={deleteConfirmationIsOpen}
+        setIsOpen={setDeleteConfirmationIsOpen}
       />
       <MatrixDialog
         open={isMatrixDialogOpen}
@@ -216,4 +216,4 @@ export const ScenarioDrawer = () => {
       />
     </Drawer>
   );
-};
+}

@@ -1,6 +1,7 @@
 import {
   Action,
   ContentStatus,
+  LastPublished,
   MigrationStatus,
   Modify,
   ProcessingStatus,
@@ -8,7 +9,6 @@ import {
   RiScStatus,
   Risk,
   Scenario,
-  SopsConfig,
   Valuations,
 } from './types';
 import { ProfileInfo } from '@backstage/core-plugin-api';
@@ -47,6 +47,7 @@ export type RiScContentResultDTO = {
   riScContent: string;
   sopsConfig: SopsConfigDTO;
   migrationStatus: MigrationStatus;
+  lastPublished: LastPublished;
 } & ContentRiScResultDTO;
 
 export type RiScDTO = {
@@ -57,13 +58,6 @@ export type RiScDTO = {
   scenarios: ScenarioDTO[];
 };
 
-export type SopsConfigResultDTO = {
-  status: ProcessingStatus;
-  statusMessage: string;
-  gcpCryptoKeys: GcpCryptoKeyObject[];
-  sopsConfigs: SopsConfig[];
-} & ProcessRiScResultDTO;
-
 export type GcpCryptoKeyObject = {
   projectId: string;
   keyRing: string;
@@ -73,35 +67,6 @@ export type GcpCryptoKeyObject = {
   createdAt: string;
   hasEncryptDecryptAccess?: boolean;
 };
-
-export type PullRequestObject = {
-  url: string;
-  title: string;
-  openedBy: string;
-  createdAt: string;
-};
-
-export type SopsConfigRequestBody = {
-  gcpCryptoKey: GcpCryptoKeyObject;
-  publicAgeKeys: string[];
-};
-
-export type SopsConfigCreateResponse = {
-  status: ProcessingStatus;
-  statusMessage: string;
-  sopsConfig: SopsConfig;
-} & ProcessRiScResultDTO;
-
-export type SopsConfigUpdateResponse = {
-  status: ProcessingStatus;
-  statusMessage: string;
-} & ProcessRiScResultDTO;
-
-export type OpenPullRequestForSopsConfigResponseBody = {
-  status: ProcessingStatus;
-  statusMessage: string;
-  pullRequest: PullRequestObject;
-} & ProcessRiScResultDTO;
 
 type ScenarioDTO = {
   title: string;
@@ -155,19 +120,6 @@ export function profileInfoToDTOString(profile: ProfileInfo): string {
   return JSON.stringify({
     name: profile.displayName ?? '',
     email: profile.email ?? '',
-  });
-}
-
-export function sopsConfigToDTOString(
-  sopsConfig: SopsConfigRequestBody,
-): string {
-  return JSON.stringify({
-    gcpCryptoKey: {
-      projectId: sopsConfig.gcpCryptoKey.projectId,
-      keyRing: sopsConfig.gcpCryptoKey.keyRing,
-      keyName: sopsConfig.gcpCryptoKey.keyName,
-    },
-    publicAgeKeys: sopsConfig.publicAgeKeys,
   });
 }
 
@@ -229,7 +181,7 @@ export type SopsConfigDTO = {
   shamir_threshold: number;
   age?: AgeEntry[];
   gcp_kms: GcpKmsEntry[];
-  lastmodified?: string;
+  lastModified?: string;
   unencrypted_suffix?: string;
   version?: string;
 };

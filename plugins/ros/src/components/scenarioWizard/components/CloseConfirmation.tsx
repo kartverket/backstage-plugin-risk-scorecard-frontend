@@ -1,4 +1,3 @@
-import React from 'react';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Button from '@mui/material/Button';
@@ -13,11 +12,11 @@ interface CloseConfirmationProps {
   save: () => void;
 }
 
-export const CloseConfirmation = ({
+export function CloseConfirmation({
   isOpen,
   close,
   save,
-}: CloseConfirmationProps) => {
+}: CloseConfirmationProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Dialog open={isOpen}>
@@ -27,10 +26,10 @@ export const CloseConfirmation = ({
           {t('dictionary.discardChanges')}
         </Button>
 
-        <Button variant="outlined" onClick={save}>
+        <Button variant="contained" onClick={save}>
           {t('dictionary.save')}
         </Button>
       </DialogActions>
     </Dialog>
   );
-};
+}

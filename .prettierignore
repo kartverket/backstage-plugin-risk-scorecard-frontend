@@ -2,3 +2,9 @@ dist
 dist-types
 coverage
 .vscode
+.history/
+.security/
+.yarnrc.yml
+
+# Added by `yarn lerna repair`. https://github.com/lerna/lerna/blob/main/CHANGELOG.md#breaking-changes
+/.nx/workspace-data

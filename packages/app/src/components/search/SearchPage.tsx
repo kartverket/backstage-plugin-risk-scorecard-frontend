@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles, Theme, Grid, Paper } from '@material-ui/core';
 
 import { CatalogSearchResultListItem } from '@backstage/plugin-catalog';
@@ -40,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const SearchPage = () => {
+function SearchPage() {
   const classes = useStyles();
   const { types } = useSearch();
   const catalogApi = useApi(catalogApiRef);
@@ -119,6 +118,6 @@ const SearchPage = () => {
       </Content>
     </Page>
   );
-};
+}
 
 export const searchPage = <SearchPage />;

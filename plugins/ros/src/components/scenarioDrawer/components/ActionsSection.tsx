@@ -1,5 +1,5 @@
 import { ActionBox } from './ActionBox';
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -13,6 +13,7 @@ import { FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
+import Box from '@mui/material/Box';
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -20,23 +21,34 @@ type ActionSectionProps = {
   onSubmit: () => void;
 };
 
-export const ActionsSection = ({
+export function ActionsSection({
   formMethods,
   isEditing,
   onSubmit,
-}: ActionSectionProps) => {
+}: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const { control } = formMethods;
+  const { control, watch } = formMethods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'actions',
   });
 
+  const currentActions = watch('actions');
+
   if (isEditing) {
     return (
       <Paper sx={section}>
-        <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
+          <Button
+            startIcon={<AddCircle />}
+            color="primary"
+            onClick={() => append(emptyAction())}
+          >
+            {t('scenarioDrawer.measureTab.addMeasureButton')}
+          </Button>
+        </Box>
         {fields.map((field, index) => (
           <Fragment key={field.id}>
             <Divider variant="fullWidth" />
@@ -48,13 +60,6 @@ export const ActionsSection = ({
             />
           </Fragment>
         ))}
-        <Button
-          startIcon={<AddCircle />}
-          color="primary"
-          onClick={() => append(emptyAction())}
-        >
-          {t('scenarioDrawer.measureTab.addMeasureButton')}
-        </Button>
       </Paper>
     );
   }
@@ -68,7 +73,7 @@ export const ActionsSection = ({
           <Fragment key={field.id}>
             <Divider />
             <ActionBox
-              action={field}
+              action={currentActions[index]}
               index={index}
               formMethods={formMethods}
               remove={remove}
@@ -85,4 +90,4 @@ export const ActionsSection = ({
       )}
     </Paper>
   );
-};
+}

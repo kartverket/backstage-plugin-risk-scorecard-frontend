@@ -1,4 +1,4 @@
-import React, { ReactComponentElement, useState } from 'react';
+import { ReactComponentElement, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -14,6 +14,7 @@ import Box from '@mui/material/Box';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { MigrationVersions } from '../../utils/types';
 import { dialogActions } from '../common/mixins';
+import { URLS } from '../../urls';
 
 interface RiScMigrationDialogProps {
   openDialog: boolean;
@@ -32,9 +33,9 @@ export const RiScMigrationDialog = ({
 
   const [saveMigration, setSaveMigration] = useState<boolean>(false);
 
-  const handleCheckboxInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  function handleCheckboxInput(event: React.ChangeEvent<HTMLInputElement>) {
     setSaveMigration(event.target.checked);
-  };
+  }
 
   return (
     <Dialog open={openDialog}>
@@ -49,7 +50,7 @@ export const RiScMigrationDialog = ({
             <Link
               underline="always"
               target="_blank"
-              href="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md"
+              href={URLS.external.github_com__kartverket_changelog}
             >
               {t('migrationDialog.changelog')}
             </Link>{' '}
@@ -69,15 +70,15 @@ export const RiScMigrationDialog = ({
         </Alert>
       </DialogContent>
       <DialogActions sx={dialogActions}>
+        <Button variant="outlined" color="primary" onClick={handleCancel}>
+          {t('dictionary.cancel')}
+        </Button>
         <Button
           variant="contained"
           onClick={handleUpdate}
           disabled={!saveMigration}
         >
           {t('dictionary.confirm')}
-        </Button>
-        <Button variant="outlined" color="primary" onClick={handleCancel}>
-          {t('dictionary.cancel')}
         </Button>
       </DialogActions>
     </Dialog>

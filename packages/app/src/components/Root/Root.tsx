@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { makeStyles } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import ExtensionIcon from '@material-ui/icons/Extension';
@@ -22,7 +22,8 @@ import {
   SidebarScrollWrapper,
   SidebarSpace,
   useSidebarOpenState,
-  Link, WarningIcon,
+  Link,
+  WarningIcon,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
@@ -30,6 +31,7 @@ import LayersIcon from '@material-ui/icons/Layers';
 import CategoryIcon from '@material-ui/icons/Category';
 import { MyGroupsSidebarItem } from '@backstage/plugin-org';
 import GroupIcon from '@material-ui/icons/People';
+import { URLS } from '../../urls';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -46,54 +48,92 @@ const useSidebarLogoStyles = makeStyles({
   },
 });
 
-const SidebarLogo = () => {
+function SidebarLogo() {
   const classes = useSidebarLogoStyles();
   const { isOpen } = useSidebarOpenState();
 
   return (
     <div className={classes.root}>
-      <Link to="/" underline="none" className={classes.link} aria-label="Home">
+      <Link
+        to={URLS.frontend.index}
+        underline="none"
+        className={classes.link}
+        aria-label="Home"
+      >
         {isOpen ? <LogoFull type="light" /> : <LogoIcon />}
       </Link>
     </div>
   );
-};
+}
 
-export const Root = ({ children }: PropsWithChildren<{}>) => (
-  <SidebarPage>
-    <Sidebar>
-      <SidebarLogo />
-      <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
-        <SidebarSearchModal />
-      </SidebarGroup>
-      <SidebarDivider />
-      <SidebarGroup label="Menu" icon={<MenuIcon />}>
-        {/* Global nav, not org-specific */}
-        <SidebarItem icon={HomeIcon} to="/" text="Home" />
-        <SidebarItem icon={CategoryIcon} to="catalog" text="Catalog" />
-        <MyGroupsSidebarItem singularTitle="My Group" pluralTitle="My Groups" icon={GroupIcon}
-        />
-        <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
-        <SidebarItem icon={LayersIcon} to="explore" text="Explore" />
-        <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
-        <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
-        {/* End global nav */}
+export function Root({ children }: PropsWithChildren<{}>) {
+  return (
+    <SidebarPage>
+      <Sidebar>
+        <SidebarLogo />
+        <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
+          <SidebarSearchModal />
+        </SidebarGroup>
         <SidebarDivider />
-        <SidebarScrollWrapper>
-          <SidebarItem icon={SpeedIcon} to="lighthouse" text="Lighthouse" />
-        </SidebarScrollWrapper>
-        <SidebarItem icon={WarningIcon} to="opencost" text="SKIPcost" />
-      </SidebarGroup>
-      <SidebarSpace />
-      <SidebarDivider />
-      <SidebarGroup
-        label="Settings"
-        icon={<UserSettingsSignInAvatar />}
-        to="/settings"
-      >
-        <SidebarSettings />
-      </SidebarGroup>
-    </Sidebar>
-    {children}
-  </SidebarPage>
-);
+        <SidebarGroup label="Menu" icon={<MenuIcon />}>
+          {/* Global nav, not org-specific */}
+          <SidebarItem icon={HomeIcon} to={URLS.frontend.index} text="Home" />
+          <SidebarItem
+            icon={CategoryIcon}
+            to={URLS.frontend.catalog}
+            text="Catalog"
+          />
+          <MyGroupsSidebarItem
+            singularTitle="My Group"
+            pluralTitle="My Groups"
+            icon={GroupIcon}
+          />
+          <SidebarItem
+            icon={ExtensionIcon}
+            to={URLS.frontend.api_docs}
+            text="APIs"
+          />
+          <SidebarItem
+            icon={LayersIcon}
+            to={URLS.frontend.explore}
+            text="Explore"
+          />
+          <SidebarItem
+            icon={LibraryBooks}
+            to={URLS.frontend.docs}
+            text="Docs"
+          />
+          <SidebarItem
+            icon={CreateComponentIcon}
+            to={URLS.frontend.create}
+            text="Create..."
+          />
+          {/* End global nav */}
+          <SidebarDivider />
+          <SidebarScrollWrapper>
+            <SidebarItem
+              icon={SpeedIcon}
+              to={URLS.frontend.lighthouse}
+              text="Lighthouse"
+            />
+          </SidebarScrollWrapper>
+          <SidebarItem
+            icon={WarningIcon}
+            to={URLS.frontend.opencost}
+            text="SKIPcost"
+          />
+        </SidebarGroup>
+        <SidebarSpace />
+        <SidebarDivider />
+        <SidebarGroup
+          label="Settings"
+          icon={<UserSettingsSignInAvatar />}
+          to={URLS.frontend.settings}
+        >
+          <SidebarSettings />
+        </SidebarGroup>
+      </Sidebar>
+      {children}
+    </SidebarPage>
+  );
+}

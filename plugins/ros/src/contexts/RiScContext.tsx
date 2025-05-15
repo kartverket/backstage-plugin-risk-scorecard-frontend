@@ -1,6 +1,8 @@
-import React, {
+import {
+  createContext,
   ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -25,7 +27,6 @@ import {
   ProcessRiScResultDTO,
   RiScDTO,
 } from '../utils/DTOs';
-import { useEffectOnce } from 'react-use';
 import { useAuthenticatedFetch } from '../utils/hooks';
 import { latestSupportedVersion } from '../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -58,9 +59,9 @@ type RiScDrawerProps = {
   response: SubmitResponseObject | null;
 };
 
-const RiScContext = React.createContext<RiScDrawerProps | undefined>(undefined);
+const RiScContext = createContext<RiScDrawerProps | undefined>(undefined);
 
-const RiScProvider = ({ children }: { children: ReactNode }) => {
+export function RiScProvider({ children }: { children: ReactNode }) {
   const { riScId: riScIdFromParams } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -106,7 +107,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
   }, [location, setResponse]);
 
   // Initial fetch of GCP crypto keys
-  useEffectOnce(() => {
+  useEffect(() => {
     fetchGcpCryptoKeys(
       res => {
         setGcpCryptoKeys(res);
@@ -143,10 +144,11 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         }
       },
     );
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Initial fetch of RiScs
-  useEffectOnce(() => {
+  useEffect(() => {
     fetchRiScs(
       res => {
         const fetchedRiScs: RiScWithMetadata[] = res
@@ -162,6 +164,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
               status: riScDTO.riScStatus,
               pullRequestUrl: riScDTO.pullRequestUrl,
               migrationStatus: riScDTO.migrationStatus,
+              lastPublished: riScDTO.lastPublished,
             };
           });
         setRiScs(fetchedRiScs);
@@ -224,7 +227,8 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         }
       },
     );
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Set selected RiSc based on URL
   useEffect(() => {
@@ -249,14 +253,14 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
     setResponse(null);
   }, [setResponse]);
 
-  const selectRiSc = (id: string) => {
+  function selectRiSc(id: string) {
     const selectedRiScId = riScs?.find(riSc => riSc.id === id)?.id;
     if (selectedRiScId) {
       navigate(getRiScPath({ riScId: selectedRiScId }));
     }
-  };
+  }
 
-  const createNewRiSc = (riSc: RiScWithMetadata, generateDefault: boolean) => {
+  function createNewRiSc(riSc: RiScWithMetadata, generateDefault: boolean) {
     setIsFetching(true);
     setSelectedRiSc(null);
 
@@ -279,6 +283,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
           content: content,
           sopsConfig: riSc.sopsConfig,
           schemaVersion: riSc.schemaVersion,
+          lastPublished: riSc.lastPublished,
         };
         setRiScs(riScs ? [...riScs, riScWithMetaData] : [riScWithMetaData]);
         setIsFetching(false);
@@ -312,13 +317,13 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         });
       },
     );
-  };
+  }
 
-  const updateRiSc = (
+  function updateRiSc(
     riSc: RiScWithMetadata,
     onSuccess?: () => void,
     onError?: () => void,
-  ) => {
+  ) {
     if (selectedRiSc && riScs) {
       const isRequiresNewApproval =
         selectedRiSc.migrationStatus?.migrationRequiresNewApproval ||
@@ -389,9 +394,9 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         },
       );
     }
-  };
+  }
 
-  const approveRiSc = () => {
+  function approveRiSc() {
     if (selectedRiSc && riScs) {
       setUpdateStatus({
         isLoading: true,
@@ -438,7 +443,7 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
         },
       );
     }
-  };
+  }
 
   const value = {
     riScs,
@@ -467,14 +472,12 @@ const RiScProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </RiScContext.Provider>
   );
-};
+}
 
-const useRiScs = () => {
-  const context = React.useContext(RiScContext);
+export function useRiScs() {
+  const context = useContext(RiScContext);
   if (context === undefined) {
     throw new Error('useRiScs must be used within a RiScProvider');
   }
   return context;
-};
-
-export { RiScProvider, useRiScs };
+}

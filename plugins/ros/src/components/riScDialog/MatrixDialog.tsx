@@ -1,4 +1,3 @@
-import React from 'react';
 import { ConsequenceTableInfoWithHeaders } from '../scenarioWizard/components/ConsequenceTable';
 import CloseIcon from '@mui/icons-material/Close';
 import { ProbabilityTableInfoWithHeaders } from '../scenarioWizard/components/ProbabilityTable';
@@ -14,13 +13,13 @@ import Typography from '@mui/material/Typography';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 
-export const MatrixDialog = ({
+export function MatrixDialog({
   open,
   close,
 }: {
   open: boolean;
   close: () => void;
-}) => {
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
@@ -66,4 +65,4 @@ export const MatrixDialog = ({
       </DialogActions>
     </Dialog>
   );
-};
+}

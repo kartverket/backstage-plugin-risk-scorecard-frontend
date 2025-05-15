@@ -1,4 +1,3 @@
-import React from 'react';
 import { Avatar, ListItemButton, ListSubheader, Menu } from '@mui/material';
 import { GcpCryptoKeyObject } from '../../utils/DTOs';
 import { GcpCryptoKeyMenuItem } from './GcpCryptoKeyMenuItem';
@@ -10,6 +9,8 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import AddIcon from '@mui/icons-material/Add';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useState, MouseEvent } from 'react';
 
 interface GcpCryptoKeyMenuProps {
   chosenGcpCryptoKey: GcpCryptoKeyObject;
@@ -17,22 +18,24 @@ interface GcpCryptoKeyMenuProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
 }
 
-export const GcpCryptoKeyMenu = ({
+export function GcpCryptoKeyMenu({
   chosenGcpCryptoKey,
   onChange,
   gcpCryptoKeys,
-}: GcpCryptoKeyMenuProps) => {
+}: GcpCryptoKeyMenuProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+
+  function handleClick(event: MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
-  };
-  const handleClickMenuItem = (gcpCryptoKey: GcpCryptoKeyObject) => {
+  }
+
+  function handleClickMenuItem(gcpCryptoKey: GcpCryptoKeyObject) {
     onChange(gcpCryptoKey);
     setAnchorEl(null);
-  };
+  }
 
   const gcpCryptoKeysGroupedByAccess = gcpCryptoKeys.reduce<
     Record<string, GcpCryptoKeyObject[]>
@@ -51,6 +54,10 @@ export const GcpCryptoKeyMenu = ({
         position: 'relative',
         left: 0,
         marginTop: 1,
+        border: '1px solid',
+        borderColor: theme =>
+          theme.palette.mode === 'dark' ? 'white' : 'grey.300',
+        borderRadius: '4px',
       }}
     >
       <ListItemButton
@@ -74,21 +81,25 @@ export const GcpCryptoKeyMenu = ({
         ) : (
           <>
             <ListItemAvatar>
-              <Avatar>
+              <Avatar
+                sx={{
+                  backgroundColor:
+                    chosenGcpCryptoKey.projectId !== ''
+                      ? 'primary.main'
+                      : 'default',
+                  color:
+                    chosenGcpCryptoKey.projectId !== '' ? 'white' : 'inherit',
+                }}
+              >
                 <VpnKey />
               </Avatar>
             </ListItemAvatar>
 
             <ListItemText
               primary={chosenGcpCryptoKey.keyName}
-              secondary={
-                <>
-                  Project ID: {chosenGcpCryptoKey.projectId}
-                  <br />
-                  Key ring: {chosenGcpCryptoKey.keyRing}
-                </>
-              }
+              secondary={<>Project ID: {chosenGcpCryptoKey.projectId}</>}
             />
+            <ExpandMoreIcon sx={{ marginLeft: 'auto' }} />
             {!chosenGcpCryptoKey.hasEncryptDecryptAccess && (
               <>
                 <WarningAmberIcon sx={{ color: 'red' }} />
@@ -128,6 +139,11 @@ export const GcpCryptoKeyMenu = ({
                   gcpCryptoKey={gcpCryptoKey}
                   handleClick={handleClickMenuItem}
                   hasAccess={hasAccess === 'true'}
+                  isSelected={
+                    gcpCryptoKey.projectId === chosenGcpCryptoKey.projectId &&
+                    gcpCryptoKey.keyRing === chosenGcpCryptoKey.keyRing &&
+                    gcpCryptoKey.keyName === chosenGcpCryptoKey.keyName
+                  }
                 />
               ))}
             </ul>
@@ -136,4 +152,4 @@ export const GcpCryptoKeyMenu = ({
       </Menu>
     </Box>
   );
-};
+}

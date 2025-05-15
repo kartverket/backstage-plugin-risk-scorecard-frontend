@@ -3,29 +3,50 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "scripts": {
     "dev": "yarn workspaces foreach -A --include backend --include app --parallel --jobs unlimited -v -i run start",
+    "ci//": "echo Installs dependencies without modifying the lockfile.\n`yarn rebuild` was added because folders are randomly missing, this command fixes it.",
+    "ci": "yarn install --immutable && yarn rebuild",
+    "iup//": "echo 'Interactive upgrade of dependencies (do not touch packages with `backstage:^?)'",
+    "iup": "yarn upgrade-interactive",
     "start": "yarn workspace app start",
     "start-backend": "yarn workspace backend start",
     "build:backend": "yarn workspace backend build",
     "build:all": "backstage-cli repo build --all",
     "build-image": "yarn workspace backend build-image",
+    "cup//": "echo Custom UPdate - Install without lockfile forces yarn to look for latest version within ranges",
+    "cup": "rm -f yarn.lock && yarn install",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
+    "backstage:upgrade": "backstage-cli versions:bump",
     "test:e2e": "playwright test",
     "fix": "backstage-cli repo fix",
+    "prettier:check": "prettier --check .",
+    "prettier:format": "prettier --write .",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
+    "pipeline//": "echo Shorthand to run all checks in the lint.yml pipeline/workflow",
+    "pipeline": "yarn run ci && yarn run prettier:check && yarn run lint:all && yarn run tsc",
     "new": "backstage-cli new --scope internal",
-    "delete_node_modules": "rm -rf node_modules; rm -rf packages/app/node_modules; rm -rf plugins/security-metrics-backend/node_modules; rm -rf plugins/security-metrics/node_modules; rm -rf packages/backend/node_modules",
-    "delete_yarn_lock": "rm yarn.lock",
-    "fresh_clean": "npm run delete_node_modules; npm run delete_yarn_lock",
-    "fresh_start": "npm run fresh_clean; yarn install"
+    "self-update//": "Upgrade package manager to the latest version",
+    "self-update": "corepack up",
+    "delete_yarn_lock": "rm -f yarn.lock",
+    "rm-node-modules//": "echo Removes `node_modules/` from all workspaces",
+    "_rm-node-modules": "rm -rf node_modules/ && cp -vnr node_modules_dummy/ node_modules/",
+    "rm-node-modules": "yarn run _rm-node-modules && yarn workspaces foreach --all --parallel run rm-node-modules",
+    "rmnm": "yarn run rm-node-modules",
+    "clean-cache": "yarn cache clean --all",
+    "ci:clean//": "echo Removes installed modules before installing packages from lockfile.",
+    "ci:clean": "yarn run clean-cache && yarn run rmnm && yarn run ci",
+    "update:clean//": "echo Removes everything before updating packages",
+    "update:clean": "yarn run fresh_clean && yarn run ci",
+    "fresh_clean//": "echo Removes everything related to dependencies",
+    "fresh_clean": "yarn run delete_yarn_lock && yarn run rmnm"
   },
   "workspaces": {
     "packages": [
@@ -34,26 +55,24 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.29.6",
-    "@backstage/e2e-test-utils": "^0.1.1",
-    "@playwright/test": "^1.32.3",
-    "@spotify/prettier-config": "^12.0.0",
-    "concurrently": "^8.0.0",
-    "lerna": "^7.3.0",
-    "node-gyp": "^10.0.0",
-    "prettier": "^2.3.2",
-    "typescript": "~5.2.0"
+    "@backstage/cli": "backstage:^",
+    "@backstage/e2e-test-utils": "backstage:^",
+    "@playwright/test": "^1.51.1",
+    "@testing-library/dom": "^10.4.0",
+    "dotenv": "^16.5.0",
+    "github-markdown-css": "^5.8.1",
+    "lerna": "^8.2.2",
+    "prettier": "^3.5.3",
+    "typescript": "~5.8.3"
   },
   "resolutions": {
-    "@types/react": "^17",
-    "@types/react-dom": "^17",
     "@mui/material": "5.16.4",
-    "swagger-ui-react": "5.10.5",
     "jsonpath-plus": "^10.2.0",
     "koa": "2.15.4",
-    "@module-federation/dts-plugin": "0.9.1"
+    "@module-federation/dts-plugin": "0.9.1",
+    "@node-saml/node-saml": "5.0.1"
   },
-  "prettier": "@backstage/cli/config/prettier-config",
+  "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "eslint --fix",
@@ -63,9 +82,5 @@
       "prettier --write"
     ]
   },
-  "dependencies": {
-    "@mui/material": "5.16.4",
-    "@types/react": "^17"
-  },
-  "packageManager": "yarn@4.4.1+sha512.f825273d0689cc9ead3259c14998037662f1dcd06912637b21a450e8da7cfeb4b1965bbee73d16927baa1201054126bc385c6f43ff4aa705c8631d26e12460f1"
+  "packageManager": "yarn@4.9.1+sha512.f95ce356460e05be48d66401c1ae64ef84d163dd689964962c6888a9810865e39097a5e9de748876c2e0bf89b232d583c33982773e9903ae7a76257270986538"
 }

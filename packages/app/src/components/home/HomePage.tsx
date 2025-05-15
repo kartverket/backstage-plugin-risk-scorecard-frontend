@@ -1,15 +1,14 @@
-import React from 'react';
 import {
-    HomePageCompanyLogo,
-    HomePageRecentlyVisited,
-    HomePageToolkit,
-    HomePageTopVisited,
+  HomePageCompanyLogo,
+  HomePageRecentlyVisited,
+  HomePageToolkit,
+  HomePageTopVisited,
 } from '@backstage/plugin-home';
-import {Content, Page} from '@backstage/core-components';
-import {HomePageSearchBar} from '@backstage/plugin-search';
-import {SearchContextProvider} from '@backstage/plugin-search-react';
-import {Grid, makeStyles} from '@material-ui/core';
-import {useTheme} from '@material-ui/core/styles';
+import { Content, Page } from '@backstage/core-components';
+import { HomePageSearchBar } from '@backstage/plugin-search';
+import { SearchContextProvider } from '@backstage/plugin-search-react';
+import { Grid, makeStyles } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
 import LogoFull from '../Root/LogoFull';
 import grafanaLogo from './logos/Grafana.png';
 import argoLogo from './logos/Argo.png';
@@ -20,6 +19,7 @@ import databricksLogo from './logos/Databricks.png';
 import githubLogo from './logos/Github.png';
 import daskLogo from './logos/DASK.png';
 import skipLogo from './logos/SKIP.png';
+import { URLS } from '../../urls';
 
 const useStyles = makeStyles(theme => ({
   searchBarInput: {
@@ -49,9 +49,9 @@ const useLogoStyles = makeStyles(theme => ({
   },
 }));
 
-export const HomePage = () => {
+export function HomePage() {
   const classes = useStyles();
-  
+
   const { svg, path, container } = useLogoStyles();
   const theme = useTheme();
   const mode = theme.palette.type === 'dark' ? 'light' : 'dark';
@@ -63,7 +63,13 @@ export const HomePage = () => {
           <Grid container justifyContent="center" spacing={6}>
             <HomePageCompanyLogo
               className={container}
-              logo={<LogoFull type={mode} className={`${svg} ${path}`} />}
+              logo={
+                <LogoFull
+                  data-pw="frontpage-logo"
+                  type={mode}
+                  className={`${svg} ${path}`}
+                />
+              }
             />
             <Grid container item xs={12} justifyContent="center">
               <HomePageSearchBar
@@ -88,28 +94,28 @@ export const HomePage = () => {
               <HomePageToolkit
                 tools={[
                   {
-                    url: 'https://monitoring.kartverket.cloud',
+                    url: URLS.external.monitorering_kartverket_cloud,
                     label: 'Grafana',
                     icon: (
                       <img src={grafanaLogo} alt="Logo of Grafana" width={35} />
                     ),
                   },
                   {
-                    url: 'https://argo.kartverket.dev',
+                    url: URLS.external.argo_kartverket_dev,
                     label: 'Argo CD',
                     icon: (
                       <img src={argoLogo} alt="Logo of Argo CD" width={45} />
                     ),
                   },
                   {
-                    url: 'https://eu1.app.sysdig.com/api/saml/kartverket?redirectRoute=/&product=SDS&companyName=kartverket',
+                    url: URLS.external.eu1_app_sysdig_com__saml_kartverket,
                     label: 'Sysdig Secure',
                     icon: (
-                        <img src={sysdigLogo} alt="Logo of Sysdig" width={40} />
+                      <img src={sysdigLogo} alt="Logo of Sysdig" width={40} />
                     ),
                   },
                   {
-                    url: 'https://accounts.gcp.databricks.com',
+                    url: URLS.external.accounts_gcp_databricks_com,
                     label: 'Databricks',
                     icon: (
                       <img
@@ -120,7 +126,7 @@ export const HomePage = () => {
                     ),
                   },
                   {
-                    url: 'https://console.cloud.google.com',
+                    url: URLS.external.console_cloud_google_com,
                     label: 'Google Cloud',
                     icon: (
                       <img
@@ -131,26 +137,26 @@ export const HomePage = () => {
                     ),
                   },
                   {
-                    url: 'https://github.com/kartverket',
+                    url: URLS.external.github_com__kartverket,
                     label: 'GitHub',
                     icon: (
                       <img src={githubLogo} alt="Logo of GitHub" width={35} />
                     ),
                   },
                   {
-                    url: 'https://jit.skip.kartverket.no',
+                    url: URLS.external.jit_skip_kartverket_no,
                     label: 'JIT',
                     icon: (
                       <img src={googleLogo} alt="Logo of Google" width={35} />
                     ),
                   },
                   {
-                    url: 'https://kartverket.atlassian.net/wiki/spaces/DAT/overview?homepageId=490045441',
+                    url: URLS.external.kartverket_atlassian_net__dask_docs,
                     label: 'DASK Docs',
                     icon: <img src={daskLogo} alt="Logo of DASK" width={35} />,
                   },
                   {
-                    url: 'https://skip.kartverket.no/docs',
+                    url: URLS.external.skip_kartverket_no__skip_docs,
                     label: 'SKIP Docs',
                     icon: <img src={skipLogo} alt="Logo of SKIP" width={35} />,
                   },
@@ -162,4 +168,4 @@ export const HomePage = () => {
       </Page>
     </SearchContextProvider>
   );
-};
+}

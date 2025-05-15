@@ -8,14 +8,17 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
-import { consequenceOptions, probabilityOptions } from '../../utils/constants';
 import { RiSc } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
 import { useScenario } from '../../contexts/ScenarioContext';
+import {
+  findConsequenceIndex,
+  findProbabilityIndex,
+} from '../../utils/utilityfunctions';
 
 interface ScenarioCountProps {
   riSc: RiSc;
@@ -24,12 +27,12 @@ interface ScenarioCountProps {
   initialRisk: boolean;
 }
 
-export const RiskMatrixScenarioCount = ({
+export function RiskMatrixScenarioCount({
   riSc,
   probability,
   consequence,
   initialRisk,
-}: ScenarioCountProps) => {
+}: ScenarioCountProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const {
     circle,
@@ -44,19 +47,19 @@ export const RiskMatrixScenarioCount = ({
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const { openScenarioDrawer } = useScenario();
 
-  const handleScenarioClick = (ID: string) => {
+  function handleScenarioClick(ID: string) {
     setTooltipOpen(false);
     openScenarioDrawer(ID);
-  };
+  }
 
   const scenarios = riSc.scenarios.filter(
     scenario =>
-      probabilityOptions.indexOf(
+      findProbabilityIndex(
         initialRisk
           ? scenario.risk.probability
           : scenario.remainingRisk.probability,
       ) === probability &&
-      consequenceOptions.indexOf(
+      findConsequenceIndex(
         initialRisk
           ? scenario.risk.consequence
           : scenario.remainingRisk.consequence,
@@ -118,4 +121,4 @@ export const RiskMatrixScenarioCount = ({
       </Tooltip>
     </ClickAwayListener>
   );
-};
+}

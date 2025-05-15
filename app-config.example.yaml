@@ -1,0 +1,72 @@
+### Setting up local database ###
+backend:
+  database:
+    client: better-sqlite3
+    connection:
+      # Use this command in terminal from project root: `pwd`
+      directory: <ABSOLUTE PATH TO REPO>/db
+
+### Setting up GitHub integration ###
+# The main part of Backstage is a Software Catalog, which can be loaded from yaml-files in GitHub repositories in your organization.
+# GitHub auth is therefore required.
+integrations:
+  github:
+    - host: github.com
+      # This is a Personal Access Token or PAT from GitHub.
+      # Generate a classic PAT with scopes `repo` and `workflow` here: https://github.com/settings/tokens
+      token: <YOUR PERSONAL ACCESS TOKEN>
+
+### Setting up auth modules ###
+# In order to use Backstage RiSc plugin, users need to authenticate towards Microsoft Entra ID, Google Cloud and GitHub.
+# You therefore need to set up Google and GitHub OAuth-apps and set up credentials for the apps in `app-config.local.yaml`.
+auth:
+  environment: development
+  providers:
+    microsoft:
+      development:
+        tenantId: <ENTRA TENANT ID>
+        clientId: <ENTRA CLIENT ID>
+        clientSecret: <ENTRA CLIENT SECRET>
+    guest:
+      development:
+    google:
+      development:
+        clientId: <GOOGLE CLIENT ID>
+        clientSecret: <GOOGLE CLIENT SECRET>
+    github:
+      development:
+        clientId: <GITHUB CLIENT ID>
+        clientSecret: <GITHUB CLIENT SECRET>
+
+### Setting up integration towards Microsoft Graph API to retrieve organization data ###
+# Backstage needs credentials to retrieve users and groups from Microsoft Entra ID,
+# which can be used to enrich the Software Catalog with a hierarchical ownership structure.
+catalog:
+  providers:
+    microsoftGraphOrg:
+      default:
+        queryMode: 'advanced'
+        user:
+          filter: accountEnabled eq true and userType eq 'member'
+          select:
+            [
+              'accountEnabled',
+              'displayName',
+              'givenName',
+              'id',
+              'mail',
+              'mailNickname',
+              'userPrincipalName',
+              'surname',
+              'companyName',
+              'userType',
+            ]
+        group:
+          filter: >
+            startswith(displayName, 'AAD - TF')
+        schedule:
+          frequency: PT1H
+          timeout: PT50M
+        tenantId: <ENTRA TENANT ID>
+        clientId: <ENTRA CLIENT ID>
+        clientSecret: <ENTRA CLIENT SECRET>

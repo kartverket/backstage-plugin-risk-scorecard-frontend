@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ContentHeader, SupportButton } from '@backstage/core-components';
 import { useSearchParams } from 'react-router-dom';
 import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
@@ -22,23 +22,28 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
-import { Edit } from '@mui/icons-material';
+import { Settings } from '@mui/icons-material';
 
-export const RiScPlugin = () => {
+export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
   );
 
-  const openCreateRiScDialog = () =>
-    setRiScDialogState(RiScDialogStates.Create);
+  function openCreateRiScDialog() {
+    return setRiScDialogState(RiScDialogStates.Create);
+  }
 
-  const openEditRiScDialog = () =>
-    setRiScDialogState(RiScDialogStates.EditRiscInfo);
-  const openEditEncryptionDialog = () =>
-    setRiScDialogState(RiScDialogStates.EditEncryption);
-  const closeRiScDialog = () => setRiScDialogState(RiScDialogStates.Closed);
+  function openEditRiScDialog() {
+    return setRiScDialogState(RiScDialogStates.EditRiscInfo);
+  }
+  function openEditEncryptionDialog() {
+    return setRiScDialogState(RiScDialogStates.EditEncryption);
+  }
+  function closeRiScDialog() {
+    return setRiScDialogState(RiScDialogStates.Closed);
+  }
 
   const {
     selectedRiSc,
@@ -133,7 +138,7 @@ export const RiScPlugin = () => {
                 </Button>
                 {selectedRiSc && (
                   <Button
-                    startIcon={<Edit />}
+                    startIcon={<Settings />}
                     variant="text"
                     color="primary"
                     onClick={openEditEncryptionDialog}
@@ -170,4 +175,4 @@ export const RiScPlugin = () => {
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>
   );
-};
+}

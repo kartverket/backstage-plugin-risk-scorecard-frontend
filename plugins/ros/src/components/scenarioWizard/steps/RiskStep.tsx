@@ -1,4 +1,3 @@
-import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
@@ -15,7 +14,7 @@ interface RiskStepProps {
   formMethods: UseFormReturn<FormScenario>;
 }
 
-export const RiskStep = ({ formMethods, riskType }: RiskStepProps) => {
+export function RiskStep({ formMethods, riskType }: RiskStepProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const translationKey =
@@ -47,4 +46,4 @@ export const RiskStep = ({ formMethods, riskType }: RiskStepProps) => {
       <ConsequenceTable formMethods={formMethods} riskType={riskType} />
     </Stack>
   );
-};
+}
