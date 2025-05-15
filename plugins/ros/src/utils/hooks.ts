@@ -1,5 +1,3 @@
-import { useEntity } from '@backstage/plugin-catalog-react';
-import { useCallback, useState, useEffect, useRef } from 'react';
 import {
   configApiRef,
   fetchApiRef,
@@ -8,6 +6,20 @@ import {
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { URLS } from '../urls';
+import {
+  CreateRiScResultDTO,
+  GcpCryptoKeyObject,
+  ProcessRiScResultDTO,
+  PublishRiScResultDTO,
+  RiScContentResultDTO,
+  SopsConfigDTO,
+  profileInfoToDTOString,
+  riScToDTOString,
+} from './DTOs';
+import { latestSupportedVersion } from './constants';
 import {
   DifferenceDTO,
   GithubRepoInfo,
@@ -15,18 +27,6 @@ import {
   RiScWithMetadata,
   SubmitResponseObject,
 } from './types';
-import {
-  CreateRiScResultDTO,
-  GcpCryptoKeyObject,
-  ProcessRiScResultDTO,
-  profileInfoToDTOString,
-  PublishRiScResultDTO,
-  RiScContentResultDTO,
-  riScToDTOString,
-  SopsConfigDTO,
-} from './DTOs';
-import { latestSupportedVersion } from './constants';
-import { URLS } from '../urls';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -242,7 +242,7 @@ export function useAuthenticatedFetch() {
     onSuccess: (response: GcpCryptoKeyObject[]) => void,
     onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
   ) {
-    fullyAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
+    googleAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
       `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
       'GET',
       res => onSuccess(res),
