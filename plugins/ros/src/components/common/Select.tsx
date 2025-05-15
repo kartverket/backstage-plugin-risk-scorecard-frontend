@@ -24,7 +24,10 @@ type Props<T extends FieldValues> = SelectProps & {
   control?: Control<T, any>;
   name: Path<T>;
   labelTranslationKey?: string;
-  options: { value: string | number; renderedValue: string | number }[];
+  options: {
+    value: string | number;
+    renderedValue: React.ReactNode | string | number;
+  }[];
 };
 
 export function Select<T extends FieldValues>({

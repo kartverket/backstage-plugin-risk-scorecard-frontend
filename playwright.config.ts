@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-import { defineConfig } from '@playwright/test';
-import { generateProjects } from '@backstage/e2e-test-utils/playwright';
+import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+import path from 'path';
+
+/** Main directory to group playwright stuff. */
+export const testDir = './playwright';
+
+const playwrightEnvFile = path.resolve(__dirname, testDir, '.env');
+
+// Load playwright environment variables.
+dotenv.config({ path: playwrightEnvFile });
+
+/** File to save browser context after authentication. */
+export const authFile = path.join(__dirname, testDir, '.auth/user.json');
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -27,12 +39,14 @@ export default defineConfig({
     timeout: 5_000,
   },
 
+  testDir: testDir,
+
   // Run your local dev server before starting the tests
   webServer: process.env.CI
     ? []
     : [
         {
-          command: 'yarn start',
+          command: 'yarn dev',
           port: 3000,
           reuseExistingServer: true,
           timeout: 60_000,
@@ -56,5 +70,16 @@ export default defineConfig({
 
   outputDir: 'node_modules/.cache/e2e-test-results',
 
-  projects: generateProjects(), // Find all packages with e2e-test folders
+  projects: [
+    { name: 'setup', testMatch: /.*\.setup\.ts/ },
+    {
+      name: 'e2e',
+      testMatch: /.*\.test\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: authFile,
+      },
+      dependencies: ['setup'],
+    },
+  ],
 });

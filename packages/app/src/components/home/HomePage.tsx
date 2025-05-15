@@ -63,7 +63,13 @@ export function HomePage() {
           <Grid container justifyContent="center" spacing={6}>
             <HomePageCompanyLogo
               className={container}
-              logo={<LogoFull type={mode} className={`${svg} ${path}`} />}
+              logo={
+                <LogoFull
+                  data-pw="frontpage-logo"
+                  type={mode}
+                  className={`${svg} ${path}`}
+                />
+              }
             />
             <Grid container item xs={12} justifyContent="center">
               <HomePageSearchBar
