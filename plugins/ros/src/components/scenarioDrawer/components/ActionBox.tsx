@@ -1,9 +1,8 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Cached, Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -27,6 +26,7 @@ import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
+import { MosesButton } from '../../common/MosesButton';
 
 interface ActionBoxProps {
   action: Action;
@@ -181,16 +181,23 @@ export function ActionBox({
             <Edit />
           </IconButton>
         )}
-        <Chip
-          label={translatedActionStatus}
-          sx={{
-            margin: 0,
-            backgroundColor:
+
+        <MosesButton
+          propsCommon={{
+            color:
               action.status === ActionStatusOptions.Completed
-                ? { backgroundColor: '#6BC6A4' }
-                : undefined,
+                ? 'success'
+                : 'inherit',
           }}
-          onClick={isEditingAllowed ? handleChipClick : () => null}
+          color="red"
+          propsLeft={{
+            children: translatedActionStatus,
+            onClick: handleChipClick,
+          }}
+          propsRight={{
+            startIcon: <Cached />,
+            sx: { padding: '0 0 0 10px', minWidth: '30px' },
+          }}
         />
         <Menu
           anchorEl={anchorEl}
