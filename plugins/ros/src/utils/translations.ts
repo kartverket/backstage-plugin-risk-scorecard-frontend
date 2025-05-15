@@ -173,20 +173,32 @@ export const pluginRiScMessages = {
       'The estimated risk is a calculation based on the risks the different scenarios pose. If there is a high probability that a serious consequence will occur, this could potentially become a large cost for the organization. In other words, the cost is an attempt to make the risk value more tangible and is the sum of the estimated risk for all the risk scenarios in this risk scorecard.',
     calculatedHowTitle: 'How do we calculate the estimated risk?',
     calculatedHow:
-      'Consequence is measured in cost (in NOK) per incident and probability is measured in incidents per year. ' +
-      'The estimated risk is calculated as C x P.',
+      'Consequence (C) is measured in cost (in NOK) per incident and probability (P) is measured in incidents per year. ' +
+      'The estimated risk is calculated as 20',
+    calculatedHowExponent: 'P+C-1',
     consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
-    probabilityTitle: 'Probability (incidents/year)',
-    probabilityDescription: {
-      '0': 'every 100 years', // 100 year intervals?
-      '1': 'every 10 years', // 10 year intervals?
-      '2': 'yearly', // almost yearly?
-      '3': 'weekly',
-      '4': 'daily',
+    consequenceUnit: 'NOK/incident',
+    consequenceDescription: {
+      oneworkday: '1 workday',
+      oneworkmonth: '1 work month',
+      oneworkyear: '1 work year',
+      '20workyears': '20 work years',
+      '400workyears': '400 work years',
     },
-    example:
-      'A scenario with consequence 2 and probability 4 has an estimated risk of ' +
-      '30 000 NOK/incident x 50 incidents/year = 1 500 000 NOK/year.',
+    probabilityTitle: 'Probability (incidents/year)',
+    probabilityUnit: 'incidents/year',
+    probabilityDescription: {
+      every400years: 'Once every 400 years',
+      every20years: 'Once every 20 years',
+      annualy: 'Annually',
+      monthly: 'Monthly',
+      daily: 'Daily',
+    },
+    example: {
+      part1: 'A risk scenario with consequence ',
+      part2: ' and probability ',
+      part3: ' has an estimated risk of ',
+    },
   },
   rosDialog: {
     titleNew: 'New risk scorecard',
@@ -346,11 +358,11 @@ export const pluginRiScMessages = {
         '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.',
       },
       economical: {
-        '1': 'Temporary minor financial loss.\n\nMay be fixed within an hour by one employee',
-        '2': 'Temporary financial loss.\n\nMay be fixed within three days by one employee',
-        '3': 'Financial loss of some duration.\n\nMay be fixed within a month by three employees',
-        '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed within a year by 10 employees',
-        '5': 'Permanent and severe financial loss.\n\nMay be fixed within three years by 100 employees',
+        '1': 'Temporary minor financial loss.\n\nMay be fixed with 1 workday.',
+        '2': 'Temporary financial loss.\n\nMay be fixed with 1 work month.',
+        '3': 'Financial loss of some duration.\n\nMay be fixed with 1 work year.',
+        '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed with 20 work years.',
+        '5': 'Permanent and severe financial loss.\n\nMay be fixed with 400 work years.',
       },
       privacy: {
         '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
@@ -377,11 +389,11 @@ export const pluginRiScMessages = {
       '5': 'Very high', // svært stor
     },
     cells: {
-      '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 100 years',
-      '2': 'The scenario is unlikely to occur.\n\nIt can occur every 10 years',
-      '3': 'The scenario can occur.\n\nIt can occur almost every year',
-      '4': 'The scenario will very likely occur.\n\nIt can occur almost weekly',
-      '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur almost daily',
+      '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 400 years',
+      '2': 'The scenario is unlikely to occur.\n\nIt can occur every 20 years',
+      '3': 'The scenario can occur.\n\nIt can occur yearly',
+      '4': 'The scenario will very likely occur.\n\nIt can occur monthly',
+      '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur daily',
     },
   },
   threatActors: {
@@ -614,16 +626,30 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.calculatedHowTitle':
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
-            'Konsekvens måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: K x S.',
+            'Konsekvens (K) måles i kroner per hendelse og sannsynlighet (S) måles i hendelser per år. Den estimerte risikoen blir da: 20',
+          'infoDialog.calculatedHowExponent': 'S+K-1',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
+          'infoDialog.consequenceUnit': 'kr/hendelse',
+          'infoDialog.consequenceDescription.oneworkday': '1 dagsverk',
+          'infoDialog.consequenceDescription.oneworkmonth': '1 månedsverk',
+          'infoDialog.consequenceDescription.oneworkyear': '1 årsverk',
+          'infoDialog.consequenceDescription.20workyears': '20 årsverk',
+          'infoDialog.consequenceDescription.400workyears': '400 årsverk',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
-          'infoDialog.probabilityDescription.0': 'ca hvert 100. år',
-          'infoDialog.probabilityDescription.1': 'ca hvert 10. år',
-          'infoDialog.probabilityDescription.2': 'ca årlig',
-          'infoDialog.probabilityDescription.3': 'ca ukentlig',
-          'infoDialog.probabilityDescription.4': 'ca daglig',
-          'infoDialog.example':
-            'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr/hendelse x 50 hendelser/år = 1 500 000 kr/år.',
+          'infoDialog.probabilityUnit': 'hendelse/år',
+          'infoDialog.probabilityDescription.every400years':
+            '1 gang hvert 400. år',
+          'infoDialog.probabilityDescription.every20years':
+            '1 gang hvert 20. år',
+          'infoDialog.probabilityDescription.annualy': 'Årlig',
+          'infoDialog.probabilityDescription.monthly': 'Månedlig',
+          'infoDialog.probabilityDescription.daily': 'Daglig',
+          'infoDialog.example.part1': 'Et risikoscenario med konsekvens ',
+          'infoDialog.example.part2': ' og sannsynlighet ',
+          'infoDialog.example.part3': ' har en estimert risiko på ',
+          'infoDialog.units.nokPerIncident': 'kr/hendelse',
+          'infoDialog.units.incidentsPerYear': 'hendelser/år',
+          'infoDialog.units.nokPerYear': 'kr/år',
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
@@ -769,17 +795,17 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.cells.health.4':
             'Et fåtall alvorlige personskader.\n\nModerat skade på miljø på et begrenset område.',
           'consequenceTable.cells.health.5':
-            'Dødsfall. Svært alvorlig skade på milhø over store områder.',
+            'Dødsfall. Svært alvorlig skade på miljø over store områder.',
           'consequenceTable.cells.economical.1':
-            'Ubetydelig økonomisk tap.\n\nKan fikses i løpet av en time av én ansatt.',
+            'Ubetydelig økonomisk tap.\n\nKan fikses med 1 dagsverk.',
           'consequenceTable.cells.economical.2':
-            'Mindre økonomisk tap.\n\nKan fikses i løpet av tre dager av én ansatt.',
+            'Mindre økonomisk tap.\n\nKan fikses med 1 månedsverk.',
           'consequenceTable.cells.economical.3':
-            'Moderat økonomisk tap.\n\nKan fikses i løpet av en måned av tre ansatte.',
+            'Moderat økonomisk tap.\n\nKan fikses med 1 årsverk.',
           'consequenceTable.cells.economical.4':
-            'Større økonomisk tap.\n\nKan fikses i løpet av et år av 10 ansatte.',
+            'Større økonomisk tap.\n\nKan fikses med 20 årsverk.',
           'consequenceTable.cells.economical.5':
-            'Kritisk økonomisk tap.\n\nKan fikses i løpet av tre år av 100 ansatte.',
+            'Kritisk økonomisk tap.\n\nKan fikses med 400 årsverk.',
           'consequenceTable.cells.privacy.1': 'Ingen brudd.',
           'consequenceTable.cells.privacy.2': 'Mindre brudd.',
           'consequenceTable.cells.privacy.3':
