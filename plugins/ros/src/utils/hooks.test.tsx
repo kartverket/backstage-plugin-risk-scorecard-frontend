@@ -853,8 +853,8 @@ describe('useAuthenticatedFetch', () => {
       expect(postOptions.headers).toEqual(
         expect.objectContaining({
           Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+          'Content-Type': 'application/json',
           'GCP-Access-Token': MOCK_GCP_TOKEN,
-          'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
         }),
       );
     });
