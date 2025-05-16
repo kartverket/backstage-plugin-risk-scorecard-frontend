@@ -46,7 +46,6 @@ function ConfigRiscInfo({
         {...register('content.title', { required: true })}
         error={errors?.content?.title !== undefined}
         label={t('dictionary.title')}
-        minRows={4}
         helperText={errors?.content?.title && t('rosDialog.titleError')}
       />
       <MarkdownInput
