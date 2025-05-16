@@ -80,10 +80,11 @@ function ConfigRiscInfo({
               {t('rosDialog.generateInitialToggleDescription')}
             </Typography>
             <FormControlLabel
-              control={<Switch
+              control={
+                <Switch
                   checked={createRiScFrom === CreateRiScFrom.Default}
                   onChange={handleChangeCreateRiScFrom}
-              />
+                />
               }
               label={
                 createRiScFrom === CreateRiScFrom.Scratch
