@@ -1,14 +1,14 @@
-import { DifferenceFetchState, DifferenceStatus } from '../../../utils/types';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { ErrorOutline, Favorite } from '@mui/icons-material';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
-import { ErrorOutline, Favorite } from '@mui/icons-material';
-import { DifferenceText } from './DifferenceText';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import Typography from '@mui/material/Typography';
+import { DateTime } from 'luxon';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { DifferenceFetchState, DifferenceStatus } from '../../../utils/types';
 import { parseISODateFromEncryptedROS } from '../../../utils/utilityfunctions';
-import { parseISO } from 'date-fns';
+import { DifferenceText } from './DifferenceText';
 
 type RiScDifferenceDialogProps = {
   differenceFetchState: DifferenceFetchState;
@@ -24,7 +24,7 @@ export function RiScDifferenceDialog({
   );
 
   const parsedDateString = formatedDateString
-    ? parseISO(formatedDateString).toLocaleDateString()
+    ? DateTime.fromISO(formatedDateString).toLocaleString()
     : null;
   return (
     <Box>
