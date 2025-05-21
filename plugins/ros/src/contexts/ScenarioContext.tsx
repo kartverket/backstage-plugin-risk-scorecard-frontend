@@ -48,6 +48,7 @@ const emptyScenario = (): Scenario => ({
 
 type ScenarioDrawerProps = {
   isDrawerOpen: boolean;
+  isEditingAllowed: boolean;
 
   isActionExpanded: (actionId: string) => boolean;
   toggleActionExpanded: (actionId: string) => void;
@@ -66,7 +67,7 @@ type ScenarioDrawerProps = {
     onError?: () => void,
   ) => void;
 
-  openScenarioDrawer: (id: string) => void;
+  openScenarioDrawer: (id: string, isEditingAllowed: boolean) => void;
   openNewScenarioWizard: () => void;
   closeScenarioForm: () => void;
   mapFormScenarioToScenario: (formScenario: FormScenario) => Scenario;
@@ -98,6 +99,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
   const [scenario, setScenario] = useState(emptyScenario());
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isEditingAllowed, setIsEditingAllowed] = useState(true);
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -182,8 +184,9 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
   }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams, t]);
 
   // SCENARIO DRAWER FUNCTIONS
-  function openScenarioDrawer(id: string) {
+  function openScenarioDrawer(id: string, canEdit: boolean) {
     if (riSc) {
+      setIsEditingAllowed(canEdit);
       navigate(getScenarioPath({ riScId: riSc.id, scenarioId: id }));
     }
   }
@@ -286,6 +289,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
   const value = {
     isDrawerOpen,
+    isEditingAllowed,
 
     isActionExpanded,
     toggleActionExpanded,

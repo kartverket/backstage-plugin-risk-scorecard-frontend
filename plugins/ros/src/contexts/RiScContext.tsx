@@ -43,6 +43,7 @@ type RiScDrawerProps = {
   selectRiSc: (title: string) => void;
   selectedRiSc: RiScWithMetadata | null;
   createNewRiSc: (riSc: RiScWithMetadata, generateDefault: boolean) => void;
+  deleteRiSc: (onSuccess?: () => void, onError?: () => void) => void;
   updateRiSc: (
     riSc: RiScWithMetadata,
     onSuccess?: () => void,
@@ -73,6 +74,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     fetchRiScs,
     fetchGcpCryptoKeys,
     postRiScs,
+    deleteRiScs,
     putRiScs,
     publishRiScs,
     response,
@@ -319,6 +321,69 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     );
   }
 
+  function deleteRiSc(onSuccess?: () => void, onError?: () => void) {
+    if (selectedRiSc && riScs) {
+      const updatedRiSc = {
+        ...selectedRiSc,
+        status: RiScStatus.DeletionDraft,
+      };
+      const originalRiSc = selectedRiSc;
+
+      setUpdateStatus({
+        isLoading: true,
+        isError: false,
+        isSuccess: false,
+      });
+      deleteRiScs(
+        selectedRiSc.id,
+        res => {
+          setUpdateStatus({
+            isLoading: false,
+            isError: false,
+            isSuccess: true,
+          });
+          setIsRequesting(false);
+          if (res.status === ProcessingStatus.DeletedRiSc) {
+            setSelectedRiSc(
+              riScs.find(riSc => riSc.id !== selectedRiSc.id) || null,
+            );
+            setRiScs(riScs.filter(riSc => riSc.id !== updatedRiSc.id));
+          } else {
+            setSelectedRiSc(updatedRiSc);
+            setRiScs(
+              riScs.map(riSc =>
+                riSc.id === selectedRiSc.id ? updatedRiSc : riSc,
+              ),
+            );
+          }
+          if (onSuccess) onSuccess();
+          setResponse({
+            ...res,
+            statusMessage: getTranslationKey('info', res.status, t),
+          });
+        },
+        (error, loginRejected) => {
+          setSelectedRiSc(originalRiSc);
+          setUpdateStatus({
+            isLoading: false,
+            isError: true,
+            isSuccess: false,
+          });
+          setIsRequesting(false);
+          if (onError) onError();
+          setResponse({
+            ...error,
+            statusMessage: loginRejected
+              ? `${getTranslationKey('error', error.status, t)}. ${t(
+                  'dictionary.rejectedLogin',
+                )}`
+              : getTranslationKey('error', error.status, t),
+          });
+        },
+      );
+    }
+  }
+
   function updateRiSc(
     riSc: RiScWithMetadata,
     onSuccess?: () => void,
@@ -409,7 +474,10 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           const prUrl = res.pendingApproval?.pullRequestUrl;
           const updatedRiSc = {
             ...selectedRiSc,
-            status: RiScStatus.SentForApproval,
+            status:
+              selectedRiSc.status === RiScStatus.Draft
+                ? RiScStatus.SentForApproval
+                : RiScStatus.DeletionSentForApproval,
             pullRequestUrl: prUrl,
           };
           setSelectedRiSc(updatedRiSc);
@@ -450,6 +518,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     selectRiSc,
     selectedRiSc,
     createNewRiSc,
+    deleteRiSc,
     updateRiSc,
     approveRiSc,
     updateStatus,

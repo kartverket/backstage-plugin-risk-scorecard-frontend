@@ -42,6 +42,8 @@ export type CreateRiScResultDTO = {
   sopsConfig: SopsConfigDTO;
 } & ProcessRiScResultDTO;
 
+export type DeleteRiScResultDTO = ProcessRiScResultDTO;
+
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;

@@ -4,7 +4,7 @@ import { InfoCard } from '@backstage/core-components';
 import Box from '@mui/material/Box';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
-import { RiSc } from '../../utils/types';
+import { RiScWithMetadata } from '../../utils/types';
 import TabContext from '@material-ui/lab/TabContext';
 import { Tabs } from './Tabs';
 import { riskMatrix } from '../../utils/constants';
@@ -14,7 +14,11 @@ import { useFontStyles } from '../../utils/style';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
 import { RiskMatrixTabs } from './utils';
 
-export function RiskMatrix({ riSc }: { riSc: RiSc }) {
+export function RiskMatrix({
+  riScWithMetadata,
+}: {
+  riScWithMetadata: RiScWithMetadata;
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label2 } = useFontStyles();
   const {
@@ -37,10 +41,10 @@ export function RiskMatrix({ riSc }: { riSc: RiSc }) {
     >
       <TabContext value={tab}>
         <Tabs setTab={setTab} />
-        {riSc.scenarios.length > 0 && (
+        {riScWithMetadata.content.scenarios.length > 0 && (
           <Box className={riskSummary}>
             <AggregatedCost
-              riSc={riSc}
+              riSc={riScWithMetadata.content}
               initialRisk={tab === RiskMatrixTabs.initialRisk}
             />
           </Box>
@@ -64,7 +68,7 @@ export function RiskMatrix({ riSc }: { riSc: RiSc }) {
                     key={colIndex}
                   >
                     <RiskMatrixScenarioCount
-                      riSc={riSc}
+                      riScWithMetadata={riScWithMetadata}
                       probability={colIndex}
                       consequence={4 - rowIndex}
                       initialRisk={tab === RiskMatrixTabs.initialRisk}

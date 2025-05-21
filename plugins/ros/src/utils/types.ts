@@ -104,6 +104,8 @@ export enum RiScStatus {
   Draft = 'Draft',
   Published = 'Published',
   SentForApproval = 'SentForApproval',
+  DeletionDraft = 'DeletionDraft',
+  DeletionSentForApproval = 'DeletionSentForApproval',
 }
 
 export enum ProcessingStatus {
@@ -111,6 +113,8 @@ export enum ProcessingStatus {
   EncryptionFailed = 'EncryptionFailed',
   CouldNotCreateBranch = 'CouldNotCreateBranch',
   UpdatedRiSc = 'UpdatedRiSc',
+  DeletedRiSc = 'DeletedRiSc',
+  DeletedRiScRequiresApproval = 'DeletedRiScRequiresApproval',
   UpdatedSops = 'UpdatedSops',
   UpdatedRiScRequiresNewApproval = 'UpdatedRiScRequiresNewApproval',
   UpdatedRiScAndCreatedPullRequest = 'UpdatedRiScAndCreatedPullRequest',
@@ -119,6 +123,7 @@ export enum ProcessingStatus {
   CreatedPullRequest = 'CreatedPullRequest',
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
   ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
+  ErrorWhenDeletingRiSc = 'ErrorWhenDeletingRiSc',
   ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
   ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
   ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
@@ -129,6 +134,7 @@ export enum ProcessingStatus {
 
 export enum ContentStatus {
   Success = 'Success',
+  Deleted = 'Deleted',
   Failure = 'Failure',
   FileNotFound = 'FileNotFound',
   DecryptionFailed = 'DecryptionFailed',

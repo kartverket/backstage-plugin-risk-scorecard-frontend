@@ -53,8 +53,12 @@ export function ActionBox({
     useState(false);
 
   const { updateStatus } = useRiScs();
-  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
-    useScenario();
+  const {
+    isEditingAllowed,
+    submitEditedScenarioToRiSc,
+    mapFormScenarioToScenario,
+    scenario,
+  } = useScenario();
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
@@ -165,17 +169,19 @@ export function ActionBox({
               : `${t('dictionary.measure')} ${index + 1}`}
           </Typography>
         </Box>
-        <IconButton
-          disabled={isExpanded ? false : true}
-          sx={{
-            marginLeft: 'auto',
-            opacity: isExpanded ? 1 : 0,
-            transition: 'opacity 300ms ease-in',
-          }}
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          <Edit />
-        </IconButton>
+        {isEditingAllowed && (
+          <IconButton
+            disabled={isExpanded ? false : true}
+            sx={{
+              marginLeft: 'auto',
+              opacity: isExpanded ? 1 : 0,
+              transition: 'opacity 300ms ease-in',
+            }}
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            <Edit />
+          </IconButton>
+        )}
         <Chip
           label={translatedActionStatus}
           sx={{
@@ -185,7 +191,7 @@ export function ActionBox({
                 ? { backgroundColor: '#6BC6A4' }
                 : undefined,
           }}
-          onClick={handleChipClick}
+          onClick={isEditingAllowed ? handleChipClick : () => null}
         />
         <Menu
           anchorEl={anchorEl}
@@ -206,9 +212,11 @@ export function ActionBox({
             </MenuItem>
           ))}
         </Menu>
-        <IconButton onClick={handleDeleteAction}>
-          <DeleteIcon />
-        </IconButton>
+        {isEditingAllowed && (
+          <IconButton onClick={handleDeleteAction}>
+            <DeleteIcon />
+          </IconButton>
+        )}
       </Box>
       <Collapse in={isExpanded}>
         <Typography sx={{ ...label, marginTop: 1 }}>

@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { useState } from 'react';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
-import { RiSc } from '../../utils/types';
+import { RiScStatus, RiScWithMetadata } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
@@ -21,14 +21,14 @@ import {
 } from '../../utils/utilityfunctions';
 
 interface ScenarioCountProps {
-  riSc: RiSc;
+  riScWithMetadata: RiScWithMetadata;
   probability: number;
   consequence: number;
   initialRisk: boolean;
 }
 
 export function RiskMatrixScenarioCount({
-  riSc,
+  riScWithMetadata,
   probability,
   consequence,
   initialRisk,
@@ -49,10 +49,14 @@ export function RiskMatrixScenarioCount({
 
   function handleScenarioClick(ID: string) {
     setTooltipOpen(false);
-    openScenarioDrawer(ID);
+    openScenarioDrawer(
+      ID,
+      riScWithMetadata.status !== RiScStatus.DeletionDraft &&
+        riScWithMetadata.status !== RiScStatus.DeletionSentForApproval,
+    );
   }
 
-  const scenarios = riSc.scenarios.filter(
+  const scenarios = riScWithMetadata.content.scenarios.filter(
     scenario =>
       findProbabilityIndex(
         initialRisk

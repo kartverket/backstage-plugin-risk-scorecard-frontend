@@ -8,6 +8,7 @@ export const pluginRiScMessages = {
     title: 'Risk scorecard',
     createNewButton: 'Create new scorecard',
     editEncryption: 'Edit encryption',
+    deleteButton: 'Delete scoreboard',
   },
   dictionary: {
     click: 'Click',
@@ -83,6 +84,9 @@ export const pluginRiScMessages = {
       draft: 'Draft',
       waiting: 'Awaiting approval',
       published: 'Published',
+      draftDeletion: 'Marked for deletion',
+      waitingDeletion: 'Awaiting deletion',
+      deletionApproval: 'The risk owner can review and accept the deletion.',
     },
     updatedStatus: {
       UPDATED: 'Updated status icon',
@@ -113,15 +117,20 @@ export const pluginRiScMessages = {
       },
     },
     editing: 'You can now start editing',
-    approveButton: 'Accept risks', // Godkjenn ROS
+    approveButtonUpdate: 'Accept risks', // Approve RiSc
+    approveButtonDelete: 'Accept deletion', // Approve deletion of RiSc
     prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
-    prStatus2: ' to publish the scorecard.',
+    prStatus2Update: ' to publish the scorecard.', // Approve RiSc
+    prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
     moreInformationButton: 'More information', // Lagre ROS migrering
   },
   publishDialog: {
-    title: 'Accept risks', // Godkjenn ROS
-    checkboxLabel:
+    titleUpdate: 'Accept risks', // Approve ROS
+    titleDelete: 'Accept deletion', // Delete ROS
+    checkboxLabelUpdate:
       'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
+    checkboxLabelDelete:
+      'I confirm that I am the risk owner and accept the deletion of this risk scorecard.',
   },
   migrationDialog: {
     description:
@@ -433,6 +442,7 @@ export const pluginRiScMessages = {
     NoWriteAccessToRepository:
       'Unable to update RiSc. You do not have write access to this repository.',
     ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
+    ErrorWhenDeletingRiSc: 'Failed to delete risk scorecard',
     ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
     ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
     ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
@@ -448,6 +458,9 @@ export const pluginRiScMessages = {
   infoMessages: {
     OpenedPullRequest: 'Successfully opened pull request',
     CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
+    DeletedRiSc: 'Risk scorecard deleted',
+    DeletedRiScRequiresApproval:
+      'Risk scorecard staged for deletion, requires approval',
     UpdatedRiSc: 'Risk scorecard updated',
     UpdatedSops: 'SOPS configuration updated',
     UpdatedRiScRequiresNewApproval:
@@ -458,6 +471,10 @@ export const pluginRiScMessages = {
     NoSopsConfigFound:
       'No SOPS configuration present on default branch of the GitHub repository',
     CreatedSops: 'SOPS configuration created successfully',
+  },
+  deleteDialog: {
+    title: 'Delete Risk Scorecard',
+    confirmationMessage: 'Are you sure you want to delete this risk scorecard?',
   },
 } as const;
 
@@ -475,6 +492,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
           'contentHeader.editEncryption': 'Rediger kryptering',
+          'contentHeader.deleteButton': 'Slett analyse',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.click': 'Klikk',
           'dictionary.here': 'her',
@@ -555,15 +573,21 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.draft': 'Utkast',
           'rosStatus.statusBadge.waiting': 'Avventer godkjenning',
           'rosStatus.statusBadge.published': 'Publisert',
+          'rosStatus.statusBadge.draftDeletion': 'Markert for sletting',
+          'rosStatus.statusBadge.waitingDeletion': 'Venter på sletting',
+          'rosStatus.statusBadge.deletionApproval':
+            'Risikoeier kan gå igjennom og godkjenne slettingen.',
           'rosStatus.lastModified': 'Sist publisert: ',
           'rosStatus.daysSinceLastModified':
             '{{days}} dager og {{numCommits}} commits siden',
           'rosStatus.notPublishedYet': 'RoS er ikke publisert enda',
           'rosStatus.errorMessage': 'Kunne ikke hente status',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
-          'rosStatus.approveButton': 'Godkjenn ROS',
+          'rosStatus.approveButtonUpdate': 'Godkjenn ROS',
+          'rosStatus.approveButtonDelete': 'Godkjenn sletting',
           'rosStatus.prStatus': ' Merge pull requesten i ',
-          'rosStatus.prStatus2': " for å publisere ROS'en.",
+          'rosStatus.prStatus2Update': " for å publisere ROS'en.",
+          'rosStatus.prStatus2Delete': " for å slette ROS'en.",
           'rosStatus.moreInformationButton': 'Mer informasjon',
           'rosStatus.difference.description':
             'Oppsummering av endringer som må godkjennes av risikoeier.',
@@ -591,9 +615,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.updatedStatus.VERY_OUTDATED': 'Veldig utdatert statusikon',
           'rosStatus.updatedStatus.error': 'Feil statusikon',
           'rosStatus.updatedStatus.disabled': 'Deaktivert statusikon',
-          'publishDialog.title': 'Godkjenn ROS-analyse',
-          'publishDialog.checkboxLabel':
+          'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
+          'publishDialog.titleDelete': 'Godkjenn sletting',
+          'publishDialog.checkboxLabelUpdate':
             'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
+          'publishDialog.checkboxLabelDelete':
+            'Jeg bekrefter at jeg er risikoeier og godtar slettingen av denne risiko- og sårbarhetsanalysen.',
 
           'migrationDialog.title': 'Lagre endringer',
           'migrationDialog.description':
@@ -878,6 +905,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til dette repoet.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
+          'errorMessages.ErrorWhenDeletingRiSc':
+            'Kunne ikke slette risiko- og sårbarhetsanalyse',
           'errorMessages.ErrorWhenCreatingRiSc':
             'Kunne ikke opprette risiko- og sårbarhetsanalyse',
           'errorMessages.RiScDoesNotExist':
@@ -901,6 +930,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
+          'infoMessages.DeletedRiSc':
+            'Risiko- og sårbarhetsanalysen ble slettet',
+          'infoMessages.DeletedRiScRequiresApproval':
+            'Risiko- og sårbarhetsanalysen ble markert for sletting og trenger godkjenning',
           'infoMessages.UpdatedRiSc':
             'Risiko- og sårbarhetsanalysen ble oppdatert',
           'infoMessages.UpdatedSops': 'SOPS-konfigurasjon oppdatert',
@@ -913,6 +946,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.NoSopsConfigFound':
             'Ingen SOPS-konfigurasjon funnet på default branchen til GitHub-repoet',
           'infoMessages.CreatedSops': 'SOPS-konfigurasjon opprettet',
+          'deleteDialog.title': 'Slett risiko- og sårbarhetsanalyse',
+          'deleteDialog.confirmationMessage':
+            'Er du sikker på at du vil slette denne risiko- og sårbarhetsanalysen?',
         },
       }),
   },
