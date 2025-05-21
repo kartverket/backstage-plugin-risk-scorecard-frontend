@@ -1,20 +1,18 @@
 import { CircularProgressProps } from '@mui/material/CircularProgress';
 import { LinearProgress } from '@material-ui/core';
+import { RiScStatusEnum, RiScStatusEnumType } from './utils.ts';
 
-function CircularProgressWithLabel(
-  props: CircularProgressProps & { step: number },
-) {
-  const progress = props.step * 33.33;
+function Progress(props: CircularProgressProps & { step: RiScStatusEnumType }) {
+  const progress = {
+    [RiScStatusEnum.CREATED]: 0,
+    [RiScStatusEnum.DRAFT]: 33.33,
+    [RiScStatusEnum.DELETION_DRAFT]: 33.33,
+    [RiScStatusEnum.WAITING]: 66.67,
+    [RiScStatusEnum.DELETION_WAITING]: 66.67,
+    [RiScStatusEnum.PUBLISHED]: 100,
+  }[props.step];
 
   return <LinearProgress variant="determinate" value={progress} />;
-}
-
-interface CircularWithValueLabelProps {
-  step: 0 | 1 | 2 | 3;
-}
-
-function Progress({ step }: CircularWithValueLabelProps) {
-  return <CircularProgressWithLabel step={step} />;
 }
 
 export default Progress;

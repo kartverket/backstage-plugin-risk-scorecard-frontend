@@ -18,6 +18,7 @@ import {
   SopsConfigDTO,
   profileInfoToDTOString,
   riScToDTOString,
+  DeleteRiScResultDTO,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import {
@@ -58,6 +59,11 @@ export function useAuthenticatedFetch() {
 
   function uriToFetchRiSc(id: string) {
     // URLS.backend.fetchRiSc
+    return `${riScUri}/${id}`;
+  }
+
+  function uriToDeleteRiSc(id: string) {
+    // URLS.backend.deleteRiSc
     return `${riScUri}/${id}`;
   }
 
@@ -326,15 +332,15 @@ export function useAuthenticatedFetch() {
   }
 
   function deleteRiScs(
-    riSc: RiScWithMetadata,
-    onSuccess?: () => void,
+    riScId: string,
+    onSuccess?: (response: DeleteRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
-    fullyAuthenticatedFetch<void, ProcessRiScResultDTO>(
-      uriToFetchRiSc(riSc.id),
+    fullyAuthenticatedFetch<DeleteRiScResultDTO, ProcessRiScResultDTO>(
+      uriToDeleteRiSc(riScId),
       'DELETE',
-      () => {
-        if (onSuccess) onSuccess();
+      res => {
+        if (onSuccess) onSuccess(res);
       },
       (error, rejectedLogin) => {
         if (onError) onError(error, rejectedLogin);

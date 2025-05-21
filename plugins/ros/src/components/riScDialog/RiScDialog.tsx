@@ -120,7 +120,7 @@ export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
     if (dialogState === RiScDialogStates.Create) {
       createNewRiSc(data, createRiScFrom === CreateRiScFrom.Default);
     } else if (dialogState === RiScDialogStates.Delete) {
-      deleteRiSc(data);
+      deleteRiSc();
     } else {
       // Do manual comparison of contents, as the sopsConfig field contains many values from the backend that are not
       // used or set by the frontend.

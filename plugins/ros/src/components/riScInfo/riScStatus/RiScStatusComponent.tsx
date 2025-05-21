@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
   DifferenceFetchState,
+  DifferenceStatus,
   RiScStatus,
   RiScWithMetadata,
-  DifferenceStatus,
 } from '../../../utils/types';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
@@ -35,6 +35,7 @@ import {
 } from '../../../utils/utilityfunctions';
 import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
 import { StatusIconWithText } from './StatusIconWithText';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -147,7 +148,11 @@ export function RiScStatusComponent({
   );
 
   useEffect(() => {
-    if (selectedRiSc.content.scenarios.length === 0) {
+    if (selectedRiSc.status === RiScStatus.DeletionDraft) {
+      setStatus(RiScStatusEnum.DELETION_DRAFT);
+    } else if (selectedRiSc.status === RiScStatus.DeletionSentForApproval) {
+      setStatus(RiScStatusEnum.DELETION_WAITING);
+    } else if (selectedRiSc.content.scenarios.length === 0) {
       setStatus(RiScStatusEnum.CREATED);
     } else if (selectedRiSc.status === RiScStatus.Draft) {
       setStatus(RiScStatusEnum.DRAFT);
@@ -199,6 +204,14 @@ export function RiScStatusComponent({
       icon: CheckCircleOutlineIcon,
       text: t('rosStatus.statusBadge.published'),
     },
+    [RiScStatusEnum.DELETION_DRAFT]: {
+      icon: DeleteIcon,
+      text: t('rosStatus.statusBadge.draftDeletion'),
+    },
+    [RiScStatusEnum.DELETION_WAITING]: {
+      icon: DeleteIcon,
+      text: t('rosStatus.statusBadge.waitingDeletion'),
+    },
   };
 
   return (
@@ -235,7 +248,13 @@ export function RiScStatusComponent({
                 {t('rosStatus.statusBadge.missing')}
               </Typography>
             )}
-            {status === RiScStatusEnum.WAITING && (
+            {status === RiScStatusEnum.DELETION_DRAFT && (
+              <Typography paragraph variant="subtitle1" ml={5} align="right">
+                {t('rosStatus.statusBadge.deletionApproval')}
+              </Typography>
+            )}
+            {(status === RiScStatusEnum.WAITING ||
+              status === RiScStatusEnum.DELETION_WAITING) && (
               <Typography
                 paragraph
                 variant="subtitle1"
@@ -247,7 +266,10 @@ export function RiScStatusComponent({
                 <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
                   Github
                 </Link>
-                {t('rosStatus.prStatus2')}
+                {status === RiScStatusEnum.WAITING &&
+                  t('rosStatus.prStatus2Update')}
+                {status === RiScStatusEnum.DELETION_WAITING &&
+                  t('rosStatus.prStatus2Delete')}
               </Typography>
             )}
             {status === RiScStatusEnum.PUBLISHED && (
@@ -262,7 +284,8 @@ export function RiScStatusComponent({
               </Typography>
             )}
           </Box>
-          {status === RiScStatusEnum.DRAFT && (
+          {(status === RiScStatusEnum.DRAFT ||
+            status === RiScStatusEnum.DELETION_DRAFT) && (
             <>
               <Button
                 color="primary"
@@ -270,10 +293,14 @@ export function RiScStatusComponent({
                 onClick={handleOpenPublishRiScDialog}
                 sx={{ display: 'block', marginLeft: 'auto' }}
               >
-                {t('rosStatus.approveButton')}
+                {status === RiScStatusEnum.DRAFT &&
+                  t('rosStatus.approveButtonUpdate')}
+                {status === RiScStatusEnum.DELETION_DRAFT &&
+                  t('rosStatus.approveButtonDelete')}
               </Button>
               <RiScPublishDialog
                 openDialog={publishRiScDialogIsOpen}
+                isDeletion={status === RiScStatusEnum.DELETION_DRAFT}
                 handlePublish={handleApproveAndPublish}
                 handleCancel={handleClosePublishRiScDialog}
                 differenceFetchState={differenceFetchState}
