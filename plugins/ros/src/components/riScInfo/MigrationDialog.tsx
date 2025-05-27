@@ -1,4 +1,4 @@
-import { ReactComponentElement, useState } from 'react';
+import { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -12,23 +12,27 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { MigrationVersions } from '../../utils/types';
+import { MigrationStatus } from '../../utils/types';
 import { dialogActions } from '../common/mixins';
 import { URLS } from '../../urls';
+import { RiScMigrationChanges41 } from './migrations/RiScMigrationChanges41.tsx';
+import { ChangeSetBox } from './migrations/components/ChangeSetBox.tsx';
+import { ChangeSetTitle } from './migrations/components/ChangeSetTitle.tsx';
+import { ChangeSetChangedValue } from './migrations/components/ChangeSetChangedValue.tsx';
 
 interface RiScMigrationDialogProps {
   openDialog: boolean;
   handleCancel: () => void;
   handleUpdate: () => void;
-  migrationVersions?: MigrationVersions;
+  migrationStatus: MigrationStatus;
 }
 
 export const RiScMigrationDialog = ({
   openDialog,
   handleCancel,
   handleUpdate,
-  migrationVersions,
-}: RiScMigrationDialogProps): ReactComponentElement<any> => {
+  migrationStatus,
+}: RiScMigrationDialogProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [saveMigration, setSaveMigration] = useState<boolean>(false);
@@ -38,14 +42,15 @@ export const RiScMigrationDialog = ({
   }
 
   return (
-    <Dialog open={openDialog}>
+    <Dialog maxWidth="md" open={openDialog}>
       <DialogTitle>{t('migrationDialog.title')}</DialogTitle>
       <DialogContent>
         <Box sx={{ marginBottom: '16px' }}>
           <Typography>
             {t('migrationDialog.description')}
-            {migrationVersions?.toVersion} {t('migrationDialog.description2')}{' '}
-            {migrationVersions?.fromVersion}
+            {migrationStatus.migrationVersions?.toVersion}{' '}
+            {t('migrationDialog.description2')}{' '}
+            {migrationStatus.migrationVersions?.fromVersion}
             {t('migrationDialog.description3')}
             <Link
               underline="always"
@@ -57,6 +62,21 @@ export const RiScMigrationDialog = ({
             {t('migrationDialog.description4')}
           </Typography>
         </Box>
+        <div>
+          <ChangeSetTitle text="Schema Version" />
+          <ChangeSetBox type="primary">
+            <ChangeSetChangedValue
+              property="Schema version"
+              oldValue={migrationStatus.migrationVersions?.fromVersion || ''}
+              newValue={migrationStatus.migrationVersions?.toVersion || ''}
+            />
+          </ChangeSetBox>
+          {migrationStatus.migrationChanges41 && (
+            <RiScMigrationChanges41
+              changes={migrationStatus.migrationChanges41}
+            />
+          )}
+        </div>
         <Alert severity="info" icon={false}>
           <FormControlLabel
             control={

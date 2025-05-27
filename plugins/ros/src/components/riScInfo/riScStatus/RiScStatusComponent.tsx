@@ -309,7 +309,8 @@ export function RiScStatusComponent({
           )}
         </>
       )}
-      {migration && (
+      {/* Need to include the undefined check here, as TypeScript does not pick up that this check is part of `migration` */}
+      {migration && selectedRiSc.migrationStatus && (
         <Box>
           <Typography paragraph sx={subtitle1}>
             <WarningAmberOutlined
@@ -335,7 +336,7 @@ export function RiScStatusComponent({
             openDialog={migrationDialogIsOpen}
             handleUpdate={handleUpdate}
             handleCancel={() => setMigrationDialogIsOpen(false)}
-            migrationVersions={selectedRiSc.migrationStatus?.migrationVersions}
+            migrationStatus={selectedRiSc.migrationStatus}
           />
         </Box>
       )}
