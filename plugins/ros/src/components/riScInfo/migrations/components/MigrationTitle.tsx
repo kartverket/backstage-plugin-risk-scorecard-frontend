@@ -3,6 +3,8 @@ import { IconButton, Tooltip } from '@material-ui/core';
 import Link from '@mui/material/Link';
 import { HelpIcon } from '@backstage/core-components';
 import { useChangeSetStyles } from './changeSetStyles.ts';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../../../utils/translations.ts';
 
 interface MigrationTitleProps {
   from: string;
@@ -18,13 +20,14 @@ export function MigrationTitle({
   changelogUrl,
 }: MigrationTitleProps) {
   const { migrationTitle, migrationChangelog } = useChangeSetStyles();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <div className={migrationTitle}>
-      <ChangeSetTitle text={`Migration from ${from} to ${to}`} />
+      <ChangeSetTitle text={t("migrationDialog.migrationTitle", {to: to, from: from})} />
       <div className={migrationChangelog}>
         <Tooltip title={migrationExplanation}>
           <Link target="_blank" href={changelogUrl} color="inherit">
-            Schema changelog
+            {t('migrationDialog.schemaChangelog')}
             <IconButton color="inherit" size="small">
               <HelpIcon fontSize="small" />
             </IconButton>

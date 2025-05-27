@@ -134,14 +134,33 @@ export const pluginRiScMessages = {
   },
   migrationDialog: {
     description:
-      'The changes have been done to adhere to the latest schema version. In this case, the RiSc was update to ',
-    description2: 'from',
-    description3: '. Review the ',
-    description4: 'for more information.',
-    changelog: 'schema changelog',
+      'The changes have been made to adhere to the latest schema version.',
+    migrationTitle: 'Migration from {{from}} to {{to}}',
+    schemaVersion: 'Schema version',
+    schemaChangelog: 'Schema changelog',
+    tagRemoved: 'Removed',
+    tagScenario: 'Risk scenario',
+    tagAction: 'Action',
     title: 'Save changes', // Lagre ROS migrering
     checkboxLabel:
       'I confirm that I have reviewed and wish to save the changes made during the migration.',
+    migration40: {
+      owner: 'Responsible',
+      deadline: 'Deadline',
+      existingActions: 'Existing actions',
+      vulnerabilitiesTitle: 'Vulnerabilities',
+      vulnerabilities: {
+        'Compromised admin user': 'Compromised admin user',
+        'Denial of service': 'Denial of service',
+        'Disclosed secret': 'Disclosed secret',
+        'Escalation of rights': 'Escalation of rights',
+        'Excessive use': 'Excessive use',
+        'Information leak': 'Information leak',
+        'User repudiation': 'User repudiation',
+        'Unauthorized access': 'Unauthorized use',
+        'Unmonitored use': 'Unmonitored use',
+      },
+    },
   },
   scenarioTable: {
     title: 'Risk scenarios',
@@ -624,14 +643,28 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'migrationDialog.title': 'Lagre endringer',
           'migrationDialog.description':
-            'Endringene er gjort for å følge den nyeste skjema versjonen. I dette tilfellet ble ROS-analysen oppdatert til ',
-          'migrationDialog.description2': 'fra',
-          'migrationDialog.description3': '. Se ',
-          'migrationDialog.description4': 'for mer informasjon.',
-          'migrationDialog.changelog': 'endringslogg for skjema',
-
+            'Endringene er gjort for å følge den nyeste skjemaversjonen.',
+          'migrationDialog.migrationTitle': 'Migrering fra {{from}} til {{to}}',
+          'migrationDialog.schemaVersion': 'Skjemaversjon',
+          'migrationDialog.schemaChangelog': 'Endringslogg for skjema',
+          'migrationDialog.tagRemoved': 'Fjernet',
+          'migrationDialog.tagScenario': 'Riskscenario',
+          'migrationDialog.tagAction': 'Tiltak',
           'migrationDialog.checkboxLabel':
             'Jeg bekrefter at jeg har gjennomgått og ønsker å lagre endringene som er gjort under migreringen.',
+          'migrationDialog.migration40.owner': 'Ansvarlig',
+          'migrationDialog.migration40.deadline': 'Frist',
+          'migrationDialog.migration40.existingActions': 'Eksisterende tiltak',
+          'migrationDialog.migration40.vulnerabilitiesTitle': 'Sårbarheter',
+          'migrationDialog.migration40.vulnerabilities.Compromised admin user': 'Kompromittert adminbruker',
+          'migrationDialog.migration40.vulnerabilities.Denial of service': 'Tjenestenekt',
+          'migrationDialog.migration40.vulnerabilities.Disclosed secret': 'Lekket hemmelighet',
+          'migrationDialog.migration40.vulnerabilities.Escalation of rights': 'Rettighetseskalering',
+          'migrationDialog.migration40.vulnerabilities.Excessive use': 'Overdreven bruk',
+          'migrationDialog.migration40.vulnerabilities.Information leak': 'Informasjonslekkasje',
+          'migrationDialog.migration40.vulnerabilities.Unauthorized access': 'Uautorisert tilgang',
+          'migrationDialog.migration40.vulnerabilities.Unmonitored use': 'Uovervåket bruk',
+          'migrationDialog.migration40.vulnerabilities.User repudiation': 'Benekte brukerhandling',
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',

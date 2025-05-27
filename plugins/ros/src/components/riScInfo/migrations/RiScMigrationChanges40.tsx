@@ -7,6 +7,8 @@ import { ChangeSetBoxTitle } from './components/ChangeSetBoxTitle.tsx';
 import { ChangeSetTags } from './components/ChangeSetTags.tsx';
 import { ChangeSetText } from './components/ChangeSetText.tsx';
 import { ChangeSetRemovedProperty } from './components/ChangeSetRemovedProperty.tsx';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 
 interface RiScMigrationChanges40Props {
   changes: MigrationChanges40;
@@ -15,6 +17,7 @@ interface RiScMigrationChanges40Props {
 export function RiScMigrationChanges40({
   changes,
 }: RiScMigrationChanges40Props) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <>
       <MigrationTitle
@@ -26,16 +29,23 @@ export function RiScMigrationChanges40({
       {changes.scenarios.map(scenario => (
         <ChangeSetBox type="primary">
           <ChangeSetTags>
-            <ChangeSetTag type="primary" text="Risk scenario" />
+            <ChangeSetTag
+              type="primary"
+              text={t('migrationDialog.tagScenario')}
+            />
           </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />
           {scenario.changedVulnerabilities.length > 0 && (
             <ChangeSetBox type="secondary">
-              <ChangeSetBoxTitle title="Vulnerabilities" />
+              <ChangeSetBoxTitle
+                title={t('migrationDialog.migration40.vulnerabilitiesTitle')}
+              />
               {scenario.changedVulnerabilities.map(change => (
                 <ChangeSetChangedValue
-                  oldValue={change.oldValue}
-                  newValue={change.newValue}
+                  /* @ts-ignore Because ts can't typecheck strings against our keys */
+                  oldValue={t(`migrationDialog.migration40.vulnerabilities.${change.oldValue}`)}
+                  /* @ts-ignore Because ts can't typecheck strings against our keys */
+                  newValue={t(`migrationDialog.migration40.vulnerabilities.${change.newValue}`)}
                 />
               ))}
             </ChangeSetBox>
@@ -43,27 +53,35 @@ export function RiScMigrationChanges40({
           {scenario.removedExistingActions && (
             <ChangeSetBox type="secondary">
               <ChangeSetTags>
-                <ChangeSetTag type="delete" text="Removed" />
+                <ChangeSetTag
+                  type="delete"
+                  text={t('migrationDialog.tagRemoved')}
+                />
               </ChangeSetTags>
-              <ChangeSetBoxTitle title="Existing actions"/>
+              <ChangeSetBoxTitle
+                title={t('migrationDialog.migration40.existingActions')}
+              />
               <ChangeSetText text={scenario.removedExistingActions} />
             </ChangeSetBox>
           )}
           {scenario.changedActions.map(action => (
             <ChangeSetBox type="secondary">
               <ChangeSetTags>
-                <ChangeSetTag text="Action" type="primary" />
+                <ChangeSetTag
+                  type="primary"
+                  text={t('migrationDialog.tagAction')}
+                />
               </ChangeSetTags>
               <ChangeSetBoxTitle title={action.title} />
               {action.removedOwner && (
                 <ChangeSetRemovedProperty
-                  propertyName="Owner"
+                  propertyName={t('migrationDialog.migration40.owner')}
                   value={action.removedOwner}
                 />
               )}
               {action.removedDeadline && (
                 <ChangeSetRemovedProperty
-                  propertyName="Deadline"
+                  propertyName={t('migrationDialog.migration40.deadline')}
                   value={action.removedDeadline}
                 />
               )}

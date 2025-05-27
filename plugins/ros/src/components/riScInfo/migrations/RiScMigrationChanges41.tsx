@@ -6,6 +6,8 @@ import { ChangeSetTag } from './components/ChangeSetTag.tsx';
 import { ChangeSetBoxTitle } from './components/ChangeSetBoxTitle.tsx';
 import { ChangeSetChangedValue } from './components/ChangeSetChangedValue.tsx';
 import { ChangeSetTags } from './components/ChangeSetTags.tsx';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 
 interface RiScMigrationChanges41Props {
   changes: MigrationChanges41;
@@ -14,6 +16,7 @@ interface RiScMigrationChanges41Props {
 export function RiScMigrationChanges41({
   changes,
 }: RiScMigrationChanges41Props) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <>
       <MigrationTitle
@@ -25,7 +28,7 @@ export function RiScMigrationChanges41({
       {changes.scenarios.map(scenario => (
         <ChangeSetBox type="primary">
           <ChangeSetTags>
-            <ChangeSetTag type="primary" text="Risk scenario" />
+            <ChangeSetTag type="primary" text={t('migrationDialog.tagScenario')}/>
           </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />
           <div
