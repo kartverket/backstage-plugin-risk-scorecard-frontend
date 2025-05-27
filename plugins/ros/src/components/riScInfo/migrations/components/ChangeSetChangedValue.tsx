@@ -13,20 +13,16 @@ export function ChangeSetChangedValue({
   newValue,
   denominator,
 }: ChangeSetChangedValueProps) {
-  const {
-    changedProperty: changedPropertyStyle,
-    oldValue: oldValueStyle,
-    newValue: newValueStyle,
-  } = useChangeSetStyles();
+  const styles = useChangeSetStyles();
   return (
     <div>
       {propertyName && (
         <>
-          <span className={changedPropertyStyle}>{propertyName}:</span>{' '}
+          <span className={styles.changedProperty}>{propertyName}:</span>{' '}
         </>
       )}
-      <span className={oldValueStyle}>{oldValue}</span>{' '}
-      <span className={newValueStyle}>{newValue}</span>
+      <span className={styles.oldValue}>{oldValue}</span>{' '}
+      <span className={styles.newValue}>{newValue}</span>
       {denominator && (
         <>
           {' '}

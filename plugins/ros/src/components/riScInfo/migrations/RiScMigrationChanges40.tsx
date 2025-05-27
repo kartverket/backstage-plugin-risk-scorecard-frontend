@@ -43,9 +43,13 @@ export function RiScMigrationChanges40({
               {scenario.changedVulnerabilities.map(change => (
                 <ChangeSetChangedValue
                   /* @ts-ignore Because ts can't typecheck strings against our keys */
-                  oldValue={t(`migrationDialog.migration40.vulnerabilities.${change.oldValue}`)}
+                  oldValue={t(
+                    `migrationDialog.migration40.vulnerabilities.${change.oldValue}`,
+                  )}
                   /* @ts-ignore Because ts can't typecheck strings against our keys */
-                  newValue={t(`migrationDialog.migration40.vulnerabilities.${change.newValue}`)}
+                  newValue={t(
+                    `migrationDialog.migration40.vulnerabilities.${change.newValue}`,
+                  )}
                 />
               ))}
             </ChangeSetBox>

@@ -5,6 +5,6 @@ interface ChangeSetBoxTitleProps {
 }
 
 export function ChangeSetBoxTitle({ title }: ChangeSetBoxTitleProps) {
-  const { boxTitle } = useChangeSetStyles();
-  return <div className={boxTitle}>{title}</div>;
+  const styles = useChangeSetStyles();
+  return <div className={styles.boxTitle}>{title}</div>;
 }

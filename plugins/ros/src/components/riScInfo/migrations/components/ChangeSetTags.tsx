@@ -6,6 +6,6 @@ interface ChangeSetTagsProps {
 }
 
 export function ChangeSetTags({ children }: ChangeSetTagsProps) {
-  const { tags } = useChangeSetStyles();
-  return <div className={tags}>{children}</div>;
+  const styles = useChangeSetStyles();
+  return <div className={styles.tags}>{children}</div>;
 }

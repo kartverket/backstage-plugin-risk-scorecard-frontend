@@ -28,7 +28,10 @@ export function RiScMigrationChanges41({
       {changes.scenarios.map(scenario => (
         <ChangeSetBox type="primary">
           <ChangeSetTags>
-            <ChangeSetTag type="primary" text={t('migrationDialog.tagScenario')}/>
+            <ChangeSetTag
+              type="primary"
+              text={t('migrationDialog.tagScenario')}
+            />
           </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />
           <div

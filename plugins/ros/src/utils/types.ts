@@ -44,20 +44,20 @@ export type MigrationVersions = {
 
 export type MigrationChanges41 = {
   scenarios: MigrationChanges41Scenario[];
-}
+};
 
 export type MigrationChanges41Scenario = {
   title: string;
   id: string;
-  changedRiskConsequence?: MigrationChangedValue<number>
-  changedRiskProbability?: MigrationChangedValue<number>
-  changedRemainingRiskConsequence?: MigrationChangedValue<number>
-  changedRemainingRiskProbability?: MigrationChangedValue<number>
-}
+  changedRiskConsequence?: MigrationChangedValue<number>;
+  changedRiskProbability?: MigrationChangedValue<number>;
+  changedRemainingRiskConsequence?: MigrationChangedValue<number>;
+  changedRemainingRiskProbability?: MigrationChangedValue<number>;
+};
 
 export type MigrationChanges40 = {
   scenarios: MigrationChanges40Scenario[];
-}
+};
 
 export type MigrationChanges40Scenario = {
   title: string;
@@ -65,19 +65,19 @@ export type MigrationChanges40Scenario = {
   removedExistingActions?: string;
   changedVulnerabilities: MigrationChangedValue<string>[];
   changedActions: MigrationChanges40Action[];
-}
+};
 
 export type MigrationChanges40Action = {
   title: string;
   id: string;
   removedOwner?: string;
   removedDeadline?: string;
-}
+};
 
 export type MigrationChangedValue<T> = {
   oldValue: T;
   newValue: T;
-}
+};
 
 export type SopsConfig = {
   shamirThreshold: number;

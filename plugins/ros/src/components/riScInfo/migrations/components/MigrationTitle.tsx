@@ -19,12 +19,14 @@ export function MigrationTitle({
   migrationExplanation,
   changelogUrl,
 }: MigrationTitleProps) {
-  const { migrationTitle, migrationChangelog } = useChangeSetStyles();
+  const styles = useChangeSetStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <div className={migrationTitle}>
-      <ChangeSetTitle text={t("migrationDialog.migrationTitle", {to: to, from: from})} />
-      <div className={migrationChangelog}>
+    <div className={styles.migrationTitle}>
+      <ChangeSetTitle
+        text={t('migrationDialog.migrationTitle', { to: to, from: from })}
+      />
+      <div className={styles.migrationChangelog}>
         <Tooltip title={migrationExplanation}>
           <Link target="_blank" href={changelogUrl} color="inherit">
             {t('migrationDialog.schemaChangelog')}

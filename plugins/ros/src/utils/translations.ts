@@ -656,15 +656,24 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration40.deadline': 'Frist',
           'migrationDialog.migration40.existingActions': 'Eksisterende tiltak',
           'migrationDialog.migration40.vulnerabilitiesTitle': 'Sårbarheter',
-          'migrationDialog.migration40.vulnerabilities.Compromised admin user': 'Kompromittert adminbruker',
-          'migrationDialog.migration40.vulnerabilities.Denial of service': 'Tjenestenekt',
-          'migrationDialog.migration40.vulnerabilities.Disclosed secret': 'Lekket hemmelighet',
-          'migrationDialog.migration40.vulnerabilities.Escalation of rights': 'Rettighetseskalering',
-          'migrationDialog.migration40.vulnerabilities.Excessive use': 'Overdreven bruk',
-          'migrationDialog.migration40.vulnerabilities.Information leak': 'Informasjonslekkasje',
-          'migrationDialog.migration40.vulnerabilities.Unauthorized access': 'Uautorisert tilgang',
-          'migrationDialog.migration40.vulnerabilities.Unmonitored use': 'Uovervåket bruk',
-          'migrationDialog.migration40.vulnerabilities.User repudiation': 'Benekte brukerhandling',
+          'migrationDialog.migration40.vulnerabilities.Compromised admin user':
+            'Kompromittert adminbruker',
+          'migrationDialog.migration40.vulnerabilities.Denial of service':
+            'Tjenestenekt',
+          'migrationDialog.migration40.vulnerabilities.Disclosed secret':
+            'Lekket hemmelighet',
+          'migrationDialog.migration40.vulnerabilities.Escalation of rights':
+            'Rettighetseskalering',
+          'migrationDialog.migration40.vulnerabilities.Excessive use':
+            'Overdreven bruk',
+          'migrationDialog.migration40.vulnerabilities.Information leak':
+            'Informasjonslekkasje',
+          'migrationDialog.migration40.vulnerabilities.Unauthorized access':
+            'Uautorisert tilgang',
+          'migrationDialog.migration40.vulnerabilities.Unmonitored use':
+            'Uovervåket bruk',
+          'migrationDialog.migration40.vulnerabilities.User repudiation':
+            'Benekte brukerhandling',
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',

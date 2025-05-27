@@ -9,15 +9,11 @@ export function ChangeSetRemovedProperty({
   propertyName,
   value,
 }: ChangeSetRemovedPropertyProps) {
-  const {
-    removedPropertyContainer,
-    removedProperty: removedPropertyStyle,
-    removedValue: removedValueStyle,
-  } = useChangeSetStyles();
+  const styles = useChangeSetStyles();
   return (
-    <div className={removedPropertyContainer} >
-      <div className={removedPropertyStyle}>{propertyName}</div>
-      <div className={removedValueStyle}>{value}</div>
+    <div className={styles.removedPropertyContainer}>
+      <div className={styles.removedProperty}>{propertyName}</div>
+      <div className={styles.removedValue}>{value}</div>
     </div>
   );
 }

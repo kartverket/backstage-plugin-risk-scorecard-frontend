@@ -6,9 +6,11 @@ interface ChangeSetTagProps {
 }
 
 export function ChangeSetTag({ text, type }: ChangeSetTagProps) {
-  const { tag, tagPrimary, tagDelete } = useChangeSetStyles();
+  const styles = useChangeSetStyles();
   return (
-    <div className={`${tag} ${type === 'primary' ? tagPrimary : tagDelete}`}>
+    <div
+      className={`${styles.tag} ${type === 'primary' ? styles.tagPrimary : styles.tagDelete}`}
+    >
       {text}
     </div>
   );

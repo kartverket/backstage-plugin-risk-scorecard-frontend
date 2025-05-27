@@ -5,6 +5,6 @@ interface ChangeSetTitleProps {
 }
 
 export function ChangeSetTitle({ text }: ChangeSetTitleProps) {
-  const { title } = useChangeSetStyles();
-  return <div className={title}>{text}</div>;
+  const styles = useChangeSetStyles();
+  return <div className={styles.title}>{text}</div>;
 }

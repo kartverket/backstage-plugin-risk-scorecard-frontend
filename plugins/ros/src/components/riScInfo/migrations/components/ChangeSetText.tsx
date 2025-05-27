@@ -5,6 +5,6 @@ interface ChangeSetTextProps {
 }
 
 export function ChangeSetText({ text }: ChangeSetTextProps) {
-  const { text: textStyle } = useChangeSetStyles();
-  return <p className={textStyle}>{text}</p>;
+  const styles = useChangeSetStyles();
+  return <p className={styles.text}>{text}</p>;
 }
