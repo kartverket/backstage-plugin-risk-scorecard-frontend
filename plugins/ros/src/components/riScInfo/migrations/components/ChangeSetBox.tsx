@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useChangeSetStyles } from './changeSetStyles.ts';
 
 interface ChangeSetBoxProps {
   type: 'primary' | 'secondary'
@@ -6,16 +7,11 @@ interface ChangeSetBoxProps {
 }
 
 export function ChangeSetBox({ children, type }: ChangeSetBoxProps) {
+  const {box, boxPrimary, boxSecondary} = useChangeSetStyles()
+
   return (
     <div
-      style={{
-        backgroundColor: type === 'primary' ? '#FCEBCD' : '#FFFFFF',
-        color: '#333333',
-        padding: '14px 18px',
-        marginBottom: type === 'primary' ? '24px' : '12px',
-        height: '100%',
-        borderRadius: '24px',
-      }}
+      className={`${box} ${type === 'primary' ? boxPrimary : boxSecondary}`}
     >
       {children}
     </div>

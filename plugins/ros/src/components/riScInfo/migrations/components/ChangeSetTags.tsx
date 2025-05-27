@@ -1,19 +1,11 @@
 import { ReactNode } from 'react';
+import { useChangeSetStyles } from './changeSetStyles.ts';
 
 interface ChangeSetTagsProps {
   children: ReactNode[] | ReactNode;
 }
 
 export function ChangeSetTags({ children }: ChangeSetTagsProps) {
-  return (
-    <div
-      style={{
-        marginBottom: '4px',
-        display: 'flex',
-        gap: '4px',
-      }}
-    >
-      {children}
-    </div>
-  );
+  const { tags } = useChangeSetStyles();
+  return <div className={tags}>{children}</div>;
 }

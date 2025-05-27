@@ -2,6 +2,7 @@ import { ChangeSetTitle } from './ChangeSetTitle.tsx';
 import { IconButton, Tooltip } from '@material-ui/core';
 import Link from '@mui/material/Link';
 import { HelpIcon } from '@backstage/core-components';
+import { useChangeSetStyles } from './changeSetStyles.ts';
 
 interface MigrationTitleProps {
   from: string;
@@ -16,23 +17,13 @@ export function MigrationTitle({
   migrationExplanation,
   changelogUrl,
 }: MigrationTitleProps) {
+  const { migrationTitle, migrationChangelog } = useChangeSetStyles();
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingRight: '4px',
-      }}
-    >
+    <div className={migrationTitle}>
       <ChangeSetTitle text={`Migration from ${from} to ${to}`} />
-      <div style={{ color: '#156630', fontWeight: '700' }}>
+      <div className={migrationChangelog}>
         <Tooltip title={migrationExplanation}>
-          <Link
-            target="_blank"
-            href={changelogUrl}
-            color="inherit"
-          >
+          <Link target="_blank" href={changelogUrl} color="inherit">
             Schema changelog
             <IconButton color="inherit" size="small">
               <HelpIcon fontSize="small" />

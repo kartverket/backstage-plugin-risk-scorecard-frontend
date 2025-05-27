@@ -42,7 +42,7 @@ export function RiScMigrationChanges41({
                   <ChangeSetBoxTitle title="Initial risk" />
                   {scenario.changedRiskConsequence && (
                     <ChangeSetChangedValue
-                      property="Consequence"
+                      propertyName="Consequence"
                       oldValue={formatNOK(
                         scenario.changedRiskConsequence.oldValue,
                       )}
@@ -54,7 +54,7 @@ export function RiScMigrationChanges41({
                   )}
                   {scenario.changedRiskProbability && (
                     <ChangeSetChangedValue
-                      property="Probability"
+                      propertyName="Probability"
                       oldValue={scenario.changedRiskProbability.oldValue.toString()}
                       newValue={scenario.changedRiskProbability.newValue.toString()}
                       denominator="occurrences/year"
@@ -70,7 +70,7 @@ export function RiScMigrationChanges41({
                   <ChangeSetBoxTitle title="Remaining risk" />
                   {scenario.changedRemainingRiskConsequence && (
                     <ChangeSetChangedValue
-                      property="Consequence"
+                      propertyName="Consequence"
                       oldValue={formatNOK(
                         scenario.changedRemainingRiskConsequence.oldValue,
                       )}
@@ -82,7 +82,7 @@ export function RiScMigrationChanges41({
                   )}
                   {scenario.changedRemainingRiskProbability && (
                     <ChangeSetChangedValue
-                      property="Probability"
+                      propertyName="Probability"
                       oldValue={scenario.changedRemainingRiskProbability.oldValue.toString()}
                       newValue={scenario.changedRemainingRiskProbability.newValue.toString()}
                       denominator="occurrences/year"

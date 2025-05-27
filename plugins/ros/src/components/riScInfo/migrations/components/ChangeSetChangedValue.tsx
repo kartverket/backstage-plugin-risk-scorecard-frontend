@@ -1,33 +1,32 @@
+import { useChangeSetStyles } from './changeSetStyles.ts';
+
 interface ChangeSetChangedValueProps {
-  property?: string;
+  propertyName?: string;
   oldValue: string;
   newValue: string;
   denominator?: string;
 }
 
 export function ChangeSetChangedValue({
-  property,
+  propertyName,
   oldValue,
   newValue,
   denominator,
 }: ChangeSetChangedValueProps) {
+  const {
+    changedProperty: changedPropertyStyle,
+    oldValue: oldValueStyle,
+    newValue: newValueStyle,
+  } = useChangeSetStyles();
   return (
-    <div style={{ color: '#333333' }}>
-      {property && (
+    <div>
+      {propertyName && (
         <>
-          <span style={{ fontWeight: '700' }}>{property}:</span>{' '}
+          <span className={changedPropertyStyle}>{propertyName}:</span>{' '}
         </>
       )}
-      <span
-        style={{
-          fontWeight: '700',
-          color: '#D04A14',
-          textDecoration: 'line-through',
-        }}
-      >
-        {oldValue}
-      </span>{' '}
-      <span style={{ fontWeight: '700', color: '#156630' }}>{newValue}</span>
+      <span className={oldValueStyle}>{oldValue}</span>{' '}
+      <span className={newValueStyle}>{newValue}</span>
       {denominator && (
         <>
           {' '}

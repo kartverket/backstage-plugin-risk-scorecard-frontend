@@ -67,7 +67,7 @@ export const RiScMigrationDialog = ({
           <ChangeSetTitle text="Schema Version" />
           <ChangeSetBox type="primary">
             <ChangeSetChangedValue
-              property="Schema version"
+              propertyName="Schema version"
               oldValue={migrationStatus.migrationVersions?.fromVersion || ''}
               newValue={migrationStatus.migrationVersions?.toVersion || ''}
             />
@@ -95,7 +95,7 @@ export const RiScMigrationDialog = ({
           />
         </Alert>
       </DialogContent>
-      <DialogActions sx={dialogActions}>
+      <DialogActions sx={dialogActions} style={{ paddingTop: '16px' }}>
         <Button variant="outlined" color="primary" onClick={handleCancel}>
           {t('dictionary.cancel')}
         </Button>
