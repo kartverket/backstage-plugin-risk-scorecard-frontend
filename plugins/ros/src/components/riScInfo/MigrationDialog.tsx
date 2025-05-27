@@ -19,6 +19,7 @@ import { RiScMigrationChanges41 } from './migrations/RiScMigrationChanges41.tsx'
 import { ChangeSetBox } from './migrations/components/ChangeSetBox.tsx';
 import { ChangeSetTitle } from './migrations/components/ChangeSetTitle.tsx';
 import { ChangeSetChangedValue } from './migrations/components/ChangeSetChangedValue.tsx';
+import { RiScMigrationChanges40 } from './migrations/RiScMigrationChanges40.tsx';
 
 interface RiScMigrationDialogProps {
   openDialog: boolean;
@@ -71,6 +72,11 @@ export const RiScMigrationDialog = ({
               newValue={migrationStatus.migrationVersions?.toVersion || ''}
             />
           </ChangeSetBox>
+          {migrationStatus.migrationChanges40 && (
+            <RiScMigrationChanges40
+              changes={migrationStatus.migrationChanges40}
+            />
+          )}
           {migrationStatus.migrationChanges41 && (
             <RiScMigrationChanges41
               changes={migrationStatus.migrationChanges41}

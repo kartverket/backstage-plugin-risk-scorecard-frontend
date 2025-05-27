@@ -1,5 +1,5 @@
 interface ChangeSetChangedValueProps {
-  property: string;
+  property?: string;
   oldValue: string;
   newValue: string;
   denominator?: string;
@@ -13,9 +13,11 @@ export function ChangeSetChangedValue({
 }: ChangeSetChangedValueProps) {
   return (
     <div style={{ color: '#333333' }}>
-      <span style={{ fontWeight: '700' }}>
-        {property}:
-      </span>{' '}
+      {property && (
+        <>
+          <span style={{ fontWeight: '700' }}>{property}:</span>{' '}
+        </>
+      )}
       <span
         style={{
           fontWeight: '700',

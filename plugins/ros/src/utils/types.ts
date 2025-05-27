@@ -62,16 +62,9 @@ export type MigrationChanges40 = {
 export type MigrationChanges40Scenario = {
   title: string;
   id: string;
-  removedExistingActions: MigrationChanges40ExistingAction[];
+  removedExistingActions?: string;
   changedVulnerabilities: MigrationChangedValue<string>[];
   changedActions: MigrationChanges40Action[];
-}
-
-export type MigrationChanges40ExistingAction = {
-  title: string;
-  id: string;
-  description: string;
-  status: string;
 }
 
 export type MigrationChanges40Action = {

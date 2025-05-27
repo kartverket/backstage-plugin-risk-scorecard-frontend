@@ -5,12 +5,15 @@ import { MigrationTitle } from './components/MigrationTitle.tsx';
 import { ChangeSetTag } from './components/ChangeSetTag.tsx';
 import { ChangeSetBoxTitle } from './components/ChangeSetBoxTitle.tsx';
 import { ChangeSetChangedValue } from './components/ChangeSetChangedValue.tsx';
+import { ChangeSetTags } from './components/ChangeSetTags.tsx';
+
+interface RiScMigrationChanges41Props {
+  changes: MigrationChanges41;
+}
 
 export function RiScMigrationChanges41({
   changes,
-}: {
-  changes: MigrationChanges41;
-}) {
+}: RiScMigrationChanges41Props) {
   return (
     <>
       <MigrationTitle
@@ -21,7 +24,9 @@ export function RiScMigrationChanges41({
       />
       {changes.scenarios.map(scenario => (
         <ChangeSetBox type="primary">
-          <ChangeSetTag text="Risk scenario" />
+          <ChangeSetTags>
+            <ChangeSetTag type="primary" text="Risk scenario" />
+          </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />
           <div
             style={{
@@ -64,24 +69,24 @@ export function RiScMigrationChanges41({
                 <ChangeSetBox type="secondary">
                   <ChangeSetBoxTitle title="Remaining risk" />
                   {scenario.changedRemainingRiskConsequence && (
-                      <ChangeSetChangedValue
-                          property="Consequence"
-                          oldValue={formatNOK(
-                              scenario.changedRemainingRiskConsequence.oldValue,
-                          )}
-                          newValue={formatNOK(
-                              scenario.changedRemainingRiskConsequence.newValue,
-                          )}
-                          denominator="NOK/incident"
-                      />
+                    <ChangeSetChangedValue
+                      property="Consequence"
+                      oldValue={formatNOK(
+                        scenario.changedRemainingRiskConsequence.oldValue,
+                      )}
+                      newValue={formatNOK(
+                        scenario.changedRemainingRiskConsequence.newValue,
+                      )}
+                      denominator="NOK/incident"
+                    />
                   )}
                   {scenario.changedRemainingRiskProbability && (
-                      <ChangeSetChangedValue
-                          property="Probability"
-                          oldValue={scenario.changedRemainingRiskProbability.oldValue.toString()}
-                          newValue={scenario.changedRemainingRiskProbability.newValue.toString()}
-                          denominator="occurrences/year"
-                      />
+                    <ChangeSetChangedValue
+                      property="Probability"
+                      oldValue={scenario.changedRemainingRiskProbability.oldValue.toString()}
+                      newValue={scenario.changedRemainingRiskProbability.newValue.toString()}
+                      denominator="occurrences/year"
+                    />
                   )}
                 </ChangeSetBox>
               </div>

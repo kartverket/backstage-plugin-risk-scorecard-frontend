@@ -12,7 +12,7 @@ export function ChangeSetBox({ children, type }: ChangeSetBoxProps) {
         backgroundColor: type === 'primary' ? '#FCEBCD' : '#FFFFFF',
         color: '#333333',
         padding: '14px 18px',
-        marginBottom: type === 'primary' ? '24px' : '0',
+        marginBottom: type === 'primary' ? '24px' : '12px',
         height: '100%',
         borderRadius: '24px',
       }}
