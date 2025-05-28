@@ -1,15 +1,32 @@
 import { makeStyles, Theme } from '@material-ui/core';
 
+// Retrieved from Kartverket's colour profile
+const white = '#FFFFFF';
+const orange50 = '#FCEBCD';
+const orange100 = '#FFDD9D';
+const orange300 = '#CF914A';
+const red100 = '#FFE2D4';
+const red200 = '#EBB095';
+const red400 = '#D04A14';
+const red500 = '#A32F00';
+const green100 = '#D0ECD6';
+const green200 = '#9FD2AB';
+const green500 = '#156630';
+const gray50 = '#F5F2F2';
+const gray400 = '#706F6E';
+const gray600 = '#4A4848';
+const gray900 = '#212121';
+
 const removedColor = (theme: Theme) =>
-  theme.palette.type === 'dark' ? '#FFD4C2' : '#D04A14';
+  theme.palette.type === 'dark' ? red100 : red500;
 const addedColor = (theme: Theme) =>
-  theme.palette.type === 'dark' ? '#99EFB6' : '#156630';
+  theme.palette.type === 'dark' ? green100 : green500;
 
 const interactiveColor = (theme: Theme) =>
-  theme.palette.type === 'dark' ? '#99EFB6' : '#156630';
+  theme.palette.type === 'dark' ? green200 : green500;
 
-const fontColorLight = '#FFFFFF';
-const fontColorDark = '#333333';
+const fontColorLight = gray50;
+const fontColorDark = gray900;
 
 const fontSizeTitle = '18px';
 const lineHeightTitle = '26px';
@@ -27,11 +44,11 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     fontSize: fontSizeNormal,
   },
   boxPrimary: {
-    backgroundColor: theme.palette.type === 'dark' ? '#616161' : '#FCEBCD',
+    backgroundColor: theme.palette.type === 'dark' ? gray400 : orange50,
     marginBottom: '24px',
   },
   boxSecondary: {
-    backgroundColor: theme.palette.type === 'dark' ? '#404040' : '#FFFFFF',
+    backgroundColor: theme.palette.type === 'dark' ? gray600 : white,
     marginBottom: '12px',
   },
 
@@ -84,12 +101,12 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     color: fontColorDark,
   },
   tagPrimary: {
-    backgroundColor: '#FFDD9D',
-    borderColor: theme.palette.type === 'dark' ? '#FF9625' : '#333333',
+    backgroundColor: orange100,
+    borderColor: orange300,
   },
   tagDelete: {
-    backgroundColor: '#FF6E60',
-    borderColor: '#C43631',
+    backgroundColor: red200,
+    borderColor: red400,
   },
 
   // ChangeSetTags
