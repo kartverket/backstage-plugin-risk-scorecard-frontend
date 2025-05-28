@@ -33,11 +33,50 @@ export type MigrationStatus = {
   migrationChanges: boolean;
   migrationRequiresNewApproval: boolean;
   migrationVersions?: MigrationVersions;
+  migrationChanges40?: MigrationChanges40;
+  migrationChanges41?: MigrationChanges41;
 };
 
 export type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
+};
+
+export type MigrationChanges41 = {
+  scenarios: MigrationChanges41Scenario[];
+};
+
+export type MigrationChanges41Scenario = {
+  title: string;
+  id: string;
+  changedRiskConsequence?: MigrationChangedValue<number>;
+  changedRiskProbability?: MigrationChangedValue<number>;
+  changedRemainingRiskConsequence?: MigrationChangedValue<number>;
+  changedRemainingRiskProbability?: MigrationChangedValue<number>;
+};
+
+export type MigrationChanges40 = {
+  scenarios: MigrationChanges40Scenario[];
+};
+
+export type MigrationChanges40Scenario = {
+  title: string;
+  id: string;
+  removedExistingActions?: string;
+  changedVulnerabilities: MigrationChangedValue<string>[];
+  changedActions: MigrationChanges40Action[];
+};
+
+export type MigrationChanges40Action = {
+  title: string;
+  id: string;
+  removedOwner?: string;
+  removedDeadline?: string;
+};
+
+export type MigrationChangedValue<T> = {
+  oldValue: T;
+  newValue: T;
 };
 
 export type SopsConfig = {
