@@ -28,6 +28,7 @@ export function ScenarioDrawer() {
   const {
     scenario,
     isDrawerOpen,
+    isEditingAllowed,
     closeScenarioForm,
     submitEditedScenarioToRiSc,
     mapScenarioToFormScenario,
@@ -122,7 +123,7 @@ export function ScenarioDrawer() {
           marginLeft: 'auto',
         }}
       >
-        {!isEditing && (
+        {!isEditing && isEditingAllowed && (
           <Button
             color="primary"
             variant="contained"
@@ -181,17 +182,19 @@ export function ScenarioDrawer() {
             )}
           </Button>
         )}
-        <div ref={deleteScenarioRef}>
-          <Button
-            startIcon={<DeleteIcon />}
-            variant="text"
-            color="primary"
-            onClick={() => setDeleteConfirmationIsOpen(true)}
-            sx={{ marginLeft: 'auto' }}
-          >
-            {t('scenarioDrawer.deleteScenarioButton')}
-          </Button>
-        </div>
+        {isEditingAllowed && (
+          <div ref={deleteScenarioRef}>
+            <Button
+              startIcon={<DeleteIcon />}
+              variant="text"
+              color="primary"
+              onClick={() => setDeleteConfirmationIsOpen(true)}
+              sx={{ marginLeft: 'auto' }}
+            >
+              {t('scenarioDrawer.deleteScenarioButton')}
+            </Button>
+          </div>
+        )}
       </Box>
 
       {response &&

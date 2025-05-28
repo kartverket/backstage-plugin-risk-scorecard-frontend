@@ -22,7 +22,8 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
-import { Settings } from '@mui/icons-material';
+import { Delete, Settings } from '@mui/icons-material';
+import { RiScStatus } from '../../utils/types';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -35,12 +36,18 @@ export function RiScPlugin() {
     return setRiScDialogState(RiScDialogStates.Create);
   }
 
+  function openDeleteRiScDialog() {
+    return setRiScDialogState(RiScDialogStates.Delete);
+  }
+
   function openEditRiScDialog() {
     return setRiScDialogState(RiScDialogStates.EditRiscInfo);
   }
+
   function openEditEncryptionDialog() {
     return setRiScDialogState(RiScDialogStates.EditEncryption);
   }
+
   function closeRiScDialog() {
     return setRiScDialogState(RiScDialogStates.Closed);
   }
@@ -128,7 +135,7 @@ export function RiScPlugin() {
                 <Button
                   startIcon={<AddCircle />}
                   variant="text"
-                  color="primary"
+                  color="success"
                   onClick={openCreateRiScDialog}
                   sx={{
                     minWidth: '205px',
@@ -136,16 +143,29 @@ export function RiScPlugin() {
                 >
                   {t('contentHeader.createNewButton')}
                 </Button>
-                {selectedRiSc && (
-                  <Button
-                    startIcon={<Settings />}
-                    variant="text"
-                    color="primary"
-                    onClick={openEditEncryptionDialog}
-                  >
-                    {t('contentHeader.editEncryption')}
-                  </Button>
-                )}
+                {selectedRiSc &&
+                  selectedRiSc.status !== RiScStatus.DeletionDraft &&
+                  selectedRiSc.status !==
+                    RiScStatus.DeletionSentForApproval && (
+                    <>
+                      <Button
+                        startIcon={<Delete />}
+                        variant="text"
+                        color="error"
+                        onClick={openDeleteRiScDialog}
+                      >
+                        {t('contentHeader.deleteButton')}
+                      </Button>
+                      <Button
+                        startIcon={<Settings />}
+                        variant="text"
+                        color="primary"
+                        onClick={openEditEncryptionDialog}
+                      >
+                        {t('contentHeader.editEncryption')}
+                      </Button>
+                    </>
+                  )}
               </Grid>
             )}
 
@@ -161,7 +181,7 @@ export function RiScPlugin() {
                   <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
                 </Grid>
                 <Grid item xs md={5} lg={4}>
-                  <RiskMatrix riSc={selectedRiSc.content} />
+                  <RiskMatrix riScWithMetadata={selectedRiSc} />
                 </Grid>
               </>
             )}

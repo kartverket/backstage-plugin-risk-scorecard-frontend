@@ -21,6 +21,7 @@ export enum RiScDialogStates {
   Create = 1,
   EditRiscInfo = 2,
   EditEncryption = 3,
+  Delete = 4,
 }
 
 interface RiScDialogProps {
@@ -59,7 +60,8 @@ function RiScStepper({
 
 export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { selectedRiSc, createNewRiSc, updateRiSc, gcpCryptoKeys } = useRiScs();
+  const { selectedRiSc, createNewRiSc, deleteRiSc, updateRiSc, gcpCryptoKeys } =
+    useRiScs();
 
   const {
     register,
@@ -117,6 +119,8 @@ export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
     if (dialogState === RiScDialogStates.Create) {
       createNewRiSc(data, createRiScFrom === CreateRiScFrom.Default);
+    } else if (dialogState === RiScDialogStates.Delete) {
+      deleteRiSc();
     } else {
       // Do manual comparison of contents, as the sopsConfig field contains many values from the backend that are not
       // used or set by the frontend.
@@ -203,6 +207,25 @@ export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
               {t('dictionary.save')}
             </Button>
           )}
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  if (dialogState === RiScDialogStates.Delete) {
+    return (
+      <Dialog open={true} onClose={onClose}>
+        <DialogTitle>{t('deleteDialog.title')}</DialogTitle>
+        <DialogContent>
+          <DialogContent>{t('deleteDialog.confirmationMessage')}</DialogContent>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onClose}>
+            {t('dictionary.cancel')}
+          </Button>
+          <Button variant="contained" onClick={handleFinish}>
+            {t('dictionary.delete')}
+          </Button>
         </DialogActions>
       </Dialog>
     );
