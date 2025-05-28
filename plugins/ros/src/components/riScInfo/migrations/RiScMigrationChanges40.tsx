@@ -23,7 +23,9 @@ export function RiScMigrationChanges40({
       <MigrationTitle
         from="3.3"
         to="4.0"
-        migrationExplanation="This migration removes the owner and deadline fields from actions, removes existing actions and updates values for vulnerabilities."
+        migrationExplanation={t(
+          'migrationDialog.migration41.changeExplanation',
+        )}
         changelogUrl="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md#40"
       />
       {changes.scenarios.map(scenario => (

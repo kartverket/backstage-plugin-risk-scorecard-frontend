@@ -145,6 +145,8 @@ export const pluginRiScMessages = {
     checkboxLabel:
       'I confirm that I have reviewed and wish to save the changes made during the migration.',
     migration40: {
+      changeExplanation:
+        'This migration changes preset values for consequence and probability.',
       owner: 'Responsible',
       deadline: 'Deadline',
       existingActions: 'Existing actions',
@@ -160,6 +162,12 @@ export const pluginRiScMessages = {
         'Unauthorized access': 'Unauthorized use',
         'Unmonitored use': 'Unmonitored use',
       },
+    },
+    migration41: {
+      changeExplanation:
+        'This migration removes the owner and deadline fields from actions, removes existing actions and updates values for vulnerabilities.',
+      nokPerIncident: 'NOK/incident',
+      occurrencesPerYear: 'occurrences/year',
     },
   },
   scenarioTable: {
@@ -652,6 +660,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.tagAction': 'Tiltak',
           'migrationDialog.checkboxLabel':
             'Jeg bekrefter at jeg har gjennomgått og ønsker å lagre endringene som er gjort under migreringen.',
+          'migrationDialog.migration40.changeExplanation':
+            'Denne migreringen endrer standard verdiene for konsekvens og sannsynlighet.',
           'migrationDialog.migration40.owner': 'Ansvarlig',
           'migrationDialog.migration40.deadline': 'Frist',
           'migrationDialog.migration40.existingActions': 'Eksisterende tiltak',
@@ -674,6 +684,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Uovervåket bruk',
           'migrationDialog.migration40.vulnerabilities.User repudiation':
             'Benekte brukerhandling',
+          'migrationDialog.migration41.changeExplanation':
+            'Denne migreringen fjerner ansvarlig («owner») og frist («deadline») feltene fra tiltak, fjerner eksisterende tiltak feltet og oppdaterer verdier for sårbarheter.',
+          'migrationDialog.migration41.nokPerIncident': 'NOK/hendelse',
+          'migrationDialog.migration41.occurrencesPerYear': 'hendelser/år',
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',

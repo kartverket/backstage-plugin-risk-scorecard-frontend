@@ -22,7 +22,9 @@ export function RiScMigrationChanges41({
       <MigrationTitle
         from="4.0"
         to="4.1"
-        migrationExplanation="This migration changes preset values for consequence and probability."
+        migrationExplanation={t(
+          'migrationDialog.migration41.changeExplanation',
+        )}
         changelogUrl="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md#41"
       />
       {changes.scenarios.map(scenario => (
@@ -45,25 +47,29 @@ export function RiScMigrationChanges41({
               scenario.changedRiskProbability) && (
               <div style={{ gridColumn: 1 }}>
                 <ChangeSetBox type="secondary">
-                  <ChangeSetBoxTitle title="Initial risk" />
+                  <ChangeSetBoxTitle title={t('dictionary.initialRisk')} />
                   {scenario.changedRiskConsequence && (
                     <ChangeSetChangedValue
-                      propertyName="Consequence"
+                      propertyName={t('dictionary.consequence')}
                       oldValue={formatNOK(
                         scenario.changedRiskConsequence.oldValue,
                       )}
                       newValue={formatNOK(
                         scenario.changedRiskConsequence.newValue,
                       )}
-                      denominator="NOK/incident"
+                      denominator={t(
+                        'migrationDialog.migration41.nokPerIncident',
+                      )}
                     />
                   )}
                   {scenario.changedRiskProbability && (
                     <ChangeSetChangedValue
-                      propertyName="Probability"
+                      propertyName={t('dictionary.probability')}
                       oldValue={scenario.changedRiskProbability.oldValue.toString()}
                       newValue={scenario.changedRiskProbability.newValue.toString()}
-                      denominator="occurrences/year"
+                      denominator={t(
+                        'migrationDialog.migration41.occurrencesPerYear',
+                      )}
                     />
                   )}
                 </ChangeSetBox>
@@ -73,25 +79,29 @@ export function RiScMigrationChanges41({
               scenario.changedRemainingRiskProbability) && (
               <div style={{ gridColumn: 2 }}>
                 <ChangeSetBox type="secondary">
-                  <ChangeSetBoxTitle title="Remaining risk" />
+                  <ChangeSetBoxTitle title={t('dictionary.restRisk')} />
                   {scenario.changedRemainingRiskConsequence && (
                     <ChangeSetChangedValue
-                      propertyName="Consequence"
+                      propertyName={t('dictionary.consequence')}
                       oldValue={formatNOK(
                         scenario.changedRemainingRiskConsequence.oldValue,
                       )}
                       newValue={formatNOK(
                         scenario.changedRemainingRiskConsequence.newValue,
                       )}
-                      denominator="NOK/incident"
+                      denominator={t(
+                        'migrationDialog.migration41.nokPerIncident',
+                      )}
                     />
                   )}
                   {scenario.changedRemainingRiskProbability && (
                     <ChangeSetChangedValue
-                      propertyName="Probability"
+                      propertyName={t('dictionary.probability')}
                       oldValue={scenario.changedRemainingRiskProbability.oldValue.toString()}
                       newValue={scenario.changedRemainingRiskProbability.newValue.toString()}
-                      denominator="occurrences/year"
+                      denominator={t(
+                        'migrationDialog.migration41.occurrencesPerYear',
+                      )}
                     />
                   )}
                 </ChangeSetBox>
