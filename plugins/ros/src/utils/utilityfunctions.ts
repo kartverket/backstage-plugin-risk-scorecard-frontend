@@ -1,4 +1,4 @@
-import { formatISO } from 'date-fns';
+import { DateTime } from 'luxon';
 import { UpdateStatus } from '../contexts/RiScContext';
 import {
   ActionStatusOptions,
@@ -162,19 +162,20 @@ export function formatNumber(
 }
 
 export function parseISODateFromEncryptedROS(date?: string): string | null {
-  // Early return if date is null, could happen from recursion
-  if (!date) {
+  // Early return if date is null or too short for an ISO date string, could happen from recursion
+  if (!date || date.length < 10) {
     return null;
   }
+
   try {
-    return formatISO(date);
-  } catch (e) {
-    if (e instanceof RangeError) {
-      // Could not parse string to date
-      // Sometimes this is because SOPS saved the date with ekstra escaped quotations: \"date\"
-      // Trim the string and try again
+    const parsedDate = DateTime.fromISO(date, { setZone: true });
+
+    if (!parsedDate.isValid) {
       return parseISODateFromEncryptedROS(date.substring(1, date.length - 1));
     }
+
+    return parsedDate.toISO({ suppressMilliseconds: true });
+  } catch (e) {
     return null;
   }
 }
