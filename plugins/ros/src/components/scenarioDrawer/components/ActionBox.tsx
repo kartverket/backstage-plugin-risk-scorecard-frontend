@@ -76,7 +76,6 @@ export function ActionBox({
   }
 
   function confirmDeleteAction(): void {
-    remove(index);
     deleteAction(remove, index, onSubmit);
     setDeleteActionConfirmationIsOpen(false);
   }
