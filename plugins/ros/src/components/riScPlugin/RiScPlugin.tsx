@@ -31,7 +31,6 @@ import TextField from '@mui/material/TextField';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import { RiScStatus } from '../../utils/types';
 
-
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { postFeedback } = useAuthenticatedFetch();
