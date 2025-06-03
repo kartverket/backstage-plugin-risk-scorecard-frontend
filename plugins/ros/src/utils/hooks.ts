@@ -244,6 +244,18 @@ export function useAuthenticatedFetch() {
     }
   }
 
+  function postFeedback(feedback: string) {
+    return identityApi.getProfileInfo().then(() =>
+      fullyAuthenticatedFetch<string, string>(
+        `${riScUri}/feedback`,
+        'POST',
+        () => {},
+        () => {},
+        JSON.stringify(feedback),
+      ),
+    );
+  }
+
   function fetchGcpCryptoKeys(
     onSuccess: (response: GcpCryptoKeyObject[]) => void,
     onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
@@ -358,6 +370,7 @@ export function useAuthenticatedFetch() {
     response,
     setResponse,
     fetchDifference,
+    postFeedback,
   };
 }
 
