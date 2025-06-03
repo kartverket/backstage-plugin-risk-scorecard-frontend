@@ -116,7 +116,7 @@ export function ActionFormItem({
                 message: t('scenarioDrawer.action.urlError'),
               },
             })}
-            label={urlLabel}
+            label={<UrlLabel />}
             helperText={formState.errors.actions?.[index]?.url?.message}
             error={!!formState.errors.actions?.[index]?.url?.message}
           />
@@ -133,24 +133,27 @@ export function ActionFormItem({
   );
 }
 
-export const urlLabel = (
-  <Box
-    sx={{
-      display: 'flex',
-      gap: 1,
-      alignItems: 'center',
-    }}
-  >
-    {t('dictionary.url')}
-    <Tooltip
-      title={
-        <Typography variant="body2">
-          {t('scenarioDrawer.measureTab.urlDescription')}
-        </Typography>
-      }
-      arrow
+export function UrlLabel(): JSX.Element {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 1,
+        alignItems: 'center',
+      }}
     >
-      <HelpIcon color="primary" />
-    </Tooltip>
-  </Box>
-);
+      {t('dictionary.url')}
+      <Tooltip
+        title={
+          <Typography variant="body2">
+            {t('scenarioDrawer.measureTab.urlDescription')}
+          </Typography>
+        }
+        arrow
+      >
+        <HelpIcon color="primary" />
+      </Tooltip>
+    </Box>
+  );
+}
