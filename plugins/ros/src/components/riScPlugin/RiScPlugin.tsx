@@ -34,7 +34,7 @@ import { RiScStatus } from '../../utils/types';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-    const { postFeedback } = useAuthenticatedFetch();
+  const { postFeedback } = useAuthenticatedFetch();
 
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
@@ -43,7 +43,6 @@ export function RiScPlugin() {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackSent, setFeedbackSent] = useState(false);
-
 
   function openCreateRiScDialog() {
     return setRiScDialogState(RiScDialogStates.Create);
@@ -121,10 +120,10 @@ export function RiScPlugin() {
             >
               <SupportButton />
               <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => setFeedbackOpen(true)}
-                  sx={{ borderRadius: '6px', fontWeight: 'bold'}}
+                variant="outlined"
+                color="primary"
+                onClick={() => setFeedbackOpen(true)}
+                sx={{ borderRadius: '6px', fontWeight: 'bold' }}
               >
                 Tilbakemelding
               </Button>
@@ -213,55 +212,71 @@ export function RiScPlugin() {
       {riScDialogState !== RiScDialogStates.Closed && (
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
-      <Dialog open={feedbackOpen} onClose={() => {
-        setFeedbackOpen(false);
-        setFeedbackSent(false);
-      }} fullWidth maxWidth="sm">
+      <Dialog
+        open={feedbackOpen}
+        onClose={() => {
+          setFeedbackOpen(false);
+          setFeedbackSent(false);
+        }}
+        fullWidth
+        maxWidth="sm"
+      >
         {!feedbackSent && <DialogTitle>Send tilbakemelding</DialogTitle>}
         <DialogContent>
           {feedbackSent ? (
-              <Typography align="center" variant="h4" sx={{ py: 8, display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                Takk for tilbakemeldingen
-              </Typography>
+            <Typography
+              align="center"
+              variant="h4"
+              sx={{
+                py: 8,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+              }}
+            >
+              Takk for tilbakemeldingen
+            </Typography>
           ) : (
-              <TextField
-                  margin="dense"
-                  label="Din tilbakemelding"
-                  fullWidth
-                  multiline
-                  minRows={4}
-                  value={feedbackText}
-                  onChange={(e) => setFeedbackText(e.target.value)}
-              />
+            <TextField
+              margin="dense"
+              label="Din tilbakemelding"
+              fullWidth
+              multiline
+              minRows={4}
+              value={feedbackText}
+              onChange={e => setFeedbackText(e.target.value)}
+            />
           )}
         </DialogContent>
         <DialogActions>
           {feedbackSent ? (
-              <Button onClick={() => {
+            <Button
+              onClick={() => {
                 setFeedbackOpen(false);
                 setFeedbackSent(false);
                 setFeedbackText('');
-              }}>
-                Lukk
-              </Button>
+              }}
+            >
+              Lukk
+            </Button>
           ) : (
-              <>
-                <Button onClick={() => setFeedbackOpen(false)}>Avbryt</Button>
-                <Button
-                    onClick={async () => {
-                      await postFeedback(feedbackText);
-                      setFeedbackSent(true);
-                    }}
-                    disabled={!feedbackText.trim()}
-                    variant="contained"
-                >
-                  Send
-                </Button>
-              </>
+            <>
+              <Button onClick={() => setFeedbackOpen(false)}>Avbryt</Button>
+              <Button
+                onClick={async () => {
+                  await postFeedback(feedbackText);
+                  setFeedbackSent(true);
+                }}
+                disabled={!feedbackText.trim()}
+                variant="contained"
+              >
+                Send
+              </Button>
+            </>
           )}
         </DialogActions>
       </Dialog>
-
 
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>

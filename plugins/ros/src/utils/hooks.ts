@@ -244,17 +244,15 @@ export function useAuthenticatedFetch() {
     }
   }
 
-  function postFeedback(
-      feedback: string,
-) {
+  function postFeedback(feedback: string) {
     return identityApi.getProfileInfo().then(() =>
-        fullyAuthenticatedFetch<string, string>(
-            `${riScUri}/feedback`,
-            'POST',
-            () => {},
-            () => {},
-            JSON.stringify(feedback),
-        ),
+      fullyAuthenticatedFetch<string, string>(
+        `${riScUri}/feedback`,
+        'POST',
+        () => {},
+        () => {},
+        JSON.stringify(feedback),
+      ),
     );
   }
 
