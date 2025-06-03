@@ -23,16 +23,17 @@ import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { Settings } from '@mui/icons-material';
-import DeleteIcon from "@mui/icons-material/Delete";
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
+import {useAuthenticatedFetch} from "../../utils/hooks.ts";
 
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+    const { postFeedback } = useAuthenticatedFetch();
 
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
@@ -56,12 +57,6 @@ export function RiScPlugin() {
   function closeRiScDialog() {
     return setRiScDialogState(RiScDialogStates.Closed);
   }
-
-  function sendFeedback(message: string) {
-    // Her kan du senere sende til Slack/api osv.
-    setFeedbackSent(true);
-  }
-
 
   const {
     selectedRiSc,
@@ -119,9 +114,10 @@ export function RiScPlugin() {
             >
               <SupportButton />
               <Button
-                  startIcon={<DeleteIcon />}
+                  variant="outlined"
                   color="primary"
                   onClick={() => setFeedbackOpen(true)}
+                  sx={{ borderRadius: '6px', fontWeight: 'bold'}}
               >
                 Tilbakemelding
               </Button>
@@ -201,10 +197,12 @@ export function RiScPlugin() {
         setFeedbackOpen(false);
         setFeedbackSent(false);
       }} fullWidth maxWidth="sm">
-        <DialogTitle>Send tilbakemelding</DialogTitle>
+        {!feedbackSent && <DialogTitle>Send tilbakemelding</DialogTitle>}
         <DialogContent>
           {feedbackSent ? (
-              <Typography>Takk for tilbakemeldingen!</Typography>
+              <Typography align="center" variant="h4" sx={{ py: 8, display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                Takk for tilbakemeldingen
+              </Typography>
           ) : (
               <TextField
                   margin="dense"
@@ -230,8 +228,12 @@ export function RiScPlugin() {
               <>
                 <Button onClick={() => setFeedbackOpen(false)}>Avbryt</Button>
                 <Button
-                    onClick={() => sendFeedback(feedbackText)}
+                    onClick={async () => {
+                      await postFeedback(feedbackText);
+                      setFeedbackSent(true);
+                    }}
                     disabled={!feedbackText.trim()}
+                    variant="contained"
                 >
                   Send
                 </Button>
