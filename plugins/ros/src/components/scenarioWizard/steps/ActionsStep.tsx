@@ -22,6 +22,9 @@ import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
 import { heading2, heading3, label, subtitle2 } from '../../common/typography';
 import { DeleteActionConfirmation } from '../../scenarioDrawer/components/DeleteConfirmation';
+import { Tooltip } from '@material-ui/core';
+import HelpIcon from '@mui/icons-material/Help';
+import { urlLabel } from '../../scenarioDrawer/components/ActionFormItem';
 
 export function ActionsStep({
   formMethods,
@@ -141,7 +144,7 @@ export function ActionsStep({
                         message: t('scenarioDrawer.action.urlError'),
                       },
                     })}
-                    label={t('dictionary.url')}
+                    label={urlLabel}
                     helperText={formState.errors.actions?.[index]?.url?.message}
                     error={!!formState.errors.actions?.[index]?.url?.message}
                   />
