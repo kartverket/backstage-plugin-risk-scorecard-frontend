@@ -18,6 +18,7 @@ import {
   SopsConfigDTO,
   profileInfoToDTOString,
   riScToDTOString,
+  DeleteRiScResultDTO,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import {
@@ -61,6 +62,11 @@ export function useAuthenticatedFetch() {
     return `${riScUri}/${id}`;
   }
 
+  function uriToDeleteRiSc(id: string) {
+    // URLS.backend.deleteRiSc
+    return `${riScUri}/${id}`;
+  }
+
   function uriToPublishRiSc(id: string) {
     // URLS.backend.publishRiSc
     return `${riScUri}/publish/${id}`;
@@ -96,7 +102,7 @@ export function useAuthenticatedFetch() {
 
   function fullyAuthenticatedFetch<T, K>(
     uri: string,
-    method: 'GET' | 'POST' | 'PUT',
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     onSuccess: (response: T) => void,
     onError: (error: K, rejectedLogin: boolean) => void,
     body?: string,
@@ -339,11 +345,29 @@ export function useAuthenticatedFetch() {
     );
   }
 
+  function deleteRiScs(
+    riScId: string,
+    onSuccess?: (response: DeleteRiScResultDTO) => void,
+    onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
+  ) {
+    fullyAuthenticatedFetch<DeleteRiScResultDTO, ProcessRiScResultDTO>(
+      uriToDeleteRiSc(riScId),
+      'DELETE',
+      res => {
+        if (onSuccess) onSuccess(res);
+      },
+      (error, rejectedLogin) => {
+        if (onError) onError(error, rejectedLogin);
+      },
+    );
+  }
+
   return {
     fetchRiScs,
     fetchGcpCryptoKeys,
     postRiScs,
     putRiScs,
+    deleteRiScs,
     publishRiScs,
     response,
     setResponse,

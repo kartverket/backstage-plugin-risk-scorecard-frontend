@@ -81,5 +81,6 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     gap: theme.spacing(1),
     alignItems: 'center',
+    justifyContent: 'center',
   },
 }));

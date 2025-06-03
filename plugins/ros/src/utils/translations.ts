@@ -8,6 +8,7 @@ export const pluginRiScMessages = {
     title: 'Risk scorecard',
     createNewButton: 'Create new scorecard',
     editEncryption: 'Edit encryption',
+    deleteButton: 'Delete scoreboard',
   },
   dictionary: {
     click: 'Click',
@@ -83,6 +84,9 @@ export const pluginRiScMessages = {
       draft: 'Draft',
       waiting: 'Awaiting approval',
       published: 'Published',
+      draftDeletion: 'Marked for deletion',
+      waitingDeletion: 'Awaiting deletion',
+      deletionApproval: 'The risk owner can review and accept the deletion.',
     },
     updatedStatus: {
       UPDATED: 'Updated status icon',
@@ -113,26 +117,58 @@ export const pluginRiScMessages = {
       },
     },
     editing: 'You can now start editing',
-    approveButton: 'Accept risks', // Godkjenn ROS
+    approveButtonUpdate: 'Accept risks', // Approve RiSc
+    approveButtonDelete: 'Accept deletion', // Approve deletion of RiSc
     prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
-    prStatus2: ' to publish the scorecard.',
+    prStatus2Update: ' to publish the scorecard.', // Approve RiSc
+    prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
     moreInformationButton: 'More information', // Lagre ROS migrering
   },
   publishDialog: {
-    title: 'Accept risks', // Godkjenn ROS
-    checkboxLabel:
+    titleUpdate: 'Accept risks', // Approve ROS
+    titleDelete: 'Accept deletion', // Delete ROS
+    checkboxLabelUpdate:
       'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
+    checkboxLabelDelete:
+      'I confirm that I am the risk owner and accept the deletion of this risk scorecard.',
   },
   migrationDialog: {
     description:
-      'The changes have been done to adhere to the latest schema version. In this case, the RiSc was update to ',
-    description2: 'from',
-    description3: '. Review the ',
-    description4: 'for more information.',
-    changelog: 'schema changelog',
+      'The changes have been made to adhere to the latest schema version.',
+    migrationTitle: 'Migration from {{from}} to {{to}}',
+    schemaVersion: 'Schema version',
+    schemaChangelog: 'Schema changelog',
+    tagRemoved: 'Removed',
+    tagScenario: 'Risk scenario',
+    tagAction: 'Action',
     title: 'Save changes', // Lagre ROS migrering
     checkboxLabel:
       'I confirm that I have reviewed and wish to save the changes made during the migration.',
+    migration40: {
+      changeExplanation:
+        'This migration changes preset values for consequence and probability.',
+      owner: 'Responsible',
+      deadline: 'Deadline',
+      existingActions: 'Existing actions',
+      vulnerabilitiesTitle: 'Vulnerabilities',
+      vulnerabilities: {
+        'Compromised admin user': 'Compromised admin user',
+        'Denial of service': 'Denial of service',
+        'Disclosed secret': 'Disclosed secret',
+        'Escalation of rights': 'Escalation of rights',
+        'Excessive use': 'Excessive use',
+        'Information leak': 'Information leak',
+        'User repudiation': 'User repudiation',
+        'Unauthorized access': 'Unauthorized use',
+        'Unmonitored use': 'Unmonitored use',
+      },
+    },
+    migration41: {
+      changeExplanation:
+        'This migration removes the owner and deadline fields from actions, removes existing actions and updates values for vulnerabilities.',
+      nokPerIncident: 'NOK/incident',
+      occurrencesPerYear: 'occurrences/year',
+    },
   },
   scenarioTable: {
     title: 'Risk scenarios',
@@ -433,6 +469,7 @@ export const pluginRiScMessages = {
     NoWriteAccessToRepository:
       'Unable to update RiSc. You do not have write access to this repository.',
     ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
+    ErrorWhenDeletingRiSc: 'Failed to delete risk scorecard',
     ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
     ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
     ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
@@ -448,6 +485,9 @@ export const pluginRiScMessages = {
   infoMessages: {
     OpenedPullRequest: 'Successfully opened pull request',
     CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
+    DeletedRiSc: 'Risk scorecard deleted',
+    DeletedRiScRequiresApproval:
+      'Risk scorecard staged for deletion, requires approval',
     UpdatedRiSc: 'Risk scorecard updated',
     UpdatedSops: 'SOPS configuration updated',
     UpdatedRiScRequiresNewApproval:
@@ -458,6 +498,10 @@ export const pluginRiScMessages = {
     NoSopsConfigFound:
       'No SOPS configuration present on default branch of the GitHub repository',
     CreatedSops: 'SOPS configuration created successfully',
+  },
+  deleteDialog: {
+    title: 'Delete Risk Scorecard',
+    confirmationMessage: 'Are you sure you want to delete this risk scorecard?',
   },
 } as const;
 
@@ -475,6 +519,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
           'contentHeader.editEncryption': 'Rediger kryptering',
+          'contentHeader.deleteButton': 'Slett analyse',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.click': 'Klikk',
           'dictionary.here': 'her',
@@ -555,15 +600,21 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.draft': 'Utkast',
           'rosStatus.statusBadge.waiting': 'Avventer godkjenning',
           'rosStatus.statusBadge.published': 'Publisert',
+          'rosStatus.statusBadge.draftDeletion': 'Markert for sletting',
+          'rosStatus.statusBadge.waitingDeletion': 'Venter på sletting',
+          'rosStatus.statusBadge.deletionApproval':
+            'Risikoeier kan gå igjennom og godkjenne slettingen.',
           'rosStatus.lastModified': 'Sist publisert: ',
           'rosStatus.daysSinceLastModified':
             '{{days}} dager og {{numCommits}} commits siden',
           'rosStatus.notPublishedYet': 'RoS er ikke publisert enda',
           'rosStatus.errorMessage': 'Kunne ikke hente status',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
-          'rosStatus.approveButton': 'Godkjenn ROS',
+          'rosStatus.approveButtonUpdate': 'Godkjenn ROS',
+          'rosStatus.approveButtonDelete': 'Godkjenn sletting',
           'rosStatus.prStatus': ' Merge pull requesten i ',
-          'rosStatus.prStatus2': " for å publisere ROS'en.",
+          'rosStatus.prStatus2Update': " for å publisere ROS'en.",
+          'rosStatus.prStatus2Delete': " for å slette ROS'en.",
           'rosStatus.moreInformationButton': 'Mer informasjon',
           'rosStatus.difference.description':
             'Oppsummering av endringer som må godkjennes av risikoeier.',
@@ -591,20 +642,52 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.updatedStatus.VERY_OUTDATED': 'Veldig utdatert statusikon',
           'rosStatus.updatedStatus.error': 'Feil statusikon',
           'rosStatus.updatedStatus.disabled': 'Deaktivert statusikon',
-          'publishDialog.title': 'Godkjenn ROS-analyse',
-          'publishDialog.checkboxLabel':
+          'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
+          'publishDialog.titleDelete': 'Godkjenn sletting',
+          'publishDialog.checkboxLabelUpdate':
             'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
+          'publishDialog.checkboxLabelDelete':
+            'Jeg bekrefter at jeg er risikoeier og godtar slettingen av denne risiko- og sårbarhetsanalysen.',
 
           'migrationDialog.title': 'Lagre endringer',
           'migrationDialog.description':
-            'Endringene er gjort for å følge den nyeste skjema versjonen. I dette tilfellet ble ROS-analysen oppdatert til ',
-          'migrationDialog.description2': 'fra',
-          'migrationDialog.description3': '. Se ',
-          'migrationDialog.description4': 'for mer informasjon.',
-          'migrationDialog.changelog': 'endringslogg for skjema',
-
+            'Endringene er gjort for å følge den nyeste skjemaversjonen.',
+          'migrationDialog.migrationTitle': 'Migrering fra {{from}} til {{to}}',
+          'migrationDialog.schemaVersion': 'Skjemaversjon',
+          'migrationDialog.schemaChangelog': 'Endringslogg for skjema',
+          'migrationDialog.tagRemoved': 'Fjernet',
+          'migrationDialog.tagScenario': 'Riskscenario',
+          'migrationDialog.tagAction': 'Tiltak',
           'migrationDialog.checkboxLabel':
             'Jeg bekrefter at jeg har gjennomgått og ønsker å lagre endringene som er gjort under migreringen.',
+          'migrationDialog.migration40.changeExplanation':
+            'Denne migreringen endrer standard verdiene for konsekvens og sannsynlighet.',
+          'migrationDialog.migration40.owner': 'Ansvarlig',
+          'migrationDialog.migration40.deadline': 'Frist',
+          'migrationDialog.migration40.existingActions': 'Eksisterende tiltak',
+          'migrationDialog.migration40.vulnerabilitiesTitle': 'Sårbarheter',
+          'migrationDialog.migration40.vulnerabilities.Compromised admin user':
+            'Kompromittert adminbruker',
+          'migrationDialog.migration40.vulnerabilities.Denial of service':
+            'Tjenestenekt',
+          'migrationDialog.migration40.vulnerabilities.Disclosed secret':
+            'Lekket hemmelighet',
+          'migrationDialog.migration40.vulnerabilities.Escalation of rights':
+            'Rettighetseskalering',
+          'migrationDialog.migration40.vulnerabilities.Excessive use':
+            'Overdreven bruk',
+          'migrationDialog.migration40.vulnerabilities.Information leak':
+            'Informasjonslekkasje',
+          'migrationDialog.migration40.vulnerabilities.Unauthorized access':
+            'Uautorisert tilgang',
+          'migrationDialog.migration40.vulnerabilities.Unmonitored use':
+            'Uovervåket bruk',
+          'migrationDialog.migration40.vulnerabilities.User repudiation':
+            'Benekte brukerhandling',
+          'migrationDialog.migration41.changeExplanation':
+            'Denne migreringen fjerner ansvarlig («owner») og frist («deadline») feltene fra tiltak, fjerner eksisterende tiltak feltet og oppdaterer verdier for sårbarheter.',
+          'migrationDialog.migration41.nokPerIncident': 'NOK/hendelse',
+          'migrationDialog.migration41.occurrencesPerYear': 'hendelser/år',
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
@@ -878,6 +961,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til dette repoet.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
+          'errorMessages.ErrorWhenDeletingRiSc':
+            'Kunne ikke slette risiko- og sårbarhetsanalyse',
           'errorMessages.ErrorWhenCreatingRiSc':
             'Kunne ikke opprette risiko- og sårbarhetsanalyse',
           'errorMessages.RiScDoesNotExist':
@@ -901,6 +986,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
+          'infoMessages.DeletedRiSc':
+            'Risiko- og sårbarhetsanalysen ble slettet',
+          'infoMessages.DeletedRiScRequiresApproval':
+            'Risiko- og sårbarhetsanalysen ble markert for sletting og trenger godkjenning',
           'infoMessages.UpdatedRiSc':
             'Risiko- og sårbarhetsanalysen ble oppdatert',
           'infoMessages.UpdatedSops': 'SOPS-konfigurasjon oppdatert',
@@ -913,6 +1002,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.NoSopsConfigFound':
             'Ingen SOPS-konfigurasjon funnet på default branchen til GitHub-repoet',
           'infoMessages.CreatedSops': 'SOPS-konfigurasjon opprettet',
+          'deleteDialog.title': 'Slett risiko- og sårbarhetsanalyse',
+          'deleteDialog.confirmationMessage':
+            'Er du sikker på at du vil slette denne risiko- og sårbarhetsanalysen?',
         },
       }),
   },
