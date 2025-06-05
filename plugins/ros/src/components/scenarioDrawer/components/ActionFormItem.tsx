@@ -19,6 +19,8 @@ import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
 import { heading3 } from '../../common/typography';
+import HelpIcon from '@mui/icons-material/Help';
+import { Tooltip } from '@material-ui/core';
 
 type ActionFormItemProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -114,7 +116,7 @@ export function ActionFormItem({
                 message: t('scenarioDrawer.action.urlError'),
               },
             })}
-            label={t('dictionary.url')}
+            label={<UrlLabel />}
             helperText={formState.errors.actions?.[index]?.url?.message}
             error={!!formState.errors.actions?.[index]?.url?.message}
           />
@@ -128,5 +130,30 @@ export function ActionFormItem({
         </Box>
       </Box>
     </>
+  );
+}
+
+export function UrlLabel(): JSX.Element {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 1,
+        alignItems: 'center',
+      }}
+    >
+      {t('dictionary.url')}
+      <Tooltip
+        title={
+          <Typography variant="body2">
+            {t('scenarioDrawer.measureTab.urlDescription')}
+          </Typography>
+        }
+        arrow
+      >
+        <HelpIcon color="primary" />
+      </Tooltip>
+    </Box>
   );
 }
