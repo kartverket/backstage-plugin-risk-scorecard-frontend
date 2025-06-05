@@ -358,7 +358,7 @@ export const pluginRiScMessages = {
       addMeasureButton: 'Add planned action',
       plannedMeasures: 'Planned actions',
       addMeasureTitleError: 'Action title is required',
-      urlDescription: 'E.g. link to Jira task',
+      urlDescription: 'For example, link to Jira task',
     },
     restRiskTab: {
       subtitle:
@@ -871,7 +871,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.measureTab.addMeasureTitleError':
             'Tiltak må ha en tittel',
           'scenarioDrawer.measureTab.urlDescription':
-            'F.eks. link til Jira-oppgave',
+            'For eksempel lenke til Jira-oppgave',
           'consequenceTable.rows.1': 'Ubetydelig',
           'consequenceTable.rows.2': 'Liten',
           'consequenceTable.rows.3': 'Moderat',
