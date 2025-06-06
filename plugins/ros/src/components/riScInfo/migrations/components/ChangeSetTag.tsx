@@ -2,14 +2,19 @@ import { useChangeSetStyles } from './changeSetStyles.ts';
 
 interface ChangeSetTagProps {
   text: string;
-  type: 'primary' | 'delete';
+  type: 'primary' | 'delete' | 'added';
 }
 
 export function ChangeSetTag({ text, type }: ChangeSetTagProps) {
   const styles = useChangeSetStyles();
+  const typeStyle = {
+    'primary': styles.tagPrimary,
+    'delete': styles.tagDelete,
+    'added': styles.tagAdded,
+  }
   return (
     <div
-      className={`${styles.tag} ${type === 'primary' ? styles.tagPrimary : styles.tagDelete}`}
+      className={`${styles.tag} ${typeStyle[type]}`}
     >
       {text}
     </div>

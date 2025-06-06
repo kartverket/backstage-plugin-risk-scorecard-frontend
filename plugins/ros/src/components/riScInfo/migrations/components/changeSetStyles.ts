@@ -11,6 +11,7 @@ const red400 = '#D04A14';
 const red500 = '#A32F00';
 const green100 = '#D0ECD6';
 const green200 = '#9FD2AB';
+const green300 = '#66B077';
 const green500 = '#156630';
 const gray50 = '#F5F2F2';
 const gray400 = '#706F6E';
@@ -107,6 +108,10 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
   tagDelete: {
     backgroundColor: red200,
     borderColor: red400,
+  },
+  tagAdded: {
+    backgroundColor: green100,
+    borderColor: green300,
   },
 
   // ChangeSetTags
