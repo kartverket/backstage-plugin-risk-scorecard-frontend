@@ -23,7 +23,7 @@ const removedColor = (theme: Theme) =>
 const addedColor = (theme: Theme) =>
   theme.palette.type === 'dark' ? green100 : green500;
 
-const interactiveColor = (theme: Theme) =>
+export const interactiveColor = (theme: Theme) =>
   theme.palette.type === 'dark' ? green200 : green500;
 
 const fontColorLight = gray50;
@@ -32,7 +32,7 @@ const fontColorDark = gray900;
 const fontSizeTitle = '18px';
 const lineHeightTitle = '26px';
 const fontSizeNormal = '14px';
-const fontWeightBold = 700;
+export const fontWeightBold = 700;
 const fontWeightSemiBold = 500;
 
 export const useChangeSetStyles = makeStyles((theme: Theme) => ({
@@ -135,17 +135,5 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     fontWeight: fontWeightBold,
     fontSize: fontSizeNormal,
     marginBottom: '12px',
-  },
-
-  // MigrationTitle
-  migrationTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingRight: '4px',
-  },
-  migrationChangelog: {
-    color: interactiveColor(theme),
-    fontWeight: fontWeightBold,
   },
 }));

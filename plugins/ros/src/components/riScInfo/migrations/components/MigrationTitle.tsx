@@ -1,8 +1,8 @@
-import { ChangeSetTitle } from './ChangeSetTitle.tsx';
+import { ChangeSetTitle } from '../../changeset/components/ChangeSetTitle.tsx';
 import { IconButton, Tooltip } from '@material-ui/core';
 import Link from '@mui/material/Link';
 import { HelpIcon } from '@backstage/core-components';
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import { useChangeSetStyles } from '../../changeset/components/changeSetStyles.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../../utils/translations.ts';
 
