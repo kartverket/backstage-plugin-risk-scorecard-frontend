@@ -1,6 +1,6 @@
-import { ChangeSetTitle } from './components/ChangeSetTitle.tsx';
-import { ChangeSetBox } from './components/ChangeSetBox.tsx';
-import { ChangeSetChangedValue } from './components/ChangeSetChangedValue.tsx';
+import { ChangeSetTitle } from '../changeset/components/ChangeSetTitle.tsx';
+import { ChangeSetBox } from '../changeset/components/ChangeSetBox.tsx';
+import { ChangeSetChangedValue } from '../changeset/components/ChangeSetChangedValue.tsx';
 import { RiScMigrationChanges40 } from './RiScMigrationChanges40.tsx';
 import { RiScMigrationChanges41 } from './RiScMigrationChanges41.tsx';
 import { MigrationStatus } from '../../../utils/types.ts';

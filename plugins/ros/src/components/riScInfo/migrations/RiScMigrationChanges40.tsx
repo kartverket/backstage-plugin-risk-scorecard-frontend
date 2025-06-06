@@ -1,12 +1,12 @@
 import { MigrationChanges40 } from '../../../utils/types.ts';
 import { MigrationTitle } from './components/MigrationTitle.tsx';
-import { ChangeSetBox } from './components/ChangeSetBox.tsx';
-import { ChangeSetTag } from './components/ChangeSetTag.tsx';
-import { ChangeSetChangedValue } from './components/ChangeSetChangedValue.tsx';
-import { ChangeSetBoxTitle } from './components/ChangeSetBoxTitle.tsx';
-import { ChangeSetTags } from './components/ChangeSetTags.tsx';
-import { ChangeSetText } from './components/ChangeSetText.tsx';
-import { ChangeSetRemovedProperty } from './components/ChangeSetRemovedProperty.tsx';
+import { ChangeSetBox } from '../changeset/components/ChangeSetBox.tsx';
+import { ChangeSetTag } from '../changeset/components/ChangeSetTag.tsx';
+import { ChangeSetChangedValue } from '../changeset/components/ChangeSetChangedValue.tsx';
+import { ChangeSetBoxTitle } from '../changeset/components/ChangeSetBoxTitle.tsx';
+import { ChangeSetTags } from '../changeset/components/ChangeSetTags.tsx';
+import { ChangeSetText } from '../changeset/components/ChangeSetText.tsx';
+import { ChangeSetRemovedProperty } from '../changeset/components/ChangeSetRemovedProperty.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 

@@ -1,11 +1,11 @@
 import { MigrationChanges41 } from '../../../utils/types.ts';
 import { formatNOK } from '../../../utils/utilityfunctions.ts';
-import { ChangeSetBox } from './components/ChangeSetBox.tsx';
+import { ChangeSetBox } from '../changeset/components/ChangeSetBox.tsx';
 import { MigrationTitle } from './components/MigrationTitle.tsx';
-import { ChangeSetTag } from './components/ChangeSetTag.tsx';
-import { ChangeSetBoxTitle } from './components/ChangeSetBoxTitle.tsx';
-import { ChangeSetChangedValue } from './components/ChangeSetChangedValue.tsx';
-import { ChangeSetTags } from './components/ChangeSetTags.tsx';
+import { ChangeSetTag } from '../changeset/components/ChangeSetTag.tsx';
+import { ChangeSetBoxTitle } from '../changeset/components/ChangeSetBoxTitle.tsx';
+import { ChangeSetChangedValue } from '../changeset/components/ChangeSetChangedValue.tsx';
+import { ChangeSetTags } from '../changeset/components/ChangeSetTags.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 
