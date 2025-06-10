@@ -1,5 +1,5 @@
 import type { Dispatch } from 'react';
-import { GcpCryptoKeyObject, SopsConfigDTO } from './DTOs';
+import { ActionsDTO, GcpCryptoKeyObject, ScenarioDTO, SopsConfigDTO } from './DTOs';
 
 /**
  * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.
@@ -203,9 +203,74 @@ export type FormScenario = Modify<
 >;
 
 export type Difference = {
-  entriesOnLeft: string[];
-  entriesOnRight: string[];
-  difference: string[];
+  type: '4.*';
+  migrationChanges: MigrationStatus;
+  title?: SimpleTrackedProperty<string>;
+  scope?: SimpleTrackedProperty<string>;
+  valuations: SimpleTrackedProperty<Valuations>[];
+  scenarios: TrackedProperty<ScenarioChange, ScenarioDTO>[];
+}
+
+export type ScenarioChange = {
+  title: SimpleTrackedProperty<string>;
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null>;
+  threatActors: SimpleTrackedProperty<string>[];
+  vulnerabilities: SimpleTrackedProperty<string>[];
+  risk: SimpleTrackedProperty<ScenarioRiskChange>;
+  remainingRisk: SimpleTrackedProperty<ScenarioRiskChange>;
+  actions: TrackedProperty<ActionChange, ActionsDTO>[];
+};
+
+export type ActionChange = {
+  title: SimpleTrackedProperty<string>;
+  // The id will never change
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null>;
+  status?: SimpleTrackedProperty<string>;
+};
+
+export type ScenarioRiskChange = {
+  summary?: SimpleTrackedProperty<string | null>;
+  probability: SimpleTrackedProperty<number>;
+  consequence: SimpleTrackedProperty<number>;
+};
+
+export type SimpleTrackedProperty<T> = TrackedProperty<T, T>;
+
+export type TrackedProperty<S, T> =
+  | AddedProperty<T>
+  | ChangedProperty<S>
+  | ContentChangedProperty<S>
+  | DeletedProperty<T>
+  | UnchangedProperty<T>;
+
+export type AddedProperty<T> = {
+  type: 'ADDED';
+  newValue: T;
+};
+
+export type ChangedProperty<S> = {
+  type: 'CHANGED';
+  oldValue: S;
+  newValue: S;
+};
+
+export type ContentChangedProperty<S> = {
+  type: 'CONTENT_CHANGED';
+  value: S;
+};
+
+export type DeletedProperty<T> = {
+  type: 'DELETED';
+  oldValue: T;
+};
+
+export type UnchangedProperty<T> = {
+  type: 'UNCHANGED';
+  value: T;
 };
 
 export type DifferenceDTO = {

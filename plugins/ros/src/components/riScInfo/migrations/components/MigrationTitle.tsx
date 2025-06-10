@@ -2,9 +2,9 @@ import { ChangeSetTitle } from '../../changeset/components/ChangeSetTitle.tsx';
 import { IconButton, Tooltip } from '@material-ui/core';
 import Link from '@mui/material/Link';
 import { HelpIcon } from '@backstage/core-components';
-import { useChangeSetStyles } from '../../changeset/components/changeSetStyles.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../../utils/translations.ts';
+import { useMigrationStyles } from './migrationStyles.ts';
 
 interface MigrationTitleProps {
   from: string;
@@ -19,7 +19,7 @@ export function MigrationTitle({
   migrationExplanation,
   changelogUrl,
 }: MigrationTitleProps) {
-  const styles = useChangeSetStyles();
+  const styles = useMigrationStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <div className={styles.migrationTitle}>
