@@ -34,7 +34,7 @@ export function RiScMigrationChanges41({
           <ChangeSetTags>
             <ChangeSetTag
               type="primary"
-              text={t('migrationDialog.tagScenario')}
+              text={t('dictionary.scenario')}
             />
           </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />

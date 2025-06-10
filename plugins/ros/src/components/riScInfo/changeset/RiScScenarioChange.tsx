@@ -8,6 +8,8 @@ import { ChangeSetTwoColumnSplit } from './components/ChangeSetTwoColumnSplit.ts
 import { ChangeSetColumn } from './components/ChangeSetColumn.tsx';
 import { ChangeSetProperty } from './components/ChangeSetProperty.tsx';
 import { RiScRiskChange } from './RiScRiskChange.tsx';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 
 interface RiScWholeScenarioChangeProps {
   scenario: Scenario;
@@ -18,30 +20,35 @@ export function RiScScenarioChange({
   scenario,
   type,
 }: RiScWholeScenarioChangeProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <ChangeSetBox type="primary">
       <ChangeSetTags>
         {type === 'ADDED' ? (
-          <ChangeSetTag text="Added" type="added" />
+          <ChangeSetTag text={t('dictionary.added')} type="added" />
         ) : (
-          <ChangeSetTag text="Deleted" type="delete" />
+          <ChangeSetTag text={t('dictionary.removed')} type="delete" />
         )}
-        <ChangeSetTag text="Scenario" type="primary" />
+        <ChangeSetTag text={t('dictionary.scenario')} type="primary" />
       </ChangeSetTags>
       <ChangeSetBoxTitle title={scenario.title} />
       <ChangeSetProperty
-        title="Description"
+        title={t('dictionary.description')}
         value={
           scenario.description ? (
             scenario.description
           ) : (
-            <i>No description provided</i>
+            <i>{t('comparisonDialog.noDescription')}</i>
           )
         }
         emphasised={true}
       />
       {scenario.url && (
-        <ChangeSetProperty title="URL" value={scenario.url} emphasised={true} />
+        <ChangeSetProperty
+          title={t('dictionary.url')}
+          value={scenario.url}
+          emphasised={true}
+        />
       )}
       {(scenario.threatActors.length > 0 ||
         scenario.vulnerabilities.length > 0) && (
@@ -49,11 +56,12 @@ export function RiScScenarioChange({
           {scenario.threatActors.length > 0 && (
             <ChangeSetColumn>
               <ChangeSetProperty
-                title="Threat actors"
+                title={t('dictionary.threatActors')}
                 value={
                   <>
                     {scenario.threatActors.map(actor => (
-                      <div>{actor}</div>
+                      /* @ts-ignore Because ts can't typecheck strings against our keys */
+                      <div>{t(`threatActors.${actor}`)}</div>
                     ))}
                   </>
                 }
@@ -64,11 +72,12 @@ export function RiScScenarioChange({
           {scenario.vulnerabilities.length > 0 && (
             <ChangeSetColumn>
               <ChangeSetProperty
-                title="Vulnerabilities"
+                title={t('dictionary.vulnerabilities')}
                 value={
                   <>
                     {scenario.vulnerabilities.map(vulnerability => (
-                      <div>{vulnerability}</div>
+                      /* @ts-ignore Because ts can't typecheck strings against our keys */
+                      <div>{t(`vulnerabilities.${vulnerability}`)}</div>
                     ))}
                   </>
                 }
@@ -81,11 +90,14 @@ export function RiScScenarioChange({
 
       <ChangeSetTwoColumnSplit>
         <ChangeSetColumn column="1">
-          <RiScRiskChange title="Initial risk" risk={scenario.risk} />
+          <RiScRiskChange
+            title={t('dictionary.initialRisk')}
+            risk={scenario.risk}
+          />
         </ChangeSetColumn>
         <ChangeSetColumn column="2">
           <RiScRiskChange
-            title="Remaining risk"
+            title={t('dictionary.restRisk')}
             risk={scenario.remainingRisk}
           />
         </ChangeSetColumn>

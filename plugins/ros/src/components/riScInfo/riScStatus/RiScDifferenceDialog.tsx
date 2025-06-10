@@ -26,7 +26,7 @@ export function RiScDifferenceDialog({
     ? DateTime.fromISO(formatedDateString).toLocaleString()
     : null;
   return (
-    <Box sx={{ paddingBottom: '12px' }}>
+    <Box sx={{ paddingBottom: '24px' }}>
       <Typography>{t('rosStatus.difference.description')}</Typography>
       <Typography fontWeight={700} fontSize={13} pb={2}>
         {parsedDateString &&

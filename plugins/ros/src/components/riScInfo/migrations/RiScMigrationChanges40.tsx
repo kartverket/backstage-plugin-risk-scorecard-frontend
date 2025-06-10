@@ -33,7 +33,7 @@ export function RiScMigrationChanges40({
           <ChangeSetTags>
             <ChangeSetTag
               type="primary"
-              text={t('migrationDialog.tagScenario')}
+              text={t('dictionary.scenario')}
             />
           </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />
@@ -63,7 +63,7 @@ export function RiScMigrationChanges40({
               <ChangeSetTags>
                 <ChangeSetTag
                   type="delete"
-                  text={t('migrationDialog.tagRemoved')}
+                  text={t('dictionary.removed')}
                 />
               </ChangeSetTags>
               <ChangeSetBoxTitle
@@ -77,7 +77,7 @@ export function RiScMigrationChanges40({
               <ChangeSetTags>
                 <ChangeSetTag
                   type="primary"
-                  text={t('migrationDialog.tagAction')}
+                  text={t('dictionary.action')}
                 />
               </ChangeSetTags>
               <ChangeSetBoxTitle title={action.title} />
