@@ -358,6 +358,7 @@ export const pluginRiScMessages = {
       addMeasureButton: 'Add planned action',
       plannedMeasures: 'Planned actions',
       addMeasureTitleError: 'Action title is required',
+      urlDescription: 'For example, link to Jira task',
     },
     restRiskTab: {
       subtitle:
@@ -869,7 +870,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.closeConfirmation': 'Vil du lagre endringene dine?',
           'scenarioDrawer.measureTab.addMeasureTitleError':
             'Tiltak må ha en tittel',
-
+          'scenarioDrawer.measureTab.urlDescription':
+            'For eksempel lenke til Jira-oppgave',
           'consequenceTable.rows.1': 'Ubetydelig',
           'consequenceTable.rows.2': 'Liten',
           'consequenceTable.rows.3': 'Moderat',
@@ -955,7 +957,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.On hold': 'På vent',
           'actionStatus.Completed': 'Fullført',
           'actionStatus.Aborted': 'Avbrutt',
-
           'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
           'errorMessages.NoWriteAccessToRepository':
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til dette repoet.',
