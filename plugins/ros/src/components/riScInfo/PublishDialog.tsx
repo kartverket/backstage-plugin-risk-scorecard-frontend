@@ -43,7 +43,7 @@ export const RiScPublishDialog = ({
           ? t('publishDialog.titleDelete')
           : t('publishDialog.titleUpdate')}
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ marginBottom: '16px' }}>
         <>
           {!isDeletion && (
             <RiScDifferenceDialog differenceFetchState={differenceFetchState} />

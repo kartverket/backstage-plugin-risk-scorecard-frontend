@@ -6,12 +6,15 @@ import { RiScScenarioChange } from './RiScScenarioChange.tsx';
 import { dtoToScenario } from '../../../utils/DTOs.ts';
 import { ChangeSetSimpleBox } from './components/ChangeSetSimpleBox.tsx';
 import { RiScValuationChange } from './RiScValuationChange.tsx';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 
 type RiScChangeSetProps = {
   changeset: DifferenceFetchState;
 };
 
 export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   const migrationChanges = changeset.differenceState.migrationChanges;
   const changes = changeset.differenceState;
 
@@ -24,7 +27,7 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
   const hasAnyChanges = changes.migrationChanges.migrationChanges || hasChanges;
 
   if (!hasAnyChanges) {
-    return <i>No changes</i>;
+    return <i>{t('comparisonDialog.noChanges')}</i>;
   }
 
   return (
@@ -35,9 +38,9 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
       )}
       {hasChanges && (
         <>
-          <ChangeSetTitle text="Changes to RiSc" />
-          <ChangeSetSimpleBox prop={changes.title} />
-          <ChangeSetSimpleBox prop={changes.scope} />
+          <ChangeSetTitle text={t('comparisonDialog.changes')} />
+          <ChangeSetSimpleBox prop={changes.title} title={t('dictionary.title')} />
+          <ChangeSetSimpleBox prop={changes.scope} title={t('dictionary.scope')} />
           {changes.valuations.map(valuation => (
             <RiScValuationChange valuation={valuation} />
           ))}

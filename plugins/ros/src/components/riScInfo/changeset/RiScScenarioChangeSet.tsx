@@ -13,6 +13,8 @@ import { RiScRiskChangeSet } from './RiScRiskChangeSet.tsx';
 import { ChangeSetProperty } from './components/ChangeSetProperty.tsx';
 import { ChangeSetRemovedValue } from './components/ChangeSetRemovedValue.tsx';
 import { ChangeSetAddedValue } from './components/ChangeSetAddedValue.tsx';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 
 interface RiScScenarioChangeSetProps {
   scenario: ScenarioChange;
@@ -21,20 +23,25 @@ interface RiScScenarioChangeSetProps {
 export function RiScScenarioChangeSet({
   scenario,
 }: RiScScenarioChangeSetProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <ChangeSetBox type="primary">
       <ChangeSetTags>
-        <ChangeSetTag text="Scenario" type="primary" />
+        <ChangeSetTag text={t('dictionary.scenario')} type="primary" />
       </ChangeSetTags>
       <ChangeSetChangedTitle title={scenario.title} />
       <ChangeSetTrackedProperty
-        title="Description"
+        title={t('dictionary.description')}
         property={scenario.description}
         multiline={true}
-        stringOnUndefinedProperty="No description provided"
+        stringOnUndefinedProperty={t('comparisonDialog.noDescription')}
         emphasised={true}
       />
-      <ChangeSetTrackedProperty title="URL" property={scenario.url} emphasised={true} />
+      <ChangeSetTrackedProperty
+        title={t('dictionary.url')}
+        property={scenario.url}
+        emphasised={true}
+      />
 
       {(scenario.threatActors.length > 0 ||
         scenario.vulnerabilities.length > 0) && (
@@ -42,18 +49,24 @@ export function RiScScenarioChangeSet({
           {scenario.threatActors.length > 0 && (
             <ChangeSetColumn>
               <ChangeSetProperty
-                title="Threat actors"
+                title={t('dictionary.threatActors')}
                 value={scenario.threatActors.map(actor => {
                   if (actor.type === 'DELETED') {
                     return (
                       <div>
-                        <ChangeSetRemovedValue oldValue={actor.oldValue} />
+                        <ChangeSetRemovedValue
+                          /* @ts-ignore Because ts can't typecheck strings against our keys */
+                          oldValue={t(`threatActors.${actor.oldValue}`)}
+                        />
                       </div>
                     );
                   } else if (actor.type === 'ADDED') {
                     return (
                       <div>
-                        <ChangeSetAddedValue newValue={actor.newValue} />
+                        <ChangeSetAddedValue
+                          /* @ts-ignore Because ts can't typecheck strings against our keys */
+                          newValue={t(`threatActors.${actor.newValue}`)}
+                        />
                       </div>
                     );
                   }
@@ -65,13 +78,14 @@ export function RiScScenarioChangeSet({
           {scenario.vulnerabilities.length > 0 && (
             <ChangeSetColumn>
               <ChangeSetProperty
-                title="Vulnerabilities"
+                title={t('dictionary.vulnerabilities')}
                 value={scenario.vulnerabilities.map(vulnerability => {
                   if (vulnerability.type === 'DELETED') {
                     return (
                       <div>
                         <ChangeSetRemovedValue
-                          oldValue={vulnerability.oldValue}
+                          /* @ts-ignore Because ts can't typecheck strings against our keys */
+                          oldValue={t(`vulnerabilities.${vulnerability.oldValue}`)}
                         />
                       </div>
                     );
@@ -79,7 +93,8 @@ export function RiScScenarioChangeSet({
                     return (
                       <div>
                         <ChangeSetAddedValue
-                          newValue={vulnerability.newValue}
+                          /* @ts-ignore Because ts can't typecheck strings against our keys */
+                          newValue={t(`vulnerabilities.${vulnerability.newValue}`)}
                         />
                       </div>
                     );
@@ -94,11 +109,11 @@ export function RiScScenarioChangeSet({
 
       <ChangeSetTwoColumnSplit>
         <ChangeSetColumn column="1">
-          <RiScRiskChangeSet title="Initial risk" risk={scenario.risk} />
+          <RiScRiskChangeSet title={t('dictionary.initialRisk')} risk={scenario.risk} />
         </ChangeSetColumn>
         <ChangeSetColumn column="2">
           <RiScRiskChangeSet
-            title="Remaining risk"
+            title={t('dictionary.restRisk')}
             risk={scenario.remainingRisk}
           />
         </ChangeSetColumn>
