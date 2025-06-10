@@ -70,7 +70,8 @@
     "jsonpath-plus": "^10.2.0",
     "koa": "2.15.4",
     "@module-federation/dts-plugin": "0.9.1",
-    "@node-saml/node-saml": "5.0.1"
+    "@node-saml/node-saml": "5.0.1",
+    "multer": "^2.0.1"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
