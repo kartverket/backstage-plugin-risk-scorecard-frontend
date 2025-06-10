@@ -1,34 +1,27 @@
 import { useChangeSetStyles } from './changeSetStyles.ts';
+import { ReactNode } from 'react';
 
 interface ChangeSetChangedValueProps {
-  propertyName?: string;
-  oldValue: string;
-  newValue: string;
-  denominator?: string;
+  oldValue: string | ReactNode;
+  newValue: string | ReactNode;
+  unit?: string
+  multiline?: boolean;
 }
 
 export function ChangeSetChangedValue({
-  propertyName,
   oldValue,
   newValue,
-  denominator,
+  unit = undefined,
+  multiline = false,
 }: ChangeSetChangedValueProps) {
   const styles = useChangeSetStyles();
   return (
-    <div>
-      {propertyName && (
-        <>
-          <span className={styles.changedProperty}>{propertyName}:</span>{' '}
-        </>
-      )}
-      <span className={styles.oldValue}>{oldValue}</span>{' '}
+    <>
+      <span className={styles.oldValue}>{oldValue}</span>
+      {multiline ? <br /> : ' '}
       <span className={styles.newValue}>{newValue}</span>
-      {denominator && (
-        <>
-          {' '}
-          <span>{denominator}</span>
-        </>
-      )}
-    </div>
+      {multiline ? <br /> : ' '}
+      <span className={styles.text}>{unit ? unit : ''}</span>
+    </>
   );
 }

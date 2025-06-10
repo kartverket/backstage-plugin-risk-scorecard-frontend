@@ -61,6 +61,15 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     marginBottom: '12px',
   },
 
+  // ChangeSetPropertyBase
+  property: {
+    marginBottom: '12px',
+  },
+  propertyTitle: {
+    fontWeight: fontWeightBold,
+    color: theme.palette.type === 'dark' ? fontColorLight : fontColorDark,
+  },
+
   // ChangeSetChangedValue
   changedProperty: {
     fontWeight: fontWeightBold,
@@ -86,9 +95,19 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     fontSize: fontSizeTitle,
     lineHeight: lineHeightTitle,
   },
+
+  // ChangeSetRemovedValue
   removedValue: {
     fontWeight: fontWeightSemiBold,
     color: removedColor(theme),
+    textDecoration: 'line-through',
+    fontSize: fontSizeNormal,
+  },
+
+  // ChangeSetAddedValue
+  addedValue: {
+    fontWeight: fontWeightSemiBold,
+    color: addedColor(theme),
     textDecoration: 'line-through',
     fontSize: fontSizeNormal,
   },
@@ -127,6 +146,13 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.type === 'dark' ? fontColorLight : fontColorDark,
   },
 
+  // ChangeSetText
+  bodyText: {
+    color: theme.palette.type === 'dark' ? fontColorLight : fontColorDark,
+    marginTop: 0,
+    marginBottom: '4px',
+  },
+
   // ChangeSetTitle
   title: {
     textTransform: 'uppercase',
@@ -135,5 +161,22 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     fontWeight: fontWeightBold,
     fontSize: fontSizeNormal,
     marginBottom: '12px',
+  },
+
+  // ChangeSetTwoColumnSplit
+  twoColumnSplit: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '18px',
+    marginBottom: '12px',
+  },
+
+  // ChangeSetColumn
+  firstColumn: {
+    gridColumn: 1,
+  },
+
+  secondColumn: {
+    gridColumn: 2,
   },
 }));

@@ -1,14 +1,13 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { ErrorOutline, Favorite } from '@mui/icons-material';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import { DateTime } from 'luxon';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { DifferenceFetchState, DifferenceStatus } from '../../../utils/types';
 import { parseISODateFromEncryptedROS } from '../../../utils/utilityfunctions';
-import { DifferenceText } from './DifferenceText';
+import { RiScChangeSet } from '../changeset/RiScChangeSet.tsx';
 
 type RiScDifferenceDialogProps = {
   differenceFetchState: DifferenceFetchState;
@@ -27,7 +26,7 @@ export function RiScDifferenceDialog({
     ? DateTime.fromISO(formatedDateString).toLocaleString()
     : null;
   return (
-    <Box>
+    <Box sx={{ paddingBottom: '12px' }}>
       <Typography>{t('rosStatus.difference.description')}</Typography>
       <Typography fontWeight={700} fontSize={13} pb={2}>
         {parsedDateString &&
@@ -39,17 +38,26 @@ export function RiScDifferenceDialog({
         <Typography variant="h3" fontSize={18}>
           {t('rosStatus.difference.differences.title')}
         </Typography>
-        <Card
-          sx={{
-            backgroundColor: 'rgb(51, 51, 51)',
-            padding: '20px',
-            position: 'relative',
-            marginBottom: '20px',
-            minHeight: '260px',
-            color: 'white',
-          }}
-        >
-          {differenceFetchState.isLoading && (
+        {differenceFetchState.isLoading && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              margin: 'auto 0',
+            }}
+          >
+            <CircularProgress
+              size={30}
+              sx={{ marginLeft: 1, color: 'inherit', margin: '10px' }}
+            />
+            {t('rosStatus.difference.fetching')}
+          </Box>
+        )}
+        {differenceFetchState.status !== null &&
+          differenceFetchState.status !== DifferenceStatus.Success &&
+          differenceFetchState.status !==
+            DifferenceStatus.GithubFileNotFound && (
             <Box
               sx={{
                 display: 'flex',
@@ -58,60 +66,40 @@ export function RiScDifferenceDialog({
                 margin: 'auto 0',
               }}
             >
-              <CircularProgress
-                size={30}
-                sx={{ marginLeft: 1, color: 'inherit', margin: '10px' }}
+              <ErrorOutline
+                sx={{
+                  fontSize: '30px',
+                  marginBottom: '16px',
+                  color: 'red',
+                }}
               />
-              {t('rosStatus.difference.fetching')}
+              {t('rosStatus.difference.error')}
             </Box>
           )}
-          {differenceFetchState.status !== null &&
-            differenceFetchState.status !== DifferenceStatus.Success &&
-            differenceFetchState.status !==
-              DifferenceStatus.GithubFileNotFound && (
-              <Box
+        {differenceFetchState.status !== null &&
+          differenceFetchState.status ===
+            DifferenceStatus.GithubFileNotFound && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                margin: 'auto 0',
+              }}
+            >
+              <Favorite
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  margin: 'auto 0',
+                  fontSize: '30px',
+                  marginBottom: '16px',
+                  color: 'green',
                 }}
-              >
-                <ErrorOutline
-                  sx={{
-                    fontSize: '30px',
-                    marginBottom: '16px',
-                    color: 'red',
-                  }}
-                />
-                {t('rosStatus.difference.error')}
-              </Box>
-            )}
-          {differenceFetchState.status !== null &&
-            differenceFetchState.status ===
-              DifferenceStatus.GithubFileNotFound && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  margin: 'auto 0',
-                }}
-              >
-                <Favorite
-                  sx={{
-                    fontSize: '30px',
-                    marginBottom: '16px',
-                    color: 'green',
-                  }}
-                />
-                {t('rosStatus.difference.newROS')}
-              </Box>
-            )}
-          {differenceFetchState.status === DifferenceStatus.Success && (
-            <DifferenceText differenceFetchState={differenceFetchState} />
+              />
+              {t('rosStatus.difference.newROS')}
+            </Box>
           )}
-        </Card>
+        {differenceFetchState.status === DifferenceStatus.Success && (
+          <RiScChangeSet changeset={differenceFetchState} />
+        )}
       </Box>
     </Box>
   );
