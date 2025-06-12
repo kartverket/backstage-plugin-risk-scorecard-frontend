@@ -13,11 +13,7 @@ import Box from '@mui/material/Box';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { MigrationStatus } from '../../utils/types';
 import { dialogActions } from '../common/mixins';
-import { RiScMigrationChanges41 } from './migrations/RiScMigrationChanges41.tsx';
-import { ChangeSetBox } from './migrations/components/ChangeSetBox.tsx';
-import { ChangeSetTitle } from './migrations/components/ChangeSetTitle.tsx';
-import { ChangeSetChangedValue } from './migrations/components/ChangeSetChangedValue.tsx';
-import { RiScMigrationChanges40 } from './migrations/RiScMigrationChanges40.tsx';
+import { RiScMigrationChanges } from './migrations/RiScMigrationChanges.tsx';
 
 interface RiScMigrationDialogProps {
   openDialog: boolean;
@@ -47,26 +43,7 @@ export const RiScMigrationDialog = ({
         <Box sx={{ marginBottom: '16px' }}>
           <Typography>{t('migrationDialog.description')}</Typography>
         </Box>
-        <div>
-          <ChangeSetTitle text={t('migrationDialog.schemaVersion')} />
-          <ChangeSetBox type="primary">
-            <ChangeSetChangedValue
-              propertyName={t('migrationDialog.schemaVersion')}
-              oldValue={migrationStatus.migrationVersions?.fromVersion || ''}
-              newValue={migrationStatus.migrationVersions?.toVersion || ''}
-            />
-          </ChangeSetBox>
-          {migrationStatus.migrationChanges40 && (
-            <RiScMigrationChanges40
-              changes={migrationStatus.migrationChanges40}
-            />
-          )}
-          {migrationStatus.migrationChanges41 && (
-            <RiScMigrationChanges41
-              changes={migrationStatus.migrationChanges41}
-            />
-          )}
-        </div>
+        <RiScMigrationChanges migrationStatus={migrationStatus} />
         <Alert severity="info" icon={false}>
           <FormControlLabel
             control={

@@ -39,9 +39,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
-    entriesOnLeft: [],
-    entriesOnRight: [],
-    difference: [],
+    type: '4.*',
+    migrationChanges: {
+      migrationChanges: false,
+      migrationRequiresNewApproval: false,
+      migrationVersions: undefined,
+      migrationChanges40: undefined,
+      migrationChanges41: undefined,
+    },
+    valuations: [],
+    scenarios: [],
   },
   status: null,
   isLoading: false,

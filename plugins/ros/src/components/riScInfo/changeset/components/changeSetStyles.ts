@@ -11,6 +11,7 @@ const red400 = '#D04A14';
 const red500 = '#A32F00';
 const green100 = '#D0ECD6';
 const green200 = '#9FD2AB';
+const green300 = '#66B077';
 const green500 = '#156630';
 const gray50 = '#F5F2F2';
 const gray400 = '#706F6E';
@@ -22,7 +23,7 @@ const removedColor = (theme: Theme) =>
 const addedColor = (theme: Theme) =>
   theme.palette.type === 'dark' ? green100 : green500;
 
-const interactiveColor = (theme: Theme) =>
+export const interactiveColor = (theme: Theme) =>
   theme.palette.type === 'dark' ? green200 : green500;
 
 const fontColorLight = gray50;
@@ -31,7 +32,7 @@ const fontColorDark = gray900;
 const fontSizeTitle = '18px';
 const lineHeightTitle = '26px';
 const fontSizeNormal = '14px';
-const fontWeightBold = 700;
+export const fontWeightBold = 700;
 const fontWeightSemiBold = 500;
 
 export const useChangeSetStyles = makeStyles((theme: Theme) => ({
@@ -60,6 +61,15 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     marginBottom: '12px',
   },
 
+  // ChangeSetPropertyBase
+  property: {
+    marginBottom: '12px',
+  },
+  propertyTitle: {
+    fontWeight: fontWeightBold,
+    color: theme.palette.type === 'dark' ? fontColorLight : fontColorDark,
+  },
+
   // ChangeSetChangedValue
   changedProperty: {
     fontWeight: fontWeightBold,
@@ -85,9 +95,19 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     fontSize: fontSizeTitle,
     lineHeight: lineHeightTitle,
   },
+
+  // ChangeSetRemovedValue
   removedValue: {
     fontWeight: fontWeightSemiBold,
     color: removedColor(theme),
+    textDecoration: 'line-through',
+    fontSize: fontSizeNormal,
+  },
+
+  // ChangeSetAddedValue
+  addedValue: {
+    fontWeight: fontWeightSemiBold,
+    color: addedColor(theme),
     textDecoration: 'line-through',
     fontSize: fontSizeNormal,
   },
@@ -108,6 +128,10 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     backgroundColor: red200,
     borderColor: red400,
   },
+  tagAdded: {
+    backgroundColor: green100,
+    borderColor: green300,
+  },
 
   // ChangeSetTags
   tags: {
@@ -122,6 +146,13 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.type === 'dark' ? fontColorLight : fontColorDark,
   },
 
+  // ChangeSetText
+  bodyText: {
+    color: theme.palette.type === 'dark' ? fontColorLight : fontColorDark,
+    marginTop: 0,
+    marginBottom: '4px',
+  },
+
   // ChangeSetTitle
   title: {
     textTransform: 'uppercase',
@@ -132,15 +163,20 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
     marginBottom: '12px',
   },
 
-  // MigrationTitle
-  migrationTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingRight: '4px',
+  // ChangeSetTwoColumnSplit
+  twoColumnSplit: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '18px',
+    marginBottom: '12px',
   },
-  migrationChangelog: {
-    color: interactiveColor(theme),
-    fontWeight: fontWeightBold,
+
+  // ChangeSetColumn
+  firstColumn: {
+    gridColumn: 1,
+  },
+
+  secondColumn: {
+    gridColumn: 2,
   },
 }));
