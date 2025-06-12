@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 interface ChangeSetChangedValueProps {
   oldValue: string | ReactNode;
   newValue: string | ReactNode;
-  unit?: string
+  unit?: string;
   multiline?: boolean;
 }
 

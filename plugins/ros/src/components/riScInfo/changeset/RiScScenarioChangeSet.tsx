@@ -85,7 +85,9 @@ export function RiScScenarioChangeSet({
                       <div>
                         <ChangeSetRemovedValue
                           /* @ts-ignore Because ts can't typecheck strings against our keys */
-                          oldValue={t(`vulnerabilities.${vulnerability.oldValue}`)}
+                          oldValue={t(
+                            `vulnerabilities.${vulnerability.oldValue}`,
+                          )}
                         />
                       </div>
                     );
@@ -94,7 +96,9 @@ export function RiScScenarioChangeSet({
                       <div>
                         <ChangeSetAddedValue
                           /* @ts-ignore Because ts can't typecheck strings against our keys */
-                          newValue={t(`vulnerabilities.${vulnerability.newValue}`)}
+                          newValue={t(
+                            `vulnerabilities.${vulnerability.newValue}`,
+                          )}
                         />
                       </div>
                     );
@@ -109,7 +113,10 @@ export function RiScScenarioChangeSet({
 
       <ChangeSetTwoColumnSplit>
         <ChangeSetColumn column="1">
-          <RiScRiskChangeSet title={t('dictionary.initialRisk')} risk={scenario.risk} />
+          <RiScRiskChangeSet
+            title={t('dictionary.initialRisk')}
+            risk={scenario.risk}
+          />
         </ChangeSetColumn>
         <ChangeSetColumn column="2">
           <RiScRiskChangeSet

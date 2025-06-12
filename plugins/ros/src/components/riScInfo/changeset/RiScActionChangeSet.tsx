@@ -34,7 +34,7 @@ export function RiScActionChangeSet({ action }: RiScActionChangeSetProps) {
         title={t('dictionary.status')}
         property={action.status}
         /* @ts-ignore Because ts can't typecheck strings against our keys */
-        valueFormatter={(actionValue) => t(`actionStatus.${actionValue}`)}
+        valueFormatter={actionValue => t(`actionStatus.${actionValue}`)}
       />
     </ChangeSetBox>
   );

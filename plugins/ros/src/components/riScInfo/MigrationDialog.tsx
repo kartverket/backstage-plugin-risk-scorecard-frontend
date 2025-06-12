@@ -43,7 +43,7 @@ export const RiScMigrationDialog = ({
         <Box sx={{ marginBottom: '16px' }}>
           <Typography>{t('migrationDialog.description')}</Typography>
         </Box>
-        <RiScMigrationChanges migrationStatus={migrationStatus}/>
+        <RiScMigrationChanges migrationStatus={migrationStatus} />
         <Alert severity="info" icon={false}>
           <FormControlLabel
             control={

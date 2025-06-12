@@ -1,5 +1,8 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { fontWeightBold, interactiveColor } from '../../changeset/components/changeSetStyles';
+import {
+  fontWeightBold,
+  interactiveColor,
+} from '../../changeset/components/changeSetStyles';
 
 export const useMigrationStyles = makeStyles((theme: Theme) => ({
   // MigrationTitle

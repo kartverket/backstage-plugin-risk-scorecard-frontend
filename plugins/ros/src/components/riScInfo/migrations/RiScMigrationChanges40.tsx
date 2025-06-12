@@ -31,10 +31,7 @@ export function RiScMigrationChanges40({
       {changes.scenarios.map(scenario => (
         <ChangeSetBox type="primary">
           <ChangeSetTags>
-            <ChangeSetTag
-              type="primary"
-              text={t('dictionary.scenario')}
-            />
+            <ChangeSetTag type="primary" text={t('dictionary.scenario')} />
           </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />
           {scenario.changedVulnerabilities.length > 0 && (
@@ -61,10 +58,7 @@ export function RiScMigrationChanges40({
           {scenario.removedExistingActions && (
             <ChangeSetBox type="secondary">
               <ChangeSetTags>
-                <ChangeSetTag
-                  type="delete"
-                  text={t('dictionary.removed')}
-                />
+                <ChangeSetTag type="delete" text={t('dictionary.removed')} />
               </ChangeSetTags>
               <ChangeSetBoxTitle
                 title={t('migrationDialog.migration40.existingActions')}
@@ -75,10 +69,7 @@ export function RiScMigrationChanges40({
           {scenario.changedActions.map(action => (
             <ChangeSetBox type="secondary">
               <ChangeSetTags>
-                <ChangeSetTag
-                  type="primary"
-                  text={t('dictionary.action')}
-                />
+                <ChangeSetTag type="primary" text={t('dictionary.action')} />
               </ChangeSetTags>
               <ChangeSetBoxTitle title={action.title} />
               {action.removedOwner && (
