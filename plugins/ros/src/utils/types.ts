@@ -1,5 +1,10 @@
 import type { Dispatch } from 'react';
-import { ActionsDTO, GcpCryptoKeyObject, ScenarioDTO, SopsConfigDTO } from './DTOs';
+import {
+  ActionsDTO,
+  GcpCryptoKeyObject,
+  ScenarioDTO,
+  SopsConfigDTO,
+} from './DTOs';
 
 /**
  * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.
@@ -209,7 +214,7 @@ export type Difference = {
   scope?: SimpleTrackedProperty<string>;
   valuations: SimpleTrackedProperty<Valuations>[];
   scenarios: TrackedProperty<ScenarioChange, ScenarioDTO>[];
-}
+};
 
 export type ScenarioChange = {
   title: SimpleTrackedProperty<string>;

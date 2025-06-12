@@ -10,7 +10,7 @@ interface IChangeSetTrackedProperty {
   compact?: boolean;
   unit?: string;
   emphasised?: boolean;
-  valueFormatter?: (value: any) => any,
+  valueFormatter?: (value: any) => any;
 }
 
 export function ChangeSetTrackedProperty({
@@ -21,7 +21,7 @@ export function ChangeSetTrackedProperty({
   unit = undefined,
   stringOnUndefinedProperty,
   emphasised = false,
-  valueFormatter = (value: string) => value
+  valueFormatter = (value: string) => value,
 }: IChangeSetTrackedProperty) {
   if (property === undefined) return <></>;
 
@@ -29,7 +29,11 @@ export function ChangeSetTrackedProperty({
     return (
       <ChangeSetProperty
         title={title}
-        value={property.value ? valueFormatter(property.value) : stringOnUndefinedProperty}
+        value={
+          property.value
+            ? valueFormatter(property.value)
+            : stringOnUndefinedProperty
+        }
         compact={compact}
         unit={unit}
         emphasised={emphasised}

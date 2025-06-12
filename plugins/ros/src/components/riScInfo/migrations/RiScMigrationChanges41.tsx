@@ -32,10 +32,7 @@ export function RiScMigrationChanges41({
       {changes.scenarios.map(scenario => (
         <ChangeSetBox type="primary">
           <ChangeSetTags>
-            <ChangeSetTag
-              type="primary"
-              text={t('dictionary.scenario')}
-            />
+            <ChangeSetTag type="primary" text={t('dictionary.scenario')} />
           </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />
           <ChangeSetTwoColumnSplit>
@@ -53,9 +50,7 @@ export function RiScMigrationChanges41({
                       newValue={formatNOK(
                         scenario.changedRiskConsequence.newValue,
                       )}
-                      unit={t(
-                        'migrationDialog.migration41.nokPerIncident',
-                      )}
+                      unit={t('migrationDialog.migration41.nokPerIncident')}
                       compact={true}
                     />
                   )}
@@ -64,9 +59,7 @@ export function RiScMigrationChanges41({
                       propertyName={t('dictionary.probability')}
                       oldValue={scenario.changedRiskProbability.oldValue.toString()}
                       newValue={scenario.changedRiskProbability.newValue.toString()}
-                      unit={t(
-                        'migrationDialog.migration41.occurrencesPerYear',
-                      )}
+                      unit={t('migrationDialog.migration41.occurrencesPerYear')}
                       compact={true}
                     />
                   )}
@@ -87,9 +80,7 @@ export function RiScMigrationChanges41({
                       newValue={formatNOK(
                         scenario.changedRemainingRiskConsequence.newValue,
                       )}
-                      unit={t(
-                        'migrationDialog.migration41.nokPerIncident',
-                      )}
+                      unit={t('migrationDialog.migration41.nokPerIncident')}
                       compact={true}
                     />
                   )}
@@ -98,9 +89,7 @@ export function RiScMigrationChanges41({
                       propertyName={t('dictionary.probability')}
                       oldValue={scenario.changedRemainingRiskProbability.oldValue.toString()}
                       newValue={scenario.changedRemainingRiskProbability.newValue.toString()}
-                      unit={t(
-                        'migrationDialog.migration41.occurrencesPerYear',
-                      )}
+                      unit={t('migrationDialog.migration41.occurrencesPerYear')}
                       compact={true}
                     />
                   )}

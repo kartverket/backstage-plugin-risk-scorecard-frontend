@@ -1,6 +1,4 @@
-import {
-  Risk,
-} from '../../../utils/types.ts';
+import { Risk } from '../../../utils/types.ts';
 import { ChangeSetBox } from './components/ChangeSetBox.tsx';
 import { ChangeSetProperty } from './components/ChangeSetProperty.tsx';
 import { ChangeSetBoxTitle } from './components/ChangeSetBoxTitle.tsx';

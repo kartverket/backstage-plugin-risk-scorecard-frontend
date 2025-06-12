@@ -31,21 +31,27 @@ export function RiScValuationChange({
       </ChangeSetTags>
       <ChangeSetBoxTitle title={valuationContent.description} />
       <ChangeSetProperty
-        title={t("dictionary.confidentiality")}
+        title={t('dictionary.confidentiality')}
         /* @ts-ignore Because ts can't typecheck strings against our keys */
-        value={t(`comparisonDialog.valuation.confidentiality.${valuationContent.confidentiality}`)}
+        value={t(
+          `comparisonDialog.valuation.confidentiality.${valuationContent.confidentiality}`,
+        )}
         emphasised={true}
       />
       <ChangeSetProperty
         title={t('dictionary.availability')}
         /* @ts-ignore Because ts can't typecheck strings against our keys */
-        value={t(`comparisonDialog.valuation.availability.${valuationContent.availability}`)}
+        value={t(
+          `comparisonDialog.valuation.availability.${valuationContent.availability}`,
+        )}
         emphasised={true}
       />
       <ChangeSetProperty
         title={t('dictionary.integrity')}
         /* @ts-ignore Because ts can't typecheck strings against our keys */
-        value={t(`comparisonDialog.valuation.integrity.${valuationContent.integrity}`)}
+        value={t(
+          `comparisonDialog.valuation.integrity.${valuationContent.integrity}`,
+        )}
         emphasised={true}
       />
     </ChangeSetBox>

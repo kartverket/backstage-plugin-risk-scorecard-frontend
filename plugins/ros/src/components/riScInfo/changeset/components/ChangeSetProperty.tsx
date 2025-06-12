@@ -7,7 +7,7 @@ interface ChangeSetPropertyProps {
   value: string | ReactNode;
   unit?: string;
   compact?: boolean;
-  emphasised?: boolean
+  emphasised?: boolean;
 }
 
 export function ChangeSetProperty({
@@ -19,7 +19,7 @@ export function ChangeSetProperty({
 }: ChangeSetPropertyProps) {
   return (
     <ChangeSetPropertyBase propertyName={title} compact={compact}>
-      <ChangeSetValue value={value} unit={unit} emphasised={emphasised}/>
+      <ChangeSetValue value={value} unit={unit} emphasised={emphasised} />
     </ChangeSetPropertyBase>
   );
 }

@@ -39,8 +39,14 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
       {hasChanges && (
         <>
           <ChangeSetTitle text={t('comparisonDialog.changes')} />
-          <ChangeSetSimpleBox prop={changes.title} title={t('dictionary.title')} />
-          <ChangeSetSimpleBox prop={changes.scope} title={t('dictionary.scope')} />
+          <ChangeSetSimpleBox
+            prop={changes.title}
+            title={t('dictionary.title')}
+          />
+          <ChangeSetSimpleBox
+            prop={changes.scope}
+            title={t('dictionary.scope')}
+          />
           {changes.valuations.map(valuation => (
             <RiScValuationChange valuation={valuation} />
           ))}

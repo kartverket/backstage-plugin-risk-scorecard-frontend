@@ -7,10 +7,14 @@ interface ChangeSetValueProps {
   emphasised: boolean;
 }
 
-export function ChangeSetValue({ value, unit, emphasised }: ChangeSetValueProps) {
+export function ChangeSetValue({
+  value,
+  unit,
+  emphasised,
+}: ChangeSetValueProps) {
   const styles = useChangeSetStyles();
   return (
-    <span className={emphasised ? styles.text : ""}>
+    <span className={emphasised ? styles.text : ''}>
       {value} {unit ? unit : ''}
     </span>
   );

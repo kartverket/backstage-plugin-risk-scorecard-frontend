@@ -194,14 +194,14 @@ export const pluginRiScMessages = {
         Insignificant: 'Insignificant',
         '2 days': '2 days',
         '4 hours': '4 hours',
-        'Immediate': 'Immediate'
+        Immediate: 'Immediate',
       },
       confidentiality: {
         Public: 'Public',
         Internal: 'Internal',
         Confidential: 'Confidential',
         'Strictly confidential': 'Strictly confidential',
-      }
+      },
     },
   },
   scenarioTable: {
@@ -738,14 +738,17 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'comparisonDialog.valuation.integrity.Expected': 'Forventet',
           'comparisonDialog.valuation.integrity.Dependent': 'Avhengig',
           'comparisonDialog.valuation.integrity.Critical': 'Kritisk',
-          'comparisonDialog.valuation.availability.Insignificant': 'Insignifikant',
+          'comparisonDialog.valuation.availability.Insignificant':
+            'Insignifikant',
           'comparisonDialog.valuation.availability.2 days': '2 dager',
           'comparisonDialog.valuation.availability.4 hours': '4 timer',
           'comparisonDialog.valuation.availability.Immediate': 'Umiddelbart',
           'comparisonDialog.valuation.confidentiality.Public': 'Offentlig',
           'comparisonDialog.valuation.confidentiality.Internal': 'Intern',
-          'comparisonDialog.valuation.confidentiality.Confidential': 'Konfidensielt',
-          'comparisonDialog.valuation.confidentiality.Strictly confidential': 'Strengt konfidensielt',
+          'comparisonDialog.valuation.confidentiality.Confidential':
+            'Konfidensielt',
+          'comparisonDialog.valuation.confidentiality.Strictly confidential':
+            'Strengt konfidensielt',
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
