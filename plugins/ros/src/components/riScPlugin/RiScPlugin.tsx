@@ -23,14 +23,25 @@ import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { Delete, Settings } from '@mui/icons-material';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import TextField from '@mui/material/TextField';
+import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import { RiScStatus } from '../../utils/types';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { postFeedback } = useAuthenticatedFetch();
 
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
   );
+
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackSent, setFeedbackSent] = useState(false);
 
   function openCreateRiScDialog() {
     return setRiScDialogState(RiScDialogStates.Create);
@@ -107,6 +118,14 @@ export function RiScPlugin() {
               }}
             >
               <SupportButton />
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => setFeedbackOpen(true)}
+                sx={{ borderRadius: '6px', fontWeight: 'bold' }}
+              >
+                Tilbakemelding
+              </Button>
             </Grid>
           </ContentHeader>
 
@@ -192,6 +211,72 @@ export function RiScPlugin() {
       {riScDialogState !== RiScDialogStates.Closed && (
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
+      <Dialog
+        open={feedbackOpen}
+        onClose={() => {
+          setFeedbackOpen(false);
+          setFeedbackSent(false);
+        }}
+        fullWidth
+        maxWidth="sm"
+      >
+        {!feedbackSent && <DialogTitle>Send tilbakemelding</DialogTitle>}
+        <DialogContent>
+          {feedbackSent ? (
+            <Typography
+              align="center"
+              variant="h4"
+              sx={{
+                py: 8,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+              }}
+            >
+              Takk for tilbakemeldingen
+            </Typography>
+          ) : (
+            <TextField
+              margin="dense"
+              label="Din tilbakemelding"
+              fullWidth
+              multiline
+              minRows={4}
+              value={feedbackText}
+              onChange={e => setFeedbackText(e.target.value)}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          {feedbackSent ? (
+            <Button
+              onClick={() => {
+                setFeedbackOpen(false);
+                setFeedbackSent(false);
+                setFeedbackText('');
+              }}
+            >
+              Lukk
+            </Button>
+          ) : (
+            <>
+              <Button onClick={() => setFeedbackOpen(false)}>Avbryt</Button>
+              <Button
+                onClick={async () => {
+                  await postFeedback(feedbackText);
+                  setFeedbackSent(true);
+                }}
+                disabled={!feedbackText.trim()}
+                variant="contained"
+              >
+                Send
+              </Button>
+            </>
+          )}
+        </DialogActions>
+      </Dialog>
+
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>
   );
