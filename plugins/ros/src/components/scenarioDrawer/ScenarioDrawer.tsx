@@ -1,26 +1,26 @@
-import { useEffect, useRef, useState } from 'react';
-import Box from '@mui/material/Box';
-import { useScenario } from '../../contexts/ScenarioContext';
-import { RiskSection } from './components/RiskSection';
-import { ActionsSection } from './components/ActionsSection';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { DeleteConfirmation } from './components/DeleteConfirmation';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { ScopeSection } from './components/ScopeSection';
-import { useForm } from 'react-hook-form';
-import { FormScenario, ProcessingStatus } from '../../utils/types';
-import RiskFormSection from './components/RiskFormSection';
-import ScopeFormSection from './components/ScopeFormSection';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import { useRiScs } from '../../contexts/RiScContext';
-import CircularProgress from '@mui/material/CircularProgress';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Alert from '@mui/material/Alert';
-import { getAlertSeverity } from '../../utils/utilityfunctions';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Drawer from '@mui/material/Drawer';
 import Typography from '@mui/material/Typography';
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useRiScs } from '../../contexts/RiScContext';
+import { useScenario } from '../../contexts/ScenarioContext';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { FormScenario, ProcessingStatus } from '../../utils/types';
+import { getAlertSeverity } from '../../utils/utilityfunctions';
 import { MatrixDialog } from '../riScDialog/MatrixDialog';
 import { CloseConfirmation } from '../scenarioWizard/components/CloseConfirmation';
+import { ActionsSection } from './components/ActionsSection';
+import { DeleteConfirmation } from './components/DeleteConfirmation';
+import RiskFormSection from './components/RiskFormSection';
+import { RiskSection } from './components/RiskSection';
+import ScopeFormSection from './components/ScopeFormSection';
+import { ScopeSection } from './components/ScopeSection';
 
 export function ScenarioDrawer() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -28,6 +28,7 @@ export function ScenarioDrawer() {
   const {
     scenario,
     isDrawerOpen,
+    isEditingAllowed,
     closeScenarioForm,
     submitEditedScenarioToRiSc,
     mapScenarioToFormScenario,
@@ -50,7 +51,7 @@ export function ScenarioDrawer() {
 
   const formMethods = useForm<FormScenario>({
     defaultValues: mapScenarioToFormScenario(scenario),
-    mode: 'onBlur',
+    mode: 'onChange',
   });
 
   function onCancel() {
@@ -122,7 +123,7 @@ export function ScenarioDrawer() {
           marginLeft: 'auto',
         }}
       >
-        {!isEditing && (
+        {!isEditing && isEditingAllowed && (
           <Button
             color="primary"
             variant="contained"
@@ -181,17 +182,19 @@ export function ScenarioDrawer() {
             )}
           </Button>
         )}
-        <div ref={deleteScenarioRef}>
-          <Button
-            startIcon={<DeleteIcon />}
-            variant="text"
-            color="primary"
-            onClick={() => setDeleteConfirmationIsOpen(true)}
-            sx={{ marginLeft: 'auto' }}
-          >
-            {t('scenarioDrawer.deleteScenarioButton')}
-          </Button>
-        </div>
+        {isEditingAllowed && (
+          <div ref={deleteScenarioRef}>
+            <Button
+              startIcon={<DeleteIcon />}
+              variant="text"
+              color="primary"
+              onClick={() => setDeleteConfirmationIsOpen(true)}
+              sx={{ marginLeft: 'auto' }}
+            >
+              {t('scenarioDrawer.deleteScenarioButton')}
+            </Button>
+          </div>
+        )}
       </Box>
 
       {response &&

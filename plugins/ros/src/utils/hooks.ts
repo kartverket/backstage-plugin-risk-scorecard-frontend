@@ -1,5 +1,3 @@
-import { useEntity } from '@backstage/plugin-catalog-react';
-import { useCallback, useState, useEffect, useRef } from 'react';
 import {
   configApiRef,
   fetchApiRef,
@@ -8,6 +6,21 @@ import {
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { URLS } from '../urls';
+import {
+  CreateRiScResultDTO,
+  GcpCryptoKeyObject,
+  ProcessRiScResultDTO,
+  PublishRiScResultDTO,
+  RiScContentResultDTO,
+  SopsConfigDTO,
+  profileInfoToDTOString,
+  riScToDTOString,
+  DeleteRiScResultDTO,
+} from './DTOs';
+import { latestSupportedVersion } from './constants';
 import {
   DifferenceDTO,
   GithubRepoInfo,
@@ -15,18 +28,6 @@ import {
   RiScWithMetadata,
   SubmitResponseObject,
 } from './types';
-import {
-  CreateRiScResultDTO,
-  GcpCryptoKeyObject,
-  ProcessRiScResultDTO,
-  profileInfoToDTOString,
-  PublishRiScResultDTO,
-  RiScContentResultDTO,
-  riScToDTOString,
-  SopsConfigDTO,
-} from './DTOs';
-import { latestSupportedVersion } from './constants';
-import { URLS } from '../urls';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -58,6 +59,11 @@ export function useAuthenticatedFetch() {
 
   function uriToFetchRiSc(id: string) {
     // URLS.backend.fetchRiSc
+    return `${riScUri}/${id}`;
+  }
+
+  function uriToDeleteRiSc(id: string) {
+    // URLS.backend.deleteRiSc
     return `${riScUri}/${id}`;
   }
 
@@ -96,7 +102,7 @@ export function useAuthenticatedFetch() {
 
   function fullyAuthenticatedFetch<T, K>(
     uri: string,
-    method: 'GET' | 'POST' | 'PUT',
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     onSuccess: (response: T) => void,
     onError: (error: K, rejectedLogin: boolean) => void,
     body?: string,
@@ -242,7 +248,7 @@ export function useAuthenticatedFetch() {
     onSuccess: (response: GcpCryptoKeyObject[]) => void,
     onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
   ) {
-    fullyAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
+    googleAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
       `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
       'GET',
       res => onSuccess(res),
@@ -325,11 +331,29 @@ export function useAuthenticatedFetch() {
     );
   }
 
+  function deleteRiScs(
+    riScId: string,
+    onSuccess?: (response: DeleteRiScResultDTO) => void,
+    onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
+  ) {
+    fullyAuthenticatedFetch<DeleteRiScResultDTO, ProcessRiScResultDTO>(
+      uriToDeleteRiSc(riScId),
+      'DELETE',
+      res => {
+        if (onSuccess) onSuccess(res);
+      },
+      (error, rejectedLogin) => {
+        if (onError) onError(error, rejectedLogin);
+      },
+    );
+  }
+
   return {
     fetchRiScs,
     fetchGcpCryptoKeys,
     postRiScs,
     putRiScs,
+    deleteRiScs,
     publishRiScs,
     response,
     setResponse,
