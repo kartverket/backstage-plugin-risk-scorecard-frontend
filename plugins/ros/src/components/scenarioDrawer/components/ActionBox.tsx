@@ -26,7 +26,7 @@ import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
-import { DualButton } from '../../common/MosesButton';
+import { DualButton } from '../../common/DualButton';
 
 interface ActionBoxProps {
   action: Action;
