@@ -30,6 +30,7 @@ import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import { RiScStatus } from '../../utils/types';
+import {FeedbackDialog} from "./FeedbackDialog.tsx";
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -61,6 +62,12 @@ export function RiScPlugin() {
 
   function closeRiScDialog() {
     return setRiScDialogState(RiScDialogStates.Closed);
+  }
+
+  function handleCloseFeedbackDialog() {
+    setFeedbackOpen(false);
+    setFeedbackSent(false);
+    setFeedbackText('');
   }
 
   const {
@@ -124,7 +131,7 @@ export function RiScPlugin() {
                 onClick={() => setFeedbackOpen(true)}
                 sx={{ borderRadius: '6px', fontWeight: 'bold' }}
               >
-                Tilbakemelding
+                {t('feedbackDialog.feedbackButton')}
               </Button>
             </Grid>
           </ContentHeader>
@@ -211,71 +218,15 @@ export function RiScPlugin() {
       {riScDialogState !== RiScDialogStates.Closed && (
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
-      <Dialog
-        open={feedbackOpen}
-        onClose={() => {
-          setFeedbackOpen(false);
-          setFeedbackSent(false);
-        }}
-        fullWidth
-        maxWidth="sm"
-      >
-        {!feedbackSent && <DialogTitle>Send tilbakemelding</DialogTitle>}
-        <DialogContent>
-          {feedbackSent ? (
-            <Typography
-              align="center"
-              variant="h4"
-              sx={{
-                py: 8,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100%',
-              }}
-            >
-              Takk for tilbakemeldingen
-            </Typography>
-          ) : (
-            <TextField
-              margin="dense"
-              label="Din tilbakemelding"
-              fullWidth
-              multiline
-              minRows={4}
-              value={feedbackText}
-              onChange={e => setFeedbackText(e.target.value)}
-            />
-          )}
-        </DialogContent>
-        <DialogActions>
-          {feedbackSent ? (
-            <Button
-              onClick={() => {
-                setFeedbackOpen(false);
-                setFeedbackSent(false);
-                setFeedbackText('');
-              }}
-            >
-              Lukk
-            </Button>
-          ) : (
-            <>
-              <Button onClick={() => setFeedbackOpen(false)}>Avbryt</Button>
-              <Button
-                onClick={async () => {
-                  await postFeedback(feedbackText);
-                  setFeedbackSent(true);
-                }}
-                disabled={!feedbackText.trim()}
-                variant="contained"
-              >
-                Send
-              </Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
+      <FeedbackDialog
+          open={feedbackOpen}
+          feedbackText={feedbackText}
+          feedbackSent={feedbackSent}
+          setFeedbackText={setFeedbackText}
+          setFeedbackSent={setFeedbackSent} 
+          onClose={handleCloseFeedbackDialog}
+          onSend={async () => await postFeedback(feedbackText)}
+      />
 
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>

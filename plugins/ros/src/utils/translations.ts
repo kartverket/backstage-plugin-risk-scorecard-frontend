@@ -503,6 +503,13 @@ export const pluginRiScMessages = {
     title: 'Delete Risk Scorecard',
     confirmationMessage: 'Are you sure you want to delete this risk scorecard?',
   },
+  feedbackDialog: {
+    title: 'Send feedback',
+    description: 'Your feedback',
+    confirmationMessage: 'Thank you for your feedback!',
+    feedbackButton: 'feedback',
+
+  }
 } as const;
 
 export const pluginRiScTranslationRef = createTranslationRef({
@@ -1005,6 +1012,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'deleteDialog.title': 'Slett risiko- og sårbarhetsanalyse',
           'deleteDialog.confirmationMessage':
             'Er du sikker på at du vil slette denne risiko- og sårbarhetsanalysen?',
+          'feedbackDialog.title': 'Send tilbakemelding',
+          'feedbackDialog.description': 'Din tilbakemelding',
+          'feedbackDialog.confirmationMessage': 'Takk for din tilbakemelding!',
+          'feedbackDialog.feedbackButton': 'tilbakemelding',
         },
       }),
   },
