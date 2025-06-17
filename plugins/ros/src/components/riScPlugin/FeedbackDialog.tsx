@@ -21,7 +21,7 @@ type FeedbackDialogProps = {
   setFeedbackText: (text: string) => void;
   setFeedbackSent: (sent: boolean) => void;
   onClose: () => void;
-  onSend: () => void;
+  onSend: () => Promise<void>;
 };
 
 export function FeedbackDialog({
