@@ -26,6 +26,7 @@ import { Delete, Settings } from '@mui/icons-material';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import { RiScStatus } from '../../utils/types';
 import { FeedbackDialog } from './FeedbackDialog.tsx';
+import {AddComment} from "@material-ui/icons";
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -121,10 +122,11 @@ export function RiScPlugin() {
             >
               <SupportButton />
               <Button
-                variant="outlined"
+                variant="text"
+                startIcon={<AddComment />}
                 color="primary"
                 onClick={() => setFeedbackOpen(true)}
-                sx={{ borderRadius: '6px', fontWeight: 'bold' }}
+                sx={{ borderRadius: '6px' }}
               >
                 {t('feedbackDialog.feedbackButton')}
               </Button>
@@ -220,7 +222,7 @@ export function RiScPlugin() {
         setFeedbackText={setFeedbackText}
         setFeedbackSent={setFeedbackSent}
         onClose={handleCloseFeedbackDialog}
-        onSend={async () => await postFeedback(feedbackText)}
+        onSend={() => postFeedback(feedbackText)}
       />
 
       {!scenarioWizardStep && <ScenarioDrawer />}

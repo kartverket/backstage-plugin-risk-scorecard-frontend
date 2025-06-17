@@ -508,6 +508,7 @@ export const pluginRiScMessages = {
     description: 'Your feedback',
     confirmationMessage: 'Thank you for your feedback!',
     feedbackButton: 'feedback',
+    errorMessage: 'An error occurred while sending your feedback.',
   },
 } as const;
 
@@ -1015,6 +1016,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'feedbackDialog.description': 'Din tilbakemelding',
           'feedbackDialog.confirmationMessage': 'Takk for din tilbakemelding!',
           'feedbackDialog.feedbackButton': 'tilbakemelding',
+          'feedbackDialog.errorMessage': 'Kunne ikke sende tilbakemelding',
         },
       }),
   },

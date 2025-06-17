@@ -11,6 +11,10 @@ import {
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 
+import { useState } from 'react';
+
+const [feedbackError, setFeedbackError] = useState<string | null>(null);
+
 type FeedbackDialogProps = {
   open: boolean;
   feedbackText: string;
@@ -60,8 +64,13 @@ export function FeedbackDialog({
             <Button onClick={onClose}>{t('dictionary.cancel')}</Button>
             <Button
               onClick={async () => {
-                await onSend();
-                setFeedbackSent(true);
+                setFeedbackError(null);
+                try {
+                  await onSend();
+                  setFeedbackSent(true);
+                } catch (error: any ) {
+                  setFeedbackError(t('feedbackDialog.errorMessage'));
+                }
               }}
               disabled={!feedbackText.trim()}
               variant="contained"
