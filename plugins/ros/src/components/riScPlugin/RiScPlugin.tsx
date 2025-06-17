@@ -23,14 +23,9 @@ import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { Delete, Settings } from '@mui/icons-material';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import { RiScStatus } from '../../utils/types';
-import {FeedbackDialog} from "./FeedbackDialog.tsx";
+import { FeedbackDialog } from './FeedbackDialog.tsx';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -219,13 +214,13 @@ export function RiScPlugin() {
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
       <FeedbackDialog
-          open={feedbackOpen}
-          feedbackText={feedbackText}
-          feedbackSent={feedbackSent}
-          setFeedbackText={setFeedbackText}
-          setFeedbackSent={setFeedbackSent} 
-          onClose={handleCloseFeedbackDialog}
-          onSend={async () => await postFeedback(feedbackText)}
+        open={feedbackOpen}
+        feedbackText={feedbackText}
+        feedbackSent={feedbackSent}
+        setFeedbackText={setFeedbackText}
+        setFeedbackSent={setFeedbackSent}
+        onClose={handleCloseFeedbackDialog}
+        onSend={async () => await postFeedback(feedbackText)}
       />
 
       {!scenarioWizardStep && <ScenarioDrawer />}

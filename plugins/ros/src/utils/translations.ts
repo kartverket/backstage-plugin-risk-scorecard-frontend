@@ -508,8 +508,7 @@ export const pluginRiScMessages = {
     description: 'Your feedback',
     confirmationMessage: 'Thank you for your feedback!',
     feedbackButton: 'feedback',
-
-  }
+  },
 } as const;
 
 export const pluginRiScTranslationRef = createTranslationRef({
