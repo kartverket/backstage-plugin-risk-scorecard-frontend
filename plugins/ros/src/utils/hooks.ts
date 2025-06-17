@@ -251,7 +251,7 @@ export function useAuthenticatedFetch() {
         'POST',
         () => {},
         () => {},
-        JSON.stringify(feedback),
+        feedback,
       ),
     );
   }
