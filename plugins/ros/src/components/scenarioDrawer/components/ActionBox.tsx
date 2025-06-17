@@ -26,7 +26,7 @@ import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
-import { MosesButton } from '../../common/MosesButton';
+import { DualButton } from '../../common/MosesButton';
 
 interface ActionBoxProps {
   action: Action;
@@ -182,14 +182,13 @@ export function ActionBox({
           </IconButton>
         )}
 
-        <MosesButton
+        <DualButton
           propsCommon={{
             color:
               action.status === ActionStatusOptions.Completed
                 ? 'success'
                 : 'inherit',
           }}
-          color="red"
           propsLeft={{
             children: translatedActionStatus,
             onClick: handleChipClick,
@@ -199,6 +198,7 @@ export function ActionBox({
             sx: { padding: '0 0 0 10px', minWidth: '30px' },
           }}
         />
+
         <Menu
           anchorEl={anchorEl}
           open={open}

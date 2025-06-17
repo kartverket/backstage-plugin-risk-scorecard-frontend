@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from '@mui/material';
 
-type MosesButtonProps = {
+type DualButtonProps = {
   propsLeft?: ButtonProps;
   propsRight?: ButtonProps;
   propsCommon?: ButtonProps;
@@ -11,26 +11,26 @@ type MosesButtonProps = {
  * propsCommon applies to both sides.
  * Specificity takes precedence.
  */
-export function MosesButton({
+export function DualButton({
   propsLeft,
   propsRight,
   className,
   propsCommon,
   ...props
-}: MosesButtonProps) {
+}: DualButtonProps) {
   return (
     <div
       {...props}
       style={{
         display: 'flex',
         textWrap: 'nowrap',
-        gap: '2px',
-
+        gap: '4px',
         ...props.style,
       }}
     >
       <Button
         variant="contained"
+        disableElevation
         {...propsCommon}
         {...propsLeft}
         sx={{
@@ -42,6 +42,7 @@ export function MosesButton({
       />
       <Button
         variant="contained"
+        disableElevation
         {...propsCommon}
         {...propsRight}
         sx={{
