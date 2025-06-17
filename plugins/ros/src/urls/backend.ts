@@ -13,5 +13,4 @@ export const BACKEND_URLS = {
 	fetchRiSc: '/api/proxy/risc-proxy/api/risc/:repoOwner/:repoName/:id', // (1)
   deleteRiSc: 'api/proxy/risc-proxy/api/risc/:repoOwner/:repoName/:id', // (1)
 	publishRiSc: '/api/proxy/risc-proxy/api/risc/:repoOwner/:repoName/publish/:id', // (1)
-	riScApiUri: '/api/proxy/risc-proxy', // (2)
 };
