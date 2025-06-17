@@ -26,7 +26,7 @@ import { Delete, Settings } from '@mui/icons-material';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import { RiScStatus } from '../../utils/types';
 import { FeedbackDialog } from './FeedbackDialog.tsx';
-import {AddComment} from "@material-ui/icons";
+import { AddComment } from '@material-ui/icons';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);

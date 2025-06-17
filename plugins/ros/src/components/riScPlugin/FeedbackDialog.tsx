@@ -12,8 +12,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 
 import { useState } from 'react';
-
-const [feedbackError, setFeedbackError] = useState<string | null>(null);
+import { dialogActions } from '../common/mixins.ts';
 
 type FeedbackDialogProps = {
   open: boolean;
@@ -35,9 +34,10 @@ export function FeedbackDialog({
   onSend,
 }: FeedbackDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth={'sm'}>
+    <Dialog open={open} onClose={onClose} fullWidth>
       {!feedbackSent && <DialogTitle>{t('feedbackDialog.title')}</DialogTitle>}
       <DialogContent>
         {feedbackSent ? (
@@ -45,30 +45,41 @@ export function FeedbackDialog({
             {t('feedbackDialog.confirmationMessage')}
           </Typography>
         ) : (
-          <TextField
-            margin="dense"
-            label={t('feedbackDialog.description')}
-            fullWidth
-            multiline
-            minRows={4}
-            value={feedbackText}
-            onChange={e => setFeedbackText(e.target.value)}
-          />
+          <>
+            <TextField
+              margin="dense"
+              label={t('feedbackDialog.description')}
+              fullWidth
+              multiline
+              minRows={4}
+              value={feedbackText}
+              onChange={e => setFeedbackText(e.target.value)}
+            />
+            {feedbackError && (
+              <Typography color="error" sx={{ mt: 2 }}>
+                {feedbackError}
+              </Typography>
+            )}
+          </>
         )}
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={dialogActions}>
         {feedbackSent ? (
-          <Button onClick={onClose}>{t('dictionary.close')}</Button>
+          <Button onClick={onClose} variant="outlined">
+            {t('dictionary.close')}
+          </Button>
         ) : (
           <>
-            <Button onClick={onClose}>{t('dictionary.cancel')}</Button>
+            <Button onClick={onClose} variant="outlined">
+              {t('dictionary.cancel')}
+            </Button>
             <Button
               onClick={async () => {
                 setFeedbackError(null);
                 try {
                   await onSend();
                   setFeedbackSent(true);
-                } catch (error: any ) {
+                } catch (error: any) {
                   setFeedbackError(t('feedbackDialog.errorMessage'));
                 }
               }}
