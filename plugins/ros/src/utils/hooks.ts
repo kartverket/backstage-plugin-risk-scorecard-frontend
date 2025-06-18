@@ -244,16 +244,16 @@ export function useAuthenticatedFetch() {
     }
   }
 
-  function postFeedback(feedback: string) {
-    return identityApi.getProfileInfo().then(() =>
-      fullyAuthenticatedFetch<string, string>(
-        `${riScUri}/feedback`,
-        'POST',
-        () => {},
-        () => {},
-        feedback,
-      ),
-    );
+  function postFeedback(feedback: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fullyAuthenticatedFetch<void, any>(
+          `${riScUri}/feedback`,
+          'POST',
+          () => resolve(),
+          (error) => reject(error),
+          feedback,
+      );
+    });
   }
 
   function fetchGcpCryptoKeys(
