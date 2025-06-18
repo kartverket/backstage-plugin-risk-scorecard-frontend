@@ -1,4 +1,5 @@
 import { useChangeSetStyles } from './changeSetStyles.ts';
+import { ChangeSetRemovedValue } from './ChangeSetRemovedValue.tsx';
 
 interface ChangeSetRemovedPropertyProps {
   propertyName: string;
@@ -13,7 +14,9 @@ export function ChangeSetRemovedProperty({
   return (
     <div className={styles.removedPropertyContainer}>
       <div className={styles.removedProperty}>{propertyName}</div>
-      <div className={styles.removedValue}>{value}</div>
+      <div>
+        <ChangeSetRemovedValue oldValue={value} />
+      </div>
     </div>
   );
 }

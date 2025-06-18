@@ -70,7 +70,7 @@ export type GcpCryptoKeyObject = {
   hasEncryptDecryptAccess?: boolean;
 };
 
-type ScenarioDTO = {
+export type ScenarioDTO = {
   title: string;
   scenario: {
     ID: string;
@@ -84,7 +84,7 @@ type ScenarioDTO = {
   };
 };
 
-type ActionsDTO = {
+export type ActionsDTO = {
   title: string;
   action: {
     ID: string;
@@ -103,7 +103,7 @@ export function dtoToRiSc(riScDTO: RiScDTO): RiSc {
   };
 }
 
-function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
+export function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
   return {
     ...scenarioDTO.scenario,
     title: scenarioDTO.title,
@@ -111,7 +111,7 @@ function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
   };
 }
 
-function dtoToAction(actionDTO: ActionsDTO): Action {
+export function dtoToAction(actionDTO: ActionsDTO): Action {
   return {
     ...actionDTO.action,
     title: actionDTO.title,
