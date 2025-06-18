@@ -26,7 +26,6 @@ import { Delete, Settings } from '@mui/icons-material';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import { RiScStatus } from '../../utils/types';
 import { FeedbackDialog } from './FeedbackDialog.tsx';
-import { AddComment } from '@material-ui/icons';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -35,10 +34,6 @@ export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
   );
-
-  const [feedbackOpen, setFeedbackOpen] = useState(false);
-  const [feedbackText, setFeedbackText] = useState('');
-  const [feedbackSent, setFeedbackSent] = useState(false);
 
   function openCreateRiScDialog() {
     return setRiScDialogState(RiScDialogStates.Create);
@@ -58,12 +53,6 @@ export function RiScPlugin() {
 
   function closeRiScDialog() {
     return setRiScDialogState(RiScDialogStates.Closed);
-  }
-
-  function handleCloseFeedbackDialog() {
-    setFeedbackOpen(false);
-    setFeedbackSent(false);
-    setFeedbackText('');
   }
 
   const {
@@ -121,15 +110,7 @@ export function RiScPlugin() {
               }}
             >
               <SupportButton />
-              <Button
-                variant="text"
-                startIcon={<AddComment />}
-                color="primary"
-                onClick={() => setFeedbackOpen(true)}
-                sx={{ borderRadius: '6px' }}
-              >
-                {t('feedbackDialog.feedbackButton')}
-              </Button>
+              <FeedbackDialog onSend={postFeedback} />
             </Grid>
           </ContentHeader>
 
@@ -215,15 +196,6 @@ export function RiScPlugin() {
       {riScDialogState !== RiScDialogStates.Closed && (
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
-      <FeedbackDialog
-        open={feedbackOpen}
-        feedbackText={feedbackText}
-        feedbackSent={feedbackSent}
-        setFeedbackText={setFeedbackText}
-        setFeedbackSent={setFeedbackSent}
-        onClose={handleCloseFeedbackDialog}
-        onSend={() => postFeedback(feedbackText)}
-      />
 
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>
