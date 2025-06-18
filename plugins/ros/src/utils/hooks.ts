@@ -247,11 +247,11 @@ export function useAuthenticatedFetch() {
   function postFeedback(feedback: string): Promise<void> {
     return new Promise((resolve, reject) => {
       fullyAuthenticatedFetch<void, any>(
-          `${riScUri}/feedback`,
-          'POST',
-          () => resolve(),
-          (error) => reject(error),
-          feedback,
+        `${riScUri}/feedback`,
+        'POST',
+        () => resolve(),
+        error => reject(error),
+        feedback,
       );
     });
   }
