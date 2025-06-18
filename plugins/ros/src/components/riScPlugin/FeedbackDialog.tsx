@@ -16,10 +16,10 @@ import { dialogActions } from '../common/mixins.ts';
 import { AddComment } from '@material-ui/icons';
 
 type FeedbackDialogProps = {
-  onSend: (text: string) => Promise<void>;
+  sendFeedback: (text: string) => Promise<void>;
 };
 
-export function FeedbackDialog({ onSend }: FeedbackDialogProps) {
+export function FeedbackDialog({ sendFeedback }: FeedbackDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [open, setOpen] = useState(false);
@@ -48,21 +48,18 @@ export function FeedbackDialog({ onSend }: FeedbackDialogProps) {
         startIcon={<AddComment />}
         color="primary"
         onClick={handleOpen}
-        sx={{ borderRadius: '6px' }}
       >
         {t('feedbackDialog.feedbackButton')}
       </Button>
 
       <Dialog open={open} onClose={onClose} fullWidth>
-        {!feedbackSent && (
+        {feedbackSent ? (
+          <DialogTitle>{t('feedbackDialog.confirmationMessage')}</DialogTitle>
+        ) : (
           <DialogTitle>{t('feedbackDialog.title')}</DialogTitle>
         )}
         <DialogContent>
-          {feedbackSent ? (
-            <Typography align="center" variant="h4" sx={{ py: 8 }}>
-              {t('feedbackDialog.confirmationMessage')}
-            </Typography>
-          ) : (
+          {!feedbackSent && (
             <>
               <TextField
                 margin="dense"
@@ -95,7 +92,7 @@ export function FeedbackDialog({ onSend }: FeedbackDialogProps) {
                 onClick={async () => {
                   setFeedbackError(null);
                   try {
-                    await onSend(feedbackText);
+                    await sendFeedback(feedbackText);
                     setFeedbackSent(true);
                   } catch (error: any) {
                     setFeedbackError(t('feedbackDialog.errorMessage'));
@@ -104,7 +101,7 @@ export function FeedbackDialog({ onSend }: FeedbackDialogProps) {
                 disabled={!feedbackText.trim()}
                 variant="contained"
               >
-                Send
+                {t('feedbackDialog.sendButton')}
               </Button>
             </>
           )}

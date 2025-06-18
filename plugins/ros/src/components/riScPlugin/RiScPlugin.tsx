@@ -110,7 +110,7 @@ export function RiScPlugin() {
               }}
             >
               <SupportButton />
-              <FeedbackDialog onSend={postFeedback} />
+              <FeedbackDialog sendFeedback={postFeedback} />
             </Grid>
           </ContentHeader>
 
