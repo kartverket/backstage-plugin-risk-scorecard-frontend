@@ -5,7 +5,6 @@ import {
   DialogActions,
   TextField,
   Button,
-  Typography,
 } from '@mui/material/';
 
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -14,6 +13,7 @@ import { useState } from 'react';
 import { dialogActions } from '../common/mixins.ts';
 import { AddComment } from '@material-ui/icons';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
+import Alert from "@mui/material/Alert";
 
 export function FeedbackDialog() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -61,9 +61,9 @@ export function FeedbackDialog() {
                 onChange={e => setFeedbackText(e.target.value)}
               />
               {feedbackError && (
-                <Typography color="error" sx={{ mt: 2 }}>
+                <Alert severity="error" sx={{ mt: 2 }}>
                   {feedbackError}
-                </Typography>
+                </Alert>
               )}
             </>
           )}
