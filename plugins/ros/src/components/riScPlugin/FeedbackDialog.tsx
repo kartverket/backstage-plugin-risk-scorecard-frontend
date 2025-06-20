@@ -43,13 +43,8 @@ export function FeedbackDialog() {
       </Button>
 
       <Dialog open={open} onClose={onClose} fullWidth>
-        {feedbackSent ? (
-          <DialogTitle>{t('feedbackDialog.confirmationMessage')}</DialogTitle>
-        ) : (
-          <DialogTitle>{t('feedbackDialog.title')}</DialogTitle>
-        )}
+        <DialogTitle>{t('feedbackDialog.title')}</DialogTitle>
         <DialogContent>
-          {!feedbackSent && (
             <>
               <TextField
                 margin="dense"
@@ -59,14 +54,18 @@ export function FeedbackDialog() {
                 minRows={4}
                 value={feedbackText}
                 onChange={e => setFeedbackText(e.target.value)}
+                disabled={feedbackSent}
               />
               {feedbackError && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {feedbackError}
                 </Alert>
               )}
+              {feedbackSent &&
+                  <Alert severity="success" sx={{ mt: 2 }}>
+                    {t('feedbackDialog.confirmationMessage')}
+                  </Alert>}
             </>
-          )}
         </DialogContent>
         <DialogActions sx={dialogActions}>
           {feedbackSent ? (
