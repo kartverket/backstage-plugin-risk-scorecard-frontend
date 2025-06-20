@@ -10,17 +10,14 @@ import {
 
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-
 import { useState } from 'react';
 import { dialogActions } from '../common/mixins.ts';
 import { AddComment } from '@material-ui/icons';
+import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 
-type FeedbackDialogProps = {
-  sendFeedback: (text: string) => Promise<void>;
-};
-
-export function FeedbackDialog({ sendFeedback }: FeedbackDialogProps) {
+export function FeedbackDialog() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { postFeedback } = useAuthenticatedFetch();
 
   const [open, setOpen] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
@@ -84,7 +81,7 @@ export function FeedbackDialog({ sendFeedback }: FeedbackDialogProps) {
               <Button
                 onClick={async () => {
                   try {
-                    await sendFeedback(feedbackText);
+                    await postFeedback(feedbackText);
                     setFeedbackSent(true);
                   } catch (error: any) {
                     setFeedbackError(t('feedbackDialog.errorMessage'));

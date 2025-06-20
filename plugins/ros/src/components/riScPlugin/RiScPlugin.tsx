@@ -23,13 +23,11 @@ import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { Delete, Settings } from '@mui/icons-material';
-import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import { RiScStatus } from '../../utils/types';
 import { FeedbackDialog } from './FeedbackDialog.tsx';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { postFeedback } = useAuthenticatedFetch();
 
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
@@ -110,7 +108,7 @@ export function RiScPlugin() {
               }}
             >
               <SupportButton />
-              <FeedbackDialog sendFeedback={postFeedback} />
+              <FeedbackDialog />
             </Grid>
           </ContentHeader>
 
