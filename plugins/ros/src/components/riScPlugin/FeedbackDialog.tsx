@@ -27,13 +27,6 @@ export function FeedbackDialog({ sendFeedback }: FeedbackDialogProps) {
   const [feedbackSent, setFeedbackSent] = useState(false);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
-  const handleOpen = () => {
-    setOpen(true);
-    setFeedbackText('');
-    setFeedbackSent(false);
-    setFeedbackError(null);
-  };
-
   const onClose = () => {
     setOpen(false);
     setFeedbackText('');
@@ -47,7 +40,7 @@ export function FeedbackDialog({ sendFeedback }: FeedbackDialogProps) {
         variant="text"
         startIcon={<AddComment />}
         color="primary"
-        onClick={handleOpen}
+        onClick={() => setOpen(true)}
       >
         {t('feedbackDialog.feedbackButton')}
       </Button>
