@@ -83,7 +83,6 @@ export function FeedbackDialog({ sendFeedback }: FeedbackDialogProps) {
               </Button>
               <Button
                 onClick={async () => {
-                  setFeedbackError(null);
                   try {
                     await sendFeedback(feedbackText);
                     setFeedbackSent(true);

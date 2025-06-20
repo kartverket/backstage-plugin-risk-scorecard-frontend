@@ -1017,7 +1017,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'feedbackDialog.description': 'Din tilbakemelding',
           'feedbackDialog.confirmationMessage': 'Takk for din tilbakemelding!',
           'feedbackDialog.feedbackButton': 'Gi tilbakemelding',
-          'feedbackDialog.errorMessage': 'Kunne ikke sende tilbakemelding',
+          'feedbackDialog.errorMessage': 'Kunne ikke sende tilbakemelding.',
           'feedbackDialog.sendButton': 'Send',
         },
       }),
