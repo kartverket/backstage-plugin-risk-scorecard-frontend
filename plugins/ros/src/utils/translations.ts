@@ -506,7 +506,7 @@ export const pluginRiScMessages = {
   feedbackDialog: {
     title: 'Give us your feedback!',
     description: 'Your feedback',
-    confirmationMessage: 'Thank you for your feedback!',
+    confirmationMessage: 'Thank you for your feedback.',
     feedbackButton: 'Give feedback',
     errorMessage: 'An error occurred while sending your feedback.',
     sendButton: 'Send',
@@ -1015,7 +1015,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Er du sikker på at du vil slette denne risiko- og sårbarhetsanalysen?',
           'feedbackDialog.title': 'Gi oss en tilbakemelding!',
           'feedbackDialog.description': 'Din tilbakemelding',
-          'feedbackDialog.confirmationMessage': 'Takk for din tilbakemelding!',
+          'feedbackDialog.confirmationMessage': 'Takk for din tilbakemelding.',
           'feedbackDialog.feedbackButton': 'Gi tilbakemelding',
           'feedbackDialog.errorMessage': 'Kunne ikke sende tilbakemelding.',
           'feedbackDialog.sendButton': 'Send',
