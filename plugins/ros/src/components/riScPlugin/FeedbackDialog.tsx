@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { dialogActions } from '../common/mixins.ts';
 import { AddComment } from '@material-ui/icons';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
-import Alert from "@mui/material/Alert";
+import Alert from '@mui/material/Alert';
 
 export function FeedbackDialog() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -45,27 +45,28 @@ export function FeedbackDialog() {
       <Dialog open={open} onClose={onClose} fullWidth>
         <DialogTitle>{t('feedbackDialog.title')}</DialogTitle>
         <DialogContent>
-            <>
-              <TextField
-                margin="dense"
-                label={t('feedbackDialog.description')}
-                fullWidth
-                multiline
-                minRows={4}
-                value={feedbackText}
-                onChange={e => setFeedbackText(e.target.value)}
-                disabled={feedbackSent}
-              />
-              {feedbackError && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {feedbackError}
-                </Alert>
-              )}
-              {feedbackSent &&
-                  <Alert severity="success" sx={{ mt: 2 }}>
-                    {t('feedbackDialog.confirmationMessage')}
-                  </Alert>}
-            </>
+          <>
+            <TextField
+              margin="dense"
+              label={t('feedbackDialog.description')}
+              fullWidth
+              multiline
+              minRows={4}
+              value={feedbackText}
+              onChange={e => setFeedbackText(e.target.value)}
+              disabled={feedbackSent}
+            />
+            {feedbackError && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {feedbackError}
+              </Alert>
+            )}
+            {feedbackSent && (
+              <Alert severity="success" sx={{ mt: 2 }}>
+                {t('feedbackDialog.confirmationMessage')}
+              </Alert>
+            )}
+          </>
         </DialogContent>
         <DialogActions sx={dialogActions}>
           {feedbackSent ? (
