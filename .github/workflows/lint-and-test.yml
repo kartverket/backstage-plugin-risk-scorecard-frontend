@@ -3,6 +3,9 @@ name: Lint, test and compile plugin
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   compile_and_lint:
     runs-on: ubuntu-latest
