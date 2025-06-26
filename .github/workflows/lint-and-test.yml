@@ -2,6 +2,8 @@ name: Lint, test and compile plugin
 
 on:
   pull_request:
+    paths-ignore:
+      - '.security/**'
 
 permissions:
   contents: read
