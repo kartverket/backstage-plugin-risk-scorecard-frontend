@@ -5,6 +5,8 @@ on:
     branches: ['main']
   pull_request:
     branches: ['main']
+    paths-ignore:
+      - '.security/**'
 
 env:
   IMAGE_NAME: ${{ github.repository }}
