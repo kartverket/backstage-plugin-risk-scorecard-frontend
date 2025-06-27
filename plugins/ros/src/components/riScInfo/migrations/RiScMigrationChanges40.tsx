@@ -1,12 +1,12 @@
 import { MigrationChanges40 } from '../../../utils/types.ts';
 import { MigrationTitle } from './components/MigrationTitle.tsx';
-import { ChangeSetBox } from './components/ChangeSetBox.tsx';
-import { ChangeSetTag } from './components/ChangeSetTag.tsx';
-import { ChangeSetChangedValue } from './components/ChangeSetChangedValue.tsx';
-import { ChangeSetBoxTitle } from './components/ChangeSetBoxTitle.tsx';
-import { ChangeSetTags } from './components/ChangeSetTags.tsx';
-import { ChangeSetText } from './components/ChangeSetText.tsx';
-import { ChangeSetRemovedProperty } from './components/ChangeSetRemovedProperty.tsx';
+import { ChangeSetBox } from '../changeset/components/ChangeSetBox.tsx';
+import { ChangeSetTag } from '../changeset/components/ChangeSetTag.tsx';
+import { ChangeSetChangedValue } from '../changeset/components/ChangeSetChangedValue.tsx';
+import { ChangeSetBoxTitle } from '../changeset/components/ChangeSetBoxTitle.tsx';
+import { ChangeSetTags } from '../changeset/components/ChangeSetTags.tsx';
+import { ChangeSetText } from '../changeset/components/ChangeSetText.tsx';
+import { ChangeSetRemovedProperty } from '../changeset/components/ChangeSetRemovedProperty.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 
@@ -31,10 +31,7 @@ export function RiScMigrationChanges40({
       {changes.scenarios.map(scenario => (
         <ChangeSetBox type="primary">
           <ChangeSetTags>
-            <ChangeSetTag
-              type="primary"
-              text={t('migrationDialog.tagScenario')}
-            />
+            <ChangeSetTag type="primary" text={t('dictionary.scenario')} />
           </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />
           {scenario.changedVulnerabilities.length > 0 && (
@@ -43,26 +40,25 @@ export function RiScMigrationChanges40({
                 title={t('migrationDialog.migration40.vulnerabilitiesTitle')}
               />
               {scenario.changedVulnerabilities.map(change => (
-                <ChangeSetChangedValue
-                  /* @ts-ignore Because ts can't typecheck strings against our keys */
-                  oldValue={t(
-                    `migrationDialog.migration40.vulnerabilities.${change.oldValue}`,
-                  )}
-                  /* @ts-ignore Because ts can't typecheck strings against our keys */
-                  newValue={t(
-                    `migrationDialog.migration40.vulnerabilities.${change.newValue}`,
-                  )}
-                />
+                <div>
+                  <ChangeSetChangedValue
+                    /* @ts-ignore Because ts can't typecheck strings against our keys */
+                    oldValue={t(
+                      `migrationDialog.migration40.vulnerabilities.${change.oldValue}`,
+                    )}
+                    /* @ts-ignore Because ts can't typecheck strings against our keys */
+                    newValue={t(
+                      `migrationDialog.migration40.vulnerabilities.${change.newValue}`,
+                    )}
+                  />
+                </div>
               ))}
             </ChangeSetBox>
           )}
           {scenario.removedExistingActions && (
             <ChangeSetBox type="secondary">
               <ChangeSetTags>
-                <ChangeSetTag
-                  type="delete"
-                  text={t('migrationDialog.tagRemoved')}
-                />
+                <ChangeSetTag type="delete" text={t('dictionary.removed')} />
               </ChangeSetTags>
               <ChangeSetBoxTitle
                 title={t('migrationDialog.migration40.existingActions')}
@@ -73,10 +69,7 @@ export function RiScMigrationChanges40({
           {scenario.changedActions.map(action => (
             <ChangeSetBox type="secondary">
               <ChangeSetTags>
-                <ChangeSetTag
-                  type="primary"
-                  text={t('migrationDialog.tagAction')}
-                />
+                <ChangeSetTag type="primary" text={t('dictionary.action')} />
               </ChangeSetTags>
               <ChangeSetBoxTitle title={action.title} />
               {action.removedOwner && (
