@@ -48,6 +48,8 @@ import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
 import { HomePage } from './components/home/HomePage';
 import { URLS } from './urls';
+import { UnifiedThemeProvider } from '@backstage/theme';
+import { kartverketTheme } from './theme/kartverket';
 
 const app = createApp({
   __experimentalTranslations: {
@@ -89,6 +91,16 @@ const app = createApp({
     },
   },
   apis,
+  themes: [
+    {
+      id: 'kartverket',
+      title: 'Kartverket Theme',
+      variant: 'light',
+      Provider: ({ children }) => (
+        <UnifiedThemeProvider theme={kartverketTheme} children={children} />
+      ),
+    },
+  ],
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,
