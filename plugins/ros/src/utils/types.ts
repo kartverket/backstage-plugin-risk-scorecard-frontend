@@ -132,6 +132,7 @@ export type Action = {
   description: string;
   status: string;
   url: string;
+  lastUpdated?: Date | null;
 };
 
 export type GithubRepoInfo = {
@@ -235,6 +236,7 @@ export type ActionChange = {
   description: SimpleTrackedProperty<string>;
   url?: SimpleTrackedProperty<string | null>;
   status?: SimpleTrackedProperty<string>;
+  lastUpdated?: SimpleTrackedProperty<Date | null>;
 };
 
 export type ScenarioRiskChange = {

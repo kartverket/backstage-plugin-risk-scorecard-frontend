@@ -364,6 +364,8 @@ export const pluginRiScMessages = {
       descriptionError: 'Description cannot be empty',
       urlError: 'Invalid URL',
       emptyState: 'This scenario has no defined actions',
+      lastUpdated: 'Last updated:',
+      notUpdated: 'Not updated yet',
     },
     title: 'Risk scenario',
     titleError: 'Scenario title is required',
@@ -627,6 +629,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Restkonsekvens kan ikke være høyere enn startkonsekvens',
           'scenarioDrawer.errors.remainingProbabilityTooHigh':
             'Restsannsynlighet kan ikke være høyere enn startsannsynlighet',
+          'scenarioDrawer.action.lastUpdated': 'Sist oppdatert:',
+          'scenarioDrawer.action.notUpdated': 'Ingen dato satt',
 
           'encryption.title': 'Kryptering',
 

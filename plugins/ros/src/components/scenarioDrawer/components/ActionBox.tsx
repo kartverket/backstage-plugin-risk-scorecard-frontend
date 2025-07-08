@@ -22,6 +22,7 @@ import { Action, FormScenario } from '../../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
   deleteAction,
+  formatDate,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
@@ -88,15 +89,21 @@ export function ActionBox({
     setAnchorEl(null);
   }
 
+  const parsedDateTime = action.lastUpdated
+    ? formatDate(action.lastUpdated)
+    : t('scenarioDrawer.action.notUpdated');
+
   async function handleStatusChange(newStatus: string) {
     const updatedScenario = {
       ...scenario,
       actions: scenario.actions.map(a =>
-        a.ID === action.ID ? { ...a, status: newStatus } : a,
+        a.ID === action.ID
+          ? { ...a, status: newStatus, lastUpdated: new Date() }
+          : a,
       ),
     };
 
-    await submitEditedScenarioToRiSc(updatedScenario);
+    submitEditedScenarioToRiSc(updatedScenario);
 
     if (isMounted()) {
       handleMenuClose();
@@ -181,36 +188,55 @@ export function ActionBox({
             <Edit />
           </IconButton>
         )}
-        <Chip
-          label={translatedActionStatus}
+        <Box
           sx={{
-            margin: 0,
-            backgroundColor:
-              action.status === ActionStatusOptions.Completed
-                ? { backgroundColor: '#6BC6A4' }
-                : undefined,
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 2,
+            alignItems: 'center',
           }}
-          onClick={isEditingAllowed ? handleChipClick : () => null}
-        />
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleMenuClose}
-          onClick={handleMenuClose}
         >
-          {Object.values(ActionStatusOptions).map(value => (
-            <MenuItem key={value} onClick={() => handleStatusChange(value)}>
-              {
-                /* @ts-ignore Because ts can't typecheck strings against our keys */
-                t(
-                  actionStatusOptionsToTranslationKeys[
-                    value as ActionStatusOptions
-                  ],
-                )
-              }
-            </MenuItem>
-          ))}
-        </Menu>
+          <Chip
+            label={translatedActionStatus}
+            sx={{
+              margin: 0,
+              backgroundColor:
+                action.status === ActionStatusOptions.Completed
+                  ? { backgroundColor: '#6BC6A4' }
+                  : undefined,
+            }}
+            onClick={isEditingAllowed ? handleChipClick : () => null}
+          />
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleMenuClose}
+            onClick={handleMenuClose}
+          >
+            {Object.values(ActionStatusOptions).map(value => (
+              <MenuItem key={value} onClick={() => handleStatusChange(value)}>
+                {
+                  /* @ts-ignore Because ts can't typecheck strings against our keys */
+                  t(
+                    actionStatusOptionsToTranslationKeys[
+                      value as ActionStatusOptions
+                    ],
+                  )
+                }
+              </MenuItem>
+            ))}
+          </Menu>
+          <Box
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Typography>{t('scenarioDrawer.action.lastUpdated')}</Typography>
+            <Typography>{parsedDateTime}</Typography>
+          </Box>
+        </Box>
         {isEditingAllowed && (
           <IconButton onClick={handleDeleteAction}>
             <DeleteIcon />

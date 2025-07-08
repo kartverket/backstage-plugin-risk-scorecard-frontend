@@ -91,6 +91,7 @@ export type ActionsDTO = {
     description: string;
     status: string;
     url: string;
+    lastUpdated?: Date | null;
   };
 };
 
@@ -175,6 +176,7 @@ function actionToDTO(action: Action): ActionsDTO {
       description: action.description,
       status: action.status,
       url: action.url,
+      lastUpdated: action.lastUpdated,
     },
   };
 }
