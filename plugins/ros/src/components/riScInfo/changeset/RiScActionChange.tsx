@@ -17,7 +17,8 @@ export function RiScActionChange({ action, type }: RiScWholeActionChangeProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const parsedDateTime = action.lastUpdated
     ? formatDate(action.lastUpdated)
-    : 'Ingen dato satt';
+    : t('scenarioDrawer.action.notUpdated');
+
   return (
     <ChangeSetBox type="secondary">
       <ChangeSetTags>
