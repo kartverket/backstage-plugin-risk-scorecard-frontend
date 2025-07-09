@@ -41,7 +41,9 @@ export function RiScActionChangeSet({ action }: RiScActionChangeSetProps) {
         title={t('scenarioDrawer.action.lastUpdated')}
         property={action.lastUpdated}
         valueFormatter={actionValue =>
-          actionValue ? formatDate(actionValue) : 'Ingen dato satt'
+          actionValue
+            ? formatDate(actionValue)
+            : t('scenarioDrawer.action.notUpdated')
         }
       />
     </ChangeSetBox>
