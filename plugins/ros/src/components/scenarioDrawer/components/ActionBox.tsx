@@ -129,7 +129,6 @@ export function ActionBox({
     );
   }
 
-  // Reset anchorEl when component unmounts
   useEffect(() => () => setAnchorEl(null), []);
 
   if (isEditing) {
