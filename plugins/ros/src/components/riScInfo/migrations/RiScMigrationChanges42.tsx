@@ -8,7 +8,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 import { ChangeSetAddedProperty } from '../changeset/components/ChangeSetAddedProperty.tsx';
 import { formatDate } from '../../../utils/utilityfunctions.ts';
-import { act } from 'react';
 
 interface RiScMigrationChanges42Props {
   changes: MigrationChanges42;
