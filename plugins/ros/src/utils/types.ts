@@ -40,11 +40,28 @@ export type MigrationStatus = {
   migrationVersions?: MigrationVersions;
   migrationChanges40?: MigrationChanges40;
   migrationChanges41?: MigrationChanges41;
+  migrationChanges42?: MigrationChanges42;
 };
 
 export type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
+};
+
+export type MigrationChanges42 = {
+  scenarios: MigrationChanges42Scenario[];
+};
+
+export type MigrationChanges42Scenario = {
+  title: string;
+  id: string;
+  changedActions: MigrationChanges42Action[];
+};
+
+export type MigrationChanges42Action = {
+  title: string;
+  id: string;
+  lastUpdated?: Date | null;
 };
 
 export type MigrationChanges41 = {

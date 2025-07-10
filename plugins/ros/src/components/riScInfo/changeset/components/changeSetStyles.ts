@@ -108,7 +108,6 @@ export const useChangeSetStyles = makeStyles((theme: Theme) => ({
   addedValue: {
     fontWeight: fontWeightSemiBold,
     color: addedColor(theme),
-    textDecoration: 'line-through',
     fontSize: fontSizeNormal,
   },
 

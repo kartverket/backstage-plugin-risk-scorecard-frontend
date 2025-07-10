@@ -173,6 +173,9 @@ export const pluginRiScMessages = {
       nokPerIncident: 'NOK/incident',
       occurrencesPerYear: 'occurrences/year',
     },
+    migration42: {
+      changeExplanation: 'This migration adds a last updated field to actions.',
+    },
   },
   comparisonDialog: {
     noChanges: 'No changes',
@@ -731,7 +734,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Denne migreringen fjerner ansvarlig («owner») og frist («deadline») feltene fra tiltak, fjerner eksisterende tiltak feltet og oppdaterer verdier for sårbarheter.',
           'migrationDialog.migration41.nokPerIncident': 'NOK/hendelse',
           'migrationDialog.migration41.occurrencesPerYear': 'hendelser/år',
-
+          'migrationDialog.migration42.changeExplanation':
+            'Denne migreringen legger til et sist oppdatert felt ("lastUpdated") på tiltak.',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
           'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
