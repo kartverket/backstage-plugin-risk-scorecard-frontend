@@ -1,9 +1,8 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Cached, Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -28,6 +27,7 @@ import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
+import { DualButton } from '../../common/DualButton';
 
 interface ActionBoxProps {
   action: Action;
@@ -93,23 +93,43 @@ export function ActionBox({
     ? formatDate(action.lastUpdated)
     : t('scenarioDrawer.action.notUpdated');
 
-  async function handleStatusChange(newStatus: string) {
+  function updateActionInScenario(updates: Partial<Action>) {
     const updatedScenario = {
       ...scenario,
       actions: scenario.actions.map(a =>
-        a.ID === action.ID
-          ? { ...a, status: newStatus, lastUpdated: new Date() }
-          : a,
+        a.ID === action.ID ? { ...a, ...updates, lastUpdated: new Date() } : a,
       ),
     };
-
     submitEditedScenarioToRiSc(updatedScenario);
-
-    if (isMounted()) {
-      handleMenuClose();
-    }
+    if (isMounted()) handleMenuClose();
   }
 
+  function handleStatusChange(newStatus: string) {
+    updateActionInScenario({ status: newStatus });
+  }
+
+  function refreshStatus() {
+    if (isSameDay()) return;
+    updateActionInScenario({});
+  }
+
+  function isSameDay(): boolean {
+    const currentAction = scenario.actions.find(a => a.ID === action.ID);
+    const lastUpdated = currentAction?.lastUpdated;
+    const today = new Date();
+
+    if (!lastUpdated) return false;
+    const lastUpdatedParsed =
+      typeof lastUpdated === 'string' ? new Date(lastUpdated) : lastUpdated;
+
+    return (
+      lastUpdatedParsed.getDate() === today.getDate() &&
+      lastUpdatedParsed.getMonth() === today.getMonth() &&
+      lastUpdatedParsed.getFullYear() === today.getFullYear()
+    );
+  }
+
+  // Reset anchorEl when component unmounts
   useEffect(() => () => setAnchorEl(null), []);
 
   if (isEditing) {
@@ -196,16 +216,22 @@ export function ActionBox({
             alignItems: 'center',
           }}
         >
-          <Chip
-            label={translatedActionStatus}
-            sx={{
-              margin: 0,
-              backgroundColor:
+          <DualButton
+            propsCommon={{
+              color:
                 action.status === ActionStatusOptions.Completed
-                  ? { backgroundColor: '#6BC6A4' }
-                  : undefined,
+                  ? 'success'
+                  : 'inherit',
             }}
-            onClick={isEditingAllowed ? handleChipClick : () => null}
+            propsLeft={{
+              children: translatedActionStatus,
+              onClick: handleChipClick,
+            }}
+            propsRight={{
+              startIcon: <Cached />,
+              sx: { padding: '0 0 0 10px', minWidth: '30px' },
+              onClick: () => refreshStatus(),
+            }}
           />
           <Menu
             anchorEl={anchorEl}
