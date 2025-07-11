@@ -1,5 +1,11 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Cached, Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
+import {
+  Cached,
+  Edit,
+  ExpandLess,
+  ExpandMore,
+  PriorityHigh,
+} from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -17,17 +23,21 @@ import { useScenario } from '../../../contexts/ScenarioContext';
 import { ActionStatusOptions } from '../../../utils/constants';
 import { useIsMounted } from '../../../utils/hooks';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { Action, FormScenario } from '../../../utils/types';
+import { Action, FormScenario, LastPublished } from '../../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
+  calculateDaysSince,
+  calculateUpdatedStatus,
   deleteAction,
   formatDate,
+  UpdatedStatusEnum,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
 import { DualButton } from '../../common/DualButton';
+import { Tooltip } from '@material-ui/core';
 
 interface ActionBoxProps {
   action: Action;
@@ -53,13 +63,9 @@ export function ActionBox({
   const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
     useState(false);
 
-  const { updateStatus } = useRiScs();
-  const {
-    isEditingAllowed,
-    submitEditedScenarioToRiSc,
-    mapFormScenarioToScenario,
-    scenario,
-  } = useScenario();
+  const { updateStatus, selectedRiSc } = useRiScs();
+  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
+    useScenario();
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
@@ -169,7 +175,14 @@ export function ActionBox({
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 1,
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -194,19 +207,6 @@ export function ActionBox({
               : `${t('dictionary.measure')} ${index + 1}`}
           </Typography>
         </Box>
-        {isEditingAllowed && (
-          <IconButton
-            disabled={isExpanded ? false : true}
-            sx={{
-              marginLeft: 'auto',
-              opacity: isExpanded ? 1 : 0,
-              transition: 'opacity 300ms ease-in',
-            }}
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            <Edit />
-          </IconButton>
-        )}
         <Box
           sx={{
             display: 'flex',
@@ -261,17 +261,37 @@ export function ActionBox({
             <Typography>{t('scenarioDrawer.action.lastUpdated')}</Typography>
             <Typography>{parsedDateTime}</Typography>
           </Box>
+          <Exclamations
+            action={action}
+            lastPublished={selectedRiSc?.lastPublished}
+          />
         </Box>
-        {isEditingAllowed && (
-          <IconButton onClick={handleDeleteAction}>
-            <DeleteIcon />
-          </IconButton>
-        )}
+        <IconButton onClick={handleDeleteAction}>
+          <DeleteIcon />
+        </IconButton>
       </Box>
-      <Collapse in={isExpanded}>
-        <Typography sx={{ ...label, marginTop: 1 }}>
-          {t('dictionary.description')}
-        </Typography>
+
+      <Collapse in={isExpanded} sx={{ marginTop: 1 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Typography sx={{ ...label, marginTop: 1 }}>
+            {t('dictionary.description')}
+          </Typography>
+          <IconButton
+            sx={{
+              marginLeft: 'auto',
+              transition: 'opacity 300ms ease-in',
+            }}
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            <Edit />
+          </IconButton>
+        </Box>
         <Markdown description={action.description} />
 
         <Box
@@ -316,4 +336,50 @@ export function ActionBox({
       />
     </Box>
   );
+}
+
+function Exclamations({
+  action,
+  lastPublished,
+}: {
+  action: Action;
+  lastPublished?: LastPublished;
+}) {
+  const daysSinceLastUpdate = action.lastUpdated
+    ? calculateDaysSince(new Date(action.lastUpdated))
+    : null;
+  const status = calculateUpdatedStatus(
+    daysSinceLastUpdate,
+    lastPublished?.numberOfCommits || null,
+  );
+
+  switch (status) {
+    case UpdatedStatusEnum.VERY_OUTDATED:
+      return (
+        <Tooltip title="Tiltaket er veldig utdatert">
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              color: '#FF4444',
+            }}
+          >
+            <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
+            <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
+          </Box>
+        </Tooltip>
+      );
+    case UpdatedStatusEnum.OUTDATED:
+      return (
+        <Tooltip title="Tiltaket er utdatert">
+          <Box sx={{ color: '#FF8B38', minWidth: '24px', textAlign: 'right' }}>
+            <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
+          </Box>
+        </Tooltip>
+      );
+    case (UpdatedStatusEnum.UPDATED, UpdatedStatusEnum.LITTLE_OUTDATED):
+      return <Box sx={{ minWidth: '24px' }} />;
+    default:
+      return null;
+  }
 }
