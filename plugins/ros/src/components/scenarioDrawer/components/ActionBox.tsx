@@ -372,7 +372,7 @@ function Exclamations({
       );
     case UpdatedStatusEnum.OUTDATED:
       return (
-        <Tooltip title={t(t('rosStatus.updatedStatus.tooltip.OUTDATED'))}>
+        <Tooltip title={t('rosStatus.updatedStatus.tooltip.OUTDATED')}>
           <Box sx={{ color: '#FF8B38', minWidth: '24px', textAlign: 'right' }}>
             <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
           </Box>
