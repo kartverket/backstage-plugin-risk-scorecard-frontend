@@ -6,6 +6,7 @@ import { ChangeSetBoxTitle } from './components/ChangeSetBoxTitle.tsx';
 import { ChangeSetProperty } from './components/ChangeSetProperty.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
+import { formatDate } from '../../../utils/utilityfunctions.ts';
 
 interface RiScWholeActionChangeProps {
   action: Action;
@@ -14,6 +15,10 @@ interface RiScWholeActionChangeProps {
 
 export function RiScActionChange({ action, type }: RiScWholeActionChangeProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const parsedDateTime = action.lastUpdated
+    ? formatDate(action.lastUpdated)
+    : t('scenarioDrawer.action.notUpdated');
+
   return (
     <ChangeSetBox type="secondary">
       <ChangeSetTags>
@@ -36,6 +41,10 @@ export function RiScActionChange({ action, type }: RiScWholeActionChangeProps) {
         title={t('dictionary.status')}
         /* @ts-ignore Because ts can't typecheck strings against our keys */
         value={t(`actionStatus.${action.status}`)}
+      />
+      <ChangeSetProperty
+        title={t('scenarioDrawer.action.lastUpdated')}
+        value={parsedDateTime}
       />
     </ChangeSetBox>
   );

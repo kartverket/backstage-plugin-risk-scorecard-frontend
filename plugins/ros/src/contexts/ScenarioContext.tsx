@@ -18,6 +18,7 @@ import {
   roundProbabilityToNearestProbabilityOption,
 } from '../utils/utilityfunctions';
 import { useRiScs } from './RiScContext';
+import { consequenceOptions, probabilityOptions } from '../utils/constants';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
@@ -134,13 +135,13 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       ...initialScenario,
       risk: {
         summary: '',
-        probability: '0.01',
-        consequence: '1000',
+        probability: probabilityOptions[0].toString(),
+        consequence: consequenceOptions[0].toString(),
       },
       remainingRisk: {
         summary: '',
-        probability: '0.01',
-        consequence: '1000',
+        probability: probabilityOptions[0].toString(),
+        consequence: consequenceOptions[0].toString(),
       },
     };
   }

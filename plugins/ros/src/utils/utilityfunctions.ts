@@ -64,6 +64,10 @@ export function emptyRiSc(): RiSc {
   };
 }
 
+export function formatDate(date: Date | string): string {
+  return new Date(date).toLocaleDateString();
+}
+
 export function calculateDaysSince(dateString: Date) {
   const givenDate = dateString;
   const now = new Date();
