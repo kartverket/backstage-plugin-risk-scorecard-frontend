@@ -102,6 +102,10 @@ export const pluginRiScMessages = {
       VERY_OUTDATED: 'Very outdated status icon',
       error: 'Error status icon',
       disabled: 'Disabled status icon',
+      tooltip: {
+        OUTDATED: 'This action is outdated',
+        VERY_OUTDATED: 'This action is very outdated',
+      },
     },
     lastModified: 'Last published: ',
     daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
@@ -691,6 +695,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.updatedStatus.VERY_OUTDATED': 'Veldig utdatert statusikon',
           'rosStatus.updatedStatus.error': 'Feil statusikon',
           'rosStatus.updatedStatus.disabled': 'Deaktivert statusikon',
+          'rosStatus.updatedStatus.tooltip.OUTDATED':
+            'Dette tiltaket er utdatert',
+          'rosStatus.updatedStatus.tooltip.VERY_OUTDATED':
+            'Dette tiltaket er veldig utdatert',
           'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
           'publishDialog.titleDelete': 'Godkjenn sletting',
           'publishDialog.checkboxLabelUpdate':

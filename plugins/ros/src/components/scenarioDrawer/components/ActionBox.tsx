@@ -345,6 +345,7 @@ function Exclamations({
   action: Action;
   lastPublished?: LastPublished;
 }) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   const daysSinceLastUpdate = action.lastUpdated
     ? calculateDaysSince(new Date(action.lastUpdated))
     : null;
@@ -356,7 +357,7 @@ function Exclamations({
   switch (status) {
     case UpdatedStatusEnum.VERY_OUTDATED:
       return (
-        <Tooltip title="Tiltaket er veldig utdatert">
+        <Tooltip title={t('rosStatus.updatedStatus.tooltip.VERY_OUTDATED')}>
           <Box
             sx={{
               display: 'flex',
@@ -371,7 +372,7 @@ function Exclamations({
       );
     case UpdatedStatusEnum.OUTDATED:
       return (
-        <Tooltip title="Tiltaket er utdatert">
+        <Tooltip title={t(t('rosStatus.updatedStatus.tooltip.OUTDATED'))}>
           <Box sx={{ color: '#FF8B38', minWidth: '24px', textAlign: 'right' }}>
             <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
           </Box>
