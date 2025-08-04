@@ -7,6 +7,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 import { ChangeSetChangedProperty } from '../changeset/components/ChangeSetChangedProperty.tsx';
 import { RiScMigrationChanges42 } from './RiScMigrationChanges42.tsx';
+import { RiScMigrationChanges50 } from './RiScMigrationChanges50.tsx';
 
 interface RiScMigrationChangesProps {
   migrationStatus: MigrationStatus;
@@ -35,6 +36,9 @@ export function RiScMigrationChanges({
       )}
       {migrationStatus.migrationChanges42 && (
         <RiScMigrationChanges42 changes={migrationStatus.migrationChanges42} />
+      )}
+      {migrationStatus.migrationChanges50 && (
+        <RiScMigrationChanges50 changes={migrationStatus.migrationChanges50} />
       )}
     </div>
   );
