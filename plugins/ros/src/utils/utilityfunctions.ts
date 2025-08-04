@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import { UpdateStatus } from '../contexts/RiScContext';
 import {
+  ActionStatusOptionsV4,
   ActionStatusOptions,
   BASE_NUMBER,
   CONSEQUENCE_SCALE_OFFSET,
@@ -432,16 +433,50 @@ export const probabilityIndexToTranslationKeys: Record<number, string> = {
   4: 'infoDialog.probabilityDescription.daily',
 };
 
-export const actionStatusOptionsToTranslationKeys: Record<
-  ActionStatusOptions,
+export const actionStatusOptionsV4ToTranslationKeys: Record<
+  ActionStatusOptionsV4,
   string
 > = {
-  [ActionStatusOptions.NotStarted]: 'actionStatus.Not started',
-  [ActionStatusOptions.InProgress]: 'actionStatus.In progress',
-  [ActionStatusOptions.OnHold]: 'actionStatus.On hold',
-  [ActionStatusOptions.Completed]: 'actionStatus.Completed',
-  [ActionStatusOptions.Aborted]: 'actionStatus.Aborted',
+  [ActionStatusOptionsV4.NotStarted]: 'actionStatus.Not started',
+  [ActionStatusOptionsV4.InProgress]: 'actionStatus.In progress',
+  [ActionStatusOptionsV4.OnHold]: 'actionStatus.On hold',
+  [ActionStatusOptionsV4.Completed]: 'actionStatus.Completed',
+  [ActionStatusOptionsV4.Aborted]: 'actionStatus.Aborted',
 };
+
+export const actionStatusOptionsToTranslationKeys: Record<
+    ActionStatusOptions,
+    string
+> = {
+  [ActionStatusOptions.OK]: 'actionStatus.OK',
+  [ActionStatusOptions.NotOK]: 'actionStatus.Not OK',
+  [ActionStatusOptions.NotRelevant]: 'actionStatus.Not relevant',
+};
+
+
+export function getTranslatedActionStatus(
+    status: string,
+    t: (s: string) => string,
+): string {
+  if (
+      Object.values(ActionStatusOptions).includes(
+          status as ActionStatusOptions,
+      )
+  ) {
+    return t(actionStatusOptionsToTranslationKeys[status as ActionStatusOptions]);
+  }
+
+  if (
+      Object.values(ActionStatusOptionsV4).includes(
+          status as ActionStatusOptionsV4,
+      )
+  ) {
+    return t(actionStatusOptionsV4ToTranslationKeys[status as ActionStatusOptionsV4]);
+  }
+
+  return status;
+}
+
 
 export const threatActorOptionsToTranslationKeys: Record<
   ThreatActorsOptions,
