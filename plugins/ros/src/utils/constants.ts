@@ -1,6 +1,6 @@
-export const schemaPath = '../risc_schema_en_v4_2.json';
+export const schemaPath = '../risc_schema_en_v5_0.json';
 
-export const latestSupportedVersion = '4.2';
+export const latestSupportedVersion = '5.0';
 
 export const BASE_NUMBER = 20.0;
 export const CONSEQUENCE_SCALE_OFFSET = 3;
@@ -13,6 +13,7 @@ export const consequenceOptions = Array.from({ length: 5 }, (_, i) =>
 export const probabilityOptions = Array.from({ length: 5 }, (_, i) =>
   Math.pow(BASE_NUMBER, i + PROBABILITY_SCALE_OFFSET),
 );
+
 
 export enum ThreatActorsOptions {
   ScriptKiddie = 'Script kiddie',
@@ -35,12 +36,19 @@ export enum VulnerabilitiesOptions {
   ExcessiveUse = 'Excessive use',
 }
 
-export enum ActionStatusOptions {
+
+export enum ActionStatusOptionsV4 {
   NotStarted = 'Not started',
   InProgress = 'In progress',
   OnHold = 'On hold',
   Completed = 'Completed',
   Aborted = 'Aborted',
+}
+
+export enum ActionStatusOptions {
+  OK = 'OK',
+  NotOK = 'Not OK',
+  NotRelevant = 'Not Relevant',
 }
 
 export const riskMatrix = [
