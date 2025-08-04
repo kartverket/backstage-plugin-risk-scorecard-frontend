@@ -14,7 +14,6 @@ export const probabilityOptions = Array.from({ length: 5 }, (_, i) =>
   Math.pow(BASE_NUMBER, i + PROBABILITY_SCALE_OFFSET),
 );
 
-
 export enum ThreatActorsOptions {
   ScriptKiddie = 'Script kiddie',
   Hacktivist = 'Hacktivist',
@@ -35,7 +34,6 @@ export enum VulnerabilitiesOptions {
   InformationLeak = 'Information leak',
   ExcessiveUse = 'Excessive use',
 }
-
 
 export enum ActionStatusOptionsV4 {
   NotStarted = 'Not started',

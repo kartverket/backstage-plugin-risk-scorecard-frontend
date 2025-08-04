@@ -51,7 +51,7 @@ export type MigrationVersions = {
 
 export type MigrationChanges50 = {
   scenarios: MigrationChanges50Scenario[];
-}
+};
 
 export type MigrationChanges50Scenario = {
   title: string;

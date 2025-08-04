@@ -181,8 +181,9 @@ export const pluginRiScMessages = {
       changeExplanation: 'This migration adds a last updated field to actions.',
     },
     migration50: {
-      changeExplanation: 'This migration updates the action status to a new naming convention.',
-    }
+      changeExplanation:
+        'This migration updates the action status to a new naming convention.',
+    },
   },
   comparisonDialog: {
     noChanges: 'No changes',
@@ -512,7 +513,7 @@ export const pluginRiScMessages = {
     Aborted: 'Aborted',
     OK: 'OK',
     'Not OK': 'Not OK',
-    'Not relevant': 'Not relevant'
+    'Not relevant': 'Not relevant',
   },
   errorMessages: {
     DefaultErrorMessage: 'An error occured',
