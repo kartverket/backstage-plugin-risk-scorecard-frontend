@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { useRiScs } from '../../../contexts/RiScContext';
 import { useScenario } from '../../../contexts/ScenarioContext';
-import { ActionStatusOptions } from '../../../utils/constants';
+import {ActionStatusOptions, ActionStatusOptionsV4} from '../../../utils/constants';
 import { useIsMounted } from '../../../utils/hooks';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { Action, FormScenario, LastPublished } from '../../../utils/types';
@@ -31,6 +31,7 @@ import {
   deleteAction,
   formatDate,
   UpdatedStatusEnum,
+    getTranslatedActionStatus,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
@@ -64,15 +65,14 @@ export function ActionBox({
     useState(false);
 
   const { updateStatus, selectedRiSc } = useRiScs();
-  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
-    useScenario();
+  const isV5 = selectedRiSc?.content?.schemaVersion === '5.0';
+
+  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } = useScenario();
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
   /* @ts-ignore Because ts can't typecheck strings against our keys */
-  const translatedActionStatus = t(
-    actionStatusOptionsToTranslationKeys[action.status as ActionStatusOptions],
-  );
+  const translatedActionStatus = getTranslatedActionStatus(action.status, t);
 
   const isMounted = useIsMounted();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -102,10 +102,11 @@ export function ActionBox({
   function updateActionInScenario(updates: Partial<Action>) {
     const updatedScenario = {
       ...scenario,
-      actions: scenario.actions.map(a =>
+        actions: scenario.actions.map(a =>
         a.ID === action.ID ? { ...a, ...updates, lastUpdated: new Date() } : a,
       ),
     };
+
     submitEditedScenarioToRiSc(updatedScenario);
     if (isMounted()) handleMenuClose();
   }
@@ -217,10 +218,14 @@ export function ActionBox({
         >
           <DualButton
             propsCommon={{
-              color:
-                action.status === ActionStatusOptions.Completed
-                  ? 'success'
-                  : 'inherit',
+                color:
+                    isV5
+                        ? action.status === ActionStatusOptions.OK
+                            ? 'success'
+                            : 'inherit'
+                        : action.status === ActionStatusOptionsV4.Completed
+                            ? 'success'
+                            : 'inherit',
             }}
             propsLeft={{
               children: translatedActionStatus,
