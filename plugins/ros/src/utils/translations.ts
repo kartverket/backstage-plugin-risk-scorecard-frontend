@@ -507,6 +507,9 @@ export const pluginRiScMessages = {
     'On hold': 'On hold',
     Completed: 'Completed',
     Aborted: 'Aborted',
+    OK: 'OK',
+    'Not OK': 'Not OK',
+    'Not relevant': 'Not relevant'
   },
   errorMessages: {
     DefaultErrorMessage: 'An error occured',
@@ -1041,6 +1044,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.On hold': 'På vent',
           'actionStatus.Completed': 'Fullført',
           'actionStatus.Aborted': 'Avbrutt',
+          'actionStatus.OK': 'OK',
+          'actionStatus.Not OK': 'Ikke OK',
+          'actionStatus.Not relevant': 'Ikke relevant',
           'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
           'errorMessages.NoWriteAccessToRepository':
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til dette repoet.',
