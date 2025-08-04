@@ -180,6 +180,9 @@ export const pluginRiScMessages = {
     migration42: {
       changeExplanation: 'This migration adds a last updated field to actions.',
     },
+    migration50: {
+      changeExplanation: 'This migration updates the action status to a new naming convention.',
+    }
   },
   comparisonDialog: {
     noChanges: 'No changes',
@@ -755,6 +758,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration41.occurrencesPerYear': 'hendelser/år',
           'migrationDialog.migration42.changeExplanation':
             'Denne migreringen legger til et sist oppdatert felt ("lastUpdated") på tiltak.',
+          'migrationDialog.migration50.changeExplanation':
+            'Denne migreringen oppdaterer tiltakets status til en ny navnekonvensjon.',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
           'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
