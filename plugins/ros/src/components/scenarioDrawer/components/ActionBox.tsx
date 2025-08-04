@@ -69,6 +69,10 @@ export function ActionBox({
 
   const { updateStatus, selectedRiSc } = useRiScs();
   const isV5 = selectedRiSc?.content?.schemaVersion === '5.0';
+  const isCompleted = isV5
+    ? action.status === ActionStatusOptions.OK
+    : action.status === ActionStatusOptionsV4.Completed;
+  const color = isCompleted ? 'success' : 'inherit';
 
   const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
     useScenario();
@@ -221,15 +225,7 @@ export function ActionBox({
           }}
         >
           <DualButton
-            propsCommon={{
-              color: isV5
-                ? action.status === ActionStatusOptions.OK
-                  ? 'success'
-                  : 'inherit'
-                : action.status === ActionStatusOptionsV4.Completed
-                  ? 'success'
-                  : 'inherit',
-            }}
+            propsCommon={{ color }}
             propsLeft={{
               children: translatedActionStatus,
               onClick: handleChipClick,
