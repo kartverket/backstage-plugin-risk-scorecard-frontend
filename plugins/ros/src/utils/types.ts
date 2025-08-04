@@ -1,5 +1,10 @@
 import type { Dispatch } from 'react';
-import { GcpCryptoKeyObject, SopsConfigDTO } from './DTOs';
+import {
+  ActionsDTO,
+  GcpCryptoKeyObject,
+  ScenarioDTO,
+  SopsConfigDTO,
+} from './DTOs';
 
 /**
  * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.
@@ -35,11 +40,28 @@ export type MigrationStatus = {
   migrationVersions?: MigrationVersions;
   migrationChanges40?: MigrationChanges40;
   migrationChanges41?: MigrationChanges41;
+  migrationChanges42?: MigrationChanges42;
 };
 
 export type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
+};
+
+export type MigrationChanges42 = {
+  scenarios: MigrationChanges42Scenario[];
+};
+
+export type MigrationChanges42Scenario = {
+  title: string;
+  id: string;
+  changedActions: MigrationChanges42Action[];
+};
+
+export type MigrationChanges42Action = {
+  title: string;
+  id: string;
+  lastUpdated?: Date | null;
 };
 
 export type MigrationChanges41 = {
@@ -127,6 +149,7 @@ export type Action = {
   description: string;
   status: string;
   url: string;
+  lastUpdated?: Date | null;
 };
 
 export type GithubRepoInfo = {
@@ -203,9 +226,75 @@ export type FormScenario = Modify<
 >;
 
 export type Difference = {
-  entriesOnLeft: string[];
-  entriesOnRight: string[];
-  difference: string[];
+  type: '4.*';
+  migrationChanges: MigrationStatus;
+  title?: SimpleTrackedProperty<string>;
+  scope?: SimpleTrackedProperty<string>;
+  valuations: SimpleTrackedProperty<Valuations>[];
+  scenarios: TrackedProperty<ScenarioChange, ScenarioDTO>[];
+};
+
+export type ScenarioChange = {
+  title: SimpleTrackedProperty<string>;
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null>;
+  threatActors: SimpleTrackedProperty<string>[];
+  vulnerabilities: SimpleTrackedProperty<string>[];
+  risk: SimpleTrackedProperty<ScenarioRiskChange>;
+  remainingRisk: SimpleTrackedProperty<ScenarioRiskChange>;
+  actions: TrackedProperty<ActionChange, ActionsDTO>[];
+};
+
+export type ActionChange = {
+  title: SimpleTrackedProperty<string>;
+  // The id will never change
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null>;
+  status?: SimpleTrackedProperty<string>;
+  lastUpdated?: SimpleTrackedProperty<Date | null>;
+};
+
+export type ScenarioRiskChange = {
+  summary?: SimpleTrackedProperty<string | null>;
+  probability: SimpleTrackedProperty<number>;
+  consequence: SimpleTrackedProperty<number>;
+};
+
+export type SimpleTrackedProperty<T> = TrackedProperty<T, T>;
+
+export type TrackedProperty<S, T> =
+  | AddedProperty<T>
+  | ChangedProperty<S>
+  | ContentChangedProperty<S>
+  | DeletedProperty<T>
+  | UnchangedProperty<T>;
+
+export type AddedProperty<T> = {
+  type: 'ADDED';
+  newValue: T;
+};
+
+export type ChangedProperty<S> = {
+  type: 'CHANGED';
+  oldValue: S;
+  newValue: S;
+};
+
+export type ContentChangedProperty<S> = {
+  type: 'CONTENT_CHANGED';
+  value: S;
+};
+
+export type DeletedProperty<T> = {
+  type: 'DELETED';
+  oldValue: T;
+};
+
+export type UnchangedProperty<T> = {
+  type: 'UNCHANGED';
+  value: T;
 };
 
 export type DifferenceDTO = {

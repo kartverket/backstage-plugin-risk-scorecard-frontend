@@ -64,6 +64,10 @@ export function emptyRiSc(): RiSc {
   };
 }
 
+export function formatDate(date: Date | string): string {
+  return new Date(date).toLocaleDateString();
+}
+
 export function calculateDaysSince(dateString: Date) {
   const givenDate = dateString;
   const now = new Date();
@@ -183,7 +187,7 @@ export function parseISODateFromEncryptedROS(date?: string): string | null {
 export function getTranslationKey(
   type: string,
   key: string,
-  t: (s: any) => string,
+  t: (s: any, c?: any) => string,
 ): string {
   if (type === 'error') {
     return t([`errorMessages.${key}`, 'errorMessages.DefaultErrorMessage']);

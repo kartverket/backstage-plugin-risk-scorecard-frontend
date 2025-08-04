@@ -31,12 +31,16 @@ export const pluginRiScMessages = {
     hours: 'hours',
     minutes: 'minutes',
     seconds: 'seconds',
+    action: 'Action',
     add: 'Add',
+    added: 'Added',
+    availability: 'Availability',
     copy: 'Copy',
     copied: 'Copied',
     cancel: 'Cancel',
     close: 'Close',
     completed: 'Completed',
+    confidentiality: 'Confidentiality',
     confirm: 'Confirm',
     consequence: 'Consequence', // Severity, Impact, Effect or Consequence
     deadline: 'Deadline', // Deadline or Due date
@@ -46,6 +50,7 @@ export const pluginRiScMessages = {
     edit: 'Edit',
     estimatedRisk: 'Estimated risk',
     initialRisk: 'Initial risk', // Starting or Initial risk
+    integrity: 'Integrity',
     measure: 'Action', // Measure, Action or Initiative
     measures: 'Actions', // Measure, Action or Initiative
     measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
@@ -54,6 +59,7 @@ export const pluginRiScMessages = {
     previous: 'Previous',
     probability: 'Probability', // Likelihood or Probability
     restRisk: 'Remaining risk', // Residual or Remaining risk
+    removed: 'Removed',
     risk: 'Risk',
     save: 'Save',
     saveAndClose: 'Save and close',
@@ -64,6 +70,7 @@ export const pluginRiScMessages = {
     title: 'Title',
     url: 'URL',
     emptyField: 'No {{field}} specified',
+    valuation: 'Valuation',
     vulnerabilities: 'Vulnerabilities',
   },
   encryption: {
@@ -95,6 +102,10 @@ export const pluginRiScMessages = {
       VERY_OUTDATED: 'Very outdated status icon',
       error: 'Error status icon',
       disabled: 'Disabled status icon',
+      tooltip: {
+        OUTDATED: 'This action is outdated',
+        VERY_OUTDATED: 'This action is very outdated',
+      },
     },
     lastModified: 'Last published: ',
     daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
@@ -138,9 +149,6 @@ export const pluginRiScMessages = {
     migrationTitle: 'Migration from {{from}} to {{to}}',
     schemaVersion: 'Schema version',
     schemaChangelog: 'Schema changelog',
-    tagRemoved: 'Removed',
-    tagScenario: 'Risk scenario',
-    tagAction: 'Action',
     title: 'Save changes', // Lagre ROS migrering
     checkboxLabel:
       'I confirm that I have reviewed and wish to save the changes made during the migration.',
@@ -168,6 +176,39 @@ export const pluginRiScMessages = {
         'This migration removes the owner and deadline fields from actions, removes existing actions and updates values for vulnerabilities.',
       nokPerIncident: 'NOK/incident',
       occurrencesPerYear: 'occurrences/year',
+    },
+    migration42: {
+      changeExplanation: 'This migration adds a last updated field to actions.',
+    },
+  },
+  comparisonDialog: {
+    noChanges: 'No changes',
+    changes: 'Changes to RiSc',
+    noURL: 'No URL provided',
+    noDescription: 'No description provided',
+    risk: {
+      probabilityUnit: 'occurrences/year',
+      consequenceUnit: 'NOK/incident',
+    },
+    valuation: {
+      integrity: {
+        Insignificant: 'Insignificant',
+        Expected: 'Expected',
+        Dependent: 'Dependent',
+        Critical: 'Critical',
+      },
+      availability: {
+        Insignificant: 'Insignificant',
+        '2 days': '2 days',
+        '4 hours': '4 hours',
+        Immediate: 'Immediate',
+      },
+      confidentiality: {
+        Public: 'Public',
+        Internal: 'Internal',
+        Confidential: 'Confidential',
+        'Strictly confidential': 'Strictly confidential',
+      },
     },
   },
   scenarioTable: {
@@ -330,6 +371,8 @@ export const pluginRiScMessages = {
       descriptionError: 'Description cannot be empty',
       urlError: 'Invalid URL',
       emptyState: 'This scenario has no defined actions',
+      lastUpdated: 'Last updated:',
+      notUpdated: 'Not updated yet',
     },
     title: 'Risk scenario',
     titleError: 'Scenario title is required',
@@ -358,6 +401,7 @@ export const pluginRiScMessages = {
       addMeasureButton: 'Add planned action',
       plannedMeasures: 'Planned actions',
       addMeasureTitleError: 'Action title is required',
+      urlDescription: 'For example, link to Jira task',
     },
     restRiskTab: {
       subtitle:
@@ -548,12 +592,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.hours': 'timer',
           'dictionary.minutes': 'minutter',
           'dictionary.seconds': 'sekunder',
+          'dictionary.action': 'Tiltak',
           'dictionary.add': 'Legg til',
+          'dictionary.added': 'Lagt til',
+          'dictionary.availability': 'Tilgjengelighet',
           'dictionary.copy': 'Kopier',
           'dictionary.copied': 'Kopiert',
           'dictionary.cancel': 'Avbryt',
           'dictionary.close': 'Lukk',
           'dictionary.completed': 'Fullført',
+          'dictionary.confidentiality': 'Konfidensialitet',
           'dictionary.confirm': 'Bekreft',
           'dictionary.consequence': 'Konsekvens',
           'dictionary.deadline': 'Frist',
@@ -563,6 +611,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.edit': 'Rediger',
           'dictionary.estimatedRisk': 'Estimert risiko',
           'dictionary.initialRisk': 'Startrisiko',
+          'dictionary.integrity': 'Integritet',
           'dictionary.measure': 'Tiltak',
           'dictionary.measures': 'Tiltak',
           'dictionary.measureOwner': 'Tiltakseier',
@@ -571,6 +620,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.previous': 'Forrige',
           'dictionary.probability': 'Sannsynlighet',
           'dictionary.restRisk': 'Restrisiko',
+          'dictionary.removed': 'Fjernet',
           'dictionary.risk': 'Risiko',
           'dictionary.save': 'Lagre',
           'dictionary.saveAndClose': 'Lagre og lukk',
@@ -581,6 +631,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.title': 'Tittel',
           'dictionary.url': 'URL',
           'dictionary.emptyField': 'Ingen {{field}} spesifisert',
+          'dictionary.valuation': 'Verdi',
           'dictionary.vulnerabilities': 'Sårbarheter',
 
           'scenarioDrawer.action.descriptionError':
@@ -593,6 +644,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Restkonsekvens kan ikke være høyere enn startkonsekvens',
           'scenarioDrawer.errors.remainingProbabilityTooHigh':
             'Restsannsynlighet kan ikke være høyere enn startsannsynlighet',
+          'scenarioDrawer.action.lastUpdated': 'Sist oppdatert:',
+          'scenarioDrawer.action.notUpdated': 'Ingen dato satt',
 
           'encryption.title': 'Kryptering',
 
@@ -650,6 +703,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.updatedStatus.VERY_OUTDATED': 'Veldig utdatert statusikon',
           'rosStatus.updatedStatus.error': 'Feil statusikon',
           'rosStatus.updatedStatus.disabled': 'Deaktivert statusikon',
+          'rosStatus.updatedStatus.tooltip.OUTDATED':
+            'Dette tiltaket er utdatert',
+          'rosStatus.updatedStatus.tooltip.VERY_OUTDATED':
+            'Dette tiltaket er veldig utdatert',
           'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
           'publishDialog.titleDelete': 'Godkjenn sletting',
           'publishDialog.checkboxLabelUpdate':
@@ -663,9 +720,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migrationTitle': 'Migrering fra {{from}} til {{to}}',
           'migrationDialog.schemaVersion': 'Skjemaversjon',
           'migrationDialog.schemaChangelog': 'Endringslogg for skjema',
-          'migrationDialog.tagRemoved': 'Fjernet',
-          'migrationDialog.tagScenario': 'Riskscenario',
-          'migrationDialog.tagAction': 'Tiltak',
           'migrationDialog.checkboxLabel':
             'Jeg bekrefter at jeg har gjennomgått og ønsker å lagre endringene som er gjort under migreringen.',
           'migrationDialog.migration40.changeExplanation':
@@ -696,6 +750,29 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Denne migreringen fjerner ansvarlig («owner») og frist («deadline») feltene fra tiltak, fjerner eksisterende tiltak feltet og oppdaterer verdier for sårbarheter.',
           'migrationDialog.migration41.nokPerIncident': 'NOK/hendelse',
           'migrationDialog.migration41.occurrencesPerYear': 'hendelser/år',
+          'migrationDialog.migration42.changeExplanation':
+            'Denne migreringen legger til et sist oppdatert felt ("lastUpdated") på tiltak.',
+          'comparisonDialog.noChanges': 'Ingen endringer',
+          'comparisonDialog.changes': 'Endringer av RoSen',
+          'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
+          'comparisonDialog.noURL': 'Ingen URL spesifisert',
+          'comparisonDialog.risk.consequenceUnit': 'NOK/hendelse',
+          'comparisonDialog.risk.probabilityUnit': 'hendelser/år',
+          'comparisonDialog.valuation.integrity.Insignificant': 'Insignifikant',
+          'comparisonDialog.valuation.integrity.Expected': 'Forventet',
+          'comparisonDialog.valuation.integrity.Dependent': 'Avhengig',
+          'comparisonDialog.valuation.integrity.Critical': 'Kritisk',
+          'comparisonDialog.valuation.availability.Insignificant':
+            'Insignifikant',
+          'comparisonDialog.valuation.availability.2 days': '2 dager',
+          'comparisonDialog.valuation.availability.4 hours': '4 timer',
+          'comparisonDialog.valuation.availability.Immediate': 'Umiddelbart',
+          'comparisonDialog.valuation.confidentiality.Public': 'Offentlig',
+          'comparisonDialog.valuation.confidentiality.Internal': 'Intern',
+          'comparisonDialog.valuation.confidentiality.Confidential':
+            'Konfidensielt',
+          'comparisonDialog.valuation.confidentiality.Strictly confidential':
+            'Strengt konfidensielt',
 
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
@@ -877,7 +954,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.closeConfirmation': 'Vil du lagre endringene dine?',
           'scenarioDrawer.measureTab.addMeasureTitleError':
             'Tiltak må ha en tittel',
-
+          'scenarioDrawer.measureTab.urlDescription':
+            'For eksempel lenke til Jira-oppgave',
           'consequenceTable.rows.1': 'Ubetydelig',
           'consequenceTable.rows.2': 'Liten',
           'consequenceTable.rows.3': 'Moderat',
@@ -963,7 +1041,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.On hold': 'På vent',
           'actionStatus.Completed': 'Fullført',
           'actionStatus.Aborted': 'Avbrutt',
-
           'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
           'errorMessages.NoWriteAccessToRepository':
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til dette repoet.',
