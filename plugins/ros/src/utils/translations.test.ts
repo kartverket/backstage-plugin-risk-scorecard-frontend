@@ -31,8 +31,8 @@ describe('translations for schema options', () => {
 
   it('should have translation keys for all values in actionStatusOptions', () => {
     const actionStatusEnumValues = [
-      Object.values(ActionStatusOptions),
-      Object.values(ActionStatusOptionsV4),
+      ...Object.values(ActionStatusOptions),
+      ...Object.values(ActionStatusOptionsV4),
     ];
     const actionStatusTranslationKeys = Object.keys(
       pluginRiScMessages.actionStatus,
