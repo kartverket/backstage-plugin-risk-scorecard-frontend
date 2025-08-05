@@ -46,7 +46,7 @@ export enum ActionStatusOptionsV4 {
 export enum ActionStatusOptions {
   OK = 'OK',
   NotOK = 'Not OK',
-  NotRelevant = 'Not Relevant',
+  NotRelevant = 'Not relevant',
 }
 
 export const riskMatrix = [
