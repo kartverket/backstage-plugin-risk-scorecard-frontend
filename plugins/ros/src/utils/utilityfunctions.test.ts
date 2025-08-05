@@ -22,7 +22,7 @@ import {
   roundConsequenceToNearestConsequenceOption,
   roundProbabilityToNearestProbabilityOption,
   threatActorOptionsToTranslationKeys,
-  vulnerabiltiesOptionsToTranslationKeys,
+  vulnerabiltiesOptionsToTranslationKeys, actionStatusOptionsV4ToTranslationKeys,
 } from './utilityfunctions';
 
 describe('generateRandomId', () => {
@@ -575,17 +575,23 @@ describe('Translation mappings cover all enum values', () => {
 });
 
 describe('Translation mappings match translation keys', () => {
-  it('translatedActionStatusOptions values should match corresponding keys in translations', () => {
-    const optionToTranslationValues = Object.values(
-      actionStatusOptionsToTranslationKeys,
-    ).sort();
-    const translationKeys = Object.keys(pluginRiScMessages.actionStatus).sort();
-
-    optionToTranslationValues.forEach((value, index) => {
-      const translationKey = translationKeys[index];
-      expect(value).toBe(`actionStatus.${translationKey}`);
+  it('translatedActionStatusOptions values should match corresponding keys in translations for V5', () => {
+    const optionToTranslationValues = Object.values(actionStatusOptionsToTranslationKeys);
+    optionToTranslationValues.forEach(value => {
+      const key = value.replace('actionStatus.', '');
+      expect(pluginRiScMessages.actionStatus).toHaveProperty(key);
     });
   });
+
+  it('translatedActionStatusOptionsV4 values should match corresponding keys in translations for V4', () => {
+    const optionToTranslationValues = Object.values(actionStatusOptionsV4ToTranslationKeys);
+    optionToTranslationValues.forEach(value => {
+      const key = value.replace('actionStatus.', '');
+      expect(pluginRiScMessages.actionStatus).toHaveProperty(key);
+    });
+  });
+});
+
 
   it('translatedThreatActorOptions values should match corresponding keys in translations', () => {
     const optionToTranslationValues = Object.values(
