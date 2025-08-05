@@ -618,7 +618,6 @@ describe('Translation mappings match translation keys', () => {
       expect(value).toBe(`vulnerabilities.${translationKey}`);
     });
   });
-});
 
 describe('Enum to translation key maps', () => {
   it('actionStatusOptionsToTranslationKeys keys should match ActionStatusOptions values', () => {
