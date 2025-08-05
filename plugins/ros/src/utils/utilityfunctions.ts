@@ -455,7 +455,7 @@ export const actionStatusOptionsToTranslationKeys: Record<
 
 export function getTranslatedActionStatus(
   status: string,
-  t: (key: string, options?: any) => string
+  t: (key: string, options?: any) => string,
 ): string {
   if (
     Object.values(ActionStatusOptions).includes(status as ActionStatusOptions)
