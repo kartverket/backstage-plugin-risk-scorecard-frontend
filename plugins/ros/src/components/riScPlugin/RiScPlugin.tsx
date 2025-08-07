@@ -24,6 +24,7 @@ import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { Delete, Settings } from '@mui/icons-material';
 import { RiScStatus } from '../../utils/types';
+import { FeedbackDialog } from './FeedbackDialog.tsx';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -107,6 +108,7 @@ export function RiScPlugin() {
               }}
             >
               <SupportButton />
+              <FeedbackDialog />
             </Grid>
           </ContentHeader>
 
@@ -192,6 +194,7 @@ export function RiScPlugin() {
       {riScDialogState !== RiScDialogStates.Closed && (
         <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
       )}
+
       {!scenarioWizardStep && <ScenarioDrawer />}
     </>
   );
