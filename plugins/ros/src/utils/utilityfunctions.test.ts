@@ -575,7 +575,7 @@ describe('Translation mappings cover all enum values', () => {
 });
 
 describe('Translation mappings match translation keys', () => {
-  it('translatedActionStatusOptions values should match corresponding keys in translations for V5', () => {
+  it('translatedActionStatusOptions values should match corresponding keys in translations', () => {
     const optionToTranslationValues = Object.values(
       actionStatusOptionsToTranslationKeys,
     );
