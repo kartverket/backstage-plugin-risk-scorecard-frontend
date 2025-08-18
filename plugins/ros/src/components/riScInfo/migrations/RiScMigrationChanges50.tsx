@@ -42,8 +42,14 @@ export function RiScMigrationChanges50({
               <ChangeSetBoxTitle title={action.title} />
               <ChangeSetChangedProperty
                 propertyName={t('dictionary.status')}
-                oldValue={getTranslatedActionStatus(action.oldStatus, t)}
-                newValue={getTranslatedActionStatus(action.newStatus, t)}
+                oldValue={getTranslatedActionStatus(
+                  action.changedActionStatus.oldValue,
+                  t,
+                )}
+                newValue={getTranslatedActionStatus(
+                  action.changedActionStatus.newValue,
+                  t,
+                )}
               />
             </ChangeSetBox>
           ))}
