@@ -23,7 +23,6 @@ import {
   roundProbabilityToNearestProbabilityOption,
   threatActorOptionsToTranslationKeys,
   vulnerabiltiesOptionsToTranslationKeys,
-  actionStatusOptionsV4ToTranslationKeys,
 } from './utilityfunctions';
 
 describe('generateRandomId', () => {
@@ -579,16 +578,6 @@ describe('Translation mappings match translation keys', () => {
   it('translatedActionStatusOptions values should match corresponding keys in translations for V5', () => {
     const optionToTranslationValues = Object.values(
       actionStatusOptionsToTranslationKeys,
-    );
-    optionToTranslationValues.forEach(value => {
-      const key = value.replace('actionStatus.', '');
-      expect(pluginRiScMessages.actionStatus).toHaveProperty(key);
-    });
-  });
-
-  it('translatedActionStatusOptionsV4 values should match corresponding keys in translations for V4', () => {
-    const optionToTranslationValues = Object.values(
-      actionStatusOptionsV4ToTranslationKeys,
     );
     optionToTranslationValues.forEach(value => {
       const key = value.replace('actionStatus.', '');

@@ -35,14 +35,6 @@ export enum VulnerabilitiesOptions {
   ExcessiveUse = 'Excessive use',
 }
 
-export enum ActionStatusOptionsV4 {
-  NotStarted = 'Not started',
-  InProgress = 'In progress',
-  OnHold = 'On hold',
-  Completed = 'Completed',
-  Aborted = 'Aborted',
-}
-
 export enum ActionStatusOptions {
   OK = 'OK',
   NotOK = 'Not OK',

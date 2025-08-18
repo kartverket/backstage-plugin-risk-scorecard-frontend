@@ -20,10 +20,7 @@ import { useEffect, useState } from 'react';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { useRiScs } from '../../../contexts/RiScContext';
 import { useScenario } from '../../../contexts/ScenarioContext';
-import {
-  ActionStatusOptions,
-  ActionStatusOptionsV4,
-} from '../../../utils/constants';
+import { ActionStatusOptions } from '../../../utils/constants';
 import { useIsMounted } from '../../../utils/hooks';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { Action, FormScenario, LastPublished } from '../../../utils/types';
@@ -68,11 +65,6 @@ export function ActionBox({
     useState(false);
 
   const { updateStatus, selectedRiSc } = useRiScs();
-  const isV5 = selectedRiSc?.content?.schemaVersion === '5.0';
-  const isCompleted = isV5
-    ? action.status === ActionStatusOptions.OK
-    : action.status === ActionStatusOptionsV4.Completed;
-  const color = isCompleted ? 'success' : 'inherit';
 
   const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
     useScenario();
@@ -225,7 +217,12 @@ export function ActionBox({
           }}
         >
           <DualButton
-            propsCommon={{ color }}
+            propsCommon={{
+              color:
+                action.status === ActionStatusOptions.OK
+                  ? 'success'
+                  : 'inherit',
+            }}
             propsLeft={{
               children: translatedActionStatus,
               onClick: handleChipClick,

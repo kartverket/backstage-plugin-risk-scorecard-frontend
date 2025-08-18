@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon';
 import { UpdateStatus } from '../contexts/RiScContext';
 import {
-  ActionStatusOptionsV4,
   ActionStatusOptions,
   BASE_NUMBER,
   CONSEQUENCE_SCALE_OFFSET,
@@ -433,17 +432,6 @@ export const probabilityIndexToTranslationKeys: Record<number, string> = {
   4: 'infoDialog.probabilityDescription.daily',
 };
 
-export const actionStatusOptionsV4ToTranslationKeys: Record<
-  ActionStatusOptionsV4,
-  string
-> = {
-  [ActionStatusOptionsV4.NotStarted]: 'actionStatus.Not started',
-  [ActionStatusOptionsV4.InProgress]: 'actionStatus.In progress',
-  [ActionStatusOptionsV4.OnHold]: 'actionStatus.On hold',
-  [ActionStatusOptionsV4.Completed]: 'actionStatus.Completed',
-  [ActionStatusOptionsV4.Aborted]: 'actionStatus.Aborted',
-};
-
 export const actionStatusOptionsToTranslationKeys: Record<
   ActionStatusOptions,
   string
@@ -462,16 +450,6 @@ export function getTranslatedActionStatus(
   ) {
     return t(
       actionStatusOptionsToTranslationKeys[status as ActionStatusOptions],
-    );
-  }
-
-  if (
-    Object.values(ActionStatusOptionsV4).includes(
-      status as ActionStatusOptionsV4,
-    )
-  ) {
-    return t(
-      actionStatusOptionsV4ToTranslationKeys[status as ActionStatusOptionsV4],
     );
   }
 
