@@ -506,11 +506,6 @@ export const pluginRiScMessages = {
     'Excessive use': 'Excessive use',
   },
   actionStatus: {
-    'Not started': 'Not started',
-    'In progress': 'In progress',
-    'On hold': 'On hold',
-    Completed: 'Completed',
-    Aborted: 'Aborted',
     OK: 'OK',
     'Not OK': 'Not OK',
     'Not relevant': 'Not relevant',
