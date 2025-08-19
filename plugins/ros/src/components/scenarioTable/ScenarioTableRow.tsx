@@ -142,7 +142,7 @@ export function ScenarioTableRow({
                 <ScenarioTableProgressBar
                   completedCount={
                     scenario.actions.filter(
-                      a => a.status === ActionStatusOptions.Completed,
+                      a => a.status === ActionStatusOptions.OK,
                     ).length
                   }
                   totalCount={scenario.actions.length}

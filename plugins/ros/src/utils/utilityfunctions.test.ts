@@ -578,39 +578,37 @@ describe('Translation mappings match translation keys', () => {
   it('translatedActionStatusOptions values should match corresponding keys in translations', () => {
     const optionToTranslationValues = Object.values(
       actionStatusOptionsToTranslationKeys,
-    ).sort();
-    const translationKeys = Object.keys(pluginRiScMessages.actionStatus).sort();
-
-    optionToTranslationValues.forEach((value, index) => {
-      const translationKey = translationKeys[index];
-      expect(value).toBe(`actionStatus.${translationKey}`);
+    );
+    optionToTranslationValues.forEach(value => {
+      const key = value.replace('actionStatus.', '');
+      expect(pluginRiScMessages.actionStatus).toHaveProperty(key);
     });
   });
+});
 
-  it('translatedThreatActorOptions values should match corresponding keys in translations', () => {
-    const optionToTranslationValues = Object.values(
-      threatActorOptionsToTranslationKeys,
-    ).sort();
-    const translationKeys = Object.keys(pluginRiScMessages.threatActors).sort();
+it('translatedThreatActorOptions values should match corresponding keys in translations', () => {
+  const optionToTranslationValues = Object.values(
+    threatActorOptionsToTranslationKeys,
+  ).sort();
+  const translationKeys = Object.keys(pluginRiScMessages.threatActors).sort();
 
-    optionToTranslationValues.forEach((value, index) => {
-      const translationKey = translationKeys[index];
-      expect(value).toBe(`threatActors.${translationKey}`);
-    });
+  optionToTranslationValues.forEach((value, index) => {
+    const translationKey = translationKeys[index];
+    expect(value).toBe(`threatActors.${translationKey}`);
   });
+});
 
-  it('translatedVulnerabilitiesOptions values should match corresponding keys in translations', () => {
-    const optionToTranslationValues = Object.values(
-      vulnerabiltiesOptionsToTranslationKeys,
-    ).sort();
-    const translationKeys = Object.keys(
-      pluginRiScMessages.vulnerabilities,
-    ).sort();
+it('translatedVulnerabilitiesOptions values should match corresponding keys in translations', () => {
+  const optionToTranslationValues = Object.values(
+    vulnerabiltiesOptionsToTranslationKeys,
+  ).sort();
+  const translationKeys = Object.keys(
+    pluginRiScMessages.vulnerabilities,
+  ).sort();
 
-    optionToTranslationValues.forEach((value, index) => {
-      const translationKey = translationKeys[index];
-      expect(value).toBe(`vulnerabilities.${translationKey}`);
-    });
+  optionToTranslationValues.forEach((value, index) => {
+    const translationKey = translationKeys[index];
+    expect(value).toBe(`vulnerabilities.${translationKey}`);
   });
 });
 

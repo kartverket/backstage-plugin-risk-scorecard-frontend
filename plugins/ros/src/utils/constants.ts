@@ -1,6 +1,6 @@
-export const schemaPath = '../risc_schema_en_v4_2.json';
+export const schemaPath = '../risc_schema_en_v5_0.json';
 
-export const latestSupportedVersion = '4.2';
+export const latestSupportedVersion = '5.0';
 
 export const BASE_NUMBER = 20.0;
 export const CONSEQUENCE_SCALE_OFFSET = 3;
@@ -36,11 +36,9 @@ export enum VulnerabilitiesOptions {
 }
 
 export enum ActionStatusOptions {
-  NotStarted = 'Not started',
-  InProgress = 'In progress',
-  OnHold = 'On hold',
-  Completed = 'Completed',
-  Aborted = 'Aborted',
+  OK = 'OK',
+  NotOK = 'Not OK',
+  NotRelevant = 'Not relevant',
 }
 
 export const riskMatrix = [
