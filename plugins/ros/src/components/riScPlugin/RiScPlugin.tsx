@@ -115,23 +115,6 @@ export function RiScPlugin() {
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>
-            {riScs !== null && riScs.length !== 0 && (
-              <Grid item xs={12} sm={6}>
-                <Select
-                  variant="standard"
-                  value={selectedRiSc?.id ?? ''}
-                  onChange={e => selectRiSc(e.target.value)}
-                  sx={{ width: '100%' }}
-                >
-                  {riScs.map(riSc => (
-                    <MenuItem key={riSc.id} value={riSc.id}>
-                      <ListItemText primary={riSc.content.title} />
-                    </MenuItem>
-                  )) ?? []}
-                </Select>
-              </Grid>
-            )}
-
             {!isFetching && (
               <Grid item xs>
                 <Button
@@ -140,7 +123,7 @@ export function RiScPlugin() {
                   color="success"
                   onClick={openCreateRiScDialog}
                   sx={{
-                    minWidth: '205px',
+                    alignItems: 'right',
                   }}
                 >
                   {t('contentHeader.createNewButton')}
@@ -177,6 +160,28 @@ export function RiScPlugin() {
                   <RiScInfo
                     riScWithMetadata={selectedRiSc}
                     edit={openEditRiScDialog}
+                    topSlot={
+                      riScs !== null &&
+                      riScs.length !== 0 && (
+                        <>
+                          <Typography variant="h6" sx={{ fontSize: 16, mb: 1 }}>
+                            {t('contentHeader.multipleRiScs')}
+                          </Typography>
+                          <Select
+                            variant="standard"
+                            value={selectedRiSc?.id ?? ''}
+                            onChange={e => selectRiSc(e.target.value)}
+                            sx={{ width: '100%' }}
+                          >
+                            {riScs.map(riSc => (
+                              <MenuItem key={riSc.id} value={riSc.id}>
+                                <ListItemText primary={riSc.content.title} />
+                              </MenuItem>
+                            )) ?? []}
+                          </Select>
+                        </>
+                      )
+                    }
                   />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
