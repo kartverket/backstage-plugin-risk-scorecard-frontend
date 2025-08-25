@@ -2,21 +2,18 @@ import { RiScWithMetadata } from '../../utils/types';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';
 import { InfoCard } from '@backstage/core-components';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useFontStyles } from '../../utils/style';
 import EditButton from '../common/EditButton';
 import { useRiScs } from '../../contexts/RiScContext';
 import { Markdown } from '../common/Markdown';
+import { ReactNode } from 'react';
 
 interface RiScInfoProps {
   riScWithMetadata: RiScWithMetadata;
   edit: () => void;
+  topSlot?: ReactNode;
 }
 
-export function RiScInfo({ riScWithMetadata, edit }: RiScInfoProps) {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { label } = useFontStyles();
+export function RiScInfo({ riScWithMetadata, edit, topSlot }: RiScInfoProps) {
 
   const { approveRiSc } = useRiScs();
 
@@ -33,6 +30,7 @@ export function RiScInfo({ riScWithMetadata, edit }: RiScInfoProps) {
         }}
       >
         <InfoCard>
+            {topSlot && <Box sx={{ mb: 2 }}>{topSlot}</Box>}
           <Box
             style={{
               display: 'flex',
@@ -45,7 +43,6 @@ export function RiScInfo({ riScWithMetadata, edit }: RiScInfoProps) {
             </Typography>
             <EditButton onClick={edit} />
           </Box>
-          <Typography className={label}>{t('dictionary.scope')}</Typography>
           <Markdown description={riScWithMetadata.content.scope} />
         </InfoCard>
       </Grid>
