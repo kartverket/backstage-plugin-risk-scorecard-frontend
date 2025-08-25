@@ -14,7 +14,6 @@ interface RiScInfoProps {
 }
 
 export function RiScInfo({ riScWithMetadata, edit, topSlot }: RiScInfoProps) {
-
   const { approveRiSc } = useRiScs();
 
   return (
@@ -30,7 +29,7 @@ export function RiScInfo({ riScWithMetadata, edit, topSlot }: RiScInfoProps) {
         }}
       >
         <InfoCard>
-            {topSlot && <Box sx={{ mb: 2 }}>{topSlot}</Box>}
+          {topSlot && <Box sx={{ mb: 2 }}>{topSlot}</Box>}
           <Box
             style={{
               display: 'flex',
