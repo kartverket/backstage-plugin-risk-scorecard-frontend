@@ -18,13 +18,17 @@ import {
   roundProbabilityToNearestProbabilityOption,
 } from '../utils/utilityfunctions';
 import { useRiScs } from './RiScContext';
-import { consequenceOptions, probabilityOptions } from '../utils/constants';
+import {
+  ActionStatusOptions,
+  consequenceOptions,
+  probabilityOptions,
+} from '../utils/constants';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
   title: '',
   description: '',
-  status: 'Not started',
+  status: ActionStatusOptions.NotOK,
   url: '',
 });
 

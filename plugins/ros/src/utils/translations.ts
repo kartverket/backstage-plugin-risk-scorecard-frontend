@@ -181,6 +181,10 @@ export const pluginRiScMessages = {
     migration42: {
       changeExplanation: 'This migration adds a last updated field to actions.',
     },
+    migration50: {
+      changeExplanation:
+        'This migration updates the action status to a new naming convention.',
+    },
   },
   comparisonDialog: {
     noChanges: 'No changes',
@@ -503,11 +507,9 @@ export const pluginRiScMessages = {
     'Excessive use': 'Excessive use',
   },
   actionStatus: {
-    'Not started': 'Not started',
-    'In progress': 'In progress',
-    'On hold': 'On hold',
-    Completed: 'Completed',
-    Aborted: 'Aborted',
+    OK: 'OK',
+    'Not OK': 'Not OK',
+    'Not relevant': 'Not relevant',
   },
   errorMessages: {
     DefaultErrorMessage: 'An error occured',
@@ -754,6 +756,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration41.occurrencesPerYear': 'hendelser/år',
           'migrationDialog.migration42.changeExplanation':
             'Denne migreringen legger til et sist oppdatert felt ("lastUpdated") på tiltak.',
+          'migrationDialog.migration50.changeExplanation':
+            'Denne migreringen oppdaterer tiltakets status til en ny navnekonvensjon.',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
           'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
@@ -1043,6 +1047,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.On hold': 'På vent',
           'actionStatus.Completed': 'Fullført',
           'actionStatus.Aborted': 'Avbrutt',
+          'actionStatus.OK': 'OK',
+          'actionStatus.Not OK': 'Ikke OK',
+          'actionStatus.Not relevant': 'Ikke relevant',
           'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
           'errorMessages.NoWriteAccessToRepository':
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til dette repoet.',

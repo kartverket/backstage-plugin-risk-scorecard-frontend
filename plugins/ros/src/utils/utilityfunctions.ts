@@ -436,12 +436,25 @@ export const actionStatusOptionsToTranslationKeys: Record<
   ActionStatusOptions,
   string
 > = {
-  [ActionStatusOptions.NotStarted]: 'actionStatus.Not started',
-  [ActionStatusOptions.InProgress]: 'actionStatus.In progress',
-  [ActionStatusOptions.OnHold]: 'actionStatus.On hold',
-  [ActionStatusOptions.Completed]: 'actionStatus.Completed',
-  [ActionStatusOptions.Aborted]: 'actionStatus.Aborted',
+  [ActionStatusOptions.OK]: 'actionStatus.OK',
+  [ActionStatusOptions.NotOK]: 'actionStatus.Not OK',
+  [ActionStatusOptions.NotRelevant]: 'actionStatus.Not relevant',
 };
+
+export function getTranslatedActionStatus(
+  status: string,
+  t: (key: string, options?: any) => string,
+): string {
+  if (
+    Object.values(ActionStatusOptions).includes(status as ActionStatusOptions)
+  ) {
+    return t(
+      actionStatusOptionsToTranslationKeys[status as ActionStatusOptions],
+    );
+  }
+
+  return status;
+}
 
 export const threatActorOptionsToTranslationKeys: Record<
   ThreatActorsOptions,

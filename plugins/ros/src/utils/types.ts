@@ -5,6 +5,7 @@ import {
   ScenarioDTO,
   SopsConfigDTO,
 } from './DTOs';
+import { ActionStatusOptions } from './constants';
 
 /**
  * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.
@@ -41,11 +42,31 @@ export type MigrationStatus = {
   migrationChanges40?: MigrationChanges40;
   migrationChanges41?: MigrationChanges41;
   migrationChanges42?: MigrationChanges42;
+  migrationChanges50?: MigrationChanges50;
 };
 
 export type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
+};
+
+export type MigrationChanges50 = {
+  scenarios: MigrationChanges50Scenario[];
+};
+
+export type MigrationChanges50Scenario = {
+  title: string;
+  id: string;
+  changedActions: MigrationChanges50Action[];
+};
+
+export type MigrationChanges50Action = {
+  title: string;
+  id: string;
+  changedActionStatus: MigrationChangedTypedValue<
+    ActionStatusOptionsV4,
+    ActionStatusOptions
+  >;
 };
 
 export type MigrationChanges42 = {
@@ -98,6 +119,11 @@ export type MigrationChanges40Action = {
 
 export type MigrationChangedValue<T> = {
   oldValue: T;
+  newValue: T;
+};
+
+export type MigrationChangedTypedValue<S, T> = {
+  oldValue: S;
   newValue: T;
 };
 
@@ -211,6 +237,14 @@ export enum DifferenceStatus {
   NoReadAccess = 'NoReadAccess',
   GithubFileNotFound = 'GithubFileNotFound',
   FrontendFallback = 'FrontendFallback',
+}
+
+export enum ActionStatusOptionsV4 {
+  NotStarted = 'Not started',
+  InProgress = 'In progress',
+  OnHold = 'On hold',
+  Completed = 'Completed',
+  Aborted = 'Aborted',
 }
 
 type FormRisk = Modify<
