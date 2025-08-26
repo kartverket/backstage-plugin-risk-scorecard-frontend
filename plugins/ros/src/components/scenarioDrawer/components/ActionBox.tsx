@@ -218,10 +218,16 @@ export function ActionBox({
         >
           <DualButton
             propsCommon={{
-              color:
-                action.status === ActionStatusOptions.OK
-                  ? 'success'
-                  : 'inherit',
+              color: (() => {
+                switch (action.status) {
+                  case ActionStatusOptions.OK:
+                    return 'success';
+                  case ActionStatusOptions.NotOK:
+                    return 'error';
+                  default:
+                    return 'inherit';
+                }
+              })(),
             }}
             propsLeft={{
               children: translatedActionStatus,
