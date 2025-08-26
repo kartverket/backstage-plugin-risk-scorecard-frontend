@@ -244,6 +244,7 @@ export function ActionBox({
             open={open}
             onClose={handleMenuClose}
             onClick={handleMenuClose}
+            autoFocus={false}
           >
             {Object.values(ActionStatusOptions).map(value => (
               <MenuItem key={value} onClick={() => handleStatusChange(value)}>
