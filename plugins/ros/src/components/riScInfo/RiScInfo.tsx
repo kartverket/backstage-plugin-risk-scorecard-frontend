@@ -29,7 +29,7 @@ export function RiScInfo({ riScWithMetadata, edit, topSlot }: RiScInfoProps) {
         }}
       >
         <InfoCard>
-          {topSlot && <Box sx={{ mb: 2 }}>{topSlot}</Box>}
+          <Box sx={{ mb: 2 }}>{topSlot}</Box>
           <Box
             style={{
               display: 'flex',
