@@ -1,0 +1,47 @@
+schemaVersion: ENC[AES256_GCM,data:b9dD,iv:EykjJUBna2y/5MqmIIxjQwRNJaTVrq+ZAjoK1ZTsVfI=,tag:+T0uGCV+VGZw8t/sWxxmDA==,type:str]
+title: ENC[AES256_GCM,data:YBMKn3jjv8Tvjg==,iv:jf88h5D61qte9CNV8Un1Pc8CFg23EQ9kmO397anOP70=,tag:GkIpZA9kW/CRMIQfvYzUXQ==,type:str]
+scope: ""
+valuations: []
+scenarios: []
+sops:
+    shamir_threshold: 2
+    key_groups:
+        - gcp_kms:
+            - resource_id: projects/dybdedata-prod-5004/locations/europe-north1/keyRings/dybdedata-risc-key-ring/cryptoKeys/dybdedata-risc-crypto-key
+              created_at: "2025-08-26T11:55:18Z"
+              enc: CiQAPDFcNGAR4ZV/4kpvCDihKmRMgWDzCKufrznsWJp9OaxLNYkSSgBScVDBVlK80I7iUQ5PQpVuTSy9GLO+qyFGhGc15UiGLEt+DpCn6ySFPpNacnN6yV60TVFzFuN7cFhvQV+XyrBqnwxs5TVUflxa
+          hc_vault: []
+          age:
+            - recipient: age145s860ux96jvx6d7nwvzar588qjmgv5p47sp6nmmt2jnmhqh4scqcuk0mg
+              enc: |
+                -----BEGIN AGE ENCRYPTED FILE-----
+                YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCZm9pcTdjK2hIOWRuTWsy
+                RzNxWFJlWUtsOGNUaGxKWXEzVjBIV2tBOHdZCmtWRVFLcUNPRkVOY21kU2s4U0hS
+                NlFBSTBQdjdPamNIaS9HeklXdWNxQ3cKLS0tIHVXeUM1Y3Q3ZUNwN0hOSDBvelE0
+                ZkcxUGh1ZUdZZW5lNHh6WS9YbWdSSXcKo+u9q+XQNlNi9h0rMpJiTSpZmhO2YSqN
+                YdAUpAdZX/eoe4AYPGjo4aZY0zLCUhxsZRVrzYAmBsVtYYpVXYhXSsk=
+                -----END AGE ENCRYPTED FILE-----
+        - hc_vault: []
+          age:
+            - recipient: age18e0t6ve0vdxqzzjt7rxf0r6vzc37fhs5cad2qz40r02c3spzgvvq8uxz23
+              enc: |
+                -----BEGIN AGE ENCRYPTED FILE-----
+                YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0VFFETkNwME00SnZKYXdq
+                LzlVelNMbjlXdmpKVWxzSVl1RWE3czBFMEg0ClJFa0VGMDFOeFZXSk42THRsNzBv
+                SzRYaFQzbm1pbnhaaE5zT2ZNbXkxMzgKLS0tIDk1ZGptU2FXdTJBVVpBM2NmS0Vl
+                Z0Jzb3JEb3ZZemRZNU9KNDBuekJpdTAKaTRYvkWxcs190zI52XAyYbBF4i0SXx2j
+                Epf9vlGr+RcMO1LrFIUMKWkkzVjQXDSskUI70uaOAWBH5QnvzBpEVvo=
+                -----END AGE ENCRYPTED FILE-----
+            - recipient: age1kjpgclkjev08aa8l2uy277gn0cngrkrkazt240405ezqywkm5axqt3d3tq
+              enc: |
+                -----BEGIN AGE ENCRYPTED FILE-----
+                YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXTU5hbGg3endaeitKVWZV
+                ZklWVDVDTHF6RHhiTnNLUHU0U2FoUE5pdGdnCm1RdWhmdWQyc2hmSDJ6L2hOWVN1
+                NERFUm9pUFN4ZzU0em90dmloRjIvcVEKLS0tIGVZc0orbTlvS2tSR01FbHFSM0p5
+                Z0tEVmFSVERIUlN5WWpKSUU3N0kyTFEKQWOW4B8kMT/H+J1ehVOZOFAj/nS0lKfY
+                tqUUHGYzTWN/TMONPaqTik0UQDyC2iHfRUXSGu7MRh4Uok3Vl8KJqXk=
+                -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-08-26T11:55:18Z"
+    mac: ENC[AES256_GCM,data:SXM2CSJYdQjtSc1ZMOlEOTxDq1Htvx/p5qrL/f4J9KGljx1bYF+0/9jkK6W/pbDcNUVPBNdJHcFGz1JgIMm6vwSkFMFVyYYdg0X4RyBhONyMRGpQUHxSNZwXgP8s3I0lduQ0eOvSwxKhIm/GrBKmI5snDw+V+s9OM6X8AlPXKjM=,iv:+eKEUHeHTOB7iKRilPa5p+ONoOUTV27Qmn9joqAc5yk=,tag:ON3XKXpzl4aWMyqzMPCDeg==,type:str]
+    unencrypted_suffix: _unencrypted
+    version: 3.10.2
