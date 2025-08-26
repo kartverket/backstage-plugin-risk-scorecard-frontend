@@ -1,47 +1,62 @@
-schemaVersion: ENC[AES256_GCM,data:b9dD,iv:EykjJUBna2y/5MqmIIxjQwRNJaTVrq+ZAjoK1ZTsVfI=,tag:+T0uGCV+VGZw8t/sWxxmDA==,type:str]
-title: ENC[AES256_GCM,data:YBMKn3jjv8Tvjg==,iv:jf88h5D61qte9CNV8Un1Pc8CFg23EQ9kmO397anOP70=,tag:GkIpZA9kW/CRMIQfvYzUXQ==,type:str]
+schemaVersion: ENC[AES256_GCM,data:zAyc,iv:+csLVAklgQkAYnZLL7mVY8SnVMgKNEGopbh9IS6k6co=,tag:E2uhDUnfE43XMHnsnolKaQ==,type:str]
+title: ENC[AES256_GCM,data:13wbNW6ojOmN2w==,iv:0J7WTuZkWfOyqObqbrItSQ82dLkh9wkX4bMrG722ZIs=,tag:N1SLezg7suaNCa+t0wscnA==,type:str]
 scope: ""
 valuations: []
-scenarios: []
+scenarios:
+    - title: ENC[AES256_GCM,data:Cqq8IQoZ,iv:Cg9Yn+uvXfoDzgE+HavBpBEh05erDvH5mNpf9Kr9pes=,tag:D3Q1CryiCyA+snKDZo0K7A==,type:str]
+      scenario:
+        ID: ENC[AES256_GCM,data:98zTrYM=,iv:+GAx4ZhsuoLjVZ4lQWx7oXwo8dpOgg0dWJ5wG6DnteU=,tag:wjTd/SNaaM8L7oUbFmAamw==,type:str]
+        description: ""
+        threatActors: []
+        vulnerabilities: []
+        risk:
+            summary: ""
+            probability: ENC[AES256_GCM,data:4vWoXI5/,iv:QBVQw4oGpf2O+C2Da13A8Qpea7ikj37/7X92ZRldZWc=,tag:Pi3+m9TILub5uZrMbrby1w==,type:float]
+            consequence: ENC[AES256_GCM,data:bOnGxA==,iv:9YkVi+gqWBj2KtDPfAS5S814ALArZVN+/R99hLdGAfE=,tag:zvSdg4iFvwBHtDwtiixYmA==,type:float]
+        actions: []
+        remainingRisk:
+            summary: ""
+            probability: ENC[AES256_GCM,data:YFMOHGNF,iv:LICjJSMNeW0cSgvUYtFuFR2jwNkpdmoDRYSuXei+eYE=,tag:jBxPPblkS1SMCSNFDQXkDQ==,type:float]
+            consequence: ENC[AES256_GCM,data:ljsnZA==,iv:LXo0A3Q1paGqkIGYr+lvpmGxQr25xxzvuWRkvzig9EQ=,tag:QuWf3DH38EksyVI+GdBhQQ==,type:float]
 sops:
     shamir_threshold: 2
     key_groups:
         - gcp_kms:
             - resource_id: projects/dybdedata-prod-5004/locations/europe-north1/keyRings/dybdedata-risc-key-ring/cryptoKeys/dybdedata-risc-crypto-key
-              created_at: "2025-08-26T11:55:18Z"
-              enc: CiQAPDFcNGAR4ZV/4kpvCDihKmRMgWDzCKufrznsWJp9OaxLNYkSSgBScVDBVlK80I7iUQ5PQpVuTSy9GLO+qyFGhGc15UiGLEt+DpCn6ySFPpNacnN6yV60TVFzFuN7cFhvQV+XyrBqnwxs5TVUflxa
+              created_at: "2025-08-26T12:05:34Z"
+              enc: CiQAPDFcNMeb5BcwhKtQV8qYDAivb9ijgumC7XvwK/rJ1H16SFoSSQBScVDB+pVjRwgWZxjSh+MRNR3RXMeS0WucTr3MZz15yTtrJgdlXLm0fSbTOiUNXaoVU8M0M4Hp4dnz4pKdUWt9PkHnOYGXzIg=
           hc_vault: []
           age:
             - recipient: age145s860ux96jvx6d7nwvzar588qjmgv5p47sp6nmmt2jnmhqh4scqcuk0mg
               enc: |
                 -----BEGIN AGE ENCRYPTED FILE-----
-                YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCZm9pcTdjK2hIOWRuTWsy
-                RzNxWFJlWUtsOGNUaGxKWXEzVjBIV2tBOHdZCmtWRVFLcUNPRkVOY21kU2s4U0hS
-                NlFBSTBQdjdPamNIaS9HeklXdWNxQ3cKLS0tIHVXeUM1Y3Q3ZUNwN0hOSDBvelE0
-                ZkcxUGh1ZUdZZW5lNHh6WS9YbWdSSXcKo+u9q+XQNlNi9h0rMpJiTSpZmhO2YSqN
-                YdAUpAdZX/eoe4AYPGjo4aZY0zLCUhxsZRVrzYAmBsVtYYpVXYhXSsk=
+                YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBpdzM4QXkvWFUxUytrNmI5
+                QzJnZkVyZ3gzWW41R0NEOFc4clZ2bHFSMUNVClBZKythWEo2cUZ6anEvSm1FZ05o
+                UERiREtFU3FKSXc5akZDQzVscGlnQzAKLS0tIGZmaHhIQi8ySVVxT1c5WWE3bEFN
+                bzF0VkFaa0grcGpCS1M0MTZRQ3Y0VE0K1pCYuerPLtJc9XfJKPBPNZyPd284zaQ7
+                FA296tvkC43oAUqmRADfzn1SibWUeGS+hd35NIbwA8JYEOxzS2lMnwE=
                 -----END AGE ENCRYPTED FILE-----
         - hc_vault: []
           age:
             - recipient: age18e0t6ve0vdxqzzjt7rxf0r6vzc37fhs5cad2qz40r02c3spzgvvq8uxz23
               enc: |
                 -----BEGIN AGE ENCRYPTED FILE-----
-                YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0VFFETkNwME00SnZKYXdq
-                LzlVelNMbjlXdmpKVWxzSVl1RWE3czBFMEg0ClJFa0VGMDFOeFZXSk42THRsNzBv
-                SzRYaFQzbm1pbnhaaE5zT2ZNbXkxMzgKLS0tIDk1ZGptU2FXdTJBVVpBM2NmS0Vl
-                Z0Jzb3JEb3ZZemRZNU9KNDBuekJpdTAKaTRYvkWxcs190zI52XAyYbBF4i0SXx2j
-                Epf9vlGr+RcMO1LrFIUMKWkkzVjQXDSskUI70uaOAWBH5QnvzBpEVvo=
+                YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBPUXlzNFprZ1c5TCtGWDJB
+                SFFHbGVTdjR2VmlJMTRJaEJFVmpLMUhKRUg0CjBrUm9IUTJ0WWtPdFAyRzdKTnRI
+                WmtIUHJHajBTYllHQm1qc1FQYVl5VjQKLS0tIFA3S3JoVVROMG5ycGdIV3A4OWMx
+                K0xvN0pTZ2tyOFh6MDgxSTdqR0pOem8KL0+hQUm5o9yxGXLoEMQEV+28uUcMhFmd
+                pPuYKfDCXceyoe/fac0i4840xeKPofFzGHy7pHQuzdVTlL5auqTIOe4=
                 -----END AGE ENCRYPTED FILE-----
             - recipient: age1kjpgclkjev08aa8l2uy277gn0cngrkrkazt240405ezqywkm5axqt3d3tq
               enc: |
                 -----BEGIN AGE ENCRYPTED FILE-----
-                YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXTU5hbGg3endaeitKVWZV
-                ZklWVDVDTHF6RHhiTnNLUHU0U2FoUE5pdGdnCm1RdWhmdWQyc2hmSDJ6L2hOWVN1
-                NERFUm9pUFN4ZzU0em90dmloRjIvcVEKLS0tIGVZc0orbTlvS2tSR01FbHFSM0p5
-                Z0tEVmFSVERIUlN5WWpKSUU3N0kyTFEKQWOW4B8kMT/H+J1ehVOZOFAj/nS0lKfY
-                tqUUHGYzTWN/TMONPaqTik0UQDyC2iHfRUXSGu7MRh4Uok3Vl8KJqXk=
+                YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXVHRmY29OQmVZb05QZ2VQ
+                V0V4am9FT3FvS3NwSXRlSDc2ZjY4OElkSnhBClo0bWljaWhxWGZFTGQ1dThYV3hE
+                T2lpdjNrMXVXMnFXbTBUTHB6TnZxYWsKLS0tIEVEcmxYRWJpWDB6V0I1WHVUL3JO
+                Q2s2RUJSREU4TXRQK2tYUEt4N0FKNnMKNrH0WgrzC0VONxhcFq5LKnKUqSvVrI3E
+                1s15+Ct6kdJ0VXYSAbejJl8tdTP6MzrjFxL3tT8d9lgYFaldzSiALb4=
                 -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-08-26T11:55:18Z"
-    mac: ENC[AES256_GCM,data:SXM2CSJYdQjtSc1ZMOlEOTxDq1Htvx/p5qrL/f4J9KGljx1bYF+0/9jkK6W/pbDcNUVPBNdJHcFGz1JgIMm6vwSkFMFVyYYdg0X4RyBhONyMRGpQUHxSNZwXgP8s3I0lduQ0eOvSwxKhIm/GrBKmI5snDw+V+s9OM6X8AlPXKjM=,iv:+eKEUHeHTOB7iKRilPa5p+ONoOUTV27Qmn9joqAc5yk=,tag:ON3XKXpzl4aWMyqzMPCDeg==,type:str]
+    lastmodified: "2025-08-26T12:05:34Z"
+    mac: ENC[AES256_GCM,data:EOsgFu2tZ3djN8IKTd/8ZIuqhrxemXuWG2lBH90r+bJzJjKKgCIzgHX9adomQw5XxIUnjwpVGmyHLBLJbNP12RLB/pWkVhJLNt37z2PPXSdo87lRh8Jc9YXBp9VypRhXClDNGJHoM0RiKo0NSndOpZMEbo/LSyVs+nLAW/Bjs4M=,iv:+lsBS9iPDBZ5Q5qVzpMh6cwddPT0hv4iZI0MRamFbWQ=,tag:285MTxExYToWzQfPV6zhAw==,type:str]
     unencrypted_suffix: _unencrypted
     version: 3.10.2
