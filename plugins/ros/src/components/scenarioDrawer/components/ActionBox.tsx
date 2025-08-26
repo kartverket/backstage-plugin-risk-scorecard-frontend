@@ -216,16 +216,19 @@ export function ActionBox({
             alignItems: 'center',
           }}
         >
-            <DualButton
-                propsCommon={{
-                    color: (() => {
-                        switch (action.status) {
-                            case ActionStatusOptions.OK: return 'success';
-                            case ActionStatusOptions.NotOK: return 'error';
-                            default: return 'inherit';
-                        }
-                    })(),
-                }}
+          <DualButton
+            propsCommon={{
+              color: (() => {
+                switch (action.status) {
+                  case ActionStatusOptions.OK:
+                    return 'success';
+                  case ActionStatusOptions.NotOK:
+                    return 'error';
+                  default:
+                    return 'inherit';
+                }
+              })(),
+            }}
             propsLeft={{
               children: translatedActionStatus,
               onClick: handleChipClick,
