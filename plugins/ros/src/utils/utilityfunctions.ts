@@ -132,8 +132,6 @@ export function calculateUpdatedStatus(
   daysSinceLastModified: number | null,
   numOfCommitsBehind: number | null,
 ): UpdatedStatusEnumType {
-  console.log(`days: ${daysSinceLastModified}, commits: ${numOfCommitsBehind}`);
-
   if (daysSinceLastModified !== null && numOfCommitsBehind === null) {
     return calculateUpdatedStatusFromDaysOnly(daysSinceLastModified);
   }
