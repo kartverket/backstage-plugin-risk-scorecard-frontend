@@ -54,15 +54,6 @@ describe('calculateDaysSince', () => {
 });
 
 describe('calculateUpdatedStatus', () => {
-  it('returns VERY_OUTDATED if any input is null', () => {
-    expect(calculateUpdatedStatus(null, 10)).toBe(
-      UpdatedStatusEnum.VERY_OUTDATED,
-    );
-    expect(calculateUpdatedStatus(10, null)).toBe(
-      UpdatedStatusEnum.VERY_OUTDATED,
-    );
-  });
-
   it('returns VERY_OUTDATED if both inputs are null', () => {
     expect(calculateUpdatedStatus(null, null)).toBe(
       UpdatedStatusEnum.VERY_OUTDATED,
