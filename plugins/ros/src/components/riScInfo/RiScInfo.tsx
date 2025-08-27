@@ -40,7 +40,10 @@ export function RiScInfo({ riScWithMetadata, edit }: RiScInfoProps) {
           <Box sx={{ mb: 2 }}>
             {riScs !== null && riScs.length !== 0 && (
               <>
-                <Typography variant="h6" style={{ fontSize: 16, marginBottom: 1 }}>
+                <Typography
+                  variant="h6"
+                  style={{ fontSize: 16, marginBottom: 1 }}
+                >
                   {t('contentHeader.multipleRiScs')}
                 </Typography>
                 <Select
