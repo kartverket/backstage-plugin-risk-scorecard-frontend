@@ -99,7 +99,7 @@ export function calculateUpdatedStatus(
   const days = daysSinceLastModified;
   const commits = numOfCommitsBehind;
 
-  if (commits > 50){
+  if (commits > 50) {
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
@@ -110,7 +110,7 @@ export function calculateUpdatedStatus(
   }
 
   if (commits > 10) {
-    if(days <= 30) return UpdatedStatusEnum.UPDATED;
+    if (days <= 30) return UpdatedStatusEnum.UPDATED;
     if (days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
     if (days <= 180) return UpdatedStatusEnum.OUTDATED;
     return UpdatedStatusEnum.VERY_OUTDATED;

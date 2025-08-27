@@ -64,28 +64,43 @@ describe('calculateUpdatedStatus', () => {
   });
 
   it('returns correct status for commits > 50', () => {
-    expect(calculateUpdatedStatus(10, 51)).toBe(UpdatedStatusEnum.VERY_OUTDATED);
-    expect(calculateUpdatedStatus(100, 100)).toBe(UpdatedStatusEnum.VERY_OUTDATED);
+    expect(calculateUpdatedStatus(10, 51)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(100, 100)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
   });
 
   it('returns correct status for commits between 26 and 50', () => {
-    expect(calculateUpdatedStatus(20, 30)).toBe(UpdatedStatusEnum.LITTLE_OUTDATED)
+    expect(calculateUpdatedStatus(20, 30)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
     expect(calculateUpdatedStatus(60, 30)).toBe(UpdatedStatusEnum.OUTDATED);
-    expect(calculateUpdatedStatus(100, 30)).toBe(UpdatedStatusEnum.VERY_OUTDATED);
-
+    expect(calculateUpdatedStatus(100, 30)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
   });
   it('returns correct status for commits between 11 and 25', () => {
     expect(calculateUpdatedStatus(20, 15)).toBe(UpdatedStatusEnum.UPDATED);
-    expect(calculateUpdatedStatus(90, 15)).toBe(UpdatedStatusEnum.LITTLE_OUTDATED);
+    expect(calculateUpdatedStatus(90, 15)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
     expect(calculateUpdatedStatus(180, 15)).toBe(UpdatedStatusEnum.OUTDATED);
-    expect(calculateUpdatedStatus(200, 15)).toBe(UpdatedStatusEnum.VERY_OUTDATED);
+    expect(calculateUpdatedStatus(200, 15)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
   });
 
   it('returns correct status for commits <= 10', () => {
     expect(calculateUpdatedStatus(60, 5)).toBe(UpdatedStatusEnum.UPDATED);
-    expect(calculateUpdatedStatus(120, 5)).toBe(UpdatedStatusEnum.LITTLE_OUTDATED);
+    expect(calculateUpdatedStatus(120, 5)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
     expect(calculateUpdatedStatus(300, 5)).toBe(UpdatedStatusEnum.OUTDATED);
-    expect(calculateUpdatedStatus(400, 5)).toBe(UpdatedStatusEnum.VERY_OUTDATED);
+    expect(calculateUpdatedStatus(400, 5)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
   });
 });
 
@@ -743,4 +758,3 @@ describe('roundProbabilityToNearestProbabilityOption', () => {
     );
   });
 });
-
