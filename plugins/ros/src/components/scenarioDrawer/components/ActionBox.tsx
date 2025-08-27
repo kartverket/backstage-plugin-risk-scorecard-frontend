@@ -246,7 +246,11 @@ export function ActionBox({
             onClick={handleMenuClose}
           >
             {Object.values(ActionStatusOptions).map(value => (
-              <MenuItem key={value} onClick={() => handleStatusChange(value)}>
+              <MenuItem
+                key={value}
+                onClick={() => handleStatusChange(value)}
+                selected={value === action.status}
+              >
                 {
                   /* @ts-ignore Because ts can't typecheck strings against our keys */
                   t(

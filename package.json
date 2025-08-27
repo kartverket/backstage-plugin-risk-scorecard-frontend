@@ -80,7 +80,9 @@
     "prismjs": "^1.30.0",
     "tough-cookie": "5.1.2",
     "tmp": "^0.2.4",
-    "on-headers": "^1.1.0"
+    "on-headers": "^1.1.0",
+    "linkifyjs": "^4.3.2",
+    "sha.js": "^2.4.12"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
