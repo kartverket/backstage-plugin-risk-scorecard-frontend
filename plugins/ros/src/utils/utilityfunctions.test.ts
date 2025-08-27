@@ -63,6 +63,46 @@ describe('calculateUpdatedStatus', () => {
     );
   });
 
+  it('returns VERY_OUTDATED if both inputs are null', () => {
+    expect(calculateUpdatedStatus(null, null)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+  });
+
+  it('returns VERY_OUTDATED if days is null', () => {
+    expect(calculateUpdatedStatus(null, 13)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+  });
+
+  it('returns correct status when commits is null', () => {
+    expect(calculateUpdatedStatus(0, null)).toBe(UpdatedStatusEnum.UPDATED);
+    expect(calculateUpdatedStatus(5, null)).toBe(UpdatedStatusEnum.UPDATED);
+    expect(calculateUpdatedStatus(13, null)).toBe(UpdatedStatusEnum.UPDATED);
+    expect(calculateUpdatedStatus(14, null)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(20, null)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(27, null)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(28, null)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(30, null)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(51, null)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(55, null)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(56, null)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(120, null)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(439, null)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+  });
+
   it('returns correct status for commits > 50', () => {
     expect(calculateUpdatedStatus(10, 51)).toBe(
       UpdatedStatusEnum.VERY_OUTDATED,
