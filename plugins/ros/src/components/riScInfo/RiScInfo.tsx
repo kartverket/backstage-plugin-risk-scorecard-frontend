@@ -50,6 +50,7 @@ export function RiScInfo({ riScWithMetadata, edit }: RiScInfoProps) {
                   variant="standard"
                   value={selectedRiSc?.id ?? ''}
                   onChange={e => selectRiSc(e.target.value as string)}
+                  style={{ width: '100%' }}
                 >
                   {riScs.map(riSc => (
                     <MenuItem key={riSc.id} value={riSc.id}>
