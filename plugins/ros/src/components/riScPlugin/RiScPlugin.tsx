@@ -17,9 +17,6 @@ import { RiScInfo } from '../riScInfo/RiScInfo';
 import AddCircle from '@mui/icons-material/AddCircle';
 import { Spinner } from '../common/Spinner';
 import { useRiScs } from '../../contexts/RiScContext';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { Delete, Settings } from '@mui/icons-material';
@@ -55,8 +52,6 @@ export function RiScPlugin() {
 
   const {
     selectedRiSc,
-    riScs,
-    selectRiSc,
     isFetching,
     resetResponse,
     resetRiScStatus,
@@ -160,28 +155,6 @@ export function RiScPlugin() {
                   <RiScInfo
                     riScWithMetadata={selectedRiSc}
                     edit={openEditRiScDialog}
-                    topSlot={
-                      riScs !== null &&
-                      riScs.length !== 0 && (
-                        <>
-                          <Typography variant="h6" sx={{ fontSize: 16, mb: 1 }}>
-                            {t('contentHeader.multipleRiScs')}
-                          </Typography>
-                          <Select
-                            variant="standard"
-                            value={selectedRiSc?.id ?? ''}
-                            onChange={e => selectRiSc(e.target.value)}
-                            sx={{ width: '100%' }}
-                          >
-                            {riScs.map(riSc => (
-                              <MenuItem key={riSc.id} value={riSc.id}>
-                                <ListItemText primary={riSc.content.title} />
-                              </MenuItem>
-                            )) ?? []}
-                          </Select>
-                        </>
-                      )
-                    }
                   />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
