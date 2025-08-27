@@ -9,6 +9,7 @@ export const pluginRiScMessages = {
     createNewButton: 'Create new scorecard',
     editEncryption: 'Edit encryption',
     deleteButton: 'Delete scoreboard',
+    multipleRiScs: 'RiSc scorecards',
   },
   dictionary: {
     click: 'Click',
@@ -574,6 +575,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.createNewButton': 'Opprett ny analyse',
           'contentHeader.editEncryption': 'Rediger kryptering',
           'contentHeader.deleteButton': 'Slett analyse',
+          'contentHeader.multipleRiScs': 'RoS-analyser',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.click': 'Klikk',
           'dictionary.here': 'her',

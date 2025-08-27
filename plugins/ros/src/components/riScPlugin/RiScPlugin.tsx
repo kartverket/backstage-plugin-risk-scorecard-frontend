@@ -17,9 +17,6 @@ import { RiScInfo } from '../riScInfo/RiScInfo';
 import AddCircle from '@mui/icons-material/AddCircle';
 import { Spinner } from '../common/Spinner';
 import { useRiScs } from '../../contexts/RiScContext';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { Delete, Settings } from '@mui/icons-material';
@@ -55,8 +52,6 @@ export function RiScPlugin() {
 
   const {
     selectedRiSc,
-    riScs,
-    selectRiSc,
     isFetching,
     resetResponse,
     resetRiScStatus,
@@ -115,23 +110,6 @@ export function RiScPlugin() {
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>
-            {riScs !== null && riScs.length !== 0 && (
-              <Grid item xs={12} sm={6}>
-                <Select
-                  variant="standard"
-                  value={selectedRiSc?.id ?? ''}
-                  onChange={e => selectRiSc(e.target.value)}
-                  sx={{ width: '100%' }}
-                >
-                  {riScs.map(riSc => (
-                    <MenuItem key={riSc.id} value={riSc.id}>
-                      <ListItemText primary={riSc.content.title} />
-                    </MenuItem>
-                  )) ?? []}
-                </Select>
-              </Grid>
-            )}
-
             {!isFetching && (
               <Grid item xs>
                 <Button
@@ -140,7 +118,7 @@ export function RiScPlugin() {
                   color="success"
                   onClick={openCreateRiScDialog}
                   sx={{
-                    minWidth: '205px',
+                    alignItems: 'right',
                   }}
                 >
                   {t('contentHeader.createNewButton')}
