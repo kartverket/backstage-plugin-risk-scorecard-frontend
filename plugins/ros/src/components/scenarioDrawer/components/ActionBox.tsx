@@ -228,6 +228,9 @@ export function ActionBox({
                     return 'inherit';
                 }
               })(),
+                style: action.status === ActionStatusOptions.NotRelevant ? {
+                    backgroundColor: 'rgba(128, 128, 128, 1)',
+                } : {}
             }}
             propsLeft={{
               children: translatedActionStatus,
