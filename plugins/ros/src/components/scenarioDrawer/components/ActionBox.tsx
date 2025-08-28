@@ -40,6 +40,29 @@ import { DeleteActionConfirmation } from './DeleteConfirmation';
 import { DualButton } from '../../common/DualButton';
 import { Tooltip } from '@material-ui/core';
 
+const getActionStatusColor = (status: string): 'success' | 'error' | 'inherit' => {
+    switch (status) {
+        case ActionStatusOptions.OK:
+            return 'success';
+        case ActionStatusOptions.NotOK:
+            return 'error';
+        default:
+            return 'inherit';
+    }
+}
+
+const getActionStatusStyle = (status: string) => {
+    const baseStyle = { color: 'white' };
+
+    if (status === ActionStatusOptions.NotRelevant) {
+        return {
+            ...baseStyle,
+            backgroundColor: 'rgba(128, 128, 128, 1)',
+        };
+    }
+    return baseStyle;
+}
+
 interface ActionBoxProps {
   action: Action;
   index: number;
@@ -218,22 +241,8 @@ export function ActionBox({
         >
           <DualButton
             propsCommon={{
-                color: (() => {
-                    switch (action.status) {
-                        case ActionStatusOptions.OK:
-                            return 'success';
-                        case ActionStatusOptions.NotOK:
-                            return 'error';
-                        default:
-                            return 'inherit';
-                    }
-                })(),
-                style: {
-                    color: 'white',
-                    ...(action.status === ActionStatusOptions.NotRelevant && {
-                        backgroundColor: 'rgba(128, 128, 128, 1)',
-                    })
-                }
+                color: getActionStatusColor(action.status),
+                style: getActionStatusStyle(action.status)
             }}
             propsLeft={{
               children: translatedActionStatus,
