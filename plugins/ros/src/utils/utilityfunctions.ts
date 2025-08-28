@@ -485,3 +485,28 @@ export const vulnerabiltiesOptionsToTranslationKeys: Record<
   [VulnerabilitiesOptions.InformationLeak]: 'vulnerabilities.Information leak',
   [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
 };
+
+export const getActionStatusColor = (
+  status: string,
+): 'success' | 'error' | 'inherit' => {
+  switch (status) {
+    case ActionStatusOptions.OK:
+      return 'success';
+    case ActionStatusOptions.NotOK:
+      return 'error';
+    default:
+      return 'inherit';
+  }
+};
+
+export const getActionStatusStyle = (status: string) => {
+  const baseStyle = { color: 'white' };
+
+  if (status === ActionStatusOptions.NotRelevant) {
+    return {
+      ...baseStyle,
+      backgroundColor: 'rgba(128, 128, 128, 1)',
+    };
+  }
+  return baseStyle;
+};
