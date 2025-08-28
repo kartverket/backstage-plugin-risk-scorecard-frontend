@@ -88,14 +88,17 @@ export const UpdatedStatusEnum = {
 export type UpdatedStatusEnumType =
   (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
 
-export function calculateUpdatedStatus(
-  daysSinceLastModified: number | null,
-  numOfCommitsBehind: number | null,
-): UpdatedStatusEnumType {
-  if (daysSinceLastModified === null || numOfCommitsBehind === null) {
-    return UpdatedStatusEnum.VERY_OUTDATED;
-  }
+function calculateUpdatedStatusFromDaysOnly(daysSinceLastModified: number) {
+  if (daysSinceLastModified < 2 * 7) return UpdatedStatusEnum.UPDATED;
+  if (daysSinceLastModified < 4 * 7) return UpdatedStatusEnum.LITTLE_OUTDATED;
+  if (daysSinceLastModified < 8 * 7) return UpdatedStatusEnum.OUTDATED;
+  return UpdatedStatusEnum.VERY_OUTDATED;
+}
 
+function calculateUpdatedStatusFromDaysAndCommits(
+  daysSinceLastModified: number,
+  numOfCommitsBehind: number,
+) {
   const days = daysSinceLastModified;
   const commits = numOfCommitsBehind;
 
@@ -119,6 +122,24 @@ export function calculateUpdatedStatus(
   if (days <= 60) return UpdatedStatusEnum.UPDATED;
   if (days <= 180) return UpdatedStatusEnum.LITTLE_OUTDATED;
   if (days <= 360) return UpdatedStatusEnum.OUTDATED;
+  return UpdatedStatusEnum.VERY_OUTDATED;
+}
+
+export function calculateUpdatedStatus(
+  daysSinceLastModified: number | null,
+  numOfCommitsBehind: number | null,
+): UpdatedStatusEnumType {
+  if (daysSinceLastModified !== null && numOfCommitsBehind === null) {
+    return calculateUpdatedStatusFromDaysOnly(daysSinceLastModified);
+  }
+
+  if (daysSinceLastModified !== null && numOfCommitsBehind !== null) {
+    return calculateUpdatedStatusFromDaysAndCommits(
+      daysSinceLastModified,
+      numOfCommitsBehind,
+    );
+  }
+
   return UpdatedStatusEnum.VERY_OUTDATED;
 }
 
