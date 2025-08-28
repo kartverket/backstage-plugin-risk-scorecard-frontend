@@ -383,7 +383,8 @@ function Exclamations({
           </Box>
         </Tooltip>
       );
-    case (UpdatedStatusEnum.UPDATED, UpdatedStatusEnum.LITTLE_OUTDATED):
+    case UpdatedStatusEnum.UPDATED:
+    case UpdatedStatusEnum.LITTLE_OUTDATED:
       return <Box sx={{ minWidth: '24px' }} />;
     default:
       return null;
