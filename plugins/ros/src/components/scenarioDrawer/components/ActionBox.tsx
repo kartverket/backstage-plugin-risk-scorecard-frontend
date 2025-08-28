@@ -32,6 +32,8 @@ import {
   formatDate,
   UpdatedStatusEnum,
   getTranslatedActionStatus,
+  getActionStatusColor,
+  getActionStatusStyle,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
@@ -218,16 +220,8 @@ export function ActionBox({
         >
           <DualButton
             propsCommon={{
-              color: (() => {
-                switch (action.status) {
-                  case ActionStatusOptions.OK:
-                    return 'success';
-                  case ActionStatusOptions.NotOK:
-                    return 'error';
-                  default:
-                    return 'inherit';
-                }
-              })(),
+              color: getActionStatusColor(action.status),
+              style: getActionStatusStyle(action.status),
             }}
             propsLeft={{
               children: translatedActionStatus,
