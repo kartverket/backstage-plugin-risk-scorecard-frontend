@@ -218,19 +218,22 @@ export function ActionBox({
         >
           <DualButton
             propsCommon={{
-              color: (() => {
-                switch (action.status) {
-                  case ActionStatusOptions.OK:
-                    return 'success';
-                  case ActionStatusOptions.NotOK:
-                    return 'error';
-                  default:
-                    return 'inherit';
+                color: (() => {
+                    switch (action.status) {
+                        case ActionStatusOptions.OK:
+                            return 'success';
+                        case ActionStatusOptions.NotOK:
+                            return 'error';
+                        default:
+                            return 'inherit';
+                    }
+                })(),
+                style: {
+                    color: 'white',
+                    ...(action.status === ActionStatusOptions.NotRelevant && {
+                        backgroundColor: 'rgba(128, 128, 128, 1)',
+                    })
                 }
-              })(),
-                style: action.status === ActionStatusOptions.NotRelevant ? {
-                    backgroundColor: 'rgba(128, 128, 128, 1)',
-                } : {}
             }}
             propsLeft={{
               children: translatedActionStatus,
