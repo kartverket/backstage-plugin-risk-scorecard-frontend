@@ -106,25 +106,22 @@ function calculateUpdatedStatusFromDaysAndCommits(
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
-  if (commits >= 26 && commits <= 50) {
+  if (commits > 25) {
     if (days <= 30) return UpdatedStatusEnum.LITTLE_OUTDATED;
-    if (days >= 31 && days <= 90) return UpdatedStatusEnum.OUTDATED;
+    if (days <= 90) return UpdatedStatusEnum.OUTDATED;
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
-  if (commits >= 11 && commits <= 25) {
+  if (commits > 10) {
     if (days <= 30) return UpdatedStatusEnum.UPDATED;
-    if (days >= 31 && days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
-    if (days >= 91 && days <= 180) return UpdatedStatusEnum.OUTDATED;
+    if (days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
+    if (days <= 180) return UpdatedStatusEnum.OUTDATED;
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
-  if (commits <= 10) {
-    return days <= 60
-      ? UpdatedStatusEnum.UPDATED
-      : UpdatedStatusEnum.LITTLE_OUTDATED;
-  }
-
+  if (days <= 60) return UpdatedStatusEnum.UPDATED;
+  if (days <= 180) return UpdatedStatusEnum.LITTLE_OUTDATED;
+  if (days <= 360) return UpdatedStatusEnum.OUTDATED;
   return UpdatedStatusEnum.VERY_OUTDATED;
 }
 
