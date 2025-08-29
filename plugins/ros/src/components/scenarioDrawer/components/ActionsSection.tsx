@@ -1,5 +1,5 @@
 import { ActionBox } from './ActionBox';
-import { Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -14,6 +14,7 @@ import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
+import { ActionStatusOptions } from '../../../utils/constants';
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -35,6 +36,28 @@ export function ActionsSection({
   });
 
   const currentActions = watch('actions');
+
+  const sortedActionsWithIndex = useMemo(() => {
+    if (!currentActions || currentActions.length === 0) return [];
+
+    return currentActions
+      .map((action, originalIndex) => ({ action, originalIndex }))
+      .sort((a, b) => {
+        if (
+          a.action.status === ActionStatusOptions.NotRelevant &&
+          b.action.status !== ActionStatusOptions.NotRelevant
+        ) {
+          return 1;
+        }
+        if (
+          b.action.status === ActionStatusOptions.NotRelevant &&
+          a.action.status !== ActionStatusOptions.NotRelevant
+        ) {
+          return -1;
+        }
+        return 0;
+      });
+  }, [currentActions]);
 
   if (isEditing) {
     return (
@@ -68,13 +91,13 @@ export function ActionsSection({
     <Paper sx={section}>
       <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
 
-      {fields.length > 0 ? (
-        fields.map((field, index) => (
-          <Fragment key={field.id}>
+      {sortedActionsWithIndex.length > 0 ? (
+        sortedActionsWithIndex.map(({ action, originalIndex }) => (
+          <Fragment key={fields[originalIndex].id}>
             <Divider />
             <ActionBox
-              action={currentActions[index]}
-              index={index}
+              action={action}
+              index={originalIndex}
               formMethods={formMethods}
               remove={remove}
               onSubmit={onSubmit}
