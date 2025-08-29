@@ -48,6 +48,7 @@ interface ActionBoxProps {
   formMethods: UseFormReturn<FormScenario>;
   remove: UseFieldArrayRemove;
   onSubmit: () => void;
+  setCurrentUpdatedActionIDs: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export function ActionBox({
@@ -56,6 +57,7 @@ export function ActionBox({
   formMethods,
   remove,
   onSubmit,
+  setCurrentUpdatedActionIDs,
 }: ActionBoxProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -115,11 +117,6 @@ export function ActionBox({
 
   function handleStatusChange(newStatus: string) {
     updateActionInScenario({ status: newStatus });
-  }
-
-  function refreshStatus() {
-    if (isSameDay()) return;
-    updateActionInScenario({});
   }
 
   function isSameDay(): boolean {
@@ -230,7 +227,16 @@ export function ActionBox({
             propsRight={{
               startIcon: <Cached />,
               sx: { padding: '0 0 0 10px', minWidth: '30px' },
-              onClick: () => refreshStatus(),
+              onClick: () => {
+                formMethods.setValue(
+                  `actions.${index}.lastUpdated`,
+                  new Date(),
+                );
+                !isSameDay() &&
+                  setCurrentUpdatedActionIDs(prev =>
+                    prev.includes(action.ID) ? prev : [...prev, action.ID],
+                  );
+              },
             }}
           />
           <Menu
