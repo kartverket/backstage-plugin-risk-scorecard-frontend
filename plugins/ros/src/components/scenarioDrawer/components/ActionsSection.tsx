@@ -85,8 +85,6 @@ export function ActionsSection({
     );
   }
 
-  console.log(currentUpdatedActionIDs);
-
   return (
     <Paper sx={section}>
       <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
