@@ -119,9 +119,7 @@ export function ActionBox({
     updateActionInScenario({ status: newStatus });
   }
 
-  function isSameDay(): boolean {
-    const currentAction = scenario.actions.find(a => a.ID === action.ID);
-    const lastUpdated = currentAction?.lastUpdated;
+  function isToday(lastUpdated: Date | null): boolean {
     const today = new Date();
 
     if (!lastUpdated) return false;
@@ -228,14 +226,14 @@ export function ActionBox({
               startIcon: <Cached />,
               sx: { padding: '0 0 0 10px', minWidth: '30px' },
               onClick: () => {
+                if (isToday(action.lastUpdated ?? null)) return;
                 formMethods.setValue(
                   `actions.${index}.lastUpdated`,
                   new Date(),
                 );
-                !isSameDay() &&
-                  setCurrentUpdatedActionIDs(prev =>
-                    prev.includes(action.ID) ? prev : [...prev, action.ID],
-                  );
+                setCurrentUpdatedActionIDs(prev =>
+                  prev.includes(action.ID) ? prev : [...prev, action.ID],
+                );
               },
             }}
           />
