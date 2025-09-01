@@ -1,5 +1,5 @@
 import { ActionBox } from './ActionBox';
-import { Fragment, useMemo } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -15,6 +15,8 @@ import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import { ActionStatusOptions } from '../../../utils/constants';
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -36,12 +38,24 @@ export function ActionsSection({
   });
 
   const currentActions = watch('actions');
+  const [showNotRelevant, setShowNotRelevant] = useState(true);
 
   const sortedActionsWithIndex = useMemo(() => {
     if (!currentActions || currentActions.length === 0) return [];
 
-    return currentActions
-      .map((action, originalIndex) => ({ action, originalIndex }))
+    let filteredActions = currentActions;
+
+    if (!showNotRelevant) {
+      filteredActions = currentActions.filter(
+        action => action.status !== ActionStatusOptions.NotRelevant,
+      );
+    }
+
+    return filteredActions
+        .map((action, originalIndex) => {
+            const realOriginalIndex = currentActions.findIndex((a) => a === action);
+            return { action, originalIndex: realOriginalIndex };
+        })
       .sort((a, b) => {
         if (
           a.action.status === ActionStatusOptions.NotRelevant &&
@@ -57,7 +71,7 @@ export function ActionsSection({
         }
         return 0;
       });
-  }, [currentActions]);
+  }, [currentActions, showNotRelevant]);
 
   if (isEditing) {
     return (
@@ -89,8 +103,21 @@ export function ActionsSection({
 
   return (
     <Paper sx={section}>
-      <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
 
+            <FormControlLabel control={
+                <Switch
+                    checked={showNotRelevant}
+                    onChange={() => setShowNotRelevant(!showNotRelevant)}
+                    name="showNotRelevant"
+                    color="primary"
+                />
+            }
+            label="Vis ikke relevante"
+            labelPlacement="start"
+            />
+        </Box>
       {sortedActionsWithIndex.length > 0 ? (
         sortedActionsWithIndex.map(({ action, originalIndex }) => (
           <Fragment key={fields[originalIndex].id}>
