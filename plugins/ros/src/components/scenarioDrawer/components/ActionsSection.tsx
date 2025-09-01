@@ -1,10 +1,10 @@
 import { ActionBox } from './ActionBox';
-import { Fragment, useMemo } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { emptyAction } from '../../../contexts/ScenarioContext';
+import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
 import { emptyState, heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
@@ -15,6 +15,7 @@ import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import { ActionStatusOptions } from '../../../utils/constants';
+import { useDebounce } from '../../../utils/hooks';
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -59,6 +60,26 @@ export function ActionsSection({
       });
   }, [currentActions]);
 
+  const [currentUpdatedActionIDs, setCurrentUpdatedActionIDs] = useState<
+    string[]
+  >([]);
+
+  const { submitEditedScenarioToRiSc, scenario } = useScenario();
+
+  useDebounce(currentUpdatedActionIDs, 6000, updatedIDs => {
+    if (updatedIDs.length === 0) return;
+    const updatedScenario = {
+      ...scenario,
+      actions: scenario.actions.map(a =>
+        updatedIDs.find(id => id === a.ID)
+          ? { ...a, lastUpdated: new Date() }
+          : a,
+      ),
+    };
+    submitEditedScenarioToRiSc(updatedScenario);
+    setCurrentUpdatedActionIDs([]);
+  });
+
   if (isEditing) {
     return (
       <Paper sx={section}>
@@ -101,6 +122,7 @@ export function ActionsSection({
               formMethods={formMethods}
               remove={remove}
               onSubmit={onSubmit}
+              setCurrentUpdatedActionIDs={setCurrentUpdatedActionIDs}
             />
           </Fragment>
         ))
