@@ -14,7 +14,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
 import { RiScInfo } from '../riScInfo/RiScInfo';
-import AddCircle from '@mui/icons-material/AddCircle';
 import { Spinner } from '../common/Spinner';
 import { useRiScs } from '../../contexts/RiScContext';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
@@ -112,17 +111,6 @@ export function RiScPlugin() {
           <Grid container spacing={4}>
             {!isFetching && (
               <Grid item xs>
-                <Button
-                  startIcon={<AddCircle />}
-                  variant="text"
-                  color="success"
-                  onClick={openCreateRiScDialog}
-                  sx={{
-                    alignItems: 'right',
-                  }}
-                >
-                  {t('contentHeader.createNewButton')}
-                </Button>
                 {selectedRiSc &&
                   selectedRiSc.status !== RiScStatus.DeletionDraft &&
                   selectedRiSc.status !==
@@ -155,6 +143,7 @@ export function RiScPlugin() {
                   <RiScInfo
                     riScWithMetadata={selectedRiSc}
                     edit={openEditRiScDialog}
+                    onCreateNew={openCreateRiScDialog}
                   />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
