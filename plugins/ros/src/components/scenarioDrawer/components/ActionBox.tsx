@@ -70,7 +70,7 @@ export function ActionBox({
 
   const { updateStatus, selectedRiSc } = useRiScs();
 
-  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
+  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario } =
     useScenario();
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
