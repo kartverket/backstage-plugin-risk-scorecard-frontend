@@ -37,14 +37,14 @@ export function ActionsSection({
   });
 
   const currentActions = watch('actions');
-  const [showNotRelevant, setShowNotRelevant] = useState(false);
+  const [showOnlyRelevant, setShowOnlyRelevant] = useState(false);
 
   const sortedActionsWithIndex = useMemo(() => {
     if (!currentActions || currentActions.length === 0) return [];
 
     let filteredActions = currentActions;
 
-    if (showNotRelevant) {
+    if (showOnlyRelevant) {
       filteredActions = currentActions.filter(
         action => action.status !== ActionStatusOptions.NotRelevant,
       );
@@ -70,7 +70,7 @@ export function ActionsSection({
         }
         return 0;
       });
-  }, [currentActions, showNotRelevant]);
+  }, [currentActions, showOnlyRelevant]);
 
   if (isEditing) {
     return (
@@ -113,13 +113,13 @@ export function ActionsSection({
         <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Switch
-            checked={showNotRelevant}
-            onChange={() => setShowNotRelevant(!showNotRelevant)}
-            name="showNotRelevant"
+            checked={showOnlyRelevant}
+            onChange={() => setShowOnlyRelevant(!showOnlyRelevant)}
+            name="showOnlyRelevant"
             color="primary"
           />
           <Typography variant="subtitle2" color="primary">
-            Vis kun relevante
+              {t('dictionary.showOnlyRelevant')}
           </Typography>
         </Box>
       </Box>
