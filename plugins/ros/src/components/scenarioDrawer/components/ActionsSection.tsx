@@ -67,13 +67,13 @@ export function ActionsSection({
 
   const currentActions = watch('actions');
 
-  const [showOnlyRelevant, setShowOnlyRelevant] = useState(
+  const [showOnlyRelevant, setShowOnlyRelevant] = useState<boolean>(
     FILTER_SETTINGS.SHOW_ALL,
   );
 
   const filterActions = useCallback(
-    (actions: Action[], showOnlyRelevant: boolean) => {
-      if (!showOnlyRelevant) return actions;
+    (actions: Action[], filterRelevant: boolean) => {
+      if (!filterRelevant) return actions;
 
       return actions.filter(
         action => action.status !== ActionStatusOptions.NotRelevant,
@@ -151,7 +151,7 @@ export function ActionsSection({
 
         <RelevanceToggle
           checked={showOnlyRelevant}
-          onChange={setShowOnlyRelevant}
+          onChange={value => setShowOnlyRelevant(value)}
         />
       </Box>
       {processedActions.length > 0 ? (
