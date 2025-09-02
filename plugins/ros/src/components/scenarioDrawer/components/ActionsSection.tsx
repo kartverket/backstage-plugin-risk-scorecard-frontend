@@ -15,8 +15,7 @@ import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import { ActionStatusOptions } from '../../../utils/constants';
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
+import Switch from '@mui/material/Switch';
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -38,24 +37,24 @@ export function ActionsSection({
   });
 
   const currentActions = watch('actions');
-  const [showNotRelevant, setShowNotRelevant] = useState(true);
+  const [showNotRelevant, setShowNotRelevant] = useState(false);
 
   const sortedActionsWithIndex = useMemo(() => {
     if (!currentActions || currentActions.length === 0) return [];
 
     let filteredActions = currentActions;
 
-    if (!showNotRelevant) {
+    if (showNotRelevant) {
       filteredActions = currentActions.filter(
         action => action.status !== ActionStatusOptions.NotRelevant,
       );
     }
 
     return filteredActions
-        .map((action, originalIndex) => {
-            const realOriginalIndex = currentActions.findIndex((a) => a === action);
-            return { action, originalIndex: realOriginalIndex };
-        })
+      .map((action, originalIndex) => {
+        const realOriginalIndex = currentActions.findIndex(a => a === action);
+        return { action, originalIndex: realOriginalIndex };
+      })
       .sort((a, b) => {
         if (
           a.action.status === ActionStatusOptions.NotRelevant &&
@@ -103,21 +102,27 @@ export function ActionsSection({
 
   return (
     <Paper sx={section}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
-
-            <FormControlLabel control={
-                <Switch
-                    checked={showNotRelevant}
-                    onChange={() => setShowNotRelevant(!showNotRelevant)}
-                    name="showNotRelevant"
-                    color="primary"
-                />
-            }
-            label="Vis ikke relevante"
-            labelPlacement="start"
-            />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 2,
+        }}
+      >
+        <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Switch
+            checked={showNotRelevant}
+            onChange={() => setShowNotRelevant(!showNotRelevant)}
+            name="showNotRelevant"
+            color="primary"
+          />
+          <Typography variant="subtitle2" color="primary">
+            Vis kun relevante
+          </Typography>
         </Box>
+      </Box>
       {sortedActionsWithIndex.length > 0 ? (
         sortedActionsWithIndex.map(({ action, originalIndex }) => (
           <Fragment key={fields[originalIndex].id}>
