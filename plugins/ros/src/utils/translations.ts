@@ -74,7 +74,7 @@ export const pluginRiScMessages = {
     valuation: 'Valuation',
     vulnerabilities: 'Vulnerabilities',
     showOnlyRelevant: 'Show only relevant',
-    noRelevantMeasures: ' relevant actions',
+    noRelevantMeasures: 'No relevant actions',
   },
   encryption: {
     title: 'Encryption',

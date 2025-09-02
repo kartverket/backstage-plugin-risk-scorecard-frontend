@@ -23,7 +23,6 @@ const FILTER_SETTINGS = {
   SHOW_ONLY_RELEVANT: true,
 } as const;
 
-
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
   isEditing: boolean;
