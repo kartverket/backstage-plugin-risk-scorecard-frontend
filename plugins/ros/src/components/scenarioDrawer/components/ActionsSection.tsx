@@ -23,6 +23,30 @@ type ActionSectionProps = {
   onSubmit: () => void;
 };
 
+const RelevanceToggle = ({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Switch
+        checked={checked}
+        onChange={e => onChange(e.target.checked)}
+        name="showOnlyRelevant"
+        color="primary"
+      />
+      <Typography variant="subtitle2" color="primary">
+        {t('dictionary.showOnlyRelevant')}
+      </Typography>
+    </Box>
+  );
+};
+
 export function ActionsSection({
   formMethods,
   isEditing,
@@ -111,17 +135,11 @@ export function ActionsSection({
         }}
       >
         <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Switch
-            checked={showOnlyRelevant}
-            onChange={() => setShowOnlyRelevant(!showOnlyRelevant)}
-            name="showOnlyRelevant"
-            color="primary"
-          />
-          <Typography variant="subtitle2" color="primary">
-              {t('dictionary.showOnlyRelevant')}
-          </Typography>
-        </Box>
+
+        <RelevanceToggle
+          checked={showOnlyRelevant}
+          onChange={setShowOnlyRelevant}
+        />
       </Box>
       {sortedActionsWithIndex.length > 0 ? (
         sortedActionsWithIndex.map(({ action, originalIndex }) => (
