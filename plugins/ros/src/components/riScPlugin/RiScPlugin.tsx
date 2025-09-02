@@ -155,6 +155,7 @@ export function RiScPlugin() {
                   <RiScInfo
                     riScWithMetadata={selectedRiSc}
                     edit={openEditRiScDialog}
+                    onCreateNew={openCreateRiScDialog}
                   />
                 </Grid>
                 <Grid item xs md={7} lg={8}>
