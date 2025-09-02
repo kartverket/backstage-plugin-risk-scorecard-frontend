@@ -74,6 +74,7 @@ export const pluginRiScMessages = {
     valuation: 'Valuation',
     vulnerabilities: 'Vulnerabilities',
     showOnlyRelevant: 'Show only relevant',
+    noRelevantMeasures: ' relevant actions',
   },
   encryption: {
     title: 'Encryption',
@@ -639,6 +640,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.valuation': 'Verdi',
           'dictionary.vulnerabilities': 'Sårbarheter',
           'dictionary.showOnlyRelevant': 'Vis kun relevante',
+          'dictionary.noRelevantMeasures': 'Ingen relevante tiltak',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',

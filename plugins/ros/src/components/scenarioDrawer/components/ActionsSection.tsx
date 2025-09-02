@@ -169,9 +169,11 @@ export function ActionsSection({
         ))
       ) : (
         <Typography sx={emptyState}>
-          {t('dictionary.emptyField', {
-            field: t('dictionary.measures').toLowerCase(),
-          })}
+          {!currentActions || currentActions.length === 0
+            ? t('dictionary.emptyField', {
+                field: t('dictionary.measures').toLowerCase(),
+              })
+            : t('dictionary.noRelevantMeasures')}
         </Typography>
       )}
     </Paper>
