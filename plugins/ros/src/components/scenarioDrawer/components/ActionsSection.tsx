@@ -1,5 +1,5 @@
 import { ActionBox } from './ActionBox';
-import {Fragment, useCallback, useMemo, useState} from 'react';
+import { Fragment, useCallback, useMemo, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -9,7 +9,7 @@ import { section } from '../scenarioDrawerComponents';
 import { emptyState, heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import {Action, FormScenario} from '../../../utils/types';
+import { Action, FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
@@ -18,8 +18,8 @@ import { ActionStatusOptions } from '../../../utils/constants';
 import Switch from '@mui/material/Switch';
 
 const FILTER_SETTINGS = {
-    SHOW_ALL: false,
-    SHOW_ONLY_RELEVANT: true,
+  SHOW_ALL: false,
+  SHOW_ONLY_RELEVANT: true,
 } as const;
 
 type ActionSectionProps = {
@@ -67,43 +67,47 @@ export function ActionsSection({
 
   const currentActions = watch('actions');
 
-  const [showOnlyRelevant, setShowOnlyRelevant] = useState(FILTER_SETTINGS.SHOW_ALL);
+  const [showOnlyRelevant, setShowOnlyRelevant] = useState(
+    FILTER_SETTINGS.SHOW_ALL,
+  );
 
-  const filterActions = useCallback((actions: Action[], showOnlyRelevant: boolean) => {
+  const filterActions = useCallback(
+    (actions: Action[], showOnlyRelevant: boolean) => {
       if (!showOnlyRelevant) return actions;
 
-        return actions.filter(
-            action => action.status !== ActionStatusOptions.NotRelevant,
-        );
-    }, []);
+      return actions.filter(
+        action => action.status !== ActionStatusOptions.NotRelevant,
+      );
+    },
+    [],
+  );
 
   const sortActionsByRelevance = useCallback((actions: Action[]) => {
-      return [...actions].sort((a, b) => {
-          const aIsNotRelevant = a.status === ActionStatusOptions.NotRelevant;
-          const bIsNotRelevant = b.status === ActionStatusOptions.NotRelevant;
+    return [...actions].sort((a, b) => {
+      const aIsNotRelevant = a.status === ActionStatusOptions.NotRelevant;
+      const bIsNotRelevant = b.status === ActionStatusOptions.NotRelevant;
 
-          if (aIsNotRelevant && !bIsNotRelevant) {
-              return 1;
-          }
-          if (!aIsNotRelevant && bIsNotRelevant) {
-              return -1;
-          }
-          return 0;
-      });
+      if (aIsNotRelevant && !bIsNotRelevant) {
+        return 1;
+      }
+      if (!aIsNotRelevant && bIsNotRelevant) {
+        return -1;
+      }
+      return 0;
+    });
   }, []);
 
   const processedActions = useMemo(() => {
-      if (!currentActions?.length) return [];
+    if (!currentActions?.length) return [];
 
-      const filtered = filterActions(currentActions, showOnlyRelevant);
-      const sorted = sortActionsByRelevance(filtered);
+    const filtered = filterActions(currentActions, showOnlyRelevant);
+    const sorted = sortActionsByRelevance(filtered);
 
-      return sorted.map((action) => ({
-          action,
-            originalIndex: currentActions.findIndex(a => a === action),
-      }));
+    return sorted.map(action => ({
+      action,
+      originalIndex: currentActions.findIndex(a => a === action),
+    }));
   }, [currentActions, showOnlyRelevant, filterActions, sortActionsByRelevance]);
-
 
   if (isEditing) {
     return (
