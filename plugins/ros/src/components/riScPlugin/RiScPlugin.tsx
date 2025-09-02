@@ -112,17 +112,6 @@ export function RiScPlugin() {
           <Grid container spacing={4}>
             {!isFetching && (
               <Grid item xs>
-                <Button
-                  startIcon={<AddCircle />}
-                  variant="text"
-                  color="success"
-                  onClick={openCreateRiScDialog}
-                  sx={{
-                    alignItems: 'right',
-                  }}
-                >
-                  {t('contentHeader.createNewButton')}
-                </Button>
                 {selectedRiSc &&
                   selectedRiSc.status !== RiScStatus.DeletionDraft &&
                   selectedRiSc.status !==
