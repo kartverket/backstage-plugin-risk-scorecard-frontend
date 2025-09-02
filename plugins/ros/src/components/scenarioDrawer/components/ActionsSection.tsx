@@ -1,5 +1,5 @@
 import { ActionBox } from './ActionBox';
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useCallback, useMemo, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -9,18 +9,48 @@ import { section } from '../scenarioDrawerComponents';
 import { emptyState, heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
+import { Action, FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import { ActionStatusOptions } from '../../../utils/constants';
+import Switch from '@mui/material/Switch';
 import { useDebounce } from '../../../utils/hooks';
+
+const FILTER_SETTINGS = {
+  SHOW_ALL: false,
+  SHOW_ONLY_RELEVANT: true,
+} as const;
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
   isEditing: boolean;
   onSubmit: () => void;
+};
+
+const RelevanceToggle = ({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Switch
+        checked={checked}
+        onChange={e => onChange(e.target.checked)}
+        name="showOnlyRelevant"
+        color="primary"
+      />
+      <Typography variant="subtitle2" color="primary">
+        {t('dictionary.showOnlyRelevant')}
+      </Typography>
+    </Box>
+  );
 };
 
 export function ActionsSection({
@@ -38,27 +68,47 @@ export function ActionsSection({
 
   const currentActions = watch('actions');
 
-  const sortedActionsWithIndex = useMemo(() => {
-    if (!currentActions || currentActions.length === 0) return [];
+  const [showOnlyRelevant, setShowOnlyRelevant] = useState<boolean>(
+    FILTER_SETTINGS.SHOW_ALL,
+  );
 
-    return currentActions
-      .map((action, originalIndex) => ({ action, originalIndex }))
-      .sort((a, b) => {
-        if (
-          a.action.status === ActionStatusOptions.NotRelevant &&
-          b.action.status !== ActionStatusOptions.NotRelevant
-        ) {
-          return 1;
-        }
-        if (
-          b.action.status === ActionStatusOptions.NotRelevant &&
-          a.action.status !== ActionStatusOptions.NotRelevant
-        ) {
-          return -1;
-        }
-        return 0;
-      });
-  }, [currentActions]);
+  const filterActions = useCallback(
+    (actions: Action[], filterRelevant: boolean) => {
+      if (!filterRelevant) return actions;
+
+      return actions.filter(
+        action => action.status !== ActionStatusOptions.NotRelevant,
+      );
+    },
+    [],
+  );
+
+  const sortActionsByRelevance = useCallback((actions: Action[]) => {
+    return [...actions].sort((a, b) => {
+      const aIsNotRelevant = a.status === ActionStatusOptions.NotRelevant;
+      const bIsNotRelevant = b.status === ActionStatusOptions.NotRelevant;
+
+      if (aIsNotRelevant && !bIsNotRelevant) {
+        return 1;
+      }
+      if (!aIsNotRelevant && bIsNotRelevant) {
+        return -1;
+      }
+      return 0;
+    });
+  }, []);
+
+  const processedActions = useMemo(() => {
+    if (!currentActions?.length) return [];
+
+    const filtered = filterActions(currentActions, showOnlyRelevant);
+    const sorted = sortActionsByRelevance(filtered);
+
+    return sorted.map(action => ({
+      action,
+      originalIndex: currentActions.findIndex(a => a === action),
+    }));
+  }, [currentActions, showOnlyRelevant, filterActions, sortActionsByRelevance]);
 
   const [currentUpdatedActionIDs, setCurrentUpdatedActionIDs] = useState<
     string[]
@@ -110,10 +160,23 @@ export function ActionsSection({
 
   return (
     <Paper sx={section}>
-      <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 2,
+        }}
+      >
+        <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
 
-      {sortedActionsWithIndex.length > 0 ? (
-        sortedActionsWithIndex.map(({ action, originalIndex }) => (
+        <RelevanceToggle
+          checked={showOnlyRelevant}
+          onChange={value => setShowOnlyRelevant(value)}
+        />
+      </Box>
+      {processedActions.length > 0 ? (
+        processedActions.map(({ action, originalIndex }) => (
           <Fragment key={fields[originalIndex].id}>
             <Divider />
             <ActionBox
@@ -128,9 +191,11 @@ export function ActionsSection({
         ))
       ) : (
         <Typography sx={emptyState}>
-          {t('dictionary.emptyField', {
-            field: t('dictionary.measures').toLowerCase(),
-          })}
+          {!currentActions || currentActions.length === 0
+            ? t('dictionary.emptyField', {
+                field: t('dictionary.measures').toLowerCase(),
+              })
+            : t('dictionary.noRelevantMeasures')}
         </Typography>
       )}
     </Paper>

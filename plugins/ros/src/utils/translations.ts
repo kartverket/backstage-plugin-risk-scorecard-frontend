@@ -73,6 +73,8 @@ export const pluginRiScMessages = {
     emptyField: 'No {{field}} specified',
     valuation: 'Valuation',
     vulnerabilities: 'Vulnerabilities',
+    showOnlyRelevant: 'Show only relevant',
+    noRelevantMeasures: 'No relevant actions',
   },
   encryption: {
     title: 'Encryption',
@@ -637,6 +639,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.emptyField': 'Ingen {{field}} spesifisert',
           'dictionary.valuation': 'Verdi',
           'dictionary.vulnerabilities': 'Sårbarheter',
+          'dictionary.showOnlyRelevant': 'Vis kun relevante',
+          'dictionary.noRelevantMeasures': 'Ingen relevante tiltak',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
