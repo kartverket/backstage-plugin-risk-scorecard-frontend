@@ -105,9 +105,10 @@ export function ActionBox({
 
   function updateActionInScenario(updates: ActionStatusOptions) {
     const actionIndex = scenario.actions.findIndex(a => a.ID === action.ID);
-    const currentStatus = formMethods.getValues()?.actions?.[actionIndex]?.status;
+    const currentStatus =
+      formMethods.getValues()?.actions?.[actionIndex]?.status;
 
-    if(updates === currentStatus){
+    if (updates === currentStatus) {
       handleMenuClose();
       return;
     }
