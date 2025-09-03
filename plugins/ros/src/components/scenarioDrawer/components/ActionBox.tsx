@@ -70,7 +70,7 @@ export function ActionBox({
 
   const { updateStatus, selectedRiSc } = useRiScs();
 
-  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario } =
+  const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
     useScenario();
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
@@ -104,6 +104,14 @@ export function ActionBox({
     : t('scenarioDrawer.action.notUpdated');
 
   function updateActionInScenario(updates: ActionStatusOptions) {
+    const actionIndex = scenario.actions.findIndex(a => a.ID === action.ID);
+    const currentStatus = formMethods.getValues()?.actions?.[actionIndex]?.status;
+
+    if(updates === currentStatus){
+      handleMenuClose();
+      return;
+    }
+
     formMethods.setValue(`actions.${index}.status`, updates);
 
     setCurrentUpdatedActionIDs(prev =>
