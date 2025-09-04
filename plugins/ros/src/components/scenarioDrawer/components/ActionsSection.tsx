@@ -140,7 +140,12 @@ export function ActionsSection({
       submitEditedScenarioToRiSc(updatedScenario);
       setCurrentUpdatedActionIDs([]);
     },
-    [scenario, formMethods, setCurrentUpdatedActionIDs, submitEditedScenarioToRiSc],
+    [
+      scenario,
+      formMethods,
+      setCurrentUpdatedActionIDs,
+      submitEditedScenarioToRiSc,
+    ],
   );
 
   useDebounce(currentUpdatedActionIDs, 6000, debounceCallback);
