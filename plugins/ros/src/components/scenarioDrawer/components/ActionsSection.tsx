@@ -120,26 +120,29 @@ export function ActionsSection({
     return scenario.actions.findIndex(a => a.ID === ID);
   }
 
-  const debounceCallback = useCallback((updatedIDs: string[]) => {
-    if (updatedIDs.length === 0) return;
+  const debounceCallback = useCallback(
+    (updatedIDs: string[]) => {
+      if (updatedIDs.length === 0) return;
 
-    const formValues = formMethods.getValues();
-    const updatedScenario = {
-      ...scenario,
-      actions: scenario.actions.map(a =>
-        updatedIDs.includes(a.ID)
-          ? {
-              ...a,
-              status:
-                formValues.actions?.[indexOfAction(a.ID)]?.status ?? a.status,
-              lastUpdated: new Date(),
-            }
-          : a,
-      ),
-    };
-    submitEditedScenarioToRiSc(updatedScenario);
-    setCurrentUpdatedActionIDs([]);
-  }, [scenario, formMethods, setCurrentUpdatedActionIDs]);
+      const formValues = formMethods.getValues();
+      const updatedScenario = {
+        ...scenario,
+        actions: scenario.actions.map(a =>
+          updatedIDs.includes(a.ID)
+            ? {
+                ...a,
+                status:
+                  formValues.actions?.[indexOfAction(a.ID)]?.status ?? a.status,
+                lastUpdated: new Date(),
+              }
+            : a,
+        ),
+      };
+      submitEditedScenarioToRiSc(updatedScenario);
+      setCurrentUpdatedActionIDs([]);
+    },
+    [scenario, formMethods, setCurrentUpdatedActionIDs],
+  );
 
   useDebounce(currentUpdatedActionIDs, 6000, debounceCallback);
 
