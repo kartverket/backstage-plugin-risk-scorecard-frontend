@@ -120,7 +120,7 @@ export function ActionsSection({
     return scenario.actions.findIndex(a => a.ID === ID);
   }
 
-  useDebounce(currentUpdatedActionIDs, 6000, updatedIDs => {
+  const debounceCallback = useCallback((updatedIDs: string[]) => {
     if (updatedIDs.length === 0) return;
 
     const formValues = formMethods.getValues();
@@ -139,7 +139,9 @@ export function ActionsSection({
     };
     submitEditedScenarioToRiSc(updatedScenario);
     setCurrentUpdatedActionIDs([]);
-  });
+  }, [scenario, formMethods, setCurrentUpdatedActionIDs]);
+
+  useDebounce(currentUpdatedActionIDs, 6000, debounceCallback);
 
   if (isEditing) {
     return (

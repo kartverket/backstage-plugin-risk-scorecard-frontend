@@ -393,6 +393,11 @@ export function useDebounce<T>(
   callback: (value: T) => void,
 ) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const latestValueRef = useRef<T>(value);
+
+  useEffect(() => {
+    latestValueRef.current = value;
+  }, [value]);
 
   useEffect(() => {
     if (timeoutRef.current) {
@@ -409,4 +414,10 @@ export function useDebounce<T>(
       }
     };
   }, [value, delay, callback]);
+
+  useEffect(() => {
+    return () => {
+      callback(latestValueRef.current);
+    };
+  }, [callback]);
 }
