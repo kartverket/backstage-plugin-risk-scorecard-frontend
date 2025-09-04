@@ -116,12 +116,11 @@ export function ActionsSection({
 
   const { submitEditedScenarioToRiSc, scenario } = useScenario();
 
-  function indexOfAction(ID: string) {
-    return scenario.actions.findIndex(a => a.ID === ID);
-  }
-
   const debounceCallback = useCallback(
     (updatedIDs: string[]) => {
+      const indexOfAction = (ID: string) => {
+        return scenario.actions.findIndex(a => a.ID === ID);
+      };
       if (updatedIDs.length === 0) return;
 
       const formValues = formMethods.getValues();
@@ -141,7 +140,7 @@ export function ActionsSection({
       submitEditedScenarioToRiSc(updatedScenario);
       setCurrentUpdatedActionIDs([]);
     },
-    [scenario, formMethods, setCurrentUpdatedActionIDs],
+    [scenario, formMethods, setCurrentUpdatedActionIDs, submitEditedScenarioToRiSc],
   );
 
   useDebounce(currentUpdatedActionIDs, 6000, debounceCallback);
