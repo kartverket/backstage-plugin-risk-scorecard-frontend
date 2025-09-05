@@ -103,20 +103,27 @@ export function ActionBox({
     ? formatDate(action.lastUpdated)
     : t('scenarioDrawer.action.notUpdated');
 
-  function updateActionInScenario(updates: Partial<Action>) {
-    const updatedScenario = {
-      ...scenario,
-      actions: scenario.actions.map(a =>
-        a.ID === action.ID ? { ...a, ...updates, lastUpdated: new Date() } : a,
-      ),
-    };
+  function updateActionInScenario(updates: ActionStatusOptions) {
+    const actionIndex = scenario.actions.findIndex(a => a.ID === action.ID);
+    const currentStatus =
+      formMethods.getValues()?.actions?.[actionIndex]?.status;
 
-    submitEditedScenarioToRiSc(updatedScenario);
+    if (updates === currentStatus) {
+      handleMenuClose();
+      return;
+    }
+
+    formMethods.setValue(`actions.${index}.status`, updates);
+
+    setCurrentUpdatedActionIDs(prev =>
+      prev.includes(action.ID) ? prev : [...prev, action.ID],
+    );
+
     if (isMounted()) handleMenuClose();
   }
 
-  function handleStatusChange(newStatus: string) {
-    updateActionInScenario({ status: newStatus });
+  function handleStatusChange(newStatus: ActionStatusOptions) {
+    updateActionInScenario(newStatus);
   }
 
   function isToday(lastUpdated: Date | null): boolean {

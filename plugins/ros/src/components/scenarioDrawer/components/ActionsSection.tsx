@@ -116,19 +116,39 @@ export function ActionsSection({
 
   const { submitEditedScenarioToRiSc, scenario } = useScenario();
 
-  useDebounce(currentUpdatedActionIDs, 6000, updatedIDs => {
-    if (updatedIDs.length === 0) return;
-    const updatedScenario = {
-      ...scenario,
-      actions: scenario.actions.map(a =>
-        updatedIDs.find(id => id === a.ID)
-          ? { ...a, lastUpdated: new Date() }
-          : a,
-      ),
-    };
-    submitEditedScenarioToRiSc(updatedScenario);
-    setCurrentUpdatedActionIDs([]);
-  });
+  const debounceCallback = useCallback(
+    (updatedIDs: string[]) => {
+      const indexOfAction = (ID: string) => {
+        return scenario.actions.findIndex(a => a.ID === ID);
+      };
+      if (updatedIDs.length === 0) return;
+
+      const formValues = formMethods.getValues();
+      const updatedScenario = {
+        ...scenario,
+        actions: scenario.actions.map(a =>
+          updatedIDs.includes(a.ID)
+            ? {
+                ...a,
+                status:
+                  formValues.actions?.[indexOfAction(a.ID)]?.status ?? a.status,
+                lastUpdated: new Date(),
+              }
+            : a,
+        ),
+      };
+      submitEditedScenarioToRiSc(updatedScenario);
+      setCurrentUpdatedActionIDs([]);
+    },
+    [
+      scenario,
+      formMethods,
+      setCurrentUpdatedActionIDs,
+      submitEditedScenarioToRiSc,
+    ],
+  );
+
+  useDebounce(currentUpdatedActionIDs, 6000, debounceCallback);
 
   if (isEditing) {
     return (
