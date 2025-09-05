@@ -5,25 +5,25 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiScs } from '../../contexts/RiScContext';
 
 export function EditEncryptionButton({
-                                         onEditEncryption
-                                     }: {
-    onEditEncryption: () => void;
+  onEditEncryption,
+}: {
+  onEditEncryption: () => void;
 }) {
-    const { t } = useTranslationRef(pluginRiScTranslationRef);
-    const { selectedRiSc } = useRiScs();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { selectedRiSc } = useRiScs();
 
-    if (!selectedRiSc) {
-        return null;
-    }
+  if (!selectedRiSc) {
+    return null;
+  }
 
-    return (
-        <Button
-            variant="text"
-            startIcon={<Settings />}
-            color="primary"
-            onClick={onEditEncryption}
-        >
-            {t('contentHeader.editEncryption')}
-        </Button>
-    );
+  return (
+    <Button
+      variant="text"
+      startIcon={<Settings />}
+      color="primary"
+      onClick={onEditEncryption}
+    >
+      {t('contentHeader.editEncryption')}
+    </Button>
+  );
 }
