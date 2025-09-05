@@ -15,7 +15,7 @@ import Box from '@mui/material/Box';
 import { Step, StepLabel, Stepper } from '@mui/material';
 import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
-import { Delete } from '@material-ui/icons';
+import { Delete as DeleteIcon } from '@material-ui/icons';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -260,7 +260,7 @@ export function RiScDialog({
         </DialogContent>
         <DialogActions sx={dialogActions}>
           <Button
-            startIcon={<Delete />}
+            startIcon={<DeleteIcon />}
             variant="text"
             color="error"
             onClick={onDelete}
