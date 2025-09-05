@@ -5,7 +5,6 @@ import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
 import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
@@ -13,13 +12,12 @@ import { getAlertSeverity } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
+import { EditEncryptionButton } from '../riScDialog/EditEncryptionButton';
 import { RiScInfo } from '../riScInfo/RiScInfo';
 import { Spinner } from '../common/Spinner';
 import { useRiScs } from '../../contexts/RiScContext';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
-import { Delete, Settings } from '@mui/icons-material';
-import { RiScStatus } from '../../utils/types';
 import { FeedbackDialog } from './FeedbackDialog.tsx';
 
 export function RiScPlugin() {
@@ -101,6 +99,9 @@ export function RiScPlugin() {
                 flexDirection: 'row',
               }}
             >
+              <EditEncryptionButton
+                onEditEncryption={openEditEncryptionDialog}
+              />
               <SupportButton />
               <FeedbackDialog />
             </Grid>
@@ -109,34 +110,6 @@ export function RiScPlugin() {
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>
-            {!isFetching && (
-              <Grid item xs>
-                {selectedRiSc &&
-                  selectedRiSc.status !== RiScStatus.DeletionDraft &&
-                  selectedRiSc.status !==
-                    RiScStatus.DeletionSentForApproval && (
-                    <>
-                      <Button
-                        startIcon={<Delete />}
-                        variant="text"
-                        color="error"
-                        onClick={openDeleteRiScDialog}
-                      >
-                        {t('contentHeader.deleteButton')}
-                      </Button>
-                      <Button
-                        startIcon={<Settings />}
-                        variant="text"
-                        color="primary"
-                        onClick={openEditEncryptionDialog}
-                      >
-                        {t('contentHeader.editEncryption')}
-                      </Button>
-                    </>
-                  )}
-              </Grid>
-            )}
-
             {selectedRiSc && (
               <>
                 <Grid item xs={12}>
@@ -159,7 +132,11 @@ export function RiScPlugin() {
       )}
 
       {riScDialogState !== RiScDialogStates.Closed && (
-        <RiScDialog onClose={closeRiScDialog} dialogState={riScDialogState} />
+        <RiScDialog
+          onClose={closeRiScDialog}
+          dialogState={riScDialogState}
+          onDelete={openDeleteRiScDialog}
+        />
       )}
 
       {!scenarioWizardStep && <ScenarioDrawer />}
