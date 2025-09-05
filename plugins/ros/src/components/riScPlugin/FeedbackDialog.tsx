@@ -14,6 +14,28 @@ import { dialogActions } from '../common/mixins.ts';
 import { AddComment } from '@material-ui/icons';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import Alert from '@mui/material/Alert';
+import { Settings } from '@material-ui/icons';
+import { useRiScs } from '../../contexts/RiScContext'
+
+export function EditEncryptionButton({ onEditEncryption }: { onEditEncryption: () => void }) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { selectedRiSc } = useRiScs();
+
+  if (!selectedRiSc) {
+    return null;
+  }
+
+  return (
+      <Button
+          variant="text"
+          startIcon={<Settings />}
+          color="primary"
+          onClick={onEditEncryption}
+      >
+        {t('contentHeader.editEncryption')}
+      </Button>
+  );
+}
 
 export function FeedbackDialog() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
