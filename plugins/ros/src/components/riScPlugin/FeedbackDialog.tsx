@@ -15,9 +15,13 @@ import { AddComment } from '@material-ui/icons';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import Alert from '@mui/material/Alert';
 import { Settings } from '@material-ui/icons';
-import { useRiScs } from '../../contexts/RiScContext'
+import { useRiScs } from '../../contexts/RiScContext';
 
-export function EditEncryptionButton({ onEditEncryption }: { onEditEncryption: () => void }) {
+export function EditEncryptionButton({
+  onEditEncryption,
+}: {
+  onEditEncryption: () => void;
+}) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc } = useRiScs();
 
@@ -26,14 +30,14 @@ export function EditEncryptionButton({ onEditEncryption }: { onEditEncryption: (
   }
 
   return (
-      <Button
-          variant="text"
-          startIcon={<Settings />}
-          color="primary"
-          onClick={onEditEncryption}
-      >
-        {t('contentHeader.editEncryption')}
-      </Button>
+    <Button
+      variant="text"
+      startIcon={<Settings />}
+      color="primary"
+      onClick={onEditEncryption}
+    >
+      {t('contentHeader.editEncryption')}
+    </Button>
   );
 }
 

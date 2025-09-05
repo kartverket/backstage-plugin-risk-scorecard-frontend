@@ -98,7 +98,9 @@ export function RiScPlugin() {
                 flexDirection: 'row',
               }}
             >
-              <EditEncryptionButton onEditEncryption={openEditEncryptionDialog} />
+              <EditEncryptionButton
+                onEditEncryption={openEditEncryptionDialog}
+              />
               <SupportButton />
               <FeedbackDialog />
             </Grid>
@@ -130,9 +132,9 @@ export function RiScPlugin() {
 
       {riScDialogState !== RiScDialogStates.Closed && (
         <RiScDialog
-            onClose={closeRiScDialog}
-            dialogState={riScDialogState}
-            onDelete={openDeleteRiScDialog}
+          onClose={closeRiScDialog}
+          dialogState={riScDialogState}
+          onDelete={openDeleteRiScDialog}
         />
       )}
 
