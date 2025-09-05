@@ -264,7 +264,10 @@ export function RiScDialog({
                 variant="text"
                 color="error"
                 onClick={onDelete}
-                sx={{ alignSelf: 'flex-start' }}
+                sx={{
+                    position: 'absolute',
+                    left: 16
+                }}
             >
                 {t('contentHeader.deleteButton')}
             </Button>
