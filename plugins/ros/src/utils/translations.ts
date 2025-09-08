@@ -561,8 +561,8 @@ export const pluginRiScMessages = {
     sendButton: 'Send',
   },
   filterButton: {
-    veryOutdated: 'Very Outdated',
-    littleOutdated: 'Little Outdated',
+    veryOutdated: 'actions are very outdated',
+    littleOutdated: 'actions are little outdated',
     seeActions: 'See all outdated actions',
   },
 } as const;
@@ -1114,8 +1114,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'feedbackDialog.feedbackButton': 'Gi tilbakemelding',
           'feedbackDialog.errorMessage': 'Kunne ikke sende tilbakemelding.',
           'feedbackDialog.sendButton': 'Send',
-          'filterButton.veryOutdated': 'Veldig utdatert',
-          'filterButton.littleOutdated': 'Litt utdatert',
+          'filterButton.veryOutdated': 'tiltak er veldig utdatert',
+          'filterButton.littleOutdated': 'tiltak er litt utdatert',
           'filterButton.seeActions': 'Se alle utdaterte tiltak',
         },
       }),
