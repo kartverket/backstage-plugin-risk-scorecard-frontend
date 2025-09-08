@@ -560,6 +560,11 @@ export const pluginRiScMessages = {
     errorMessage: 'An error occurred while sending your feedback.',
     sendButton: 'Send',
   },
+  filterButton: {
+    veryOutdated: 'Very Outdated',
+    littleOutdated: 'Little Outdated',
+    seeActions: 'See all outdated actions',
+  },
 } as const;
 
 export const pluginRiScTranslationRef = createTranslationRef({
@@ -1109,6 +1114,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'feedbackDialog.feedbackButton': 'Gi tilbakemelding',
           'feedbackDialog.errorMessage': 'Kunne ikke sende tilbakemelding.',
           'feedbackDialog.sendButton': 'Send',
+          'filterButton.veryOutdated': 'Veldig utdatert',
+          'filterButton.littleOutdated': 'Litt utdatert',
+          'filterButton.seeActions': 'Se alle utdaterte tiltak',
         },
       }),
   },

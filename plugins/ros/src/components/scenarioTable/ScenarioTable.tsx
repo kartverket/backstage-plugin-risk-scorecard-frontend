@@ -19,6 +19,11 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiSc, RiScStatus, RiScWithMetadata } from '../../utils/types';
 import { ScenarioTableRow } from './ScenarioTableRow';
 import { useTableStyles } from './ScenarioTableStyles';
+import {
+  calculateDaysSince,
+  calculateUpdatedStatus,
+  UpdatedStatusEnum,
+} from '../../utils/utilityfunctions';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
@@ -80,6 +85,32 @@ export function ScenarioTable({
     updateRiSc(updatedRiSc, () => {});
   }
 
+  function handleFilterButtonClick(status: String) {
+    console.log(tempScenarios);
+    const { updateStatus } = useRiScs();
+    console.log('Status', updateStatus);
+
+    const scenariosWithCalculatedStatus = tempScenarios.map(scenario => ({
+      ...scenario,
+      actions: scenario.actions.map(action => {
+        const days = calculateDaysSince(
+          action.lastUpdated ? new Date(action.lastUpdated) : new Date(0),
+        );
+        const commits = null;
+        const calcStatus = calculateUpdatedStatus(days, commits);
+
+        return {
+          ...action,
+          calculatedStatus: calcStatus,
+        };
+      }),
+    }));
+    let filteredActions;
+    filteredActions = scenariosWithCalculatedStatus.flatMap(scenario =>
+      scenario.actions.filter(action => action.calculatedStatus === status),
+    );
+    console.log(filteredActions);
+  }
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   return (
@@ -121,6 +152,42 @@ export function ScenarioTable({
               </Button>
             </Box>
           )}
+        </Box>
+        <Box style={{ margin: '1rem' }}>
+          <Button
+            onClick={() =>
+              handleFilterButtonClick(UpdatedStatusEnum.VERY_OUTDATED)
+            }
+            style={{
+              marginRight: '0.5rem',
+              border: '1px solid red',
+              borderRadius: '20px',
+            }}
+          >
+            {t('filterButton.veryOutdated')}
+          </Button>
+          <Button
+            onClick={() =>
+              handleFilterButtonClick(UpdatedStatusEnum.LITTLE_OUTDATED)
+            }
+            style={{
+              marginRight: '0.5rem',
+              border: '1px solid orange',
+              borderRadius: '20px',
+            }}
+          >
+            {t('filterButton.littleOutdated')}
+          </Button>
+          <Button
+            onClick={() => handleFilterButtonClick('Both')}
+            style={{
+              marginRight: '0.5rem',
+              border: '1px solid green',
+              borderRadius: '20px',
+            }}
+          >
+            {t('filterButton.seeActions')}
+          </Button>
         </Box>
         {riSc.scenarios.length === 0 && editingAllowed ? (
           <Box
