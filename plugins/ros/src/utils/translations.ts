@@ -7,6 +7,7 @@ export const pluginRiScMessages = {
   contentHeader: {
     title: 'Risk scorecard',
     createNewButton: 'Create new scorecard',
+    editRiSc: 'Edit RiSc',
     editEncryption: 'Edit encryption',
     deleteButton: 'Delete scoreboard',
     multipleRiScs: 'RiSc scorecards',
@@ -576,6 +577,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
           'contentHeader.editEncryption': 'Rediger kryptering',
+          'contentHeader.editRiSc': 'Rediger RoS',
           'contentHeader.deleteButton': 'Slett analyse',
           'contentHeader.multipleRiScs': 'RoS-analyser',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',

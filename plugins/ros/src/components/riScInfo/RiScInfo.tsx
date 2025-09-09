@@ -1,21 +1,19 @@
 import { RiScWithMetadata } from '../../utils/types';
-import {
-  Box,
-  Grid,
-  Typography,
-  Select,
-  MenuItem,
-  ListItemText,
-} from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';
-import { InfoCard } from '@backstage/core-components';
-import EditButton from '../common/EditButton';
 import { useRiScs } from '../../contexts/RiScContext';
 import { Markdown } from '../common/Markdown';
-import AddCircle from '@mui/icons-material/AddCircle';
-import Button from '@mui/material/Button';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Text,
+  Select,
+  Icon,
+} from '@backstage/ui';
 
 interface RiScInfoProps {
   riScWithMetadata: RiScWithMetadata;
@@ -43,10 +41,10 @@ export function RiScInfo({
           flexDirection: 'column',
         }}
       >
-        <InfoCard>
-          <Box sx={{ mb: 2 }}>
+        <Card>
+          <CardHeader>
             {riScs !== null && riScs.length !== 0 && (
-              <>
+              <div>
                 <Box
                   sx={{
                     display: 'flex',
@@ -55,18 +53,18 @@ export function RiScInfo({
                     mb: 1,
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    style={{ fontSize: 16, marginBottom: 1 }}
+                  <Text
+                    as="h6"
+                    variant={'title-small'}
+                    style={{ marginBottom: 1 }}
                   >
                     {t('contentHeader.multipleRiScs')}
-                  </Typography>
+                  </Text>
                   <Button
-                    startIcon={<AddCircle />}
-                    variant="text"
-                    color="success"
+                    iconStart={<Icon name="plus" />}
+                    variant="primary"
                     onClick={onCreateNew}
-                    sx={{
+                    style={{
                       alignItems: 'right',
                     }}
                   >
@@ -74,34 +72,36 @@ export function RiScInfo({
                   </Button>
                 </Box>
                 <Select
-                  variant="standard"
-                  value={selectedRiSc?.id ?? ''}
-                  onChange={e => selectRiSc(e.target.value as string)}
-                  style={{ width: '100%' }}
-                >
-                  {riScs.map(riSc => (
-                    <MenuItem key={riSc.id} value={riSc.id}>
-                      <ListItemText primary={riSc.content.title} />
-                    </MenuItem>
-                  )) ?? []}
-                </Select>
-              </>
+                  name="font"
+                  options={riScs.map(riSc => ({
+                    value: riSc.id,
+                    label: riSc.content.title,
+                  }))}
+                  onSelectionChange={key => {
+                    if (key) selectRiSc(key.toString());
+                  }}
+                  defaultSelectedKey={selectedRiSc?.id ?? ''}
+                  size={'medium'}
+                />
+              </div>
             )}
-          </Box>
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Typography variant="h5">
-              {riScWithMetadata.content.title}
-            </Typography>
-            <EditButton onClick={edit} />
-          </Box>
-          <Markdown description={riScWithMetadata.content.scope} />
-        </InfoCard>
+          </CardHeader>
+          <CardBody>
+            <Box
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text as="h5" variant="title-small" weight="bold">
+                {riScWithMetadata.content.title}
+              </Text>
+              <Button onClick={edit}>{t('contentHeader.editRiSc')}</Button>
+            </Box>
+            <Markdown description={riScWithMetadata.content.scope} />
+          </CardBody>
+        </Card>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
         <RiScStatusComponent

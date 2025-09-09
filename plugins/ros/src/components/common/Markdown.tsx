@@ -1,9 +1,9 @@
-import Typography from '@mui/material/Typography';
 import ReactMarkdown from 'react-markdown';
 import { useTheme } from '@mui/material/styles';
 import 'github-markdown-css/github-markdown.css';
 import remarkBreaks from 'remark-breaks';
 import { commonTextColor, commonBackgroundColor } from '../../utils/style';
+import { Text } from '@backstage/ui';
 
 type Props = {
   description: string;
@@ -14,9 +14,10 @@ export function Markdown({ description, disabled = false }: Props) {
   const theme = useTheme();
 
   return (
-    <Typography
+    <Text
       className="markdown-body"
-      sx={{
+      variant="body-large"
+      style={{
         color: commonTextColor(theme, disabled),
         backgroundColor: commonBackgroundColor(theme, disabled),
       }}
@@ -24,6 +25,6 @@ export function Markdown({ description, disabled = false }: Props) {
       <ReactMarkdown remarkPlugins={[remarkBreaks]}>
         {description}
       </ReactMarkdown>
-    </Typography>
+    </Text>
   );
 }
