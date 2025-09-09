@@ -85,7 +85,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   },
   filterContainer: {
     fontFamily: 'helvetica Neue',
-    width: '1199px',
+    width: '100%',
     height: '40px',
     display: 'flex',
     alignItems: 'center',
@@ -105,7 +105,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   filterBox: {
     fontWeight: 'bold',
     fontSize: '15px',
-    width: '226px',
+    minWidth: '226px',
     height: '40px',
     display: 'flex',
     alignItems: 'center',
@@ -113,9 +113,11 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     paddingTop: '8px',
     paddingLeft: '10px',
     paddingBottom: '8px',
+    paddingRight: '8px',
     borderRadius: '24px',
     opacity: 1,
     transform: 'rotate(0deg)',
+    width: 'auto',
   },
   filterSpan: {
     fontWeight: 'bold',
