@@ -536,8 +536,10 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
         return { ...action, status: UpdatedStatusEnum.VERY_OUTDATED };
       }
       const day = formatDate(action.lastUpdated);
+      const commits = riScWithMetadata.lastPublished?.numberOfCommits ?? null;
       const daysSinceLastUpdated = calculateDaysSince(new Date(day));
-      const status = calculateUpdatedStatus(daysSinceLastUpdated, 0);
+      const status = calculateUpdatedStatus(daysSinceLastUpdated, commits);
+
       return { ...action, status };
     });
     return {
@@ -551,7 +553,7 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
     action => action.status === UpdatedStatusEnum.VERY_OUTDATED,
   ).length;
   const littleOutdatedCount = allActions.filter(
-    action => action.status === UpdatedStatusEnum.LITTLE_OUTDATED,
+    action => action.status === UpdatedStatusEnum.OUTDATED,
   ).length;
 
   return { veryOutdatedCount, littleOutdatedCount };
