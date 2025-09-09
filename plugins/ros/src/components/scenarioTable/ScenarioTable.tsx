@@ -19,6 +19,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiSc, RiScStatus, RiScWithMetadata } from '../../utils/types';
 import { ScenarioTableRow } from './ScenarioTableRow';
 import { useTableStyles } from './ScenarioTableStyles';
+import { computeStatusCount } from '../../utils/utilityfunctions';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
@@ -32,11 +33,21 @@ export function ScenarioTable({
   const riSc = riScWithMetadata.content;
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label } = useFontStyles();
-  const { titleBox, rowBorder, tableCell, tableCellTitle, tableCellDragIcon } =
-    useTableStyles();
+  const {
+    titleBox,
+    rowBorder,
+    tableCell,
+    tableCellTitle,
+    tableCellDragIcon,
+    filterContainer,
+    filterBox,
+    filterSpan,
+  } = useTableStyles();
   const { openNewScenarioWizard, openScenarioDrawer } = useScenario();
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
+  const { veryOutdatedCount, littleOutdatedCount } =
+    computeStatusCount(riScWithMetadata);
 
   useEffect(() => {
     if (!updateStatus.isSuccess) {
@@ -121,6 +132,37 @@ export function ScenarioTable({
               </Button>
             </Box>
           )}
+        </Box>
+        <Box className={filterContainer}>
+          <div
+            className={filterBox}
+            style={{
+              backgroundColor: '#EFBFA9',
+              border: '1px solid #A32F00',
+            }}
+          >
+            <span
+              className={filterSpan}
+              style={{
+                backgroundColor: '#A32F00',
+              }}
+            >
+              {veryOutdatedCount}
+            </span>
+            {t('filterButton.veryOutdated')}
+          </div>
+          <div
+            className={filterBox}
+            style={{
+              backgroundColor: '#FCEBCD',
+              border: '1px solid #CF914A',
+            }}
+          >
+            <span className={filterSpan} style={{ backgroundColor: '#CF914A' }}>
+              {littleOutdatedCount}
+            </span>
+            {t('filterButton.littleOutdated')}
+          </div>
         </Box>
         {riSc.scenarios.length === 0 && editingAllowed ? (
           <Box
