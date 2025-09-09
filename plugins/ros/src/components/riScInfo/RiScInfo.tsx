@@ -17,6 +17,8 @@ import { Markdown } from '../common/Markdown';
 import AddCircle from '@mui/icons-material/AddCircle';
 import Button from '@mui/material/Button';
 
+// DETTE ER EN KOMMENTAR
+
 interface RiScInfoProps {
   riScWithMetadata: RiScWithMetadata;
   edit: () => void;
