@@ -528,3 +528,33 @@ export const getActionStatusStyle = (status: string) => {
   }
   return baseStyle;
 };
+
+export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
+  const scenariosWithData = riScWithMetadata.content.scenarios.map(scenario => {
+    const actionsWithStatus = (scenario.actions ?? []).map(action => {
+      if (!action.lastUpdated) {
+        return { ...action, status: UpdatedStatusEnum.VERY_OUTDATED };
+      }
+      const day = formatDate(action.lastUpdated);
+      const commits = riScWithMetadata.lastPublished?.numberOfCommits ?? null;
+      const daysSinceLastUpdated = calculateDaysSince(new Date(day));
+      const status = calculateUpdatedStatus(daysSinceLastUpdated, commits);
+
+      return { ...action, status };
+    });
+    return {
+      ...scenario,
+      actions: actionsWithStatus,
+    };
+  });
+
+  const allActions = scenariosWithData.flatMap(scenario => scenario.actions);
+  const veryOutdatedCount = allActions.filter(
+    action => action.status === UpdatedStatusEnum.VERY_OUTDATED,
+  ).length;
+  const littleOutdatedCount = allActions.filter(
+    action => action.status === UpdatedStatusEnum.OUTDATED,
+  ).length;
+
+  return { veryOutdatedCount, littleOutdatedCount };
+}
