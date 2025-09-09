@@ -15,6 +15,7 @@ import Box from '@mui/material/Box';
 import { Step, StepLabel, Stepper } from '@mui/material';
 import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
+import { Delete as DeleteIcon } from '@material-ui/icons';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -27,6 +28,7 @@ export enum RiScDialogStates {
 interface RiScDialogProps {
   onClose: () => void;
   dialogState: RiScDialogStates;
+  onDelete: () => void;
 }
 
 export enum CreateRiScFrom {
@@ -58,7 +60,11 @@ function RiScStepper({
   );
 }
 
-export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
+export function RiScDialog({
+  onClose,
+  dialogState,
+  onDelete,
+}: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc, createNewRiSc, deleteRiSc, updateRiSc, gcpCryptoKeys } =
     useRiScs();
@@ -234,7 +240,11 @@ export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
   if (dialogState === RiScDialogStates.EditRiscInfo) {
     return (
       <Dialog open={true} onClose={onClose}>
-        <DialogTitle>{t('rosDialog.titleEdit')}</DialogTitle>
+        <DialogTitle>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            {t('rosDialog.titleEdit')}
+          </Box>
+        </DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
         >
@@ -249,6 +259,18 @@ export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
           />
         </DialogContent>
         <DialogActions sx={dialogActions}>
+          <Button
+            startIcon={<DeleteIcon />}
+            variant="text"
+            color="error"
+            onClick={onDelete}
+            sx={{
+              position: 'absolute',
+              left: 16,
+            }}
+          >
+            {t('contentHeader.deleteButton')}
+          </Button>
           <Button variant="outlined" onClick={onClose}>
             {t('dictionary.cancel')}
           </Button>
