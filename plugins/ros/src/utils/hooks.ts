@@ -427,7 +427,7 @@ export function useDebounce<T>(
       timeoutRef.current = null;
     }
     const v = latestValueRef.current;
-    const hasValue = Array.isArray(v) ? v.length > 0 : v != null;
+    const hasValue = Array.isArray(v) ? v.length > 0 : v !== null;
     if (hasValue) {
       latestCallbackRef.current(v);
     }

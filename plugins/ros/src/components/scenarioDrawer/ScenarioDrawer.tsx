@@ -51,6 +51,15 @@ export function ScenarioDrawer() {
     string[]
   >([]);
 
+  // Used to scroll to the bottom of the drawer when the user deletes a scenario
+  // via the quick edit and DeleteConfirmation
+  const deleteScenarioRef = useRef<HTMLDivElement>(null);
+
+  const formMethods = useForm<FormScenario>({
+    defaultValues: mapScenarioToFormScenario(scenario),
+    mode: 'onChange',
+  });
+
   const debounceCallback = useCallback(
     (updatedIDs: string[]) => {
       const indexOfAction = (ID: string) => {
@@ -75,22 +84,13 @@ export function ScenarioDrawer() {
       submitEditedScenarioToRiSc(updatedScenario);
       setCurrentUpdatedActionIDs([]);
     },
-    [scenario, submitEditedScenarioToRiSc],
+    [scenario, formMethods, submitEditedScenarioToRiSc],
   );
   const { flush } = useDebounce(
     currentUpdatedActionIDs,
     6000,
     debounceCallback,
   );
-
-  // Used to scroll to the bottom of the drawer when the user deletes a scenario
-  // via the quick edit and DeleteConfirmation
-  const deleteScenarioRef = useRef<HTMLDivElement>(null);
-
-  const formMethods = useForm<FormScenario>({
-    defaultValues: mapScenarioToFormScenario(scenario),
-    mode: 'onChange',
-  });
 
   function onCancel() {
     formMethods.reset(mapScenarioToFormScenario(scenario));
