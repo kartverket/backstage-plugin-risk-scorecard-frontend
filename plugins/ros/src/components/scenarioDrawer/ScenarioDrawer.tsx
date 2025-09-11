@@ -79,7 +79,7 @@ export function ScenarioDrawer() {
   );
   const { flush } = useDebounce(
     currentUpdatedActionIDs,
-    3000,
+    6000,
     debounceCallback,
   );
 
