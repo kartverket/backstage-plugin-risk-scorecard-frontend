@@ -394,10 +394,15 @@ export function useDebounce<T>(
 ) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const latestValueRef = useRef<T>(value);
+  const latestCallbackRef = useRef<(v: T) => void>(callback);
 
   useEffect(() => {
     latestValueRef.current = value;
   }, [value]);
+
+  useEffect(() => {
+    latestCallbackRef.current = callback;
+  }, [callback]);
 
   useEffect(() => {
     if (timeoutRef.current) {
@@ -405,7 +410,8 @@ export function useDebounce<T>(
     }
 
     timeoutRef.current = setTimeout(() => {
-      callback(value);
+      latestCallbackRef.current(latestValueRef.current);
+      timeoutRef.current = null;
     }, delay);
 
     return () => {
@@ -413,11 +419,18 @@ export function useDebounce<T>(
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [value, delay, callback]);
+  }, [value, delay]);
 
-  useEffect(() => {
-    return () => {
-      callback(latestValueRef.current);
-    };
-  }, [callback]);
+  const flush = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    const v = latestValueRef.current;
+    const hasValue = Array.isArray(v) ? v.length > 0 : v != null;
+    if (hasValue) {
+      latestCallbackRef.current(v);
+    }
+  }, []);
+  return { flush };
 }

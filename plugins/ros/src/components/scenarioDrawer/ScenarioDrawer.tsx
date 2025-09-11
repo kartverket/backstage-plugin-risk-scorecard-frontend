@@ -21,6 +21,8 @@ import RiskFormSection from './components/RiskFormSection';
 import { RiskSection } from './components/RiskSection';
 import ScopeFormSection from './components/ScopeFormSection';
 import { ScopeSection } from './components/ScopeSection';
+import { useCallback } from 'react';
+import { useDebounce } from '../../utils/hooks';
 
 export function ScenarioDrawer() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -44,6 +46,42 @@ export function ScenarioDrawer() {
   const [isMatrixDialogOpen, setIsMatrixDialogOpen] = useState<boolean>(false);
 
   const { updateStatus, response } = useRiScs();
+
+  const [currentUpdatedActionIDs, setCurrentUpdatedActionIDs] = useState<
+    string[]
+  >([]);
+
+  const debounceCallback = useCallback(
+    (updatedIDs: string[]) => {
+      const indexOfAction = (ID: string) => {
+        return scenario.actions.findIndex(a => a.ID === ID);
+      };
+      if (updatedIDs.length === 0) return;
+
+      const formValues = formMethods.getValues();
+      const updatedScenario = {
+        ...scenario,
+        actions: scenario.actions.map(a =>
+          updatedIDs.includes(a.ID)
+            ? {
+                ...a,
+                status:
+                  formValues.actions?.[indexOfAction(a.ID)]?.status ?? a.status,
+                lastUpdated: new Date(),
+              }
+            : a,
+        ),
+      };
+      submitEditedScenarioToRiSc(updatedScenario);
+      setCurrentUpdatedActionIDs([]);
+    },
+    [scenario, submitEditedScenarioToRiSc],
+  );
+  const { flush } = useDebounce(
+    currentUpdatedActionIDs,
+    3000,
+    debounceCallback,
+  );
 
   // Used to scroll to the bottom of the drawer when the user deletes a scenario
   // via the quick edit and DeleteConfirmation
@@ -70,6 +108,7 @@ export function ScenarioDrawer() {
     if (formMethods.formState.isDirty) {
       setShowCloseConfirmation(true);
     } else {
+      flush();
       closeScenarioForm();
       setIsEditing(false);
       collapseAllActions();
@@ -80,6 +119,7 @@ export function ScenarioDrawer() {
     submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), () =>
       setIsEditing(false),
     );
+    flush();
   });
 
   function onSubmitAndCloseDialog() {
@@ -159,6 +199,7 @@ export function ScenarioDrawer() {
         formMethods={formMethods}
         isEditing={isEditing}
         onSubmit={onSubmit}
+        setCurrentUpdatedActionIDs={setCurrentUpdatedActionIDs}
       />
       <Box
         sx={{
