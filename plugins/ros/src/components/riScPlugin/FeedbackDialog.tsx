@@ -4,14 +4,14 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Button,
 } from '@mui/material/';
+
+import { Button } from '@backstage/ui';
 
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useState } from 'react';
 import { dialogActions } from '../common/mixins.ts';
-import { AddComment } from '@material-ui/icons';
 import { useAuthenticatedFetch } from '../../utils/hooks.ts';
 import Alert from '@mui/material/Alert';
 
@@ -34,9 +34,8 @@ export function FeedbackDialog() {
   return (
     <>
       <Button
-        variant="text"
-        startIcon={<AddComment />}
-        color="primary"
+        variant="secondary"
+        iconStart={<i className="ri-feedback-line"></i>}
         onClick={() => setOpen(true)}
       >
         {t('feedbackDialog.feedbackButton')}
@@ -70,12 +69,12 @@ export function FeedbackDialog() {
         </DialogContent>
         <DialogActions sx={dialogActions}>
           {feedbackSent ? (
-            <Button onClick={onClose} variant="outlined">
+            <Button onClick={onClose} variant="secondary">
               {t('dictionary.close')}
             </Button>
           ) : (
             <>
-              <Button onClick={onClose} variant="outlined">
+              <Button onClick={onClose} variant="secondary">
                 {t('dictionary.cancel')}
               </Button>
               <Button
@@ -87,8 +86,8 @@ export function FeedbackDialog() {
                     setFeedbackError(t('feedbackDialog.errorMessage'));
                   }
                 }}
-                disabled={!feedbackText.trim()}
-                variant="contained"
+                isDisabled={!feedbackText.trim()}
+                variant="primary"
               >
                 {t('feedbackDialog.sendButton')}
               </Button>
