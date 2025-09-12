@@ -220,6 +220,7 @@ export const pluginRiScMessages = {
   },
   supportDialog: {
     title: 'Support',
+    openEntry: 'Open',
     entries: {
       documentation: 'Documentation',
       slackChannel: 'Slack Channel',
@@ -799,6 +800,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'comparisonDialog.valuation.confidentiality.Strictly confidential':
             'Strengt konfidensielt',
           'supportDialog.title': 'Support',
+          'supportDialog.openEntry': 'Åpne',
           'supportDialog.entries.documentation': 'Dokumentasjon',
           'supportDialog.entries.slackChannel': 'Slack-kanal',
           'supportDialog.entries.riscFeedbackChannel':

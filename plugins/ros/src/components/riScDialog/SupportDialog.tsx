@@ -92,6 +92,7 @@ type SupportEntryProps = {
 };
 
 function SupportEntry(props: SupportEntryProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Card>
       <CardHeader>
@@ -102,7 +103,9 @@ function SupportEntry(props: SupportEntryProps) {
               {props.label}
             </Text>
           </Flex>
-          <Button onClick={() => window.open(props.url, '_blank')}>Open</Button>
+          <Button onClick={() => window.open(props.url, '_blank')}>
+            {t('supportDialog.openEntry')}
+          </Button>
         </Flex>
       </CardHeader>
     </Card>
