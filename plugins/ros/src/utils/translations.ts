@@ -218,6 +218,16 @@ export const pluginRiScMessages = {
       },
     },
   },
+  supportDialog: {
+    title: 'Support',
+    entries: {
+      documentation: 'Documentation',
+      slackChannel: 'Slack Channel',
+      riscFeedbackChannel: 'RISC Feedback Channel',
+      riscDocumentation: 'RISC Documentation',
+      securityMetricsFeedbackChannel: 'Sikkerhetsmetrikker Feedback Channel',
+    },
+  },
   scenarioTable: {
     title: 'Risk scenarios',
     addScenarioButton: 'Add scenario',
@@ -788,7 +798,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Konfidensielt',
           'comparisonDialog.valuation.confidentiality.Strictly confidential':
             'Strengt konfidensielt',
-
+          'supportDialog.title': 'Support',
+          'supportDialog.entries.documentation': 'Dokumentasjon',
+          'supportDialog.entries.slackChannel': 'Slack-kanal',
+          'supportDialog.entries.riscFeedbackChannel':
+            'RoS tilbakemeldingskanal',
+          'supportDialog.entries.riscDocumentation': 'RoS dokumentasjon',
+          'supportDialog.entries.securityMetricsFeedbackChannel':
+            'Sikkerhetsmetrikker tilbakemeldingskanal',
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.noActions': 'Ingen tiltak',
