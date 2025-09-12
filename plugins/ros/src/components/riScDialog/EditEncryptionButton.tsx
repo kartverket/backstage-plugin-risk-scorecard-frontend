@@ -18,7 +18,7 @@ export function EditEncryptionButton({
   return (
     <Button
       variant="secondary"
-      iconStart={<i className="ri-settings-2-line"></i>}
+      iconStart={<i className="ri-settings-2-line" />}
       onClick={onEditEncryption}
     >
       {t('contentHeader.editEncryption')}

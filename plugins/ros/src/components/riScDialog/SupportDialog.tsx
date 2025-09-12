@@ -13,7 +13,7 @@ export function SupportDialog() {
       <Button
         onClick={() => setOpen(true)}
         variant="secondary"
-        iconStart={<i className="ri-question-line"></i>}
+        iconStart={<i className="ri-question-line" />}
       >
         {t('supportDialog.title')}
       </Button>
@@ -35,27 +35,21 @@ export function SupportDialog() {
                 <i
                   className="ri-article-line"
                   style={{ fontSize: 'x-large' }}
-                ></i>
+                />
               }
             />
             <SupportEntry
               label={t('supportDialog.entries.slackChannel')}
               url="https://kartverketgroup.slack.com/archives/C028ZEED280"
               icon={
-                <i
-                  className="ri-slack-fill"
-                  style={{ fontSize: 'x-large' }}
-                ></i>
+                <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
               }
             />
             <SupportEntry
               label={t('supportDialog.entries.riscFeedbackChannel')}
               url="https://kartverketgroup.slack.com/archives/C075KCPTURY"
               icon={
-                <i
-                  className="ri-slack-fill"
-                  style={{ fontSize: 'x-large' }}
-                ></i>
+                <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
               }
             />
             <SupportEntry
@@ -65,17 +59,14 @@ export function SupportDialog() {
                 <i
                   className="ri-article-line"
                   style={{ fontSize: 'x-large' }}
-                ></i>
+                />
               }
             />
             <SupportEntry
               label={t('supportDialog.entries.securityMetricsFeedbackChannel')}
               url="https://kartverketgroup.slack.com/archives/C07RNB2LPUZ"
               icon={
-                <i
-                  className="ri-slack-fill"
-                  style={{ fontSize: 'x-large' }}
-                ></i>
+                <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
               }
             />
           </div>

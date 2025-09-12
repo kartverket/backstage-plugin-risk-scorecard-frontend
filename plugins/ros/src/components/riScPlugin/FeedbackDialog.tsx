@@ -35,7 +35,7 @@ export function FeedbackDialog() {
     <>
       <Button
         variant="secondary"
-        iconStart={<i className="ri-feedback-line"></i>}
+        iconStart={<i className="ri-feedback-line" />}
         onClick={() => setOpen(true)}
       >
         {t('feedbackDialog.feedbackButton')}
