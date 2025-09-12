@@ -119,7 +119,6 @@ export function ScenarioDrawer() {
     submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), () =>
       setIsEditing(false),
     );
-    flush();
   });
 
   function onSubmitAndCloseDialog() {
