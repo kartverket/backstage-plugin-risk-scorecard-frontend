@@ -67,6 +67,7 @@ export function RiScSelectionCard(props: Props) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            marginTop: '8px',
           }}
         >
           <Text variant="title-x-small" as="h5" weight="bold">
