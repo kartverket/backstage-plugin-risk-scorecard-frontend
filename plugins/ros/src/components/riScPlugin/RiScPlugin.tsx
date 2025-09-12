@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ContentHeader, SupportButton } from '@backstage/core-components';
+import { SupportDialog } from '../riScDialog/SupportDialog.tsx';
 import { useSearchParams } from 'react-router-dom';
 import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
 import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
@@ -19,6 +19,7 @@ import { useRiScs } from '../../contexts/RiScContext';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { FeedbackDialog } from './FeedbackDialog.tsx';
+import { Header } from '@backstage/ui';
 
 export function RiScPlugin() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -92,20 +93,18 @@ export function RiScPlugin() {
         <ScenarioWizard step={scenarioWizardStep} />
       ) : (
         <>
-          <ContentHeader title={t('contentHeader.title')}>
-            <Grid
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-              }}
-            >
-              <EditEncryptionButton
-                onEditEncryption={openEditEncryptionDialog}
-              />
-              <SupportButton />
-              <FeedbackDialog />
-            </Grid>
-          </ContentHeader>
+          <Header
+            title={t('contentHeader.title')}
+            customActions={
+              <>
+                <EditEncryptionButton
+                  onEditEncryption={openEditEncryptionDialog}
+                />
+                <SupportDialog />
+                <FeedbackDialog />
+              </>
+            }
+          />
 
           {isFetching && <Spinner size={80} />}
 
