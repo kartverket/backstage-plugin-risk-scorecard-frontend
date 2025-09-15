@@ -28,10 +28,6 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   titleBox: {
     display: 'flex',
     justifyContent: 'space-between',
-    borderBottom:
-      theme.palette.type === 'dark'
-        ? '1px solid #616161'
-        : '1px solid #0000001f',
   },
   rowBorder: {
     display: 'flex',
@@ -94,7 +90,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
       flexDirection: 'column',
       alignItems: 'flex-start',
     },
-    gap: '8px',
+    gap: '16px',
     paddingLeft: '24px',
     paddingRight: '24px',
     opacity: 1,
@@ -104,23 +100,22 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   },
 
   filterBox: {
-    fontWeight: 'bold',
     fontSize: '15px',
+    fontWeight: 500,
     height: '40px',
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
     paddingTop: '8px',
-    paddingLeft: '10px',
+    paddingLeft: '20px',
     paddingBottom: '8px',
-    paddingRight: '12px',
+    paddingRight: '20px',
     borderRadius: '24px',
     opacity: 1,
     transform: 'rotate(0deg)',
     width: 'auto',
   },
   filterSpan: {
-    fontWeight: 'bold',
     fontSize: '15px',
     width: '26px',
     height: '26px',
