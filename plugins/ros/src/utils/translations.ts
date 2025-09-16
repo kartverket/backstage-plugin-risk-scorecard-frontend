@@ -218,6 +218,26 @@ export const pluginRiScMessages = {
       },
     },
   },
+  supportDialog: {
+    title: 'Support',
+    openEntry: 'Open',
+    entries: {
+      documentation: { title: 'Documentation', description: 'SKIPDOK' },
+      slackChannel: { title: 'Slack Channel', description: '#gen-skip' },
+      riscFeedbackChannel: {
+        title: 'RISC Feedback Channel',
+        description: '#kodenær-ros-tilbakemelding',
+      },
+      riscDocumentation: {
+        title: 'RISC Documentation',
+        description: 'Confluence - RISC',
+      },
+      securityMetricsFeedbackChannel: {
+        title: 'Sikkerhetsmetrikker Feedback Channel',
+        description: '#sikkerhetsmetrikker-tilbakemelding',
+      },
+    },
+  },
   scenarioTable: {
     title: 'Risk scenarios',
     addScenarioButton: 'Add scenario',
@@ -788,7 +808,23 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Konfidensielt',
           'comparisonDialog.valuation.confidentiality.Strictly confidential':
             'Strengt konfidensielt',
-
+          'supportDialog.title': 'Support',
+          'supportDialog.openEntry': 'Åpne',
+          'supportDialog.entries.documentation.title': 'Dokumentasjon',
+          'supportDialog.entries.documentation.description': 'SKIPDOK',
+          'supportDialog.entries.slackChannel.title': 'Slack-kanal',
+          'supportDialog.entries.slackChannel.description': '#gen-skip',
+          'supportDialog.entries.riscFeedbackChannel.title':
+            'RoS tilbakemeldingskanal',
+          'supportDialog.entries.riscFeedbackChannel.description':
+            '#kodenær-ros-tilbakemelding',
+          'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
+          'supportDialog.entries.riscDocumentation.description':
+            'Confluence - RISC',
+          'supportDialog.entries.securityMetricsFeedbackChannel.title':
+            'Sikkerhetsmetrikker tilbakemeldingskanal',
+          'supportDialog.entries.securityMetricsFeedbackChannel.description':
+            '#sikkerhetsmetrikker-tilbakemelding',
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.noActions': 'Ingen tiltak',

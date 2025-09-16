@@ -1,5 +1,4 @@
-import { Button } from '@mui/material';
-import { Settings } from '@material-ui/icons';
+import { Button } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiScs } from '../../contexts/RiScContext';
@@ -18,9 +17,8 @@ export function EditEncryptionButton({
 
   return (
     <Button
-      variant="text"
-      startIcon={<Settings />}
-      color="primary"
+      variant="secondary"
+      iconStart={<i className="ri-settings-2-line" />}
       onClick={onEditEncryption}
     >
       {t('contentHeader.editEncryption')}
