@@ -1,5 +1,4 @@
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { Box, Text } from '@backstage/ui';
 
 interface StatusIconWithTextProps {
   iconSrc: string;
@@ -13,16 +12,21 @@ export function StatusIconWithText({
   text,
 }: StatusIconWithTextProps) {
   return (
-    <Box display="flex" alignItems="center" gap={1}>
-      <Box
-        component="img"
+    <Box
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+      }}
+    >
+      <img
         src={iconSrc}
         alt={altText}
-        sx={{ height: 24, width: 24 }}
+        style={{ height: '24px', width: '24px' }}
       />
-      <Typography variant="subtitle1" mb={0}>
+      <Text as="h6" style={{ fontSize: '1rem' }}>
         {text}
-      </Typography>
+      </Text>
     </Box>
   );
 }
