@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
+import { emptyAction } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
 import { emptyState, heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
@@ -16,7 +16,6 @@ import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import { ActionStatusOptions } from '../../../utils/constants';
 import Switch from '@mui/material/Switch';
-import { useDebounce } from '../../../utils/hooks';
 
 const FILTER_SETTINGS = {
   SHOW_ALL: false,
@@ -27,6 +26,7 @@ type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
   isEditing: boolean;
   onSubmit: () => void;
+  setCurrentUpdatedActionIDs: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 const RelevanceToggle = ({
@@ -57,6 +57,7 @@ export function ActionsSection({
   formMethods,
   isEditing,
   onSubmit,
+  setCurrentUpdatedActionIDs,
 }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { isDrawerOpen, submitEditedScenarioToRiSc, scenario } = useScenario();

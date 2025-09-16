@@ -142,9 +142,9 @@ export const pluginRiScMessages = {
     titleUpdate: 'Accept risks', // Approve ROS
     titleDelete: 'Accept deletion', // Delete ROS
     checkboxLabelUpdate:
-      'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
+      'I confirm that the risk owner accepts the risks detailed in this risk scorecard.',
     checkboxLabelDelete:
-      'I confirm that I am the risk owner and accept the deletion of this risk scorecard.',
+      'I confirm that the risk owner accepts the deletion of this risk scorecard.',
   },
   migrationDialog: {
     description:
@@ -215,6 +215,26 @@ export const pluginRiScMessages = {
         Internal: 'Internal',
         Confidential: 'Confidential',
         'Strictly confidential': 'Strictly confidential',
+      },
+    },
+  },
+  supportDialog: {
+    title: 'Support',
+    openEntry: 'Open',
+    entries: {
+      documentation: { title: 'Documentation', description: 'SKIPDOK' },
+      slackChannel: { title: 'Slack Channel', description: '#gen-skip' },
+      riscFeedbackChannel: {
+        title: 'RISC Feedback Channel',
+        description: '#kodenær-ros-tilbakemelding',
+      },
+      riscDocumentation: {
+        title: 'RISC Documentation',
+        description: 'Confluence - RISC',
+      },
+      securityMetricsFeedbackChannel: {
+        title: 'Sikkerhetsmetrikker Feedback Channel',
+        description: '#sikkerhetsmetrikker-tilbakemelding',
       },
     },
   },
@@ -723,9 +743,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
           'publishDialog.titleDelete': 'Godkjenn sletting',
           'publishDialog.checkboxLabelUpdate':
-            'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
+            'Jeg bekrefter at risikoeier godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
           'publishDialog.checkboxLabelDelete':
-            'Jeg bekrefter at jeg er risikoeier og godtar slettingen av denne risiko- og sårbarhetsanalysen.',
+            'Jeg bekrefter at risikoeier godtar slettingen av denne risiko- og sårbarhetsanalysen.',
 
           'migrationDialog.title': 'Lagre endringer',
           'migrationDialog.description':
@@ -788,7 +808,23 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Konfidensielt',
           'comparisonDialog.valuation.confidentiality.Strictly confidential':
             'Strengt konfidensielt',
-
+          'supportDialog.title': 'Support',
+          'supportDialog.openEntry': 'Åpne',
+          'supportDialog.entries.documentation.title': 'Dokumentasjon',
+          'supportDialog.entries.documentation.description': 'SKIPDOK',
+          'supportDialog.entries.slackChannel.title': 'Slack-kanal',
+          'supportDialog.entries.slackChannel.description': '#gen-skip',
+          'supportDialog.entries.riscFeedbackChannel.title':
+            'RoS tilbakemeldingskanal',
+          'supportDialog.entries.riscFeedbackChannel.description':
+            '#kodenær-ros-tilbakemelding',
+          'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
+          'supportDialog.entries.riscDocumentation.description':
+            'Confluence - RISC',
+          'supportDialog.entries.securityMetricsFeedbackChannel.title':
+            'Sikkerhetsmetrikker tilbakemeldingskanal',
+          'supportDialog.entries.securityMetricsFeedbackChannel.description':
+            '#sikkerhetsmetrikker-tilbakemelding',
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.noActions': 'Ingen tiltak',
