@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { SupportDialog } from '../riScDialog/SupportDialog.tsx';
 import { useSearchParams } from 'react-router-dom';
 import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
 import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
@@ -9,21 +8,15 @@ import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
-import { EditEncryptionButton } from '../riScDialog/EditEncryptionButton';
 import { RiScInfo } from '../riScInfo/RiScInfo';
 import { Spinner } from '../common/Spinner';
 import { useRiScs } from '../../contexts/RiScContext';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
-import { FeedbackDialog } from './FeedbackDialog.tsx';
-import { Header } from '@backstage/ui';
+import { RiScHeader } from '../riScHeader/RiScHeader.tsx';
 
 export function RiScPlugin() {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
   );
@@ -93,18 +86,7 @@ export function RiScPlugin() {
         <ScenarioWizard step={scenarioWizardStep} />
       ) : (
         <>
-          <Header
-            title={t('contentHeader.title')}
-            customActions={
-              <>
-                <EditEncryptionButton
-                  onEditEncryption={openEditEncryptionDialog}
-                />
-                <SupportDialog />
-                <FeedbackDialog />
-              </>
-            }
-          />
+          <RiScHeader onEditEncryption={openEditEncryptionDialog} />
 
           {isFetching && <Spinner size={80} />}
 
