@@ -3,6 +3,7 @@ import { Button, Card, CardHeader, Flex, Text } from '@backstage/ui';
 import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { Link } from '@mui/material';
 
 export function SupportDialog() {
   const [open, setOpen] = useState(false);
@@ -29,7 +30,7 @@ export function SupportDialog() {
             }}
           >
             <SupportEntry
-              label={t('supportDialog.entries.documentation')}
+              label={t('supportDialog.entries.documentation.title')}
               url="https://skip.kartverket.no/docs"
               icon={
                 <i
@@ -37,23 +38,28 @@ export function SupportDialog() {
                   style={{ fontSize: 'x-large' }}
                 />
               }
+              description={t('supportDialog.entries.documentation.description')}
             />
             <SupportEntry
-              label={t('supportDialog.entries.slackChannel')}
+              label={t('supportDialog.entries.slackChannel.title')}
               url="https://kartverketgroup.slack.com/archives/C028ZEED280"
               icon={
                 <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
               }
+              description={t('supportDialog.entries.slackChannel.description')}
             />
             <SupportEntry
-              label={t('supportDialog.entries.riscFeedbackChannel')}
+              label={t('supportDialog.entries.riscFeedbackChannel.title')}
               url="https://kartverketgroup.slack.com/archives/C075KCPTURY"
               icon={
                 <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
               }
+              description={t(
+                'supportDialog.entries.riscFeedbackChannel.description',
+              )}
             />
             <SupportEntry
-              label={t('supportDialog.entries.riscDocumentation')}
+              label={t('supportDialog.entries.riscDocumentation.title')}
               url="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1176142023/Koden+r+RoS"
               icon={
                 <i
@@ -61,13 +67,21 @@ export function SupportDialog() {
                   style={{ fontSize: 'x-large' }}
                 />
               }
+              description={t(
+                'supportDialog.entries.riscDocumentation.description',
+              )}
             />
             <SupportEntry
-              label={t('supportDialog.entries.securityMetricsFeedbackChannel')}
+              label={t(
+                'supportDialog.entries.securityMetricsFeedbackChannel.title',
+              )}
               url="https://kartverketgroup.slack.com/archives/C07RNB2LPUZ"
               icon={
                 <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
               }
+              description={t(
+                'supportDialog.entries.securityMetricsFeedbackChannel.description',
+              )}
             />
           </div>
         </DialogContent>
@@ -79,24 +93,22 @@ export function SupportDialog() {
 type SupportEntryProps = {
   label: string;
   url: string;
+  description: string;
   icon: ReactElement;
 };
 
 function SupportEntry(props: SupportEntryProps) {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Card>
       <CardHeader>
-        <Flex justify="between" align="center">
-          <Flex align="center">
-            {props.icon}
-            <Text variant="body-large" weight="bold">
-              {props.label}
-            </Text>
+        <Flex align="center">
+          {props.icon}
+          <Flex direction="column" gap="0">
+            <Text weight="bold">{props.label}</Text>
+            <Link href={props.url} target="_blank">
+              {props.description}
+            </Link>
           </Flex>
-          <Button onClick={() => window.open(props.url, '_blank')}>
-            {t('supportDialog.openEntry')}
-          </Button>
         </Flex>
       </CardHeader>
     </Card>

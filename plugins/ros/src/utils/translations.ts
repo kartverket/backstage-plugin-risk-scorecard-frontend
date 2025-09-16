@@ -222,11 +222,20 @@ export const pluginRiScMessages = {
     title: 'Support',
     openEntry: 'Open',
     entries: {
-      documentation: 'Documentation',
-      slackChannel: 'Slack Channel',
-      riscFeedbackChannel: 'RISC Feedback Channel',
-      riscDocumentation: 'RISC Documentation',
-      securityMetricsFeedbackChannel: 'Sikkerhetsmetrikker Feedback Channel',
+      documentation: { title: 'Documentation', description: 'SKIPDOK' },
+      slackChannel: { title: 'Slack Channel', description: '#gen-skip' },
+      riscFeedbackChannel: {
+        title: 'RISC Feedback Channel',
+        description: '#kodenær-ros-tilbakemelding',
+      },
+      riscDocumentation: {
+        title: 'RISC Documentation',
+        description: 'Confluence - RISC',
+      },
+      securityMetricsFeedbackChannel: {
+        title: 'Sikkerhetsmetrikker Feedback Channel',
+        description: '#sikkerhetsmetrikker-tilbakemelding',
+      },
     },
   },
   scenarioTable: {
@@ -801,13 +810,21 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Strengt konfidensielt',
           'supportDialog.title': 'Support',
           'supportDialog.openEntry': 'Åpne',
-          'supportDialog.entries.documentation': 'Dokumentasjon',
-          'supportDialog.entries.slackChannel': 'Slack-kanal',
-          'supportDialog.entries.riscFeedbackChannel':
+          'supportDialog.entries.documentation.title': 'Dokumentasjon',
+          'supportDialog.entries.documentation.description': 'SKIPDOK',
+          'supportDialog.entries.slackChannel.title': 'Slack-kanal',
+          'supportDialog.entries.slackChannel.description': '#gen-skip',
+          'supportDialog.entries.riscFeedbackChannel.title':
             'RoS tilbakemeldingskanal',
-          'supportDialog.entries.riscDocumentation': 'RoS dokumentasjon',
-          'supportDialog.entries.securityMetricsFeedbackChannel':
+          'supportDialog.entries.riscFeedbackChannel.description':
+            '#kodenær-ros-tilbakemelding',
+          'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
+          'supportDialog.entries.riscDocumentation.description':
+            'Confluence - RISC',
+          'supportDialog.entries.securityMetricsFeedbackChannel.title':
             'Sikkerhetsmetrikker tilbakemeldingskanal',
+          'supportDialog.entries.securityMetricsFeedbackChannel.description':
+            '#sikkerhetsmetrikker-tilbakemelding',
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.noActions': 'Ingen tiltak',
