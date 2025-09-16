@@ -142,9 +142,9 @@ export const pluginRiScMessages = {
     titleUpdate: 'Accept risks', // Approve ROS
     titleDelete: 'Accept deletion', // Delete ROS
     checkboxLabelUpdate:
-      'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
+      'I confirm that the risk owner accepts the risks detailed in this risk scorecard.',
     checkboxLabelDelete:
-      'I confirm that I am the risk owner and accept the deletion of this risk scorecard.',
+      'I confirm that the risk owner accepts the deletion of this risk scorecard.',
   },
   migrationDialog: {
     description:
@@ -743,9 +743,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
           'publishDialog.titleDelete': 'Godkjenn sletting',
           'publishDialog.checkboxLabelUpdate':
-            'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
+            'Jeg bekrefter at risikoeier godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
           'publishDialog.checkboxLabelDelete':
-            'Jeg bekrefter at jeg er risikoeier og godtar slettingen av denne risiko- og sårbarhetsanalysen.',
+            'Jeg bekrefter at risikoeier godtar slettingen av denne risiko- og sårbarhetsanalysen.',
 
           'migrationDialog.title': 'Lagre endringer',
           'migrationDialog.description':
