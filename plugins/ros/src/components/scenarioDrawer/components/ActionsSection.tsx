@@ -1,5 +1,5 @@
 import { ActionBox } from './ActionBox';
-import { Fragment, useCallback, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -59,6 +59,7 @@ export function ActionsSection({
   onSubmit,
 }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { isDrawerOpen, submitEditedScenarioToRiSc, scenario } = useScenario();
 
   const { control, watch } = formMethods;
   const { fields, append, remove } = useFieldArray({
@@ -72,16 +73,9 @@ export function ActionsSection({
     FILTER_SETTINGS.SHOW_ALL,
   );
 
-  const filterActions = useCallback(
-    (actions: Action[], filterRelevant: boolean) => {
-      if (!filterRelevant) return actions;
-
-      return actions.filter(
-        action => action.status !== ActionStatusOptions.NotRelevant,
-      );
-    },
-    [],
-  );
+  const [processedActions, setProcessedActions] = useState<
+    { action: Action; originalIndex: number }[]
+  >([]);
 
   const sortActionsByRelevance = useCallback((actions: Action[]) => {
     return [...actions].sort((a, b) => {
@@ -98,23 +92,24 @@ export function ActionsSection({
     });
   }, []);
 
-  const processedActions = useMemo(() => {
-    if (!currentActions?.length) return [];
+  useEffect(() => {
+    if (isDrawerOpen && currentActions?.length) {
+      const sorted = sortActionsByRelevance(currentActions);
 
-    const filtered = filterActions(currentActions, showOnlyRelevant);
-    const sorted = sortActionsByRelevance(filtered);
-
-    return sorted.map(action => ({
-      action,
-      originalIndex: currentActions.findIndex(a => a === action),
-    }));
-  }, [currentActions, showOnlyRelevant, filterActions, sortActionsByRelevance]);
+      setProcessedActions(
+        sorted.map(action => ({
+          action,
+          originalIndex: currentActions.findIndex(a => a === action),
+        })),
+      );
+    }
+    // ESLint-ignore: only sort when drawer opens
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDrawerOpen, sortActionsByRelevance]);
 
   const [currentUpdatedActionIDs, setCurrentUpdatedActionIDs] = useState<
     string[]
   >([]);
-
-  const { submitEditedScenarioToRiSc, scenario } = useScenario();
 
   const debounceCallback = useCallback(
     (updatedIDs: string[]) => {
@@ -149,6 +144,10 @@ export function ActionsSection({
   );
 
   useDebounce(currentUpdatedActionIDs, 6000, debounceCallback);
+
+  const visibleActions = processedActions.filter(({ action }) =>
+    showOnlyRelevant ? action.status !== ActionStatusOptions.NotRelevant : true,
+  );
 
   if (isEditing) {
     return (
@@ -195,9 +194,9 @@ export function ActionsSection({
           onChange={value => setShowOnlyRelevant(value)}
         />
       </Box>
-      {processedActions.length > 0 ? (
-        processedActions.map(({ action, originalIndex }) => (
-          <Fragment key={fields[originalIndex].id}>
+      {visibleActions.length > 0 ? (
+        visibleActions.map(({ action, originalIndex }) => (
+          <Fragment key={action.ID}>
             <Divider />
             <ActionBox
               action={action}
