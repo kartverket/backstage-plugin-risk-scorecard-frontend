@@ -1,4 +1,4 @@
-import { Box, Text } from '@backstage/ui';
+import { Text, Flex } from '@backstage/ui';
 
 interface StatusIconWithTextProps {
   iconSrc: string;
@@ -12,21 +12,15 @@ export function StatusIconWithText({
   text,
 }: StatusIconWithTextProps) {
   return (
-    <Box
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-      }}
-    >
+    <Flex direction="row" align="center" gap="2">
       <img
         src={iconSrc}
         alt={altText}
         style={{ height: '24px', width: '24px' }}
       />
-      <Text as="h6" style={{ fontSize: '1rem' }}>
+      <Text as="h6" variant="body-large">
         {text}
       </Text>
-    </Box>
+    </Flex>
   );
 }

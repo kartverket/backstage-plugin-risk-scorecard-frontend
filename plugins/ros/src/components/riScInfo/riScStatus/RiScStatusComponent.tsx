@@ -31,8 +31,7 @@ import {
 import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
 import { StatusIconWithText } from './StatusIconWithText';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Text, Button, Box, Card, CardBody } from '@backstage/ui';
-import { useStatusStyle } from './RiScStatusComponentStyles';
+import { Text, Button, Box, Flex, Card, CardBody } from '@backstage/ui';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -66,18 +65,12 @@ interface StatusBadgeProps {
 
 function StatusBadge({ icon: Icon, text }: StatusBadgeProps) {
   return (
-    <Box
-      style={{
-        display: 'flex',
-        gap: '8px',
-        alignItems: 'center',
-      }}
-    >
+    <Flex align="center" gap="2">
       <Icon />
-      <Text as="p" style={{ fontSize: '16px', lineHeight: '1.75' }}>
+      <Text as="p" variant="body-large">
         {text}
       </Text>
-    </Box>
+    </Flex>
   );
 }
 
@@ -103,7 +96,6 @@ export function RiScStatusComponent({
     publishRiScFn();
     setPublishRiScDialogIsOpen(false);
   }
-  const { statusBox } = useStatusStyle();
 
   function getDifferences() {
     if (
@@ -228,83 +220,62 @@ export function RiScStatusComponent({
   return (
     <Card style={{ borderRadius: '4px' }}>
       <CardBody style={{ padding: '4px' }}>
-        <Text
-          as="h5"
-          style={{
-            fontSize: '24px',
-            fontWeight: '700',
-            marginBottom: '4px',
-          }}
-        >
+        <Text variant="title-small" weight="bold" as="h5">
           Status
         </Text>
         {!migration && (
           <>
-            <Box style={{ marginTop: '8px' }}>
+            <Box mt="2">
               <Progress step={status} />
             </Box>
-            <Box
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: '16px',
-              }}
-            >
+            <Flex direction="row" justify="between" mt="4">
               <StatusBadge
                 icon={statusMap[status].icon}
                 text={statusMap[status].text}
               />
-              {status === RiScStatusEnum.CREATED && (
-                <Text as="p" className={statusBox}>
-                  {t('rosStatus.editing')}
-                </Text>
-              )}
-              {status === RiScStatusEnum.DRAFT && (
-                <Text as="p" className={statusBox}>
-                  {t('rosStatus.statusBadge.missing')}
-                </Text>
-              )}
-              {status === RiScStatusEnum.DELETION_DRAFT && (
-                <Text as="p" className={statusBox}>
-                  {t('rosStatus.statusBadge.deletionApproval')}
-                </Text>
-              )}
-              {(status === RiScStatusEnum.WAITING ||
-                status === RiScStatusEnum.DELETION_WAITING) && (
-                <Text
-                  as="p"
-                  style={{
-                    marginLeft: '40px',
-                    textAlign: 'right',
-                    fontSize: '16px',
-                    lineHeight: '1.75',
-                  }}
-                >
-                  {t('rosStatus.prStatus')}
-                  <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
-                    Github
-                  </Link>
-                  {status === RiScStatusEnum.WAITING &&
-                    t('rosStatus.prStatus2Update')}
-                  {status === RiScStatusEnum.DELETION_WAITING &&
-                    t('rosStatus.prStatus2Delete')}
-                </Text>
-              )}
-              {status === RiScStatusEnum.PUBLISHED && (
-                <Text
-                  as="p"
-                  style={{
-                    display: 'flex',
-                    textAlign: 'right',
-                    gap: '8px',
-                    fontSize: '16px',
-                  }}
-                >
-                  {t('rosStatus.statusBadge.approved')}
-                </Text>
-              )}
-            </Box>
+
+              <Flex
+                direction="row"
+                ml="auto"
+                mb="4"
+                min-width="0"
+                style={{ textAlign: 'right' }}
+              >
+                {status === RiScStatusEnum.CREATED && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.editing')}
+                  </Text>
+                )}
+                {status === RiScStatusEnum.DRAFT && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.statusBadge.missing')}
+                  </Text>
+                )}
+                {status === RiScStatusEnum.DELETION_DRAFT && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.statusBadge.deletionApproval')}
+                  </Text>
+                )}
+                {(status === RiScStatusEnum.WAITING ||
+                  status === RiScStatusEnum.DELETION_WAITING) && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.prStatus')}
+                    <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
+                      GitHub
+                    </Link>
+                    {status === RiScStatusEnum.WAITING &&
+                      t('rosStatus.prStatus2Update')}
+                    {status === RiScStatusEnum.DELETION_WAITING &&
+                      t('rosStatus.prStatus2Delete')}
+                  </Text>
+                )}
+                {status === RiScStatusEnum.PUBLISHED && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.statusBadge.approved')}
+                  </Text>
+                )}
+              </Flex>
+            </Flex>
             {(status === RiScStatusEnum.DRAFT ||
               status === RiScStatusEnum.DELETION_DRAFT) && (
               <>
@@ -316,7 +287,6 @@ export function RiScStatusComponent({
                     display: 'block',
                     marginLeft: 'auto',
                     fontSize: '14px',
-                    textTransform: 'uppercase',
                   }}
                 >
                   {status === RiScStatusEnum.DRAFT &&
@@ -338,21 +308,14 @@ export function RiScStatusComponent({
         {/* Need to include the undefined check here, as TypeScript does not pick up that this check is part of `migration` */}
         {migration && selectedRiSc.migrationStatus && (
           <Box>
-            <Text
-              as="p"
-              style={{
-                fontWeight: 700,
-                fontSize: '16px',
-                marginBottom: '16px',
-              }}
-            >
+            <Text as="p" variant="body-large" weight="bold">
               <WarningAmberOutlined
                 fontSize="medium"
                 sx={{ transform: 'translateY(5px)', marginTop: '5px' }}
               />{' '}
               {t('rosStatus.statusBadge.migration.title')}
             </Text>
-            <Text as="p" style={{ fontSize: '1rem' }}>
+            <Text as="p" variant="body-large">
               {t('rosStatus.statusBadge.migration.description')}
             </Text>
 
@@ -362,7 +325,6 @@ export function RiScStatusComponent({
               onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
               style={{
                 display: 'block',
-                textTransform: 'uppercase',
                 fontWeight: 500,
                 fontSize: '14px',
                 marginLeft: 'auto',
@@ -383,9 +345,9 @@ export function RiScStatusComponent({
         {!selectedRiSc && (
           <Text as="span">{t('rosStatus.statusBadge.error')}</Text>
         )}
-        <Box style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
+        <Flex direction="row" mt="4">
           {renderStatusContent()}
-        </Box>
+        </Flex>
       </CardBody>
     </Card>
   );
