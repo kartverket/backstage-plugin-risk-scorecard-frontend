@@ -61,7 +61,7 @@ export function RiScSelectionCard(props: Props) {
                 if (key) selectRiSc(key.toString());
               }}
               defaultSelectedKey={selectedRiSc?.id ?? ''}
-              size={'medium'}
+              size="medium"
             />
           </>
         )}
