@@ -9,7 +9,6 @@ import Link from '@mui/material/Link';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useRiScs } from '../../../contexts/RiScContext';
-import { WarningAmberOutlined } from '@mui/icons-material';
 import { useAuthenticatedFetch } from '../../../utils/hooks';
 import Progress from './Progress';
 import { RiScMigrationDialog } from '../MigrationDialog';
