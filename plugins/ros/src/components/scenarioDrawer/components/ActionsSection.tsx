@@ -57,6 +57,7 @@ export function ActionsSection({
   formMethods,
   isEditing,
   onSubmit,
+  setCurrentUpdatedActionIDs,
 }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { isDrawerOpen } = useScenario();
