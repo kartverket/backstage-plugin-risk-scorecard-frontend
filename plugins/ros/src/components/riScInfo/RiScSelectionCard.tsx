@@ -10,8 +10,8 @@ import {
   Button,
   Text,
   Select,
-  Box,
   ButtonIcon,
+  Flex,
 } from '@backstage/ui';
 
 interface Props {
@@ -29,11 +29,10 @@ export function RiScSelectionCard(props: Props) {
       <CardHeader>
         {riScs !== null && riScs.length !== 0 && (
           <>
-            <Box
+            <Flex
+              justify="between"
+              align="center"
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
                 marginBottom: '16px',
                 marginTop: '8px',
               }}
@@ -51,7 +50,7 @@ export function RiScSelectionCard(props: Props) {
               >
                 {t('contentHeader.createNewButton')}
               </Button>
-            </Box>
+            </Flex>
             <Select
               options={riScs.map(riSc => ({
                 value: riSc.id,
@@ -67,13 +66,12 @@ export function RiScSelectionCard(props: Props) {
         )}
       </CardHeader>
       <CardBody>
-        <Box
+        <Flex
+          justify="between"
+          align="center"
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: '8px',
             marginBottom: '16px',
+            marginTop: '8px',
           }}
         >
           <Text variant="title-x-small" as="h5" weight="bold">
@@ -86,7 +84,7 @@ export function RiScSelectionCard(props: Props) {
             }
             variant="tertiary"
           />
-        </Box>
+        </Flex>
         <Markdown description={props.riScWithMetadata.content.scope} />
       </CardBody>
     </Card>
