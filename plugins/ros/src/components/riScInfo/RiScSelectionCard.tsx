@@ -1,4 +1,3 @@
-import { Box } from '@material-ui/core';
 import { Markdown } from '../common/Markdown.tsx';
 import { RiScWithMetadata } from '../../utils/types.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
@@ -11,6 +10,7 @@ import {
   Button,
   Text,
   Select,
+  Box,
 } from '@backstage/ui';
 
 interface Props {
@@ -29,11 +29,12 @@ export function RiScSelectionCard(props: Props) {
         {riScs !== null && riScs.length !== 0 && (
           <>
             <Box
-              sx={{
+              style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                mb: 1,
+                marginBottom: '16px',
+                marginTop: '8px',
               }}
             >
               <Text variant="title-small" as="h6" weight="bold">
@@ -68,6 +69,7 @@ export function RiScSelectionCard(props: Props) {
             alignItems: 'center',
             justifyContent: 'space-between',
             marginTop: '8px',
+            marginBottom: '16px',
           }}
         >
           <Text variant="title-x-small" as="h5" weight="bold">
