@@ -11,6 +11,7 @@ import {
   Text,
   Select,
   Box,
+  ButtonIcon,
 } from '@backstage/ui';
 
 interface Props {
@@ -42,8 +43,11 @@ export function RiScSelectionCard(props: Props) {
               </Text>
               <Button
                 iconStart={<i className="ri-add-line" />}
-                variant="primary"
+                variant="secondary"
                 onClick={props.onCreateNew}
+                style={{
+                  color: '#2E7D32', // Green color from MUI, change when BUI is more mature
+                }}
               >
                 {t('contentHeader.createNewButton')}
               </Button>
@@ -75,12 +79,13 @@ export function RiScSelectionCard(props: Props) {
           <Text variant="title-x-small" as="h5" weight="bold">
             {props.riScWithMetadata.content.title}
           </Text>
-          <Button
+          <ButtonIcon
             onClick={props.edit}
-            iconStart={<i className="ri-pencil-line" />}
-          >
-            {t('dictionary.edit')}
-          </Button>
+            icon={
+              <i className="ri-pencil-line" style={{ fontSize: 'x-large' }} />
+            }
+            variant="tertiary"
+          />
         </Box>
         <Markdown description={props.riScWithMetadata.content.scope} />
       </CardBody>
