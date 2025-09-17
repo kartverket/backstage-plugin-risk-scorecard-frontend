@@ -107,7 +107,6 @@ export function ActionsSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDrawerOpen, sortActionsByRelevance]);
 
-        
   const visibleActions = processedActions.filter(({ action }) =>
     showOnlyRelevant ? action.status !== ActionStatusOptions.NotRelevant : true,
   );
