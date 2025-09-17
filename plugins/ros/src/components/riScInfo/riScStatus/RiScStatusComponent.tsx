@@ -308,31 +308,26 @@ export function RiScStatusComponent({
         {/* Need to include the undefined check here, as TypeScript does not pick up that this check is part of `migration` */}
         {migration && selectedRiSc.migrationStatus && (
           <Box>
-            <Text as="p" variant="body-large" weight="bold">
-              <WarningAmberOutlined
-                fontSize="medium"
-                sx={{ transform: 'translateY(5px)', marginTop: '5px' }}
-              />{' '}
-              {t('rosStatus.statusBadge.migration.title')}
-            </Text>
+            <Box mt="2" mb="2">
+              <Text as="p" variant="body-large" weight="bold">
+                <i className="ri-error-warning-line" />{' '}
+                {t('rosStatus.statusBadge.migration.title')}
+              </Text>
+            </Box>
+
             <Text as="p" variant="body-large">
               {t('rosStatus.statusBadge.migration.description')}
             </Text>
 
-            <Button
-              variant="primary"
-              size="medium"
-              onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
-              style={{
-                display: 'block',
-                fontWeight: 500,
-                fontSize: '14px',
-                marginLeft: 'auto',
-                marginTop: '8px',
-              }}
-            >
-              {t('rosStatus.moreInformationButton')}
-            </Button>
+            <Flex direction="column" mt="4" align="end">
+              <Button
+                variant="primary"
+                size="medium"
+                onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
+              >
+                {t('rosStatus.moreInformationButton')}
+              </Button>
+            </Flex>
             <RiScMigrationDialog
               openDialog={migrationDialogIsOpen}
               handleUpdate={handleUpdate}
