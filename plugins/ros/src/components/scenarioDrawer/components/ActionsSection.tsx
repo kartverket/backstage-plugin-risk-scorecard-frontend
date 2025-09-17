@@ -16,7 +16,6 @@ import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import { ActionStatusOptions } from '../../../utils/constants';
 import Switch from '@mui/material/Switch';
-import { useDebounce } from '../../../utils/hooks';
 
 const FILTER_SETTINGS = {
   SHOW_ALL: false,
@@ -58,9 +57,10 @@ export function ActionsSection({
   formMethods,
   isEditing,
   onSubmit,
+  setCurrentUpdatedActionIDs,
 }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { isDrawerOpen, submitEditedScenarioToRiSc, scenario } = useScenario();
+  const { isDrawerOpen } = useScenario();
 
   const { control, watch } = formMethods;
   const { fields, append, remove } = useFieldArray({
@@ -107,44 +107,6 @@ export function ActionsSection({
     // ESLint-ignore: only sort when drawer opens
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDrawerOpen, sortActionsByRelevance]);
-
-  const [currentUpdatedActionIDs, setCurrentUpdatedActionIDs] = useState<
-    string[]
-  >([]);
-
-  const debounceCallback = useCallback(
-    (updatedIDs: string[]) => {
-      const indexOfAction = (ID: string) => {
-        return scenario.actions.findIndex(a => a.ID === ID);
-      };
-      if (updatedIDs.length === 0) return;
-
-      const formValues = formMethods.getValues();
-      const updatedScenario = {
-        ...scenario,
-        actions: scenario.actions.map(a =>
-          updatedIDs.includes(a.ID)
-            ? {
-                ...a,
-                status:
-                  formValues.actions?.[indexOfAction(a.ID)]?.status ?? a.status,
-                lastUpdated: new Date(),
-              }
-            : a,
-        ),
-      };
-      submitEditedScenarioToRiSc(updatedScenario);
-      setCurrentUpdatedActionIDs([]);
-    },
-    [
-      scenario,
-      formMethods,
-      setCurrentUpdatedActionIDs,
-      submitEditedScenarioToRiSc,
-    ],
-  );
-
-  useDebounce(currentUpdatedActionIDs, 6000, debounceCallback);
 
   const visibleActions = processedActions.filter(({ action }) =>
     showOnlyRelevant ? action.status !== ActionStatusOptions.NotRelevant : true,
