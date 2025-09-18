@@ -7643,6 +7643,7 @@ __metadata:
     "@emotion/cache": "npm:^11.14.0"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.0"
+    "@kartverket/bui-custom-theme": "workspace:*"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
@@ -7672,9 +7673,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kartverket/backstage-theme@workspace:*, @kartverket/backstage-theme@workspace:^, @kartverket/backstage-theme@workspace:packages/theme":
+"@kartverket/bui-custom-theme@workspace:*, @kartverket/bui-custom-theme@workspace:packages/theme":
   version: 0.0.0-use.local
-  resolution: "@kartverket/backstage-theme@workspace:packages/theme"
+  resolution: "@kartverket/bui-custom-theme@workspace:packages/theme"
   languageName: unknown
   linkType: soft
 
@@ -18030,7 +18031,6 @@ __metadata:
     "@backstage/theme": "backstage:^"
     "@kartverket/backstage-plugin-opencost": "npm:0.1.7"
     "@kartverket/backstage-plugin-risk-scorecard": "workspace:plugins/ros"
-    "@kartverket/backstage-theme": "workspace:*"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/icons": "npm:^4.11.3"
     "@playwright/test": "npm:^1.51.1"
@@ -36004,7 +36004,6 @@ __metadata:
   dependencies:
     "@backstage/cli": "backstage:^"
     "@backstage/e2e-test-utils": "backstage:^"
-    "@kartverket/backstage-theme": "workspace:^"
     "@playwright/test": "npm:^1.51.1"
     "@testing-library/dom": "npm:^10.4.0"
     dotenv: "npm:^16.5.0"
