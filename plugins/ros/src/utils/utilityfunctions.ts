@@ -552,9 +552,9 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
   const veryOutdatedCount = allActions.filter(
     action => action.status === UpdatedStatusEnum.VERY_OUTDATED,
   ).length;
-  const littleOutdatedCount = allActions.filter(
+  const outdatedCount = allActions.filter(
     action => action.status === UpdatedStatusEnum.OUTDATED,
   ).length;
 
-  return { veryOutdatedCount, littleOutdatedCount };
+  return { veryOutdatedCount, outdatedCount };
 }
