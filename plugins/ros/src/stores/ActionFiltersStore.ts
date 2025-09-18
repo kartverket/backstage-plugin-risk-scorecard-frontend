@@ -13,8 +13,8 @@ const DEFAULT_ACTION_FILTERS: ActionFilters = {
 };
 
 // Functions
-let getActionFilters = (): ActionFilters => {
-  let storage = localStorage.getItem(LOCAL_STORAGE_KEY);
+const getActionFilters = (): ActionFilters => {
+  const storage = localStorage.getItem(LOCAL_STORAGE_KEY);
   if (storage === null) return DEFAULT_ACTION_FILTERS;
 
   const storageJson = JSON.parse(storage);
@@ -25,7 +25,7 @@ let getActionFilters = (): ActionFilters => {
   };
 };
 
-let storeActionFilters = (actionFilters: ActionFilters) => {
+const storeActionFilters = (actionFilters: ActionFilters) => {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(actionFilters));
 };
 
@@ -33,13 +33,13 @@ let storeActionFilters = (actionFilters: ActionFilters) => {
 export function useActionFiltersStorage() {
   const [actionFilters, setActionFilters] = useState(() => getActionFilters());
 
-  let saveOnlyRelevantFilter = (isVisible: boolean) => {
+  const saveOnlyRelevantFilter = (isVisible: boolean) => {
     const newActionFilters = { ...actionFilters, showOnlyRelevant: isVisible };
     storeActionFilters(newActionFilters);
     setActionFilters(newActionFilters);
   };
 
-  let clearActionFilters = () => {
+  const clearActionFilters = () => {
     localStorage.clear();
   };
 
