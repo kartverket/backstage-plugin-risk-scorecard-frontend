@@ -16,11 +16,7 @@ import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import { ActionStatusOptions } from '../../../utils/constants';
 import Switch from '@mui/material/Switch';
-
-const FILTER_SETTINGS = {
-  SHOW_ALL: false,
-  SHOW_ONLY_RELEVANT: true,
-} as const;
+import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -70,10 +66,7 @@ export function ActionsSection({
 
   const currentActions = watch('actions');
 
-  const [showOnlyRelevant, setShowOnlyRelevant] = useState<boolean>(
-    FILTER_SETTINGS.SHOW_ALL,
-  );
-
+  const { actionFilters, saveOnlyRelevantFilter } = useActionFiltersStorage();
   const [processedActions, setProcessedActions] = useState<
     { action: Action; originalIndex: number }[]
   >([]);
@@ -109,7 +102,9 @@ export function ActionsSection({
   }, [isDrawerOpen, sortActionsByRelevance]);
 
   const visibleActions = processedActions.filter(({ action }) =>
-    showOnlyRelevant ? action.status !== ActionStatusOptions.NotRelevant : true,
+    actionFilters.showOnlyRelevant
+      ? action.status !== ActionStatusOptions.NotRelevant
+      : true,
   );
 
   if (isEditing) {
@@ -153,8 +148,8 @@ export function ActionsSection({
         <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
 
         <RelevanceToggle
-          checked={showOnlyRelevant}
-          onChange={value => setShowOnlyRelevant(value)}
+          checked={actionFilters.showOnlyRelevant}
+          onChange={value => saveOnlyRelevantFilter(value)}
         />
       </Box>
       {visibleActions.length > 0 ? (

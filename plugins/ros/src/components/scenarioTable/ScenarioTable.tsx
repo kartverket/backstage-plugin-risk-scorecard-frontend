@@ -138,14 +138,13 @@ export function ScenarioTable({
             <div
               className={filterBox}
               style={{
-                backgroundColor: '#EFBFA9',
-                border: '1px solid #A32F00',
+                backgroundColor: '#FFE2D4',
               }}
             >
               <span
                 className={filterSpan}
                 style={{
-                  backgroundColor: '#A32F00',
+                  backgroundColor: '#F23131',
                 }}
               >
                 {veryOutdatedCount}
@@ -156,12 +155,11 @@ export function ScenarioTable({
               className={filterBox}
               style={{
                 backgroundColor: '#FCEBCD',
-                border: '1px solid #CF914A',
               }}
             >
               <span
                 className={filterSpan}
-                style={{ backgroundColor: '#CF914A' }}
+                style={{ backgroundColor: '#FF8B38' }}
               >
                 {outdatedCount}
               </span>
