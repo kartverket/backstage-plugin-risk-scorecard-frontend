@@ -46,7 +46,7 @@ export function ScenarioTable({
   const { openNewScenarioWizard, openScenarioDrawer } = useScenario();
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
-  const { veryOutdatedCount, littleOutdatedCount } =
+  const { veryOutdatedCount, outdatedCount } =
     computeStatusCount(riScWithMetadata);
 
   useEffect(() => {
@@ -133,35 +133,40 @@ export function ScenarioTable({
             </Box>
           )}
         </Box>
-        <Box className={filterContainer}>
-          <div
-            className={filterBox}
-            style={{
-              backgroundColor: '#FFE2D4',
-            }}
-          >
-            <span
-              className={filterSpan}
+        {veryOutdatedCount + outdatedCount !== 0 && (
+          <Box className={filterContainer}>
+            <div
+              className={filterBox}
               style={{
-                backgroundColor: '#F23131',
+                backgroundColor: '#FFE2D4',
               }}
             >
-              {veryOutdatedCount}
-            </span>
-            {t('filterButton.veryOutdated')}
-          </div>
-          <div
-            className={filterBox}
-            style={{
-              backgroundColor: '#FCEBCD',
-            }}
-          >
-            <span className={filterSpan} style={{ backgroundColor: '#FF8B38' }}>
-              {littleOutdatedCount}
-            </span>
-            {t('filterButton.littleOutdated')}
-          </div>
-        </Box>
+              <span
+                className={filterSpan}
+                style={{
+                  backgroundColor: '#F23131',
+                }}
+              >
+                {veryOutdatedCount}
+              </span>
+              {t('filterButton.veryOutdated')}
+            </div>
+            <div
+              className={filterBox}
+              style={{
+                backgroundColor: '#FCEBCD',
+              }}
+            >
+              <span
+                className={filterSpan}
+                style={{ backgroundColor: '#FF8B38' }}
+              >
+                {outdatedCount}
+              </span>
+              {t('filterButton.outdated')}
+            </div>
+          </Box>
+        )}
         {riSc.scenarios.length === 0 && editingAllowed ? (
           <Box
             style={{
