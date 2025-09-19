@@ -1,13 +1,12 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { ErrorOutline, Favorite } from '@mui/icons-material';
-import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
 import { DateTime } from 'luxon';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { DifferenceFetchState, DifferenceStatus } from '../../../utils/types';
 import { parseISODateFromEncryptedROS } from '../../../utils/utilityfunctions';
 import { RiScChangeSet } from '../changeset/RiScChangeSet.tsx';
+import { Text, Box } from '@backstage/ui';
 
 type RiScDifferenceDialogProps = {
   differenceFetchState: DifferenceFetchState;
@@ -26,21 +25,26 @@ export function RiScDifferenceDialog({
     ? DateTime.fromISO(formatedDateString).toLocaleString()
     : null;
   return (
-    <Box sx={{ paddingBottom: '24px' }}>
-      <Typography>{t('rosStatus.difference.description')}</Typography>
-      <Typography fontWeight={700} fontSize={13} pb={2}>
+    <Box style={{ paddingBottom: '24px' }}>
+      <Text as="p" style={{ fontSize: '16px' }}>
+        {t('rosStatus.difference.description')}
+      </Text>
+      <Text
+        as="p"
+        style={{ fontSize: '13px', fontWeight: 700, paddingBottom: '16px' }}
+      >
         {parsedDateString &&
           t('rosStatus.difference.publishDate', {
             date: parsedDateString,
           })}
-      </Typography>
+      </Text>
       <Box>
-        <Typography variant="h3" fontSize={18}>
+        <Text as="h3" style={{ fontWeight: 700, fontSize: '18px' }}>
           {t('rosStatus.difference.differences.title')}
-        </Typography>
+        </Text>
         {differenceFetchState.isLoading && (
           <Box
-            sx={{
+            style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -59,7 +63,7 @@ export function RiScDifferenceDialog({
           differenceFetchState.status !==
             DifferenceStatus.GithubFileNotFound && (
             <Box
-              sx={{
+              style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -80,7 +84,7 @@ export function RiScDifferenceDialog({
           differenceFetchState.status ===
             DifferenceStatus.GithubFileNotFound && (
             <Box
-              sx={{
+              style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',

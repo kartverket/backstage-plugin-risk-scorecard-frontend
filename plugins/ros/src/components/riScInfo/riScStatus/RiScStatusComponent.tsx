@@ -5,16 +5,10 @@ import {
   RiScStatus,
   RiScWithMetadata,
 } from '../../../utils/types';
-import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { InfoCard } from '@backstage/core-components';
 import { useRiScs } from '../../../contexts/RiScContext';
-import { subtitle1 } from '../../common/typography';
-import Box from '@mui/material/Box';
-import { WarningAmberOutlined } from '@mui/icons-material';
 import { useAuthenticatedFetch } from '../../../utils/hooks';
 import Progress from './Progress';
 import { RiScMigrationDialog } from '../MigrationDialog';
@@ -36,6 +30,7 @@ import {
 import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
 import { StatusIconWithText } from './StatusIconWithText';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Text, Button, Box, Flex, Card, CardBody } from '@backstage/ui';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -69,12 +64,12 @@ interface StatusBadgeProps {
 
 function StatusBadge({ icon: Icon, text }: StatusBadgeProps) {
   return (
-    <Box display="flex" gap={1} alignItems="center">
+    <Flex align="center" gap="2">
       <Icon />
-      <Typography paragraph variant="subtitle1" mb={0}>
+      <Text as="p" variant="body-large">
         {text}
-      </Typography>
-    </Box>
+      </Text>
+    </Flex>
   );
 }
 
@@ -222,141 +217,133 @@ export function RiScStatusComponent({
   };
 
   return (
-    <InfoCard>
-      <Typography variant="h5">Status</Typography>
-      {!migration && (
-        <>
-          <Box mt={1}>
-            <Progress step={status} />
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-            mt={2}
-          >
-            <StatusBadge
-              icon={statusMap[status].icon}
-              text={statusMap[status].text}
-            />
-            {status === RiScStatusEnum.CREATED && (
-              <Typography
-                paragraph
-                variant="subtitle1"
-                mb={0}
-                ml={5}
-                align="right"
-              >
-                {t('rosStatus.editing')}
-              </Typography>
-            )}
-            {status === RiScStatusEnum.DRAFT && (
-              <Typography paragraph variant="subtitle1" ml={5} align="right">
-                {t('rosStatus.statusBadge.missing')}
-              </Typography>
-            )}
-            {status === RiScStatusEnum.DELETION_DRAFT && (
-              <Typography paragraph variant="subtitle1" ml={5} align="right">
-                {t('rosStatus.statusBadge.deletionApproval')}
-              </Typography>
-            )}
-            {(status === RiScStatusEnum.WAITING ||
-              status === RiScStatusEnum.DELETION_WAITING) && (
-              <Typography
-                paragraph
-                variant="subtitle1"
-                mb={0}
-                ml={5}
-                align="right"
-              >
-                {t('rosStatus.prStatus')}
-                <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
-                  Github
-                </Link>
-                {status === RiScStatusEnum.WAITING &&
-                  t('rosStatus.prStatus2Update')}
-                {status === RiScStatusEnum.DELETION_WAITING &&
-                  t('rosStatus.prStatus2Delete')}
-              </Typography>
-            )}
-            {status === RiScStatusEnum.PUBLISHED && (
-              <Typography
-                paragraph
-                variant="subtitle1"
-                display="flex"
-                gap={1}
-                mb={0}
-              >
-                {t('rosStatus.statusBadge.approved')}
-              </Typography>
-            )}
-          </Box>
-          {(status === RiScStatusEnum.DRAFT ||
-            status === RiScStatusEnum.DELETION_DRAFT) && (
-            <>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={handleOpenPublishRiScDialog}
-                sx={{ display: 'block', marginLeft: 'auto' }}
-              >
-                {status === RiScStatusEnum.DRAFT &&
-                  t('rosStatus.approveButtonUpdate')}
-                {status === RiScStatusEnum.DELETION_DRAFT &&
-                  t('rosStatus.approveButtonDelete')}
-              </Button>
-              <RiScPublishDialog
-                openDialog={publishRiScDialogIsOpen}
-                isDeletion={status === RiScStatusEnum.DELETION_DRAFT}
-                handlePublish={handleApproveAndPublish}
-                handleCancel={handleClosePublishRiScDialog}
-                differenceFetchState={differenceFetchState}
+    <Card style={{ borderRadius: '4px' }}>
+      <CardBody style={{ padding: '4px' }}>
+        <Text variant="title-small" weight="bold" as="h5">
+          Status
+        </Text>
+        {!migration && (
+          <>
+            <Box mt="2">
+              <Progress step={status} />
+            </Box>
+            <Flex direction="row" justify="between" mt="4">
+              <StatusBadge
+                icon={statusMap[status].icon}
+                text={statusMap[status].text}
               />
-            </>
-          )}
-        </>
-      )}
-      {/* Need to include the undefined check here, as TypeScript does not pick up that this check is part of `migration` */}
-      {migration && selectedRiSc.migrationStatus && (
-        <Box>
-          <Typography paragraph sx={subtitle1}>
-            <WarningAmberOutlined
-              fontSize="medium"
-              sx={{ transform: 'translateY(5px)', marginTop: '5px' }}
-            />{' '}
-            {t('rosStatus.statusBadge.migration.title')}
-          </Typography>
-          <Typography>
-            {t('rosStatus.statusBadge.migration.description')}
-          </Typography>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
-            sx={{ display: 'block', marginLeft: 'auto', mt: 1 }}
-          >
-            <Typography variant="button">
-              {t('rosStatus.moreInformationButton')}
-            </Typography>
-          </Button>
-          <RiScMigrationDialog
-            openDialog={migrationDialogIsOpen}
-            handleUpdate={handleUpdate}
-            handleCancel={() => setMigrationDialogIsOpen(false)}
-            migrationStatus={selectedRiSc.migrationStatus}
-          />
-        </Box>
-      )}
-      {/* Error */}
-      {!selectedRiSc && (
-        <Typography paragraph variant="subtitle1">
-          {t('rosStatus.statusBadge.error')}
-        </Typography>
-      )}
-      <Box mt={2} display="flex" gap={1}>
-        {renderStatusContent()}
-      </Box>
-    </InfoCard>
+
+              <Flex
+                direction="row"
+                ml="auto"
+                mb="4"
+                min-width="0"
+                style={{ textAlign: 'right' }}
+              >
+                {status === RiScStatusEnum.CREATED && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.editing')}
+                  </Text>
+                )}
+                {status === RiScStatusEnum.DRAFT && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.statusBadge.missing')}
+                  </Text>
+                )}
+                {status === RiScStatusEnum.DELETION_DRAFT && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.statusBadge.deletionApproval')}
+                  </Text>
+                )}
+                {(status === RiScStatusEnum.WAITING ||
+                  status === RiScStatusEnum.DELETION_WAITING) && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.prStatus')}
+                    <Link target="_blank" href={selectedRiSc.pullRequestUrl}>
+                      GitHub
+                    </Link>
+                    {status === RiScStatusEnum.WAITING &&
+                      t('rosStatus.prStatus2Update')}
+                    {status === RiScStatusEnum.DELETION_WAITING &&
+                      t('rosStatus.prStatus2Delete')}
+                  </Text>
+                )}
+                {status === RiScStatusEnum.PUBLISHED && (
+                  <Text as="p" variant="body-large">
+                    {t('rosStatus.statusBadge.approved')}
+                  </Text>
+                )}
+              </Flex>
+            </Flex>
+            {(status === RiScStatusEnum.DRAFT ||
+              status === RiScStatusEnum.DELETION_DRAFT) && (
+              <>
+                <Button
+                  variant="primary"
+                  size="medium"
+                  onClick={handleOpenPublishRiScDialog}
+                  style={{
+                    display: 'block',
+                    marginLeft: 'auto',
+                    fontSize: '14px',
+                  }}
+                >
+                  {status === RiScStatusEnum.DRAFT &&
+                    t('rosStatus.approveButtonUpdate')}
+                  {status === RiScStatusEnum.DELETION_DRAFT &&
+                    t('rosStatus.approveButtonDelete')}
+                </Button>
+                <RiScPublishDialog
+                  openDialog={publishRiScDialogIsOpen}
+                  isDeletion={status === RiScStatusEnum.DELETION_DRAFT}
+                  handlePublish={handleApproveAndPublish}
+                  handleCancel={handleClosePublishRiScDialog}
+                  differenceFetchState={differenceFetchState}
+                />
+              </>
+            )}
+          </>
+        )}
+        {/* Need to include the undefined check here, as TypeScript does not pick up that this check is part of `migration` */}
+        {migration && selectedRiSc.migrationStatus && (
+          <Box>
+            <Box mt="2" mb="2">
+              <Text as="p" variant="body-large" weight="bold">
+                <i className="ri-error-warning-line" />{' '}
+                {t('rosStatus.statusBadge.migration.title')}
+              </Text>
+            </Box>
+
+            <Text as="p" variant="body-large">
+              {t('rosStatus.statusBadge.migration.description')}
+            </Text>
+
+            <Flex direction="column" mt="4" align="end">
+              <Button
+                variant="primary"
+                size="medium"
+                onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
+              >
+                {t('rosStatus.moreInformationButton')}
+              </Button>
+            </Flex>
+            <RiScMigrationDialog
+              openDialog={migrationDialogIsOpen}
+              handleUpdate={handleUpdate}
+              handleCancel={() => setMigrationDialogIsOpen(false)}
+              migrationStatus={selectedRiSc.migrationStatus}
+            />
+          </Box>
+        )}
+        {/* Error */}
+        {!selectedRiSc && (
+          <Text as="span">{t('rosStatus.statusBadge.error')}</Text>
+        )}
+        <Flex direction="row" mt="4">
+          {renderStatusContent()}
+        </Flex>
+      </CardBody>
+    </Card>
   );
 
   function renderStatusContent() {
