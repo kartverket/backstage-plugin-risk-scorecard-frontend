@@ -93,13 +93,26 @@ export function ActionsSection({
       setProcessedActions(
         sorted.map(action => ({
           action,
-          originalIndex: currentActions.findIndex(a => a === action),
+          originalIndex: currentActions.findIndex(a => a.ID === action.ID),
         })),
       );
     }
     // ESLint-ignore: only sort when drawer opens
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDrawerOpen, sortActionsByRelevance]);
+
+  useEffect(() => {
+    if (isDrawerOpen && processedActions.length) {
+      setProcessedActions(prev =>
+        prev.map(({ action, originalIndex }) => {
+          const updated = currentActions.find(a => a.ID === action.ID);
+          return updated
+            ? { action: updated, originalIndex }
+            : { action, originalIndex };
+        }),
+      );
+    }
+  }, [isDrawerOpen, currentActions, processedActions.length]);
 
   const visibleActions = processedActions.filter(({ action }) =>
     actionFilters.showOnlyRelevant
