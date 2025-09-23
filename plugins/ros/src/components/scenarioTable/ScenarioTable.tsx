@@ -1,53 +1,36 @@
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Box, Button, Paper, Typography } from '@material-ui/core';
-import AddCircle from '@material-ui/icons/AddCircle';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { CheckCircle, Edit } from '@mui/icons-material';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
+import { Paper, Typography } from '@material-ui/core';
+import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import TableBody from '@mui/material/TableBody';
+import { ScenarioTableRow } from './ScenarioTableRow.tsx';
+import { useTableStyles } from './ScenarioTableStyles.ts';
+import { useFontStyles } from '../../utils/style.ts';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
 import { useEffect, useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useRiScs } from '../../contexts/RiScContext';
-import { useScenario } from '../../contexts/ScenarioContext';
-import { useFontStyles } from '../../utils/style';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { RiSc, RiScStatus, RiScWithMetadata } from '../../utils/types';
-import { ScenarioTableRow } from './ScenarioTableRow';
-import { useTableStyles } from './ScenarioTableStyles';
-import { computeStatusCount } from '../../utils/utilityfunctions';
+import { useRiScs } from '../../contexts/RiScContext.tsx';
+import { useScenario } from '../../contexts/ScenarioContext.tsx';
 
-interface ScenarioTableProps {
+type ScenarioTableV1Props = {
+  isEditing: boolean;
+  isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
-  editingAllowed: boolean;
-}
+};
 
-export function ScenarioTable({
-  riScWithMetadata,
-  editingAllowed,
-}: ScenarioTableProps) {
-  const riSc = riScWithMetadata.content;
+export function ScenarioTable(props: ScenarioTableV1Props) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { rowBorder, tableCell, tableCellTitle, tableCellDragIcon } =
+    useTableStyles();
   const { label } = useFontStyles();
-  const {
-    titleBox,
-    rowBorder,
-    tableCell,
-    tableCellTitle,
-    tableCellDragIcon,
-    filterContainer,
-    filterBox,
-    filterSpan,
-  } = useTableStyles();
-  const { openNewScenarioWizard, openScenarioDrawer } = useScenario();
+  const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
-  const { veryOutdatedCount, outdatedCount } =
-    computeStatusCount(riScWithMetadata);
+
+  const { openScenarioDrawer } = useScenario();
 
   useEffect(() => {
     if (!updateStatus.isSuccess) {
@@ -82,7 +65,7 @@ export function ScenarioTable({
     setTempScenarios(updatedScenarios);
 
     const updatedRiSc = {
-      ...riScWithMetadata,
+      ...props.riScWithMetadata,
       content: {
         ...riSc,
         scenarios: updatedScenarios,
@@ -91,188 +74,61 @@ export function ScenarioTable({
     updateRiSc(updatedRiSc, () => {});
   }
 
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-
   return (
-    <>
-      <Paper>
-        <Box className={titleBox}>
-          <Typography variant="h5" style={{ padding: '1rem', marginBottom: 0 }}>
-            {t('scenarioTable.title')}
-          </Typography>
-
-          {riSc.scenarios.length > 0 && editingAllowed && (
-            <Box
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                paddingRight: '1rem',
-              }}
-            >
-              <Button
-                startIcon={<AddCircle />}
-                variant="text"
-                color="primary"
-                onClick={openNewScenarioWizard}
+    <TableContainer style={{ overflow: 'auto' }} component={Paper}>
+      <Table>
+        <TableHead style={{ whiteSpace: 'nowrap' }}>
+          <TableRow className={rowBorder}>
+            {props.isEditing && <TableCell className={tableCellDragIcon} />}
+            <TableCell className={tableCellTitle}>
+              <Typography className={label} style={{ paddingBottom: 0 }}>
+                {t('dictionary.title')}
+              </Typography>
+            </TableCell>
+            <TableCell className={tableCell}>
+              <Typography
+                className={label}
+                style={{ paddingBottom: 0, textAlign: 'center' }}
               >
-                {t('scenarioTable.addScenarioButton')}
-              </Button>
-              <Button
-                startIcon={isEditing ? <CheckCircle /> : <Edit />}
-                variant="text"
-                color="primary"
-                onClick={() =>
-                  isEditing ? setIsEditing(false) : setIsEditing(true)
-                }
-              >
-                {isEditing
-                  ? t('scenarioTable.doneEditing')
-                  : t('scenarioTable.editButton')}
-              </Button>
-            </Box>
-          )}
-        </Box>
-        {veryOutdatedCount + outdatedCount !== 0 && (
-          <Box className={filterContainer}>
-            <div
-              className={filterBox}
-              style={{
-                backgroundColor: '#FFE2D4',
-              }}
-            >
-              <span
-                className={filterSpan}
-                style={{
-                  backgroundColor: '#F23131',
-                }}
-              >
-                {veryOutdatedCount}
-              </span>
-              {t('filterButton.veryOutdated')}
-            </div>
-            <div
-              className={filterBox}
-              style={{
-                backgroundColor: '#FCEBCD',
-              }}
-            >
-              <span
-                className={filterSpan}
-                style={{ backgroundColor: '#FF8B38' }}
-              >
-                {outdatedCount}
-              </span>
-              {t('filterButton.outdated')}
-            </div>
-          </Box>
-        )}
-        {riSc.scenarios.length === 0 && editingAllowed ? (
-          <Box
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '1rem',
-            }}
-          >
-            <Button
-              startIcon={<AddCircleOutlineIcon />}
-              variant="contained"
-              color="primary"
-              onClick={openNewScenarioWizard}
-              style={{
-                display: 'flex',
-                padding: '0.5rem 1rem 0.5rem 1rem',
-                justifyContent: 'center',
-              }}
-            >
-              {t('scenarioTable.addScenarioButton')}
-            </Button>
-          </Box>
-        ) : (
-          <>
-            <TableContainer style={{ overflow: 'auto' }} component={Paper}>
-              <Table>
-                <TableHead style={{ whiteSpace: 'nowrap' }}>
-                  <TableRow className={rowBorder}>
-                    {isEditing && <TableCell className={tableCellDragIcon} />}
-                    <TableCell className={tableCellTitle}>
-                      <Typography
-                        className={label}
-                        style={{ paddingBottom: 0 }}
-                      >
-                        {t('dictionary.title')}
-                      </Typography>
-                    </TableCell>
-                    <TableCell className={tableCell}>
-                      <Typography
-                        className={label}
-                        style={{ paddingBottom: 0, textAlign: 'center' }}
-                      >
-                        {t('dictionary.initialRisk')}
-                      </Typography>
-                    </TableCell>
+                {t('dictionary.initialRisk')}
+              </Typography>
+            </TableCell>
 
-                    <TableCell className={tableCell}>
-                      <Typography
-                        className={label}
-                        style={{ paddingBottom: 0, textAlign: 'center' }}
-                      >
-                        {t('dictionary.measures')}
-                      </Typography>
-                    </TableCell>
-                    <TableCell className={tableCell}>
-                      <Typography
-                        className={label}
-                        style={{ paddingBottom: 0, textAlign: 'center' }}
-                      >
-                        {t('dictionary.restRisk')}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tempScenarios.map((scenario, idx) => (
-                    <ScenarioTableRow
-                      key={scenario.ID}
-                      index={idx}
-                      scenario={scenario}
-                      viewRow={(id: string) =>
-                        openScenarioDrawer(id, editingAllowed)
-                      }
-                      moveRowFinal={moveRowFinal}
-                      moveRowLocal={moveRowLocal}
-                      isLastRow={idx === riSc.scenarios.length - 1}
-                      isEditing={isEditing}
-                    />
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </>
-        )}
-      </Paper>
-    </>
-  );
-}
-
-interface ScenarioTableWrapperProps {
-  riScWithMetadata: RiScWithMetadata;
-}
-
-export function ScenarioTableWrapper({
-  riScWithMetadata,
-}: ScenarioTableWrapperProps) {
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <ScenarioTable
-        editingAllowed={
-          riScWithMetadata.status !== RiScStatus.DeletionDraft &&
-          riScWithMetadata.status !== RiScStatus.DeletionSentForApproval
-        }
-        key={riScWithMetadata.id}
-        riScWithMetadata={riScWithMetadata}
-      />
-    </DndProvider>
+            <TableCell className={tableCell}>
+              <Typography
+                className={label}
+                style={{ paddingBottom: 0, textAlign: 'center' }}
+              >
+                {t('dictionary.measures')}
+              </Typography>
+            </TableCell>
+            <TableCell className={tableCell}>
+              <Typography
+                className={label}
+                style={{ paddingBottom: 0, textAlign: 'center' }}
+              >
+                {t('dictionary.restRisk')}
+              </Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {tempScenarios.map((scenario, idx) => (
+            <ScenarioTableRow
+              key={scenario.ID}
+              index={idx}
+              scenario={scenario}
+              viewRow={(id: string) =>
+                openScenarioDrawer(id, props.isEditingAllowed)
+              }
+              moveRowFinal={moveRowFinal}
+              moveRowLocal={moveRowLocal}
+              isLastRow={idx === riSc.scenarios.length - 1}
+              isEditing={props.isEditing}
+            />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }

@@ -13,8 +13,8 @@ import { RiScInfo } from '../riScInfo/RiScInfo';
 import { Spinner } from '../common/Spinner';
 import { useRiScs } from '../../contexts/RiScContext';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
-import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTable';
 import { RiScHeader } from '../riScHeader/RiScHeader.tsx';
+import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper.tsx';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
