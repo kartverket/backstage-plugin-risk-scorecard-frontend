@@ -217,8 +217,8 @@ export function RiScStatusComponent({
   };
 
   return (
-    <Card style={{ borderRadius: '4px' }}>
-      <CardBody style={{ padding: '4px' }}>
+    <Card>
+      <CardBody>
         <Text variant="title-small" weight="bold" as="h5">
           Status
         </Text>
