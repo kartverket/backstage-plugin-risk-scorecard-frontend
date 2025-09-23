@@ -14,13 +14,13 @@ import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Text } from '@backstage/ui';
 
-type ScenarioTableV1Props = {
+type ScenarioTableProps = {
   isEditing: boolean;
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
 };
 
-export function ScenarioTable(props: ScenarioTableV1Props) {
+export function ScenarioTable(props: ScenarioTableProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { rowBorder, tableCell, tableCellTitle, tableCellDragIcon } =
     useTableStyles();
