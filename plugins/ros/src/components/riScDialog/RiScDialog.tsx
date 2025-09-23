@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
 import { emptyRiSc, isDeeplyEqual } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -15,14 +15,17 @@ import Box from '@mui/material/Box';
 import { Step, StepLabel, Stepper } from '@mui/material';
 import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
+import ConfigInitialRisc from './ConfigInitialRisc';
 import { Delete as DeleteIcon } from '@material-ui/icons';
+import { Flex } from '@backstage/ui';
 
 export enum RiScDialogStates {
   Closed = 0,
   Create = 1,
   EditRiscInfo = 2,
-  EditEncryption = 3,
-  Delete = 4,
+  SelectInitialRisc = 3,
+  EditEncryption = 4,
+  Delete = 5,
 }
 
 interface RiScDialogProps {
@@ -34,6 +37,7 @@ interface RiScDialogProps {
 export enum CreateRiScFrom {
   Scratch = 0,
   Default = 1,
+  Custom = 2,
 }
 
 function RiScStepper({
@@ -45,9 +49,13 @@ function RiScStepper({
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const steps = [t('rosDialog.stepRiscDetails'), t('rosDialog.stepEncryption')];
+  const steps = [
+    t('rosDialog.stepRiscDetails'),
+    t('rosDialog.initialRiscTitle'),
+    t('rosDialog.stepEncryption'),
+  ];
   return (
-    <Box sx={{ width: '100%', p: 2 }}>
+    <Box sx={{ width: '100%', p: 3 }}>
       <Stepper activeStep={activeStep}>
         {steps.map(label => (
           <Step key={label}>
@@ -91,21 +99,23 @@ export function RiScDialog({
 
   const [activeStep, setActiveStep] = useState(0);
 
+  const [switchOn, setSwitchOn] = useState(false);
+
   const [createRiScFrom, setCreateRiScFrom] = useState<CreateRiScFrom>(
     CreateRiScFrom.Scratch,
   );
-  const handleChangeCreateRiScFrom = () => {
-    if (createRiScFrom === CreateRiScFrom.Scratch) {
-      setCreateRiScFrom(CreateRiScFrom.Default);
-    } else {
-      setCreateRiScFrom(CreateRiScFrom.Scratch);
-    }
+  const handleChangeCreateRiScFrom = (value: string) => {
+    const enumValue = Number(value) as CreateRiScFrom;
+    setCreateRiScFrom(enumValue);
   };
 
   const handleNext = handleSubmit(
     () => {
       if (activeStep === 0) {
         setActiveStep(1);
+      }
+      if (activeStep === 1) {
+        setActiveStep(2);
       }
     },
     // Continue to step 1 even if there are errors, as long as there are no errors in step 0 (the content)
@@ -119,6 +129,9 @@ export function RiScDialog({
   function handleBack() {
     if (activeStep === 1) {
       setActiveStep(0);
+    }
+    if (activeStep === 2) {
+      setActiveStep(1);
     }
   }
 
@@ -177,7 +190,6 @@ export function RiScDialog({
               <ConfigRiscInfo
                 dialogState={dialogState}
                 createRiScFrom={createRiScFrom}
-                handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
                 register={register}
                 errors={errors}
                 setValue={setValue}
@@ -185,6 +197,15 @@ export function RiScDialog({
               />
             )}
             {activeStep === 1 && (
+              <ConfigInitialRisc
+                dialogState={dialogState}
+                switchOn={switchOn}
+                setSwitchOn={setSwitchOn}
+                createRiScFrom={createRiScFrom}
+                handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
+              />
+            )}
+            {activeStep === 2 && (
               <ConfigEncryptionDialog
                 gcpCryptoKeys={gcpCryptoKeys}
                 setValue={setValue}
@@ -196,23 +217,25 @@ export function RiScDialog({
           </DialogContent>
         </RiScStepper>
         <DialogActions sx={dialogActions}>
-          {activeStep > 0 && (
-            <Button variant="outlined" onClick={handleBack}>
-              {t('dictionary.previous')}
-            </Button>
-          )}
           <Button variant="outlined" onClick={onClose}>
             {t('dictionary.cancel')}
           </Button>
-          {activeStep < 1 ? (
-            <Button variant="contained" onClick={handleNext}>
-              {t('dictionary.next')}
-            </Button>
-          ) : (
-            <Button variant="contained" onClick={handleFinish}>
-              {t('dictionary.save')}
-            </Button>
-          )}
+          <Flex>
+            {activeStep > 0 && (
+              <Button variant="outlined" onClick={handleBack}>
+                {t('dictionary.previous')}
+              </Button>
+            )}
+            {activeStep < 2 ? (
+              <Button variant="contained" onClick={handleNext}>
+                {t('dictionary.next')}
+              </Button>
+            ) : (
+              <Button variant="contained" onClick={handleFinish}>
+                {t('dictionary.save')}
+              </Button>
+            )}
+          </Flex>
         </DialogActions>
       </Dialog>
     );
@@ -251,7 +274,6 @@ export function RiScDialog({
           <ConfigRiscInfo
             dialogState={dialogState}
             createRiScFrom={createRiScFrom}
-            handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
             register={register}
             errors={errors}
             setValue={setValue}
@@ -264,19 +286,17 @@ export function RiScDialog({
             variant="text"
             color="error"
             onClick={onDelete}
-            sx={{
-              position: 'absolute',
-              left: 16,
-            }}
           >
             {t('contentHeader.deleteButton')}
           </Button>
-          <Button variant="outlined" onClick={onClose}>
-            {t('dictionary.cancel')}
-          </Button>
-          <Button variant="contained" onClick={handleFinish}>
-            {t('dictionary.save')}
-          </Button>
+          <Flex>
+            <Button variant="outlined" onClick={onClose}>
+              {t('dictionary.cancel')}
+            </Button>
+            <Button variant="contained" onClick={handleFinish}>
+              {t('dictionary.save')}
+            </Button>
+          </Flex>
         </DialogActions>
       </Dialog>
     );

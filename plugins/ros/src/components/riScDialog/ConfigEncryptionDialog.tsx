@@ -29,6 +29,7 @@ import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
 import FormHelperText from '@mui/material/FormHelperText';
 import { URLS } from '../../urls';
+import { Text } from '@backstage/ui';
 
 interface ConfigEncryptionDialogProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
@@ -133,6 +134,9 @@ function ConfigEncryptionDialog({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <Text as="h2" variant="title-small" weight="bold">
+        {t('rosDialog.stepEncryption')}
+      </Text>
       <DialogContentText>
         {state === RiScDialogStates.Create
           ? t('sopsConfigDialog.description.new')

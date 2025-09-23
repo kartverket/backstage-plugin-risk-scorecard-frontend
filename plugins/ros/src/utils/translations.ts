@@ -319,6 +319,10 @@ export const pluginRiScMessages = {
     generateDefault: 'Default',
     stepRiscDetails: 'Risk Scorecard Details',
     stepEncryption: 'Configure Encryption',
+    initialRiscTitle: 'Predefined Risk Scorecard (optional)',
+    initialRiscScopeDescription:
+      'Do you want to generate a RoS with predefined scenarios and actions?',
+    initialRiscApplicationType: 'What type of application do you have?',
   },
   sopsConfigDialog: {
     title: 'Encryption',
@@ -882,6 +886,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
+          'rosDialog.initialRiscScopeDescription':
+            'Vil du generere en RoS med forhåndsdefinerte scenarioer og tiltak?',
+          'rosDialog.initialRiscApplicationType':
+            'Hva slags applikasjon har du?',
           'rosDialog.editEncryption': 'Rediger kryptering',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':
@@ -894,6 +902,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.fromScratch': 'Tom',
           'rosDialog.generateDefault': 'Initiell',
           'rosDialog.stepRiscDetails': 'RoS-detaljer',
+          'rosDialog.initialRiscTitle': 'Forhåndsdefinert RoS (valgfritt)',
           'rosDialog.stepEncryption': 'Konfigurer kryptering',
           'sopsConfigDialog.title': 'Kryptering',
           'sopsConfigDialog.writeLocalRiscSuffix':

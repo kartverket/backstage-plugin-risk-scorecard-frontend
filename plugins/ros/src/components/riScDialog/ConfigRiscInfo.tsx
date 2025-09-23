@@ -9,17 +9,11 @@ import { RiScWithMetadata } from '../../utils/types';
 import { CreateRiScFrom, RiScDialogStates } from './RiScDialog';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import Box from '@mui/material/Box';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import Typography from '@mui/material/Typography';
-import { DialogContentText } from '@mui/material';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
 
 interface ConfigRiscInfoProps {
   dialogState: RiScDialogStates;
   createRiScFrom: CreateRiScFrom;
-  handleChangeCreateRiScFrom: () => void;
   register: UseFormRegister<RiScWithMetadata>;
   errors: FieldErrors<RiScWithMetadata>;
   setValue: UseFormSetValue<RiScWithMetadata>;
@@ -27,9 +21,6 @@ interface ConfigRiscInfoProps {
 }
 
 function ConfigRiscInfo({
-  dialogState,
-  createRiScFrom,
-  handleChangeCreateRiScFrom,
   register,
   errors,
   setValue,
@@ -57,43 +48,6 @@ function ConfigRiscInfo({
         minRows={8}
         onMarkdownChange={value => setValue('content.scope', value)}
       />
-
-      {dialogState === RiScDialogStates.Create && (
-        <div>
-          <DialogContentText>
-            {t('rosDialog.generateInitialDescription')}
-          </DialogContentText>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 4,
-            }}
-          >
-            <Typography
-              sx={{
-                fontWeight: 'bold',
-              }}
-            >
-              {t('rosDialog.generateInitialToggleDescription')}
-            </Typography>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={createRiScFrom === CreateRiScFrom.Default}
-                  onChange={handleChangeCreateRiScFrom}
-                />
-              }
-              label={
-                createRiScFrom === CreateRiScFrom.Scratch
-                  ? t('dictionary.no')
-                  : t('dictionary.yes')
-              }
-            />
-          </Box>
-        </div>
-      )}
     </>
   );
 }
