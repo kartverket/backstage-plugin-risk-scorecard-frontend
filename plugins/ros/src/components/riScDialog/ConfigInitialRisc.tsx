@@ -4,9 +4,49 @@ import { Text, RadioGroup, Radio, Box, Switch, Flex } from '@backstage/ui';
 import { CreateRiScFrom, RiScDialogStates } from './RiScDialog';
 import { Divider } from '@mui/material';
 
+type RadioOptionProps = {
+  value: string;
+  label: string;
+  description?: string;
+  active?: boolean;
+};
+
+export const RadioOption = ({
+  value,
+  label,
+  description,
+  active = true,
+}: RadioOptionProps) => {
+  return (
+    <>
+      <Flex align="center" pt="2">
+        <Radio value={value}>
+          <Text
+            as="h5"
+            variant="body-medium"
+            color={active ? 'secondary' : 'primary'}
+          >
+            {label}
+          </Text>
+        </Radio>
+      </Flex>
+      {description && (
+        <Flex ml="6">
+          <Text
+            as="p"
+            variant="body-small"
+            color={active ? 'secondary' : 'primary'}
+          >
+            {description}
+          </Text>
+        </Flex>
+      )}
+    </>
+  );
+};
+
 interface ConfigInitialRiscProps {
   dialogState: RiScDialogStates;
-  createRiScFrom: CreateRiScFrom;
   switchOn: boolean;
   setSwitchOn: (val: boolean) => void;
   handleChangeCreateRiScFrom: (value: string) => void;
@@ -14,7 +54,6 @@ interface ConfigInitialRiscProps {
 
 function ConfigInitialRisc({
   dialogState,
-  createRiScFrom,
   switchOn,
   setSwitchOn,
   handleChangeCreateRiScFrom,
@@ -31,7 +70,7 @@ function ConfigInitialRisc({
               {t('rosDialog.initialRiscTitle')}{' '}
             </Text>
           </Box>
-          <Box mb="4">
+          <Box pb="2">
             <Text variant="body-medium" as="p">
               {t('rosDialog.initialRiscScopeDescription')}
             </Text>
@@ -49,20 +88,28 @@ function ConfigInitialRisc({
               {t('rosDialog.initialRiscApplicationType')}
             </Text>
             <RadioGroup
-              value={String(createRiScFrom)}
               onChange={handleChangeCreateRiScFrom}
               // label={t('rosDialog.initialRiscApplicationType')}
               isDisabled={!switchOn}
             >
-              <Radio value={String(CreateRiScFrom.Default)}>
-                <Box>
-                  Default
-                  <br />
-                  <Text>Text</Text>
-                </Box>
-              </Radio>
-              <Radio value={String(CreateRiScFrom.Scratch)}> Scratch </Radio>
-              <Radio value="2"> Custom </Radio>
+              <RadioOption
+                value={String(CreateRiScFrom.Default)}
+                label="Default"
+                description="En applikasjon som kjører i nettleseren og gir brukergrensenitt via web"
+                active={!switchOn}
+              />
+              <RadioOption
+                value={String(CreateRiScFrom.Scratch)}
+                label="Scratch"
+                description="lorepm ipsum dolor sit amet."
+                active={!switchOn}
+              />
+              <RadioOption
+                value="2"
+                label="Custom"
+                description="lorep ipsum dolor sit amet."
+                active={!switchOn}
+              />
             </RadioGroup>
           </Flex>
         </Box>

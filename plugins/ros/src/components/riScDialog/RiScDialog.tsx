@@ -201,7 +201,6 @@ export function RiScDialog({
                 dialogState={dialogState}
                 switchOn={switchOn}
                 setSwitchOn={setSwitchOn}
-                createRiScFrom={createRiScFrom}
                 handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
               />
             )}
