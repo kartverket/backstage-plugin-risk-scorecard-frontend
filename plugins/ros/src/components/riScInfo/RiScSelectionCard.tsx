@@ -31,10 +31,8 @@ export function RiScSelectionCard(props: Props) {
           <>
             <Flex
               justify="between"
-              align="center"
               style={{
                 marginBottom: '16px',
-                marginTop: '8px',
               }}
             >
               <Text variant="title-small" as="h6" weight="bold">
