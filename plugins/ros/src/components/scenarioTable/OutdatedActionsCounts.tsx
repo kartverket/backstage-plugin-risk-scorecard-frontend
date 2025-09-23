@@ -59,7 +59,7 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
     opacity: 1,
     transform: 'rotate(0deg)',
     width: 'auto',
-    backgroundColor: '#FFE2D4',
+    backgroundColor: props.type === 'veryOutdated' ? '#FFE2D4' : '#FCEBCD',
   };
   const filterSpanStyle = {
     fontSize: '15px',

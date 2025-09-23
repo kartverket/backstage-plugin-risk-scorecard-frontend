@@ -1,5 +1,4 @@
 import TableContainer from '@mui/material/TableContainer';
-import { Paper, Typography } from '@material-ui/core';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -7,13 +6,13 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { useTableStyles } from './ScenarioTableStyles.ts';
-import { useFontStyles } from '../../utils/style.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
 import { useEffect, useState } from 'react';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
+import { Text } from '@backstage/ui';
 
 type ScenarioTableV1Props = {
   isEditing: boolean;
@@ -25,7 +24,6 @@ export function ScenarioTable(props: ScenarioTableV1Props) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { rowBorder, tableCell, tableCellTitle, tableCellDragIcon } =
     useTableStyles();
-  const { label } = useFontStyles();
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
@@ -75,40 +73,31 @@ export function ScenarioTable(props: ScenarioTableV1Props) {
   }
 
   return (
-    <TableContainer style={{ overflow: 'auto' }} component={Paper}>
+    <TableContainer>
       <Table>
         <TableHead style={{ whiteSpace: 'nowrap' }}>
           <TableRow className={rowBorder}>
             {props.isEditing && <TableCell className={tableCellDragIcon} />}
             <TableCell className={tableCellTitle}>
-              <Typography className={label} style={{ paddingBottom: 0 }}>
+              <Text weight="bold" variant="body-large">
                 {t('dictionary.title')}
-              </Typography>
+              </Text>
             </TableCell>
             <TableCell className={tableCell}>
-              <Typography
-                className={label}
-                style={{ paddingBottom: 0, textAlign: 'center' }}
-              >
+              <Text weight="bold" variant="body-large">
                 {t('dictionary.initialRisk')}
-              </Typography>
+              </Text>
             </TableCell>
 
             <TableCell className={tableCell}>
-              <Typography
-                className={label}
-                style={{ paddingBottom: 0, textAlign: 'center' }}
-              >
+              <Text weight="bold" variant="body-large">
                 {t('dictionary.measures')}
-              </Typography>
+              </Text>
             </TableCell>
             <TableCell className={tableCell}>
-              <Typography
-                className={label}
-                style={{ paddingBottom: 0, textAlign: 'center' }}
-              >
+              <Text weight="bold" variant="body-large">
                 {t('dictionary.restRisk')}
-              </Typography>
+              </Text>
             </TableCell>
           </TableRow>
         </TableHead>
