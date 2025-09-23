@@ -23,7 +23,7 @@ export function ScenarioTableCardHeader(props: ScenarioTableCardHeaderProps) {
           <Button
             iconStart={
               props.isEditing ? (
-                <i className="ri-checkbox-circle-line"></i>
+                <i className="ri-checkbox-circle-line" />
               ) : (
                 <i className="ri-pencil-line" />
               )
