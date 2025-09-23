@@ -15,6 +15,7 @@ import { dialogActions } from '../common/mixins';
 
 interface RiScPublishDialogProps {
   openDialog: boolean;
+  isDeletion: boolean;
   handleCancel: () => void;
   handlePublish: () => void;
   differenceFetchState: DifferenceFetchState;
@@ -22,6 +23,7 @@ interface RiScPublishDialogProps {
 
 export const RiScPublishDialog = ({
   openDialog,
+  isDeletion,
   handleCancel,
   handlePublish,
   differenceFetchState,
@@ -35,11 +37,17 @@ export const RiScPublishDialog = ({
   }
 
   return (
-    <Dialog open={openDialog}>
-      <DialogTitle>{t('publishDialog.title')}</DialogTitle>
-      <DialogContent>
+    <Dialog maxWidth="md" open={openDialog}>
+      <DialogTitle>
+        {isDeletion
+          ? t('publishDialog.titleDelete')
+          : t('publishDialog.titleUpdate')}
+      </DialogTitle>
+      <DialogContent sx={{ marginBottom: '16px' }}>
         <>
-          <RiScDifferenceDialog differenceFetchState={differenceFetchState} />
+          {!isDeletion && (
+            <RiScDifferenceDialog differenceFetchState={differenceFetchState} />
+          )}
           <Alert severity="info" icon={false}>
             <FormControlLabel
               control={
@@ -49,7 +57,11 @@ export const RiScPublishDialog = ({
                   onChange={handleCheckboxInput}
                 />
               }
-              label={t('publishDialog.checkboxLabel')}
+              label={
+                isDeletion
+                  ? t('publishDialog.checkboxLabelDelete')
+                  : t('publishDialog.checkboxLabelUpdate')
+              }
             />
           </Alert>
         </>

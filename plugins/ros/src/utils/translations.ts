@@ -8,6 +8,8 @@ export const pluginRiScMessages = {
     title: 'Risk scorecard',
     createNewButton: 'Create new scorecard',
     editEncryption: 'Edit encryption',
+    deleteButton: 'Delete scoreboard',
+    multipleRiScs: 'RiSc scorecards',
   },
   dictionary: {
     click: 'Click',
@@ -30,12 +32,16 @@ export const pluginRiScMessages = {
     hours: 'hours',
     minutes: 'minutes',
     seconds: 'seconds',
+    action: 'Action',
     add: 'Add',
+    added: 'Added',
+    availability: 'Availability',
     copy: 'Copy',
     copied: 'Copied',
     cancel: 'Cancel',
     close: 'Close',
     completed: 'Completed',
+    confidentiality: 'Confidentiality',
     confirm: 'Confirm',
     consequence: 'Consequence', // Severity, Impact, Effect or Consequence
     deadline: 'Deadline', // Deadline or Due date
@@ -45,6 +51,7 @@ export const pluginRiScMessages = {
     edit: 'Edit',
     estimatedRisk: 'Estimated risk',
     initialRisk: 'Initial risk', // Starting or Initial risk
+    integrity: 'Integrity',
     measure: 'Action', // Measure, Action or Initiative
     measures: 'Actions', // Measure, Action or Initiative
     measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
@@ -53,6 +60,7 @@ export const pluginRiScMessages = {
     previous: 'Previous',
     probability: 'Probability', // Likelihood or Probability
     restRisk: 'Remaining risk', // Residual or Remaining risk
+    removed: 'Removed',
     risk: 'Risk',
     save: 'Save',
     saveAndClose: 'Save and close',
@@ -63,7 +71,10 @@ export const pluginRiScMessages = {
     title: 'Title',
     url: 'URL',
     emptyField: 'No {{field}} specified',
+    valuation: 'Valuation',
     vulnerabilities: 'Vulnerabilities',
+    showOnlyRelevant: 'Show only relevant',
+    noRelevantMeasures: 'No relevant actions',
   },
   encryption: {
     title: 'Encryption',
@@ -83,6 +94,9 @@ export const pluginRiScMessages = {
       draft: 'Draft',
       waiting: 'Awaiting approval',
       published: 'Published',
+      draftDeletion: 'Marked for deletion',
+      waitingDeletion: 'Awaiting deletion',
+      deletionApproval: 'The risk owner can review and accept the deletion.',
     },
     updatedStatus: {
       UPDATED: 'Updated status icon',
@@ -91,6 +105,10 @@ export const pluginRiScMessages = {
       VERY_OUTDATED: 'Very outdated status icon',
       error: 'Error status icon',
       disabled: 'Disabled status icon',
+      tooltip: {
+        OUTDATED: 'This action is outdated',
+        VERY_OUTDATED: 'This action is very outdated',
+      },
     },
     lastModified: 'Last published: ',
     daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
@@ -113,26 +131,112 @@ export const pluginRiScMessages = {
       },
     },
     editing: 'You can now start editing',
-    approveButton: 'Accept risks', // Godkjenn ROS
+    approveButtonUpdate: 'Accept risks', // Approve RiSc
+    approveButtonDelete: 'Accept deletion', // Approve deletion of RiSc
     prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
-    prStatus2: ' to publish the scorecard.',
+    prStatus2Update: ' to publish the scorecard.', // Approve RiSc
+    prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
     moreInformationButton: 'More information', // Lagre ROS migrering
   },
   publishDialog: {
-    title: 'Accept risks', // Godkjenn ROS
-    checkboxLabel:
-      'I confirm that I am the risk owner and accept the risks detailed in this risk scorecard.',
+    titleUpdate: 'Accept risks', // Approve ROS
+    titleDelete: 'Accept deletion', // Delete ROS
+    checkboxLabelUpdate:
+      'I confirm that the risk owner accepts the risks detailed in this risk scorecard.',
+    checkboxLabelDelete:
+      'I confirm that the risk owner accepts the deletion of this risk scorecard.',
   },
   migrationDialog: {
     description:
-      'The changes have been done to adhere to the latest schema version. In this case, the RiSc was update to ',
-    description2: 'from',
-    description3: '. Review the ',
-    description4: 'for more information.',
-    changelog: 'schema changelog',
+      'The changes have been made to adhere to the latest schema version.',
+    migrationTitle: 'Migration from {{from}} to {{to}}',
+    schemaVersion: 'Schema version',
+    schemaChangelog: 'Schema changelog',
     title: 'Save changes', // Lagre ROS migrering
     checkboxLabel:
       'I confirm that I have reviewed and wish to save the changes made during the migration.',
+    migration40: {
+      changeExplanation:
+        'This migration changes preset values for consequence and probability.',
+      owner: 'Responsible',
+      deadline: 'Deadline',
+      existingActions: 'Existing actions',
+      vulnerabilitiesTitle: 'Vulnerabilities',
+      vulnerabilities: {
+        'Compromised admin user': 'Compromised admin user',
+        'Denial of service': 'Denial of service',
+        'Disclosed secret': 'Disclosed secret',
+        'Escalation of rights': 'Escalation of rights',
+        'Excessive use': 'Excessive use',
+        'Information leak': 'Information leak',
+        'User repudiation': 'User repudiation',
+        'Unauthorized access': 'Unauthorized use',
+        'Unmonitored use': 'Unmonitored use',
+      },
+    },
+    migration41: {
+      changeExplanation:
+        'This migration removes the owner and deadline fields from actions, removes existing actions and updates values for vulnerabilities.',
+      nokPerIncident: 'NOK/incident',
+      occurrencesPerYear: 'occurrences/year',
+    },
+    migration42: {
+      changeExplanation: 'This migration adds a last updated field to actions.',
+    },
+    migration50: {
+      changeExplanation:
+        'This migration updates the action status to a new naming convention.',
+    },
+  },
+  comparisonDialog: {
+    noChanges: 'No changes',
+    changes: 'Changes to RiSc',
+    noURL: 'No URL provided',
+    noDescription: 'No description provided',
+    risk: {
+      probabilityUnit: 'occurrences/year',
+      consequenceUnit: 'NOK/incident',
+    },
+    valuation: {
+      integrity: {
+        Insignificant: 'Insignificant',
+        Expected: 'Expected',
+        Dependent: 'Dependent',
+        Critical: 'Critical',
+      },
+      availability: {
+        Insignificant: 'Insignificant',
+        '2 days': '2 days',
+        '4 hours': '4 hours',
+        Immediate: 'Immediate',
+      },
+      confidentiality: {
+        Public: 'Public',
+        Internal: 'Internal',
+        Confidential: 'Confidential',
+        'Strictly confidential': 'Strictly confidential',
+      },
+    },
+  },
+  supportDialog: {
+    title: 'Support',
+    openEntry: 'Open',
+    entries: {
+      documentation: { title: 'Documentation', description: 'SKIPDOK' },
+      slackChannel: { title: 'Slack Channel', description: '#gen-skip' },
+      riscFeedbackChannel: {
+        title: 'RISC Feedback Channel',
+        description: '#kodenær-ros-tilbakemelding',
+      },
+      riscDocumentation: {
+        title: 'RISC Documentation',
+        description: 'Confluence - RISC',
+      },
+      securityMetricsFeedbackChannel: {
+        title: 'Sikkerhetsmetrikker Feedback Channel',
+        description: '#sikkerhetsmetrikker-tilbakemelding',
+      },
+    },
   },
   scenarioTable: {
     title: 'Risk scenarios',
@@ -173,20 +277,32 @@ export const pluginRiScMessages = {
       'The estimated risk is a calculation based on the risks the different scenarios pose. If there is a high probability that a serious consequence will occur, this could potentially become a large cost for the organization. In other words, the cost is an attempt to make the risk value more tangible and is the sum of the estimated risk for all the risk scenarios in this risk scorecard.',
     calculatedHowTitle: 'How do we calculate the estimated risk?',
     calculatedHow:
-      'Consequence is measured in cost (in NOK) per incident and probability is measured in incidents per year. ' +
-      'The estimated risk is calculated as C x P.',
+      'Consequence (C) is measured in cost (in NOK) per incident and probability (P) is measured in incidents per year. ' +
+      'The estimated risk is calculated as 20',
+    calculatedHowExponent: 'P+C-1',
     consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
-    probabilityTitle: 'Probability (incidents/year)',
-    probabilityDescription: {
-      '0': 'every 100 years', // 100 year intervals?
-      '1': 'every 10 years', // 10 year intervals?
-      '2': 'yearly', // almost yearly?
-      '3': 'weekly',
-      '4': 'daily',
+    consequenceUnit: 'NOK/incident',
+    consequenceDescription: {
+      oneworkday: '1 workday',
+      oneworkmonth: '1 work month',
+      oneworkyear: '1 work year',
+      '20workyears': '20 work years',
+      '400workyears': '400 work years',
     },
-    example:
-      'A scenario with consequence 2 and probability 4 has an estimated risk of ' +
-      '30 000 NOK/incident x 50 incidents/year = 1 500 000 NOK/year.',
+    probabilityTitle: 'Probability (incidents/year)',
+    probabilityUnit: 'incidents/year',
+    probabilityDescription: {
+      every400years: 'Once every 400 years',
+      every20years: 'Once every 20 years',
+      annualy: 'Annually',
+      monthly: 'Monthly',
+      daily: 'Daily',
+    },
+    example: {
+      part1: 'A risk scenario with consequence ',
+      part2: ' and probability ',
+      part3: ' has an estimated risk of ',
+    },
   },
   rosDialog: {
     titleNew: 'New risk scorecard',
@@ -282,6 +398,8 @@ export const pluginRiScMessages = {
       descriptionError: 'Description cannot be empty',
       urlError: 'Invalid URL',
       emptyState: 'This scenario has no defined actions',
+      lastUpdated: 'Last updated:',
+      notUpdated: 'Not updated yet',
     },
     title: 'Risk scenario',
     titleError: 'Scenario title is required',
@@ -310,6 +428,7 @@ export const pluginRiScMessages = {
       addMeasureButton: 'Add planned action',
       plannedMeasures: 'Planned actions',
       addMeasureTitleError: 'Action title is required',
+      urlDescription: 'For example, link to Jira task',
     },
     restRiskTab: {
       subtitle:
@@ -322,6 +441,12 @@ export const pluginRiScMessages = {
     deleteActionButton: 'Delete action',
     deleteActionConfirmation: 'Are you sure you want to delete this action?',
     closeConfirmation: 'Do you want to save your changes?',
+    errors: {
+      remainingProbabilityTooHigh:
+        'Remaining probability cannot be higher than initial probability',
+      remainingConsequenceTooHigh:
+        'Remaining consequence cannot be higher than initial consequence',
+    },
   },
   consequenceTable: {
     rows: {
@@ -346,11 +471,11 @@ export const pluginRiScMessages = {
         '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.',
       },
       economical: {
-        '1': 'Temporary minor financial loss.\n\nMay be fixed within an hour by one employee',
-        '2': 'Temporary financial loss.\n\nMay be fixed within three days by one employee',
-        '3': 'Financial loss of some duration.\n\nMay be fixed within a month by three employees',
-        '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed within a year by 10 employees',
-        '5': 'Permanent and severe financial loss.\n\nMay be fixed within three years by 100 employees',
+        '1': 'Temporary minor financial loss.\n\nMay be fixed with 1 workday.',
+        '2': 'Temporary financial loss.\n\nMay be fixed with 1 work month.',
+        '3': 'Financial loss of some duration.\n\nMay be fixed with 1 work year.',
+        '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed with 20 work years.',
+        '5': 'Permanent and severe financial loss.\n\nMay be fixed with 400 work years.',
       },
       privacy: {
         '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
@@ -377,11 +502,11 @@ export const pluginRiScMessages = {
       '5': 'Very high', // svært stor
     },
     cells: {
-      '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 100 years',
-      '2': 'The scenario is unlikely to occur.\n\nIt can occur every 10 years',
-      '3': 'The scenario can occur.\n\nIt can occur almost every year',
-      '4': 'The scenario will very likely occur.\n\nIt can occur almost weekly',
-      '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur almost daily',
+      '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 400 years',
+      '2': 'The scenario is unlikely to occur.\n\nIt can occur every 20 years',
+      '3': 'The scenario can occur.\n\nIt can occur yearly',
+      '4': 'The scenario will very likely occur.\n\nIt can occur monthly',
+      '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur daily',
     },
   },
   threatActors: {
@@ -404,17 +529,16 @@ export const pluginRiScMessages = {
     'Excessive use': 'Excessive use',
   },
   actionStatus: {
-    'Not started': 'Not started',
-    'In progress': 'In progress',
-    'On hold': 'On hold',
-    Completed: 'Completed',
-    Aborted: 'Aborted',
+    OK: 'OK',
+    'Not OK': 'Not OK',
+    'Not relevant': 'Not relevant',
   },
   errorMessages: {
     DefaultErrorMessage: 'An error occured',
     NoWriteAccessToRepository:
       'Unable to update RiSc. You do not have write access to this repository.',
     ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
+    ErrorWhenDeletingRiSc: 'Failed to delete risk scorecard',
     ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
     ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
     ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
@@ -430,6 +554,9 @@ export const pluginRiScMessages = {
   infoMessages: {
     OpenedPullRequest: 'Successfully opened pull request',
     CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
+    DeletedRiSc: 'Risk scorecard deleted',
+    DeletedRiScRequiresApproval:
+      'Risk scorecard staged for deletion, requires approval',
     UpdatedRiSc: 'Risk scorecard updated',
     UpdatedSops: 'SOPS configuration updated',
     UpdatedRiScRequiresNewApproval:
@@ -440,6 +567,23 @@ export const pluginRiScMessages = {
     NoSopsConfigFound:
       'No SOPS configuration present on default branch of the GitHub repository',
     CreatedSops: 'SOPS configuration created successfully',
+  },
+  deleteDialog: {
+    title: 'Delete Risk Scorecard',
+    confirmationMessage: 'Are you sure you want to delete this risk scorecard?',
+  },
+  feedbackDialog: {
+    title: 'Give us your feedback!',
+    description: 'Your feedback',
+    confirmationMessage: 'Thank you for your feedback.',
+    feedbackButton: 'Give feedback',
+    errorMessage: 'An error occurred while sending your feedback.',
+    sendButton: 'Send',
+  },
+  filterButton: {
+    veryOutdated: 'Actions are very outdated',
+    outdated: 'Actions are outdated',
+    seeActions: 'See all outdated actions',
   },
 } as const;
 
@@ -457,6 +601,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
           'contentHeader.editEncryption': 'Rediger kryptering',
+          'contentHeader.deleteButton': 'Slett analyse',
+          'contentHeader.multipleRiScs': 'RoS-analyser',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.click': 'Klikk',
           'dictionary.here': 'her',
@@ -477,12 +623,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.hours': 'timer',
           'dictionary.minutes': 'minutter',
           'dictionary.seconds': 'sekunder',
+          'dictionary.action': 'Tiltak',
           'dictionary.add': 'Legg til',
+          'dictionary.added': 'Lagt til',
+          'dictionary.availability': 'Tilgjengelighet',
           'dictionary.copy': 'Kopier',
           'dictionary.copied': 'Kopiert',
           'dictionary.cancel': 'Avbryt',
           'dictionary.close': 'Lukk',
           'dictionary.completed': 'Fullført',
+          'dictionary.confidentiality': 'Konfidensialitet',
           'dictionary.confirm': 'Bekreft',
           'dictionary.consequence': 'Konsekvens',
           'dictionary.deadline': 'Frist',
@@ -492,6 +642,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.edit': 'Rediger',
           'dictionary.estimatedRisk': 'Estimert risiko',
           'dictionary.initialRisk': 'Startrisiko',
+          'dictionary.integrity': 'Integritet',
           'dictionary.measure': 'Tiltak',
           'dictionary.measures': 'Tiltak',
           'dictionary.measureOwner': 'Tiltakseier',
@@ -500,6 +651,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.previous': 'Forrige',
           'dictionary.probability': 'Sannsynlighet',
           'dictionary.restRisk': 'Restrisiko',
+          'dictionary.removed': 'Fjernet',
           'dictionary.risk': 'Risiko',
           'dictionary.save': 'Lagre',
           'dictionary.saveAndClose': 'Lagre og lukk',
@@ -510,7 +662,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.title': 'Tittel',
           'dictionary.url': 'URL',
           'dictionary.emptyField': 'Ingen {{field}} spesifisert',
+          'dictionary.valuation': 'Verdi',
           'dictionary.vulnerabilities': 'Sårbarheter',
+          'dictionary.showOnlyRelevant': 'Vis kun relevante',
+          'dictionary.noRelevantMeasures': 'Ingen relevante tiltak',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
@@ -518,6 +673,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.action.requiredError': 'Feltet er påkrevd',
           'scenarioDrawer.action.emptyState':
             'Scenariet har ingen definerte tiltak',
+          'scenarioDrawer.errors.remainingConsequenceTooHigh':
+            'Restkonsekvens kan ikke være høyere enn startkonsekvens',
+          'scenarioDrawer.errors.remainingProbabilityTooHigh':
+            'Restsannsynlighet kan ikke være høyere enn startsannsynlighet',
+          'scenarioDrawer.action.lastUpdated': 'Sist oppdatert:',
+          'scenarioDrawer.action.notUpdated': 'Ingen dato satt',
 
           'encryption.title': 'Kryptering',
 
@@ -533,15 +694,21 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.draft': 'Utkast',
           'rosStatus.statusBadge.waiting': 'Avventer godkjenning',
           'rosStatus.statusBadge.published': 'Publisert',
+          'rosStatus.statusBadge.draftDeletion': 'Markert for sletting',
+          'rosStatus.statusBadge.waitingDeletion': 'Venter på sletting',
+          'rosStatus.statusBadge.deletionApproval':
+            'Risikoeier kan gå igjennom og godkjenne slettingen.',
           'rosStatus.lastModified': 'Sist publisert: ',
           'rosStatus.daysSinceLastModified':
             '{{days}} dager og {{numCommits}} commits siden',
           'rosStatus.notPublishedYet': 'RoS er ikke publisert enda',
           'rosStatus.errorMessage': 'Kunne ikke hente status',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
-          'rosStatus.approveButton': 'Godkjenn ROS',
+          'rosStatus.approveButtonUpdate': 'Godkjenn ROS',
+          'rosStatus.approveButtonDelete': 'Godkjenn sletting',
           'rosStatus.prStatus': ' Merge pull requesten i ',
-          'rosStatus.prStatus2': " for å publisere ROS'en.",
+          'rosStatus.prStatus2Update': " for å publisere ROS'en.",
+          'rosStatus.prStatus2Delete': " for å slette ROS'en.",
           'rosStatus.moreInformationButton': 'Mer informasjon',
           'rosStatus.difference.description':
             'Oppsummering av endringer som må godkjennes av risikoeier.',
@@ -569,21 +736,95 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.updatedStatus.VERY_OUTDATED': 'Veldig utdatert statusikon',
           'rosStatus.updatedStatus.error': 'Feil statusikon',
           'rosStatus.updatedStatus.disabled': 'Deaktivert statusikon',
-          'publishDialog.title': 'Godkjenn ROS-analyse',
-          'publishDialog.checkboxLabel':
-            'Jeg bekrefter at jeg er risikoeier og godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
+          'rosStatus.updatedStatus.tooltip.OUTDATED':
+            'Dette tiltaket er utdatert',
+          'rosStatus.updatedStatus.tooltip.VERY_OUTDATED':
+            'Dette tiltaket er veldig utdatert',
+          'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
+          'publishDialog.titleDelete': 'Godkjenn sletting',
+          'publishDialog.checkboxLabelUpdate':
+            'Jeg bekrefter at risikoeier godtar risikoen beskrevet i denne risiko- og sårbarhetsanalysen.',
+          'publishDialog.checkboxLabelDelete':
+            'Jeg bekrefter at risikoeier godtar slettingen av denne risiko- og sårbarhetsanalysen.',
 
           'migrationDialog.title': 'Lagre endringer',
           'migrationDialog.description':
-            'Endringene er gjort for å følge den nyeste skjema versjonen. I dette tilfellet ble ROS-analysen oppdatert til ',
-          'migrationDialog.description2': 'fra',
-          'migrationDialog.description3': '. Se ',
-          'migrationDialog.description4': 'for mer informasjon.',
-          'migrationDialog.changelog': 'endringslogg for skjema',
-
+            'Endringene er gjort for å følge den nyeste skjemaversjonen.',
+          'migrationDialog.migrationTitle': 'Migrering fra {{from}} til {{to}}',
+          'migrationDialog.schemaVersion': 'Skjemaversjon',
+          'migrationDialog.schemaChangelog': 'Endringslogg for skjema',
           'migrationDialog.checkboxLabel':
             'Jeg bekrefter at jeg har gjennomgått og ønsker å lagre endringene som er gjort under migreringen.',
-
+          'migrationDialog.migration40.changeExplanation':
+            'Denne migreringen endrer standard verdiene for konsekvens og sannsynlighet.',
+          'migrationDialog.migration40.owner': 'Ansvarlig',
+          'migrationDialog.migration40.deadline': 'Frist',
+          'migrationDialog.migration40.existingActions': 'Eksisterende tiltak',
+          'migrationDialog.migration40.vulnerabilitiesTitle': 'Sårbarheter',
+          'migrationDialog.migration40.vulnerabilities.Compromised admin user':
+            'Kompromittert adminbruker',
+          'migrationDialog.migration40.vulnerabilities.Denial of service':
+            'Tjenestenekt',
+          'migrationDialog.migration40.vulnerabilities.Disclosed secret':
+            'Lekket hemmelighet',
+          'migrationDialog.migration40.vulnerabilities.Escalation of rights':
+            'Rettighetseskalering',
+          'migrationDialog.migration40.vulnerabilities.Excessive use':
+            'Overdreven bruk',
+          'migrationDialog.migration40.vulnerabilities.Information leak':
+            'Informasjonslekkasje',
+          'migrationDialog.migration40.vulnerabilities.Unauthorized access':
+            'Uautorisert tilgang',
+          'migrationDialog.migration40.vulnerabilities.Unmonitored use':
+            'Uovervåket bruk',
+          'migrationDialog.migration40.vulnerabilities.User repudiation':
+            'Benekte brukerhandling',
+          'migrationDialog.migration41.changeExplanation':
+            'Denne migreringen fjerner ansvarlig («owner») og frist («deadline») feltene fra tiltak, fjerner eksisterende tiltak feltet og oppdaterer verdier for sårbarheter.',
+          'migrationDialog.migration41.nokPerIncident': 'NOK/hendelse',
+          'migrationDialog.migration41.occurrencesPerYear': 'hendelser/år',
+          'migrationDialog.migration42.changeExplanation':
+            'Denne migreringen legger til et sist oppdatert felt ("lastUpdated") på tiltak.',
+          'migrationDialog.migration50.changeExplanation':
+            'Denne migreringen oppdaterer tiltakets status til en ny navnekonvensjon.',
+          'comparisonDialog.noChanges': 'Ingen endringer',
+          'comparisonDialog.changes': 'Endringer av RoSen',
+          'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
+          'comparisonDialog.noURL': 'Ingen URL spesifisert',
+          'comparisonDialog.risk.consequenceUnit': 'NOK/hendelse',
+          'comparisonDialog.risk.probabilityUnit': 'hendelser/år',
+          'comparisonDialog.valuation.integrity.Insignificant': 'Insignifikant',
+          'comparisonDialog.valuation.integrity.Expected': 'Forventet',
+          'comparisonDialog.valuation.integrity.Dependent': 'Avhengig',
+          'comparisonDialog.valuation.integrity.Critical': 'Kritisk',
+          'comparisonDialog.valuation.availability.Insignificant':
+            'Insignifikant',
+          'comparisonDialog.valuation.availability.2 days': '2 dager',
+          'comparisonDialog.valuation.availability.4 hours': '4 timer',
+          'comparisonDialog.valuation.availability.Immediate': 'Umiddelbart',
+          'comparisonDialog.valuation.confidentiality.Public': 'Offentlig',
+          'comparisonDialog.valuation.confidentiality.Internal': 'Intern',
+          'comparisonDialog.valuation.confidentiality.Confidential':
+            'Konfidensielt',
+          'comparisonDialog.valuation.confidentiality.Strictly confidential':
+            'Strengt konfidensielt',
+          'supportDialog.title': 'Support',
+          'supportDialog.openEntry': 'Åpne',
+          'supportDialog.entries.documentation.title': 'Dokumentasjon',
+          'supportDialog.entries.documentation.description': 'SKIPDOK',
+          'supportDialog.entries.slackChannel.title': 'Slack-kanal',
+          'supportDialog.entries.slackChannel.description': '#gen-skip',
+          'supportDialog.entries.riscFeedbackChannel.title':
+            'RoS tilbakemeldingskanal',
+          'supportDialog.entries.riscFeedbackChannel.description':
+            '#kodenær-ros-tilbakemelding',
+          'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
+          'supportDialog.entries.riscDocumentation.description':
+            'Confluence - RISC',
+          'supportDialog.entries.securityMetricsFeedbackChannel.title':
+            'Sikkerhetsmetrikker tilbakemeldingskanal',
+          'supportDialog.entries.securityMetricsFeedbackChannel.description':
+            '#sikkerhetsmetrikker-tilbakemelding',
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.noActions': 'Ingen tiltak',
@@ -614,16 +855,30 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.calculatedHowTitle':
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
-            'Konsekvens måles i kroner per hendelse og sannsynlighet måles i hendelser per år. Den estimerte risikoen blir da: K x S.',
+            'Konsekvens (K) måles i kroner per hendelse og sannsynlighet (S) måles i hendelser per år. Den estimerte risikoen blir da: 20',
+          'infoDialog.calculatedHowExponent': 'S+K-1',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
+          'infoDialog.consequenceUnit': 'kr/hendelse',
+          'infoDialog.consequenceDescription.oneworkday': '1 dagsverk',
+          'infoDialog.consequenceDescription.oneworkmonth': '1 månedsverk',
+          'infoDialog.consequenceDescription.oneworkyear': '1 årsverk',
+          'infoDialog.consequenceDescription.20workyears': '20 årsverk',
+          'infoDialog.consequenceDescription.400workyears': '400 årsverk',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
-          'infoDialog.probabilityDescription.0': 'ca hvert 100. år',
-          'infoDialog.probabilityDescription.1': 'ca hvert 10. år',
-          'infoDialog.probabilityDescription.2': 'ca årlig',
-          'infoDialog.probabilityDescription.3': 'ca ukentlig',
-          'infoDialog.probabilityDescription.4': 'ca daglig',
-          'infoDialog.example':
-            'Et risikoscenario med konsekvens 2 og sannsynlighet 4 har en estimert risiko på 30 000 kr/hendelse x 50 hendelser/år = 1 500 000 kr/år.',
+          'infoDialog.probabilityUnit': 'hendelse/år',
+          'infoDialog.probabilityDescription.every400years':
+            '1 gang hvert 400. år',
+          'infoDialog.probabilityDescription.every20years':
+            '1 gang hvert 20. år',
+          'infoDialog.probabilityDescription.annualy': 'Årlig',
+          'infoDialog.probabilityDescription.monthly': 'Månedlig',
+          'infoDialog.probabilityDescription.daily': 'Daglig',
+          'infoDialog.example.part1': 'Et risikoscenario med konsekvens ',
+          'infoDialog.example.part2': ' og sannsynlighet ',
+          'infoDialog.example.part3': ' har en estimert risiko på ',
+          'infoDialog.units.nokPerIncident': 'kr/hendelse',
+          'infoDialog.units.incidentsPerYear': 'hendelser/år',
+          'infoDialog.units.nokPerYear': 'kr/år',
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
@@ -750,7 +1005,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.closeConfirmation': 'Vil du lagre endringene dine?',
           'scenarioDrawer.measureTab.addMeasureTitleError':
             'Tiltak må ha en tittel',
-
+          'scenarioDrawer.measureTab.urlDescription':
+            'For eksempel lenke til Jira-oppgave',
           'consequenceTable.rows.1': 'Ubetydelig',
           'consequenceTable.rows.2': 'Liten',
           'consequenceTable.rows.3': 'Moderat',
@@ -769,17 +1025,17 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'consequenceTable.cells.health.4':
             'Et fåtall alvorlige personskader.\n\nModerat skade på miljø på et begrenset område.',
           'consequenceTable.cells.health.5':
-            'Dødsfall. Svært alvorlig skade på milhø over store områder.',
+            'Dødsfall. Svært alvorlig skade på miljø over store områder.',
           'consequenceTable.cells.economical.1':
-            'Ubetydelig økonomisk tap.\n\nKan fikses i løpet av en time av én ansatt.',
+            'Ubetydelig økonomisk tap.\n\nKan fikses med 1 dagsverk.',
           'consequenceTable.cells.economical.2':
-            'Mindre økonomisk tap.\n\nKan fikses i løpet av tre dager av én ansatt.',
+            'Mindre økonomisk tap.\n\nKan fikses med 1 månedsverk.',
           'consequenceTable.cells.economical.3':
-            'Moderat økonomisk tap.\n\nKan fikses i løpet av en måned av tre ansatte.',
+            'Moderat økonomisk tap.\n\nKan fikses med 1 årsverk.',
           'consequenceTable.cells.economical.4':
-            'Større økonomisk tap.\n\nKan fikses i løpet av et år av 10 ansatte.',
+            'Større økonomisk tap.\n\nKan fikses med 20 årsverk.',
           'consequenceTable.cells.economical.5':
-            'Kritisk økonomisk tap.\n\nKan fikses i løpet av tre år av 100 ansatte.',
+            'Kritisk økonomisk tap.\n\nKan fikses med 400 årsverk.',
           'consequenceTable.cells.privacy.1': 'Ingen brudd.',
           'consequenceTable.cells.privacy.2': 'Mindre brudd.',
           'consequenceTable.cells.privacy.3':
@@ -836,12 +1092,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.On hold': 'På vent',
           'actionStatus.Completed': 'Fullført',
           'actionStatus.Aborted': 'Avbrutt',
-
+          'actionStatus.OK': 'OK',
+          'actionStatus.Not OK': 'Ikke OK',
+          'actionStatus.Not relevant': 'Ikke relevant',
           'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
           'errorMessages.NoWriteAccessToRepository':
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til dette repoet.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
+          'errorMessages.ErrorWhenDeletingRiSc':
+            'Kunne ikke slette risiko- og sårbarhetsanalyse',
           'errorMessages.ErrorWhenCreatingRiSc':
             'Kunne ikke opprette risiko- og sårbarhetsanalyse',
           'errorMessages.RiScDoesNotExist':
@@ -865,6 +1125,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
+          'infoMessages.DeletedRiSc':
+            'Risiko- og sårbarhetsanalysen ble slettet',
+          'infoMessages.DeletedRiScRequiresApproval':
+            'Risiko- og sårbarhetsanalysen ble markert for sletting og trenger godkjenning',
           'infoMessages.UpdatedRiSc':
             'Risiko- og sårbarhetsanalysen ble oppdatert',
           'infoMessages.UpdatedSops': 'SOPS-konfigurasjon oppdatert',
@@ -877,6 +1141,18 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.NoSopsConfigFound':
             'Ingen SOPS-konfigurasjon funnet på default branchen til GitHub-repoet',
           'infoMessages.CreatedSops': 'SOPS-konfigurasjon opprettet',
+          'deleteDialog.title': 'Slett risiko- og sårbarhetsanalyse',
+          'deleteDialog.confirmationMessage':
+            'Er du sikker på at du vil slette denne risiko- og sårbarhetsanalysen?',
+          'feedbackDialog.title': 'Gi oss en tilbakemelding!',
+          'feedbackDialog.description': 'Din tilbakemelding',
+          'feedbackDialog.confirmationMessage': 'Takk for din tilbakemelding.',
+          'feedbackDialog.feedbackButton': 'Gi tilbakemelding',
+          'feedbackDialog.errorMessage': 'Kunne ikke sende tilbakemelding.',
+          'feedbackDialog.sendButton': 'Send',
+          'filterButton.veryOutdated': 'Tiltak er veldig utdatert',
+          'filterButton.outdated': 'Tiltak er utdatert',
+          'filterButton.seeActions': 'Se alle utdaterte tiltak',
         },
       }),
   },

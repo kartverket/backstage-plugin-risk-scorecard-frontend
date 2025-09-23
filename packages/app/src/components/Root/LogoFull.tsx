@@ -3,6 +3,7 @@ import KartverketLogoFullLight from './logo/kartverket-dev-light.svg';
 
 type Props = {
   type: undefined | 'light' | 'dark';
+  'data-pw'?: string;
 } & React.JSX.IntrinsicAttributes &
   React.ClassAttributes<HTMLImageElement> &
   React.ImgHTMLAttributes<HTMLImageElement>;

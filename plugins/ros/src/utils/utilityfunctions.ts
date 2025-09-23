@@ -1,12 +1,13 @@
-import { formatISO } from 'date-fns';
+import { DateTime } from 'luxon';
 import { UpdateStatus } from '../contexts/RiScContext';
 import {
   ActionStatusOptions,
+  BASE_NUMBER,
+  CONSEQUENCE_SCALE_OFFSET,
+  PROBABILITY_SCALE_OFFSET,
   ThreatActorsOptions,
   VulnerabilitiesOptions,
-  consequenceOptions,
   latestSupportedVersion,
-  probabilityOptions,
   riskMatrix,
 } from './constants';
 import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
@@ -40,17 +41,17 @@ export function getAlertSeverity(
 }
 
 export function getRiskMatrixColor(risiko: Risk) {
-  const sannsynlighet = probabilityOptions.indexOf(risiko.probability);
-  const konsekvens = consequenceOptions.indexOf(risiko.consequence);
+  const sannsynlighet = findProbabilityIndex(risiko.probability);
+  const konsekvens = findConsequenceIndex(risiko.consequence);
   return riskMatrix[4 - konsekvens][sannsynlighet];
 }
 
 export function getProbabilityLevel(risiko: Risk) {
-  return probabilityOptions.indexOf(risiko.probability) + 1;
+  return findProbabilityIndex(risiko.probability) + 1;
 }
 
 export function getConsequenceLevel(risiko: Risk) {
-  return consequenceOptions.indexOf(risiko.consequence) + 1;
+  return findConsequenceIndex(risiko.consequence) + 1;
 }
 
 export function emptyRiSc(): RiSc {
@@ -61,6 +62,10 @@ export function emptyRiSc(): RiSc {
     valuations: [],
     scenarios: [],
   };
+}
+
+export function formatDate(date: Date | string): string {
+  return new Date(date).toLocaleDateString();
 }
 
 export function calculateDaysSince(dateString: Date) {
@@ -83,14 +88,17 @@ export const UpdatedStatusEnum = {
 export type UpdatedStatusEnumType =
   (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
 
-export function calculateUpdatedStatus(
-  daysSinceLastModified: number | null,
-  numOfCommitsBehind: number | null,
-): UpdatedStatusEnumType {
-  if (daysSinceLastModified === null || numOfCommitsBehind === null) {
-    return UpdatedStatusEnum.VERY_OUTDATED;
-  }
+function calculateUpdatedStatusFromDaysOnly(daysSinceLastModified: number) {
+  if (daysSinceLastModified < 2 * 7) return UpdatedStatusEnum.UPDATED;
+  if (daysSinceLastModified < 4 * 7) return UpdatedStatusEnum.LITTLE_OUTDATED;
+  if (daysSinceLastModified < 8 * 7) return UpdatedStatusEnum.OUTDATED;
+  return UpdatedStatusEnum.VERY_OUTDATED;
+}
 
+function calculateUpdatedStatusFromDaysAndCommits(
+  daysSinceLastModified: number,
+  numOfCommitsBehind: number,
+) {
   const days = daysSinceLastModified;
   const commits = numOfCommitsBehind;
 
@@ -98,23 +106,38 @@ export function calculateUpdatedStatus(
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
-  if (commits >= 26 && commits <= 50) {
+  if (commits > 25) {
     if (days <= 30) return UpdatedStatusEnum.LITTLE_OUTDATED;
-    if (days >= 31 && days <= 90) return UpdatedStatusEnum.OUTDATED;
+    if (days <= 90) return UpdatedStatusEnum.OUTDATED;
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
-  if (commits >= 11 && commits <= 25) {
+  if (commits > 10) {
     if (days <= 30) return UpdatedStatusEnum.UPDATED;
-    if (days >= 31 && days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
-    if (days >= 91 && days <= 180) return UpdatedStatusEnum.OUTDATED;
+    if (days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
+    if (days <= 180) return UpdatedStatusEnum.OUTDATED;
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
-  if (commits <= 10) {
-    return days <= 60
-      ? UpdatedStatusEnum.UPDATED
-      : UpdatedStatusEnum.LITTLE_OUTDATED;
+  if (days <= 60) return UpdatedStatusEnum.UPDATED;
+  if (days <= 180) return UpdatedStatusEnum.LITTLE_OUTDATED;
+  if (days <= 360) return UpdatedStatusEnum.OUTDATED;
+  return UpdatedStatusEnum.VERY_OUTDATED;
+}
+
+export function calculateUpdatedStatus(
+  daysSinceLastModified: number | null,
+  numOfCommitsBehind: number | null,
+): UpdatedStatusEnumType {
+  if (daysSinceLastModified !== null && numOfCommitsBehind === null) {
+    return calculateUpdatedStatusFromDaysOnly(daysSinceLastModified);
+  }
+
+  if (daysSinceLastModified !== null && numOfCommitsBehind !== null) {
+    return calculateUpdatedStatusFromDaysAndCommits(
+      daysSinceLastModified,
+      numOfCommitsBehind,
+    );
   }
 
   return UpdatedStatusEnum.VERY_OUTDATED;
@@ -161,19 +184,20 @@ export function formatNumber(
 }
 
 export function parseISODateFromEncryptedROS(date?: string): string | null {
-  // Early return if date is null, could happen from recursion
-  if (!date) {
+  // Early return if date is null or too short for an ISO date string, could happen from recursion
+  if (!date || date.length < 10) {
     return null;
   }
+
   try {
-    return formatISO(date);
-  } catch (e) {
-    if (e instanceof RangeError) {
-      // Could not parse string to date
-      // Sometimes this is because SOPS saved the date with ekstra escaped quotations: \"date\"
-      // Trim the string and try again
+    const parsedDate = DateTime.fromISO(date, { setZone: true });
+
+    if (!parsedDate.isValid) {
       return parseISODateFromEncryptedROS(date.substring(1, date.length - 1));
     }
+
+    return parsedDate.toISO({ suppressMilliseconds: true });
+  } catch (e) {
     return null;
   }
 }
@@ -181,7 +205,7 @@ export function parseISODateFromEncryptedROS(date?: string): string | null {
 export function getTranslationKey(
   type: string,
   key: string,
-  t: (s: any) => string,
+  t: (s: any, c?: any) => string,
 ): string {
   if (type === 'error') {
     return t([`errorMessages.${key}`, 'errorMessages.DefaultErrorMessage']);
@@ -358,16 +382,97 @@ export function isDeeplyEqual<T>(
   return false;
 }
 
+function logBase(value: number, base: number): number {
+  return Math.log(value) / Math.log(base);
+}
+
+/*
+  Probability is categorized in 5 levels on a logarithmic scale with base 20:
+  0 = 20^-2 = 1 / 400
+  1 = 20^-1 = 1 / 20
+  2 = 20^-0 = 1
+  3 = 20^1  = 20
+  4 = 20^2  = 400
+*/
+export function findProbabilityIndex(probability: number): number {
+  const probabilityIndex = Math.round(
+    logBase(probability, BASE_NUMBER) - PROBABILITY_SCALE_OFFSET,
+  );
+  return Math.min(4, Math.max(0, probabilityIndex));
+}
+
+/*
+  Consequence  is categorized in 5 levels on a logarithmic scale with base 20:
+  0 = 20^3 = 8 000
+  1 = 20^4 = 160 000
+  2 = 20^5 = 3 200 000
+  3 = 20^6 = 64 000 000
+  4 = 20^7 = 1 280 000 000
+*/
+export function findConsequenceIndex(consequence: number): number {
+  const consequenceIndex = Math.round(
+    logBase(consequence, BASE_NUMBER) - CONSEQUENCE_SCALE_OFFSET,
+  );
+  return Math.min(4, Math.max(0, consequenceIndex));
+}
+
+/*
+  Logarithmically round the consequence to the nearest consequence option.
+*/
+export function roundConsequenceToNearestConsequenceOption(
+  consequence: number,
+): number {
+  return Math.pow(BASE_NUMBER, findConsequenceIndex(consequence) + 3);
+}
+
+/*
+  Logarithmically round the probability to the nearest probability option.
+*/
+export function roundProbabilityToNearestProbabilityOption(
+  probability: number,
+): number {
+  return Math.pow(BASE_NUMBER, findProbabilityIndex(probability) - 2);
+}
+
+export const consequenceIndexToTranslationKeys: Record<number, string> = {
+  0: 'infoDialog.consequenceDescription.oneworkday',
+  1: 'infoDialog.consequenceDescription.oneworkmonth',
+  2: 'infoDialog.consequenceDescription.oneworkyear',
+  3: 'infoDialog.consequenceDescription.20workyears',
+  4: 'infoDialog.consequenceDescription.400workyears',
+};
+
+export const probabilityIndexToTranslationKeys: Record<number, string> = {
+  0: 'infoDialog.probabilityDescription.every400years',
+  1: 'infoDialog.probabilityDescription.every20years',
+  2: 'infoDialog.probabilityDescription.annualy',
+  3: 'infoDialog.probabilityDescription.monthly',
+  4: 'infoDialog.probabilityDescription.daily',
+};
+
 export const actionStatusOptionsToTranslationKeys: Record<
   ActionStatusOptions,
   string
 > = {
-  [ActionStatusOptions.NotStarted]: 'actionStatus.Not started',
-  [ActionStatusOptions.InProgress]: 'actionStatus.In progress',
-  [ActionStatusOptions.OnHold]: 'actionStatus.On hold',
-  [ActionStatusOptions.Completed]: 'actionStatus.Completed',
-  [ActionStatusOptions.Aborted]: 'actionStatus.Aborted',
+  [ActionStatusOptions.OK]: 'actionStatus.OK',
+  [ActionStatusOptions.NotOK]: 'actionStatus.Not OK',
+  [ActionStatusOptions.NotRelevant]: 'actionStatus.Not relevant',
 };
+
+export function getTranslatedActionStatus(
+  status: string,
+  t: (key: string, options?: any) => string,
+): string {
+  if (
+    Object.values(ActionStatusOptions).includes(status as ActionStatusOptions)
+  ) {
+    return t(
+      actionStatusOptionsToTranslationKeys[status as ActionStatusOptions],
+    );
+  }
+
+  return status;
+}
 
 export const threatActorOptionsToTranslationKeys: Record<
   ThreatActorsOptions,
@@ -398,3 +503,58 @@ export const vulnerabiltiesOptionsToTranslationKeys: Record<
   [VulnerabilitiesOptions.InformationLeak]: 'vulnerabilities.Information leak',
   [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
 };
+
+export const getActionStatusColor = (
+  status: string,
+): 'success' | 'error' | 'inherit' => {
+  switch (status) {
+    case ActionStatusOptions.OK:
+      return 'success';
+    case ActionStatusOptions.NotOK:
+      return 'error';
+    default:
+      return 'inherit';
+  }
+};
+
+export const getActionStatusStyle = (status: string) => {
+  const baseStyle = { color: 'white' };
+
+  if (status === ActionStatusOptions.NotRelevant) {
+    return {
+      ...baseStyle,
+      backgroundColor: 'rgba(128, 128, 128, 1)',
+    };
+  }
+  return baseStyle;
+};
+
+export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
+  const scenariosWithData = riScWithMetadata.content.scenarios.map(scenario => {
+    const actionsWithStatus = (scenario.actions ?? []).map(action => {
+      if (!action.lastUpdated) {
+        return { ...action, status: UpdatedStatusEnum.VERY_OUTDATED };
+      }
+      const day = formatDate(action.lastUpdated);
+      const commits = riScWithMetadata.lastPublished?.numberOfCommits ?? null;
+      const daysSinceLastUpdated = calculateDaysSince(new Date(day));
+      const status = calculateUpdatedStatus(daysSinceLastUpdated, commits);
+
+      return { ...action, status };
+    });
+    return {
+      ...scenario,
+      actions: actionsWithStatus,
+    };
+  });
+
+  const allActions = scenariosWithData.flatMap(scenario => scenario.actions);
+  const veryOutdatedCount = allActions.filter(
+    action => action.status === UpdatedStatusEnum.VERY_OUTDATED,
+  ).length;
+  const outdatedCount = allActions.filter(
+    action => action.status === UpdatedStatusEnum.OUTDATED,
+  ).length;
+
+  return { veryOutdatedCount, outdatedCount };
+}

@@ -1,25 +1,34 @@
+import { useRouteRef } from '@backstage/core-plugin-api';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import {
   ReactNode,
-  useState,
-  useEffect,
-  useContext,
   createContext,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
-import { useRouteRef } from '@backstage/core-plugin-api';
-import { Action, FormScenario, Scenario } from '../utils/types';
-import { riScRouteRef, scenarioRouteRef } from '../routes';
 import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { generateRandomId } from '../utils/utilityfunctions';
-import { useRiScs } from './RiScContext';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { riScRouteRef, scenarioRouteRef } from '../routes';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { Action, FormScenario, Scenario } from '../utils/types';
+import {
+  generateRandomId,
+  roundConsequenceToNearestConsequenceOption,
+  roundProbabilityToNearestProbabilityOption,
+} from '../utils/utilityfunctions';
+import { useRiScs } from './RiScContext';
+import {
+  ActionStatusOptions,
+  consequenceOptions,
+  probabilityOptions,
+} from '../utils/constants';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
   title: '',
   description: '',
-  status: 'Not started',
+  status: ActionStatusOptions.NotOK,
   url: '',
 });
 
@@ -44,6 +53,7 @@ const emptyScenario = (): Scenario => ({
 
 type ScenarioDrawerProps = {
   isDrawerOpen: boolean;
+  isEditingAllowed: boolean;
 
   isActionExpanded: (actionId: string) => boolean;
   toggleActionExpanded: (actionId: string) => void;
@@ -65,7 +75,7 @@ type ScenarioDrawerProps = {
     onError?: () => void,
   ) => void;
 
-  openScenarioDrawer: (id: string) => void;
+  openScenarioDrawer: (id: string, isEditingAllowed: boolean) => void;
   openNewScenarioWizard: () => void;
   closeScenarioForm: () => void;
   mapFormScenarioToScenario: (formScenario: FormScenario) => Scenario;
@@ -99,6 +109,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
   const [hoveredScenarios, setHoveredScenarios] = useState<Scenario[]>([]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isEditingAllowed, setIsEditingAllowed] = useState(true);
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -133,13 +144,13 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       ...initialScenario,
       risk: {
         summary: '',
-        probability: '0.01',
-        consequence: '1000',
+        probability: probabilityOptions[0].toString(),
+        consequence: consequenceOptions[0].toString(),
       },
       remainingRisk: {
         summary: '',
-        probability: '0.01',
-        consequence: '1000',
+        probability: probabilityOptions[0].toString(),
+        consequence: consequenceOptions[0].toString(),
       },
     };
   }
@@ -183,8 +194,9 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
   }, [riSc, scenarioIdFromParams, getRiScPath, navigate, searchParams, t]);
 
   // SCENARIO DRAWER FUNCTIONS
-  function openScenarioDrawer(id: string) {
+  function openScenarioDrawer(id: string, canEdit: boolean) {
     if (riSc) {
+      setIsEditingAllowed(canEdit);
       navigate(getScenarioPath({ riScId: riSc.id, scenarioId: id }));
     }
   }
@@ -273,13 +285,13 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       ...apiScenario,
       risk: {
         ...apiScenario.risk,
-        probability: `${apiScenario.risk.probability}`,
-        consequence: `${apiScenario.risk.consequence}`,
+        probability: `${roundProbabilityToNearestProbabilityOption(apiScenario.risk.probability)}`,
+        consequence: `${roundConsequenceToNearestConsequenceOption(apiScenario.risk.consequence)}`,
       },
       remainingRisk: {
         ...apiScenario.remainingRisk,
-        probability: `${apiScenario.remainingRisk.probability}`,
-        consequence: `${apiScenario.remainingRisk.consequence}`,
+        probability: `${roundProbabilityToNearestProbabilityOption(apiScenario.remainingRisk.probability)}`,
+        consequence: `${roundConsequenceToNearestConsequenceOption(apiScenario.remainingRisk.consequence)}`,
       },
     };
     return returnFormScenario;
@@ -287,6 +299,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
   const value = {
     isDrawerOpen,
+    isEditingAllowed,
 
     isActionExpanded,
     toggleActionExpanded,

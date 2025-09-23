@@ -11,11 +11,16 @@ import {
   calculateDaysSince,
   calculateUpdatedStatus,
   deleteScenario,
+  findConsequenceIndex,
+  findProbabilityIndex,
   formatNOK,
   formatNumber,
   generateRandomId,
   isDeeplyEqual,
+  parseISODateFromEncryptedROS,
   requiresNewApproval,
+  roundConsequenceToNearestConsequenceOption,
+  roundProbabilityToNearestProbabilityOption,
   threatActorOptionsToTranslationKeys,
   vulnerabiltiesOptionsToTranslationKeys,
 } from './utilityfunctions';
@@ -49,11 +54,42 @@ describe('calculateDaysSince', () => {
 });
 
 describe('calculateUpdatedStatus', () => {
-  it('returns VERY_OUTDATED if any input is null', () => {
-    expect(calculateUpdatedStatus(null, 10)).toBe(
+  it('returns VERY_OUTDATED if both inputs are null', () => {
+    expect(calculateUpdatedStatus(null, null)).toBe(
       UpdatedStatusEnum.VERY_OUTDATED,
     );
-    expect(calculateUpdatedStatus(10, null)).toBe(
+  });
+
+  it('returns VERY_OUTDATED if days is null', () => {
+    expect(calculateUpdatedStatus(null, 13)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+  });
+
+  it('returns correct status when commits is null', () => {
+    expect(calculateUpdatedStatus(0, null)).toBe(UpdatedStatusEnum.UPDATED);
+    expect(calculateUpdatedStatus(5, null)).toBe(UpdatedStatusEnum.UPDATED);
+    expect(calculateUpdatedStatus(13, null)).toBe(UpdatedStatusEnum.UPDATED);
+    expect(calculateUpdatedStatus(14, null)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(20, null)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(27, null)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(28, null)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(30, null)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(51, null)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(55, null)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(56, null)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(120, null)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(439, null)).toBe(
       UpdatedStatusEnum.VERY_OUTDATED,
     );
   });
@@ -62,10 +98,22 @@ describe('calculateUpdatedStatus', () => {
     expect(calculateUpdatedStatus(10, 51)).toBe(
       UpdatedStatusEnum.VERY_OUTDATED,
     );
+    expect(calculateUpdatedStatus(100, 100)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
   });
 
+  it('returns correct status for commits between 26 and 50', () => {
+    expect(calculateUpdatedStatus(20, 30)).toBe(
+      UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(60, 30)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(100, 30)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
+    );
+  });
   it('returns correct status for commits between 11 and 25', () => {
-    expect(calculateUpdatedStatus(30, 15)).toBe(UpdatedStatusEnum.UPDATED);
+    expect(calculateUpdatedStatus(20, 15)).toBe(UpdatedStatusEnum.UPDATED);
     expect(calculateUpdatedStatus(90, 15)).toBe(
       UpdatedStatusEnum.LITTLE_OUTDATED,
     );
@@ -76,9 +124,13 @@ describe('calculateUpdatedStatus', () => {
   });
 
   it('returns correct status for commits <= 10', () => {
-    expect(calculateUpdatedStatus(30, 5)).toBe(UpdatedStatusEnum.UPDATED);
-    expect(calculateUpdatedStatus(61, 5)).toBe(
+    expect(calculateUpdatedStatus(60, 5)).toBe(UpdatedStatusEnum.UPDATED);
+    expect(calculateUpdatedStatus(120, 5)).toBe(
       UpdatedStatusEnum.LITTLE_OUTDATED,
+    );
+    expect(calculateUpdatedStatus(300, 5)).toBe(UpdatedStatusEnum.OUTDATED);
+    expect(calculateUpdatedStatus(400, 5)).toBe(
+      UpdatedStatusEnum.VERY_OUTDATED,
     );
   });
 });
@@ -418,6 +470,32 @@ describe('formatNumber', () => {
   });
 });
 
+describe('parseISODateFromEncryptedROS', () => {
+  it('should parse a valid ISO date string', () => {
+    const isoDate = '2023-10-01T12:00:00Z';
+    const result = parseISODateFromEncryptedROS(isoDate);
+    expect(result).toBe('2023-10-01T12:00:00Z');
+  });
+
+  it('should parse a valid ISO date string with extra escaped quotations', () => {
+    const isoDate = '\"2023-10-01T12:00:00Z\"';
+    const result = parseISODateFromEncryptedROS(isoDate);
+    expect(result).toBe('2023-10-01T12:00:00Z');
+  });
+
+  it('should return null for an invalid date string', () => {
+    const invalidDate = 'invalid-date';
+    const result = parseISODateFromEncryptedROS(invalidDate);
+    expect(result).toBeNull();
+  });
+
+  it('should return null for an empty string', () => {
+    const emptyString = '';
+    const result = parseISODateFromEncryptedROS(emptyString);
+    expect(result).toBeNull();
+  });
+});
+
 describe('deleteScenario', () => {
   const scenario1: Scenario = {
     ID: '1',
@@ -547,38 +625,167 @@ describe('Translation mappings match translation keys', () => {
   it('translatedActionStatusOptions values should match corresponding keys in translations', () => {
     const optionToTranslationValues = Object.values(
       actionStatusOptionsToTranslationKeys,
-    ).sort();
-    const translationKeys = Object.keys(pluginRiScMessages.actionStatus).sort();
-
-    optionToTranslationValues.forEach((value, index) => {
-      const translationKey = translationKeys[index];
-      expect(value).toBe(`actionStatus.${translationKey}`);
+    );
+    optionToTranslationValues.forEach(value => {
+      const key = value.replace('actionStatus.', '');
+      expect(pluginRiScMessages.actionStatus).toHaveProperty(key);
     });
   });
+});
 
-  it('translatedThreatActorOptions values should match corresponding keys in translations', () => {
-    const optionToTranslationValues = Object.values(
-      threatActorOptionsToTranslationKeys,
-    ).sort();
-    const translationKeys = Object.keys(pluginRiScMessages.threatActors).sort();
+it('translatedThreatActorOptions values should match corresponding keys in translations', () => {
+  const optionToTranslationValues = Object.values(
+    threatActorOptionsToTranslationKeys,
+  ).sort();
+  const translationKeys = Object.keys(pluginRiScMessages.threatActors).sort();
 
-    optionToTranslationValues.forEach((value, index) => {
-      const translationKey = translationKeys[index];
-      expect(value).toBe(`threatActors.${translationKey}`);
-    });
+  optionToTranslationValues.forEach((value, index) => {
+    const translationKey = translationKeys[index];
+    expect(value).toBe(`threatActors.${translationKey}`);
+  });
+});
+
+it('translatedVulnerabilitiesOptions values should match corresponding keys in translations', () => {
+  const optionToTranslationValues = Object.values(
+    vulnerabiltiesOptionsToTranslationKeys,
+  ).sort();
+  const translationKeys = Object.keys(
+    pluginRiScMessages.vulnerabilities,
+  ).sort();
+
+  optionToTranslationValues.forEach((value, index) => {
+    const translationKey = translationKeys[index];
+    expect(value).toBe(`vulnerabilities.${translationKey}`);
+  });
+});
+
+describe('Enum to translation key maps', () => {
+  it('actionStatusOptionsToTranslationKeys keys should match ActionStatusOptions values', () => {
+    const enumValues = Object.values(ActionStatusOptions);
+    const mapKeys = Object.keys(actionStatusOptionsToTranslationKeys);
+    expect(mapKeys.sort()).toEqual(enumValues.sort());
   });
 
-  it('translatedVulnerabilitiesOptions values should match corresponding keys in translations', () => {
-    const optionToTranslationValues = Object.values(
-      vulnerabiltiesOptionsToTranslationKeys,
-    ).sort();
-    const translationKeys = Object.keys(
-      pluginRiScMessages.vulnerabilities,
-    ).sort();
+  it('threatActorOptionsToTranslationKeys keys should match ThreatActorsOptions values', () => {
+    const enumValues = Object.values(ThreatActorsOptions);
+    const mapKeys = Object.keys(threatActorOptionsToTranslationKeys);
+    expect(mapKeys.sort()).toEqual(enumValues.sort());
+  });
 
-    optionToTranslationValues.forEach((value, index) => {
-      const translationKey = translationKeys[index];
-      expect(value).toBe(`vulnerabilities.${translationKey}`);
-    });
+  it('vulnerabiltiesOptionsToTranslationKeys keys should match VulnerabilitiesOptions values', () => {
+    const enumValues = Object.values(VulnerabilitiesOptions);
+    const mapKeys = Object.keys(vulnerabiltiesOptionsToTranslationKeys);
+    expect(mapKeys.sort()).toEqual(enumValues.sort());
+  });
+});
+
+describe('findProbabilityIndex', () => {
+  it.each([
+    [1 / 400, 0], // 20^-2
+    [1 / 20, 1], // 20^-1
+    [1, 2], // 20^0
+    [20, 3], // 20^1
+    [400, 4], // 20^2
+  ])('returns %i for probability %f', (input, expected) => {
+    expect(findProbabilityIndex(input)).toBe(expected);
+  });
+
+  it('clamps low values to 0', () => {
+    expect(findProbabilityIndex(1e-10)).toBe(0);
+  });
+
+  it('clamps high values to 4', () => {
+    expect(findProbabilityIndex(1e5)).toBe(4);
+  });
+
+  it('handles values between defined steps', () => {
+    // log_20(4.47) + 2 = ~2.49 => round to 2
+    expect(findProbabilityIndex(4.47)).toBe(2);
+  });
+});
+
+describe('findConsequenceIndex', () => {
+  it.each([
+    [8000, 0], // 20^3
+    [160000, 1], // 20^4
+    [3200000, 2], // 20^5
+    [64000000, 3], // 20^6
+    [1280000000, 4], // 20^7
+  ])('returns %i for consequence %f', (input, expected) => {
+    expect(findConsequenceIndex(input)).toBe(expected);
+  });
+
+  it('clamps low values to 0', () => {
+    expect(findConsequenceIndex(1000)).toBe(0);
+  });
+
+  it('clamps high values to 4', () => {
+    expect(findConsequenceIndex(1e10)).toBe(4);
+  });
+
+  it('handles values between defined steps', () => {
+    // log_20(15M) - 3 = ~2.51 => round to 3
+    expect(findConsequenceIndex(15000000)).toBe(3);
+  });
+});
+
+describe('roundConsequenceToNearestConsequenceOption', () => {
+  it.each([
+    [8000, 8000], // Exact match for index 0
+    [160000, 160000], // Exact match for index 1
+    [3200000, 3200000], // Exact match for index 2
+    [64000000, 64000000], // Exact match for index 3
+    [1280000000, 1280000000], // Exact match for index 4
+  ])('returns exact match %i for consequence %f', (input, expected) => {
+    expect(roundConsequenceToNearestConsequenceOption(input)).toBe(expected);
+  });
+
+  it.each([
+    [10000, 8000], // round to 8000 (index 0)
+    [1000000, 3200000], // round to 3200000 (index 3)
+  ])('rounds %i to nearest consequence %f', (input, expected) => {
+    expect(roundConsequenceToNearestConsequenceOption(input)).toBe(expected);
+  });
+
+  it.each([
+    [1e10, 1280000000], // Clamped to index 4
+    [1000, 8000], // Clamped to index 0
+  ])('clamps %i to consequence %f', (input, expected) => {
+    expect(roundConsequenceToNearestConsequenceOption(input)).toBe(expected);
+  });
+});
+
+describe('roundProbabilityToNearestProbabilityOption', () => {
+  it.each([
+    [1 / 400, 1 / 400], // index 0 => 20^-2
+    [1 / 20, 1 / 20], // index 1 => 20^-1
+    [1, 1], // index 2 => 20^0
+    [20, 20], // index 3 => 20^1
+    [400, 400], // index 4 => 20^2
+  ])('returns exact match %i for probability %f', (input, expected) => {
+    expect(roundProbabilityToNearestProbabilityOption(input)).toBeCloseTo(
+      expected,
+      5,
+    );
+  });
+
+  it.each([
+    [0.01, 0.0025], // round to 1/400 (index 0)
+    [10, 20], // round to 1/20 (index 3)
+  ])('rounds %i to nearest probability %f', (input, expected) => {
+    expect(roundProbabilityToNearestProbabilityOption(input)).toBeCloseTo(
+      expected,
+      5,
+    );
+  });
+
+  it.each([
+    [0.0001, 1 / 400], // clamped to index 0
+    [1000, 400], // clamped to index 4
+  ])('clamps %i to probability %f', (input, expected) => {
+    expect(roundProbabilityToNearestProbabilityOption(input)).toBeCloseTo(
+      expected,
+      5,
+    );
   });
 });

@@ -15,17 +15,20 @@ import Box from '@mui/material/Box';
 import { Step, StepLabel, Stepper } from '@mui/material';
 import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
+import { Delete as DeleteIcon } from '@material-ui/icons';
 
 export enum RiScDialogStates {
   Closed = 0,
   Create = 1,
   EditRiscInfo = 2,
   EditEncryption = 3,
+  Delete = 4,
 }
 
 interface RiScDialogProps {
   onClose: () => void;
   dialogState: RiScDialogStates;
+  onDelete: () => void;
 }
 
 export enum CreateRiScFrom {
@@ -57,9 +60,14 @@ function RiScStepper({
   );
 }
 
-export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
+export function RiScDialog({
+  onClose,
+  dialogState,
+  onDelete,
+}: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { selectedRiSc, createNewRiSc, updateRiSc, gcpCryptoKeys } = useRiScs();
+  const { selectedRiSc, createNewRiSc, deleteRiSc, updateRiSc, gcpCryptoKeys } =
+    useRiScs();
 
   const {
     register,
@@ -117,6 +125,8 @@ export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
     if (dialogState === RiScDialogStates.Create) {
       createNewRiSc(data, createRiScFrom === CreateRiScFrom.Default);
+    } else if (dialogState === RiScDialogStates.Delete) {
+      deleteRiSc();
     } else {
       // Do manual comparison of contents, as the sopsConfig field contains many values from the backend that are not
       // used or set by the frontend.
@@ -208,10 +218,33 @@ export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
     );
   }
 
+  if (dialogState === RiScDialogStates.Delete) {
+    return (
+      <Dialog open={true} onClose={onClose}>
+        <DialogTitle>{t('deleteDialog.title')}</DialogTitle>
+        <DialogContent>
+          <DialogContent>{t('deleteDialog.confirmationMessage')}</DialogContent>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onClose}>
+            {t('dictionary.cancel')}
+          </Button>
+          <Button variant="contained" onClick={handleFinish}>
+            {t('dictionary.delete')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
   if (dialogState === RiScDialogStates.EditRiscInfo) {
     return (
       <Dialog open={true} onClose={onClose}>
-        <DialogTitle>{t('rosDialog.titleEdit')}</DialogTitle>
+        <DialogTitle>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            {t('rosDialog.titleEdit')}
+          </Box>
+        </DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
         >
@@ -226,6 +259,18 @@ export function RiScDialog({ onClose, dialogState }: RiScDialogProps) {
           />
         </DialogContent>
         <DialogActions sx={dialogActions}>
+          <Button
+            startIcon={<DeleteIcon />}
+            variant="text"
+            color="error"
+            onClick={onDelete}
+            sx={{
+              position: 'absolute',
+              left: 16,
+            }}
+          >
+            {t('contentHeader.deleteButton')}
+          </Button>
           <Button variant="outlined" onClick={onClose}>
             {t('dictionary.cancel')}
           </Button>

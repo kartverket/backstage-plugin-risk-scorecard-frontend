@@ -1,9 +1,14 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
+import {
+  Cached,
+  Edit,
+  ExpandLess,
+  ExpandMore,
+  PriorityHigh,
+} from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -18,15 +23,24 @@ import { useScenario } from '../../../contexts/ScenarioContext';
 import { ActionStatusOptions } from '../../../utils/constants';
 import { useIsMounted } from '../../../utils/hooks';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { Action, FormScenario } from '../../../utils/types';
+import { Action, FormScenario, LastPublished } from '../../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
+  calculateDaysSince,
+  calculateUpdatedStatus,
   deleteAction,
+  formatDate,
+  UpdatedStatusEnum,
+  getTranslatedActionStatus,
+  getActionStatusColor,
+  getActionStatusStyle,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
+import { DualButton } from '../../common/DualButton';
+import { Tooltip } from '@material-ui/core';
 
 interface ActionBoxProps {
   action: Action;
@@ -34,6 +48,7 @@ interface ActionBoxProps {
   formMethods: UseFormReturn<FormScenario>;
   remove: UseFieldArrayRemove;
   onSubmit: () => void;
+  setCurrentUpdatedActionIDs: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export function ActionBox({
@@ -42,6 +57,7 @@ export function ActionBox({
   formMethods,
   remove,
   onSubmit,
+  setCurrentUpdatedActionIDs,
 }: ActionBoxProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -52,16 +68,15 @@ export function ActionBox({
   const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
     useState(false);
 
-  const { updateStatus } = useRiScs();
+  const { updateStatus, selectedRiSc } = useRiScs();
+
   const { submitEditedScenarioToRiSc, mapFormScenarioToScenario, scenario } =
     useScenario();
 
   const isActionTitlePresent = action.title !== null && action.title !== '';
 
   /* @ts-ignore Because ts can't typecheck strings against our keys */
-  const translatedActionStatus = t(
-    actionStatusOptionsToTranslationKeys[action.status as ActionStatusOptions],
-  );
+  const translatedActionStatus = getTranslatedActionStatus(action.status, t);
 
   const isMounted = useIsMounted();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -72,7 +87,6 @@ export function ActionBox({
   }
 
   function confirmDeleteAction(): void {
-    remove(index);
     deleteAction(remove, index, onSubmit);
     setDeleteActionConfirmationIsOpen(false);
   }
@@ -85,19 +99,45 @@ export function ActionBox({
     setAnchorEl(null);
   }
 
-  async function handleStatusChange(newStatus: string) {
-    const updatedScenario = {
-      ...scenario,
-      actions: scenario.actions.map(a =>
-        a.ID === action.ID ? { ...a, status: newStatus } : a,
-      ),
-    };
+  const parsedDateTime = action.lastUpdated
+    ? formatDate(action.lastUpdated)
+    : t('scenarioDrawer.action.notUpdated');
 
-    await submitEditedScenarioToRiSc(updatedScenario);
+  function updateActionInScenario(updates: ActionStatusOptions) {
+    const actionIndex = scenario.actions.findIndex(a => a.ID === action.ID);
+    const currentStatus =
+      formMethods.getValues()?.actions?.[actionIndex]?.status;
 
-    if (isMounted()) {
+    if (updates === currentStatus) {
       handleMenuClose();
+      return;
     }
+
+    formMethods.setValue(`actions.${index}.status`, updates);
+
+    setCurrentUpdatedActionIDs(prev =>
+      prev.includes(action.ID) ? prev : [...prev, action.ID],
+    );
+
+    if (isMounted()) handleMenuClose();
+  }
+
+  function handleStatusChange(newStatus: ActionStatusOptions) {
+    updateActionInScenario(newStatus);
+  }
+
+  function isToday(lastUpdated: Date | null): boolean {
+    const today = new Date();
+
+    if (!lastUpdated) return false;
+    const lastUpdatedParsed =
+      typeof lastUpdated === 'string' ? new Date(lastUpdated) : lastUpdated;
+
+    return (
+      lastUpdatedParsed.getDate() === today.getDate() &&
+      lastUpdatedParsed.getMonth() === today.getMonth() &&
+      lastUpdatedParsed.getFullYear() === today.getFullYear()
+    );
   }
 
   useEffect(() => () => setAnchorEl(null), []);
@@ -140,7 +180,14 @@ export function ActionBox({
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 1,
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -165,55 +212,102 @@ export function ActionBox({
               : `${t('dictionary.measure')} ${index + 1}`}
           </Typography>
         </Box>
-        <IconButton
-          disabled={isExpanded ? false : true}
+        <Box
           sx={{
-            marginLeft: 'auto',
-            opacity: isExpanded ? 1 : 0,
-            transition: 'opacity 300ms ease-in',
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 2,
+            alignItems: 'center',
           }}
-          onClick={() => setIsEditing(!isEditing)}
         >
-          <Edit />
-        </IconButton>
-        <Chip
-          label={translatedActionStatus}
-          sx={{
-            margin: 0,
-            backgroundColor:
-              action.status === ActionStatusOptions.Completed
-                ? { backgroundColor: '#6BC6A4' }
-                : undefined,
-          }}
-          onClick={handleChipClick}
-        />
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleMenuClose}
-          onClick={handleMenuClose}
-        >
-          {Object.values(ActionStatusOptions).map(value => (
-            <MenuItem key={value} onClick={() => handleStatusChange(value)}>
-              {
-                /* @ts-ignore Because ts can't typecheck strings against our keys */
-                t(
-                  actionStatusOptionsToTranslationKeys[
-                    value as ActionStatusOptions
-                  ],
-                )
-              }
-            </MenuItem>
-          ))}
-        </Menu>
+          <DualButton
+            propsCommon={{
+              color: getActionStatusColor(action.status),
+              style: getActionStatusStyle(action.status),
+            }}
+            propsLeft={{
+              children: translatedActionStatus,
+              onClick: handleChipClick,
+            }}
+            propsRight={{
+              startIcon: <Cached />,
+              sx: { padding: '0 0 0 10px', minWidth: '30px' },
+              onClick: () => {
+                if (isToday(action.lastUpdated ?? null)) return;
+                formMethods.setValue(
+                  `actions.${index}.lastUpdated`,
+                  new Date(),
+                );
+                setCurrentUpdatedActionIDs(prev =>
+                  prev.includes(action.ID) ? prev : [...prev, action.ID],
+                );
+              },
+            }}
+          />
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleMenuClose}
+            onClick={handleMenuClose}
+          >
+            {Object.values(ActionStatusOptions).map(value => (
+              <MenuItem
+                key={value}
+                onClick={() => handleStatusChange(value)}
+                selected={value === action.status}
+              >
+                {
+                  /* @ts-ignore Because ts can't typecheck strings against our keys */
+                  t(
+                    actionStatusOptionsToTranslationKeys[
+                      value as ActionStatusOptions
+                    ],
+                  )
+                }
+              </MenuItem>
+            ))}
+          </Menu>
+          <Box
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Typography>{t('scenarioDrawer.action.lastUpdated')}</Typography>
+            <Typography>{parsedDateTime}</Typography>
+          </Box>
+          <Exclamations
+            action={action}
+            lastPublished={selectedRiSc?.lastPublished}
+          />
+        </Box>
         <IconButton onClick={handleDeleteAction}>
           <DeleteIcon />
         </IconButton>
       </Box>
-      <Collapse in={isExpanded}>
-        <Typography sx={{ ...label, marginTop: 1 }}>
-          {t('dictionary.description')}
-        </Typography>
+
+      <Collapse in={isExpanded} sx={{ marginTop: 1 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Typography sx={{ ...label, marginTop: 1 }}>
+            {t('dictionary.description')}
+          </Typography>
+          <IconButton
+            sx={{
+              marginLeft: 'auto',
+              transition: 'opacity 300ms ease-in',
+            }}
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            <Edit />
+          </IconButton>
+        </Box>
         <Markdown description={action.description} />
 
         <Box
@@ -258,4 +352,52 @@ export function ActionBox({
       />
     </Box>
   );
+}
+
+function Exclamations({
+  action,
+  lastPublished,
+}: {
+  action: Action;
+  lastPublished?: LastPublished;
+}) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const daysSinceLastUpdate = action.lastUpdated
+    ? calculateDaysSince(new Date(action.lastUpdated))
+    : null;
+  const status = calculateUpdatedStatus(
+    daysSinceLastUpdate,
+    lastPublished?.numberOfCommits || null,
+  );
+
+  switch (status) {
+    case UpdatedStatusEnum.VERY_OUTDATED:
+      return (
+        <Tooltip title={t('rosStatus.updatedStatus.tooltip.VERY_OUTDATED')}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              color: '#FF4444',
+            }}
+          >
+            <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
+            <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
+          </Box>
+        </Tooltip>
+      );
+    case UpdatedStatusEnum.OUTDATED:
+      return (
+        <Tooltip title={t('rosStatus.updatedStatus.tooltip.OUTDATED')}>
+          <Box sx={{ color: '#FF8B38', minWidth: '24px', textAlign: 'right' }}>
+            <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
+          </Box>
+        </Tooltip>
+      );
+    case UpdatedStatusEnum.UPDATED:
+    case UpdatedStatusEnum.LITTLE_OUTDATED:
+      return <Box sx={{ minWidth: '24px' }} />;
+    default:
+      return null;
+  }
 }

@@ -16,23 +16,38 @@ import { useRiScs } from '../../contexts/RiScContext';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { useFontStyles } from '../../utils/style';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { RiSc, RiScWithMetadata } from '../../utils/types';
+import { RiSc, RiScStatus, RiScWithMetadata } from '../../utils/types';
 import { ScenarioTableRow } from './ScenarioTableRow';
 import { useTableStyles } from './ScenarioTableStyles';
+import { computeStatusCount } from '../../utils/utilityfunctions';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
+  editingAllowed: boolean;
 }
 
-export function ScenarioTable({ riScWithMetadata }: ScenarioTableProps) {
+export function ScenarioTable({
+  riScWithMetadata,
+  editingAllowed,
+}: ScenarioTableProps) {
   const riSc = riScWithMetadata.content;
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label } = useFontStyles();
-  const { titleBox, rowBorder, tableCell, tableCellTitle, tableCellDragIcon } =
-    useTableStyles();
+  const {
+    titleBox,
+    rowBorder,
+    tableCell,
+    tableCellTitle,
+    tableCellDragIcon,
+    filterContainer,
+    filterBox,
+    filterSpan,
+  } = useTableStyles();
   const { openNewScenarioWizard, openScenarioDrawer } = useScenario();
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
+  const { veryOutdatedCount, outdatedCount } =
+    computeStatusCount(riScWithMetadata);
 
   useEffect(() => {
     if (!updateStatus.isSuccess) {
@@ -86,7 +101,7 @@ export function ScenarioTable({ riScWithMetadata }: ScenarioTableProps) {
             {t('scenarioTable.title')}
           </Typography>
 
-          {riSc.scenarios.length > 0 && (
+          {riSc.scenarios.length > 0 && editingAllowed && (
             <Box
               style={{
                 display: 'flex',
@@ -118,7 +133,41 @@ export function ScenarioTable({ riScWithMetadata }: ScenarioTableProps) {
             </Box>
           )}
         </Box>
-        {riSc.scenarios.length === 0 ? (
+        {veryOutdatedCount + outdatedCount !== 0 && (
+          <Box className={filterContainer}>
+            <div
+              className={filterBox}
+              style={{
+                backgroundColor: '#FFE2D4',
+              }}
+            >
+              <span
+                className={filterSpan}
+                style={{
+                  backgroundColor: '#F23131',
+                }}
+              >
+                {veryOutdatedCount}
+              </span>
+              {t('filterButton.veryOutdated')}
+            </div>
+            <div
+              className={filterBox}
+              style={{
+                backgroundColor: '#FCEBCD',
+              }}
+            >
+              <span
+                className={filterSpan}
+                style={{ backgroundColor: '#FF8B38' }}
+              >
+                {outdatedCount}
+              </span>
+              {t('filterButton.outdated')}
+            </div>
+          </Box>
+        )}
+        {riSc.scenarios.length === 0 && editingAllowed ? (
           <Box
             style={{
               display: 'flex',
@@ -188,7 +237,9 @@ export function ScenarioTable({ riScWithMetadata }: ScenarioTableProps) {
                       key={scenario.ID}
                       index={idx}
                       scenario={scenario}
-                      viewRow={openScenarioDrawer}
+                      viewRow={(id: string) =>
+                        openScenarioDrawer(id, editingAllowed)
+                      }
                       moveRowFinal={moveRowFinal}
                       moveRowLocal={moveRowLocal}
                       isLastRow={idx === riSc.scenarios.length - 1}
@@ -215,6 +266,10 @@ export function ScenarioTableWrapper({
   return (
     <DndProvider backend={HTML5Backend}>
       <ScenarioTable
+        editingAllowed={
+          riScWithMetadata.status !== RiScStatus.DeletionDraft &&
+          riScWithMetadata.status !== RiScStatus.DeletionSentForApproval
+        }
         key={riScWithMetadata.id}
         riScWithMetadata={riScWithMetadata}
       />

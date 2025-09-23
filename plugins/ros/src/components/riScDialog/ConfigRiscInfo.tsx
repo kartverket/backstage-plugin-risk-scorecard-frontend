@@ -46,7 +46,6 @@ function ConfigRiscInfo({
         {...register('content.title', { required: true })}
         error={errors?.content?.title !== undefined}
         label={t('dictionary.title')}
-        minRows={4}
         helperText={errors?.content?.title && t('rosDialog.titleError')}
       />
       <MarkdownInput
@@ -80,7 +79,12 @@ function ConfigRiscInfo({
               {t('rosDialog.generateInitialToggleDescription')}
             </Typography>
             <FormControlLabel
-              control={<Switch onChange={handleChangeCreateRiScFrom} />}
+              control={
+                <Switch
+                  checked={createRiScFrom === CreateRiScFrom.Default}
+                  onChange={handleChangeCreateRiScFrom}
+                />
+              }
               label={
                 createRiScFrom === CreateRiScFrom.Scratch
                   ? t('dictionary.no')

@@ -26,19 +26,21 @@ export function ScenarioTableProgressBar({
 }: ScenarioTableProgressBarProps) {
   return (
     <Box display="flex" alignItems="center" gap={2} width="100%">
-      <Box sx={{ flexGrow: 1, minWidth: 100, width: '100%' }}>
+      <Box sx={{ flexGrow: 1, minWidth: 120 }}>
         <LinearProgressStyled
           variant="determinate"
           value={100 * (completedCount / totalCount)}
         />
       </Box>
-      <Typography
-        variant="body2"
-        sx={{ whiteSpace: 'nowrap', fontWeight: 500 }}
-      >
-        {completedCount} / {totalCount}
-        {completedCount === totalCount ? ' 👑' : ''}
-      </Typography>
+      <Box sx={{ width: 65, textAlign: 'left', ml: 1 }}>
+        <Typography
+          variant="body2"
+          sx={{ whiteSpace: 'nowrap', fontWeight: 500 }}
+        >
+          {completedCount} / {totalCount}
+          {completedCount === totalCount ? ' 👑' : ''}
+        </Typography>
+      </Box>
     </Box>
   );
 }

@@ -1,15 +1,23 @@
-import { UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import InfoIcon from '@mui/icons-material/Info';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import { UseFormReturn } from 'react-hook-form';
 import {
   consequenceOptions,
   probabilityOptions,
 } from '../../../utils/constants';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { FormScenario } from '../../../utils/types';
+import {
+  consequenceIndexToTranslationKeys,
+  findConsequenceIndex,
+  findProbabilityIndex,
+  probabilityIndexToTranslationKeys,
+} from '../../../utils/utilityfunctions';
 import { Select } from '../../common/Select';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { heading3 } from '../../common/typography';
 import {
   headerSection,
@@ -17,8 +25,7 @@ import {
   section,
   selectSection,
 } from '../scenarioDrawerComponents';
-import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
+import RiskOptionDisplay from './RiskOptionDisplay';
 
 function ScenarioForm({
   formMethods,
@@ -28,19 +35,63 @@ function ScenarioForm({
   setIsMatrixDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { control } = formMethods;
+  const {
+    watch,
+    control,
+    formState: { errors },
+  } = formMethods;
 
-  const probabilityValues = probabilityOptions.map((value, index) => ({
-    value: `${value}`,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`probabilityTable.rows.${index + 1}`)}`,
-  }));
+  const [
+    riskProbability,
+    riskConsequence,
+    remainingRiskProbability,
+    remainingRiskConsequence,
+  ] = watch([
+    'risk.probability',
+    'risk.consequence',
+    'remainingRisk.probability',
+    'remainingRisk.consequence',
+  ]);
 
-  const consequenceValues = consequenceOptions.map((value, index) => ({
-    value: `${value}`,
-    /* @ts-ignore Because ts can't typecheck strings against our keys */
-    renderedValue: `${index + 1}: ${t(`consequenceTable.rows.${index + 1}`)}`,
-  }));
+  const probabilityValues = (selectedValue: number) => {
+    return probabilityOptions.map((value, index) => ({
+      value: `${value}`,
+      renderedValue: (
+        <RiskOptionDisplay
+          isSelected={
+            findProbabilityIndex(value) === findProbabilityIndex(selectedValue)
+          }
+          level={index + 1}
+          label={
+            /* @ts-ignore Because ts can't typecheck strings against our keys */
+            `${t(`probabilityTable.rows.${index + 1}`)} (${t(
+              probabilityIndexToTranslationKeys[index],
+            )})`
+          }
+        />
+      ),
+    }));
+  };
+
+  const consequenceValues = (selectedValue: number) => {
+    return consequenceOptions.map((value, index) => ({
+      value: `${value}`,
+      renderedValue: (
+        <RiskOptionDisplay
+          isSelected={
+            findConsequenceIndex(value) === findConsequenceIndex(selectedValue)
+          }
+          level={index + 1}
+          label={
+            /* @ts-ignore Because ts can't typecheck strings against our keys */
+            `${t(`consequenceTable.rows.${index + 1}`)} (${t(
+              consequenceIndexToTranslationKeys[index],
+            )})`
+          }
+        />
+      ),
+    }));
+  };
 
   return (
     <Paper sx={section}>
@@ -51,50 +102,67 @@ function ScenarioForm({
         }}
       >
         <Paper sx={riscSection}>
-          <Box sx={headerSection}>
-            <Typography sx={{ ...heading3, justifySelf: 'start' }}>
-              {t('dictionary.initialRisk')}
-            </Typography>
-            <Typography>
-              {t('scenarioDrawer.riskMatrixModal.startRisk')}
-            </Typography>
-          </Box>
           <Box sx={selectSection}>
+            {/* Row 1 */}
+            <Box sx={headerSection}>
+              <Typography sx={{ ...heading3, justifySelf: 'start' }}>
+                {t('dictionary.initialRisk')}
+              </Typography>
+              <Typography>
+                {t('scenarioDrawer.riskMatrixModal.startRisk')}
+              </Typography>
+            </Box>
+            <Box sx={headerSection}>
+              <Typography sx={{ ...heading3, justifySelf: 'flex-start' }}>
+                {t('dictionary.restRisk')}
+              </Typography>
+              <Typography>
+                {t('scenarioDrawer.riskMatrixModal.restRisk')}
+              </Typography>
+            </Box>
+
+            {/* Row 2 */}
             <Select<FormScenario>
               control={control}
               name="risk.probability"
-              label={t('dictionary.probability')}
-              options={probabilityValues}
+              label={t('infoDialog.probabilityTitle')}
+              options={probabilityValues(Number(riskProbability))}
             />
-            <Select<FormScenario>
-              control={control}
-              name="risk.consequence"
-              label={t('dictionary.consequence')}
-              options={consequenceValues}
-            />
-          </Box>
-        </Paper>
-        <Paper sx={riscSection}>
-          <Box sx={headerSection}>
-            <Typography sx={{ ...heading3, justifySelf: 'flex-start' }}>
-              {t('dictionary.restRisk')}
-            </Typography>
-            <Typography>
-              {t('scenarioDrawer.riskMatrixModal.restRisk')}
-            </Typography>
-          </Box>
-          <Box sx={selectSection}>
             <Select<FormScenario>
               control={control}
               name="remainingRisk.probability"
-              label={t('dictionary.probability')}
-              options={probabilityValues}
+              label={t('infoDialog.probabilityTitle')}
+              options={probabilityValues(Number(remainingRiskProbability))}
+              rules={{
+                validate: (value, _) =>
+                  Number(value) <=
+                    Number(control._formValues.risk?.probability) ||
+                  t('scenarioDrawer.errors.remainingProbabilityTooHigh'),
+              }}
+              error={errors.remainingRisk?.probability !== undefined}
+              helperText={errors.remainingRisk?.probability?.message}
+            />
+
+            {/* Row 3 */}
+            <Select<FormScenario>
+              control={control}
+              name="risk.consequence"
+              label={t('infoDialog.consequenceTitle')}
+              options={consequenceValues(Number(riskConsequence))}
             />
             <Select<FormScenario>
               control={control}
               name="remainingRisk.consequence"
-              label={t('dictionary.consequence')}
-              options={consequenceValues}
+              label={t('infoDialog.consequenceTitle')}
+              options={consequenceValues(Number(remainingRiskConsequence))}
+              rules={{
+                validate: (value, _) =>
+                  Number(value) <=
+                    Number(control._formValues.risk?.consequence) ||
+                  t('scenarioDrawer.errors.remainingConsequenceTooHigh'),
+              }}
+              error={errors.remainingRisk?.consequence !== undefined}
+              helperText={errors.remainingRisk?.consequence?.message}
             />
           </Box>
         </Paper>

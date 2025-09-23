@@ -42,6 +42,8 @@ export type CreateRiScResultDTO = {
   sopsConfig: SopsConfigDTO;
 } & ProcessRiScResultDTO;
 
+export type DeleteRiScResultDTO = ProcessRiScResultDTO;
+
 export type RiScContentResultDTO = {
   riScStatus: RiScStatus;
   riScContent: string;
@@ -68,7 +70,7 @@ export type GcpCryptoKeyObject = {
   hasEncryptDecryptAccess?: boolean;
 };
 
-type ScenarioDTO = {
+export type ScenarioDTO = {
   title: string;
   scenario: {
     ID: string;
@@ -82,13 +84,14 @@ type ScenarioDTO = {
   };
 };
 
-type ActionsDTO = {
+export type ActionsDTO = {
   title: string;
   action: {
     ID: string;
     description: string;
     status: string;
     url: string;
+    lastUpdated?: Date | null;
   };
 };
 
@@ -101,7 +104,7 @@ export function dtoToRiSc(riScDTO: RiScDTO): RiSc {
   };
 }
 
-function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
+export function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
   return {
     ...scenarioDTO.scenario,
     title: scenarioDTO.title,
@@ -109,7 +112,7 @@ function dtoToScenario(scenarioDTO: ScenarioDTO): Scenario {
   };
 }
 
-function dtoToAction(actionDTO: ActionsDTO): Action {
+export function dtoToAction(actionDTO: ActionsDTO): Action {
   return {
     ...actionDTO.action,
     title: actionDTO.title,
@@ -173,6 +176,7 @@ function actionToDTO(action: Action): ActionsDTO {
       description: action.description,
       status: action.status,
       url: action.url,
+      lastUpdated: action.lastUpdated,
     },
   };
 }

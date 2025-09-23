@@ -1,14 +1,12 @@
-import { DifferenceFetchState, DifferenceStatus } from '../../../utils/types';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Card from '@mui/material/Card';
-import CircularProgress from '@mui/material/CircularProgress';
-import { ErrorOutline, Favorite } from '@mui/icons-material';
-import { DifferenceText } from './DifferenceText';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { ErrorOutline, Favorite } from '@mui/icons-material';
+import CircularProgress from '@mui/material/CircularProgress';
+import { DateTime } from 'luxon';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { DifferenceFetchState, DifferenceStatus } from '../../../utils/types';
 import { parseISODateFromEncryptedROS } from '../../../utils/utilityfunctions';
-import { parseISO } from 'date-fns';
+import { RiScChangeSet } from '../changeset/RiScChangeSet.tsx';
+import { Text, Box } from '@backstage/ui';
 
 type RiScDifferenceDialogProps = {
   differenceFetchState: DifferenceFetchState;
@@ -24,94 +22,88 @@ export function RiScDifferenceDialog({
   );
 
   const parsedDateString = formatedDateString
-    ? parseISO(formatedDateString).toLocaleDateString()
+    ? DateTime.fromISO(formatedDateString).toLocaleString()
     : null;
   return (
-    <Box>
-      <Typography>{t('rosStatus.difference.description')}</Typography>
-      <Typography fontWeight={700} fontSize={13} pb={2}>
+    <Box style={{ paddingBottom: '24px' }}>
+      <Text as="p" style={{ fontSize: '16px' }}>
+        {t('rosStatus.difference.description')}
+      </Text>
+      <Text
+        as="p"
+        style={{ fontSize: '13px', fontWeight: 700, paddingBottom: '16px' }}
+      >
         {parsedDateString &&
           t('rosStatus.difference.publishDate', {
             date: parsedDateString,
           })}
-      </Typography>
+      </Text>
       <Box>
-        <Typography variant="h3" fontSize={18}>
+        <Text as="h3" style={{ fontWeight: 700, fontSize: '18px' }}>
           {t('rosStatus.difference.differences.title')}
-        </Typography>
-        <Card
-          sx={{
-            backgroundColor: 'rgb(51, 51, 51)',
-            padding: '20px',
-            position: 'relative',
-            marginBottom: '20px',
-            minHeight: '260px',
-            color: 'white',
-          }}
-        >
-          {differenceFetchState.isLoading && (
+        </Text>
+        {differenceFetchState.isLoading && (
+          <Box
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              margin: 'auto 0',
+            }}
+          >
+            <CircularProgress
+              size={30}
+              sx={{ marginLeft: 1, color: 'inherit', margin: '10px' }}
+            />
+            {t('rosStatus.difference.fetching')}
+          </Box>
+        )}
+        {differenceFetchState.status !== null &&
+          differenceFetchState.status !== DifferenceStatus.Success &&
+          differenceFetchState.status !==
+            DifferenceStatus.GithubFileNotFound && (
             <Box
-              sx={{
+              style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 margin: 'auto 0',
               }}
             >
-              <CircularProgress
-                size={30}
-                sx={{ marginLeft: 1, color: 'inherit', margin: '10px' }}
+              <ErrorOutline
+                sx={{
+                  fontSize: '30px',
+                  marginBottom: '16px',
+                  color: 'red',
+                }}
               />
-              {t('rosStatus.difference.fetching')}
+              {t('rosStatus.difference.error')}
             </Box>
           )}
-          {differenceFetchState.status !== null &&
-            differenceFetchState.status !== DifferenceStatus.Success &&
-            differenceFetchState.status !==
-              DifferenceStatus.GithubFileNotFound && (
-              <Box
+        {differenceFetchState.status !== null &&
+          differenceFetchState.status ===
+            DifferenceStatus.GithubFileNotFound && (
+            <Box
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                margin: 'auto 0',
+              }}
+            >
+              <Favorite
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  margin: 'auto 0',
+                  fontSize: '30px',
+                  marginBottom: '16px',
+                  color: 'green',
                 }}
-              >
-                <ErrorOutline
-                  sx={{
-                    fontSize: '30px',
-                    marginBottom: '16px',
-                    color: 'red',
-                  }}
-                />
-                {t('rosStatus.difference.error')}
-              </Box>
-            )}
-          {differenceFetchState.status !== null &&
-            differenceFetchState.status ===
-              DifferenceStatus.GithubFileNotFound && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  margin: 'auto 0',
-                }}
-              >
-                <Favorite
-                  sx={{
-                    fontSize: '30px',
-                    marginBottom: '16px',
-                    color: 'green',
-                  }}
-                />
-                {t('rosStatus.difference.newROS')}
-              </Box>
-            )}
-          {differenceFetchState.status === DifferenceStatus.Success && (
-            <DifferenceText differenceFetchState={differenceFetchState} />
+              />
+              {t('rosStatus.difference.newROS')}
+            </Box>
           )}
-        </Card>
+        {differenceFetchState.status === DifferenceStatus.Success && (
+          <RiScChangeSet changeset={differenceFetchState} />
+        )}
       </Box>
     </Box>
   );
