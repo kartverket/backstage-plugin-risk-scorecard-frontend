@@ -13,10 +13,10 @@ export function StatusIconWithText({
 }: StatusIconWithTextProps) {
   return (
     <Flex direction="row" align="center" gap="2">
-      <img
-        src={iconSrc}
-        alt={altText}
-        style={{ height: '24px', width: '24px' }}
+      <i
+        className={iconSrc}
+        aria-label={altText}
+        style={{ fontSize: '20px' }}
       />
       <Text as="h6" variant="body-large">
         {text}
