@@ -137,6 +137,7 @@ export const pluginRiScMessages = {
     prStatus2Update: ' to publish the scorecard.', // Approve RiSc
     prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
     moreInformationButton: 'More information', // Lagre ROS migrering
+    githubLink: 'Go to GitHub',
   },
   publishDialog: {
     titleUpdate: 'Accept risks', // Approve ROS
@@ -740,6 +741,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Dette tiltaket er utdatert',
           'rosStatus.updatedStatus.tooltip.VERY_OUTDATED':
             'Dette tiltaket er veldig utdatert',
+          'rosStatus.githubLink': 'Gå til GitHub',
           'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
           'publishDialog.titleDelete': 'Godkjenn sletting',
           'publishDialog.checkboxLabelUpdate':
