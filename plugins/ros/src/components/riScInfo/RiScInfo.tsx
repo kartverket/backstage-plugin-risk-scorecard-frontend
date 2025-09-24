@@ -1,8 +1,8 @@
 import { RiScWithMetadata } from '../../utils/types';
-import { Grid } from '@material-ui/core';
 import { RiScStatusComponent } from './riScStatus/RiScStatusComponent';
 import { useRiScs } from '../../contexts/RiScContext';
 import { RiScSelectionCard } from './RiScSelectionCard.tsx';
+import { Flex } from '@backstage/ui';
 
 interface RiScInfoProps {
   riScWithMetadata: RiScWithMetadata;
@@ -18,29 +18,16 @@ export function RiScInfo({
   const { approveRiSc } = useRiScs();
 
   return (
-    <Grid container>
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        md={6}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <RiScSelectionCard
-          riScWithMetadata={riScWithMetadata}
-          edit={edit}
-          onCreateNew={onCreateNew}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} md={6}>
-        <RiScStatusComponent
-          selectedRiSc={riScWithMetadata}
-          publishRiScFn={approveRiSc}
-        />
-      </Grid>
-    </Grid>
+    <Flex direction="row">
+      <RiScSelectionCard
+        riScWithMetadata={riScWithMetadata}
+        edit={edit}
+        onCreateNew={onCreateNew}
+      />
+      <RiScStatusComponent
+        selectedRiSc={riScWithMetadata}
+        publishRiScFn={approveRiSc}
+      />
+    </Flex>
   );
 }
