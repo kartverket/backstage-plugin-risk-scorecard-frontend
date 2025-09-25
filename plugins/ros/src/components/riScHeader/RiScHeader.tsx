@@ -17,7 +17,7 @@ export function RiScHeader(props: RiScHeaderProps) {
         <Text variant="title-medium" weight="bold">
           {t('contentHeader.title')}
         </Text>
-        <Flex>
+        <Flex style={{ gap: '8px' }}>
           <EditEncryptionButton onEditEncryption={props.onEditEncryption} />
           <SupportDialog />
           <FeedbackDialog />
