@@ -6,6 +6,6 @@ export const dialogActions: SxProps<Theme> = {
   alignItems: 'center',
   gap: 1,
   paddingTop: 0,
-  paddingX: 3,
-  paddingBottom: 2,
+  paddingX: 4,
+  paddingBottom: 3,
 };

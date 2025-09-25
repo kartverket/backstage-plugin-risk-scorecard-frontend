@@ -10,6 +10,7 @@ import { CreateRiScFrom, RiScDialogStates } from './RiScDialog';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
+import { Divider } from '@mui/material';
 
 interface ConfigRiscInfoProps {
   dialogState: RiScDialogStates;
@@ -32,6 +33,7 @@ function ConfigRiscInfo({
 
   return (
     <>
+      <Divider />
       <Input
         required
         {...register('content.title', { required: true })}

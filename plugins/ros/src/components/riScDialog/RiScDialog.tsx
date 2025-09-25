@@ -5,19 +5,16 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiScs } from '../../contexts/RiScContext';
 import { useForm } from 'react-hook-form';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../common/mixins';
-import Box from '@mui/material/Box';
 import { Step, StepLabel, Stepper } from '@mui/material';
 import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
 import ConfigInitialRisc from './ConfigInitialRisc';
-import { Delete as DeleteIcon } from '@material-ui/icons';
-import { Flex } from '@backstage/ui';
+import { Flex, Box, Button } from '@backstage/ui';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -55,7 +52,7 @@ function RiScStepper({
     t('rosDialog.stepEncryption'),
   ];
   return (
-    <Box sx={{ width: '100%', p: 3 }}>
+    <Box style={{ width: '100%', padding: '24px' }}>
       <Stepper activeStep={activeStep}>
         {steps.map(label => (
           <Step key={label}>
@@ -102,11 +99,10 @@ export function RiScDialog({
   const [switchOn, setSwitchOn] = useState(false);
 
   const [createRiScFrom, setCreateRiScFrom] = useState<CreateRiScFrom>(
-    CreateRiScFrom.Scratch,
+    CreateRiScFrom.Default,
   );
   const handleChangeCreateRiScFrom = (value: string) => {
-    const enumValue = Number(value) as CreateRiScFrom;
-    setCreateRiScFrom(enumValue);
+    setCreateRiScFrom(Number(value) as CreateRiScFrom);
   };
 
   const handleNext = handleSubmit(
@@ -184,7 +180,14 @@ export function RiScDialog({
         <DialogTitle>{t('rosDialog.titleNew')}</DialogTitle>
         <RiScStepper activeStep={activeStep}>
           <DialogContent
-            sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              width: '100%',
+              paddingX: 1,
+              paddingY: 0.5,
+            }}
           >
             {activeStep === 0 && (
               <ConfigRiscInfo
@@ -216,21 +219,24 @@ export function RiScDialog({
           </DialogContent>
         </RiScStepper>
         <DialogActions sx={dialogActions}>
-          <Button variant="outlined" onClick={onClose}>
+          <Button size="medium" variant="secondary" onClick={onClose}>
             {t('dictionary.cancel')}
           </Button>
           <Flex>
-            {activeStep > 0 && (
-              <Button variant="outlined" onClick={handleBack}>
-                {t('dictionary.previous')}
-              </Button>
-            )}
+            <Button
+              size="medium"
+              variant="secondary"
+              isDisabled={activeStep === 0}
+              onClick={handleBack}
+            >
+              {t('dictionary.previous')}
+            </Button>
             {activeStep < 2 ? (
-              <Button variant="contained" onClick={handleNext}>
+              <Button size="medium" variant="primary" onClick={handleNext}>
                 {t('dictionary.next')}
               </Button>
             ) : (
-              <Button variant="contained" onClick={handleFinish}>
+              <Button size="medium" variant="primary" onClick={handleFinish}>
                 {t('dictionary.save')}
               </Button>
             )}
@@ -248,10 +254,10 @@ export function RiScDialog({
           <DialogContent>{t('deleteDialog.confirmationMessage')}</DialogContent>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={onClose}>
+          <Button size="medium" variant="secondary" onClick={onClose}>
             {t('dictionary.cancel')}
           </Button>
-          <Button variant="contained" onClick={handleFinish}>
+          <Button size="medium" variant="primary" onClick={handleFinish}>
             {t('dictionary.delete')}
           </Button>
         </DialogActions>
@@ -263,12 +269,17 @@ export function RiScDialog({
     return (
       <Dialog open={true} onClose={onClose}>
         <DialogTitle>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            {t('rosDialog.titleEdit')}
-          </Box>
+          <Flex direction="column">{t('rosDialog.titleEdit')}</Flex>
         </DialogTitle>
         <DialogContent
-          sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            width: '100%',
+            paddingX: 4,
+            paddingY: 3,
+          }}
         >
           <ConfigRiscInfo
             dialogState={dialogState}
@@ -281,18 +292,19 @@ export function RiScDialog({
         </DialogContent>
         <DialogActions sx={dialogActions}>
           <Button
-            startIcon={<DeleteIcon />}
-            variant="text"
-            color="error"
+            size="medium"
+            variant="tertiary"
             onClick={onDelete}
+            style={{ color: '#d32f2f', paddingLeft: 0 }}
           >
+            <i className="ri-delete-bin-line" style={{ fontSize: '16px' }} />
             {t('contentHeader.deleteButton')}
           </Button>
           <Flex>
-            <Button variant="outlined" onClick={onClose}>
+            <Button size="medium" variant="secondary" onClick={onClose}>
               {t('dictionary.cancel')}
             </Button>
-            <Button variant="contained" onClick={handleFinish}>
+            <Button size="medium" variant="primary" onClick={handleFinish}>
               {t('dictionary.save')}
             </Button>
           </Flex>
@@ -318,10 +330,10 @@ export function RiScDialog({
           />
         </DialogContent>
         <DialogActions sx={dialogActions}>
-          <Button variant="outlined" onClick={onClose}>
+          <Button size="medium" variant="secondary" onClick={onClose}>
             {t('dictionary.cancel')}
           </Button>
-          <Button variant="contained" onClick={handleFinish}>
+          <Button size="medium" variant="primary" onClick={handleFinish}>
             {t('dictionary.save')}
           </Button>
         </DialogActions>

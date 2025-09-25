@@ -87,10 +87,12 @@ function ConfigInitialRisc({
             >
               {t('rosDialog.initialRiscApplicationType')}
             </Text>
+
             <RadioGroup
+              defaultValue={String(CreateRiScFrom.Default)}
               onChange={handleChangeCreateRiScFrom}
-              // label={t('rosDialog.initialRiscApplicationType')}
               isDisabled={!switchOn}
+              aria-label="Select application type"
             >
               <RadioOption
                 value={String(CreateRiScFrom.Default)}
