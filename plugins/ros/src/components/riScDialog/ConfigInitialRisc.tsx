@@ -89,26 +89,26 @@ function ConfigInitialRisc({
             </Text>
 
             <RadioGroup
-              defaultValue={String(CreateRiScFrom.Default)}
+              defaultValue={String(CreateRiScFrom.Standard)}
               onChange={handleChangeCreateRiScFrom}
               isDisabled={!switchOn}
               aria-label="Select application type"
             >
               <RadioOption
-                value={String(CreateRiScFrom.Default)}
-                label="Default"
+                value={String(CreateRiScFrom.Ops)}
+                label="Ops"
                 description="En applikasjon som kjører i nettleseren og gir brukergrensenitt via web"
                 active={!switchOn}
               />
               <RadioOption
-                value={String(CreateRiScFrom.Scratch)}
-                label="Scratch"
+                value={String(CreateRiScFrom.InternalJob)}
+                label="Internal Job"
                 description="lorepm ipsum dolor sit amet."
                 active={!switchOn}
               />
               <RadioOption
-                value="2"
-                label="Custom"
+                value={String(CreateRiScFrom.Standard)}
+                label="Standard"
                 description="lorep ipsum dolor sit amet."
                 active={!switchOn}
               />

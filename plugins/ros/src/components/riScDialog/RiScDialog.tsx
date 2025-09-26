@@ -32,9 +32,9 @@ interface RiScDialogProps {
 }
 
 export enum CreateRiScFrom {
-  Scratch = 0,
-  Default = 1,
-  Custom = 2,
+  Ops = 'Ops',
+  InternalJob = 'InternalJob',
+  Standard = 'Standard',
 }
 
 function RiScStepper({
@@ -99,10 +99,11 @@ export function RiScDialog({
   const [switchOn, setSwitchOn] = useState(false);
 
   const [createRiScFrom, setCreateRiScFrom] = useState<CreateRiScFrom>(
-    CreateRiScFrom.Default,
+    CreateRiScFrom.Standard,
   );
+
   const handleChangeCreateRiScFrom = (value: string) => {
-    setCreateRiScFrom(Number(value) as CreateRiScFrom);
+    setCreateRiScFrom(value as unknown as CreateRiScFrom);
   };
 
   const handleNext = handleSubmit(
@@ -133,7 +134,7 @@ export function RiScDialog({
 
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
     if (dialogState === RiScDialogStates.Create) {
-      createNewRiSc(data, createRiScFrom === CreateRiScFrom.Default);
+      createNewRiSc(data, switchOn, [createRiScFrom]);
     } else if (dialogState === RiScDialogStates.Delete) {
       deleteRiSc();
     } else {
