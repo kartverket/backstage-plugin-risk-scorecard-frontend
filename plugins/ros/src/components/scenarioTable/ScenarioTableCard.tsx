@@ -37,7 +37,7 @@ export function ScenarioTableCard({
         />
       </CardHeader>
       <CardBody>
-        {veryOutdatedCount + outdatedCount !== 0 && (
+        {(veryOutdatedCount > 0 || outdatedCount > 0) && (
           <OutdatedActionsCounts
             veryOutdatedCount={veryOutdatedCount}
             outdatedCount={outdatedCount}
