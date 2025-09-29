@@ -1,33 +1,14 @@
-import { Box } from '@material-ui/core';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { Flex } from '@backstage/ui';
 
 type OutdatedActionsCountsProps = {
   veryOutdatedCount: number;
   outdatedCount: number;
 };
 export function OutdatedActionsCounts(props: OutdatedActionsCountsProps) {
-  const boxStyle = {
-    fontFamily: 'helvetica Neue',
-    width: '100%',
-    height: '40px',
-    display: 'flex',
-    alignItems: 'center',
-    '@media (max-width: 1280px)': {
-      height: '80px',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-    },
-    gap: '16px',
-    paddingLeft: '24px',
-    paddingRight: '24px',
-    opacity: 1,
-    transform: 'rotate(0deg)',
-    marginTop: '8px',
-    marginBottom: '8px',
-  };
   return (
-    <Box style={boxStyle}>
+    <Flex>
       {props.veryOutdatedCount > 0 && (
         <OutdatedActionsBadge
           type="veryOutdated"
@@ -37,7 +18,7 @@ export function OutdatedActionsCounts(props: OutdatedActionsCountsProps) {
       {props.outdatedCount > 0 && (
         <OutdatedActionsBadge type="outdated" count={props.outdatedCount} />
       )}
-    </Box>
+    </Flex>
   );
 }
 
