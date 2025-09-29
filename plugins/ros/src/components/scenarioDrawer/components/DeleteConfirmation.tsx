@@ -5,35 +5,29 @@ import DialogActions from '@mui/material/DialogActions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { dialogActions } from '../../common/mixins';
-import { useScenario } from '../../../contexts/ScenarioContext';
-import { useRiScs } from '../../../contexts/RiScContext';
-import { deleteScenario } from '../../../utils/utilityfunctions';
 import type { SetState } from '../../../utils/types';
 
-type DeleteConfirmationProps = {
+type DeleteScenarioConfirmationProps = {
   isOpen: ConfirmationDialogProps['isOpen'];
   setIsOpen: SetState<ConfirmationDialogProps['isOpen']>;
   onConfirm?: ConfirmationDialogProps['onConfirm'];
 };
 
-export function DeleteConfirmation({
+export function DeleteScenarioConfirmation({
   isOpen,
   setIsOpen,
-}: DeleteConfirmationProps) {
-  const { selectedRiSc: riSc, updateRiSc } = useRiScs();
-  const { scenario } = useScenario();
+  onConfirm,
+}: DeleteScenarioConfirmationProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-
-  function handleConfirm() {
-    setIsOpen(false);
-    deleteScenario(riSc, updateRiSc, scenario);
-  }
 
   return (
     <ConfirmationDialog
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
-      onConfirm={handleConfirm}
+      onConfirm={() => {
+        setIsOpen(false);
+        onConfirm?.();
+      }}
       title={t('scenarioDrawer.deleteScenarioConfirmation')}
       confirmButtonText={t('scenarioDrawer.deleteScenarioButton')}
     />
@@ -55,16 +49,14 @@ export function DeleteActionConfirmation({
 }: DeleteActionConfirmationProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  function handleConfirm() {
-    setIsOpen(false);
-    onConfirm?.();
-  }
-
   return (
     <ConfirmationDialog
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
-      onConfirm={handleConfirm}
+      onConfirm={() => {
+        setIsOpen(false);
+        onConfirm?.();
+      }}
       title={t('scenarioDrawer.deleteActionConfirmation')}
       confirmButtonText={t('scenarioDrawer.deleteActionButton')}
     />
@@ -97,10 +89,22 @@ function ConfirmationDialog({
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogActions sx={dialogActions}>
-        <Button variant="outlined" onClick={onClose}>
+        <Button
+          variant="outlined"
+          onClick={event => {
+            event.stopPropagation();
+            onClose?.();
+          }}
+        >
           {t('dictionary.cancel')}
         </Button>
-        <Button onClick={onConfirm} variant="contained">
+        <Button
+          onClick={event => {
+            event.stopPropagation();
+            onConfirm?.();
+          }}
+          variant="contained"
+        >
           {confirmButtonText}
         </Button>
       </DialogActions>

@@ -12,11 +12,11 @@ import { useRiScs } from '../../contexts/RiScContext';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FormScenario, ProcessingStatus } from '../../utils/types';
-import { getAlertSeverity } from '../../utils/utilityfunctions';
+import { deleteScenario, getAlertSeverity } from '../../utils/utilityfunctions';
 import { MatrixDialog } from '../riScDialog/MatrixDialog';
 import { CloseConfirmation } from '../scenarioWizard/components/CloseConfirmation';
 import { ActionsSection } from './components/ActionsSection';
-import { DeleteConfirmation } from './components/DeleteConfirmation';
+import { DeleteScenarioConfirmation } from './components/DeleteConfirmation';
 import RiskFormSection from './components/RiskFormSection';
 import { RiskSection } from './components/RiskSection';
 import ScopeFormSection from './components/ScopeFormSection';
@@ -37,6 +37,7 @@ export function ScenarioDrawer() {
     mapFormScenarioToScenario,
     collapseAllActions,
   } = useScenario();
+  const { selectedRiSc, updateRiSc } = useRiScs();
 
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] =
     useState(false);
@@ -244,9 +245,10 @@ export function ScenarioDrawer() {
           </Alert>
         )}
 
-      <DeleteConfirmation
+      <DeleteScenarioConfirmation
         isOpen={deleteConfirmationIsOpen}
         setIsOpen={setDeleteConfirmationIsOpen}
+        onConfirm={() => deleteScenario(selectedRiSc, updateRiSc, scenario)}
       />
       <MatrixDialog
         open={isMatrixDialogOpen}
