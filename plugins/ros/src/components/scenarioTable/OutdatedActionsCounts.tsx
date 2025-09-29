@@ -28,11 +28,15 @@ export function OutdatedActionsCounts(props: OutdatedActionsCountsProps) {
   };
   return (
     <Box style={boxStyle}>
-      <OutdatedActionsBadge
-        type="veryOutdated"
-        count={props.veryOutdatedCount}
-      />
-      <OutdatedActionsBadge type="outdated" count={props.outdatedCount} />
+      {props.veryOutdatedCount > 0 && (
+        <OutdatedActionsBadge
+          type="veryOutdated"
+          count={props.veryOutdatedCount}
+        />
+      )}
+      {props.outdatedCount > 0 && (
+        <OutdatedActionsBadge type="outdated" count={props.outdatedCount} />
+      )}
     </Box>
   );
 }
