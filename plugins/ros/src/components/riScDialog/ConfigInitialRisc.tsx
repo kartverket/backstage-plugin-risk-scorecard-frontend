@@ -3,6 +3,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Text, RadioGroup, Radio, Box, Switch, Flex } from '@backstage/ui';
 import { CreateRiScFrom, RiScDialogStates } from './RiScDialog';
 import { Divider } from '@mui/material';
+import { Create } from '@mui/icons-material';
 
 type RadioOptionProps = {
   value: string;
@@ -97,19 +98,19 @@ function ConfigInitialRisc({
               <RadioOption
                 value={String(CreateRiScFrom.Ops)}
                 label="Ops"
-                description="En applikasjon som kjører i nettleseren og gir brukergrensenitt via web"
+                description={t('rosDialog.generateObsRiScDescription')}
                 active={!switchOn}
               />
               <RadioOption
                 value={String(CreateRiScFrom.InternalJob)}
                 label="Internal Job"
-                description="lorepm ipsum dolor sit amet."
+                description={t('rosDialog.generateInternalJobRiScDescription')}
                 active={!switchOn}
               />
               <RadioOption
                 value={String(CreateRiScFrom.Standard)}
                 label="Standard"
-                description="lorep ipsum dolor sit amet."
+                description={t('rosDialog.generateStandardRiScDescription')}
                 active={!switchOn}
               />
             </RadioGroup>
