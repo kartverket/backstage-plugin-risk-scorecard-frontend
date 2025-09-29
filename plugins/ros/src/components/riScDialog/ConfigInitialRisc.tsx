@@ -3,7 +3,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Text, RadioGroup, Radio, Box, Switch, Flex } from '@backstage/ui';
 import { CreateRiScFrom, RiScDialogStates } from './RiScDialog';
 import { Divider } from '@mui/material';
-import { Create } from '@mui/icons-material';
 
 type RadioOptionProps = {
   value: string;
