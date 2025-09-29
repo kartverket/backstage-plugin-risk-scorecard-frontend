@@ -45,22 +45,22 @@ export type MigrationStatus = {
   migrationChanges50?: MigrationChanges50;
 };
 
-export type MigrationVersions = {
+type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
 };
 
-export type MigrationChanges50 = {
+type MigrationChanges50 = {
   scenarios: MigrationChanges50Scenario[];
 };
 
-export type MigrationChanges50Scenario = {
+type MigrationChanges50Scenario = {
   title: string;
   id: string;
   changedActions: MigrationChanges50Action[];
 };
 
-export type MigrationChanges50Action = {
+type MigrationChanges50Action = {
   title: string;
   id: string;
   changedActionStatus: MigrationChangedTypedValue<
@@ -69,27 +69,27 @@ export type MigrationChanges50Action = {
   >;
 };
 
-export type MigrationChanges42 = {
+type MigrationChanges42 = {
   scenarios: MigrationChanges42Scenario[];
 };
 
-export type MigrationChanges42Scenario = {
+type MigrationChanges42Scenario = {
   title: string;
   id: string;
   changedActions: MigrationChanges42Action[];
 };
 
-export type MigrationChanges42Action = {
+type MigrationChanges42Action = {
   title: string;
   id: string;
   lastUpdated?: Date | null;
 };
 
-export type MigrationChanges41 = {
+type MigrationChanges41 = {
   scenarios: MigrationChanges41Scenario[];
 };
 
-export type MigrationChanges41Scenario = {
+type MigrationChanges41Scenario = {
   title: string;
   id: string;
   changedRiskConsequence?: MigrationChangedValue<number>;
@@ -98,11 +98,11 @@ export type MigrationChanges41Scenario = {
   changedRemainingRiskProbability?: MigrationChangedValue<number>;
 };
 
-export type MigrationChanges40 = {
+type MigrationChanges40 = {
   scenarios: MigrationChanges40Scenario[];
 };
 
-export type MigrationChanges40Scenario = {
+type MigrationChanges40Scenario = {
   title: string;
   id: string;
   removedExistingActions?: string;
@@ -110,19 +110,19 @@ export type MigrationChanges40Scenario = {
   changedActions: MigrationChanges40Action[];
 };
 
-export type MigrationChanges40Action = {
+type MigrationChanges40Action = {
   title: string;
   id: string;
   removedOwner?: string;
   removedDeadline?: string;
 };
 
-export type MigrationChangedValue<T> = {
+type MigrationChangedValue<T> = {
   oldValue: T;
   newValue: T;
 };
 
-export type MigrationChangedTypedValue<S, T> = {
+type MigrationChangedTypedValue<S, T> = {
   oldValue: S;
   newValue: T;
 };
@@ -231,15 +231,11 @@ export enum ContentStatus {
 
 export enum DifferenceStatus {
   Success = 'Success',
-  GithubFailure = 'GithubFailure',
-  JsonFailure = 'JsonFailure',
-  DecryptionFailure = 'DecryptionFailure',
-  NoReadAccess = 'NoReadAccess',
   GithubFileNotFound = 'GithubFileNotFound',
   FrontendFallback = 'FrontendFallback',
 }
 
-export enum ActionStatusOptionsV4 {
+enum ActionStatusOptionsV4 {
   NotStarted = 'Not started',
   InProgress = 'In progress',
   OnHold = 'On hold',
@@ -259,7 +255,7 @@ export type FormScenario = Modify<
   FormRisk
 >;
 
-export type Difference = {
+type Difference = {
   type: '4.*';
   migrationChanges: MigrationStatus;
   title?: SimpleTrackedProperty<string>;
@@ -298,40 +294,40 @@ export type ScenarioRiskChange = {
 
 export type SimpleTrackedProperty<T> = TrackedProperty<T, T>;
 
-export type TrackedProperty<S, T> =
+type TrackedProperty<S, T> =
   | AddedProperty<T>
   | ChangedProperty<S>
   | ContentChangedProperty<S>
   | DeletedProperty<T>
   | UnchangedProperty<T>;
 
-export type AddedProperty<T> = {
+type AddedProperty<T> = {
   type: 'ADDED';
   newValue: T;
 };
 
-export type ChangedProperty<S> = {
+type ChangedProperty<S> = {
   type: 'CHANGED';
   oldValue: S;
   newValue: S;
 };
 
-export type ContentChangedProperty<S> = {
+type ContentChangedProperty<S> = {
   type: 'CONTENT_CHANGED';
   value: S;
 };
 
-export type DeletedProperty<T> = {
+type DeletedProperty<T> = {
   type: 'DELETED';
   oldValue: T;
 };
 
-export type UnchangedProperty<T> = {
+type UnchangedProperty<T> = {
   type: 'UNCHANGED';
   value: T;
 };
 
-export type DifferenceDTO = {
+type DifferenceDTO = {
   status: DifferenceStatus;
   differenceState: Difference;
   errorMessage?: string;
@@ -343,9 +339,3 @@ export type DifferenceFetchState = Modify<
   'status',
   DifferenceStatus | null
 > & { isLoading: boolean; currentDifferenceId: string };
-
-export interface SopsConfigDialogFormData {
-  gcpCryptoKey: GcpCryptoKeyObject;
-  publicAgeKeysToAdd: string[];
-  publicAgeKeysToDelete: string[];
-}

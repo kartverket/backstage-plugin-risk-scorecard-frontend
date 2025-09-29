@@ -190,11 +190,11 @@ export type SopsConfigDTO = {
   version?: string;
 };
 
-export type GcpKmsEntry = {
+type GcpKmsEntry = {
   resource_id: string;
   created_at: string;
 };
 
-export type AgeEntry = {
+type AgeEntry = {
   recipient: string;
 };
