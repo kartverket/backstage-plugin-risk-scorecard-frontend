@@ -10,7 +10,7 @@ export function VersionChip() {
   return (
     <div
       style={{
-        padding: '4px',
+        padding: 'var(--bui-space-1_5)',
         boxShadow: 'inset 0 0 0 1px var(--bui-border)', // same as bui secondary button
         borderRadius: 'var(--bui-radius-2)', // same as bui secondary button
       }}
