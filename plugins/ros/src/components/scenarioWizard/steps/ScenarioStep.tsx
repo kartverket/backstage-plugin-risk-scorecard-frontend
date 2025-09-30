@@ -6,7 +6,6 @@ import {
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import { UseFormReturn } from 'react-hook-form';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { FormScenario } from '../../../utils/types';
@@ -17,7 +16,7 @@ import {
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
-import { heading2, subtitle2 } from '../../common/typography';
+import { Text } from '@backstage/ui';
 
 export function ScenarioStep({
   formMethods,
@@ -55,8 +54,12 @@ export function ScenarioStep({
   return (
     <Stack spacing={3}>
       <Box>
-        <Typography sx={heading2}>{t('scenarioDrawer.title')}</Typography>
-        <Typography sx={subtitle2}>{t('scenarioDrawer.subtitle')}</Typography>
+        <Text variant="title-small" weight="bold">
+          {t('scenarioDrawer.title')}
+        </Text>
+        <Text variant="body-large" as="p">
+          {t('scenarioDrawer.subtitle')}
+        </Text>
       </Box>
 
       <Input

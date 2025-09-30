@@ -1,5 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Box, IconButton, Typography } from '@material-ui/core';
+import { Box, IconButton } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
 import { useState } from 'react';
 import { useFontStyles } from '../../utils/style';
@@ -8,6 +8,7 @@ import { RiSc } from '../../utils/types';
 import { formatNumber } from '../../utils/utilityfunctions';
 import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
 import { useAggregatedCostStyles } from './aggregatedCostStyle';
+import { Text } from '@backstage/ui';
 
 interface AggregatedCostProps {
   riSc: RiSc;
@@ -17,7 +18,7 @@ interface AggregatedCostProps {
 export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { outerBox, innerBox } = useAggregatedCostStyles();
-  const { label2, body2 } = useFontStyles();
+  const { body2 } = useFontStyles();
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -32,14 +33,14 @@ export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
 
   return (
     <Box className={outerBox}>
-      <Typography className={label2}>
+      <Text as="h3" variant="body-large" weight="bold">
         {t('riskMatrix.estimatedRisk.title')}
-      </Typography>
+      </Text>
       <Box className={innerBox}>
-        <Typography className={body2}>
+        <Text variant="body-large" className={body2}>
           {formatNumber(cost, t)}{' '}
           {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
-        </Typography>
+        </Text>
         <IconButton size="small" onClick={() => setShowDialog(true)}>
           <InfoIcon />
         </IconButton>

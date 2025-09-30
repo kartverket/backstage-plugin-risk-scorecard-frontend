@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Drawer from '@mui/material/Drawer';
-import Typography from '@mui/material/Typography';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRiScs } from '../../contexts/RiScContext';
@@ -23,6 +22,7 @@ import ScopeFormSection from './components/ScopeFormSection';
 import { ScopeSection } from './components/ScopeSection';
 import { useCallback } from 'react';
 import { useDebounce } from '../../utils/hooks';
+import { Text } from '@backstage/ui';
 
 export function ScenarioDrawer() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -240,7 +240,7 @@ export function ScenarioDrawer() {
       {response &&
         response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
           <Alert severity={getAlertSeverity(updateStatus)}>
-            <Typography>{response.statusMessage}</Typography>
+            <Text variant="body-large">{response.statusMessage}</Text>
           </Alert>
         )}
 

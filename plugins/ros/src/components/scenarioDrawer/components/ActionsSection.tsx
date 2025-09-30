@@ -1,12 +1,10 @@
 import { ActionBox } from './ActionBox';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
-import { emptyState, heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Action, FormScenario } from '../../../utils/types';
@@ -17,6 +15,7 @@ import Box from '@mui/material/Box';
 import { ActionStatusOptions } from '../../../utils/constants';
 import Switch from '@mui/material/Switch';
 import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
+import { Text } from '@backstage/ui';
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -42,9 +41,7 @@ const RelevanceToggle = ({
         name="showOnlyRelevant"
         color="primary"
       />
-      <Typography variant="subtitle2" color="primary">
-        {t('dictionary.showOnlyRelevant')}
-      </Typography>
+      <Text variant="body-medium">{t('dictionary.showOnlyRelevant')}</Text>
     </Box>
   );
 };
@@ -124,7 +121,9 @@ export function ActionsSection({
     return (
       <Paper sx={section}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
+          <Text variant="title-x-small" weight="bold">
+            {t('dictionary.measure')}
+          </Text>
           <Button
             startIcon={<AddCircle />}
             color="primary"
@@ -158,7 +157,9 @@ export function ActionsSection({
           marginBottom: 2,
         }}
       >
-        <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
+        <Text variant="title-x-small" weight="bold">
+          {t('dictionary.measures')}
+        </Text>
 
         <RelevanceToggle
           checked={actionFilters.showOnlyRelevant}
@@ -180,13 +181,13 @@ export function ActionsSection({
           </Fragment>
         ))
       ) : (
-        <Typography sx={emptyState}>
+        <Text variant="body-large" style={{ fontStyle: 'italic' }}>
           {!currentActions || currentActions.length === 0
             ? t('dictionary.emptyField', {
                 field: t('dictionary.measures').toLowerCase(),
               })
             : t('dictionary.noRelevantMeasures')}
-        </Typography>
+        </Text>
       )}
     </Paper>
   );

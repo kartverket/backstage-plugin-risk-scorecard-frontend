@@ -5,7 +5,6 @@ import {
   DialogContentText,
   DialogTitle,
   Paper,
-  Typography,
 } from '@material-ui/core';
 import { Fragment } from 'react';
 import { consequenceOptions, probabilityOptions } from '../../utils/constants';
@@ -16,6 +15,7 @@ import {
   probabilityIndexToTranslationKeys,
 } from '../../utils/utilityfunctions';
 import { useEstimatedRiskInfoDialogStyles } from './estimatedRiskInfoDialogStyle';
+import { Text } from '@backstage/ui';
 
 interface EstimatedRiskInfoDialogProps {
   isOpen: boolean;
@@ -37,17 +37,17 @@ export function EstimatedRiskInfoDialog({
           <DialogContentText className={text}>
             {t('infoDialog.description')}
           </DialogContentText>
-          <Typography style={{ fontWeight: 'bold' }}>
+          <Text variant="body-large" weight="bold">
             {t('infoDialog.calculatedHowTitle')}
-          </Typography>
+          </Text>
           <DialogContentText className={text}>
             {t('infoDialog.calculatedHow')}
-            <sup>{t('infoDialog.calculatedHowExponent')}</sup>{' '}
+            <sup>{t('infoDialog.calculatedHowExponent')}</sup>
             {t('riskMatrix.estimatedRisk.unit.nokPerYear')}.
           </DialogContentText>
-          <Typography style={{ fontWeight: 'bold' }}>
+          <Text variant="body-large" weight="bold">
             {t('infoDialog.consequenceTitle')}
-          </Typography>
+          </Text>
           <DialogContentText className={text}>
             {consequenceOptions.map((option, index) => (
               <Fragment key={index}>
@@ -58,9 +58,9 @@ export function EstimatedRiskInfoDialog({
               </Fragment>
             ))}
           </DialogContentText>
-          <Typography style={{ fontWeight: 'bold' }}>
+          <Text variant="body-large" weight="bold">
             {t('infoDialog.probabilityTitle')}
-          </Typography>
+          </Text>
           <DialogContentText className={text}>
             {probabilityOptions.map((option, index) => (
               <Fragment key={index}>

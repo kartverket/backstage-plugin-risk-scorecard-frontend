@@ -1,7 +1,5 @@
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import Typography from '@mui/material/Typography';
-import { subtitle1 } from '../../common/typography';
 import {
   riskCell,
   riskLabelCell,
@@ -16,6 +14,7 @@ import { RiskRadioButton } from './RiskRadioButton';
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';
 import { consequenceOptions } from '../../../utils/constants';
+import { Text } from '@backstage/ui';
 
 const consequenceRow: SxProps<Theme> = {
   ...riskRow,
@@ -42,10 +41,12 @@ export function ConsequenceTableInfo() {
     return (
       <>
         <Box sx={riskLabelCell}>
-          <Typography sx={{ ...subtitle1, lineHeight: 1 }}>
+          <Text as="p" variant="body-large" weight="bold">
+            {' '}
+            hei
             {/* @ts-ignore */}
             {t(`consequenceTable.columns.${resourceKey}`)}
-          </Typography>
+          </Text>
         </Box>
         {getTextCell(resourceKey, 0, cellType[0])}
         {getTextCell(resourceKey, 1, cellType[1])}
@@ -141,9 +142,9 @@ export function ConsequenceTableInfoWithHeaders() {
   function getRadioLabel(row: number) {
     return (
       /* @ts-ignore Because ts can't typecheck strings agains our keys */
-      <Typography fontWeight={500}>{`${row}: ${t(
+      <Text as="p" variant="body-large">{`${row}: ${t(
         `consequenceTable.rows.${row}`,
-      )}`}</Typography>
+      )}`}</Text>
     );
   }
   return (

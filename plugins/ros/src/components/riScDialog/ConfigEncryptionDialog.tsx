@@ -13,8 +13,8 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   TextField,
-  Typography,
 } from '@mui/material';
+import { Text } from '@backstage/ui';
 import { GcpCryptoKeyMenu } from '../sopsConfigDialog/GcpCryptoKeyMenu';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -138,10 +138,7 @@ function ConfigEncryptionDialog({
           ? t('sopsConfigDialog.description.new')
           : t('sopsConfigDialog.description.edit')}
       </DialogContentText>
-      <Typography variant="subtitle2">
-        {t('sopsConfigDialog.selectKeysTitle')}
-      </Typography>
-
+      <Text weight="bold">{t('sopsConfigDialog.selectKeysTitle')}</Text>
       {chosenGcpCryptoKey !== undefined ? (
         <>
           {t('sopsConfigDialog.gcpCryptoKeyDescription')}
@@ -156,9 +153,7 @@ function ConfigEncryptionDialog({
           />
         </>
       ) : (
-        <Typography variant="body1">
-          {t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}
-        </Typography>
+        <Text>{t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}</Text>
       )}
       {errors.sopsConfig !== undefined && (
         <FormHelperText error={true}>
@@ -211,7 +206,7 @@ function ConfigEncryptionDialog({
                   </List>
                 </Box>
               )}
-              <Typography>
+              <Text as="p" variant="body-large">
                 {t('dictionary.click')}{' '}
                 <Link
                   href={
@@ -225,12 +220,12 @@ function ConfigEncryptionDialog({
                   {t('dictionary.here')}
                 </Link>{' '}
                 {t('sopsConfigDialog.writeLocalRiscSuffix')}
-              </Typography>
-              <Typography>
+              </Text>
+              <Text as="p" variant="body-large">
                 {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
                   'dictionary.optional',
-                )})`}
-              </Typography>
+                )})`}{' '}
+              </Text>
               <Box
                 sx={{
                   display: 'flex',

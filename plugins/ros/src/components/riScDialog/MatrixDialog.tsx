@@ -1,7 +1,6 @@
 import { ConsequenceTableInfoWithHeaders } from '../scenarioWizard/components/ConsequenceTable';
 import CloseIcon from '@mui/icons-material/Close';
 import { ProbabilityTableInfoWithHeaders } from '../scenarioWizard/components/ProbabilityTable';
-import { heading3 } from '../common/typography';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Box from '@mui/material/Box';
@@ -9,9 +8,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import DialogContent from '@mui/material/DialogContent';
-import Typography from '@mui/material/Typography';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import { Text } from '@backstage/ui';
 
 export function MatrixDialog({
   open,
@@ -38,25 +37,27 @@ export function MatrixDialog({
         <CloseIcon />
       </IconButton>
       <DialogContent>
-        <Typography
-          sx={{
-            paddingBottom: '32px',
-          }}
-        >
+        <Text as="p" variant="body-large" style={{ paddingBottom: '32px' }}>
           {t('scenarioStepper.initialRiskStep.subtitle')}
-        </Typography>
+        </Text>
         <Box>
-          <Typography sx={{ ...heading3, paddingBottom: '4px' }}>
+          <Text
+            variant="title-x-small"
+            weight="bold"
+            style={{ paddingBottom: '4px' }}
+          >
             {t('dictionary.probability')}
-          </Typography>
+          </Text>
         </Box>
         <ProbabilityTableInfoWithHeaders />
         <Box>
-          <Typography
-            sx={{ ...heading3, paddingTop: '16px', paddingBottom: '4px' }}
+          <Text
+            variant="title-x-small"
+            weight="bold"
+            style={{ paddingTop: '32px', paddingBottom: '4px' }}
           >
             {t('dictionary.consequence')}
-          </Typography>
+          </Text>
         </Box>
         <ConsequenceTableInfoWithHeaders />
       </DialogContent>
