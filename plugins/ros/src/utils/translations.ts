@@ -586,6 +586,11 @@ export const pluginRiScMessages = {
     outdated: 'Actions are outdated',
     seeActions: 'See all outdated actions',
   },
+  firstRiScCard: {
+    noRiScYet: 'No RiSc analyses created yet',
+    getStarted:
+      'Get started with risk and vulnerability analysis for your team',
+  },
 } as const;
 
 export const pluginRiScTranslationRef = createTranslationRef({
@@ -1155,6 +1160,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'filterButton.veryOutdated': 'Tiltak er veldig utdatert',
           'filterButton.outdated': 'Tiltak er utdatert',
           'filterButton.seeActions': 'Se alle utdaterte tiltak',
+          'firstRiScCard.noRiScYet': 'Ingen RoS-analyser opprettet enda',
+          'firstRiScCard.getStarted':
+            'Kom igang med risiko- og sårbarhetsanalyse for ditt team',
         },
       }),
   },

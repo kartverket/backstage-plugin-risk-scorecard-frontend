@@ -7,12 +7,12 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Button,
   Text,
   Select,
   ButtonIcon,
   Flex,
 } from '@backstage/ui';
+import { CreateNewRiScButton } from './CreateNewRiScButton.tsx';
 
 interface Props {
   riScWithMetadata: RiScWithMetadata;
@@ -38,16 +38,7 @@ export function RiScSelectionCard(props: Props) {
               <Text variant="title-small" as="h6" weight="bold">
                 {t('contentHeader.multipleRiScs')}
               </Text>
-              <Button
-                iconStart={<i className="ri-add-line" />}
-                variant="secondary"
-                onClick={props.onCreateNew}
-                style={{
-                  color: '#2E7D32', // Green color from MUI, change when BUI is more mature
-                }}
-              >
-                {t('contentHeader.createNewButton')}
-              </Button>
+              <CreateNewRiScButton onCreateNew={props.onCreateNew} />
             </Flex>
             <Select
               options={riScs.map(riSc => ({
