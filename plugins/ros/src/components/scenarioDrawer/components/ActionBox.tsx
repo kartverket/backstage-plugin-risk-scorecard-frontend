@@ -32,6 +32,8 @@ import {
   formatDate,
   UpdatedStatusEnum,
   getTranslatedActionStatus,
+  getActionStatusColor,
+  getActionStatusStyle,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2, emptyState, label } from '../../common/typography';
@@ -46,6 +48,7 @@ interface ActionBoxProps {
   formMethods: UseFormReturn<FormScenario>;
   remove: UseFieldArrayRemove;
   onSubmit: () => void;
+  setCurrentUpdatedActionIDs: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export function ActionBox({
@@ -54,6 +57,7 @@ export function ActionBox({
   formMethods,
   remove,
   onSubmit,
+  setCurrentUpdatedActionIDs,
 }: ActionBoxProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -99,30 +103,30 @@ export function ActionBox({
     ? formatDate(action.lastUpdated)
     : t('scenarioDrawer.action.notUpdated');
 
-  function updateActionInScenario(updates: Partial<Action>) {
-    const updatedScenario = {
-      ...scenario,
-      actions: scenario.actions.map(a =>
-        a.ID === action.ID ? { ...a, ...updates, lastUpdated: new Date() } : a,
-      ),
-    };
+  function updateActionInScenario(updates: ActionStatusOptions) {
+    const actionIndex = scenario.actions.findIndex(a => a.ID === action.ID);
+    const currentStatus =
+      formMethods.getValues()?.actions?.[actionIndex]?.status;
 
-    submitEditedScenarioToRiSc(updatedScenario);
+    if (updates === currentStatus) {
+      handleMenuClose();
+      return;
+    }
+
+    formMethods.setValue(`actions.${index}.status`, updates);
+
+    setCurrentUpdatedActionIDs(prev =>
+      prev.includes(action.ID) ? prev : [...prev, action.ID],
+    );
+
     if (isMounted()) handleMenuClose();
   }
 
-  function handleStatusChange(newStatus: string) {
-    updateActionInScenario({ status: newStatus });
+  function handleStatusChange(newStatus: ActionStatusOptions) {
+    updateActionInScenario(newStatus);
   }
 
-  function refreshStatus() {
-    if (isSameDay()) return;
-    updateActionInScenario({});
-  }
-
-  function isSameDay(): boolean {
-    const currentAction = scenario.actions.find(a => a.ID === action.ID);
-    const lastUpdated = currentAction?.lastUpdated;
+  function isToday(lastUpdated: Date | null): boolean {
     const today = new Date();
 
     if (!lastUpdated) return false;
@@ -218,10 +222,8 @@ export function ActionBox({
         >
           <DualButton
             propsCommon={{
-              color:
-                action.status === ActionStatusOptions.OK
-                  ? 'success'
-                  : 'inherit',
+              color: getActionStatusColor(action.status),
+              style: getActionStatusStyle(action.status),
             }}
             propsLeft={{
               children: translatedActionStatus,
@@ -230,7 +232,16 @@ export function ActionBox({
             propsRight={{
               startIcon: <Cached />,
               sx: { padding: '0 0 0 10px', minWidth: '30px' },
-              onClick: () => refreshStatus(),
+              onClick: () => {
+                if (isToday(action.lastUpdated ?? null)) return;
+                formMethods.setValue(
+                  `actions.${index}.lastUpdated`,
+                  new Date(),
+                );
+                setCurrentUpdatedActionIDs(prev =>
+                  prev.includes(action.ID) ? prev : [...prev, action.ID],
+                );
+              },
             }}
           />
           <Menu
@@ -240,7 +251,11 @@ export function ActionBox({
             onClick={handleMenuClose}
           >
             {Object.values(ActionStatusOptions).map(value => (
-              <MenuItem key={value} onClick={() => handleStatusChange(value)}>
+              <MenuItem
+                key={value}
+                onClick={() => handleStatusChange(value)}
+                selected={value === action.status}
+              >
                 {
                   /* @ts-ignore Because ts can't typecheck strings against our keys */
                   t(
@@ -379,7 +394,8 @@ function Exclamations({
           </Box>
         </Tooltip>
       );
-    case (UpdatedStatusEnum.UPDATED, UpdatedStatusEnum.LITTLE_OUTDATED):
+    case UpdatedStatusEnum.UPDATED:
+    case UpdatedStatusEnum.LITTLE_OUTDATED:
       return <Box sx={{ minWidth: '24px' }} />;
     default:
       return null;

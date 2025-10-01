@@ -386,3 +386,51 @@ export function useIsMounted() {
 
   return useCallback(() => mountedRef.current, []);
 }
+
+export function useDebounce<T>(
+  value: T,
+  delay: number,
+  callback: (value: T) => void,
+) {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const latestValueRef = useRef<T>(value);
+  const latestCallbackRef = useRef<(v: T) => void>(callback);
+
+  useEffect(() => {
+    latestValueRef.current = value;
+  }, [value]);
+
+  useEffect(() => {
+    latestCallbackRef.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      latestCallbackRef.current(latestValueRef.current);
+      timeoutRef.current = null;
+    }, delay);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [value, delay]);
+
+  const flush = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    const v = latestValueRef.current;
+    const hasValue = Array.isArray(v) ? v.length > 0 : v !== null;
+    if (hasValue) {
+      latestCallbackRef.current(v);
+    }
+  }, []);
+  return { flush };
+}

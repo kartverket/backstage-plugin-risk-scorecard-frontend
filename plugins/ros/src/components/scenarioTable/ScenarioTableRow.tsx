@@ -1,5 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { IconButton, Paper, Typography } from '@material-ui/core';
+import { IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import TableCell from '@mui/material/TableCell';
@@ -18,6 +18,7 @@ import {
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
 import { useTableStyles } from './ScenarioTableStyles';
+import { Text } from '@backstage/ui';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -116,9 +117,9 @@ export function ScenarioTableRow({
         </TableCell>
       )}
       <TableCell className={tableCellTitle}>
-        <Typography color="primary" style={{ fontWeight: 600 }}>
+        <Text weight="bold" style={{ color: 'var(--bui-bg-solid)' }}>
           {scenario.title}
-        </Typography>
+        </Text>
       </TableCell>
       <TableCell className={tableCell}>
         <div className={tableCellContainer}>
@@ -145,7 +146,11 @@ export function ScenarioTableRow({
                       a => a.status === ActionStatusOptions.OK,
                     ).length
                   }
-                  totalCount={scenario.actions.length}
+                  totalCount={
+                    scenario.actions.filter(
+                      a => a.status !== ActionStatusOptions.NotRelevant,
+                    ).length
+                  }
                 />
               );
             }

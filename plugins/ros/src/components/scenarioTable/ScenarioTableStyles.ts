@@ -28,10 +28,6 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   titleBox: {
     display: 'flex',
     justifyContent: 'space-between',
-    borderBottom:
-      theme.palette.type === 'dark'
-        ? '1px solid #616161'
-        : '1px solid #0000001f',
   },
   rowBorder: {
     display: 'flex',
@@ -82,5 +78,53 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     gap: theme.spacing(1),
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  filterContainer: {
+    fontFamily: 'helvetica Neue',
+    width: '100%',
+    height: '40px',
+    display: 'flex',
+    alignItems: 'center',
+    '@media (max-width: 1280px)': {
+      height: '80px',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+    },
+    gap: '16px',
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    opacity: 1,
+    transform: 'rotate(0deg)',
+    marginTop: '8px',
+    marginBottom: '8px',
+  },
+
+  filterBox: {
+    fontSize: '15px',
+    fontWeight: 500,
+    height: '40px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    paddingTop: '8px',
+    paddingLeft: '20px',
+    paddingBottom: '8px',
+    paddingRight: '20px',
+    borderRadius: '24px',
+    opacity: 1,
+    transform: 'rotate(0deg)',
+    width: 'auto',
+  },
+  filterSpan: {
+    fontSize: '15px',
+    width: '26px',
+    height: '26px',
+    borderRadius: '8px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 1,
+    transform: 'rotate(0deg)',
+    color: 'white',
   },
 }));

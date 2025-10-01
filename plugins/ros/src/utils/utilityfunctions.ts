@@ -88,14 +88,17 @@ export const UpdatedStatusEnum = {
 export type UpdatedStatusEnumType =
   (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
 
-export function calculateUpdatedStatus(
-  daysSinceLastModified: number | null,
-  numOfCommitsBehind: number | null,
-): UpdatedStatusEnumType {
-  if (daysSinceLastModified === null || numOfCommitsBehind === null) {
-    return UpdatedStatusEnum.VERY_OUTDATED;
-  }
+function calculateUpdatedStatusFromDaysOnly(daysSinceLastModified: number) {
+  if (daysSinceLastModified < 2 * 7) return UpdatedStatusEnum.UPDATED;
+  if (daysSinceLastModified < 4 * 7) return UpdatedStatusEnum.LITTLE_OUTDATED;
+  if (daysSinceLastModified < 8 * 7) return UpdatedStatusEnum.OUTDATED;
+  return UpdatedStatusEnum.VERY_OUTDATED;
+}
 
+function calculateUpdatedStatusFromDaysAndCommits(
+  daysSinceLastModified: number,
+  numOfCommitsBehind: number,
+) {
   const days = daysSinceLastModified;
   const commits = numOfCommitsBehind;
 
@@ -103,23 +106,38 @@ export function calculateUpdatedStatus(
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
-  if (commits >= 26 && commits <= 50) {
+  if (commits > 25) {
     if (days <= 30) return UpdatedStatusEnum.LITTLE_OUTDATED;
-    if (days >= 31 && days <= 90) return UpdatedStatusEnum.OUTDATED;
+    if (days <= 90) return UpdatedStatusEnum.OUTDATED;
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
-  if (commits >= 11 && commits <= 25) {
+  if (commits > 10) {
     if (days <= 30) return UpdatedStatusEnum.UPDATED;
-    if (days >= 31 && days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
-    if (days >= 91 && days <= 180) return UpdatedStatusEnum.OUTDATED;
+    if (days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
+    if (days <= 180) return UpdatedStatusEnum.OUTDATED;
     return UpdatedStatusEnum.VERY_OUTDATED;
   }
 
-  if (commits <= 10) {
-    return days <= 60
-      ? UpdatedStatusEnum.UPDATED
-      : UpdatedStatusEnum.LITTLE_OUTDATED;
+  if (days <= 60) return UpdatedStatusEnum.UPDATED;
+  if (days <= 180) return UpdatedStatusEnum.LITTLE_OUTDATED;
+  if (days <= 360) return UpdatedStatusEnum.OUTDATED;
+  return UpdatedStatusEnum.VERY_OUTDATED;
+}
+
+export function calculateUpdatedStatus(
+  daysSinceLastModified: number | null,
+  numOfCommitsBehind: number | null,
+): UpdatedStatusEnumType {
+  if (daysSinceLastModified !== null && numOfCommitsBehind === null) {
+    return calculateUpdatedStatusFromDaysOnly(daysSinceLastModified);
+  }
+
+  if (daysSinceLastModified !== null && numOfCommitsBehind !== null) {
+    return calculateUpdatedStatusFromDaysAndCommits(
+      daysSinceLastModified,
+      numOfCommitsBehind,
+    );
   }
 
   return UpdatedStatusEnum.VERY_OUTDATED;
@@ -485,3 +503,59 @@ export const vulnerabiltiesOptionsToTranslationKeys: Record<
   [VulnerabilitiesOptions.InformationLeak]: 'vulnerabilities.Information leak',
   [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
 };
+
+export const getActionStatusColor = (
+  status: string,
+): 'success' | 'error' | 'inherit' => {
+  switch (status) {
+    case ActionStatusOptions.OK:
+      return 'success';
+    case ActionStatusOptions.NotOK:
+      return 'error';
+    default:
+      return 'inherit';
+  }
+};
+
+export const getActionStatusStyle = (status: string) => {
+  const baseStyle = { color: 'white' };
+
+  if (status === ActionStatusOptions.NotRelevant) {
+    return {
+      ...baseStyle,
+      backgroundColor: 'rgba(128, 128, 128, 1)',
+    };
+  }
+  return baseStyle;
+};
+
+export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
+  const scenariosWithData = riScWithMetadata.content.scenarios.map(scenario => {
+    const actionsWithStatus = (scenario.actions ?? []).map(action => {
+      if (!action.lastUpdated) {
+        return { ...action, status: UpdatedStatusEnum.VERY_OUTDATED };
+      }
+      const daysSinceLastUpdate = action.lastUpdated
+        ? calculateDaysSince(new Date(action.lastUpdated))
+        : null;
+      const commits = riScWithMetadata.lastPublished?.numberOfCommits ?? null;
+      const status = calculateUpdatedStatus(daysSinceLastUpdate, commits);
+
+      return { ...action, status };
+    });
+    return {
+      ...scenario,
+      actions: actionsWithStatus,
+    };
+  });
+
+  const allActions = scenariosWithData.flatMap(scenario => scenario.actions);
+  const veryOutdatedCount = allActions.filter(
+    action => action.status === UpdatedStatusEnum.VERY_OUTDATED,
+  ).length;
+  const outdatedCount = allActions.filter(
+    action => action.status === UpdatedStatusEnum.OUTDATED,
+  ).length;
+
+  return { veryOutdatedCount, outdatedCount };
+}
