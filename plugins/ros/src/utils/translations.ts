@@ -321,6 +321,16 @@ export const pluginRiScMessages = {
     generateDefault: 'Default',
     stepRiscDetails: 'Risk Scorecard Details',
     stepEncryption: 'Configure Encryption',
+    initialRiscTitle: 'Predefined Risk Scorecard (optional)',
+    initialRiscScopeDescription:
+      'Do you want to generate a RoS with predefined scenarios and actions?',
+    initialRiscApplicationType: 'What type of application do you have?',
+    generateObsRiScDescription:
+      'This RoS contains scenarios that should be considered for build and deploy.',
+    generateInternalJobRiScDescription:
+      'This RoS contains scenarios that should be considered for internal tools and jobs',
+    generateStandardRiScDescription:
+      'This RoS is generated from information about the codebase in kartverket.dec, security metrics and security controllers.',
   },
   sopsConfigDialog: {
     title: 'Encryption',
@@ -586,6 +596,11 @@ export const pluginRiScMessages = {
     veryOutdated: 'Actions are very outdated',
     outdated: 'Actions are outdated',
     seeActions: 'See all outdated actions',
+  },
+  firstRiScCard: {
+    noRiScYet: 'No RiSc analyses created yet',
+    getStarted:
+      'Get started with risk and vulnerability analysis for your team',
   },
 } as const;
 
@@ -886,6 +901,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
+          'rosDialog.initialRiscScopeDescription':
+            'Vil du generere en RoS med forhåndsdefinerte scenarioer og tiltak?',
+          'rosDialog.initialRiscApplicationType':
+            'Hva slags applikasjon har du?',
           'rosDialog.editEncryption': 'Rediger kryptering',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':
@@ -895,9 +914,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kodenær RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
           'rosDialog.generateInitialToggleDescription':
             'Vil du generere initiell RoS?',
+          'rosDialog.generateObsRiScDescription':
+            "Denne RoS'en inneholder scenarier som bør vurderes for bygg og deploy.",
+          'rosDialog.generateInternalJobRiScDescription':
+            "Denne RoS'en inneholder scenarier som bør vurderes for interne verktøy og jobber.",
+          'rosDialog.generateStandardRiScDescription':
+            "Denne RoS'en er generert fra opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.",
           'rosDialog.fromScratch': 'Tom',
           'rosDialog.generateDefault': 'Initiell',
           'rosDialog.stepRiscDetails': 'RoS-detaljer',
+          'rosDialog.initialRiscTitle': 'Forhåndsdefinert RoS (valgfritt)',
           'rosDialog.stepEncryption': 'Konfigurer kryptering',
           'sopsConfigDialog.title': 'Kryptering',
           'sopsConfigDialog.writeLocalRiscSuffix':
@@ -1157,6 +1183,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'filterButton.veryOutdated': 'Tiltak er veldig utdatert',
           'filterButton.outdated': 'Tiltak er utdatert',
           'filterButton.seeActions': 'Se alle utdaterte tiltak',
+          'firstRiScCard.noRiScYet': 'Ingen RoS-analyser opprettet enda',
+          'firstRiScCard.getStarted':
+            'Kom igang med risiko- og sårbarhetsanalyse for ditt team',
         },
       }),
   },
