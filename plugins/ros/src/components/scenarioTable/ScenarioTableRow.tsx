@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useRiScs } from '../../contexts/RiScContext';
 import { ActionStatusOptions } from '../../utils/constants';
@@ -19,6 +19,7 @@ import {
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
 import { useTableStyles } from './ScenarioTableStyles';
 import { Text } from '@backstage/ui';
+import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -50,6 +51,8 @@ export function ScenarioTableRow({
   } = useTableStyles();
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
+  const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
+    useState(false);
 
   const ref = useRef<HTMLTableRowElement>(null);
 
@@ -176,10 +179,18 @@ export function ScenarioTableRow({
         <TableCell>
           <IconButton
             size="small"
-            onClick={() => deleteScenario(riSc, updateRiSc, scenario)}
+            onClick={event => {
+              event.stopPropagation();
+              setScenarioDeletionDialogOpen(true);
+            }}
           >
             <DeleteIcon />
           </IconButton>
+          <DeleteScenarioConfirmation
+            isOpen={isScenarioDeletionDialogOpen}
+            setIsOpen={setScenarioDeletionDialogOpen}
+            onConfirm={() => deleteScenario(riSc, updateRiSc, scenario)}
+          />
         </TableCell>
       )}
     </TableRow>
