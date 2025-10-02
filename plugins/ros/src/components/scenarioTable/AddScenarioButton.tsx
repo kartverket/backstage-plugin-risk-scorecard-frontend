@@ -13,9 +13,6 @@ export function AddScenarioButton(props: AddScenarioButtonProps) {
       iconStart={<i className="ri-add-line" />}
       variant="secondary"
       onClick={props.onNewScenario}
-      style={{
-        color: '#2E7D32', // Green color from MUI, change when BUI is more mature
-      }}
     >
       {t('scenarioTable.addScenarioButton')}
     </Button>
