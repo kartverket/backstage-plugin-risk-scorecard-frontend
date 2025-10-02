@@ -28,6 +28,7 @@ import {
   RiScWithMetadata,
   SubmitResponseObject,
 } from './types';
+import { CreateRiScFrom } from '../components/riScDialog/RiScDialog';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -295,6 +296,7 @@ export function useAuthenticatedFetch() {
     riSc: RiSc,
     generateDefault: boolean,
     sopsConfig: SopsConfigDTO,
+    initialRiScType: CreateRiScFrom[],
     onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
@@ -309,7 +311,7 @@ export function useAuthenticatedFetch() {
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
         },
-        riScToDTOString(riSc, true, profile, sopsConfig),
+        riScToDTOString(riSc, true, profile, sopsConfig, initialRiScType),
       ),
     );
   }
