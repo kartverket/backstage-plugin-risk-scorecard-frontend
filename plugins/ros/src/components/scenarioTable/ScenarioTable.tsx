@@ -67,9 +67,9 @@ export function ScenarioTable(props: ScenarioTableProps) {
 
   return (
     <>
-      <Grid.Root columns={`${props.isEditing ? 8 : 6}`} py="16px">
+      <Grid.Root columns={`${props.isEditing ? 9 : 7}`} py="16px">
         {props.isEditing && <Grid.Item className={tableCellDragIcon} />}
-        <Grid.Item colSpan="2">
+        <Grid.Item colSpan="3">
           <Text weight="bold" variant="body-large">
             {t('dictionary.title')}
           </Text>

@@ -99,7 +99,7 @@ export function ScenarioTableRow({
         opacity: isDragging ? 0.5 : 1,
       }}
     >
-      <Grid.Root columns={`${isEditing ? 8 : 6}`} style={{ minWidth: 750 }}>
+      <Grid.Root columns={`${isEditing ? 9 : 7}`} style={{ minWidth: 750 }}>
         {isEditing && (
           <Grid.Item className={gridItem}>
             <IconButton size="small" ref={drag}>
@@ -109,7 +109,7 @@ export function ScenarioTableRow({
             </IconButton>
           </Grid.Item>
         )}
-        <Grid.Item colSpan="2" className={gridItem}>
+        <Grid.Item colSpan="3" className={gridItem}>
           <Text as="p" variant="body-large">
             {scenario.title}
           </Text>
