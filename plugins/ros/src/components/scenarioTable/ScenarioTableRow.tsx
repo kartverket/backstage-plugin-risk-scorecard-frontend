@@ -2,12 +2,14 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { IconButton } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { Flex, Text, Card, Grid } from '@backstage/ui';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
+import { useState } from 'react';
+import { Flex, Card, Grid } from '@backstage/ui';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Scenario } from '../../utils/types';
 import { Paper } from '@mui/material';
 import { useRiScs } from '../../contexts/RiScContext';
-import { useTableStyles } from './ScenarioTableStyles';
 import {
   deleteScenario,
   getConsequenceLevel,
@@ -15,6 +17,9 @@ import {
   getRiskMatrixColor,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
+import { useTableStyles } from './ScenarioTableStyles';
+import { Text } from '@backstage/ui';
+import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
@@ -39,6 +44,8 @@ export function ScenarioTableRow({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
+  const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
+    useState(false);
 
   const { tableCard, gridItem, riskColor } = useTableStyles();
 
@@ -171,13 +178,18 @@ export function ScenarioTableRow({
           <Grid.Item colSpan="1" className={gridItem}>
             <IconButton
               size="small"
-              onClick={e => {
-                e.stopPropagation(); // prevent card click
-                deleteScenario(riSc, updateRiSc, scenario);
+              onClick={event => {
+                event.stopPropagation(); // prevent card click
+                setScenarioDeletionDialogOpen(true);
               }}
             >
               <DeleteIcon />
             </IconButton>
+            <DeleteScenarioConfirmation
+              isOpen={isScenarioDeletionDialogOpen}
+              setIsOpen={setScenarioDeletionDialogOpen}
+              onConfirm={() => deleteScenario(riSc, updateRiSc, scenario)}
+            />
           </Grid.Item>
         )}
       </Grid.Root>
