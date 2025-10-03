@@ -1,6 +1,7 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import { styled } from '@mui/material/styles';
+import { Text } from '@backstage/ui';
 
 interface ScenarioTableProgressBarProps {
   completedCount: number;
@@ -33,13 +34,11 @@ export function ScenarioTableProgressBar({
         />
       </Box>
       <Box sx={{ width: 65, textAlign: 'left', ml: 1 }}>
-        <Typography
-          variant="body2"
-          sx={{ whiteSpace: 'nowrap', fontWeight: 500 }}
-        >
+        <Text variant="body-medium" style={{ whiteSpace: 'pre-line' }}>
+          {' '}
           {completedCount} / {totalCount}
           {completedCount === totalCount ? ' 👑' : ''}
-        </Typography>
+        </Text>
       </Box>
     </Box>
   );

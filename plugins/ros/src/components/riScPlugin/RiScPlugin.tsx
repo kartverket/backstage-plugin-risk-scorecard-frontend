@@ -6,7 +6,6 @@ import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
-import Typography from '@mui/material/Typography';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
 import { RiScInfo } from '../riScInfo/RiScInfo';
@@ -16,7 +15,7 @@ import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { RiScHeader } from '../riScHeader/RiScHeader.tsx';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper.tsx';
 import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
-import { Flex } from '@backstage/ui';
+import { Flex, Text } from '@backstage/ui';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -71,7 +70,7 @@ export function RiScPlugin() {
           severity={getAlertSeverity(updateStatus)}
           sx={{ marginBottom: 2 }}
         >
-          <Typography>{response.statusMessage}</Typography>
+          <Text variant="body-large">{response.statusMessage}</Text>
         </Alert>
       )}
       {updateStatus.isLoading && (

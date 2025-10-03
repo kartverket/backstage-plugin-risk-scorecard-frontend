@@ -3,7 +3,6 @@ import InfoIcon from '@mui/icons-material/Info';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { UseFormReturn } from 'react-hook-form';
 import {
   consequenceOptions,
@@ -18,7 +17,6 @@ import {
   probabilityIndexToTranslationKeys,
 } from '../../../utils/utilityfunctions';
 import { Select } from '../../common/Select';
-import { heading3 } from '../../common/typography';
 import {
   headerSection,
   riscSection,
@@ -26,6 +24,7 @@ import {
   selectSection,
 } from '../scenarioDrawerComponents';
 import RiskOptionDisplay from './RiskOptionDisplay';
+import { Text } from '@backstage/ui';
 
 function ScenarioForm({
   formMethods,
@@ -105,20 +104,20 @@ function ScenarioForm({
           <Box sx={selectSection}>
             {/* Row 1 */}
             <Box sx={headerSection}>
-              <Typography sx={{ ...heading3, justifySelf: 'start' }}>
+              <Text variant="title-x-small" weight="bold">
                 {t('dictionary.initialRisk')}
-              </Typography>
-              <Typography>
+              </Text>
+              <Text variant="body-large">
                 {t('scenarioDrawer.riskMatrixModal.startRisk')}
-              </Typography>
+              </Text>
             </Box>
             <Box sx={headerSection}>
-              <Typography sx={{ ...heading3, justifySelf: 'flex-start' }}>
+              <Text variant="title-x-small" weight="bold">
                 {t('dictionary.restRisk')}
-              </Typography>
-              <Typography>
+              </Text>
+              <Text variant="body-large">
                 {t('scenarioDrawer.riskMatrixModal.restRisk')}
-              </Typography>
+              </Text>
             </Box>
 
             {/* Row 2 */}

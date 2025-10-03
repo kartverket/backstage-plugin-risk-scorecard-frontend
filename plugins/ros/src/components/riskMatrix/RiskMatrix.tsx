@@ -1,5 +1,4 @@
 import { Fragment, useState } from 'react';
-import { Typography } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
@@ -55,14 +54,24 @@ export function RiskMatrix({
           <Box className={gridWrapper}>
             <Box className={grid}>
               <Box className={konsekvens}>
-                <Typography className={`${centered} ${label2}`}>
+                <Text
+                  variant="body-large"
+                  weight="bold"
+                  className={`${centered} ${label2}`}
+                >
                   {t('dictionary.consequence')}
-                </Typography>
+                </Text>
               </Box>
               {riskMatrix.map((row, rowIndex) => (
                 <Fragment key={rowIndex}>
                   <Box className={centered}>
-                    <Typography className={text}>{5 - rowIndex}</Typography>
+                    <Text
+                      variant="title-x-small"
+                      weight="bold"
+                      className={text}
+                    >
+                      {5 - rowIndex}
+                    </Text>
                   </Box>
                   {row.map((col, colIndex) => (
                     <Box
@@ -84,13 +93,19 @@ export function RiskMatrix({
               <Box className={centered} />
               {riskMatrix.map((_, col) => (
                 <Box className={centered} key={col}>
-                  <Typography className={text}>{col + 1}</Typography>
+                  <Text variant="title-x-small" weight="bold" className={text}>
+                    {col + 1}
+                  </Text>
                 </Box>
               ))}
               <Box className={sannsynlighet}>
-                <Typography className={`${centered} ${label2}`}>
+                <Text
+                  weight="bold"
+                  variant="body-large"
+                  className={`${centered} ${label2}`}
+                >
                   {t('dictionary.probability')}
-                </Typography>
+                </Text>
               </Box>
             </Box>
           </Box>

@@ -7,7 +7,7 @@ import { RiskRadioButton } from './RiskRadioButton';
 import RadioGroup from '@mui/material/RadioGroup';
 import Box from '@mui/material/Box';
 import { probabilityOptions } from '../../../utils/constants';
-import Typography from '@mui/material/Typography';
+import { Text } from '@backstage/ui';
 
 export function ProbabilityTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -80,9 +80,7 @@ export function ProbabilityTableInfoWithHeaders() {
   function getRadioLabel(row: number) {
     return (
       /* @ts-ignore Because ts can't typecheck strings agains our keys */
-      <Typography fontWeight={500}>{`${row}: ${t(
-        `probabilityTable.rows.${row}`,
-      )}`}</Typography>
+      <Text>{`${row}: ${t(`probabilityTable.rows.${row}`)}`}</Text>
     );
   }
   return (
