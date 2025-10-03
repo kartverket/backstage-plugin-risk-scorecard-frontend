@@ -1,12 +1,11 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Flex, Card, Grid } from '@backstage/ui';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Scenario } from '../../utils/types';
-import { Paper } from '@mui/material';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
   deleteScenario,
@@ -19,17 +18,16 @@ import { useTableStyles } from './ScenarioTableStyles';
 import { Text } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
-import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
-type ScenarioTableRowProps = {
+interface ScenarioTableRowProps {
   scenario: Scenario;
   viewRow: (id: string) => void;
   index: number;
   moveRowFinal: (dragIndex: number, dropIndex: number) => void;
   moveRowLocal: (dragIndex: number, hoverIndex: number) => void;
   isEditing: boolean;
-};
+}
 
 export function ScenarioTableRow({
   scenario,
@@ -40,12 +38,11 @@ export function ScenarioTableRow({
   isEditing,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { tableCard, gridItem, riskColor } = useTableStyles();
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
     useState(false);
-
-  const { tableCard, gridItem, riskColor } = useTableStyles();
 
   const ref = useRef<HTMLTableRowElement>(null);
 
