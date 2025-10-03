@@ -127,4 +127,21 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     transform: 'rotate(0deg)',
     color: 'white',
   },
+  tableCard: {
+    cursor: 'pointer',
+    overflowX: 'auto',
+    border: 'none',
+    paddingLeft: '1rem',
+    paddingRight: '1rem',
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    backgroundColor: '#F8F8F8',
+    '&:hover': {
+      backgroundColor: '#E0E0E0',
+    },
+  },
+  gridItem: {
+    display: 'flex',
+    alignItems: 'center',
+  },
 }));

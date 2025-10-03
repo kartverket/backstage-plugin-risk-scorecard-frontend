@@ -1,10 +1,3 @@
-import TableContainer from '@mui/material/TableContainer';
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
-import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { useTableStyles } from './ScenarioTableStyles.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
@@ -12,7 +5,8 @@ import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
 import { useEffect, useState } from 'react';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
-import { Text } from '@backstage/ui';
+import { Text, Grid } from '@backstage/ui';
+import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 
 type ScenarioTableProps = {
   isEditing: boolean;
@@ -22,8 +16,7 @@ type ScenarioTableProps = {
 
 export function ScenarioTable(props: ScenarioTableProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { rowBorder, tableCell, tableCellTitle, tableCellDragIcon } =
-    useTableStyles();
+  const { tableCellDragIcon } = useTableStyles();
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
@@ -73,51 +66,44 @@ export function ScenarioTable(props: ScenarioTableProps) {
   }
 
   return (
-    <TableContainer>
-      <Table>
-        <TableHead style={{ whiteSpace: 'nowrap' }}>
-          <TableRow className={rowBorder}>
-            {props.isEditing && <TableCell className={tableCellDragIcon} />}
-            <TableCell className={tableCellTitle}>
-              <Text weight="bold" variant="body-large">
-                {t('dictionary.title')}
-              </Text>
-            </TableCell>
-            <TableCell className={tableCell}>
-              <Text weight="bold" variant="body-large">
-                {t('dictionary.initialRisk')}
-              </Text>
-            </TableCell>
-
-            <TableCell className={tableCell}>
-              <Text weight="bold" variant="body-large">
-                {t('dictionary.measures')}
-              </Text>
-            </TableCell>
-            <TableCell className={tableCell}>
-              <Text weight="bold" variant="body-large">
-                {t('dictionary.restRisk')}
-              </Text>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tempScenarios.map((scenario, idx) => (
-            <ScenarioTableRow
-              key={scenario.ID}
-              index={idx}
-              scenario={scenario}
-              viewRow={(id: string) =>
-                openScenarioDrawer(id, props.isEditingAllowed)
-              }
-              moveRowFinal={moveRowFinal}
-              moveRowLocal={moveRowLocal}
-              isLastRow={idx === riSc.scenarios.length - 1}
-              isEditing={props.isEditing}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <Grid.Root columns={`${props.isEditing ? 9 : 7}`} py="16px">
+        {props.isEditing && <Grid.Item className={tableCellDragIcon} />}
+        <Grid.Item colSpan="3">
+          <Text weight="bold" variant="body-large">
+            {t('dictionary.title')}
+          </Text>
+        </Grid.Item>
+        <Grid.Item colSpan="1">
+          <Text weight="bold" variant="body-large">
+            {t('dictionary.initialRisk')}
+          </Text>
+        </Grid.Item>
+        <Grid.Item colSpan="2">
+          <Text weight="bold" variant="body-large">
+            {t('dictionary.measures')}
+          </Text>
+        </Grid.Item>
+        <Grid.Item colSpan="1">
+          <Text weight="bold" variant="body-large">
+            {t('dictionary.restRisk')}
+          </Text>
+        </Grid.Item>
+        {props.isEditing && <Grid.Item colSpan="1" />}
+      </Grid.Root>
+      {tempScenarios.map((scenario, idx) => (
+        <ScenarioTableRow
+          key={scenario.ID}
+          scenario={scenario}
+          index={idx}
+          viewRow={(id: string) =>
+            openScenarioDrawer(id, props.isEditingAllowed)
+          }
+          moveRowFinal={moveRowFinal}
+          moveRowLocal={moveRowLocal}
+          isEditing={props.isEditing}
+        />
+      ))}
+    </>
   );
 }
