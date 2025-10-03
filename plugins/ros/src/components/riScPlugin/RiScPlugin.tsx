@@ -14,7 +14,8 @@ import { useRiScs } from '../../contexts/RiScContext';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { RiScHeader } from '../riScHeader/RiScHeader.tsx';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper.tsx';
-import { Text } from '@backstage/ui';
+import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
+import { Flex, Text } from '@backstage/ui';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -87,7 +88,17 @@ export function RiScPlugin() {
       ) : (
         <>
           <RiScHeader onEditEncryption={openEditEncryptionDialog} />
-
+          {!isFetching && !selectedRiSc && (
+            <Flex
+              justify="center"
+              align="center"
+              style={{
+                height: '60%',
+              }}
+            >
+              <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
+            </Flex>
+          )}
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>

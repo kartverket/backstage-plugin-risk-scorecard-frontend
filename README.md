@@ -99,6 +99,8 @@ yarn upgrade-interactive
 
 If you want to publish a new version of the plugin, you first need to update the version in `plugins/ros/package.json` (line 3). Follow [semantic versioning](https://semver.org/).
 
+To update the plugin version shown in the UI, change the `PLUGIN_VERSION_NUMBER` variable in `plugins/ros/src/contexts/PluginVersionContext.tsx`.
+
 Once the new version is updated on the `main` branch, you can create a new release with tags.
 
 **To create a new tag manually on GitHub:**
