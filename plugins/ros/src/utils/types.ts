@@ -1,10 +1,5 @@
 import type { Dispatch } from 'react';
-import {
-  ActionsDTO,
-  GcpCryptoKeyObject,
-  ScenarioDTO,
-  SopsConfigDTO,
-} from './DTOs';
+import { ActionsDTO, ScenarioDTO, SopsConfigDTO } from './DTOs';
 import { ActionStatusOptions } from './constants';
 
 /**
@@ -125,15 +120,6 @@ type MigrationChangedValue<T> = {
 type MigrationChangedTypedValue<S, T> = {
   oldValue: S;
   newValue: T;
-};
-
-export type SopsConfig = {
-  shamirThreshold: number;
-  lastModified?: string;
-  modified?: boolean;
-  version?: string;
-  gcpCryptoKey: GcpCryptoKeyObject;
-  publicAgeKeys: string[];
 };
 
 export type RiSc = {
@@ -327,7 +313,7 @@ type UnchangedProperty<T> = {
   value: T;
 };
 
-type DifferenceDTO = {
+export type DifferenceDTO = {
   status: DifferenceStatus;
   differenceState: Difference;
   errorMessage?: string;
