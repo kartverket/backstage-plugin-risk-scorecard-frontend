@@ -2,14 +2,11 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import { useRef, useState } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
-import { useRiScs } from '../../contexts/RiScContext';
-import { ActionStatusOptions } from '../../utils/constants';
+import { useState, useRef } from 'react';
+import { Flex, Card, Grid } from '@backstage/ui';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Scenario } from '../../utils/types';
+import { useRiScs } from '../../contexts/RiScContext';
 import {
   deleteScenario,
   getConsequenceLevel,
@@ -20,6 +17,8 @@ import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
 import { useTableStyles } from './ScenarioTableStyles';
 import { Text } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
+import { ActionStatusOptions } from '../../utils/constants';
+import { useDrag, useDrop } from 'react-dnd';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -27,7 +26,6 @@ interface ScenarioTableRowProps {
   index: number;
   moveRowFinal: (dragIndex: number, dropIndex: number) => void;
   moveRowLocal: (dragIndex: number, hoverIndex: number) => void;
-  isLastRow?: boolean;
   isEditing: boolean;
 }
 
@@ -37,24 +35,16 @@ export function ScenarioTableRow({
   index,
   moveRowFinal,
   moveRowLocal,
-  isLastRow,
   isEditing,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const {
-    riskColor,
-    rowBackground,
-    rowBorder,
-    tableCell,
-    tableCellTitle,
-    tableCellContainer,
-  } = useTableStyles();
+  const { tableCard, gridItem, riskColor } = useTableStyles();
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
     useState(false);
 
-  const ref = useRef<HTMLTableRowElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const [, drop] = useDrop({
     accept: 'row',
@@ -103,96 +93,101 @@ export function ScenarioTableRow({
   preview(drop(ref));
 
   return (
-    <TableRow
+    <Card
       ref={ref}
-      className={`${isLastRow ? undefined : rowBorder} ${rowBackground}`}
       onClick={() => viewRow(scenario.ID)}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
+      className={tableCard}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+      }}
     >
-      {isEditing && (
-        <TableCell>
-          <IconButton size="small" ref={drag}>
-            <DragIndicatorIcon
-              aria-label="Drag"
-              sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+      <Grid.Root columns={`${isEditing ? 9 : 7}`} style={{ minWidth: 750 }}>
+        {isEditing && (
+          <Grid.Item className={gridItem}>
+            <IconButton size="small" ref={drag}>
+              <DragIndicatorIcon
+                sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+              />
+            </IconButton>
+          </Grid.Item>
+        )}
+        <Grid.Item colSpan="3" className={gridItem}>
+          <Text as="p" variant="body-large">
+            {scenario.title}
+          </Text>
+        </Grid.Item>
+        <Grid.Item colSpan="1" className={gridItem}>
+          <Flex align="center" justify="start">
+            <Paper
+              className={riskColor}
+              style={{
+                backgroundColor: getRiskMatrixColor(scenario.risk),
+              }}
             />
-          </IconButton>
-        </TableCell>
-      )}
-      <TableCell className={tableCellTitle}>
-        <Text weight="bold" style={{ color: 'var(--bui-bg-solid)' }}>
-          {scenario.title}
-        </Text>
-      </TableCell>
-      <TableCell className={tableCell}>
-        <div className={tableCellContainer}>
-          <Paper
-            className={riskColor}
-            style={{
-              backgroundColor: getRiskMatrixColor(scenario.risk),
-            }}
-          />
-          {t('scenarioTable.columns.probabilityChar')}:
-          {getProbabilityLevel(scenario.risk)}{' '}
-          {t('scenarioTable.columns.consequenceChar')}:
-          {getConsequenceLevel(scenario.risk)}
-        </div>
-      </TableCell>
-      <TableCell className={tableCell}>
-        <div className={tableCellContainer}>
-          {(() => {
-            if (scenario.actions.length > 0) {
-              return (
-                <ScenarioTableProgressBar
-                  completedCount={
-                    scenario.actions.filter(
-                      a => a.status === ActionStatusOptions.OK,
-                    ).length
-                  }
-                  totalCount={
-                    scenario.actions.filter(
-                      a => a.status !== ActionStatusOptions.NotRelevant,
-                    ).length
-                  }
-                />
-              );
-            }
-            return t('scenarioTable.noActions');
-          })()}
-        </div>
-      </TableCell>
-      <TableCell className={tableCell}>
-        <div className={tableCellContainer}>
-          <Paper
-            className={riskColor}
-            style={{
-              backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
-            }}
-          />
-          {t('scenarioTable.columns.probabilityChar')}:
-          {getProbabilityLevel(scenario.remainingRisk)}{' '}
-          {t('scenarioTable.columns.consequenceChar')}:
-          {getConsequenceLevel(scenario.remainingRisk)}
-        </div>
-      </TableCell>
-      {isEditing && (
-        <TableCell>
-          <IconButton
-            size="small"
-            onClick={event => {
-              event.stopPropagation();
-              setScenarioDeletionDialogOpen(true);
-            }}
-          >
-            <DeleteIcon />
-          </IconButton>
-          <DeleteScenarioConfirmation
-            isOpen={isScenarioDeletionDialogOpen}
-            setIsOpen={setScenarioDeletionDialogOpen}
-            onConfirm={() => deleteScenario(riSc, updateRiSc, scenario)}
-          />
-        </TableCell>
-      )}
-    </TableRow>
+            <Text variant="body-medium">
+              {t('scenarioTable.columns.probabilityChar')}:
+              {`${getProbabilityLevel(
+                scenario.risk,
+              )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.risk)}`}
+            </Text>
+          </Flex>
+        </Grid.Item>
+
+        <Grid.Item colSpan="2" className={gridItem}>
+          <div style={{ paddingRight: '1rem' }}>
+            {(() => {
+              if (scenario.actions.length > 0) {
+                return (
+                  <ScenarioTableProgressBar
+                    completedCount={
+                      scenario.actions.filter(
+                        a => a.status === ActionStatusOptions.OK,
+                      ).length
+                    }
+                    totalCount={
+                      scenario.actions.filter(
+                        a => a.status !== ActionStatusOptions.NotRelevant,
+                      ).length
+                    }
+                  />
+                );
+              }
+              return t('scenarioTable.noActions');
+            })()}
+          </div>
+        </Grid.Item>
+        <Grid.Item colSpan="1" className={gridItem}>
+          <Flex align="center">
+            <Paper
+              className={riskColor}
+              style={{
+                backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
+              }}
+            />
+            <Text variant="body-medium">{`${t('scenarioTable.columns.probabilityChar')}:${getProbabilityLevel(
+              scenario.remainingRisk,
+            )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.remainingRisk)}`}</Text>
+          </Flex>
+        </Grid.Item>
+        {isEditing && (
+          <Grid.Item colSpan="1" className={gridItem}>
+            <IconButton
+              size="small"
+              onClick={event => {
+                event.stopPropagation(); // prevent card click
+                setScenarioDeletionDialogOpen(true);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+            <DeleteScenarioConfirmation
+              isOpen={isScenarioDeletionDialogOpen}
+              setIsOpen={setScenarioDeletionDialogOpen}
+              onConfirm={() => deleteScenario(riSc, updateRiSc, scenario)}
+            />
+          </Grid.Item>
+        )}
+      </Grid.Root>
+    </Card>
   );
 }
