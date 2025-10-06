@@ -1,3 +1,4 @@
+import { CreateRiScFrom } from '../components/riScDialog/RiScDialog';
 import {
   Action,
   ContentStatus,
@@ -131,11 +132,13 @@ export function riScToDTOString(
   isRequiresNewApproval: boolean,
   profile: ProfileInfo,
   sopsConfig: SopsConfigDTO,
+  initialRiScType?: CreateRiScFrom[],
 ): string {
   const json = JSON.stringify({
     riSc: JSON.stringify(riScToDTO(riSc)),
     isRequiresNewApproval: isRequiresNewApproval,
     schemaVersion: riSc.schemaVersion,
+    defaultRiScTypes: initialRiScType,
     userInfo: {
       name: profile.displayName ?? '',
       email: profile.email ?? '',
