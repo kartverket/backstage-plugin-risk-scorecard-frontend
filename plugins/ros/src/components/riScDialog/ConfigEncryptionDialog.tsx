@@ -2,18 +2,14 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box,
-  Button,
   DialogContentText,
   FormLabel,
   IconButton,
-  Link,
   List,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
   TextField,
-  Typography,
 } from '@mui/material';
 import { GcpCryptoKeyMenu } from '../sopsConfigDialog/GcpCryptoKeyMenu';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -29,7 +25,7 @@ import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
 import FormHelperText from '@mui/material/FormHelperText';
 import { URLS } from '../../urls';
-import { Text } from '@backstage/ui';
+import { Text, Link, Button, Flex, Box } from '@backstage/ui';
 import { Divider } from '@mui/material';
 
 interface ConfigEncryptionDialogProps {
@@ -134,7 +130,7 @@ function ConfigEncryptionDialog({
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <Flex direction="column" gap="16px">
       <Divider />
       <Text as="h2" variant="title-small" weight="bold">
         {t('rosDialog.stepEncryption')}
@@ -144,9 +140,9 @@ function ConfigEncryptionDialog({
           ? t('sopsConfigDialog.description.new')
           : t('sopsConfigDialog.description.edit')}
       </DialogContentText>
-      <Typography variant="subtitle2">
+      <Text variant="body-medium" weight="bold">
         {t('sopsConfigDialog.selectKeysTitle')}
-      </Typography>
+      </Text>
 
       {chosenGcpCryptoKey !== undefined ? (
         <>
@@ -162,9 +158,9 @@ function ConfigEncryptionDialog({
           />
         </>
       ) : (
-        <Typography variant="body1">
+        <Text variant="body-medium">
           {t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}
-        </Typography>
+        </Text>
       )}
       {errors.sopsConfig !== undefined && (
         <FormHelperText error={true}>
@@ -189,10 +185,8 @@ function ConfigEncryptionDialog({
               )}
               {publicAgeKeys.length > 0 && (
                 <Box
-                  sx={{
+                  style={{
                     border: '1px solid',
-                    borderColor: theme =>
-                      theme.palette.mode === 'dark' ? 'white' : 'grey.300',
                     borderRadius: '4px',
                     marginBottom: 2,
                   }}
@@ -217,7 +211,7 @@ function ConfigEncryptionDialog({
                   </List>
                 </Box>
               )}
-              <Typography>
+              <Text variant="body-large">
                 {t('dictionary.click')}{' '}
                 <Link
                   href={
@@ -226,48 +220,34 @@ function ConfigEncryptionDialog({
                   target="_blank"
                   rel="noopener noreferrer"
                   color="primary"
-                  underline="hover"
                 >
                   {t('dictionary.here')}
                 </Link>{' '}
                 {t('sopsConfigDialog.writeLocalRiscSuffix')}
-              </Typography>
-              <Typography>
+              </Text>
+              <Text as="p" variant="body-large">
                 {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
                   'dictionary.optional',
-                )})`}
-              </Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'space-between',
-                  gap: 2,
-                  marginTop: 2,
-                }}
-              >
+                )})`}{' '}
+              </Text>
+              <Flex direction="column" justify="between" gap="2" mt="2">
                 {!isAddPublicAgeKeyVisible && (
                   <Button
-                    startIcon={<AddCircle />}
-                    variant="text"
-                    color="primary"
+                    iconStart={<AddCircle />}
+                    type="button"
+                    variant="tertiary"
                     onClick={showAddPublicAgeKey}
-                    sx={{
-                      maxWidth: 200,
-                      mt: 1,
+                    style={{
+                      maxWidth: 150,
+                      marginTop: '1rem',
+                      color: '#1f5493',
                     }}
                   >
                     {t('sopsConfigDialog.addPublicAgeKey')}
                   </Button>
                 )}
                 {isAddPublicAgeKeyVisible && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                    }}
-                  >
+                  <Flex align="center" gap="1">
                     <TextField
                       label={t('sopsConfigDialog.publicAgeKey')}
                       helperText={publicAgeKeyHelperText}
@@ -286,23 +266,22 @@ function ConfigEncryptionDialog({
                       sx={{ flex: 1 }}
                     />
                     <Button
-                      variant="contained"
-                      color="primary"
+                      variant="primary"
                       onClick={handleAddPublicAgeKey}
-                      sx={{
+                      style={{
                         maxWidth: 200,
                       }}
                     >
                       {t('sopsConfigDialog.addPublicAgeKey')}
                     </Button>
-                  </Box>
+                  </Flex>
                 )}
-              </Box>
+              </Flex>
             </Box>
           </AccordionDetails>
         </Accordion>
       </Box>
-    </Box>
+    </Flex>
   );
 }
 
