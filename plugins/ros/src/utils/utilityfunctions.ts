@@ -65,7 +65,7 @@ export function emptyRiSc(): RiSc {
 }
 
 export function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString();
+  return DateTime.fromJSDate(new Date(date)).toFormat('dd.MM.yyyy');
 }
 
 export function calculateDaysSince(dateString: Date) {
