@@ -44,7 +44,7 @@ export function ScenarioTableRow({
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
     useState(false);
 
-  const ref = useRef<HTMLTableRowElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const [, drop] = useDrop({
     accept: 'row',
