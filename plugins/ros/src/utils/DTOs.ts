@@ -1,7 +1,7 @@
-import { CreateRiScFrom } from '../components/riScDialog/RiScDialog';
 import {
   Action,
   ContentStatus,
+  DefaultRiScType,
   LastPublished,
   MigrationStatus,
   Modify,
@@ -132,7 +132,7 @@ export function riScToDTOString(
   isRequiresNewApproval: boolean,
   profile: ProfileInfo,
   sopsConfig: SopsConfigDTO,
-  initialRiScType?: CreateRiScFrom[],
+  initialRiScType?: DefaultRiScType[],
 ): string {
   const json = JSON.stringify({
     riSc: JSON.stringify(riScToDTO(riSc)),

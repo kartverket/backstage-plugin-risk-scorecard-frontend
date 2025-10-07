@@ -5,51 +5,51 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form/dist/types/form';
-import { RiScWithMetadata } from '../../utils/types';
-import { CreateRiScFrom, RiScDialogStates } from './RiScDialog';
+import { DefaultRiScType, RiScWithMetadata } from '../../utils/types';
+import { RiScDialogStates } from './RiScDialog';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
 import { Divider } from '@mui/material';
+import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 
 interface ConfigRiscInfoProps {
   dialogState: RiScDialogStates;
-  createRiScFrom: CreateRiScFrom;
   register: UseFormRegister<RiScWithMetadata>;
   errors: FieldErrors<RiScWithMetadata>;
   setValue: UseFormSetValue<RiScWithMetadata>;
   watch: UseFormWatch<RiScWithMetadata>;
+  selectedRiScType: DefaultRiScType;
 }
 
-function ConfigRiscInfo({
-  register,
-  errors,
-  setValue,
-  watch,
-}: ConfigRiscInfoProps) {
+function ConfigRiscInfo(props: ConfigRiscInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { getDescriptorOfType } = useDefaultRiScTypeDescriptors();
+  const descriptor = getDescriptorOfType(props.selectedRiScType);
 
-  const currentScope = watch('content.scope');
+  const currentScope = props.watch('content.scope');
 
   return (
     <>
       <Divider />
       <Input
         required
-        {...register('content.title', { required: true })}
-        error={errors?.content?.title !== undefined}
+        {...props.register('content.title', { required: true })}
+        error={props.errors?.content?.title !== undefined}
         label={t('dictionary.title')}
-        helperText={errors?.content?.title && t('rosDialog.titleError')}
+        helperText={props.errors?.content?.title && t('rosDialog.titleError')}
       />
       <MarkdownInput
-        {...register('content.scope')}
+        {...props.register('content.scope')}
         value={currentScope}
         label={t('dictionary.scope')}
         sublabel={t('rosDialog.scopeDescription')}
-        error={errors?.content?.scope !== undefined}
+        error={props.errors?.content?.scope !== undefined}
         minRows={8}
-        onMarkdownChange={value => setValue('content.scope', value)}
+        onMarkdownChange={value => props.setValue('content.scope', value)}
       />
+      <p>{descriptor?.defaultScope || ''}</p>
+      <p>{descriptor?.defaultTitle || ''}</p>
     </>
   );
 }

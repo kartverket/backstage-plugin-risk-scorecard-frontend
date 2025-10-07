@@ -35,6 +35,22 @@ export type RiScWithMetadata = {
   lastPublished?: LastPublished;
 };
 
+export type DefaultRiScTypeDescriptor = {
+  riScType: DefaultRiScType;
+  listName: string;
+  listDescription: string;
+  defaultTitle: string;
+  defaultScope: string;
+  numberOfScenarios: number | null;
+  numberOfActions: number | null;
+};
+
+export enum DefaultRiScType {
+  InternalJob = 'InternalJob',
+  Standard = 'Standard',
+  Ops = 'Ops',
+}
+
 export type MigrationStatus = {
   migrationChanges: boolean;
   migrationRequiresNewApproval: boolean;
