@@ -15,6 +15,7 @@ import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
 import ConfigInitialRisc from './ConfigInitialRisc';
 import { Flex, Box, Button } from '@backstage/ui';
+import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -68,7 +69,6 @@ export function RiScDialog({
 
   const { selectedRiSc, createNewRiSc, deleteRiSc, updateRiSc, gcpCryptoKeys } =
     useRiScs();
-
   const {
     register,
     handleSubmit,
@@ -96,6 +96,17 @@ export function RiScDialog({
   const [selectedRiScType, setSelectedRiScType] = useState<DefaultRiScType>(
     DefaultRiScType.Standard,
   );
+  const { getDescriptorOfType } = useDefaultRiScTypeDescriptors();
+
+  const onSelectRiScType = (newRiScType: string) => {
+    const defaultRiScType = newRiScType as DefaultRiScType;
+    setSelectedRiScType(defaultRiScType);
+    let descriptor = getDescriptorOfType(newRiScType as DefaultRiScType);
+    if (descriptor) {
+      setValue('content.title', descriptor.defaultTitle);
+      setValue('content.scope', descriptor.defaultScope);
+    }
+  };
 
   const handleNext = handleSubmit(
     () => {
@@ -186,9 +197,7 @@ export function RiScDialog({
                 dialogState={dialogState}
                 switchOn={switchOn}
                 setSwitchOn={setSwitchOn}
-                onSelectRiScType={newRiScType => {
-                  setSelectedRiScType(newRiScType as DefaultRiScType);
-                }}
+                onSelectRiScType={onSelectRiScType}
               />
             )}
             {activeStep === 1 && (

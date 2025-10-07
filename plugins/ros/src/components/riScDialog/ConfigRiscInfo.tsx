@@ -11,7 +11,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
 import { Divider } from '@mui/material';
-import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 
 interface ConfigRiscInfoProps {
   dialogState: RiScDialogStates;
@@ -24,11 +23,7 @@ interface ConfigRiscInfoProps {
 
 function ConfigRiscInfo(props: ConfigRiscInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { getDescriptorOfType } = useDefaultRiScTypeDescriptors();
-  const descriptor = getDescriptorOfType(props.selectedRiScType);
-
   const currentScope = props.watch('content.scope');
-
   return (
     <>
       <Divider />
@@ -48,8 +43,6 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
         minRows={8}
         onMarkdownChange={value => props.setValue('content.scope', value)}
       />
-      <p>{descriptor?.defaultScope || ''}</p>
-      <p>{descriptor?.defaultTitle || ''}</p>
     </>
   );
 }
