@@ -6,8 +6,10 @@ import { Divider } from '@mui/material';
 import {
   DefaultRiScType,
   DefaultRiScTypeDescriptor,
+  RiScWithMetadata,
 } from '../../utils/types.ts';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
+import { UseFormSetValue } from 'react-hook-form/dist/types/form';
 
 type RadioOptionProps = {
   value: string;
@@ -55,6 +57,7 @@ interface ConfigInitialRiscProps {
   switchOn: boolean;
   setSwitchOn: (val: boolean) => void;
   onSelectRiScType: (value: string) => void;
+  setValue: UseFormSetValue<RiScWithMetadata>;
 }
 
 export function sortStandardRiScFirst(
@@ -75,19 +78,22 @@ export function sortStandardRiScFirst(
   });
 }
 
-function ConfigInitialRisc({
-  dialogState,
-  switchOn,
-  setSwitchOn,
-  onSelectRiScType,
-}: ConfigInitialRiscProps) {
+function ConfigInitialRisc(props: ConfigInitialRiscProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { defaultRiScTypeDescriptors } = useDefaultRiScTypeDescriptors();
+
+  function onSwitchChange() {
+    if (props.switchOn) {
+      props.setValue('content.title', '');
+      props.setValue('content.scope', '');
+    }
+    props.setSwitchOn(!props.switchOn);
+  }
 
   return (
     <>
       <Divider />
-      {dialogState === RiScDialogStates.Create && (
+      {props.dialogState === RiScDialogStates.Create && (
         <>
           <Box mt="4">
             <Box mb="4">
@@ -102,23 +108,24 @@ function ConfigInitialRisc({
                     {t('rosDialog.initialRiscScopeDescription')}
                   </Text>
                   <Switch
-                    isSelected={switchOn}
-                    onChange={() => setSwitchOn(!switchOn)}
-                    label={switchOn ? t('dictionary.yes') : t('dictionary.no')}
+                    isSelected={props.switchOn}
+                    onChange={onSwitchChange}
+                    label={
+                      props.switchOn ? t('dictionary.yes') : t('dictionary.no')
+                    }
                   />
                 </Box>
                 <Flex direction="column" justify="between" mt="2" gap="2">
                   <Text
                     variant="body-medium"
-                    color={!switchOn ? 'secondary' : 'primary'}
+                    color={!props.switchOn ? 'secondary' : 'primary'}
                   >
                     {t('rosDialog.initialRiscApplicationType')}
                   </Text>
 
                   <RadioGroup
-                    defaultValue={DefaultRiScType.Standard}
-                    onChange={onSelectRiScType}
-                    isDisabled={!switchOn}
+                    onChange={props.onSelectRiScType}
+                    isDisabled={!props.switchOn}
                     aria-label="Select application type"
                   >
                     {sortStandardRiScFirst(defaultRiScTypeDescriptors).map(
@@ -128,7 +135,7 @@ function ConfigInitialRisc({
                           value={descriptor.riScType}
                           label={descriptor.listName}
                           description={descriptor.listDescription}
-                          active={!switchOn}
+                          active={!props.switchOn}
                         />
                       ),
                     )}

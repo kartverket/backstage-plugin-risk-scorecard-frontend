@@ -197,6 +197,7 @@ export function RiScDialog({
                 dialogState={dialogState}
                 switchOn={switchOn}
                 setSwitchOn={setSwitchOn}
+                setValue={setValue}
                 onSelectRiScType={onSelectRiScType}
               />
             )}
