@@ -89,7 +89,6 @@ function ConfigInitialRisc({
             </Text>
 
             <RadioGroup
-              defaultValue={String(CreateRiScFrom.Ops)}
               onChange={handleChangeCreateRiScFrom}
               isDisabled={!switchOn}
               aria-label="Select application type"
