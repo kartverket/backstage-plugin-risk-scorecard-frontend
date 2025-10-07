@@ -30,25 +30,6 @@ export function SupportDialog() {
             }}
           >
             <SupportEntry
-              label={t('supportDialog.entries.documentation.title')}
-              url="https://skip.kartverket.no/docs"
-              icon={
-                <i
-                  className="ri-article-line"
-                  style={{ fontSize: 'x-large' }}
-                />
-              }
-              description={t('supportDialog.entries.documentation.description')}
-            />
-            <SupportEntry
-              label={t('supportDialog.entries.slackChannel.title')}
-              url="https://kartverketgroup.slack.com/archives/C028ZEED280"
-              icon={
-                <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
-              }
-              description={t('supportDialog.entries.slackChannel.description')}
-            />
-            <SupportEntry
               label={t('supportDialog.entries.riscFeedbackChannel.title')}
               url="https://kartverketgroup.slack.com/archives/C075KCPTURY"
               icon={
@@ -60,7 +41,7 @@ export function SupportDialog() {
             />
             <SupportEntry
               label={t('supportDialog.entries.riscDocumentation.title')}
-              url="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1176142023/Koden+r+RoS"
+              url="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1645608980/Koden+r+RoS"
               icon={
                 <i
                   className="ri-article-line"
@@ -69,18 +50,6 @@ export function SupportDialog() {
               }
               description={t(
                 'supportDialog.entries.riscDocumentation.description',
-              )}
-            />
-            <SupportEntry
-              label={t(
-                'supportDialog.entries.securityMetricsFeedbackChannel.title',
-              )}
-              url="https://kartverketgroup.slack.com/archives/C07RNB2LPUZ"
-              icon={
-                <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
-              }
-              description={t(
-                'supportDialog.entries.securityMetricsFeedbackChannel.description',
               )}
             />
           </div>

@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import DialogContent from '@mui/material/DialogContent';
 import Typography from '@mui/material/Typography';
 import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
+import { Button } from '@backstage/ui';
 
 export function MatrixDialog({
   open,
