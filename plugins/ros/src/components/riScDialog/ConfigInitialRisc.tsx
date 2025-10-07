@@ -89,10 +89,17 @@ function ConfigInitialRisc({
             </Text>
 
             <RadioGroup
+              defaultValue={String(CreateRiScFrom.Standard)}
               onChange={handleChangeCreateRiScFrom}
               isDisabled={!switchOn}
               aria-label="Select application type"
             >
+              <RadioOption
+                value={String(CreateRiScFrom.Standard)}
+                label="Standard"
+                description={t('rosDialog.generateStandardRiScDescription')}
+                active={!switchOn}
+              />
               <RadioOption
                 value={String(CreateRiScFrom.Ops)}
                 label="Ops"
@@ -103,12 +110,6 @@ function ConfigInitialRisc({
                 value={String(CreateRiScFrom.InternalJob)}
                 label="Internal Job"
                 description={t('rosDialog.generateInternalJobRiScDescription')}
-                active={!switchOn}
-              />
-              <RadioOption
-                value={String(CreateRiScFrom.Standard)}
-                label="Standard"
-                description={t('rosDialog.generateStandardRiScDescription')}
                 active={!switchOn}
               />
             </RadioGroup>
