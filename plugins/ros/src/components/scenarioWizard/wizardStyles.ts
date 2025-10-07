@@ -36,12 +36,3 @@ export const riskVoidCell: SxProps<Theme> = theme => ({
   textAlign: 'left',
   verticalAlign: 'top',
 });
-
-export const riskRadio: SxProps<Theme> = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  padding: '0.5rem 0',
-  gap: '0.3rem',
-  textTransform: 'uppercase',
-};

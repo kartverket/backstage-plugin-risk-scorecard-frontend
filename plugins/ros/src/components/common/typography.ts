@@ -67,10 +67,3 @@ export const subtitle2: SxProps<Theme> = {
   fontSize: '1rem',
   fontWeight: 400,
 };
-
-export const headerSubtitle: SxProps<Theme> = {
-  fontSize: '1rem',
-  fontWeight: 500,
-  paddingBottom: '1rem',
-  marginTop: '-0.2rem',
-};
