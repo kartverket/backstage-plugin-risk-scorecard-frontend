@@ -224,8 +224,6 @@ export const pluginRiScMessages = {
     title: 'Support',
     openEntry: 'Open',
     entries: {
-      documentation: { title: 'Documentation', description: 'SKIPDOK' },
-      slackChannel: { title: 'Slack Channel', description: '#gen-skip' },
       riscFeedbackChannel: {
         title: 'RISC Feedback Channel',
         description: '#kodenær-ros-tilbakemelding',
@@ -829,10 +827,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Strengt konfidensielt',
           'supportDialog.title': 'Support',
           'supportDialog.openEntry': 'Åpne',
-          'supportDialog.entries.documentation.title': 'Dokumentasjon',
-          'supportDialog.entries.documentation.description': 'SKIPDOK',
-          'supportDialog.entries.slackChannel.title': 'Slack-kanal',
-          'supportDialog.entries.slackChannel.description': '#gen-skip',
           'supportDialog.entries.riscFeedbackChannel.title':
             'RoS tilbakemeldingskanal',
           'supportDialog.entries.riscFeedbackChannel.description':
