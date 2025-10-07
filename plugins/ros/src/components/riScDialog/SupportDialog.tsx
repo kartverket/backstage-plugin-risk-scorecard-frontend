@@ -60,7 +60,7 @@ export function SupportDialog() {
             />
             <SupportEntry
               label={t('supportDialog.entries.riscDocumentation.title')}
-              url="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1176142023/Koden+r+RoS"
+              url="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1645608980/Koden+r+RoS"
               icon={
                 <i
                   className="ri-article-line"
