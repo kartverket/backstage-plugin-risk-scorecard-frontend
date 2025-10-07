@@ -1,9 +1,12 @@
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Text, RadioGroup, Radio, Box, Switch, Flex } from '@backstage/ui';
+import { Box, Flex, Radio, RadioGroup, Switch, Text } from '@backstage/ui';
 import { RiScDialogStates } from './RiScDialog';
 import { Divider } from '@mui/material';
-import { DefaultRiScType } from '../../utils/types.ts';
+import {
+  DefaultRiScType,
+  DefaultRiScTypeDescriptor,
+} from '../../utils/types.ts';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 
 type RadioOptionProps = {
@@ -54,6 +57,24 @@ interface ConfigInitialRiscProps {
   onSelectRiScType: (value: string) => void;
 }
 
+export function sortStandardRiScFirst(
+  defaultRiScTypeDescriptors: DefaultRiScTypeDescriptor[],
+): DefaultRiScTypeDescriptor[] {
+  return defaultRiScTypeDescriptors.sort((a, b) => {
+    if (
+      a.riScType === DefaultRiScType.Standard &&
+      b.riScType !== DefaultRiScType.Standard
+    )
+      return -1;
+    if (
+      a.riScType !== DefaultRiScType.Standard &&
+      b.riScType === DefaultRiScType.Standard
+    )
+      return 1;
+    return 0;
+  });
+}
+
 function ConfigInitialRisc({
   dialogState,
   switchOn,
@@ -100,15 +121,17 @@ function ConfigInitialRisc({
                     isDisabled={!switchOn}
                     aria-label="Select application type"
                   >
-                    {defaultRiScTypeDescriptors.map(descriptor => (
-                      <RadioOption
-                        key={descriptor.riScType}
-                        value={descriptor.riScType}
-                        label={descriptor.listName}
-                        description={descriptor.listDescription}
-                        active={!switchOn}
-                      />
-                    ))}
+                    {sortStandardRiScFirst(defaultRiScTypeDescriptors).map(
+                      descriptor => (
+                        <RadioOption
+                          key={descriptor.riScType}
+                          value={descriptor.riScType}
+                          label={descriptor.listName}
+                          description={descriptor.listDescription}
+                          active={!switchOn}
+                        />
+                      ),
+                    )}
                   </RadioGroup>
                 </Flex>
               </>
