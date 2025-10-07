@@ -52,18 +52,6 @@ export function SupportDialog() {
                 'supportDialog.entries.riscDocumentation.description',
               )}
             />
-            <SupportEntry
-              label={t(
-                'supportDialog.entries.securityMetricsFeedbackChannel.title',
-              )}
-              url="https://kartverketgroup.slack.com/archives/C07RNB2LPUZ"
-              icon={
-                <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
-              }
-              description={t(
-                'supportDialog.entries.securityMetricsFeedbackChannel.description',
-              )}
-            />
           </div>
         </DialogContent>
       </Dialog>

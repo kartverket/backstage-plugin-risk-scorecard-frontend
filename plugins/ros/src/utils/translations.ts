@@ -232,10 +232,6 @@ export const pluginRiScMessages = {
         title: 'RISC Documentation',
         description: 'Confluence - RISC',
       },
-      securityMetricsFeedbackChannel: {
-        title: 'Sikkerhetsmetrikker Feedback Channel',
-        description: '#sikkerhetsmetrikker-tilbakemelding',
-      },
     },
   },
   scenarioTable: {
@@ -834,10 +830,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
           'supportDialog.entries.riscDocumentation.description':
             'Confluence - RISC',
-          'supportDialog.entries.securityMetricsFeedbackChannel.title':
-            'Sikkerhetsmetrikker tilbakemeldingskanal',
-          'supportDialog.entries.securityMetricsFeedbackChannel.description':
-            '#sikkerhetsmetrikker-tilbakemelding',
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.noActions': 'Ingen tiltak',
