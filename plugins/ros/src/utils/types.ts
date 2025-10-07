@@ -40,22 +40,22 @@ export type MigrationStatus = {
   migrationChanges50?: MigrationChanges50;
 };
 
-type MigrationVersions = {
+export type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
 };
 
-type MigrationChanges50 = {
+export type MigrationChanges50 = {
   scenarios: MigrationChanges50Scenario[];
 };
 
-type MigrationChanges50Scenario = {
+export type MigrationChanges50Scenario = {
   title: string;
   id: string;
   changedActions: MigrationChanges50Action[];
 };
 
-type MigrationChanges50Action = {
+export type MigrationChanges50Action = {
   title: string;
   id: string;
   changedActionStatus: MigrationChangedTypedValue<
@@ -64,27 +64,27 @@ type MigrationChanges50Action = {
   >;
 };
 
-type MigrationChanges42 = {
+export type MigrationChanges42 = {
   scenarios: MigrationChanges42Scenario[];
 };
 
-type MigrationChanges42Scenario = {
+export type MigrationChanges42Scenario = {
   title: string;
   id: string;
   changedActions: MigrationChanges42Action[];
 };
 
-type MigrationChanges42Action = {
+export type MigrationChanges42Action = {
   title: string;
   id: string;
   lastUpdated?: Date | null;
 };
 
-type MigrationChanges41 = {
+export type MigrationChanges41 = {
   scenarios: MigrationChanges41Scenario[];
 };
 
-type MigrationChanges41Scenario = {
+export type MigrationChanges41Scenario = {
   title: string;
   id: string;
   changedRiskConsequence?: MigrationChangedValue<number>;
@@ -93,11 +93,11 @@ type MigrationChanges41Scenario = {
   changedRemainingRiskProbability?: MigrationChangedValue<number>;
 };
 
-type MigrationChanges40 = {
+export type MigrationChanges40 = {
   scenarios: MigrationChanges40Scenario[];
 };
 
-type MigrationChanges40Scenario = {
+export type MigrationChanges40Scenario = {
   title: string;
   id: string;
   removedExistingActions?: string;
@@ -105,19 +105,19 @@ type MigrationChanges40Scenario = {
   changedActions: MigrationChanges40Action[];
 };
 
-type MigrationChanges40Action = {
+export type MigrationChanges40Action = {
   title: string;
   id: string;
   removedOwner?: string;
   removedDeadline?: string;
 };
 
-type MigrationChangedValue<T> = {
+export type MigrationChangedValue<T> = {
   oldValue: T;
   newValue: T;
 };
 
-type MigrationChangedTypedValue<S, T> = {
+export type MigrationChangedTypedValue<S, T> = {
   oldValue: S;
   newValue: T;
 };
@@ -221,7 +221,7 @@ export enum DifferenceStatus {
   FrontendFallback = 'FrontendFallback',
 }
 
-enum ActionStatusOptionsV4 {
+export enum ActionStatusOptionsV4 {
   NotStarted = 'Not started',
   InProgress = 'In progress',
   OnHold = 'On hold',
@@ -241,7 +241,7 @@ export type FormScenario = Modify<
   FormRisk
 >;
 
-type Difference = {
+export type Difference = {
   type: '4.*';
   migrationChanges: MigrationStatus;
   title?: SimpleTrackedProperty<string>;
@@ -280,35 +280,35 @@ export type ScenarioRiskChange = {
 
 export type SimpleTrackedProperty<T> = TrackedProperty<T, T>;
 
-type TrackedProperty<S, T> =
+export type TrackedProperty<S, T> =
   | AddedProperty<T>
   | ChangedProperty<S>
   | ContentChangedProperty<S>
   | DeletedProperty<T>
   | UnchangedProperty<T>;
 
-type AddedProperty<T> = {
+export type AddedProperty<T> = {
   type: 'ADDED';
   newValue: T;
 };
 
-type ChangedProperty<S> = {
+export type ChangedProperty<S> = {
   type: 'CHANGED';
   oldValue: S;
   newValue: S;
 };
 
-type ContentChangedProperty<S> = {
+export type ContentChangedProperty<S> = {
   type: 'CONTENT_CHANGED';
   value: S;
 };
 
-type DeletedProperty<T> = {
+export type DeletedProperty<T> = {
   type: 'DELETED';
   oldValue: T;
 };
 
-type UnchangedProperty<T> = {
+export type UnchangedProperty<T> = {
   type: 'UNCHANGED';
   value: T;
 };
