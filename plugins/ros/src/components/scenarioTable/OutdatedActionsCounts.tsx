@@ -1,34 +1,68 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { Flex, Text } from '@backstage/ui';
+import { Flex, Text, Button } from '@backstage/ui';
+import {
+  UpdatedStatusEnum,
+  UpdatedStatusEnumType,
+} from '../../utils/utilityfunctions.ts';
 
 type OutdatedActionsCountsProps = {
   veryOutdatedCount: number;
   outdatedCount: number;
+  onToggle: (type: UpdatedStatusEnumType) => void;
+  visibleType: UpdatedStatusEnumType | null;
 };
 export function OutdatedActionsCounts(props: OutdatedActionsCountsProps) {
   return (
     <Flex>
       {props.veryOutdatedCount > 0 && (
         <OutdatedActionsBadge
-          type="veryOutdated"
+          type={UpdatedStatusEnum.VERY_OUTDATED}
           count={props.veryOutdatedCount}
+          onToggle={props.onToggle}
+          isSelected={props.visibleType === UpdatedStatusEnum.VERY_OUTDATED}
         />
       )}
       {props.outdatedCount > 0 && (
-        <OutdatedActionsBadge type="outdated" count={props.outdatedCount} />
+        <OutdatedActionsBadge
+          type={UpdatedStatusEnum.OUTDATED}
+          count={props.outdatedCount}
+          onToggle={props.onToggle}
+          isSelected={props.visibleType === UpdatedStatusEnum.OUTDATED}
+        />
       )}
     </Flex>
   );
 }
 
 type OutdatedActionsBadgeProps = {
-  type: 'outdated' | 'veryOutdated';
+  type: UpdatedStatusEnumType;
   count: number;
+  onToggle: (type: UpdatedStatusEnumType) => void;
+  isSelected: boolean;
 };
 
 function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  function getBackgroundColor(
+    isSelected: boolean,
+    type: UpdatedStatusEnumType,
+  ) {
+    if (isSelected) {
+      if (type === UpdatedStatusEnum.VERY_OUTDATED) {
+        return '#EBB095';
+      }
+      if (type === UpdatedStatusEnum.OUTDATED) {
+        return '#FFDD9D';
+      }
+    }
+    if (type === UpdatedStatusEnum.OUTDATED) {
+      return '#FFF7ED';
+    }
+    return '#FCF1E8';
+  }
+
   const filterBoxStyle = {
     height: '40px',
     display: 'flex',
@@ -39,7 +73,7 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
     paddingBottom: '8px',
     paddingRight: '20px',
     borderRadius: '24px',
-    backgroundColor: props.type === 'veryOutdated' ? '#FFE2D4' : '#FCEBCD',
+    backgroundColor: getBackgroundColor(props.isSelected, props.type),
   };
   const filterSpanStyle = {
     width: '26px',
@@ -49,20 +83,21 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
     justifyContent: 'center',
     alignItems: 'center',
     color: 'white',
-    backgroundColor: props.type === 'veryOutdated' ? '#F23131' : '#FF8B38',
+    backgroundColor:
+      props.type === UpdatedStatusEnum.VERY_OUTDATED ? '#F23131' : '#FF8B38',
   };
   return (
-    <div style={filterBoxStyle}>
+    <Button style={filterBoxStyle} onClick={() => props.onToggle(props.type)}>
       <span style={filterSpanStyle}>
         <Text style={{ color: 'white' }} weight="bold">
           {props.count}
         </Text>
       </span>
       <Text weight="bold">
-        {props.type === 'veryOutdated'
+        {props.type === UpdatedStatusEnum.VERY_OUTDATED
           ? t('filterButton.veryOutdated')
           : t('filterButton.outdated')}
       </Text>
-    </div>
+    </Button>
   );
 }

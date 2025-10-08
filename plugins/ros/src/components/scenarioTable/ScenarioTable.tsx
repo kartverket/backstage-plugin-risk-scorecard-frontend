@@ -7,11 +7,13 @@ import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Text, Grid } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
+import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 
 type ScenarioTableProps = {
   isEditing: boolean;
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
+  visibleType: UpdatedStatusEnumType | null;
 };
 
 export function ScenarioTable(props: ScenarioTableProps) {
@@ -20,6 +22,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
+  const visibleType = props.visibleType;
 
   const { openScenarioDrawer } = useScenario();
 
@@ -96,6 +99,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
           key={scenario.ID}
           scenario={scenario}
           index={idx}
+          visibleType={visibleType}
           viewRow={(id: string) =>
             openScenarioDrawer(id, props.isEditingAllowed)
           }

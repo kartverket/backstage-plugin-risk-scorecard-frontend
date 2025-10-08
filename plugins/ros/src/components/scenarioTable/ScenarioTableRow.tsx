@@ -3,22 +3,25 @@ import { IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useState, useRef } from 'react';
-import { Flex, Card, Grid } from '@backstage/ui';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Scenario } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
+  calculateDaysSince,
+  calculateUpdatedStatus,
   deleteScenario,
   getConsequenceLevel,
   getProbabilityLevel,
   getRiskMatrixColor,
+  UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
 import { useTableStyles } from './ScenarioTableStyles';
-import { Text } from '@backstage/ui';
+import { Text, Flex, Card, Grid } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
+import { ActionsCard } from './ActionsCard.tsx';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -27,6 +30,7 @@ interface ScenarioTableRowProps {
   moveRowFinal: (dragIndex: number, dropIndex: number) => void;
   moveRowLocal: (dragIndex: number, hoverIndex: number) => void;
   isEditing: boolean;
+  visibleType: UpdatedStatusEnumType | null;
 }
 
 export function ScenarioTableRow({
@@ -36,6 +40,7 @@ export function ScenarioTableRow({
   moveRowFinal,
   moveRowLocal,
   isEditing,
+  visibleType,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { tableCard, gridItem, riskColor } = useTableStyles();
@@ -89,6 +94,24 @@ export function ScenarioTableRow({
       isDragging: monitor.isDragging(),
     }),
   }));
+
+  const tmp = scenario.actions.map(action => {
+    const daysSinceLastUpdate = action.lastUpdated
+      ? calculateDaysSince(new Date(action.lastUpdated))
+      : null;
+    return {
+      ...action,
+      updatedStatus: calculateUpdatedStatus(
+        daysSinceLastUpdate,
+        riSc?.lastPublished?.numberOfCommits!,
+      ),
+    };
+  });
+
+  const filteredActions =
+    visibleType === null
+      ? []
+      : tmp.filter(a => a.updatedStatus === visibleType);
 
   preview(drop(ref));
 
@@ -188,6 +211,18 @@ export function ScenarioTableRow({
           </Grid.Item>
         )}
       </Grid.Root>
+      {/* is button clicked && {
+        Distinguish between outdated and very outdated actions
+        map over each scenario.actions to retreive the actions that are outdated and very outdated
+        <ActionsCard></ActionsCard>
+        }}*/}
+      {filteredActions.length > 0 && (
+        <ActionsCard
+          data={[scenario]}
+          filteredData={filteredActions}
+          metaData={riSc?.lastPublished?.numberOfCommits!}
+        />
+      )}
     </Card>
   );
 }
