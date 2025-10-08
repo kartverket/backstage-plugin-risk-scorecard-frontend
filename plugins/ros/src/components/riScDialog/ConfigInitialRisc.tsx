@@ -164,9 +164,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
               </>
             )}
             {defaultRiScTypeDescriptors.length === 0 && (
-              <Text>
-                Ingen forhåndsdefinert RoS er tilgjengelig for øyeblikket.
-              </Text>
+              <Text>{t('rosDialog.noInitialRiScFound')}</Text>
             )}
           </Box>
         </>
