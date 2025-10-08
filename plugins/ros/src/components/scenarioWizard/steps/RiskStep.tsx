@@ -1,13 +1,12 @@
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { ProbabilityTable } from '../components/ProbabilityTable';
 import { ConsequenceTable } from '../components/ConsequenceTable';
-import { heading2, heading3, subtitle2 } from '../../common/typography';
 import Stack from '@mui/material/Stack';
 import { UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
+import { Text } from '@backstage/ui';
 
 interface RiskStepProps {
   riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
@@ -23,25 +22,29 @@ export function RiskStep({ formMethods, riskType }: RiskStepProps) {
   return (
     <Stack spacing={2}>
       <Box>
-        <Typography sx={heading2}>
+        <Text style={{ fontSize: '1.75rem' }} as="h2" weight="bold">
           {t(`scenarioStepper.${translationKey}.title`)}
-        </Typography>
-        <Typography sx={subtitle2}>
+        </Text>
+        <Text variant="body-large" as="p">
           {t(`scenarioStepper.${translationKey}.subtitle`)}
-        </Typography>
+        </Text>
       </Box>
       <Box>
-        <Typography sx={heading3}>{t('dictionary.probability')}</Typography>
-        <Typography sx={subtitle2}>
+        <Text as="h3" variant="title-x-small" weight="bold">
+          {t('dictionary.probability')}
+        </Text>
+        <Text variant="body-large" as="p">
           {t(`scenarioStepper.${translationKey}.probabilitySubtitle`)}
-        </Typography>
+        </Text>
       </Box>
       <ProbabilityTable formMethods={formMethods} riskType={riskType} />
       <Box>
-        <Typography sx={heading3}>{t('dictionary.consequence')}</Typography>
-        <Typography sx={subtitle2}>
+        <Text as="h3" variant="title-x-small" weight="bold">
+          {t('dictionary.consequence')}
+        </Text>
+        <Text variant="body-large" as="p">
           {t(`scenarioStepper.${translationKey}.consequenceSubtitle`)}
-        </Typography>
+        </Text>
       </Box>
       <ConsequenceTable formMethods={formMethods} riskType={riskType} />
     </Stack>

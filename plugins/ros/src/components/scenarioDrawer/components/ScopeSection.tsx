@@ -2,18 +2,11 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
-import {
-  body2,
-  emptyState,
-  heading1,
-  heading3,
-  label,
-} from '../../common/typography';
 import { Markdown } from '../../common/Markdown';
+import { Text } from '@backstage/ui';
 
 export function ScopeSection() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -21,20 +14,31 @@ export function ScopeSection() {
 
   return (
     <Paper sx={section}>
-      <Typography sx={heading3}>{t('scenarioDrawer.title')}</Typography>
+      <Text variant="title-x-small" weight="bold">
+        {t('scenarioDrawer.title')}
+      </Text>
 
-      <Typography sx={heading1}>{scenario.title}</Typography>
+      <Text variant="title-medium" style={{ fontWeight: '700' }}>
+        {scenario.title}
+      </Text>
 
       <Box>
-        <Typography sx={label}>{t('dictionary.description')}</Typography>
+        <Text
+          as="p"
+          variant="body-medium"
+          weight="bold"
+          style={{ paddingBottom: '0.4rem' }}
+        >
+          {t('dictionary.description')}
+        </Text>
         {scenario.description ? (
           <Markdown description={scenario.description} />
         ) : (
-          <Typography sx={emptyState}>
+          <Text variant="body-large" style={{ fontStyle: 'italic' }}>
             {t('dictionary.emptyField', {
               field: t('dictionary.description').toLowerCase(),
-            })}
-          </Typography>
+            })}{' '}
+          </Text>
         )}
       </Box>
 
@@ -42,28 +46,40 @@ export function ScopeSection() {
 
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
         <Box>
-          <Typography sx={label}>{t('dictionary.threatActors')}</Typography>
+          <Text
+            as="p"
+            variant="body-medium"
+            style={{ paddingBottom: '0.4rem', fontWeight: '700' }}
+          >
+            {t('dictionary.threatActors')}
+          </Text>
           {scenario.threatActors.length > 0 ? (
             scenario.threatActors.map(threatActor => {
               /* @ts-ignore Because ts can't typecheck strings against our keys */
               const translatedThreatActor = t(`threatActors.${threatActor}`);
               return (
-                <Typography key={threatActor} sx={body2}>
+                <Text as="p" variant="body-large" key={threatActor}>
                   {translatedThreatActor}
-                </Typography>
+                </Text>
               );
             })
           ) : (
-            <Typography sx={emptyState}>
+            <Text variant="body-large" style={{ fontStyle: 'italic' }}>
               {t('dictionary.emptyField', {
                 field: t('dictionary.threatActors').toLowerCase(),
               })}
-            </Typography>
+            </Text>
           )}
         </Box>
 
         <Box>
-          <Typography sx={label}>{t('dictionary.vulnerabilities')}</Typography>
+          <Text
+            as="p"
+            variant="body-medium"
+            style={{ paddingBottom: '0.4rem', fontWeight: '700' }}
+          >
+            {t('dictionary.vulnerabilities')}
+          </Text>
           {scenario.vulnerabilities.length > 0 ? (
             scenario.vulnerabilities.map(vulnerability => {
               /* @ts-ignore Because ts can't typecheck strings against our keys */
@@ -71,17 +87,17 @@ export function ScopeSection() {
                 `vulnerabilities.${vulnerability}`,
               );
               return (
-                <Typography key={vulnerability} sx={body2}>
+                <Text variant="body-large" as="p" key={vulnerability}>
                   {translatedVulnerability}
-                </Typography>
+                </Text>
               );
             })
           ) : (
-            <Typography sx={emptyState}>
+            <Text variant="body-large" style={{ fontStyle: 'italic' }}>
               {t('dictionary.emptyField', {
                 field: t('dictionary.vulnerabilities').toLowerCase(),
               })}
-            </Typography>
+            </Text>
           )}
         </Box>
       </Box>

@@ -2,7 +2,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { Risk } from '../../../utils/types';
@@ -12,8 +11,8 @@ import {
   getProbabilityLevel,
   getRiskMatrixColor,
 } from '../../../utils/utilityfunctions';
-import { body1, heading3, label, label2 } from '../../common/typography';
 import { section } from '../scenarioDrawerComponents';
+import { Text } from '@backstage/ui';
 
 interface RiskProps {
   risk: Risk;
@@ -27,7 +26,9 @@ function RiskBox({ risk, heading }: RiskProps) {
 
   return (
     <Paper sx={section}>
-      <Typography sx={heading3}>{heading}</Typography>
+      <Text variant="title-x-small" weight="bold">
+        {heading}
+      </Text>
 
       <Box>
         <Box
@@ -53,20 +54,26 @@ function RiskBox({ risk, heading }: RiskProps) {
               gap: 0.5,
             }}
           >
-            <Typography sx={label2}>
+            <Text variant="body-medium" style={{ fontWeight: '700' }}>
               {t('dictionary.probability')}: {getProbabilityLevel(risk)}
-            </Typography>
-            <Typography sx={label2}>
+            </Text>
+            <Text variant="body-medium" style={{ fontWeight: '700' }}>
               {t('dictionary.consequence')}: {getConsequenceLevel(risk)}
-            </Typography>
+            </Text>
           </Box>
         </Box>
       </Box>
       <Box>
-        <Typography sx={label}>{t('dictionary.estimatedRisk')}</Typography>
-        <Typography sx={body1}>
+        <Text
+          as="p"
+          variant="body-medium"
+          style={{ paddingBottom: '0.4rem', fontWeight: '700' }}
+        >
+          {t('dictionary.estimatedRisk')}
+        </Text>
+        <Text variant="body-large" weight="bold">
           {formatNOK(cost)} {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
-        </Typography>
+        </Text>
       </Box>
     </Paper>
   );

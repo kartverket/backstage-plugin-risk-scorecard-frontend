@@ -1,6 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import {
   ThreatActorsOptions,
@@ -15,8 +14,8 @@ import {
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
-import { heading3 } from '../../common/typography';
 import { section } from '../scenarioDrawerComponents';
+import { Text } from '@backstage/ui';
 
 function ScopeFormSection({
   formMethods,
@@ -48,7 +47,9 @@ function ScopeFormSection({
 
   return (
     <Paper sx={section}>
-      <Typography sx={heading3}>{t('scenarioDrawer.title')}</Typography>
+      <Text as="h6" variant="title-x-small" weight="bold">
+        {t('scenarioDrawer.title')}
+      </Text>
       <Input
         required
         {...register('title', { required: true })}

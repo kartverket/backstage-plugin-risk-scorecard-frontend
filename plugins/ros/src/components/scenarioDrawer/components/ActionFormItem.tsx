@@ -2,7 +2,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import {
   Controller,
   UseFieldArrayRemove,
@@ -18,9 +17,9 @@ import { actionStatusOptionsToTranslationKeys } from '../../../utils/utilityfunc
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
-import { heading3 } from '../../common/typography';
 import HelpIcon from '@mui/icons-material/Help';
 import { Tooltip } from '@material-ui/core';
+import { Text } from '@backstage/ui';
 
 type ActionFormItemProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -66,11 +65,13 @@ export function ActionFormItem({
           }}
         >
           {showTitleNumber ? (
-            <Typography sx={heading3}>
+            <Text variant="title-x-small" weight="bold">
               {t('dictionary.measure')} {index + 1}
-            </Typography>
+            </Text>
           ) : (
-            <Typography sx={heading3}>{t('dictionary.edit')}</Typography>
+            <Text variant="title-x-small" weight="bold">
+              {t('dictionary.edit')}
+            </Text>
           )}
           <IconButton
             onClick={() => (handleDelete ? handleDelete() : remove(index))}
@@ -151,9 +152,9 @@ export function UrlLabel(): JSX.Element {
       {t('dictionary.url')}
       <Tooltip
         title={
-          <Typography variant="body2">
+          <Text variant="body-large" style={{ color: 'white' }}>
             {t('scenarioDrawer.measureTab.urlDescription')}
-          </Typography>
+          </Text>
         }
         arrow
       >

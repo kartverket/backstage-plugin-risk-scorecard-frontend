@@ -1,10 +1,11 @@
 import TabList from '@material-ui/lab/TabList/TabList';
-import { Tab, Typography } from '@material-ui/core';
+import { Tab } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import { useTabsStyle } from './tabsStyle';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { RiskMatrixTabs } from './utils';
+import { Text } from '@backstage/ui';
 
 interface TabsProps {
   setTab: (tab: RiskMatrixTabs) => void;
@@ -23,18 +24,18 @@ export function Tabs({ setTab }: TabsProps) {
       >
         <Tab
           label={
-            <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+            <Text variant="body-large" weight="bold">
               {t('dictionary.initialRisk')}
-            </Typography>
+            </Text>
           }
           value={RiskMatrixTabs.initialRisk}
           className={tabsStyle.tab}
         />
         <Tab
           label={
-            <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+            <Text variant="body-large" weight="bold">
               {t('dictionary.restRisk')}
-            </Typography>
+            </Text>
           }
           value={RiskMatrixTabs.remainingRisk}
           className={tabsStyle.tab}

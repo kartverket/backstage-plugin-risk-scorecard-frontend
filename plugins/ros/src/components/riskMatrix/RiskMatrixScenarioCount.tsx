@@ -6,7 +6,6 @@ import {
   ListSubheader,
   Paper,
   Tooltip,
-  Typography,
 } from '@material-ui/core';
 import { useState } from 'react';
 import CircleIcon from '@material-ui/icons/FiberManualRecord';
@@ -19,6 +18,7 @@ import {
   findConsequenceIndex,
   findProbabilityIndex,
 } from '../../utils/utilityfunctions';
+import { Text } from '@backstage/ui';
 
 interface ScenarioCountProps {
   riScWithMetadata: RiScWithMetadata;
@@ -34,15 +34,8 @@ export function RiskMatrixScenarioCount({
   initialRisk,
 }: ScenarioCountProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const {
-    circle,
-    centered,
-    circleText,
-    text,
-    tooltip,
-    tooltipArrow,
-    tooltipText,
-  } = useRiskMatrixStyles();
+  const { circle, centered, tooltip, tooltipArrow, tooltipText } =
+    useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const { openScenarioDrawer } = useScenario();
@@ -77,9 +70,9 @@ export function RiskMatrixScenarioCount({
   const tooltipList = (
     <List dense>
       <ListSubheader className={tooltipText}>
-        <Typography variant="h6" className={tooltipText}>
+        <Text variant="title-x-small" weight="bold" className={tooltipText}>
           {t('riskMatrix.tooltip.title')}
-        </Typography>
+        </Text>
       </ListSubheader>
       {scenarios.map(s => (
         <ListItem
@@ -118,9 +111,9 @@ export function RiskMatrixScenarioCount({
           elevation={10}
           onClick={() => setTooltipOpen(!tooltipOpen)}
         >
-          <Typography className={`${circleText} ${text}`}>
+          <Text variant="body-large" weight="bold">
             {scenarios.length}
-          </Typography>
+          </Text>
         </Paper>
       </Tooltip>
     </ClickAwayListener>

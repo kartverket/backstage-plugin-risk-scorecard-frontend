@@ -5,7 +5,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
-import Typography from '@mui/material/Typography';
 import Checkbox from '@mui/material/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -14,6 +13,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { MigrationStatus } from '../../utils/types';
 import { dialogActions } from '../common/mixins';
 import { RiScMigrationChanges } from './migrations/RiScMigrationChanges.tsx';
+import { Text } from '@backstage/ui';
 
 interface RiScMigrationDialogProps {
   openDialog: boolean;
@@ -41,7 +41,7 @@ export const RiScMigrationDialog = ({
       <DialogTitle>{t('migrationDialog.title')}</DialogTitle>
       <DialogContent>
         <Box sx={{ marginBottom: '16px' }}>
-          <Typography>{t('migrationDialog.description')}</Typography>
+          <Text variant="body-large">{t('migrationDialog.description')}</Text>
         </Box>
         <RiScMigrationChanges migrationStatus={migrationStatus} />
         <Alert severity="info" icon={false}>

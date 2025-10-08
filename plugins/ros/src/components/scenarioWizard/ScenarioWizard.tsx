@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Stepper from '@mui/material/Stepper';
-import Typography from '@mui/material/Typography';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import { ScenarioStep } from './steps/ScenarioStep';
@@ -23,11 +22,12 @@ import {
 } from '../../contexts/ScenarioContext';
 import { useRiScs } from '../../contexts/RiScContext';
 import Container from '@mui/material/Container';
-import { heading1, label } from '../common/typography';
+import { label } from '../common/typography';
 import { useForm } from 'react-hook-form';
 import { FormScenario, Scenario } from '../../utils/types';
 import { useSearchParams } from 'react-router-dom';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
+import { Text } from '@backstage/ui';
 
 export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -130,7 +130,9 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
           justifyContent: 'space-between',
         }}
       >
-        <Typography sx={heading1}>{t('scenarioDrawer.title')}</Typography>
+        <Text variant="title-medium" weight="bold">
+          {t('scenarioDrawer.title')}
+        </Text>
         <Button variant="outlined" onClick={handleCloseStepper}>
           {t('dictionary.cancel')}
         </Button>
@@ -157,7 +159,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
 
           {response && (
             <Alert severity={getAlertSeverity(updateStatus)}>
-              <Typography>{response.statusMessage}</Typography>
+              <Text variant="body-large">{response.statusMessage}</Text>
             </Alert>
           )}
           <Box

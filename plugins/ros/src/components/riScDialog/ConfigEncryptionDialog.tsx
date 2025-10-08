@@ -211,7 +211,7 @@ function ConfigEncryptionDialog({
                   </List>
                 </Box>
               )}
-              <Text variant="body-large">
+              <Text as="p" variant="body-large">
                 {t('dictionary.click')}{' '}
                 <Link
                   href={
