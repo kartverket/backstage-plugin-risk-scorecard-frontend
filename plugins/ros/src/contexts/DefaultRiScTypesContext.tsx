@@ -34,15 +34,15 @@ export function DefaultRiScTypesProvider({
     fetchDefaultRiScTypeDescriptors(response => {
       setDefaultRiScTypeDescriptors(response);
     });
-  }, []);
+  }, [fetchDefaultRiScTypeDescriptors]);
 
   function getDescriptorOfType(
     type: DefaultRiScType,
   ): DefaultRiScTypeDescriptor | null {
     if (defaultRiScTypeDescriptors === undefined) return null;
 
-    let descriptor = defaultRiScTypeDescriptors.find(
-      value => value.riScType == type,
+    const descriptor = defaultRiScTypeDescriptors.find(
+      value => value.riScType === type,
     );
     if (descriptor === undefined) return null;
     return descriptor;

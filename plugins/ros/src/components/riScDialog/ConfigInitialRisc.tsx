@@ -89,7 +89,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
       props.setValue('content.title', '');
       props.setValue('content.scope', '');
     } else {
-      let standardDescriptor = getDescriptorOfType(DefaultRiScType.Standard);
+      const standardDescriptor = getDescriptorOfType(DefaultRiScType.Standard);
       props.setSelectedRiScType(DefaultRiScType.Standard);
       if (standardDescriptor) {
         props.setValue('content.title', standardDescriptor.defaultTitle);
@@ -102,7 +102,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
   function onSelectRiScType(newRiScType: string) {
     const defaultRiScType = newRiScType as DefaultRiScType;
     props.setSelectedRiScType(defaultRiScType);
-    let descriptor = getDescriptorOfType(newRiScType as DefaultRiScType);
+    const descriptor = getDescriptorOfType(newRiScType as DefaultRiScType);
     if (descriptor) {
       props.setValue('content.title', descriptor.defaultTitle);
       props.setValue('content.scope', descriptor.defaultScope);
