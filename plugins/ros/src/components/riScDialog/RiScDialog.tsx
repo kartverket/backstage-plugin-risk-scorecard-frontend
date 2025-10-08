@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RiScWithMetadata } from '../../utils/types';
+import { DefaultRiScType, RiScWithMetadata } from '../../utils/types';
 import { emptyRiSc, isDeeplyEqual } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -31,12 +31,6 @@ interface RiScDialogProps {
   onDelete: () => void;
 }
 
-export enum CreateRiScFrom {
-  Ops = 'Ops',
-  InternalJob = 'InternalJob',
-  Standard = 'Standard',
-}
-
 function RiScStepper({
   children,
   activeStep,
@@ -47,8 +41,8 @@ function RiScStepper({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const steps = [
-    t('rosDialog.stepRiscDetails'),
     t('rosDialog.initialRiscTitle'),
+    t('rosDialog.stepRiscDetails'),
     t('rosDialog.stepEncryption'),
   ];
   return (
@@ -71,9 +65,9 @@ export function RiScDialog({
   onDelete,
 }: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
   const { selectedRiSc, createNewRiSc, deleteRiSc, updateRiSc, gcpCryptoKeys } =
     useRiScs();
-
   const {
     register,
     handleSubmit,
@@ -98,13 +92,9 @@ export function RiScDialog({
 
   const [switchOn, setSwitchOn] = useState(false);
 
-  const [createRiScFrom, setCreateRiScFrom] = useState<CreateRiScFrom>(
-    CreateRiScFrom.Standard,
+  const [selectedRiScType, setSelectedRiScType] = useState<DefaultRiScType>(
+    DefaultRiScType.Standard,
   );
-
-  const handleChangeCreateRiScFrom = (value: string) => {
-    setCreateRiScFrom(value as unknown as CreateRiScFrom);
-  };
 
   const handleNext = handleSubmit(
     () => {
@@ -134,7 +124,7 @@ export function RiScDialog({
 
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
     if (dialogState === RiScDialogStates.Create) {
-      createNewRiSc(data, switchOn, [createRiScFrom]);
+      createNewRiSc(data, switchOn, [selectedRiScType]);
     } else if (dialogState === RiScDialogStates.Delete) {
       deleteRiSc();
     } else {
@@ -191,21 +181,22 @@ export function RiScDialog({
             }}
           >
             {activeStep === 0 && (
-              <ConfigRiscInfo
-                dialogState={dialogState}
-                createRiScFrom={createRiScFrom}
-                register={register}
-                errors={errors}
-                setValue={setValue}
-                watch={watch}
-              />
-            )}
-            {activeStep === 1 && (
               <ConfigInitialRisc
                 dialogState={dialogState}
                 switchOn={switchOn}
                 setSwitchOn={setSwitchOn}
-                handleChangeCreateRiScFrom={handleChangeCreateRiScFrom}
+                setValue={setValue}
+                selectedRiScType={selectedRiScType}
+                setSelectedRiScType={setSelectedRiScType}
+              />
+            )}
+            {activeStep === 1 && (
+              <ConfigRiscInfo
+                dialogState={dialogState}
+                register={register}
+                errors={errors}
+                setValue={setValue}
+                watch={watch}
               />
             )}
             {activeStep === 2 && (
@@ -284,7 +275,6 @@ export function RiScDialog({
         >
           <ConfigRiscInfo
             dialogState={dialogState}
-            createRiScFrom={createRiScFrom}
             register={register}
             errors={errors}
             setValue={setValue}
