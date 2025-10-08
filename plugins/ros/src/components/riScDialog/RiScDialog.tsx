@@ -197,7 +197,6 @@ export function RiScDialog({
                 errors={errors}
                 setValue={setValue}
                 watch={watch}
-                selectedRiScType={selectedRiScType}
               />
             )}
             {activeStep === 2 && (
@@ -280,7 +279,6 @@ export function RiScDialog({
             errors={errors}
             setValue={setValue}
             watch={watch}
-            selectedRiScType={selectedRiScType}
           />
         </DialogContent>
         <DialogActions sx={dialogActions}>

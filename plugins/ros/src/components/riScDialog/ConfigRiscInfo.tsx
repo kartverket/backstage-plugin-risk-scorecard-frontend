@@ -5,7 +5,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form/dist/types/form';
-import { DefaultRiScType, RiScWithMetadata } from '../../utils/types';
+import { RiScWithMetadata } from '../../utils/types';
 import { RiScDialogStates } from './RiScDialog';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -18,7 +18,6 @@ interface ConfigRiscInfoProps {
   errors: FieldErrors<RiScWithMetadata>;
   setValue: UseFormSetValue<RiScWithMetadata>;
   watch: UseFormWatch<RiScWithMetadata>;
-  selectedRiScType: DefaultRiScType;
 }
 
 function ConfigRiscInfo(props: ConfigRiscInfoProps) {
