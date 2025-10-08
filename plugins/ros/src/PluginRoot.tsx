@@ -7,6 +7,7 @@ import { riScRouteRef, scenarioRouteRef } from './routes';
 import { RiScProvider } from './contexts/RiScContext';
 import '@backstage/ui/css/styles.css';
 import 'remixicon/fonts/remixicon.css';
+import { DefaultRiScTypesProvider } from './contexts/DefaultRiScTypesContext.tsx';
 
 const emotionInsertionPoint = document.createElement('meta');
 emotionInsertionPoint.setAttribute('name', 'emotion-insertion-point');
@@ -21,9 +22,11 @@ function ProvidedPlugin() {
   return (
     <CacheProvider value={cache}>
       <RiScProvider>
-        <ScenarioProvider>
-          <RiScPlugin />
-        </ScenarioProvider>
+        <DefaultRiScTypesProvider>
+          <ScenarioProvider>
+            <RiScPlugin />
+          </ScenarioProvider>
+        </DefaultRiScTypesProvider>
       </RiScProvider>
     </CacheProvider>
   );

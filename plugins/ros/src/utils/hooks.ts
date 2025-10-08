@@ -22,13 +22,14 @@ import {
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import {
+  DefaultRiScType,
+  DefaultRiScTypeDescriptor,
   DifferenceDTO,
   GithubRepoInfo,
   RiSc,
   RiScWithMetadata,
   SubmitResponseObject,
 } from './types';
-import { CreateRiScFrom } from '../components/riScDialog/RiScDialog';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -52,6 +53,7 @@ export function useAuthenticatedFetch() {
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
 
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
+  const uriToFetchDefaultRiScDescriptors = `${backendUrl}${URLS.backend.fetchDefaultRiScTypeDescriptors}`;
 
   function uriToFetchDifference(id: string) {
     // URLS.backend.fetchDifference
@@ -296,7 +298,7 @@ export function useAuthenticatedFetch() {
     riSc: RiSc,
     generateDefault: boolean,
     sopsConfig: SopsConfigDTO,
-    initialRiScType: CreateRiScFrom[],
+    initialRiScType: DefaultRiScType[],
     onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
@@ -362,6 +364,16 @@ export function useAuthenticatedFetch() {
     );
   }
 
+  function fetchDefaultRiScTypeDescriptors(
+    onSuccess: (response: DefaultRiScTypeDescriptor[]) => void,
+  ) {
+    googleAuthenticatedFetch<DefaultRiScTypeDescriptor[], void>(
+      uriToFetchDefaultRiScDescriptors,
+      'GET',
+      res => onSuccess(res),
+      () => {},
+    );
+  }
   return {
     fetchRiScs,
     fetchGcpCryptoKeys,
@@ -373,6 +385,7 @@ export function useAuthenticatedFetch() {
     setResponse,
     fetchDifference,
     postFeedback,
+    fetchDefaultRiScTypeDescriptors,
   };
 }
 

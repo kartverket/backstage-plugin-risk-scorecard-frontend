@@ -9,6 +9,7 @@ import {
 } from 'react';
 import {
   ContentStatus,
+  DefaultRiScType,
   ProcessingStatus,
   RiScStatus,
   RiScWithMetadata,
@@ -31,7 +32,6 @@ import { useAuthenticatedFetch } from '../utils/hooks';
 import { latestSupportedVersion } from '../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
-import { CreateRiScFrom } from '../components/riScDialog/RiScDialog';
 
 export type UpdateStatus = {
   isLoading: boolean;
@@ -46,7 +46,7 @@ type RiScDrawerProps = {
   createNewRiSc: (
     riSc: RiScWithMetadata,
     generateInitialRisc: boolean,
-    initialRiscType: CreateRiScFrom[],
+    initialRiscType: DefaultRiScType[],
   ) => void;
   deleteRiSc: (onSuccess?: () => void, onError?: () => void) => void;
   updateRiSc: (
@@ -270,7 +270,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   function createNewRiSc(
     riSc: RiScWithMetadata,
     generateInitialRisc: boolean,
-    initialRiscType: CreateRiScFrom[],
+    initialRiscType: DefaultRiScType[],
   ) {
     setIsFetching(true);
     setSelectedRiSc(null);
