@@ -18,7 +18,7 @@ type RadioOptionProps = {
   active?: boolean;
 };
 
-export const RadioOption = ({
+const RadioOption = ({
   value,
   label,
   description,

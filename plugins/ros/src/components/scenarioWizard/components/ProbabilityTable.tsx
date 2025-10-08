@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 import { probabilityOptions } from '../../../utils/constants';
 import Typography from '@mui/material/Typography';
 
-export function ProbabilityTableInfo() {
+function ProbabilityTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   function getContentCell(row: number) {
     return (
