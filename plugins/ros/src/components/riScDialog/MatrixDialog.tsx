@@ -9,8 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
-import { Text } from '@backstage/ui';
+import { Button, Text } from '@backstage/ui';
 
 export function MatrixDialog({
   open,

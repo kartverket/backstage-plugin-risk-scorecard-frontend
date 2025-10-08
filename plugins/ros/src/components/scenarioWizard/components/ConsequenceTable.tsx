@@ -21,7 +21,7 @@ const consequenceRow: SxProps<Theme> = {
   gridTemplateColumns: 'auto repeat(5, 1fr)',
 };
 
-export function ConsequenceTableInfo() {
+function ConsequenceTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   function getTextCell(

@@ -224,8 +224,6 @@ export const pluginRiScMessages = {
     title: 'Support',
     openEntry: 'Open',
     entries: {
-      documentation: { title: 'Documentation', description: 'SKIPDOK' },
-      slackChannel: { title: 'Slack Channel', description: '#gen-skip' },
       riscFeedbackChannel: {
         title: 'RISC Feedback Channel',
         description: '#kodenær-ros-tilbakemelding',
@@ -233,10 +231,6 @@ export const pluginRiScMessages = {
       riscDocumentation: {
         title: 'RISC Documentation',
         description: 'Confluence - RISC',
-      },
-      securityMetricsFeedbackChannel: {
-        title: 'Sikkerhetsmetrikker Feedback Channel',
-        description: '#sikkerhetsmetrikker-tilbakemelding',
       },
     },
   },
@@ -829,10 +823,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Strengt konfidensielt',
           'supportDialog.title': 'Support',
           'supportDialog.openEntry': 'Åpne',
-          'supportDialog.entries.documentation.title': 'Dokumentasjon',
-          'supportDialog.entries.documentation.description': 'SKIPDOK',
-          'supportDialog.entries.slackChannel.title': 'Slack-kanal',
-          'supportDialog.entries.slackChannel.description': '#gen-skip',
           'supportDialog.entries.riscFeedbackChannel.title':
             'RoS tilbakemeldingskanal',
           'supportDialog.entries.riscFeedbackChannel.description':
@@ -840,10 +830,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
           'supportDialog.entries.riscDocumentation.description':
             'Confluence - RISC',
-          'supportDialog.entries.securityMetricsFeedbackChannel.title':
-            'Sikkerhetsmetrikker tilbakemeldingskanal',
-          'supportDialog.entries.securityMetricsFeedbackChannel.description':
-            '#sikkerhetsmetrikker-tilbakemelding',
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.noActions': 'Ingen tiltak',
