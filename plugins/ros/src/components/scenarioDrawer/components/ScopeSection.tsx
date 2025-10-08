@@ -18,12 +18,13 @@ export function ScopeSection() {
         {t('scenarioDrawer.title')}
       </Text>
 
-      <Text variant="title-medium" weight="bold">
+      <Text variant="title-medium" style={{ fontWeight: '700' }}>
         {scenario.title}
       </Text>
 
       <Box>
         <Text
+          as="p"
           variant="body-medium"
           weight="bold"
           style={{ paddingBottom: '0.4rem' }}
@@ -45,7 +46,11 @@ export function ScopeSection() {
 
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
         <Box>
-          <Text as="p" variant="body-medium" weight="bold">
+          <Text
+            as="p"
+            variant="body-medium"
+            style={{ paddingBottom: '0.4rem', fontWeight: '700' }}
+          >
             {t('dictionary.threatActors')}
           </Text>
           {scenario.threatActors.length > 0 ? (
@@ -68,7 +73,11 @@ export function ScopeSection() {
         </Box>
 
         <Box>
-          <Text as="p" variant="body-medium" weight="bold">
+          <Text
+            as="p"
+            variant="body-medium"
+            style={{ paddingBottom: '0.4rem', fontWeight: '700' }}
+          >
             {t('dictionary.vulnerabilities')}
           </Text>
           {scenario.vulnerabilities.length > 0 ? (

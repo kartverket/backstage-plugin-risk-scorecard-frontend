@@ -63,7 +63,7 @@ export function ActionsStep({
   return (
     <Stack spacing={3}>
       <Box>
-        <Text variant="title-small" weight="bold">
+        <Text style={{ fontSize: '1.75rem' }} weight="bold">
           {t('dictionary.measure')}
         </Text>
         <Text variant="body-large" as="p">

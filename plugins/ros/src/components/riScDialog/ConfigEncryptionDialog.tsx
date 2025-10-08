@@ -225,7 +225,6 @@ function ConfigEncryptionDialog({
                 </Link>{' '}
                 {t('sopsConfigDialog.writeLocalRiscSuffix')}
               </Text>
-              <Text as="p" variant="body-large"></Text>
               <Text as="p" variant="body-large">
                 {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
                   'dictionary.optional',

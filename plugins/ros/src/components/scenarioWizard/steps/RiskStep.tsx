@@ -22,7 +22,7 @@ export function RiskStep({ formMethods, riskType }: RiskStepProps) {
   return (
     <Stack spacing={2}>
       <Box>
-        <Text variant="title-medium" as="h2" weight="bold">
+        <Text style={{ fontSize: '1.75rem' }} as="h2" weight="bold">
           {t(`scenarioStepper.${translationKey}.title`)}
         </Text>
         <Text variant="body-large" as="p">

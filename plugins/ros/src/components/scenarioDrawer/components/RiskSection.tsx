@@ -54,17 +54,21 @@ function RiskBox({ risk, heading }: RiskProps) {
               gap: 0.5,
             }}
           >
-            <Text variant="body-medium" weight="bold">
+            <Text variant="body-medium" style={{ fontWeight: '700' }}>
               {t('dictionary.probability')}: {getProbabilityLevel(risk)}
             </Text>
-            <Text variant="body-medium" weight="bold">
+            <Text variant="body-medium" style={{ fontWeight: '700' }}>
               {t('dictionary.consequence')}: {getConsequenceLevel(risk)}
             </Text>
           </Box>
         </Box>
       </Box>
       <Box>
-        <Text as="p" variant="body-medium" weight="bold">
+        <Text
+          as="p"
+          variant="body-medium"
+          style={{ paddingBottom: '0.4rem', fontWeight: '700' }}
+        >
           {t('dictionary.estimatedRisk')}
         </Text>
         <Text variant="body-large" weight="bold">
