@@ -56,11 +56,12 @@ interface ConfigInitialRiscProps {
   dialogState: RiScDialogStates;
   switchOn: boolean;
   setSwitchOn: (val: boolean) => void;
-  onSelectRiScType: (value: string) => void;
   setValue: UseFormSetValue<RiScWithMetadata>;
+  selectedRiScType: DefaultRiScType;
+  setSelectedRiScType: (riScType: DefaultRiScType) => void;
 }
 
-export function sortStandardRiScFirst(
+function sortStandardRiScFirst(
   defaultRiScTypeDescriptors: DefaultRiScTypeDescriptor[],
 ): DefaultRiScTypeDescriptor[] {
   return defaultRiScTypeDescriptors.sort((a, b) => {
@@ -80,14 +81,32 @@ export function sortStandardRiScFirst(
 
 function ConfigInitialRisc(props: ConfigInitialRiscProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { defaultRiScTypeDescriptors } = useDefaultRiScTypeDescriptors();
+  const { defaultRiScTypeDescriptors, getDescriptorOfType } =
+    useDefaultRiScTypeDescriptors();
 
   function onSwitchChange() {
     if (props.switchOn) {
       props.setValue('content.title', '');
       props.setValue('content.scope', '');
+    } else {
+      let standardDescriptor = getDescriptorOfType(DefaultRiScType.Standard);
+      props.setSelectedRiScType(DefaultRiScType.Standard);
+      if (standardDescriptor) {
+        props.setValue('content.title', standardDescriptor.defaultTitle);
+        props.setValue('content.scope', standardDescriptor.defaultScope);
+      }
     }
     props.setSwitchOn(!props.switchOn);
+  }
+
+  function onSelectRiScType(newRiScType: string) {
+    const defaultRiScType = newRiScType as DefaultRiScType;
+    props.setSelectedRiScType(defaultRiScType);
+    let descriptor = getDescriptorOfType(newRiScType as DefaultRiScType);
+    if (descriptor) {
+      props.setValue('content.title', descriptor.defaultTitle);
+      props.setValue('content.scope', descriptor.defaultScope);
+    }
   }
 
   return (
@@ -124,9 +143,10 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
                   </Text>
 
                   <RadioGroup
-                    onChange={props.onSelectRiScType}
+                    onChange={onSelectRiScType}
                     isDisabled={!props.switchOn}
                     aria-label="Select application type"
+                    value={props.selectedRiScType}
                   >
                     {sortStandardRiScFirst(defaultRiScTypeDescriptors).map(
                       descriptor => (
