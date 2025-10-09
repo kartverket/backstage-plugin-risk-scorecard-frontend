@@ -34,7 +34,8 @@ export function DefaultRiScTypesProvider({
     fetchDefaultRiScTypeDescriptors(response => {
       setDefaultRiScTypeDescriptors(response);
     });
-  }, [fetchDefaultRiScTypeDescriptors]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function getDescriptorOfType(
     type: DefaultRiScType,
