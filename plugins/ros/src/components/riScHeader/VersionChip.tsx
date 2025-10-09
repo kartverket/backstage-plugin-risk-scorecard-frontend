@@ -1,12 +1,10 @@
 import { Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { useContext } from 'react';
-import { PluginVersionContext } from '../../contexts/PluginVersionContext.tsx';
 
 export function VersionChip() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const version = useContext(PluginVersionContext);
+  const version = require('../../../package.json').version;
   return (
     <div
       style={{
