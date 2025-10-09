@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useState, useRef } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Scenario } from '../../utils/types';
+import { Scenario, Action } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
   calculateDaysSince,
@@ -99,13 +99,14 @@ export function ScenarioTableRow({
     const daysSinceLastUpdate = action.lastUpdated
       ? calculateDaysSince(new Date(action.lastUpdated))
       : null;
+
     return {
       ...action,
       updatedStatus: calculateUpdatedStatus(
         daysSinceLastUpdate,
-        riSc?.lastPublished?.numberOfCommits!,
+        riSc?.lastPublished?.numberOfCommits || null,
       ),
-    };
+    } as Action & { updatedStatus: UpdatedStatusEnumType };
   });
 
   const filteredActions =
@@ -217,11 +218,7 @@ export function ScenarioTableRow({
         <ActionsCard></ActionsCard>
         }}*/}
       {filteredActions.length > 0 && (
-        <ActionsCard
-          data={[scenario]}
-          filteredData={filteredActions}
-          metaData={riSc?.lastPublished?.numberOfCommits!}
-        />
+        <ActionsCard filteredData={filteredActions} />
       )}
     </Card>
   );

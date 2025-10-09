@@ -1,37 +1,19 @@
 import { Grid } from '@backstage/ui';
-import { Action, Scenario } from '../../utils/types';
+import { Action } from '../../utils/types';
 import {
-  calculateDaysSince,
-  calculateUpdatedStatus,
   formatDate,
+  UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Divider } from '@mui/material';
 
 type ActionsCardProps = {
-  data: Scenario[];
-  filteredData: Action[];
-  metaData: number | null;
+  filteredData: (Action & { updatedStatus: UpdatedStatusEnumType })[];
 };
 
 export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-
-  const tmp = props.data
-    .flatMap(scenario => scenario.actions)
-    .map(action => {
-      const daysSinceLastUpdate = action.lastUpdated
-        ? calculateDaysSince(new Date(action.lastUpdated))
-        : null;
-      return {
-        ...action,
-        updatedStatus: calculateUpdatedStatus(
-          daysSinceLastUpdate,
-          props.metaData,
-        ),
-      };
-    });
 
   return (
     <>
