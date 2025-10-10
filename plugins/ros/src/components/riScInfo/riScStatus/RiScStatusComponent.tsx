@@ -12,7 +12,7 @@ import { useAuthenticatedFetch } from '../../../utils/hooks';
 import { RiScMigrationDialog } from '../MigrationDialog';
 import { RiScPublishDialog } from '../PublishDialog';
 import { calculateDaysSince } from '../../../utils/utilityfunctions';
-import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
+import { RiScStatusEnum, RiScStatusEnumType } from './utils';
 import {
   Text,
   Button,
@@ -23,6 +23,7 @@ import {
   ButtonLink,
 } from '@backstage/ui';
 import { StatusBanner } from './StatusBanner.tsx';
+import { StatusBadge } from './StatusBadge.tsx';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -47,22 +48,6 @@ const emptyDifferenceFetchState: DifferenceFetchState = {
 interface RiScStatusProps {
   selectedRiSc: RiScWithMetadata;
   publishRiScFn: () => void;
-}
-
-interface StatusBadgeProps {
-  icon: string;
-  text: string;
-}
-
-function StatusBadge({ icon, text }: StatusBadgeProps) {
-  return (
-    <Flex direction="row" align="center" gap="2">
-      <i className={icon} style={{ fontSize: '20px' }} />
-      <Text as="p" variant="body-large" weight="bold">
-        {text}
-      </Text>
-    </Flex>
-  );
 }
 
 export function RiScStatusComponent({
@@ -167,33 +152,6 @@ export function RiScStatusComponent({
   const numOfCommitsBehind =
     selectedRiSc.lastPublished?.numberOfCommits ?? null;
 
-  const statusMap: StatusIconMapType = {
-    [RiScStatusEnum.CREATED]: {
-      icon: 'ri-edit-line',
-      text: t('rosStatus.statusBadge.created'),
-    },
-    [RiScStatusEnum.DRAFT]: {
-      icon: 'ri-edit-line',
-      text: t('rosStatus.statusBadge.draft'),
-    },
-    [RiScStatusEnum.WAITING]: {
-      icon: 'ri-hourglass-line',
-      text: t('rosStatus.statusBadge.waiting'),
-    },
-    [RiScStatusEnum.PUBLISHED]: {
-      icon: 'ri-checkbox-circle-line',
-      text: t('rosStatus.statusBadge.published'),
-    },
-    [RiScStatusEnum.DELETION_DRAFT]: {
-      icon: 'ri-delete-bin-line',
-      text: t('rosStatus.statusBadge.draftDeletion'),
-    },
-    [RiScStatusEnum.DELETION_WAITING]: {
-      icon: 'ri-close-circle-line',
-      text: t('rosStatus.statusBadge.waitingDeletion'),
-    },
-  };
-
   return (
     <Card style={{ height: 'fit-content' }}>
       <CardBody>
@@ -214,10 +172,7 @@ export function RiScStatusComponent({
               gap="1"
               mt="4"
             >
-              <StatusBadge
-                icon={statusMap[status].icon}
-                text={statusMap[status].text}
-              />
+              <StatusBadge riScStatus={status} />
               <Flex direction="row" mb="4" pl="7" style={{ width: '100%' }}>
                 {status === RiScStatusEnum.CREATED && (
                   <Text as="p" variant="body-large">
