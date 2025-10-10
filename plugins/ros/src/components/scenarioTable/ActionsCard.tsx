@@ -1,28 +1,26 @@
-import { Grid, Flex, Text, Box } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { Box, Flex, Grid, Text } from '@backstage/ui';
+import { Cached } from '@mui/icons-material';
+import { Divider } from '@mui/material';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
+import { useCallback, useEffect, useState } from 'react';
 import DualButtonWithMenu from '../../components/common/DualButtonWithMenu';
+import { useRiScs } from '../../contexts/RiScContext';
+import { useScenario } from '../../contexts/ScenarioContext';
 import { ActionStatusOptions } from '../../utils/constants';
-import { actionStatusOptionsToTranslationKeys } from '../../utils/utilityfunctions';
-import { Scenario, RiScWithMetadata, Action } from '../../utils/types';
+import { useDebounce } from '../../utils/hooks';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { Action, RiScWithMetadata, Scenario } from '../../utils/types';
 import {
+  actionStatusOptionsToTranslationKeys,
   formatDate,
-  UpdatedStatusEnumType,
-} from '../../utils/utilityfunctions';
-import { UpdatedStatusEnum } from '../../utils/utilityfunctions';
-import {
   getActionStatusColor,
   getActionStatusStyle,
+  UpdatedStatusEnum,
+  UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Divider } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
-import { Cached } from '@mui/icons-material';
-import { useDebounce } from '../../utils/hooks';
-import { useRiScs } from '../../contexts/RiScContext';
-import IconButton from '@mui/material/IconButton';
-import Collapse from '@mui/material/Collapse';
-import Link from '@mui/material/Link';
-import { useScenario } from '../../contexts/ScenarioContext';
 import { Markdown } from '../common/Markdown';
 import { body2 } from '../common/typography';
 
