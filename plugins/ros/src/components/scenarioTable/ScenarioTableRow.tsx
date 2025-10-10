@@ -136,7 +136,7 @@ export function ScenarioTableRow({
           </Grid.Item>
         )}
         <Grid.Item colSpan="3" className={gridItem}>
-          <Text as="p" variant="body-large">
+          <Text as="p" variant="body-large" weight="bold">
             {scenario.title}
           </Text>
         </Grid.Item>
@@ -212,13 +212,12 @@ export function ScenarioTableRow({
           </Grid.Item>
         )}
       </Grid.Root>
-      {/* is button clicked && {
-        Distinguish between outdated and very outdated actions
-        map over each scenario.actions to retreive the actions that are outdated and very outdated
-        <ActionsCard></ActionsCard>
-        }}*/}
       {filteredActions.length > 0 && (
-        <ActionsCard filteredData={filteredActions} />
+        <ActionsCard
+          filteredData={filteredActions}
+          scenario={scenario}
+          updateRiSc={updateRiSc}
+        />
       )}
     </Card>
   );

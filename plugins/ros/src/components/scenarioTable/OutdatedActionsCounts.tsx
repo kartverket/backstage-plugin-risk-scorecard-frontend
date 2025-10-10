@@ -1,6 +1,6 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { Flex, Text, Button } from '@backstage/ui';
+import { Flex, Text, Box, Button } from '@backstage/ui';
 import {
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
@@ -44,7 +44,6 @@ type OutdatedActionsBadgeProps = {
 
 function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-
   function getBackgroundColor(
     isSelected: boolean,
     type: UpdatedStatusEnumType,
@@ -73,6 +72,10 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
     paddingBottom: '8px',
     paddingRight: '20px',
     borderRadius: '24px',
+    border:
+      props.type === UpdatedStatusEnum.VERY_OUTDATED
+        ? '1px solid #F23131'
+        : '1px solid #FF8B38',
     backgroundColor: getBackgroundColor(props.isSelected, props.type),
   };
   const filterSpanStyle = {
@@ -88,11 +91,11 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
   };
   return (
     <Button style={filterBoxStyle} onClick={() => props.onToggle(props.type)}>
-      <span style={filterSpanStyle}>
+      <Box style={filterSpanStyle}>
         <Text style={{ color: 'white' }} weight="bold">
           {props.count}
         </Text>
-      </span>
+      </Box>
       <Text weight="bold">
         {props.type === UpdatedStatusEnum.VERY_OUTDATED
           ? t('filterButton.veryOutdated')
