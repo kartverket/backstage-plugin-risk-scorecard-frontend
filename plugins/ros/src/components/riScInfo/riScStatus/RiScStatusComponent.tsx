@@ -21,6 +21,7 @@ import {
   Card,
   CardBody,
   ButtonLink,
+  CardHeader,
 } from '@backstage/ui';
 import { StatusBanner } from './StatusBanner.tsx';
 import { StatusBadge } from './StatusBadge.tsx';
@@ -154,7 +155,7 @@ export function RiScStatusComponent({
 
   return (
     <Card style={{ height: 'fit-content' }}>
-      <CardBody>
+      <CardHeader>
         <Text variant="title-small" weight="bold" as="h5">
           Status
         </Text>
@@ -163,6 +164,8 @@ export function RiScStatusComponent({
           daysSinceLastModified={daysSinceLastModified}
           differenceFetchState={differenceFetchState}
         />
+      </CardHeader>
+      <CardBody>
         {!migration && (
           <>
             <Flex
