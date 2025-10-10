@@ -9,7 +9,6 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useRiScs } from '../../../contexts/RiScContext';
 import { useAuthenticatedFetch } from '../../../utils/hooks';
-import { ProgressBar } from './Progress';
 import { RiScMigrationDialog } from '../MigrationDialog';
 import { RiScPublishDialog } from '../PublishDialog';
 import {
@@ -354,9 +353,6 @@ export function RiScStatusComponent({
         {!selectedRiSc && (
           <Text as="span">{t('rosStatus.statusBadge.error')}</Text>
         )}
-        <Box mt="2">
-          <ProgressBar step={status} />
-        </Box>
       </CardBody>
     </Card>
   );
