@@ -115,6 +115,8 @@ export const pluginRiScMessages = {
     daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
     notPublishedYet: 'RiSc is not published yet',
     errorMessage: 'Failed to retrieve status',
+    outdated: 'Outdated',
+    veryOutdated: 'Very outdated',
     difference: {
       description: 'Summary of changes that will be approved by risk owner.',
       publishDate: 'Last published changes {{date}}',
@@ -697,6 +699,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'rosStatus.statusBadge.missing':
             'Når utkastet er ferdig, kan risikoeier gå gjennom og godkjenne endringene.',
+          'rosStatus.outdated': 'Utdatert',
+          'rosStatus.veryOutdated': 'Veldig utdatert',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
           'rosStatus.statusBadge.migration.title':

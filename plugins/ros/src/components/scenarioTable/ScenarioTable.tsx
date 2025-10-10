@@ -2,16 +2,22 @@ import { useTableStyles } from './ScenarioTableStyles.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  calculateDaysSince,
+  calculateUpdatedStatus,
+} from '../../utils/utilityfunctions.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Text, Grid } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
+import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 
 type ScenarioTableProps = {
   isEditing: boolean;
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
+  visibleType: UpdatedStatusEnumType | null;
 };
 
 export function ScenarioTable(props: ScenarioTableProps) {
@@ -20,6 +26,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
+  const visibleType = props.visibleType;
 
   const { openScenarioDrawer } = useScenario();
 
@@ -65,9 +72,29 @@ export function ScenarioTable(props: ScenarioTableProps) {
     updateRiSc(updatedRiSc, () => {});
   }
 
+  const lastPublishedCommits =
+    props.riScWithMetadata.lastPublished?.numberOfCommits ?? null;
+
+  const displayScenarios = useMemo(() => {
+    if (!visibleType) return tempScenarios;
+
+    return tempScenarios.filter(scenario =>
+      scenario.actions.some(action => {
+        const daysSinceLastUpdate = action.lastUpdated
+          ? calculateDaysSince(new Date(action.lastUpdated))
+          : null;
+        const status = calculateUpdatedStatus(
+          daysSinceLastUpdate,
+          lastPublishedCommits,
+        );
+        return status === visibleType;
+      }),
+    );
+  }, [tempScenarios, visibleType, lastPublishedCommits]);
+
   return (
     <>
-      <Grid.Root columns={`${props.isEditing ? 9 : 7}`} py="16px">
+      <Grid.Root columns={`${props.isEditing ? 9 : 7}`} pt="40px" pb="16px">
         {props.isEditing && <Grid.Item className={tableCellDragIcon} />}
         <Grid.Item colSpan="3">
           <Text weight="bold" variant="body-large">
@@ -91,11 +118,12 @@ export function ScenarioTable(props: ScenarioTableProps) {
         </Grid.Item>
         {props.isEditing && <Grid.Item colSpan="1" />}
       </Grid.Root>
-      {tempScenarios.map((scenario, idx) => (
+      {displayScenarios.map((scenario, idx) => (
         <ScenarioTableRow
           key={scenario.ID}
           scenario={scenario}
           index={idx}
+          visibleType={visibleType}
           viewRow={(id: string) =>
             openScenarioDrawer(id, props.isEditingAllowed)
           }
