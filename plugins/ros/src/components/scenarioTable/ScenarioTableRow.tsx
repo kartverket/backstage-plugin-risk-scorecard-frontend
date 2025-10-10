@@ -95,7 +95,7 @@ export function ScenarioTableRow({
     }),
   }));
 
-  const tmp = scenario.actions.map(action => {
+  const actionsWithUpdatedStatus = scenario.actions.map(action => {
     const daysSinceLastUpdate = action.lastUpdated
       ? calculateDaysSince(new Date(action.lastUpdated))
       : null;
@@ -112,7 +112,7 @@ export function ScenarioTableRow({
   const filteredActions =
     visibleType === null
       ? []
-      : tmp.filter(a => a.updatedStatus === visibleType);
+      : actionsWithUpdatedStatus.filter(a => a.updatedStatus === visibleType);
 
   preview(drop(ref));
 
@@ -198,7 +198,7 @@ export function ScenarioTableRow({
             <IconButton
               size="small"
               onClick={event => {
-                event.stopPropagation(); // prevent card click
+                event.stopPropagation();
                 setScenarioDeletionDialogOpen(true);
               }}
             >
