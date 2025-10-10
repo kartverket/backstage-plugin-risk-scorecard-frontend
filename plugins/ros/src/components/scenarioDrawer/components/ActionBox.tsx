@@ -14,7 +14,6 @@ import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import DualButtonWithMenu from '../../common/DualButtonWithMenu';
-import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { useRiScs } from '../../../contexts/RiScContext';
@@ -34,10 +33,11 @@ import {
   getActionStatusStyle,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
-import { body2, emptyState, label } from '../../common/typography';
+import { body2 } from '../../common/typography';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
 import { Tooltip } from '@material-ui/core';
+import { Text } from '@backstage/ui';
 
 interface ActionBoxProps {
   action: Action;
@@ -181,16 +181,11 @@ export function ActionBox({
           <IconButton>
             {isExpanded ? <ExpandLess /> : <ExpandMore />}
           </IconButton>
-          <Typography
-            sx={{
-              fontSize: '16px',
-              fontWeight: 500,
-            }}
-          >
+          <Text variant="body-large">
             {isActionTitlePresent
               ? action.title
               : `${t('dictionary.measure')} ${index + 1}`}
-          </Typography>
+          </Text>
         </Box>
         <Box
           sx={{
@@ -241,8 +236,10 @@ export function ActionBox({
               whiteSpace: 'nowrap',
             }}
           >
-            <Typography>{t('scenarioDrawer.action.lastUpdated')}</Typography>
-            <Typography>{parsedDateTime}</Typography>
+            <Text as="p" variant="body-large">
+              {t('scenarioDrawer.action.lastUpdated')}
+            </Text>
+            <Text variant="body-large">{parsedDateTime}</Text>
           </Box>
           <Exclamations
             action={action}
@@ -262,9 +259,13 @@ export function ActionBox({
             justifyContent: 'space-between',
           }}
         >
-          <Typography sx={{ ...label, marginTop: 1 }}>
+          <Text
+            variant="body-medium"
+            weight="bold"
+            style={{ paddingBottom: '0.4rem', marginTop: '4px' }}
+          >
             {t('dictionary.description')}
-          </Typography>
+          </Text>
           <IconButton
             sx={{
               marginLeft: 'auto',
@@ -286,7 +287,14 @@ export function ActionBox({
           }}
         >
           <Box>
-            <Typography sx={label}>{t('dictionary.url')}</Typography>
+            <Text
+              variant="body-medium"
+              weight="bold"
+              style={{ paddingBottom: '0.4rem', marginTop: '4px' }}
+            >
+              {' '}
+              {t('dictionary.url')}
+            </Text>
             {action.url ? (
               <Link
                 sx={{
@@ -302,11 +310,11 @@ export function ActionBox({
                 {action.url}
               </Link>
             ) : (
-              <Typography sx={emptyState}>
+              <Text as="p" variant="body-large" style={{ fontStyle: 'italic' }}>
                 {t('dictionary.emptyField', {
                   field: t('dictionary.url').toLowerCase(),
                 })}
-              </Typography>
+              </Text>
             )}
           </Box>
         </Box>

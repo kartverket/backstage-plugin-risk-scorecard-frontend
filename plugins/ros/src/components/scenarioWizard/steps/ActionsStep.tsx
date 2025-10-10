@@ -6,7 +6,6 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { UseFormReturn, useFieldArray } from 'react-hook-form';
 import { emptyAction } from '../../../contexts/ScenarioContext';
@@ -20,9 +19,9 @@ import { actionStatusOptionsToTranslationKeys } from '../../../utils/utilityfunc
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
-import { heading2, heading3, label, subtitle2 } from '../../common/typography';
 import { DeleteActionConfirmation } from '../../scenarioDrawer/components/DeleteConfirmation';
 import { UrlLabel } from '../../scenarioDrawer/components/ActionFormItem';
+import { Text } from '@backstage/ui';
 
 export function ActionsStep({
   formMethods,
@@ -64,16 +63,18 @@ export function ActionsStep({
   return (
     <Stack spacing={3}>
       <Box>
-        <Typography sx={heading2}>{t('dictionary.measure')}</Typography>
-        <Typography sx={subtitle2}>
+        <Text style={{ fontSize: '1.75rem' }} weight="bold">
+          {t('dictionary.measure')}
+        </Text>
+        <Text variant="body-large" as="p">
           {t('scenarioDrawer.measureTab.subtitle')}
-        </Typography>
+        </Text>
       </Box>
 
       <Stack spacing={1}>
-        <Typography sx={heading3}>
+        <Text variant="title-x-small" as="p" weight="bold">
           {t('scenarioDrawer.measureTab.plannedMeasures')}
-        </Typography>
+        </Text>
 
         {fields.map((field, index) => {
           const currentActionDescription = watch(
@@ -96,9 +97,9 @@ export function ActionsStep({
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={label}>
+                  <Text variant="body-medium" weight="bold">
                     {t('dictionary.measure')} {index + 1}
-                  </Typography>
+                  </Text>
 
                   <IconButton
                     onClick={() => handleDeleteAction(index)}
