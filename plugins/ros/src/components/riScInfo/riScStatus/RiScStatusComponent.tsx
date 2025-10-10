@@ -11,14 +11,8 @@ import { useRiScs } from '../../../contexts/RiScContext';
 import { useAuthenticatedFetch } from '../../../utils/hooks';
 import { RiScMigrationDialog } from '../MigrationDialog';
 import { RiScPublishDialog } from '../PublishDialog';
-import {
-  calculateDaysSince,
-  calculateUpdatedStatus,
-  UpdatedStatusEnum,
-  UpdatedStatusEnumType,
-} from '../../../utils/utilityfunctions';
+import { calculateDaysSince } from '../../../utils/utilityfunctions';
 import { RiScStatusEnum, RiScStatusEnumType, StatusIconMapType } from './utils';
-import { StatusIconWithText } from './StatusIconWithText';
 import {
   Text,
   Button,
@@ -28,6 +22,7 @@ import {
   CardBody,
   ButtonLink,
 } from '@backstage/ui';
+import { StatusBanner } from './StatusBanner.tsx';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -165,26 +160,12 @@ export function RiScStatusComponent({
   const migration = selectedRiSc.migrationStatus?.migrationChanges;
 
   const lastPublishedDateTime = selectedRiSc.lastPublished?.dateTime;
-  const lastPublishedNumberOfCommits =
-    selectedRiSc.lastPublished?.numberOfCommits;
-
   const daysSinceLastModified = lastPublishedDateTime
     ? calculateDaysSince(new Date(lastPublishedDateTime))
     : null;
 
-  const numOfCommitsBehind = lastPublishedNumberOfCommits ?? null;
-
-  const updatedStatus = calculateUpdatedStatus(
-    daysSinceLastModified,
-    numOfCommitsBehind,
-  );
-
-  const icons: Record<UpdatedStatusEnumType, string> = {
-    [UpdatedStatusEnum.UPDATED]: 'ri-emotion-happy-line',
-    [UpdatedStatusEnum.LITTLE_OUTDATED]: 'ri-emotion-normal-line',
-    [UpdatedStatusEnum.OUTDATED]: 'ri-emotion-unhappy-line',
-    [UpdatedStatusEnum.VERY_OUTDATED]: 'ri-emotion-sad-line',
-  };
+  const numOfCommitsBehind =
+    selectedRiSc.lastPublished?.numberOfCommits ?? null;
 
   const statusMap: StatusIconMapType = {
     [RiScStatusEnum.CREATED]: {
@@ -214,21 +195,16 @@ export function RiScStatusComponent({
   };
 
   return (
-    <Card>
+    <Card style={{ height: 'fit-content' }}>
       <CardBody>
         <Text variant="title-small" weight="bold" as="h5">
           Status
         </Text>
-
-        <Flex
-          direction="row"
-          mt="2"
-          py="2"
-          px="4"
-          style={{ backgroundColor: '#FCEBCD' }}
-        >
-          {renderStatusContent()}
-        </Flex>
+        <StatusBanner
+          numOfCommitsBehind={numOfCommitsBehind}
+          daysSinceLastModified={daysSinceLastModified}
+          differenceFetchState={differenceFetchState}
+        />
         {!migration && (
           <>
             <Flex
@@ -356,43 +332,4 @@ export function RiScStatusComponent({
       </CardBody>
     </Card>
   );
-
-  function renderStatusContent() {
-    if (numOfCommitsBehind !== null && daysSinceLastModified !== null) {
-      return (
-        <StatusIconWithText
-          iconSrc={icons[updatedStatus]}
-          altText={t(`rosStatus.updatedStatus.${updatedStatus}`)}
-          text={
-            t('rosStatus.lastModified') +
-            t('rosStatus.daysSinceLastModified', {
-              days: daysSinceLastModified.toString(),
-              numCommits: numOfCommitsBehind.toString(),
-            })
-          }
-        />
-      );
-    }
-
-    if (
-      differenceFetchState.errorMessage &&
-      differenceFetchState.status !== DifferenceStatus.GithubFileNotFound
-    ) {
-      return (
-        <StatusIconWithText
-          iconSrc="ri-emotion-sad-line"
-          altText={t('rosStatus.updatedStatus.error')}
-          text={t('rosStatus.errorMessage')}
-        />
-      );
-    }
-
-    return (
-      <StatusIconWithText
-        iconSrc="ri-emotion-normal-line"
-        altText={t('rosStatus.updatedStatus.disabled')}
-        text={t('rosStatus.notPublishedYet')}
-      />
-    );
-  }
 }
