@@ -47,7 +47,7 @@ function RiScStepper({
   ];
   return (
     <Box style={{ width: '100%', padding: '24px' }}>
-      <Stepper activeStep={activeStep}>
+      <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map(label => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -175,7 +175,6 @@ export function RiScDialog({
               display: 'flex',
               flexDirection: 'column',
               gap: '16px',
-              width: '100%',
               paddingX: 1,
               paddingY: 0.5,
             }}
