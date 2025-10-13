@@ -17463,11 +17463,53 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app@link:../app::locator=backend%40workspace%3Apackages%2Fbackend":
-  version: 0.0.0-use.local
-  resolution: "app@link:../app::locator=backend%40workspace%3Apackages%2Fbackend"
+"app@file:../app::locator=backend%40workspace%3Apackages%2Fbackend":
+  version: 0.0.0
+  resolution: "app@file:../app#../app::hash=80122d&locator=backend%40workspace%3Apackages%2Fbackend"
+  dependencies:
+    "@backstage-community/plugin-explore": "npm:^0.8.0"
+    "@backstage-community/plugin-github-actions": "npm:^0.9.0"
+    "@backstage-community/plugin-grafana": "npm:^0.4.0"
+    "@backstage-community/plugin-lighthouse": "npm:^0.8.0"
+    "@backstage-community/plugin-linguist": "npm:^0.6.1"
+    "@backstage-community/plugin-tech-radar": "npm:^1.4.0"
+    "@backstage/app-defaults": "backstage:^"
+    "@backstage/catalog-model": "backstage:^"
+    "@backstage/cli": "backstage:^"
+    "@backstage/core-app-api": "backstage:^"
+    "@backstage/core-components": "backstage:^"
+    "@backstage/core-plugin-api": "backstage:^"
+    "@backstage/integration-react": "backstage:^"
+    "@backstage/plugin-api-docs": "backstage:^"
+    "@backstage/plugin-catalog": "backstage:^"
+    "@backstage/plugin-catalog-common": "backstage:^"
+    "@backstage/plugin-catalog-graph": "backstage:^"
+    "@backstage/plugin-catalog-import": "backstage:^"
+    "@backstage/plugin-catalog-react": "backstage:^"
+    "@backstage/plugin-devtools": "backstage:^"
+    "@backstage/plugin-home": "backstage:^"
+    "@backstage/plugin-org": "backstage:^"
+    "@backstage/plugin-permission-react": "backstage:^"
+    "@backstage/plugin-scaffolder": "backstage:^"
+    "@backstage/plugin-search": "backstage:^"
+    "@backstage/plugin-search-react": "backstage:^"
+    "@backstage/plugin-techdocs": "backstage:^"
+    "@backstage/plugin-techdocs-module-addons-contrib": "backstage:^"
+    "@backstage/plugin-techdocs-react": "backstage:^"
+    "@backstage/plugin-user-settings": "backstage:^"
+    "@kartverket/backstage-plugin-opencost": "npm:0.1.7"
+    "@kartverket/backstage-plugin-risk-scorecard": "workspace:plugins/ros"
+    "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/icons": "npm:^4.11.3"
+    backstage-plugin-xkcd: "npm:^1.0.11"
+    posthog-js: "npm:^1.235.4"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    react-router: "npm:^6.30.0"
+    react-router-dom: "npm:^6.30.0"
+  checksum: 10c0/6a9b201aef723ea20385f70d334091f1c06e8dafa5d2ac467e8b23e3c2443a8a4859f5b78b639b4db1d27797f0a609154ad419fe36e2b75b4148cf50cbd776e2
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "app@workspace:packages/app":
   version: 0.0.0-use.local
@@ -18176,7 +18218,7 @@ __metadata:
     "@backstage/plugin-search-backend-module-techdocs": "backstage:^"
     "@backstage/plugin-search-backend-node": "backstage:^"
     "@backstage/plugin-techdocs-backend": "backstage:^"
-    app: "link:../app"
+    app: "file:../app"
     jwt-decode: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
