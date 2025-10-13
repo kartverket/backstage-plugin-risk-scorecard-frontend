@@ -9,15 +9,15 @@ import { Flex } from '@backstage/ui';
 
 interface CloseConfirmationProps {
   isOpen: boolean;
-  onCloseDialog: () => void;
+  onCloseDialog?: () => void;
   close: () => void;
   save: () => void;
 }
 
 export function CloseConfirmation({
   isOpen,
-  close,
   onCloseDialog,
+  close,
   save,
 }: CloseConfirmationProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
