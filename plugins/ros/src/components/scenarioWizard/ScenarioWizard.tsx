@@ -10,7 +10,6 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Divider from '@mui/material/Divider';
 import { ActionsStep } from './steps/ActionsStep';
-import Button from '@mui/material/Button';
 import { RiskStep } from './steps/RiskStep';
 import Alert from '@mui/material/Alert';
 import { Spinner } from '../common/Spinner';
@@ -27,7 +26,7 @@ import { useForm } from 'react-hook-form';
 import { FormScenario, Scenario } from '../../utils/types';
 import { useSearchParams } from 'react-router-dom';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
-import { Text } from '@backstage/ui';
+import { Text, Button, Flex } from '@backstage/ui';
 
 export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -133,7 +132,12 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
         <Text variant="title-medium" weight="bold">
           {t('scenarioDrawer.title')}
         </Text>
-        <Button variant="outlined" onClick={handleCloseStepper}>
+        <Button
+          size="medium"
+          variant="secondary"
+          onClick={handleCloseStepper}
+          style={{ color: '#1f5493' }}
+        >
           {t('dictionary.cancel')}
         </Button>
       </Box>
@@ -162,40 +166,48 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
               <Text variant="body-large">{response.statusMessage}</Text>
             </Alert>
           )}
-          <Box
-            sx={{
-              display: 'flex',
-              gap: '16px',
-            }}
-          >
+          <Flex justify={isFirstStep ? 'end' : 'between'}>
             {!isFirstStep && (
-              <Button onClick={previousStep} startIcon={<KeyboardArrowLeft />}>
+              <Button
+                size="medium"
+                variant="tertiary"
+                onClick={previousStep}
+                iconStart={<KeyboardArrowLeft />}
+                style={{ color: '#1f5493' }}
+              >
                 {t('dictionary.previous')}
               </Button>
             )}
-
-            <Button
-              variant={isLastStep ? 'contained' : 'outlined'}
-              onClick={onSubmit}
-              disabled={!isDirty || updateStatus.isLoading}
-              sx={{ marginLeft: 'auto' }}
-            >
-              {t('dictionary.saveAndClose')}
-            </Button>
-            {!isLastStep && (
+            <Flex gap="16px">
               <Button
-                variant="contained"
-                onClick={nextStep}
-                endIcon={<KeyboardArrowRight />}
+                variant={isLastStep ? 'primary' : 'secondary'}
+                onClick={onSubmit}
+                size="medium"
+                isDisabled={!isDirty || updateStatus.isLoading}
+                style={{
+                  color: !isLastStep ? '#1f5493' : undefined,
+                }}
               >
-                {t('dictionary.next')}
+                {t('dictionary.saveAndClose')}
               </Button>
-            )}
-          </Box>
+
+              {!isLastStep && (
+                <Button
+                  variant="primary"
+                  size="medium"
+                  onClick={nextStep}
+                  iconEnd={<KeyboardArrowRight />}
+                >
+                  {t('dictionary.next')}
+                </Button>
+              )}
+            </Flex>
+          </Flex>
         </>
       )}
       <CloseConfirmation
         isOpen={showCloseConfirmation}
+        onCloseDialog={() => setShowCloseConfirmation(false)}
         close={close}
         save={onSubmit}
       />
