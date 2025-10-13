@@ -59,13 +59,4 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     padding: 0,
     color: 'black',
   },
-  riskSummary: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    borderRadius: '8px',
-    padding: theme.spacing(2),
-    marginTop: theme.spacing(2),
-    backgroundColor:
-      theme.palette.type === 'dark' ? '#FFFFFF1A' : 'rgba(0, 0, 0, 0.1)',
-  },
 }));
