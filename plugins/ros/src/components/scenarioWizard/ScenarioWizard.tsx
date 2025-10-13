@@ -1,5 +1,4 @@
 import { ReactNode, useCallback, useState } from 'react';
-import Box from '@mui/material/Box';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Stepper from '@mui/material/Stepper';
@@ -123,12 +122,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
         gap: '32px',
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
+      <Flex justify="between">
         <Text variant="title-medium" weight="bold">
           {t('scenarioDrawer.title')}
         </Text>
@@ -140,7 +134,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
         >
           {t('dictionary.cancel')}
         </Button>
-      </Box>
+      </Flex>
       <Stepper
         activeStep={scenarioWizardSteps.indexOf(step)}
         alternativeLabel
