@@ -3,22 +3,25 @@ import { IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useState, useRef } from 'react';
-import { Flex, Card, Grid } from '@backstage/ui';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Scenario } from '../../utils/types';
+import { Scenario, Action } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
+  calculateDaysSince,
+  calculateUpdatedStatus,
   deleteScenario,
   getConsequenceLevel,
   getProbabilityLevel,
   getRiskMatrixColor,
+  UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
 import { useTableStyles } from './ScenarioTableStyles';
-import { Text } from '@backstage/ui';
+import { Text, Flex, Card, Grid } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
+import { ActionsCard } from './ActionsCard.tsx';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -27,6 +30,7 @@ interface ScenarioTableRowProps {
   moveRowFinal: (dragIndex: number, dropIndex: number) => void;
   moveRowLocal: (dragIndex: number, hoverIndex: number) => void;
   isEditing: boolean;
+  visibleType: UpdatedStatusEnumType | null;
 }
 
 export function ScenarioTableRow({
@@ -36,6 +40,7 @@ export function ScenarioTableRow({
   moveRowFinal,
   moveRowLocal,
   isEditing,
+  visibleType,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { tableCard, gridItem, riskColor } = useTableStyles();
@@ -90,6 +95,25 @@ export function ScenarioTableRow({
     }),
   }));
 
+  const actionsWithUpdatedStatus = scenario.actions.map(action => {
+    const daysSinceLastUpdate = action.lastUpdated
+      ? calculateDaysSince(new Date(action.lastUpdated))
+      : null;
+
+    return {
+      ...action,
+      updatedStatus: calculateUpdatedStatus(
+        daysSinceLastUpdate,
+        riSc?.lastPublished?.numberOfCommits || null,
+      ),
+    } as Action & { updatedStatus: UpdatedStatusEnumType };
+  });
+
+  const filteredActions =
+    visibleType === null
+      ? []
+      : actionsWithUpdatedStatus.filter(a => a.updatedStatus === visibleType);
+
   preview(drop(ref));
 
   return (
@@ -112,7 +136,7 @@ export function ScenarioTableRow({
           </Grid.Item>
         )}
         <Grid.Item colSpan="3" className={gridItem}>
-          <Text as="p" variant="body-large">
+          <Text as="p" variant="body-large" weight="bold">
             {scenario.title}
           </Text>
         </Grid.Item>
@@ -174,7 +198,7 @@ export function ScenarioTableRow({
             <IconButton
               size="small"
               onClick={event => {
-                event.stopPropagation(); // prevent card click
+                event.stopPropagation();
                 setScenarioDeletionDialogOpen(true);
               }}
             >
@@ -188,6 +212,13 @@ export function ScenarioTableRow({
           </Grid.Item>
         )}
       </Grid.Root>
+      {filteredActions.length > 0 && (
+        <ActionsCard
+          filteredData={filteredActions}
+          scenario={scenario}
+          updateRiSc={updateRiSc}
+        />
+      )}
     </Card>
   );
 }
