@@ -126,12 +126,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
         <Text variant="title-medium" weight="bold">
           {t('scenarioDrawer.title')}
         </Text>
-        <Button
-          size="medium"
-          variant="secondary"
-          onClick={handleCloseStepper}
-          style={{ color: '#1f5493' }}
-        >
+        <Button size="medium" variant="secondary" onClick={handleCloseStepper}>
           {t('dictionary.cancel')}
         </Button>
       </Flex>
@@ -167,7 +162,6 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
                 variant="tertiary"
                 onClick={previousStep}
                 iconStart={<KeyboardArrowLeft />}
-                style={{ color: '#1f5493' }}
               >
                 {t('dictionary.previous')}
               </Button>
@@ -178,9 +172,6 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
                 onClick={onSubmit}
                 size="medium"
                 isDisabled={!isDirty || updateStatus.isLoading}
-                style={{
-                  color: !isLastStep ? '#1f5493' : undefined,
-                }}
               >
                 {t('dictionary.saveAndClose')}
               </Button>
