@@ -131,10 +131,8 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     cursor: 'pointer',
     overflowX: 'auto',
     border: 'none',
-    paddingLeft: '1rem',
-    paddingRight: '1rem',
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    padding: '8px 24px',
+    marginBottom: '8px',
     backgroundColor: '#F8F8F8',
     '&:hover': {
       backgroundColor: '#E0E0E0',
@@ -143,5 +141,6 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   gridItem: {
     display: 'flex',
     alignItems: 'center',
+    padding: '16px 0',
   },
 }));
