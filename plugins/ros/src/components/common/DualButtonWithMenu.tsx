@@ -40,9 +40,15 @@ export function DualButtonWithMenu({
         openMenuOnLeftClick !== undefined
           ? openMenuOnLeftClick
           : Boolean(menuItems && menuItems.length > 0);
-      if (shouldOpen) setAnchorEl(event.currentTarget);
+      if (!shouldOpen) return;
+
+      if (open) {
+        setAnchorEl(null);
+      } else {
+        setAnchorEl(event.currentTarget);
+      }
     },
-    [propsLeft, openMenuOnLeftClick, menuItems],
+    [propsLeft, openMenuOnLeftClick, menuItems, open],
   );
 
   const handleRightClick = useCallback(
@@ -67,7 +73,16 @@ export function DualButtonWithMenu({
   } as ButtonProps;
 
   return (
-    <div {...props}>
+    <div
+      {...props}
+      role="presentation"
+      onClick={e => {
+        e.stopPropagation();
+      }}
+      onKeyDown={e => {
+        e.stopPropagation();
+      }}
+    >
       <DualButton
         propsLeft={wrappedLeft}
         propsRight={wrappedRight}
