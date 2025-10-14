@@ -5,22 +5,30 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../../common/mixins';
+import { Flex } from '@backstage/ui';
 
 interface CloseConfirmationProps {
   isOpen: boolean;
+  onCloseDialog?: () => void;
   close: () => void;
   save: () => void;
 }
 
 export function CloseConfirmation({
   isOpen,
+  onCloseDialog,
   close,
   save,
 }: CloseConfirmationProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Dialog open={isOpen}>
-      <DialogTitle>{t('scenarioDrawer.closeConfirmation')}</DialogTitle>
+      <Flex>
+        <DialogTitle>{t('scenarioDrawer.closeConfirmation')}</DialogTitle>
+        <Button onClick={onCloseDialog}>
+          <i className="ri-close-large-line" />
+        </Button>
+      </Flex>
       <DialogActions sx={dialogActions}>
         <Button variant="outlined" onClick={close}>
           {t('dictionary.discardChanges')}

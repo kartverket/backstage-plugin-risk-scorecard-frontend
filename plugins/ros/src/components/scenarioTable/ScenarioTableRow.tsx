@@ -43,7 +43,8 @@ export function ScenarioTableRow({
   visibleType,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { tableCard, gridItem, riskColor } = useTableStyles();
+  const { tableCard, gridItem, riskColor, noHover } = useTableStyles();
+  const [isChildHover, setIsChildHover] = useState(false);
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
@@ -120,12 +121,12 @@ export function ScenarioTableRow({
     <Card
       ref={ref}
       onClick={() => viewRow(scenario.ID)}
-      className={tableCard}
+      className={`${tableCard} ${isChildHover ? noHover : ''}`}
       style={{
         opacity: isDragging ? 0.5 : 1,
       }}
     >
-      <Grid.Root columns={`${isEditing ? 9 : 7}`} style={{ minWidth: 750 }}>
+      <Grid.Root columns={`${isEditing ? 9 : 7}`}>
         {isEditing && (
           <Grid.Item className={gridItem}>
             <IconButton size="small" ref={drag}>
@@ -213,11 +214,16 @@ export function ScenarioTableRow({
         )}
       </Grid.Root>
       {filteredActions.length > 0 && (
-        <ActionsCard
-          filteredData={filteredActions}
-          scenario={scenario}
-          updateRiSc={updateRiSc}
-        />
+        <div
+          onMouseEnter={() => setIsChildHover(true)}
+          onMouseLeave={() => setIsChildHover(false)}
+        >
+          <ActionsCard
+            filteredData={filteredActions}
+            scenario={scenario}
+            updateRiSc={updateRiSc}
+          />
+        </div>
       )}
     </Card>
   );

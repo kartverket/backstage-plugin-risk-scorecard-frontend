@@ -140,7 +140,7 @@ export function ActionsCard(props: ActionsCardProps) {
 
   return (
     <>
-      <Divider sx={{ paddingBottom: '8px' }} />
+      <Divider sx={{ marginBottom: '8px' }} />
       {filteredData.map((action, idx) => {
         const isExpanded = isActionExpanded(action.ID);
         const isLast = idx === filteredData.length - 1;
@@ -293,7 +293,7 @@ export function ActionsCard(props: ActionsCardProps) {
                 </Box>
               </Box>
             </Collapse>
-            {!isLast && <Divider sx={{ py: 1 }} />}
+            {!isLast && <Divider sx={{ my: 1 }} />}
           </div>
         );
       })}
