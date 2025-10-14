@@ -218,15 +218,11 @@ export function ActionsCard(props: ActionsCardProps) {
                         value as ActionStatusOptions
                       ],
                     ),
-                    onClick: () => {
-                      const current =
-                        pendingStatusById[action.ID] ?? action.status;
-                      if (value === current) return;
+                    onClick: () =>
                       handleStatusChange(
                         action.ID,
                         value as ActionStatusOptions,
-                      );
-                    },
+                      ),
                     selected:
                       value === (pendingStatusById[action.ID] ?? action.status),
                   }))}
