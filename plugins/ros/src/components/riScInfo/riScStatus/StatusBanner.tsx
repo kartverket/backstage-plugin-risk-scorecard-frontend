@@ -10,6 +10,7 @@ import {
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
 } from '../../../utils/utilityfunctions.ts';
+import { useTheme } from '@mui/material/styles';
 
 type StatusBannerProps = {
   numOfCommitsBehind: number | null;
@@ -22,6 +23,7 @@ export function StatusBanner(props: StatusBannerProps) {
     props.daysSinceLastModified,
     props.numOfCommitsBehind,
   );
+  const theme = useTheme();
 
   return (
     <Flex
@@ -29,7 +31,10 @@ export function StatusBanner(props: StatusBannerProps) {
       mt="2"
       py="2"
       px="4"
-      style={{ backgroundColor: '#FCEBCD' }}
+      style={{
+        backgroundColor:
+          theme.palette.mode === 'dark' ? 'var(--bui-gray-6)' : '#FCEBCD',
+      }}
     >
       <StatusIconWithText
         numOfCommitsBehind={props.numOfCommitsBehind}
