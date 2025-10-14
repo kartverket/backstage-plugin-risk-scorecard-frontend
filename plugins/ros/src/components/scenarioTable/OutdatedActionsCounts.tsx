@@ -101,11 +101,11 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
       onMouseLeave={() => setIsHover(false)}
     >
       <Box style={filterSpanStyle}>
-        <Text style={{ color: 'white' }} weight="bold">
+        <Text style={{ color: 'var(--bui-white)' }} weight="bold">
           {props.count}
         </Text>
       </Box>
-      <Text weight="bold">
+      <Text weight="bold" style={{ color: 'var(--bui-black)' }}>
         {props.type === UpdatedStatusEnum.VERY_OUTDATED
           ? t('filterButton.veryOutdated')
           : t('filterButton.outdated')}
