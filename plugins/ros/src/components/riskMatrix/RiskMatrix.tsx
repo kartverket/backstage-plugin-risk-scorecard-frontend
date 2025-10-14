@@ -21,7 +21,6 @@ export function RiskMatrix({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label2 } = useFontStyles();
   const {
-    riskSummary,
     grid,
     gridWrapper,
     konsekvens,
@@ -44,7 +43,11 @@ export function RiskMatrix({
         <TabContext value={tab}>
           <Tabs setTab={setTab} />
           {riScWithMetadata.content.scenarios.length > 0 && (
-            <Box className={riskSummary}>
+            <Box
+              style={{
+                marginTop: '16px',
+              }}
+            >
               <AggregatedCost
                 riSc={riScWithMetadata.content}
                 initialRisk={tab === RiskMatrixTabs.initialRisk}
