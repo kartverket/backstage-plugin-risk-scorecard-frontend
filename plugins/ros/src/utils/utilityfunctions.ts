@@ -129,11 +129,11 @@ export function calculateUpdatedStatus(
   daysSinceLastModified: number | null,
   numOfCommitsBehind: number | null,
 ): UpdatedStatusEnumType {
-  if (daysSinceLastModified && !numOfCommitsBehind) {
+  if (daysSinceLastModified !== null && numOfCommitsBehind === null) {
     return calculateUpdatedStatusFromDaysOnly(daysSinceLastModified);
   }
 
-  if (daysSinceLastModified && numOfCommitsBehind) {
+  if (daysSinceLastModified !== null && numOfCommitsBehind !== null) {
     return calculateUpdatedStatusFromDaysAndCommits(
       daysSinceLastModified,
       numOfCommitsBehind,
