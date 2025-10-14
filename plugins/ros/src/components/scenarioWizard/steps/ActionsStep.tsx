@@ -30,7 +30,13 @@ export function ActionsStep({
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const { control, register, setValue, watch, formState } = formMethods;
+  const {
+    control,
+    register,
+    setValue,
+    watch,
+    formState: { errors },
+  } = formMethods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'actions',
@@ -114,19 +120,19 @@ export function ActionsStep({
                 <Input
                   required
                   {...register(`actions.${index}.title`, { required: true })}
+                  error={!!errors?.actions?.[index]?.title}
+                  helperText={errors?.actions?.[index]?.title?.message}
                   label={t('dictionary.title')}
                 />
                 <MarkdownInput
                   {...register(`actions.${index}.description`)}
-                  error={
-                    formState.errors?.actions?.[index]?.description !==
-                    undefined
-                  }
+                  error={errors?.actions?.[index]?.description !== undefined}
                   value={currentActionDescription}
                   onMarkdownChange={value =>
                     setValue(`actions.${index}.description`, value)
                   }
                   label={t('dictionary.description')}
+                  minRows={8}
                 />
 
                 <Box
@@ -144,8 +150,8 @@ export function ActionsStep({
                       },
                     })}
                     label={<UrlLabel />}
-                    helperText={formState.errors.actions?.[index]?.url?.message}
-                    error={!!formState.errors.actions?.[index]?.url?.message}
+                    helperText={errors.actions?.[index]?.url?.message}
+                    error={!!errors.actions?.[index]?.url?.message}
                   />
                   <Select<FormScenario>
                     required
