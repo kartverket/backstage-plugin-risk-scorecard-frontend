@@ -1,4 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { useState } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { Flex, Text, Box, Button } from '@backstage/ui';
 import {
@@ -44,6 +45,7 @@ type OutdatedActionsBadgeProps = {
 
 function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const [isHover, setIsHover] = useState(false);
   function getBackgroundColor(
     isSelected: boolean,
     type: UpdatedStatusEnumType,
@@ -76,7 +78,9 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
       props.type === UpdatedStatusEnum.VERY_OUTDATED
         ? '1px solid #F23131'
         : '1px solid #FF8B38',
-    backgroundColor: getBackgroundColor(props.isSelected, props.type),
+    backgroundColor: isHover
+      ? getBackgroundColor(true, props.type)
+      : getBackgroundColor(props.isSelected, props.type),
   };
   const filterSpanStyle = {
     width: '26px',
@@ -90,7 +94,12 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
       props.type === UpdatedStatusEnum.VERY_OUTDATED ? '#F23131' : '#FF8B38',
   };
   return (
-    <Button style={filterBoxStyle} onClick={() => props.onToggle(props.type)}>
+    <Button
+      style={filterBoxStyle}
+      onClick={() => props.onToggle(props.type)}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
+    >
       <Box style={filterSpanStyle}>
         <Text style={{ color: 'white' }} weight="bold">
           {props.count}
