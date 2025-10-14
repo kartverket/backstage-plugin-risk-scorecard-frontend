@@ -126,7 +126,7 @@ export function ScenarioTableRow({
         opacity: isDragging ? 0.5 : 1,
       }}
     >
-      <Grid.Root columns={`${isEditing ? 9 : 7}`} style={{ minWidth: 750 }}>
+      <Grid.Root columns={`${isEditing ? 9 : 7}`}>
         {isEditing && (
           <Grid.Item className={gridItem}>
             <IconButton size="small" ref={drag}>

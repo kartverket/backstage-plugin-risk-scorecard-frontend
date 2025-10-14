@@ -129,7 +129,6 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   },
   tableCard: {
     cursor: 'pointer',
-    overflowX: 'auto',
     border: 'none',
     padding: '8px 24px',
     marginBottom: '8px',

@@ -111,10 +111,10 @@ export function RiScPlugin() {
                     onCreateNew={openCreateRiScDialog}
                   />
                 </Grid>
-                <Grid item xs md={7} lg={8}>
+                <Grid item xs={12} lg={8}>
                   <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
                 </Grid>
-                <Grid item xs md={5} lg={4}>
+                <Grid item xs={12} lg={4}>
                   <RiskMatrix riScWithMetadata={selectedRiSc} />
                 </Grid>
               </>
