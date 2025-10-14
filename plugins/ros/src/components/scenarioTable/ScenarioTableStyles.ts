@@ -132,13 +132,16 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     border: 'none',
     padding: '8px 24px',
     marginBottom: '8px',
-    backgroundColor: '#F8F8F8',
+    backgroundColor:
+      theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
     '&:hover': {
-      backgroundColor: '#E0E0E0',
+      backgroundColor:
+        theme.palette.type === 'dark' ? 'var(--bui-gray-6)' : '#E0E0E0',
     },
     '&$noHover': {
       '&:hover': {
-        backgroundColor: '#F8F8F8',
+        backgroundColor:
+          theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
         cursor: 'default',
       },
     },

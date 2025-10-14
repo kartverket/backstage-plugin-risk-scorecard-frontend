@@ -33,7 +33,7 @@ export function StatusBanner(props: StatusBannerProps) {
       px="4"
       style={{
         backgroundColor:
-          theme.palette.mode === 'dark' ? 'var(--bui-gray-6)' : '#FCEBCD',
+          theme.palette.mode === 'dark' ? 'var(--bui-gray-5)' : '#FCEBCD',
       }}
     >
       <StatusIconWithText
