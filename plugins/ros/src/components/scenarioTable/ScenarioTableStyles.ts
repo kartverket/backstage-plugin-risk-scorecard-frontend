@@ -137,7 +137,14 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       backgroundColor: '#E0E0E0',
     },
+    '&$noHover': {
+      '&:hover': {
+        backgroundColor: '#F8F8F8',
+        cursor: 'default',
+      },
+    },
   },
+  noHover: {},
   gridItem: {
     display: 'flex',
     alignItems: 'center',
