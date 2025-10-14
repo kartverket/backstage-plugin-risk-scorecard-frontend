@@ -16,6 +16,8 @@ type RadioOptionProps = {
   label: string;
   description?: string;
   active?: boolean;
+  numActions: number | null;
+  numScenarios: number | null;
 };
 
 const RadioOption = ({
@@ -23,12 +25,22 @@ const RadioOption = ({
   label,
   description,
   active = true,
+  numActions,
+  numScenarios,
 }: RadioOptionProps) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const style = {
+    border: `1px solid ${active ? '#757575' : 'black'}`,
+    borderRadius: '16px',
+    padding: '0 8px',
+  };
+
   return (
     <>
       <Flex align="center" pt="2">
         <Radio value={value}>
           <Text
+            weight="bold"
             as="h5"
             variant="body-medium"
             color={active ? 'secondary' : 'primary'}
@@ -48,6 +60,22 @@ const RadioOption = ({
           </Text>
         </Flex>
       )}
+      <Flex ml="6">
+        <Text
+          variant="body-small"
+          color={active ? 'secondary' : 'primary'}
+          style={style}
+        >
+          {numActions} {t('dictionary.measure')}
+        </Text>
+        <Text
+          variant="body-small"
+          color={active ? 'secondary' : 'primary'}
+          style={style}
+        >
+          {numScenarios} {t('dictionary.scenario')}
+        </Text>
+      </Flex>
     </>
   );
 };
@@ -156,6 +184,8 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
                           label={descriptor.listName}
                           description={descriptor.listDescription}
                           active={!props.switchOn}
+                          numActions={descriptor.numberOfActions}
+                          numScenarios={descriptor.numberOfScenarios}
                         />
                       ),
                     )}
