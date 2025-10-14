@@ -7,8 +7,8 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiSc } from '../../utils/types';
 import { formatNumber } from '../../utils/utilityfunctions';
 import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
-import { useAggregatedCostStyles } from './aggregatedCostStyle';
-import { Text } from '@backstage/ui';
+import { Flex, Text } from '@backstage/ui';
+import { useTheme } from '@mui/material/styles';
 
 interface AggregatedCostProps {
   riSc: RiSc;
@@ -17,7 +17,7 @@ interface AggregatedCostProps {
 
 export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { outerBox, innerBox } = useAggregatedCostStyles();
+  const theme = useTheme();
   const { body2 } = useFontStyles();
 
   const [showDialog, setShowDialog] = useState(false);
@@ -32,11 +32,16 @@ export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
     .reduce((a, b) => a + b, 0);
 
   return (
-    <Box className={outerBox}>
+    <Box
+      style={{
+        backgroundColor: theme.palette.mode === 'dark' ? '#FCEBCD' : '#FCEBCD',
+        padding: '8px 16px',
+      }}
+    >
       <Text as="h3" variant="body-large" weight="bold">
         {t('riskMatrix.estimatedRisk.title')}
       </Text>
-      <Box className={innerBox}>
+      <Flex align="center" gap="0">
         <Text variant="body-large" className={body2}>
           {formatNumber(cost, t)}{' '}
           {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
@@ -44,7 +49,7 @@ export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
         <IconButton size="small" onClick={() => setShowDialog(true)}>
           <InfoIcon />
         </IconButton>
-      </Box>
+      </Flex>
       <EstimatedRiskInfoDialog
         isOpen={showDialog}
         onClose={() => setShowDialog(false)}
