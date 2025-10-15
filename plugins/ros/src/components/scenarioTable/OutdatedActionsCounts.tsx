@@ -6,6 +6,7 @@ import {
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions.ts';
+import { useTheme } from '@mui/material/styles';
 
 type OutdatedActionsCountsProps = {
   veryOutdatedCount: number;
@@ -45,8 +46,9 @@ type OutdatedActionsBadgeProps = {
 
 function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const theme = useTheme();
   const [isHover, setIsHover] = useState(false);
-  function getBackgroundColor(
+  function getButtonBackgroundColor(
     isSelected: boolean,
     type: UpdatedStatusEnumType,
   ) {
@@ -59,12 +61,12 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
       }
     }
     if (type === UpdatedStatusEnum.OUTDATED) {
-      return '#FFF7ED';
+      return theme.palette.mode === 'dark' ? 'transparent' : '#FFF7ED';
     }
-    return '#FCF1E8';
+    return theme.palette.mode === 'dark' ? 'transparent' : '#FCF1E8';
   }
 
-  const filterBoxStyle = {
+  const actionsButtonStyle = {
     height: '40px',
     display: 'flex',
     alignItems: 'center',
@@ -78,34 +80,42 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
       props.type === UpdatedStatusEnum.VERY_OUTDATED
         ? '1px solid #F23131'
         : '1px solid #FF8B38',
+    color: 'white',
     backgroundColor: isHover
-      ? getBackgroundColor(true, props.type)
-      : getBackgroundColor(props.isSelected, props.type),
+      ? getButtonBackgroundColor(true, props.type)
+      : getButtonBackgroundColor(props.isSelected, props.type),
   };
-  const filterSpanStyle = {
+  const actionsCountBoxStyle = {
     width: '26px',
     height: '26px',
     borderRadius: '8px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    color: 'white',
     backgroundColor:
       props.type === UpdatedStatusEnum.VERY_OUTDATED ? '#F23131' : '#FF8B38',
   };
   return (
     <Button
-      style={filterBoxStyle}
+      style={actionsButtonStyle}
       onClick={() => props.onToggle(props.type)}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <Box style={filterSpanStyle}>
+      <Box style={actionsCountBoxStyle}>
         <Text style={{ color: 'var(--bui-white)' }} weight="bold">
           {props.count}
         </Text>
       </Box>
-      <Text weight="bold" style={{ color: 'var(--bui-black)' }}>
+      <Text
+        weight="bold"
+        style={{
+          color:
+            theme.palette.mode === 'dark' && !props.isSelected && !isHover
+              ? 'var(--bui-white)'
+              : 'var(--bui-black)',
+        }}
+      >
         {props.type === UpdatedStatusEnum.VERY_OUTDATED
           ? t('filterButton.veryOutdated')
           : t('filterButton.outdated')}
