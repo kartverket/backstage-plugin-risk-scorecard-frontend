@@ -10,6 +10,7 @@ import { OutdatedActionsCounts } from './OutdatedActionsCounts.tsx';
 import { AddScenarioButton } from './AddScenarioButton.tsx';
 import { ScenarioTable } from './ScenarioTable.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
+import { ScenarioTableFilter } from './ScenarioTableFilter.tsx';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
@@ -34,18 +35,12 @@ export function ScenarioTableCard({
   function handleToggle(type: UpdatedStatusEnumType) {
     setVisibleType(prev => (prev === type ? null : type));
   }
+  const [sortOrder, setSortOrder] = useState<string | undefined>(undefined);
 
   return (
     <Card>
       <CardHeader>
-        <ScenarioTableCardHeader
-          isEditing={isEditing}
-          onNewScenario={openNewScenarioWizard}
-          isEditingAllowed={riSc.scenarios.length > 0 && editingAllowed}
-          onToggleEdit={() =>
-            isEditing ? setIsEditing(false) : setIsEditing(true)
-          }
-        />
+        <ScenarioTableCardHeader />
       </CardHeader>
       <CardBody style={{ paddingTop: '24px' }}>
         {(veryOutdatedCount > 0 || outdatedCount > 0) && (
@@ -62,7 +57,19 @@ export function ScenarioTableCard({
           </Flex>
         ) : (
           <>
+            <ScenarioTableFilter
+              value={sortOrder}
+              onChange={setSortOrder}
+              isEditing={isEditing}
+              isEditingAllowed={riSc.scenarios.length > 0 && editingAllowed}
+              onNewScenario={openNewScenarioWizard}
+              onToggleEdit={() =>
+                isEditing ? setIsEditing(false) : setIsEditing(true)
+              }
+            />
+
             <ScenarioTable
+              sortOrder={sortOrder}
               isEditingAllowed={editingAllowed}
               isEditing={isEditing}
               riScWithMetadata={riScWithMetadata}

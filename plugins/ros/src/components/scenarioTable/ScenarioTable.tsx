@@ -12,8 +12,10 @@ import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Text, Grid } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
+import { ActionStatusOptions } from '../../utils/constants';
 
 type ScenarioTableProps = {
+  sortOrder?: string;
   isEditing: boolean;
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
@@ -27,6 +29,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
   const visibleType = props.visibleType;
+  const sortOrder = props.sortOrder;
 
   const { openScenarioDrawer } = useScenario();
 
@@ -76,21 +79,63 @@ export function ScenarioTable(props: ScenarioTableProps) {
     props.riScWithMetadata.lastPublished?.numberOfCommits ?? null;
 
   const displayScenarios = useMemo(() => {
-    if (!visibleType) return tempScenarios;
+    if (!tempScenarios) return [];
 
-    return tempScenarios.filter(scenario =>
-      scenario.actions.some(action => {
-        const daysSinceLastUpdate = action.lastUpdated
-          ? calculateDaysSince(new Date(action.lastUpdated))
-          : null;
-        const status = calculateUpdatedStatus(
-          daysSinceLastUpdate,
-          lastPublishedCommits,
+    const filtered = !visibleType
+      ? tempScenarios
+      : tempScenarios.filter(scenario =>
+          scenario.actions.some(action => {
+            const daysSinceLastUpdate = action.lastUpdated
+              ? calculateDaysSince(new Date(action.lastUpdated))
+              : null;
+            const status = calculateUpdatedStatus(
+              daysSinceLastUpdate,
+              lastPublishedCommits,
+            );
+            return status === visibleType;
+          }),
         );
-        return status === visibleType;
-      }),
-    );
-  }, [tempScenarios, visibleType, lastPublishedCommits]);
+
+    const sorted = [...filtered].sort((a, b) => {
+      switch (sortOrder) {
+        case 'title':
+          return a.title.localeCompare(b.title, 'en');
+
+        case 'initialRisk':
+          return (
+            b.risk.consequence * b.risk.probability -
+            a.risk.consequence * a.risk.probability
+          );
+
+        case 'implementedActions':
+          return (
+            b.actions.filter(status => status.status === ActionStatusOptions.OK)
+              .length -
+            a.actions.filter(status => status.status === ActionStatusOptions.OK)
+              .length
+          );
+
+        case 'remainingActions': {
+          const remainingA = a.actions.filter(
+            action =>
+              action.status !== ActionStatusOptions.OK &&
+              action.status !== ActionStatusOptions.NotRelevant,
+          ).length;
+          const remainingB = b.actions.filter(
+            action =>
+              action.status !== ActionStatusOptions.OK &&
+              action.status !== ActionStatusOptions.NotRelevant,
+          ).length;
+          return remainingB - remainingA;
+        }
+
+        default:
+          return 0;
+      }
+    });
+
+    return sorted;
+  }, [tempScenarios, visibleType, lastPublishedCommits, sortOrder]);
 
   return (
     <>
