@@ -58,7 +58,10 @@ function StatusIconWithText(props: StatusIconWithTextProps) {
       [UpdatedStatusEnum.VERY_OUTDATED]: 'ri-emotion-sad-line',
     };
 
-  if (props.numOfCommitsBehind && props.daysSinceLastModified) {
+  if (
+    props.numOfCommitsBehind !== null &&
+    props.daysSinceLastModified !== null
+  ) {
     return (
       <IconWithText
         remixIconClassString={
