@@ -239,6 +239,7 @@ function ConfigEncryptionDialog({
                     onClick={showAddPublicAgeKey}
                     style={{
                       width: 'fit-content',
+                      marginTop: '1rem',
                     }}
                   >
                     {t('sopsConfigDialog.addPublicAgeKey')}
