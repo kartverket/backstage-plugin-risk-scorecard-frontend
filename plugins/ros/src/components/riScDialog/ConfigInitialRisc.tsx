@@ -16,6 +16,8 @@ type RadioOptionProps = {
   label: string;
   description?: string;
   active?: boolean;
+  numActions: number | null;
+  numScenarios: number | null;
 };
 
 const RadioOption = ({
@@ -23,31 +25,56 @@ const RadioOption = ({
   label,
   description,
   active = true,
+  numActions,
+  numScenarios,
 }: RadioOptionProps) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const style = {
+    fontSize: '12px',
+    border: `1px solid ${active ? '#757575' : '#212121'}`,
+    borderRadius: '24px',
+    padding: '2px 8px',
+  };
+
   return (
     <>
-      <Flex align="center" pt="2">
+      <Flex
+        direction="column"
+        align="start"
+        p="12px 16px"
+        gap="2"
+        style={{ backgroundColor: '#F8F8F8', borderRadius: '8px' }}
+      >
         <Radio value={value}>
           <Text
+            weight="bold"
             as="h5"
-            variant="body-medium"
+            variant="body-large"
             color={active ? 'secondary' : 'primary'}
           >
             {label}
           </Text>
+          <Flex gap="8px">
+            <Text color={active ? 'secondary' : 'primary'} style={style}>
+              {numActions} {t('dictionary.measuresInitialRiSc')}
+            </Text>
+            <Text color={active ? 'secondary' : 'primary'} style={style}>
+              {numScenarios} {t('dictionary.scenarios')}
+            </Text>
+          </Flex>
         </Radio>
+        {description && (
+          <Flex ml="6">
+            <Text
+              as="p"
+              variant="body-large"
+              color={active ? 'secondary' : 'primary'}
+            >
+              {description}
+            </Text>
+          </Flex>
+        )}
       </Flex>
-      {description && (
-        <Flex ml="6">
-          <Text
-            as="p"
-            variant="body-small"
-            color={active ? 'secondary' : 'primary'}
-          >
-            {description}
-          </Text>
-        </Flex>
-      )}
     </>
   );
 };
@@ -111,10 +138,10 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
 
   return (
     <>
-      <Divider />
+      <Divider sx={{ margin: '16px' }} />
       {props.dialogState === RiScDialogStates.Create && (
         <>
-          <Box mt="4">
+          <Box>
             <Box mb="4">
               <Text variant="title-small" as="h6" weight="bold">
                 {t('rosDialog.initialRiscTitle')}{' '}
@@ -136,6 +163,13 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
                 </Box>
                 <Flex direction="column" justify="between" mt="2" gap="2">
                   <Text
+                    weight="bold"
+                    as="p"
+                    color={!props.switchOn ? 'secondary' : 'primary'}
+                  >
+                    {t('rosDialog.applicationType')}
+                  </Text>
+                  <Text
                     variant="body-medium"
                     color={!props.switchOn ? 'secondary' : 'primary'}
                   >
@@ -156,6 +190,8 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
                           label={descriptor.listName}
                           description={descriptor.listDescription}
                           active={!props.switchOn}
+                          numActions={descriptor.numberOfActions}
+                          numScenarios={descriptor.numberOfScenarios}
                         />
                       ),
                     )}

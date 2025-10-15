@@ -164,7 +164,10 @@ export function ActionsCard(props: ActionsCardProps) {
                   </IconButton>
                   <div>
                     <span style={getUpdatedStatusStyle(action.updatedStatus)}>
-                      <Text as="p" style={{ padding: '0 8px' }}>
+                      <Text
+                        as="p"
+                        style={{ padding: '0 8px', color: 'var(--bui-black)' }}
+                      >
                         {action.updatedStatus ===
                         UpdatedStatusEnum.VERY_OUTDATED
                           ? t('rosStatus.veryOutdated')

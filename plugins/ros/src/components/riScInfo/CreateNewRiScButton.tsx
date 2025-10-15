@@ -14,7 +14,6 @@ export function CreateNewRiScButton(props: CreateNewRiScButtonProps) {
       variant="secondary"
       onClick={props.onCreateNew}
       style={{
-        color: '#2E7D32', // Green color from MUI, change when BUI is more mature
         width: 'fit-content',
       }}
     >

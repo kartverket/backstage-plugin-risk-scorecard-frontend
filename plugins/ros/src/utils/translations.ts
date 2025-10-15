@@ -54,6 +54,7 @@ export const pluginRiScMessages = {
     integrity: 'Integrity',
     measure: 'Action', // Measure, Action or Initiative
     measures: 'Actions', // Measure, Action or Initiative
+    measuresInitialRiSc: 'actions',
     measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
     next: 'Next',
     planned: 'Planned',
@@ -76,6 +77,7 @@ export const pluginRiScMessages = {
     vulnerabilities: 'Vulnerabilities',
     showOnlyRelevant: 'Show only relevant',
     noRelevantMeasures: 'No relevant actions',
+    scenarios: 'scenarios',
   },
   encryption: {
     title: 'Encryption',
@@ -317,7 +319,7 @@ export const pluginRiScMessages = {
     generateDefault: 'Default',
     stepRiscDetails: 'Risk Scorecard Details',
     stepEncryption: 'Configure Encryption',
-    initialRiscTitle: 'Predefined Risk Scorecard (optional)',
+    initialRiscTitle: 'Predefined Risk Scorecard',
     initialRiscScopeDescription:
       'Do you want to generate a RoS with predefined scenarios and actions?',
     initialRiscApplicationType: 'What type of application do you have?',
@@ -328,6 +330,7 @@ export const pluginRiScMessages = {
     generateStandardRiScDescription:
       'This RoS is generated from information about the codebase in kartverket.dec, security metrics and security controllers.',
     noInitialRiScFound: 'No default RoS is currently available.',
+    applicationType: 'Choose application type',
   },
   sopsConfigDialog: {
     title: 'Encryption',
@@ -681,6 +684,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.vulnerabilities': 'Sårbarheter',
           'dictionary.showOnlyRelevant': 'Vis kun relevante',
           'dictionary.noRelevantMeasures': 'Ingen relevante tiltak',
+          'dictionary.scenarios': 'scenarioer',
+          'dictionary.measuresInitialRiSc': 'tiltak',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
@@ -916,8 +921,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.fromScratch': 'Tom',
           'rosDialog.generateDefault': 'Initiell',
           'rosDialog.stepRiscDetails': 'RoS-detaljer',
-          'rosDialog.initialRiscTitle': 'Forhåndsdefinert RoS (valgfritt)',
+          'rosDialog.initialRiscTitle': 'Forhåndsdefinert RoS',
           'rosDialog.stepEncryption': 'Konfigurer kryptering',
+          'rosDialog.applicationType': 'Velg type applikasjon',
           'sopsConfigDialog.title': 'Kryptering',
           'sopsConfigDialog.writeLocalRiscSuffix':
             'for å lære mer om å skrive kodenær RoS lokalt.',
