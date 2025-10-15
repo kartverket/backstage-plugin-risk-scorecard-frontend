@@ -34,7 +34,8 @@ export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
   return (
     <Box
       style={{
-        backgroundColor: theme.palette.mode === 'dark' ? '#FCEBCD' : '#FCEBCD',
+        backgroundColor:
+          theme.palette.mode === 'dark' ? 'var(--bui-gray-5)' : '#FCEBCD',
         padding: '8px 16px',
       }}
     >

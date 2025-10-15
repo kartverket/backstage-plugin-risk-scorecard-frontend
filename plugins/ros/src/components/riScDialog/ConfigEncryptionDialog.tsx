@@ -235,12 +235,11 @@ function ConfigEncryptionDialog({
                   <Button
                     iconStart={<AddCircle />}
                     type="button"
-                    variant="tertiary"
+                    variant="secondary"
                     onClick={showAddPublicAgeKey}
                     style={{
-                      maxWidth: 150,
+                      width: 'fit-content',
                       marginTop: '1rem',
-                      color: '#1f5493',
                     }}
                   >
                     {t('sopsConfigDialog.addPublicAgeKey')}
