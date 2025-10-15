@@ -54,17 +54,19 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
         {sublabel && (
           <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
         )}
-        <MDEditor
-          ref={ref}
-          value={markdownContent}
-          onChange={handleMarkdownChange}
-          preview="edit"
-          height={minRows ? minRows * 24 : 64}
-          style={{
-            color: commonTextColor(theme, disabled),
-            backgroundColor: commonBackgroundColor(theme, disabled),
-          }}
-        />
+        <div data-color-mode={theme.palette.mode}>
+          <MDEditor
+            ref={ref}
+            value={markdownContent}
+            onChange={handleMarkdownChange}
+            preview="edit"
+            height={minRows ? minRows * 24 : 64}
+            style={{
+              color: commonTextColor(theme, disabled),
+              backgroundColor: commonBackgroundColor(theme, disabled),
+            }}
+          />
+        </div>
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
     );
