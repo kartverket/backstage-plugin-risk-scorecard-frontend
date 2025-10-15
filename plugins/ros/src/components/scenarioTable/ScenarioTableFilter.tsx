@@ -32,10 +32,13 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
             props.onChange(key?.toString() ?? undefined)
           }
           options={[
-            { value: 'title', label: 'Tittel (a-å)' },
-            { value: 'initialRisk', label: 'Start risiko (høy-lav)' },
-            { value: 'implementedActions', label: 'Flest gjennomførte tiltak' },
-            { value: 'remainingActions', label: 'Flest gjennstående tiltak' },
+            { value: 'title', label: t('filter.title') },
+            { value: 'initialRisk', label: t('filter.initialRisk') },
+            {
+              value: 'implementedActions',
+              label: t('filter.completedActions'),
+            },
+            { value: 'remainingActions', label: t('filter.remainingActions') },
           ]}
         />
       </Box>
