@@ -29,7 +29,7 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
           selectedKey={props.value ?? ''}
           onSelectionChange={key => props.onChange(key?.toString() ?? null)}
           options={[
-            { value: '', label: 'Egendefinert rekkefølge' },
+            { value: '', label: t('dictionary.customOrder') },
             { value: 'title', label: t('filter.title') },
             { value: 'initialRisk', label: t('filter.initialRisk') },
             {
