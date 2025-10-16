@@ -43,26 +43,28 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
       {props.isEditingAllowed && (
         <Flex justify="end" align="center">
           <AddScenarioButton onNewScenario={props.onNewScenario} />
-          <TooltipTrigger>
-            <Button
-              iconStart={
-                props.isEditing ? (
-                  <i className="ri-checkbox-circle-line" />
-                ) : (
-                  <i className="ri-pencil-line" />
-                )
-              }
-              variant="secondary"
-              onClick={props.onToggleEdit}
-            >
-              {props.isEditing}
-            </Button>
-            <Tooltip>
-              {props.isEditing
-                ? t('scenarioTable.doneEditing')
-                : t('scenarioTable.editButton')}
-            </Tooltip>
-          </TooltipTrigger>
+          {(props.value ?? '') === '' && (
+            <TooltipTrigger>
+              <Button
+                iconStart={
+                  props.isEditing ? (
+                    <i className="ri-checkbox-circle-line" />
+                  ) : (
+                    <i className="ri-pencil-line" />
+                  )
+                }
+                variant="secondary"
+                onClick={props.onToggleEdit}
+              >
+                {props.isEditing}
+              </Button>
+              <Tooltip>
+                {props.isEditing
+                  ? t('scenarioTable.doneEditing')
+                  : t('scenarioTable.editButton')}
+              </Tooltip>
+            </TooltipTrigger>
+          )}
         </Flex>
       )}
     </Flex>
