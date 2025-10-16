@@ -48,7 +48,7 @@ export function ScenarioTableCard({
   function handleToggle(type: UpdatedStatusEnumType) {
     setVisibleType(prev => (prev === type ? null : type));
   }
-  const [sortOrder, setSortOrder] = useState<string | undefined>(undefined);
+  const [sortOrder, setSortOrder] = useState<string | null>(null);
 
   return (
     <Card>

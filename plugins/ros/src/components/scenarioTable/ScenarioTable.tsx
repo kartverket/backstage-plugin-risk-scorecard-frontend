@@ -2,20 +2,16 @@ import { useTableStyles } from './ScenarioTableStyles.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
-import { useEffect, useMemo, useState } from 'react';
-import {
-  calculateDaysSince,
-  calculateUpdatedStatus,
-} from '../../utils/utilityfunctions.ts';
+import { useEffect, useState } from 'react';
+import { useDisplayScenarios } from '../../utils/hooks.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Text, Grid } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
-import { ActionStatusOptions } from '../../utils/constants';
 
 type ScenarioTableProps = {
-  sortOrder?: string;
+  sortOrder?: string | null;
   isEditing: boolean;
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
@@ -78,64 +74,12 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const lastPublishedCommits =
     props.riScWithMetadata.lastPublished?.numberOfCommits ?? null;
 
-  const displayScenarios = useMemo(() => {
-    if (!tempScenarios) return [];
-
-    const filtered = !visibleType
-      ? tempScenarios
-      : tempScenarios.filter(scenario =>
-          scenario.actions.some(action => {
-            const daysSinceLastUpdate = action.lastUpdated
-              ? calculateDaysSince(new Date(action.lastUpdated))
-              : null;
-            const status = calculateUpdatedStatus(
-              daysSinceLastUpdate,
-              lastPublishedCommits,
-            );
-            return status === visibleType;
-          }),
-        );
-
-    const sorted = [...filtered].sort((a, b) => {
-      switch (sortOrder) {
-        case 'title':
-          return a.title.localeCompare(b.title, 'en');
-
-        case 'initialRisk':
-          return (
-            b.risk.consequence * b.risk.probability -
-            a.risk.consequence * a.risk.probability
-          );
-
-        case 'implementedActions':
-          return (
-            b.actions.filter(status => status.status === ActionStatusOptions.OK)
-              .length -
-            a.actions.filter(status => status.status === ActionStatusOptions.OK)
-              .length
-          );
-
-        case 'remainingActions': {
-          const remainingA = a.actions.filter(
-            action =>
-              action.status !== ActionStatusOptions.OK &&
-              action.status !== ActionStatusOptions.NotRelevant,
-          ).length;
-          const remainingB = b.actions.filter(
-            action =>
-              action.status !== ActionStatusOptions.OK &&
-              action.status !== ActionStatusOptions.NotRelevant,
-          ).length;
-          return remainingB - remainingA;
-        }
-
-        default:
-          return 0;
-      }
-    });
-
-    return sorted;
-  }, [tempScenarios, visibleType, lastPublishedCommits, sortOrder]);
+  const displayScenarios: RiSc['scenarios'] = useDisplayScenarios(
+    tempScenarios,
+    visibleType,
+    lastPublishedCommits,
+    sortOrder ?? undefined,
+  );
 
   return (
     <>

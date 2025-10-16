@@ -11,8 +11,8 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 
 type ScenarioTableFilterProps = {
-  value: string | undefined;
-  onChange: (sortOrder: string | undefined) => void;
+  value: string | null;
+  onChange: (sortOrder: string | null) => void;
   isEditing: boolean;
   isEditingAllowed: boolean;
   onNewScenario: () => void;
@@ -26,12 +26,10 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
       <Box style={{ width: '210px' }}>
         <Select
           aria-label="sortering"
-          placeholder="Sorter scenarioer"
-          selectedKey={props.value}
-          onSelectionChange={key =>
-            props.onChange(key?.toString() ?? undefined)
-          }
+          selectedKey={props.value ?? ''}
+          onSelectionChange={key => props.onChange(key?.toString() ?? null)}
           options={[
+            { value: '', label: 'Egendefinert rekkefølge' },
             { value: 'title', label: t('filter.title') },
             { value: 'initialRisk', label: t('filter.initialRisk') },
             {
