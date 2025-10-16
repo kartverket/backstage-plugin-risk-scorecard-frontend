@@ -10,6 +10,7 @@ import {
 } from '../../utils/types.ts';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 import { UseFormSetValue } from 'react-hook-form/dist/types/form';
+import { useTheme } from '@mui/material/styles';
 
 type RadioOptionProps = {
   value: string;
@@ -29,9 +30,10 @@ const RadioOption = ({
   numScenarios,
 }: RadioOptionProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const theme = useTheme();
   const style = {
     fontSize: '12px',
-    border: `1px solid ${active ? '#757575' : '#212121'}`,
+    border: `1px solid ${active ? 'var(--bui-gray-6)' : 'var(--bui-gray-8)'}`,
     borderRadius: '24px',
     padding: '2px 8px',
   };
@@ -43,7 +45,13 @@ const RadioOption = ({
         align="start"
         p="12px 16px"
         gap="2"
-        style={{ backgroundColor: '#F8F8F8', borderRadius: '8px' }}
+        style={{
+          backgroundColor:
+            theme.palette.mode === 'dark'
+              ? 'var(--bui-gray-5)'
+              : 'var(--bui-gray-2)',
+          borderRadius: '8px',
+        }}
       >
         <Radio value={value}>
           <Text
