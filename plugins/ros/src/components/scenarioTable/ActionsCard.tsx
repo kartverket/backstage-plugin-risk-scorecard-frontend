@@ -114,9 +114,6 @@ export function ActionsCard(props: ActionsCardProps) {
     const base: React.CSSProperties = {
       padding: '4px 0',
       borderRadius: '24px',
-      display: 'inline-block',
-      fontWeight: 600,
-      marginBottom: '6px',
     };
 
     if (status === UpdatedStatusEnum.VERY_OUTDATED) {
@@ -140,8 +137,11 @@ export function ActionsCard(props: ActionsCardProps) {
 
   return (
     <>
-      <Divider sx={{ marginBottom: '8px' }} />
+      <Divider sx={{ marginBottom: '16px' }} />
       {filteredData.map((action, idx) => {
+        const isPending =
+          pendingUpdatedIDs.includes(action.ID) ||
+          !!pendingLastUpdatedById[action.ID];
         const isExpanded = isActionExpanded(action.ID);
         const isLast = idx === filteredData.length - 1;
 
@@ -162,90 +162,107 @@ export function ActionsCard(props: ActionsCardProps) {
                       <i className="ri-arrow-down-s-line" />
                     )}
                   </IconButton>
-                  <div>
-                    <span style={getUpdatedStatusStyle(action.updatedStatus)}>
-                      <Text
-                        as="p"
-                        style={{ padding: '0 8px', color: 'var(--bui-black)' }}
+                  <Flex direction="column" align="start">
+                    {!isPending && (
+                      <span
+                        style={{
+                          ...getUpdatedStatusStyle(action.updatedStatus),
+                        }}
                       >
-                        {action.updatedStatus ===
-                        UpdatedStatusEnum.VERY_OUTDATED
-                          ? t('rosStatus.veryOutdated')
-                          : t('rosStatus.outdated')}
-                      </Text>
-                    </span>
-                    <br />
+                        <Text
+                          as="p"
+                          style={{
+                            padding: '0 8px',
+                            color: 'var(--bui-black)',
+                          }}
+                        >
+                          {action.updatedStatus ===
+                          UpdatedStatusEnum.VERY_OUTDATED
+                            ? t('rosStatus.veryOutdated')
+                            : t('rosStatus.outdated')}
+                        </Text>
+                      </span>
+                    )}
                     <Text as="p" variant="body-large">
                       {action.title}
                     </Text>
-                  </div>
+                  </Flex>
                 </Flex>
               </Grid.Item>
               <Grid.Item colSpan="1">
-                <DualButtonWithMenu
-                  propsCommon={{
-                    color: getActionStatusColor(
-                      (pendingStatusById[action.ID] ?? action.status) as any,
-                    ),
-                    style: getActionStatusStyle(
-                      (pendingStatusById[action.ID] ?? action.status) as any,
-                    ),
-                  }}
-                  propsLeft={{
-                    // @ts-ignore: mapping dynamic keys for translations
-                    children: t(
-                      actionStatusOptionsToTranslationKeys[
-                        (pendingStatusById[action.ID] ??
-                          action.status) as ActionStatusOptions
-                      ],
-                    ),
-                  }}
-                  propsRight={{
-                    startIcon: <Cached />,
-                    sx: { padding: '0 0 0 10px', minWidth: '30px' },
-                    onClick: () => {
-                      setPendingLastUpdatedById(prev => ({
-                        ...prev,
-                        [action.ID]: new Date(),
-                      }));
-                      setPendingUpdatedIDs(prev =>
-                        prev.includes(action.ID) ? prev : [...prev, action.ID],
-                      );
-                    },
-                  }}
-                  menuItems={Object.values(ActionStatusOptions).map(value => ({
-                    key: value,
-                    // @ts-ignore: mapping dynamic keys for translations
-                    label: t(
-                      actionStatusOptionsToTranslationKeys[
-                        value as ActionStatusOptions
-                      ],
-                    ),
-                    onClick: () =>
-                      handleStatusChange(
-                        action.ID,
-                        value as ActionStatusOptions,
+                <Flex direction="column" align="end" pt="2">
+                  <DualButtonWithMenu
+                    propsCommon={{
+                      color: getActionStatusColor(
+                        (pendingStatusById[action.ID] ?? action.status) as any,
                       ),
-                    selected:
-                      value === (pendingStatusById[action.ID] ?? action.status),
-                  }))}
-                />
+                      style: getActionStatusStyle(
+                        (pendingStatusById[action.ID] ?? action.status) as any,
+                      ),
+                    }}
+                    propsLeft={{
+                      // @ts-ignore: mapping dynamic keys for translations
+                      children: t(
+                        actionStatusOptionsToTranslationKeys[
+                          (pendingStatusById[action.ID] ??
+                            action.status) as ActionStatusOptions
+                        ],
+                      ),
+                    }}
+                    propsRight={{
+                      startIcon: <Cached />,
+                      sx: { padding: '0 0 0 10px', minWidth: '30px' },
+                      onClick: () => {
+                        setPendingLastUpdatedById(prev => ({
+                          ...prev,
+                          [action.ID]: new Date(),
+                        }));
+                        setPendingUpdatedIDs(prev =>
+                          prev.includes(action.ID)
+                            ? prev
+                            : [...prev, action.ID],
+                        );
+                      },
+                    }}
+                    menuItems={Object.values(ActionStatusOptions).map(
+                      value => ({
+                        key: value,
+                        // @ts-ignore: mapping dynamic keys for translations
+                        label: t(
+                          actionStatusOptionsToTranslationKeys[
+                            value as ActionStatusOptions
+                          ],
+                        ),
+                        onClick: () =>
+                          handleStatusChange(
+                            action.ID,
+                            value as ActionStatusOptions,
+                          ),
+                        selected:
+                          value ===
+                          (pendingStatusById[action.ID] ?? action.status),
+                      }),
+                    )}
+                  />
+                </Flex>
               </Grid.Item>
               <Grid.Item colSpan="1">
-                {t('scenarioDrawer.action.lastUpdated')}
-                <br />
-                {(() => {
-                  const last =
-                    pendingLastUpdatedById[action.ID] ?? action.lastUpdated;
-                  return last
-                    ? formatDate(last)
-                    : t('scenarioDrawer.action.notUpdated');
-                })()}
+                <Flex align="center" justify="center" pt="2">
+                  {t('scenarioDrawer.action.lastUpdated')}
+                  <br />
+                  {(() => {
+                    const last =
+                      pendingLastUpdatedById[action.ID] ?? action.lastUpdated;
+                    return last
+                      ? formatDate(last)
+                      : t('scenarioDrawer.action.notUpdated');
+                  })()}
+                </Flex>
               </Grid.Item>
             </Grid.Root>
 
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <Box ml="48px" mt="1" mb="1">
+              <Box ml="48px" mt="4" mb="2">
                 <Text
                   as="p"
                   variant="body-large"
@@ -292,7 +309,7 @@ export function ActionsCard(props: ActionsCardProps) {
                 </Box>
               </Box>
             </Collapse>
-            {!isLast && <Divider sx={{ my: 1 }} />}
+            {!isLast && <Divider sx={{ my: 2 }} />}
           </div>
         );
       })}
