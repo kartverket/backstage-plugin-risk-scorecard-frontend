@@ -5,6 +5,7 @@ import {
   Button,
   TooltipTrigger,
   Tooltip,
+  SearchField,
 } from '@backstage/ui';
 import { AddScenarioButton } from './AddScenarioButton.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -17,12 +18,20 @@ type ScenarioTableFilterProps = {
   isEditingAllowed: boolean;
   onNewScenario: () => void;
   onToggleEdit: () => void;
+  searchQuery: string;
+  onSearchQueryChange: (query: string) => void;
 };
 
 export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <Flex justify="end" my="2">
+    <Flex justify="start" my="2">
+      <SearchField
+        placeholder="Søk etter tiltak ..."
+        value={props.searchQuery}
+        onChange={value => props.onSearchQueryChange(value)}
+        style={{ width: '440px' }}
+      />
       <Box style={{ width: '210px' }}>
         <Select
           aria-label="sortering"

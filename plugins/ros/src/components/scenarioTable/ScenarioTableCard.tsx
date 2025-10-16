@@ -50,6 +50,8 @@ export function ScenarioTableCard({
   }
   const [sortOrder, setSortOrder] = useState<string | null>(null);
 
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
   return (
     <Card>
       <CardHeader>
@@ -79,6 +81,8 @@ export function ScenarioTableCard({
               onToggleEdit={() =>
                 isEditing ? setIsEditing(false) : setIsEditing(true)
               }
+              searchQuery={searchQuery}
+              onSearchQueryChange={setSearchQuery}
             />
 
             <ScenarioTable
@@ -87,6 +91,7 @@ export function ScenarioTableCard({
               isEditing={isEditing}
               riScWithMetadata={riScWithMetadata}
               visibleType={visibleType}
+              searchQuery={searchQuery}
             />
           </>
         )}

@@ -16,6 +16,7 @@ type ScenarioTableProps = {
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
   visibleType: UpdatedStatusEnumType | null;
+  searchQuery: string;
 };
 
 export function ScenarioTable(props: ScenarioTableProps) {
