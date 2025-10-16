@@ -81,10 +81,19 @@ export function ScenarioTable(props: ScenarioTableProps) {
     sortOrder ?? undefined,
   );
 
+  const allowDrag = (sortOrder ?? '') === '';
+
+  let columnCount = 7;
+  if (props.isEditing) {
+    columnCount = allowDrag ? 9 : 8;
+  }
+
   return (
     <>
-      <Grid.Root columns={`${props.isEditing ? 9 : 7}`} pt="40px" pb="16px">
-        {props.isEditing && <Grid.Item className={tableCellDragIcon} />}
+      <Grid.Root columns={`${columnCount}`} pt="40px" pb="16px">
+        {props.isEditing && allowDrag && (
+          <Grid.Item className={tableCellDragIcon} />
+        )}
         <Grid.Item colSpan="3">
           <Text weight="bold" variant="body-large">
             {t('dictionary.title')}
@@ -119,6 +128,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
           moveRowFinal={moveRowFinal}
           moveRowLocal={moveRowLocal}
           isEditing={props.isEditing}
+          allowDrag={allowDrag}
         />
       ))}
     </>
