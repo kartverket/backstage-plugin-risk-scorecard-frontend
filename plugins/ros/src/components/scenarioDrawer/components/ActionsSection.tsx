@@ -1,5 +1,5 @@
 import { ActionBox } from './ActionBox';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
@@ -16,6 +16,7 @@ import { ActionStatusOptions } from '../../../utils/constants';
 import Switch from '@mui/material/Switch';
 import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
 import { Text } from '@backstage/ui';
+import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -46,20 +47,7 @@ export function ActionsSection({
     { action: Action; originalIndex: number }[]
   >([]);
 
-  const sortActionsByRelevance = useCallback((actions: Action[]) => {
-    return [...actions].sort((a, b) => {
-      const aIsNotRelevant = a.status === ActionStatusOptions.NotRelevant;
-      const bIsNotRelevant = b.status === ActionStatusOptions.NotRelevant;
-
-      if (aIsNotRelevant && !bIsNotRelevant) {
-        return 1;
-      }
-      if (!aIsNotRelevant && bIsNotRelevant) {
-        return -1;
-      }
-      return 0;
-    });
-  }, []);
+  const sortActionsByRelevance = useSortActionsByRelevance();
 
   useEffect(() => {
     if (isDrawerOpen && currentActions?.length) {
