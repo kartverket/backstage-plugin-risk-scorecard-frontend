@@ -24,28 +24,6 @@ type ActionSectionProps = {
   setCurrentUpdatedActionIDs: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-const RelevanceToggle = ({
-  checked,
-  onChange,
-}: {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}) => {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Switch
-        checked={checked}
-        onChange={e => onChange(e.target.checked)}
-        name="showOnlyRelevant"
-        color="primary"
-      />
-      <Text variant="body-medium">{t('dictionary.showOnlyRelevant')}</Text>
-    </Box>
-  );
-};
-
 export function ActionsSection({
   formMethods,
   isEditing,
@@ -192,3 +170,25 @@ export function ActionsSection({
     </Paper>
   );
 }
+
+const RelevanceToggle = ({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Switch
+        checked={checked}
+        onChange={e => onChange(e.target.checked)}
+        name="showOnlyRelevant"
+        color="primary"
+      />
+      <Text variant="body-medium">{t('dictionary.showOnlyRelevant')}</Text>
+    </Box>
+  );
+};
