@@ -6,7 +6,7 @@ _Beskriv kort hva som er endret og gjerne legg ved link til Notion oppgave._
 ## 📸 Skjermbilder (valgfritt)
 _Legg til skjermbilder eller GIF-er som viser endringene visuelt (spesielt ved UI-endringer)._
 
-___
+---
 
 ## ✅ Sjekkliste
 
