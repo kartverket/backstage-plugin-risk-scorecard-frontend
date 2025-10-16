@@ -35,7 +35,7 @@ export function ActionsSection({
   const { isDrawerOpen } = useScenario();
 
   const { control, watch } = formMethods;
-  const { fields, append, remove } = useFieldArray({
+  const { remove } = useFieldArray({
     control,
     name: 'actions',
   });
@@ -84,33 +84,7 @@ export function ActionsSection({
   );
 
   if (isEditing) {
-    return (
-      <Paper sx={section}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Text variant="title-x-small" weight="bold">
-            {t('dictionary.measure')}
-          </Text>
-          <Button
-            startIcon={<AddCircle />}
-            color="primary"
-            onClick={() => append(emptyAction())}
-          >
-            {t('scenarioDrawer.measureTab.addMeasureButton')}
-          </Button>
-        </Box>
-        {fields.map((field, index) => (
-          <Fragment key={field.id}>
-            <Divider variant="fullWidth" />
-            <ActionFormItem
-              key={index}
-              formMethods={formMethods}
-              index={index}
-              remove={remove}
-            />
-          </Fragment>
-        ))}
-      </Paper>
-    );
+    return <ActionsSectionOnEdit formMethods={formMethods} />;
   }
 
   return (
@@ -155,6 +129,48 @@ export function ActionsSection({
             : t('dictionary.noRelevantMeasures')}
         </Text>
       )}
+    </Paper>
+  );
+}
+
+type ActionsSectionOnEditProps = {
+  formMethods: UseFormReturn<FormScenario>;
+};
+
+function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const { control } = props.formMethods;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'actions',
+  });
+
+  return (
+    <Paper sx={section}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Text variant="title-x-small" weight="bold">
+          {t('dictionary.measure')}
+        </Text>
+        <Button
+          startIcon={<AddCircle />}
+          color="primary"
+          onClick={() => append(emptyAction())}
+        >
+          {t('scenarioDrawer.measureTab.addMeasureButton')}
+        </Button>
+      </Box>
+      {fields.map((field, index) => (
+        <Fragment key={field.id}>
+          <Divider variant="fullWidth" />
+          <ActionFormItem
+            key={index}
+            formMethods={props.formMethods}
+            index={index}
+            remove={remove}
+          />
+        </Fragment>
+      ))}
     </Paper>
   );
 }
