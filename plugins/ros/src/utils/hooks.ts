@@ -526,3 +526,19 @@ export const useDisplayScenarios: UseDisplayScenarios = (
     return sorted;
   }, [tempScenarios, visibleType, lastPublishedCommits, sortOrder]);
 };
+
+export function useSearchActions(
+  scenarios: RiSc['scenarios'],
+  searchQuery: string,
+) {
+  return useMemo(() => {
+    if (!searchQuery) return scenarios;
+
+    const query = searchQuery.toLowerCase();
+    return scenarios.filter(scenario => {
+      return scenario.actions?.some(action =>
+        action.title.toLowerCase().includes(query),
+      );
+    });
+  }, [scenarios, searchQuery]);
+}
