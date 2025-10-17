@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
+import { emptyAction } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
 import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
@@ -12,10 +12,10 @@ import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
-import { ActionStatusOptions } from '../../../utils/constants';
 import Switch from '@mui/material/Switch';
 import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
 import { Text } from '@backstage/ui';
+import { ActionStatusOptions } from '../../../utils/constants.ts';
 import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
 
 type ActionSectionProps = {
@@ -32,7 +32,6 @@ export function ActionsSection({
   setCurrentUpdatedActionIDs,
 }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { isDrawerOpen } = useScenario();
 
   const { control, watch } = formMethods;
   const { remove } = useFieldArray({
@@ -41,47 +40,27 @@ export function ActionsSection({
   });
 
   const currentActions = watch('actions');
+  let [sortedAndFilteredActions, setSortedAndFilteredActions] = useState<
+    Action[] | undefined
+  >(undefined);
 
   const { actionFilters, saveOnlyRelevantFilter } = useActionFiltersStorage();
-  const [processedActions, setProcessedActions] = useState<
-    { action: Action; originalIndex: number }[]
-  >([]);
-
   const sortActionsByRelevance = useSortActionsByRelevance();
 
   useEffect(() => {
-    if (isDrawerOpen && currentActions?.length) {
-      const sorted = sortActionsByRelevance(currentActions);
-
-      setProcessedActions(
-        sorted.map(action => ({
-          action,
-          originalIndex: currentActions.findIndex(a => a.ID === action.ID),
-        })),
-      );
+    if (sortedAndFilteredActions === undefined) {
+      setSortedAndFilteredActions(sortActionsByRelevance([...currentActions]));
+    } else {
+      let newArray: Action[] = [];
+      for (const t of sortedAndFilteredActions) {
+        let updatedAction = currentActions.find(
+          updatedAction => updatedAction.ID === t.ID,
+        );
+        if (updatedAction) newArray.push(updatedAction);
+      }
+      setSortedAndFilteredActions(newArray);
     }
-    // ESLint-ignore: only sort when drawer opens
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDrawerOpen, sortActionsByRelevance]);
-
-  useEffect(() => {
-    if (isDrawerOpen && processedActions.length) {
-      setProcessedActions(prev =>
-        prev.map(({ action, originalIndex }) => {
-          const updated = currentActions.find(a => a.ID === action.ID);
-          return updated
-            ? { action: updated, originalIndex }
-            : { action, originalIndex };
-        }),
-      );
-    }
-  }, [isDrawerOpen, currentActions, processedActions.length]);
-
-  const visibleActions = processedActions.filter(({ action }) =>
-    actionFilters.showOnlyRelevant
-      ? action.status !== ActionStatusOptions.NotRelevant
-      : true,
-  );
+  }, [currentActions, actionFilters, sortActionsByRelevance]);
 
   if (isEditing) {
     return <ActionsSectionOnEdit formMethods={formMethods} />;
@@ -106,20 +85,27 @@ export function ActionsSection({
           onChange={value => saveOnlyRelevantFilter(value)}
         />
       </Box>
-      {visibleActions.length > 0 ? (
-        visibleActions.map(({ action, originalIndex }) => (
-          <Fragment key={action.ID}>
-            <Divider />
-            <ActionBox
-              action={action}
-              index={originalIndex}
-              formMethods={formMethods}
-              remove={remove}
-              onSubmit={onSubmit}
-              setCurrentUpdatedActionIDs={setCurrentUpdatedActionIDs}
-            />
-          </Fragment>
-        ))
+      {sortedAndFilteredActions !== undefined &&
+      sortedAndFilteredActions.length > 0 ? (
+        sortedAndFilteredActions
+          .filter(action =>
+            actionFilters.showOnlyRelevant
+              ? action.status !== ActionStatusOptions.NotRelevant
+              : true,
+          )
+          .map(action => (
+            <Fragment key={action.ID}>
+              <Divider />
+              <ActionBox
+                action={action}
+                index={currentActions.findIndex(x => action.ID === x.ID)}
+                formMethods={formMethods}
+                remove={remove}
+                onSubmit={onSubmit}
+                setCurrentUpdatedActionIDs={setCurrentUpdatedActionIDs}
+              />
+            </Fragment>
+          ))
       ) : (
         <Text variant="body-large" style={{ fontStyle: 'italic' }}>
           {!currentActions || currentActions.length === 0
