@@ -611,12 +611,6 @@ export const pluginRiScMessages = {
     completedActions: 'Most completed actions',
     remainingActions: 'Most remaining actions',
   },
-  filter: {
-    title: 'Title (a-z)',
-    initialRisk: 'Initial risk (high-low)',
-    completedActions: 'Most completed actions',
-    remainingActions: 'Most remaining actions',
-  },
 } as const;
 
 export const pluginRiScTranslationRef = createTranslationRef({
@@ -1203,10 +1197,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'firstRiScCard.noRiScYet': 'Ingen RoS-analyser opprettet enda',
           'firstRiScCard.getStarted':
             'Kom igang med risiko- og sårbarhetsanalyse for ditt team',
-          'filter.title': 'Tittel (a-å)',
-          'filter.initialRisk': 'Startrisiko (høy-lav)',
-          'filter.completedActions': 'Flest fullførte tiltak',
-          'filter.remainingActions': 'Flest gjennværende tiltak',
           'filter.title': 'Tittel (a-å)',
           'filter.initialRisk': 'Startrisiko (høy-lav)',
           'filter.completedActions': 'Flest fullførte tiltak',
