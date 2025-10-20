@@ -70,16 +70,17 @@ export function ActionsSection({
   const sortActionsByRelevance = useSortActionsByRelevance();
 
   useEffect(() => {
-    if (sortedActions === undefined) {
-      setSortedActions(sortActionsByRelevance([...currentActions]));
-    } else {
+    setSortedActions(sortedActions => {
+      if (sortedActions === undefined)
+        return sortActionsByRelevance([...currentActions]);
+
       const updatedSortedActions: Action[] = [];
       for (const action of sortedActions) {
         const updatedAction = currentActions.find(a => a.ID === action.ID);
         if (updatedAction) updatedSortedActions.push(updatedAction);
       }
-      setSortedActions(updatedSortedActions);
-    }
+      return updatedSortedActions;
+    });
   }, [currentActions, actionFilters, sortActionsByRelevance]);
 
   if (isEditing) {
