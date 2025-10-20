@@ -74,10 +74,17 @@ export function ActionsSection({
       if (sortedActions === undefined)
         return sortActionsByRelevance([...currentActions]);
 
+      // sync actions
       const updatedSortedActions: Action[] = [];
       for (const action of sortedActions) {
         const updatedAction = currentActions.find(a => a.ID === action.ID);
         if (updatedAction) updatedSortedActions.push(updatedAction);
+      }
+      // add new actions
+      for (const action of currentActions) {
+        if (!updatedSortedActions.some(a => a.ID === action.ID)) {
+          updatedSortedActions.push(action);
+        }
       }
       return updatedSortedActions;
     });
