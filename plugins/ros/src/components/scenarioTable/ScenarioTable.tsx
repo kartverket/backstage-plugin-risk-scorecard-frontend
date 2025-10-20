@@ -83,11 +83,6 @@ export function ScenarioTable(props: ScenarioTableProps) {
 
   const allowDrag = (sortOrder ?? '') === '';
 
-  let columnCount = 7;
-  if (props.isEditing) {
-    columnCount = allowDrag ? 9 : 8;
-  }
-
   return (
     <>
       <Flex p=" 18px 24px" mt="40px">

@@ -119,11 +119,6 @@ export function ScenarioTableRow({
 
   preview(drop(ref));
 
-  let columnCount = 7;
-  if (isEditing) {
-    columnCount = allowDrag ? 9 : 8;
-  }
-
   return (
     <Card
       ref={ref}
