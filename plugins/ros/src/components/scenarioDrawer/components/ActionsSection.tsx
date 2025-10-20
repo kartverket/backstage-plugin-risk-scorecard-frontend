@@ -15,8 +15,8 @@ import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch';
 import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
 import { Text } from '@backstage/ui';
-import { ActionStatusOptions } from '../../../utils/constants.ts';
 import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
+import { filterActionsByRelevance } from '../../../utils/actions.ts';
 
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -40,25 +40,23 @@ export function ActionsSection({
   });
 
   const currentActions = watch('actions');
-  let [sortedAndFilteredActions, setSortedAndFilteredActions] = useState<
-    Action[] | undefined
-  >(undefined);
+  let [sortedActions, setSortedActions] = useState<Action[] | undefined>(
+    undefined,
+  );
 
   const { actionFilters, saveOnlyRelevantFilter } = useActionFiltersStorage();
   const sortActionsByRelevance = useSortActionsByRelevance();
 
   useEffect(() => {
-    if (sortedAndFilteredActions === undefined) {
-      setSortedAndFilteredActions(sortActionsByRelevance([...currentActions]));
+    if (sortedActions === undefined) {
+      setSortedActions(sortActionsByRelevance([...currentActions]));
     } else {
-      let newArray: Action[] = [];
-      for (const t of sortedAndFilteredActions) {
-        let updatedAction = currentActions.find(
-          updatedAction => updatedAction.ID === t.ID,
-        );
-        if (updatedAction) newArray.push(updatedAction);
+      let updatedSortedActions: Action[] = [];
+      for (const action of sortedActions) {
+        let updatedAction = currentActions.find(a => a.ID === action.ID);
+        if (updatedAction) updatedSortedActions.push(updatedAction);
       }
-      setSortedAndFilteredActions(newArray);
+      setSortedActions(updatedSortedActions);
     }
   }, [currentActions, actionFilters, sortActionsByRelevance]);
 
@@ -85,27 +83,23 @@ export function ActionsSection({
           onChange={value => saveOnlyRelevantFilter(value)}
         />
       </Box>
-      {sortedAndFilteredActions !== undefined &&
-      sortedAndFilteredActions.length > 0 ? (
-        sortedAndFilteredActions
-          .filter(action =>
-            actionFilters.showOnlyRelevant
-              ? action.status !== ActionStatusOptions.NotRelevant
-              : true,
-          )
-          .map(action => (
-            <Fragment key={action.ID}>
-              <Divider />
-              <ActionBox
-                action={action}
-                index={currentActions.findIndex(x => action.ID === x.ID)}
-                formMethods={formMethods}
-                remove={remove}
-                onSubmit={onSubmit}
-                setCurrentUpdatedActionIDs={setCurrentUpdatedActionIDs}
-              />
-            </Fragment>
-          ))
+      {sortedActions !== undefined && sortedActions.length > 0 ? (
+        filterActionsByRelevance(
+          sortedActions,
+          actionFilters.showOnlyRelevant,
+        ).map(action => (
+          <Fragment key={action.ID}>
+            <Divider />
+            <ActionBox
+              action={action}
+              index={currentActions.findIndex(x => action.ID === x.ID)}
+              formMethods={formMethods}
+              remove={remove}
+              onSubmit={onSubmit}
+              setCurrentUpdatedActionIDs={setCurrentUpdatedActionIDs}
+            />
+          </Fragment>
+        ))
       ) : (
         <Text variant="body-large" style={{ fontStyle: 'italic' }}>
           {!currentActions || currentActions.length === 0
