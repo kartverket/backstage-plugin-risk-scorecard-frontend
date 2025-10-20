@@ -7,7 +7,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { URLS } from '../urls';
 import {
   CreateRiScResultDTO,
@@ -20,7 +20,7 @@ import {
   riScToDTOString,
   DeleteRiScResultDTO,
 } from './DTOs';
-import { latestSupportedVersion } from './constants';
+import { ActionStatusOptions, latestSupportedVersion } from './constants';
 import {
   DefaultRiScType,
   DefaultRiScTypeDescriptor,
@@ -30,6 +30,11 @@ import {
   RiScWithMetadata,
   SubmitResponseObject,
 } from './types';
+import {
+  calculateDaysSince,
+  calculateUpdatedStatus,
+  UpdatedStatusEnumType,
+} from './utilityfunctions';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -449,3 +454,75 @@ export function useDebounce<T>(
   }, []);
   return { flush };
 }
+
+type UseDisplayScenarios = (
+  tempScenarios: RiSc['scenarios'] | null | undefined,
+  visibleType: UpdatedStatusEnumType | null,
+  lastPublishedCommits: number | null,
+  sortOrder?: string,
+) => RiSc['scenarios'];
+export const useDisplayScenarios: UseDisplayScenarios = (
+  tempScenarios,
+  visibleType,
+  lastPublishedCommits,
+  sortOrder,
+) => {
+  return useMemo(() => {
+    if (!tempScenarios) return [] as RiSc['scenarios'];
+
+    const filtered = !visibleType
+      ? tempScenarios
+      : tempScenarios.filter(scenario =>
+          scenario.actions.some(action => {
+            const daysSinceLastUpdate = action.lastUpdated
+              ? calculateDaysSince(new Date(action.lastUpdated))
+              : null;
+            const status = calculateUpdatedStatus(
+              daysSinceLastUpdate,
+              lastPublishedCommits,
+            );
+            return status === visibleType;
+          }),
+        );
+
+    const sorted = [...filtered].sort((a, b) => {
+      switch (sortOrder) {
+        case 'title':
+          return a.title.localeCompare(b.title, 'en');
+
+        case 'initialRisk':
+          return (
+            b.risk.consequence * b.risk.probability -
+            a.risk.consequence * a.risk.probability
+          );
+
+        case 'implementedActions':
+          return (
+            b.actions.filter(status => status.status === ActionStatusOptions.OK)
+              .length -
+            a.actions.filter(status => status.status === ActionStatusOptions.OK)
+              .length
+          );
+
+        case 'remainingActions': {
+          const remainingA = a.actions.filter(
+            action =>
+              action.status !== ActionStatusOptions.OK &&
+              action.status !== ActionStatusOptions.NotRelevant,
+          ).length;
+          const remainingB = b.actions.filter(
+            action =>
+              action.status !== ActionStatusOptions.OK &&
+              action.status !== ActionStatusOptions.NotRelevant,
+          ).length;
+          return remainingB - remainingA;
+        }
+
+        default:
+          return 0;
+      }
+    });
+
+    return sorted;
+  }, [tempScenarios, visibleType, lastPublishedCommits, sortOrder]);
+};
