@@ -70,13 +70,13 @@ export function ActionsSection({
   const sortActionsByRelevance = useSortActionsByRelevance();
 
   useEffect(() => {
-    setSortedActions(sortedActions => {
-      if (sortedActions === undefined)
+    setSortedActions(sortedActionsState => {
+      if (sortedActionsState === undefined)
         return sortActionsByRelevance([...currentActions]);
 
       // sync actions
       const updatedSortedActions: Action[] = [];
-      for (const action of sortedActions) {
+      for (const action of sortedActionsState) {
         const updatedAction = currentActions.find(a => a.ID === action.ID);
         if (updatedAction) updatedSortedActions.push(updatedAction);
       }
