@@ -18,6 +18,28 @@ import { Text } from '@backstage/ui';
 import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
 import { filterActionsByRelevance } from '../../../utils/actions.ts';
 
+const RelevanceToggle = ({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) => {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Switch
+        checked={checked}
+        onChange={e => onChange(e.target.checked)}
+        name="showOnlyRelevant"
+        color="primary"
+      />
+      <Text variant="body-medium">{t('dictionary.showOnlyRelevant')}</Text>
+    </Box>
+  );
+};
+
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
   isEditing: boolean;
@@ -40,7 +62,7 @@ export function ActionsSection({
   });
 
   const currentActions = watch('actions');
-  let [sortedActions, setSortedActions] = useState<Action[] | undefined>(
+  const [sortedActions, setSortedActions] = useState<Action[] | undefined>(
     undefined,
   );
 
@@ -51,9 +73,9 @@ export function ActionsSection({
     if (sortedActions === undefined) {
       setSortedActions(sortActionsByRelevance([...currentActions]));
     } else {
-      let updatedSortedActions: Action[] = [];
+      const updatedSortedActions: Action[] = [];
       for (const action of sortedActions) {
-        let updatedAction = currentActions.find(a => a.ID === action.ID);
+        const updatedAction = currentActions.find(a => a.ID === action.ID);
         if (updatedAction) updatedSortedActions.push(updatedAction);
       }
       setSortedActions(updatedSortedActions);
@@ -154,25 +176,3 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
     </Paper>
   );
 }
-
-const RelevanceToggle = ({
-  checked,
-  onChange,
-}: {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}) => {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Switch
-        checked={checked}
-        onChange={e => onChange(e.target.checked)}
-        name="showOnlyRelevant"
-        color="primary"
-      />
-      <Text variant="body-medium">{t('dictionary.showOnlyRelevant')}</Text>
-    </Box>
-  );
-};
