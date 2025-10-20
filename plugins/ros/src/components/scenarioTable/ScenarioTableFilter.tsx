@@ -1,5 +1,4 @@
 import {
-  Box,
   Select,
   Flex,
   Button,
@@ -25,14 +24,15 @@ type ScenarioTableFilterProps = {
 export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <Flex justify="start" my="2">
-      <SearchField
-        placeholder="Søk etter tiltak ..."
-        value={props.searchQuery}
-        onChange={value => props.onSearchQueryChange(value)}
-        style={{ width: '440px' }}
-      />
-      <Box style={{ width: '210px' }}>
+    <Flex justify="between" mt="24px" gap="16px">
+      <Flex style={{ flex: 1 }}>
+        <SearchField
+          placeholder="Søk etter tiltak ..."
+          value={props.searchQuery}
+          onChange={value => props.onSearchQueryChange(value)}
+        />
+      </Flex>
+      <Flex>
         <Select
           aria-label="sortering"
           selectedKey={props.value ?? ''}
@@ -48,32 +48,32 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
             { value: 'remainingActions', label: t('filter.remainingActions') },
           ]}
         />
-      </Box>
-      {props.isEditingAllowed && (
-        <Flex justify="end" align="center">
-          <AddScenarioButton onNewScenario={props.onNewScenario} />
-          <TooltipTrigger>
-            <Button
-              iconStart={
-                props.isEditing ? (
-                  <i className="ri-checkbox-circle-line" />
-                ) : (
-                  <i className="ri-pencil-line" />
-                )
-              }
-              variant="secondary"
-              onClick={props.onToggleEdit}
-            >
-              {props.isEditing}
-            </Button>
-            <Tooltip>
-              {props.isEditing
-                ? t('scenarioTable.doneEditing')
-                : t('scenarioTable.editButton')}
-            </Tooltip>
-          </TooltipTrigger>
-        </Flex>
-      )}
+        {props.isEditingAllowed && (
+          <>
+            <AddScenarioButton onNewScenario={props.onNewScenario} />
+            <TooltipTrigger>
+              <Button
+                iconStart={
+                  props.isEditing ? (
+                    <i className="ri-checkbox-circle-line" />
+                  ) : (
+                    <i className="ri-pencil-line" />
+                  )
+                }
+                variant="secondary"
+                onClick={props.onToggleEdit}
+              >
+                {props.isEditing}
+              </Button>
+              <Tooltip>
+                {props.isEditing
+                  ? t('scenarioTable.doneEditing')
+                  : t('scenarioTable.editButton')}
+              </Tooltip>
+            </TooltipTrigger>
+          </>
+        )}
+      </Flex>
     </Flex>
   );
 }
