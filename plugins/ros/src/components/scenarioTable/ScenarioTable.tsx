@@ -2,11 +2,8 @@ import { useTableStyles } from './ScenarioTableStyles.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
-import { useEffect, useMemo, useState } from 'react';
-import {
-  calculateDaysSince,
-  calculateUpdatedStatus,
-} from '../../utils/utilityfunctions.ts';
+import { useEffect, useState } from 'react';
+import { useDisplayScenarios } from '../../utils/hooks.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Text, Flex, Box } from '@backstage/ui';
@@ -14,6 +11,7 @@ import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 
 type ScenarioTableProps = {
+  sortOrder?: string | null;
   isEditing: boolean;
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
@@ -27,6 +25,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
   const visibleType = props.visibleType;
+  const sortOrder = props.sortOrder;
 
   const { openScenarioDrawer } = useScenario();
 
@@ -75,28 +74,25 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const lastPublishedCommits =
     props.riScWithMetadata.lastPublished?.numberOfCommits ?? null;
 
-  const displayScenarios = useMemo(() => {
-    if (!visibleType) return tempScenarios;
+  const displayScenarios: RiSc['scenarios'] = useDisplayScenarios(
+    tempScenarios,
+    visibleType,
+    lastPublishedCommits,
+    sortOrder ?? undefined,
+  );
 
-    return tempScenarios.filter(scenario =>
-      scenario.actions.some(action => {
-        const daysSinceLastUpdate = action.lastUpdated
-          ? calculateDaysSince(new Date(action.lastUpdated))
-          : null;
-        const status = calculateUpdatedStatus(
-          daysSinceLastUpdate,
-          lastPublishedCommits,
-        );
-        return status === visibleType;
-      }),
-    );
-  }, [tempScenarios, visibleType, lastPublishedCommits]);
+  const allowDrag = (sortOrder ?? '') === '';
+
+  let columnCount = 7;
+  if (props.isEditing) {
+    columnCount = allowDrag ? 9 : 8;
+  }
 
   return (
     <>
       <Flex p=" 18px 24px" mt="40px">
-        {props.isEditing && <div className={tableCellDragIcon} />}
-        <Box style={{ width: props.isEditing ? '30%' : '35%' }}>
+        {props.isEditing && allowDrag && <div className={tableCellDragIcon} />}
+        <Box style={{ width: props.isEditing && allowDrag ? '30%' : '35%' }}>
           <Text weight="bold" variant="body-large">
             {t('dictionary.title')}
           </Text>
@@ -129,6 +125,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
           moveRowFinal={moveRowFinal}
           moveRowLocal={moveRowLocal}
           isEditing={props.isEditing}
+          allowDrag={allowDrag}
         />
       ))}
     </>

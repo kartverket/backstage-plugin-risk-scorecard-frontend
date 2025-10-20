@@ -31,6 +31,7 @@ interface ScenarioTableRowProps {
   moveRowLocal: (dragIndex: number, hoverIndex: number) => void;
   isEditing: boolean;
   visibleType: UpdatedStatusEnumType | null;
+  allowDrag?: boolean;
 }
 
 export function ScenarioTableRow({
@@ -41,6 +42,7 @@ export function ScenarioTableRow({
   moveRowLocal,
   isEditing,
   visibleType,
+  allowDrag = true,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { tableCard, riskColor, noHover } = useTableStyles();
@@ -117,6 +119,11 @@ export function ScenarioTableRow({
 
   preview(drop(ref));
 
+  let columnCount = 7;
+  if (isEditing) {
+    columnCount = allowDrag ? 9 : 8;
+  }
+
   return (
     <Card
       ref={ref}
@@ -127,7 +134,7 @@ export function ScenarioTableRow({
       }}
     >
       <Flex align="center">
-        {isEditing && (
+        {isEditing && allowDrag && (
           <IconButton size="small" ref={drag}>
             <DragIndicatorIcon
               sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
@@ -195,7 +202,7 @@ export function ScenarioTableRow({
         </Flex>
 
         {isEditing && (
-          <Flex align="center" justify="end" style={{ width: '5%' }}>
+          <Flex align="center" justify="end">
             <IconButton
               size="small"
               onClick={event => {
