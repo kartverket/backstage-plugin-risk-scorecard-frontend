@@ -37,7 +37,6 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     aspectRatio: '1 / 1',
   },
   circle: {
-    backgroundColor: 'white',
     height: '60%',
     aspectRatio: '1 / 1',
     borderRadius: '50%',
@@ -48,15 +47,17 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     color: 'black',
   },
   tooltip: {
-    backgroundColor: 'white',
+    backgroundColor:
+      theme.palette.type === 'dark' ? 'var(--bui-bg)' : 'var(--bui-white)',
     padding: theme.spacing(2),
     maxWidth: 500,
   },
   tooltipArrow: {
-    color: 'white',
+    color: theme.palette.type === 'dark' ? 'var(--bui-bg)' : 'var(--bui-white)',
   },
   tooltipText: {
     padding: 0,
-    color: 'black',
+    color:
+      theme.palette.type === 'dark' ? 'var(--bui-white)' : 'var(--bui-black)',
   },
 }));
