@@ -1,14 +1,14 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
+      - 'buildx'
       - 'build'
+      - '--load'
       - '-t'
       - 'gcr.io/$PROJECT_ID/backstage:$SHORT_SHA'
       - '-t'
       - 'gcr.io/$PROJECT_ID/backstage:latest'
       - '.'
-    env:
-      - 'DOCKER_BUILDKIT=1'
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
