@@ -28,6 +28,7 @@ import {
   GithubRepoInfo,
   RiSc,
   RiScWithMetadata,
+  Scenario,
   SubmitResponseObject,
 } from './types';
 import {
@@ -526,3 +527,59 @@ export const useDisplayScenarios: UseDisplayScenarios = (
     return sorted;
   }, [tempScenarios, visibleType, lastPublishedCommits, sortOrder]);
 };
+
+export function useSearchActions(
+  scenarios: Scenario[] | undefined | null,
+  searchQuery: string,
+  debounceMs = 300,
+): { matches: Record<string, Scenario['actions']>; isDebouncing: boolean } {
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+  const [hasTyped, setHasTyped] = useState(false);
+  const queryRef = useRef(searchQuery);
+
+  useEffect(() => {
+    queryRef.current = searchQuery;
+    const id = setTimeout(
+      () => setDebouncedQuery(queryRef.current),
+      debounceMs,
+    );
+    return () => clearTimeout(id);
+  }, [searchQuery, debounceMs]);
+
+  const isDebouncing = searchQuery !== debouncedQuery;
+
+  useEffect(() => {
+    if (searchQuery) setHasTyped(true);
+  }, [searchQuery]);
+
+  const findMatches = useCallback(
+    (query: string) => {
+      const result: Record<string, Scenario['actions']> = {};
+      if (!query || !scenarios) return result;
+      const q = query.toLowerCase();
+
+      for (const scenario of scenarios) {
+        const filtered = (scenario.actions ?? []).filter(a =>
+          (a.title ?? '').toLowerCase().includes(q),
+        );
+        if (filtered.length > 0) result[scenario.ID] = filtered;
+      }
+      return result;
+    },
+    [scenarios],
+  );
+
+  const matches = useMemo(
+    () => findMatches(debouncedQuery),
+    [findMatches, debouncedQuery],
+  );
+  const immediateMatches = useMemo(
+    () => findMatches(searchQuery),
+    [findMatches, searchQuery],
+  );
+
+  const shouldUseImmediate = !hasTyped || (!debouncedQuery && isDebouncing);
+  const returnedMatches = shouldUseImmediate ? immediateMatches : matches;
+
+  return { matches: returnedMatches, isDebouncing };
+}

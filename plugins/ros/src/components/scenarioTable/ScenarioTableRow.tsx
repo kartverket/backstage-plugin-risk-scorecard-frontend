@@ -32,6 +32,7 @@ interface ScenarioTableRowProps {
   isEditing: boolean;
   visibleType: UpdatedStatusEnumType | null;
   allowDrag?: boolean;
+  searchMatches?: Scenario['actions'];
 }
 
 export function ScenarioTableRow({
@@ -43,6 +44,7 @@ export function ScenarioTableRow({
   isEditing,
   visibleType,
   allowDrag = true,
+  searchMatches,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { tableCard, riskColor, noHover } = useTableStyles();
@@ -116,6 +118,22 @@ export function ScenarioTableRow({
     visibleType === null
       ? []
       : actionsWithUpdatedStatus.filter(a => a.updatedStatus === visibleType);
+
+  const displayedActions: (Action & {
+    updatedStatus: UpdatedStatusEnumType;
+  })[] =
+    searchMatches && searchMatches.length > 0
+      ? searchMatches
+          .map(sm =>
+            actionsWithUpdatedStatus.find(action => action.ID === sm.ID),
+          )
+          .filter(
+            (
+              action,
+            ): action is Action & { updatedStatus: UpdatedStatusEnumType } =>
+              !!action,
+          )
+      : filteredActions;
 
   preview(drop(ref));
 
@@ -221,7 +239,7 @@ export function ScenarioTableRow({
           onMouseLeave={() => setIsChildHover(false)}
         >
           <ActionsCard
-            filteredData={filteredActions}
+            filteredData={displayedActions}
             scenario={scenario}
             updateRiSc={updateRiSc}
           />

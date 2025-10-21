@@ -3,10 +3,10 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
 import { useEffect, useState } from 'react';
-import { useDisplayScenarios } from '../../utils/hooks.ts';
+import { useDisplayScenarios, useSearchActions } from '../../utils/hooks.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
-import { Text, Flex, Box } from '@backstage/ui';
+import { Text, Flex, Box, Card } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 
@@ -16,11 +16,12 @@ type ScenarioTableProps = {
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
   visibleType: UpdatedStatusEnumType | null;
+  searchQuery: string;
 };
 
 export function ScenarioTable(props: ScenarioTableProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { tableCellDragIcon } = useTableStyles();
+  const { tableCellDragIcon, tableCard } = useTableStyles();
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
@@ -81,6 +82,15 @@ export function ScenarioTable(props: ScenarioTableProps) {
     sortOrder ?? undefined,
   );
 
+  const { matches: searchedActions } = useSearchActions(
+    riSc.scenarios,
+    props.searchQuery,
+  );
+  const scenariosToRender =
+    (props.searchQuery ?? '')
+      ? displayScenarios.filter(search => Boolean(searchedActions[search.ID]))
+      : displayScenarios;
+
   const allowDrag = (sortOrder ?? '') === '';
 
   return (
@@ -99,7 +109,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
         </Box>
         <Box style={{ width: props.isEditing ? '25%' : '35%' }}>
           <Text weight="bold" variant="body-large">
-            {t('dictionary.initialRisk')}
+            {t('dictionary.actionsWithStatus')}
           </Text>
         </Box>
         <Box style={{ width: '15%' }}>
@@ -121,8 +131,16 @@ export function ScenarioTable(props: ScenarioTableProps) {
           moveRowLocal={moveRowLocal}
           isEditing={props.isEditing}
           allowDrag={allowDrag}
+          searchMatches={searchedActions[scenario.ID]}
         />
       ))}
+      {props.searchQuery && scenariosToRender.length === 0 && (
+        <Card className={tableCard}>
+          <Flex align="center" justify="center">
+            {t('dictionary.searchQuery')} "{props.searchQuery}"
+          </Flex>
+        </Card>
+      )}
     </>
   );
 }
