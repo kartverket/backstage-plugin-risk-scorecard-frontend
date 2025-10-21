@@ -55,6 +55,9 @@ RUN --mount=type=cache,target=/home/node/.cache,sharing=locked,uid=1000,gid=1000
 COPY packages/backend/dist/bundle.tar.gz app-config*.yaml ./
 RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
 
+# Copy the app package.json (needed by @backstage/plugin-app-backend)
+COPY packages/app/package.json packages/app/package.json
+
 # --- Runtime: distroless NodeJS
 FROM gcr.io/distroless/nodejs22-debian12
 ENV NODE_ENV=production
