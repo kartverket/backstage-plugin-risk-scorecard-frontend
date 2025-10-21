@@ -22,7 +22,12 @@ export function EstimatedRiskInfoDialog({
 
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="xs">
-      <Card>
+      <Card
+        style={{
+          padding: '16px',
+          margin: 0,
+        }}
+      >
         <CardHeader>
           <Text variant="title-x-small" weight="bold">
             {t('infoDialog.title')}
