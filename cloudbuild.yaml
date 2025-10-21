@@ -26,11 +26,11 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'backstage'  # Replace with your Cloud Run service name
+      - 'risc'
       - '--image'
       - 'gcr.io/$PROJECT_ID/backstage:$SHORT_SHA'
       - '--region'
-      - 'europe-north1'  # Replace with your region
+      - 'europe-north1'
       - '--platform'
       - 'managed'
 
