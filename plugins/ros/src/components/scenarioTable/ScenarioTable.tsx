@@ -3,10 +3,10 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
 import { useEffect, useState } from 'react';
-import { useDisplayScenarios } from '../../utils/hooks.ts';
+import { useDisplayScenarios, useSearchActions } from '../../utils/hooks.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
-import { Text, Grid } from '@backstage/ui';
+import { Text, Grid, Card, Flex } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 
@@ -16,11 +16,12 @@ type ScenarioTableProps = {
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
   visibleType: UpdatedStatusEnumType | null;
+  searchQuery: string;
 };
 
 export function ScenarioTable(props: ScenarioTableProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { tableCellDragIcon } = useTableStyles();
+  const { tableCellDragIcon, tableCard } = useTableStyles();
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
   const { updateRiSc, updateStatus } = useRiScs();
@@ -81,6 +82,15 @@ export function ScenarioTable(props: ScenarioTableProps) {
     sortOrder ?? undefined,
   );
 
+  const { matches: searchedActions } = useSearchActions(
+    riSc.scenarios,
+    props.searchQuery,
+  );
+  const scenariosToRender =
+    (props.searchQuery ?? '')
+      ? displayScenarios.filter(search => Boolean(searchedActions[search.ID]))
+      : displayScenarios;
+
   const allowDrag = (sortOrder ?? '') === '';
 
   let columnCount = 7;
@@ -106,7 +116,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
         </Grid.Item>
         <Grid.Item colSpan="2">
           <Text weight="bold" variant="body-large">
-            {t('dictionary.measures')}
+            {t('dictionary.actionsWithStatus')}
           </Text>
         </Grid.Item>
         <Grid.Item colSpan="1">
@@ -116,7 +126,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
         </Grid.Item>
         {props.isEditing && <Grid.Item colSpan="1" />}
       </Grid.Root>
-      {displayScenarios.map((scenario, idx) => (
+      {scenariosToRender.map((scenario, idx) => (
         <ScenarioTableRow
           key={scenario.ID}
           scenario={scenario}
@@ -129,8 +139,16 @@ export function ScenarioTable(props: ScenarioTableProps) {
           moveRowLocal={moveRowLocal}
           isEditing={props.isEditing}
           allowDrag={allowDrag}
+          searchMatches={searchedActions[scenario.ID]}
         />
       ))}
+      {props.searchQuery && scenariosToRender.length === 0 && (
+        <Card className={tableCard}>
+          <Flex align="center" justify="center">
+            {t('dictionary.searchQuery')} "{props.searchQuery}"
+          </Flex>
+        </Card>
+      )}
     </>
   );
 }
