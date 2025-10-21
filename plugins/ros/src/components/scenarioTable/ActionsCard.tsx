@@ -32,11 +32,12 @@ type ActionsCardProps = {
     onSuccess?: () => void,
     onError?: () => void,
   ) => void;
+  showUpdatedBadge?: boolean;
 };
 
 export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { filteredData, scenario, updateRiSc } = props;
+  const { filteredData, scenario, updateRiSc, showUpdatedBadge } = props;
 
   const [pendingUpdatedIDs, setPendingUpdatedIDs] = useState<string[]>([]);
   const [pendingStatusById, setPendingStatusById] = useState<
@@ -131,7 +132,6 @@ export function ActionsCard(props: ActionsCardProps) {
         border: '1px solid #FF8B38',
       };
     }
-
     return base;
   }
 
@@ -179,6 +179,25 @@ export function ActionsCard(props: ActionsCardProps) {
                         UpdatedStatusEnum.VERY_OUTDATED
                           ? t('rosStatus.veryOutdated')
                           : t('rosStatus.outdated')}
+                      </Text>
+                    </span>
+                  )}
+                  {showUpdatedBadge && isPending && (
+                    <span
+                      style={{
+                        padding: '4px 0',
+                        backgroundColor: '#D0ECD6',
+                        border: '1px solid #156630',
+                        borderRadius: '24px',
+                      }}
+                    >
+                      <Text
+                        style={{
+                          padding: '0 8px',
+                          color: 'var(--bui-black)',
+                        }}
+                      >
+                        {t('rosStatus.updated')}
                       </Text>
                     </span>
                   )}

@@ -118,7 +118,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
           </Text>
         </Box>
       </Flex>
-      {displayScenarios.map((scenario, idx) => (
+      {scenariosToRender.map((scenario, idx) => (
         <ScenarioTableRow
           key={scenario.ID}
           scenario={scenario}

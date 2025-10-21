@@ -22,6 +22,7 @@ import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteC
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
 import { ActionsCard } from './ActionsCard.tsx';
+import { useFilteredActions } from '../../hooks/useFilteredActions';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -104,7 +105,6 @@ export function ScenarioTableRow({
     const daysSinceLastUpdate = action.lastUpdated
       ? calculateDaysSince(new Date(action.lastUpdated))
       : null;
-
     return {
       ...action,
       updatedStatus: calculateUpdatedStatus(
@@ -114,26 +114,11 @@ export function ScenarioTableRow({
     } as Action & { updatedStatus: UpdatedStatusEnumType };
   });
 
-  const filteredActions =
-    visibleType === null
-      ? []
-      : actionsWithUpdatedStatus.filter(a => a.updatedStatus === visibleType);
-
-  const displayedActions: (Action & {
-    updatedStatus: UpdatedStatusEnumType;
-  })[] =
-    searchMatches && searchMatches.length > 0
-      ? searchMatches
-          .map(sm =>
-            actionsWithUpdatedStatus.find(action => action.ID === sm.ID),
-          )
-          .filter(
-            (
-              action,
-            ): action is Action & { updatedStatus: UpdatedStatusEnumType } =>
-              !!action,
-          )
-      : filteredActions;
+  const filteredActions = useFilteredActions({
+    visibleType,
+    actionsWithUpdatedStatus,
+    searchMatches,
+  });
 
   preview(drop(ref));
 
@@ -239,9 +224,10 @@ export function ScenarioTableRow({
           onMouseLeave={() => setIsChildHover(false)}
         >
           <ActionsCard
-            filteredData={displayedActions}
+            filteredData={filteredActions}
             scenario={scenario}
             updateRiSc={updateRiSc}
+            showUpdatedBadge={!!visibleType}
           />
         </div>
       )}
