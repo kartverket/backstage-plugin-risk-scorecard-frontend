@@ -50,6 +50,7 @@ export const pluginRiScMessages = {
     discardChanges: 'Discard changes',
     edit: 'Edit',
     estimatedRisk: 'Estimated risk',
+    example: 'Example',
     initialRisk: 'Initial risk', // Starting or Initial risk
     integrity: 'Integrity',
     measure: 'Action', // Measure, Action or Initiative
@@ -665,6 +666,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.discardChanges': 'Forkast endringer',
           'dictionary.edit': 'Rediger',
           'dictionary.estimatedRisk': 'Estimert risiko',
+          'dictionary.example': 'Eksempel',
           'dictionary.initialRisk': 'Startrisiko',
           'dictionary.integrity': 'Integritet',
           'dictionary.measure': 'Tiltak',
