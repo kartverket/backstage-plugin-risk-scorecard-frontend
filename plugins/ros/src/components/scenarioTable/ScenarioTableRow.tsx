@@ -22,7 +22,7 @@ import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteC
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
 import { ActionsCard } from './ActionsCard.tsx';
-import { useFilteredActions } from '../../hooks/useFilteredActions';
+import { useFilteredActions } from '../../hooks/useFilteredActions.ts';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
