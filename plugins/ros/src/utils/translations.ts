@@ -80,6 +80,8 @@ export const pluginRiScMessages = {
     noRelevantMeasures: 'No relevant actions',
     scenarios: 'scenarios',
     customOrder: 'Custom order',
+    searchQuery: 'No result for ',
+    actionsWithStatus: 'Actions that are OK',
   },
   encryption: {
     title: 'Encryption',
@@ -696,6 +698,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.scenarios': 'scenarioer',
           'dictionary.measuresInitialRiSc': 'tiltak',
           'dictionary.customOrder': 'Egendefinert rekkefølge',
+          'dictionary.searchQuery': 'Ingen resultater for ',
+          'dictionary.actionsWithStatus': 'Tiltak som er OK',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
