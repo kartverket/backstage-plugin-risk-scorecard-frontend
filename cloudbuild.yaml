@@ -1,4 +1,9 @@
 steps:
+  # Create and use a buildx builder
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['buildx', 'create', '--name', 'mybuilder', '--use']
+
+  # Build with buildx
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'buildx'
