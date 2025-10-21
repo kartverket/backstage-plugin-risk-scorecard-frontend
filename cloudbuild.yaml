@@ -1,29 +1,12 @@
 steps:
-  # Create and use a buildx builder
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['buildx', 'create', '--name', 'mybuilder', '--use']
-
-  # Build with buildx
-  - name: 'gcr.io/cloud-builders/docker'
+  # Build with kaniko (supports BuildKit-style cache mounts)
+  - name: 'gcr.io/kaniko-project/executor:latest'
     args:
-      - 'buildx'
-      - 'build'
-      - '--load'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/backstage:$SHORT_SHA'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/backstage:latest'
-      - '.'
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/backstage:$SHORT_SHA'
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/backstage:latest'
+      - '--dockerfile=Dockerfile'
+      - '--destination=gcr.io/$PROJECT_ID/backstage:$SHORT_SHA'
+      - '--destination=gcr.io/$PROJECT_ID/backstage:latest'
+      - '--cache=true'
+      - '--cache-ttl=24h'
 
 # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
