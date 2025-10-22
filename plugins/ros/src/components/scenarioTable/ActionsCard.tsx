@@ -175,10 +175,13 @@ export function ActionsCard(props: ActionsCardProps) {
                           color: 'var(--bui-black)',
                         }}
                       >
-                        {action.updatedStatus ===
-                        UpdatedStatusEnum.VERY_OUTDATED
-                          ? t('rosStatus.veryOutdated')
-                          : t('rosStatus.outdated')}
+                        {(action.updatedStatus ===
+                          UpdatedStatusEnum.VERY_OUTDATED &&
+                          t('rosStatus.veryOutdated')) ||
+                          (action.updatedStatus ===
+                            UpdatedStatusEnum.OUTDATED &&
+                            t('rosStatus.outdated')) ||
+                          null}
                       </Text>
                     </span>
                   )}
