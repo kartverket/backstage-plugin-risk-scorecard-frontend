@@ -87,6 +87,9 @@ RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid
 # Copy the built packages from the build stage
 COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
 
+# Copy the app package.json for the app-backend plugin
+COPY --from=build --chown=node:node /app/packages/app/package.json ./packages/app/package.json
+
 # Copy any other files that we need at runtime
 COPY --chown=node:node app-config.yaml ./
 COPY --chown=node:node app-config.production.yaml ./
