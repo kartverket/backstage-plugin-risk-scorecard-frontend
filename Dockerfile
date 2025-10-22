@@ -2,8 +2,7 @@
 FROM node:22-bookworm-slim AS packages
 
 WORKDIR /app
-COPY package.json yarn.lock .yarnrc.yml backstage.json ./
-COPY .yarn .yarn
+COPY package.json yarn.lock ./
 
 COPY packages packages
 
@@ -11,7 +10,6 @@ COPY packages packages
 COPY plugins plugins
 
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
-RUN find plugins \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
 
 # Stage 2 - Install dependencies and build packages
 FROM node:22-bookworm-slim AS build
@@ -28,15 +26,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y --no-install-recommends python3 g++ build-essential libsqlite3-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN corepack enable
-
 USER node
 WORKDIR /app
 
 COPY --from=packages --chown=node:node /app .
 
-RUN --mount=type=cache,target=/home/node/.cache/node/corepack,sharing=locked,uid=1000,gid=1000 \
-    --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
+RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
     yarn install --frozen-lockfile --network-timeout 600000
 
 COPY --chown=node:node . .
@@ -72,7 +67,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN pip3 install mkdocs-techdocs-core
 
-RUN corepack enable
 
 # From here on we use the least-privileged `node` user to run the backend.
 USER node
@@ -85,18 +79,13 @@ USER node
 WORKDIR /app
 
 # Copy the install dependencies from the build stage and context
-COPY --from=build --chown=node:node /app/yarn.lock /app/package.json /app/.yarnrc.yml /app/backstage.json /app/packages/backend/dist/skeleton/ ./
-COPY --from=build --chown=node:node /app/.yarn .yarn
+COPY --from=build --chown=node:node /app/yarn.lock /app/package.json /app/packages/backend/dist/skeleton/ ./
 
-RUN --mount=type=cache,target=/home/node/.cache/node/corepack,sharing=locked,uid=1000,gid=1000 \
-    --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
+RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
     yarn workspaces focus --all --production
 
 # Copy the built packages from the build stage
 COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
-
-# Copy the app package.json for the app-backend plugin
-COPY --from=build --chown=node:node /app/packages/app/package.json ./packages/app/package.json
 
 # Copy any other files that we need at runtime
 COPY --chown=node:node app-config.yaml ./
