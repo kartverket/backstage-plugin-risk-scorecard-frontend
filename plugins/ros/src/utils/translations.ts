@@ -582,6 +582,9 @@ export const pluginRiScMessages = {
     NoSopsConfigFound:
       'No SOPS configuration present on default branch of the GitHub repository',
     CreatedSops: 'SOPS configuration created successfully',
+    UpdateAction: 'Updating action ...',
+    UpdateInfoMessage:
+      'Please wait a few seconds while the changes are being saved.',
   },
   deleteDialog: {
     title: 'Delete Risk Scorecard',
@@ -1182,6 +1185,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.NoSopsConfigFound':
             'Ingen SOPS-konfigurasjon funnet på default branchen til GitHub-repoet',
           'infoMessages.CreatedSops': 'SOPS-konfigurasjon opprettet',
+          'infoMessages.UpdateAction': 'Oppdaterer tiltak ...',
+          'infoMessages.UpdateInfoMessage':
+            'Vennligst vent et par sekunder mens endringene lagres.',
           'deleteDialog.title': 'Slett risiko- og sårbarhetsanalyse',
           'deleteDialog.confirmationMessage':
             'Er du sikker på at du vil slette denne risiko- og sårbarhetsanalysen?',
