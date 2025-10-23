@@ -193,7 +193,7 @@ export function ScenarioDrawer() {
         </>
       ) : (
         <>
-          {currentUpdatedActionIDs.length > 0 && (
+          {updateStatus.isLoading && (
             <Flex
               style={{
                 position: 'fixed',
