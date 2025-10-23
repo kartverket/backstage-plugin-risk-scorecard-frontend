@@ -76,12 +76,9 @@ export function ScenarioTableRow({
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
 
-      // const isMovingDown =
-      //   dragIndex < hoverIndex && hoverClientY < hoverMiddleY;
-      // const isMovingUp = dragIndex > hoverIndex && hoverClientY > hoverMiddleY;
-      // if (isMovingDown || isMovingUp) return;
-      if (item.index < index && hoverClientY < hoverMiddleY) return;
-      if (item.index > index && hoverClientY > hoverMiddleY) return;
+      const buffer = hoverBoundingRect.height * 0.05;
+      if (item.index < index && hoverClientY < hoverMiddleY - buffer) return;
+      if (item.index > index && hoverClientY > hoverMiddleY + buffer) return;
 
       moveRowLocal(dragId, hoverId!);
 
@@ -140,7 +137,7 @@ export function ScenarioTableRow({
       className={`${tableCard} ${isChildHover ? noHover : ''}`}
       style={{
         opacity: isDragging ? 0.3 : 1,
-        // cursor: 'move' as const,
+        transition: isDragging ? 'none' : undefined,
       }}
     >
       <Flex align="center">
