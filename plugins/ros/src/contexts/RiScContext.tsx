@@ -9,6 +9,7 @@ import {
 } from 'react';
 import {
   ContentStatus,
+  DefaultRiScType,
   ProcessingStatus,
   RiScStatus,
   RiScWithMetadata,
@@ -42,7 +43,11 @@ type RiScDrawerProps = {
   riScs: RiScWithMetadata[] | null;
   selectRiSc: (title: string) => void;
   selectedRiSc: RiScWithMetadata | null;
-  createNewRiSc: (riSc: RiScWithMetadata, generateDefault: boolean) => void;
+  createNewRiSc: (
+    riSc: RiScWithMetadata,
+    generateInitialRisc: boolean,
+    initialRiscType: DefaultRiScType[],
+  ) => void;
   deleteRiSc: (onSuccess?: () => void, onError?: () => void) => void;
   updateRiSc: (
     riSc: RiScWithMetadata,
@@ -262,7 +267,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function createNewRiSc(riSc: RiScWithMetadata, generateDefault: boolean) {
+  function createNewRiSc(
+    riSc: RiScWithMetadata,
+    generateInitialRisc: boolean,
+    initialRiscType: DefaultRiScType[],
+  ) {
     setIsFetching(true);
     setSelectedRiSc(null);
 
@@ -272,8 +281,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     };
     postRiScs(
       newRiSc.content,
-      generateDefault,
+      generateInitialRisc,
       newRiSc.sopsConfig,
+      initialRiscType,
       res => {
         if (!res.riScId) throw new Error('No RiSc ID returned');
         if (!res.riScContent) throw new Error('No RiSc content returned');

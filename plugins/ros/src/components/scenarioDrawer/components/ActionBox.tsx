@@ -13,15 +13,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import DualButtonWithMenu from '../../common/DualButtonWithMenu';
+import { useState } from 'react';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { useRiScs } from '../../../contexts/RiScContext';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { ActionStatusOptions } from '../../../utils/constants';
-import { useIsMounted } from '../../../utils/hooks';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { Action, FormScenario, LastPublished } from '../../../utils/types';
 import {
@@ -36,11 +33,11 @@ import {
   getActionStatusStyle,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
-import { body2, emptyState, label } from '../../common/typography';
+import { body2 } from '../../common/typography';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
-import { DualButton } from '../../common/DualButton';
 import { Tooltip } from '@material-ui/core';
+import { Text } from '@backstage/ui';
 
 interface ActionBoxProps {
   action: Action;
@@ -78,10 +75,6 @@ export function ActionBox({
   /* @ts-ignore Because ts can't typecheck strings against our keys */
   const translatedActionStatus = getTranslatedActionStatus(action.status, t);
 
-  const isMounted = useIsMounted();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
   function handleDeleteAction(): void {
     setDeleteActionConfirmationIsOpen(true);
   }
@@ -89,14 +82,6 @@ export function ActionBox({
   function confirmDeleteAction(): void {
     deleteAction(remove, index, onSubmit);
     setDeleteActionConfirmationIsOpen(false);
-  }
-
-  function handleChipClick(event: React.MouseEvent<HTMLElement>) {
-    setAnchorEl(event.currentTarget);
-  }
-
-  function handleMenuClose() {
-    setAnchorEl(null);
   }
 
   const parsedDateTime = action.lastUpdated
@@ -109,7 +94,6 @@ export function ActionBox({
       formMethods.getValues()?.actions?.[actionIndex]?.status;
 
     if (updates === currentStatus) {
-      handleMenuClose();
       return;
     }
 
@@ -118,8 +102,6 @@ export function ActionBox({
     setCurrentUpdatedActionIDs(prev =>
       prev.includes(action.ID) ? prev : [...prev, action.ID],
     );
-
-    if (isMounted()) handleMenuClose();
   }
 
   function handleStatusChange(newStatus: ActionStatusOptions) {
@@ -139,8 +121,6 @@ export function ActionBox({
       lastUpdatedParsed.getFullYear() === today.getFullYear()
     );
   }
-
-  useEffect(() => () => setAnchorEl(null), []);
 
   if (isEditing) {
     return (
@@ -201,16 +181,11 @@ export function ActionBox({
           <IconButton>
             {isExpanded ? <ExpandLess /> : <ExpandMore />}
           </IconButton>
-          <Typography
-            sx={{
-              fontSize: '16px',
-              fontWeight: 500,
-            }}
-          >
+          <Text variant="body-large">
             {isActionTitlePresent
               ? action.title
               : `${t('dictionary.measure')} ${index + 1}`}
-          </Typography>
+          </Text>
         </Box>
         <Box
           sx={{
@@ -220,14 +195,13 @@ export function ActionBox({
             alignItems: 'center',
           }}
         >
-          <DualButton
+          <DualButtonWithMenu
             propsCommon={{
               color: getActionStatusColor(action.status),
               style: getActionStatusStyle(action.status),
             }}
             propsLeft={{
               children: translatedActionStatus,
-              onClick: handleChipClick,
             }}
             propsRight={{
               startIcon: <Cached />,
@@ -243,30 +217,18 @@ export function ActionBox({
                 );
               },
             }}
+            menuItems={Object.values(ActionStatusOptions).map(value => ({
+              key: value,
+              // @ts-ignore
+              label: t(
+                actionStatusOptionsToTranslationKeys[
+                  value as ActionStatusOptions
+                ],
+              ),
+              onClick: () => handleStatusChange(value as ActionStatusOptions),
+              selected: value === action.status,
+            }))}
           />
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleMenuClose}
-            onClick={handleMenuClose}
-          >
-            {Object.values(ActionStatusOptions).map(value => (
-              <MenuItem
-                key={value}
-                onClick={() => handleStatusChange(value)}
-                selected={value === action.status}
-              >
-                {
-                  /* @ts-ignore Because ts can't typecheck strings against our keys */
-                  t(
-                    actionStatusOptionsToTranslationKeys[
-                      value as ActionStatusOptions
-                    ],
-                  )
-                }
-              </MenuItem>
-            ))}
-          </Menu>
           <Box
             sx={{
               overflow: 'hidden',
@@ -274,8 +236,10 @@ export function ActionBox({
               whiteSpace: 'nowrap',
             }}
           >
-            <Typography>{t('scenarioDrawer.action.lastUpdated')}</Typography>
-            <Typography>{parsedDateTime}</Typography>
+            <Text as="p" variant="body-large">
+              {t('scenarioDrawer.action.lastUpdated')}
+            </Text>
+            <Text variant="body-large">{parsedDateTime}</Text>
           </Box>
           <Exclamations
             action={action}
@@ -295,9 +259,13 @@ export function ActionBox({
             justifyContent: 'space-between',
           }}
         >
-          <Typography sx={{ ...label, marginTop: 1 }}>
+          <Text
+            variant="body-medium"
+            weight="bold"
+            style={{ paddingBottom: '0.4rem', marginTop: '4px' }}
+          >
             {t('dictionary.description')}
-          </Typography>
+          </Text>
           <IconButton
             sx={{
               marginLeft: 'auto',
@@ -319,7 +287,14 @@ export function ActionBox({
           }}
         >
           <Box>
-            <Typography sx={label}>{t('dictionary.url')}</Typography>
+            <Text
+              variant="body-medium"
+              weight="bold"
+              style={{ paddingBottom: '0.4rem', marginTop: '4px' }}
+            >
+              {' '}
+              {t('dictionary.url')}
+            </Text>
             {action.url ? (
               <Link
                 sx={{
@@ -335,11 +310,11 @@ export function ActionBox({
                 {action.url}
               </Link>
             ) : (
-              <Typography sx={emptyState}>
+              <Text as="p" variant="body-large" style={{ fontStyle: 'italic' }}>
                 {t('dictionary.emptyField', {
                   field: t('dictionary.url').toLowerCase(),
                 })}
-              </Typography>
+              </Text>
             )}
           </Box>
         </Box>

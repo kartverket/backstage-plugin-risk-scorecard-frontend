@@ -43,7 +43,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
   tableCellDragIcon: {
     minWidth: '1px0px',
     padding: '',
-    width: '2%',
+    width: '4%',
     '&.MuiTableCell-root': {
       color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
       border: 'none',
@@ -127,4 +127,24 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     transform: 'rotate(0deg)',
     color: 'white',
   },
+  tableCard: {
+    cursor: 'pointer',
+    border: 'none',
+    marginBottom: '8px',
+    padding: '28px 24px',
+    backgroundColor:
+      theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
+    '&:hover': {
+      backgroundColor:
+        theme.palette.type === 'dark' ? 'var(--bui-gray-6)' : '#E0E0E0',
+    },
+    '&$noHover': {
+      '&:hover': {
+        backgroundColor:
+          theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
+        cursor: 'default',
+      },
+    },
+  },
+  noHover: {},
 }));

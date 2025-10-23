@@ -1,10 +1,5 @@
 import type { Dispatch } from 'react';
-import {
-  ActionsDTO,
-  GcpCryptoKeyObject,
-  ScenarioDTO,
-  SopsConfigDTO,
-} from './DTOs';
+import { ActionsDTO, ScenarioDTO, SopsConfigDTO } from './DTOs';
 import { ActionStatusOptions } from './constants';
 
 /**
@@ -34,6 +29,22 @@ export type RiScWithMetadata = {
   migrationStatus?: MigrationStatus;
   lastPublished?: LastPublished;
 };
+
+export type DefaultRiScTypeDescriptor = {
+  riScType: DefaultRiScType;
+  listName: string;
+  listDescription: string;
+  defaultTitle: string;
+  defaultScope: string;
+  numberOfScenarios: number | null;
+  numberOfActions: number | null;
+};
+
+export enum DefaultRiScType {
+  InternalJob = 'InternalJob',
+  Standard = 'Standard',
+  Ops = 'Ops',
+}
 
 export type MigrationStatus = {
   migrationChanges: boolean;
@@ -125,15 +136,6 @@ export type MigrationChangedValue<T> = {
 export type MigrationChangedTypedValue<S, T> = {
   oldValue: S;
   newValue: T;
-};
-
-export type SopsConfig = {
-  shamirThreshold: number;
-  lastModified?: string;
-  modified?: boolean;
-  version?: string;
-  gcpCryptoKey: GcpCryptoKeyObject;
-  publicAgeKeys: string[];
 };
 
 export type RiSc = {
@@ -231,10 +233,6 @@ export enum ContentStatus {
 
 export enum DifferenceStatus {
   Success = 'Success',
-  GithubFailure = 'GithubFailure',
-  JsonFailure = 'JsonFailure',
-  DecryptionFailure = 'DecryptionFailure',
-  NoReadAccess = 'NoReadAccess',
   GithubFileNotFound = 'GithubFileNotFound',
   FrontendFallback = 'FrontendFallback',
 }
@@ -343,9 +341,3 @@ export type DifferenceFetchState = Modify<
   'status',
   DifferenceStatus | null
 > & { isLoading: boolean; currentDifferenceId: string };
-
-export interface SopsConfigDialogFormData {
-  gcpCryptoKey: GcpCryptoKeyObject;
-  publicAgeKeysToAdd: string[];
-  publicAgeKeysToDelete: string[];
-}

@@ -50,10 +50,12 @@ export const pluginRiScMessages = {
     discardChanges: 'Discard changes',
     edit: 'Edit',
     estimatedRisk: 'Estimated risk',
+    example: 'Example',
     initialRisk: 'Initial risk', // Starting or Initial risk
     integrity: 'Integrity',
     measure: 'Action', // Measure, Action or Initiative
     measures: 'Actions', // Measure, Action or Initiative
+    measuresInitialRiSc: 'actions',
     measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
     next: 'Next',
     planned: 'Planned',
@@ -72,9 +74,14 @@ export const pluginRiScMessages = {
     url: 'URL',
     emptyField: 'No {{field}} specified',
     valuation: 'Valuation',
+    version: 'Version',
     vulnerabilities: 'Vulnerabilities',
     showOnlyRelevant: 'Show only relevant',
     noRelevantMeasures: 'No relevant actions',
+    scenarios: 'scenarios',
+    customOrder: 'Custom order',
+    searchQuery: 'No result for ',
+    actionsWithStatus: 'Actions that are OK',
   },
   encryption: {
     title: 'Encryption',
@@ -114,6 +121,9 @@ export const pluginRiScMessages = {
     daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
     notPublishedYet: 'RiSc is not published yet',
     errorMessage: 'Failed to retrieve status',
+    outdated: 'Outdated',
+    veryOutdated: 'Very outdated',
+    updated: 'Updated',
     difference: {
       description: 'Summary of changes that will be approved by risk owner.',
       publishDate: 'Last published changes {{date}}',
@@ -137,6 +147,7 @@ export const pluginRiScMessages = {
     prStatus2Update: ' to publish the scorecard.', // Approve RiSc
     prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
     moreInformationButton: 'More information', // Lagre ROS migrering
+    githubLink: 'Go to GitHub',
   },
   publishDialog: {
     titleUpdate: 'Accept risks', // Approve ROS
@@ -222,8 +233,6 @@ export const pluginRiScMessages = {
     title: 'Support',
     openEntry: 'Open',
     entries: {
-      documentation: { title: 'Documentation', description: 'SKIPDOK' },
-      slackChannel: { title: 'Slack Channel', description: '#gen-skip' },
       riscFeedbackChannel: {
         title: 'RISC Feedback Channel',
         description: '#kodenær-ros-tilbakemelding',
@@ -231,10 +240,6 @@ export const pluginRiScMessages = {
       riscDocumentation: {
         title: 'RISC Documentation',
         description: 'Confluence - RISC',
-      },
-      securityMetricsFeedbackChannel: {
-        title: 'Sikkerhetsmetrikker Feedback Channel',
-        description: '#sikkerhetsmetrikker-tilbakemelding',
       },
     },
   },
@@ -319,6 +324,18 @@ export const pluginRiScMessages = {
     generateDefault: 'Default',
     stepRiscDetails: 'Risk Scorecard Details',
     stepEncryption: 'Configure Encryption',
+    initialRiscTitle: 'Predefined Risk Scorecard',
+    initialRiscScopeDescription:
+      'Do you want to generate a RoS with predefined scenarios and actions?',
+    initialRiscApplicationType: 'What type of application do you have?',
+    generateObsRiScDescription:
+      'This RoS contains scenarios that should be considered for build and deploy.',
+    generateInternalJobRiScDescription:
+      'This RoS contains scenarios that should be considered for internal tools and jobs',
+    generateStandardRiScDescription:
+      'This RoS is generated from information about the codebase in kartverket.dec, security metrics and security controllers.',
+    noInitialRiScFound: 'No default RoS is currently available.',
+    applicationType: 'Choose application type',
   },
   sopsConfigDialog: {
     title: 'Encryption',
@@ -567,6 +584,9 @@ export const pluginRiScMessages = {
     NoSopsConfigFound:
       'No SOPS configuration present on default branch of the GitHub repository',
     CreatedSops: 'SOPS configuration created successfully',
+    UpdateAction: 'Updating action ...',
+    UpdateInfoMessage:
+      'Please wait a few seconds while the changes are being saved.',
   },
   deleteDialog: {
     title: 'Delete Risk Scorecard',
@@ -584,6 +604,17 @@ export const pluginRiScMessages = {
     veryOutdated: 'Actions are very outdated',
     outdated: 'Actions are outdated',
     seeActions: 'See all outdated actions',
+  },
+  firstRiScCard: {
+    noRiScYet: 'No RiSc analyses created yet',
+    getStarted:
+      'Get started with risk and vulnerability analysis for your team',
+  },
+  filter: {
+    title: 'Title (a-z)',
+    initialRisk: 'Initial risk (high-low)',
+    completedActions: 'Most completed actions',
+    remainingActions: 'Most remaining actions',
   },
 } as const;
 
@@ -641,6 +672,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.discardChanges': 'Forkast endringer',
           'dictionary.edit': 'Rediger',
           'dictionary.estimatedRisk': 'Estimert risiko',
+          'dictionary.example': 'Eksempel',
           'dictionary.initialRisk': 'Startrisiko',
           'dictionary.integrity': 'Integritet',
           'dictionary.measure': 'Tiltak',
@@ -663,9 +695,15 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.url': 'URL',
           'dictionary.emptyField': 'Ingen {{field}} spesifisert',
           'dictionary.valuation': 'Verdi',
+          'dictionary.version': 'Versjon',
           'dictionary.vulnerabilities': 'Sårbarheter',
           'dictionary.showOnlyRelevant': 'Vis kun relevante',
           'dictionary.noRelevantMeasures': 'Ingen relevante tiltak',
+          'dictionary.scenarios': 'scenarioer',
+          'dictionary.measuresInitialRiSc': 'tiltak',
+          'dictionary.customOrder': 'Egendefinert rekkefølge',
+          'dictionary.searchQuery': 'Ingen resultater for ',
+          'dictionary.actionsWithStatus': 'Tiltak som er OK',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
@@ -684,6 +722,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'rosStatus.statusBadge.missing':
             'Når utkastet er ferdig, kan risikoeier gå gjennom og godkjenne endringene.',
+          'rosStatus.outdated': 'Utdatert',
+          'rosStatus.updated': 'Oppdatert',
+          'rosStatus.veryOutdated': 'Veldig utdatert',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
           'rosStatus.statusBadge.migration.title':
@@ -740,6 +781,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Dette tiltaket er utdatert',
           'rosStatus.updatedStatus.tooltip.VERY_OUTDATED':
             'Dette tiltaket er veldig utdatert',
+          'rosStatus.githubLink': 'Gå til GitHub',
           'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
           'publishDialog.titleDelete': 'Godkjenn sletting',
           'publishDialog.checkboxLabelUpdate':
@@ -810,10 +852,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Strengt konfidensielt',
           'supportDialog.title': 'Support',
           'supportDialog.openEntry': 'Åpne',
-          'supportDialog.entries.documentation.title': 'Dokumentasjon',
-          'supportDialog.entries.documentation.description': 'SKIPDOK',
-          'supportDialog.entries.slackChannel.title': 'Slack-kanal',
-          'supportDialog.entries.slackChannel.description': '#gen-skip',
           'supportDialog.entries.riscFeedbackChannel.title':
             'RoS tilbakemeldingskanal',
           'supportDialog.entries.riscFeedbackChannel.description':
@@ -821,10 +859,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
           'supportDialog.entries.riscDocumentation.description':
             'Confluence - RISC',
-          'supportDialog.entries.securityMetricsFeedbackChannel.title':
-            'Sikkerhetsmetrikker tilbakemeldingskanal',
-          'supportDialog.entries.securityMetricsFeedbackChannel.description':
-            '#sikkerhetsmetrikker-tilbakemelding',
           'scenarioTable.title': 'Risikoscenarioer',
           'scenarioTable.addScenarioButton': 'Legg til scenario',
           'scenarioTable.noActions': 'Ingen tiltak',
@@ -882,6 +916,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
+          'rosDialog.initialRiscScopeDescription':
+            'Vil du generere en RoS med forhåndsdefinerte scenarioer og tiltak?',
+          'rosDialog.initialRiscApplicationType':
+            'Hva slags applikasjon har du?',
+          'rosDialog.noInitialRiScFound':
+            'Ingen forhåndsdefinert RoS er tilgjengelig for øyeblikket.',
           'rosDialog.editEncryption': 'Rediger kryptering',
           'rosDialog.titleError': 'ROS-analysen må ha en tittel',
           'rosDialog.scopeDescription':
@@ -891,10 +931,18 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kodenær RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
           'rosDialog.generateInitialToggleDescription':
             'Vil du generere initiell RoS?',
+          'rosDialog.generateObsRiScDescription':
+            "Denne RoS'en inneholder scenarier som bør vurderes for bygg og deploy.",
+          'rosDialog.generateInternalJobRiScDescription':
+            "Denne RoS'en inneholder scenarier som bør vurderes for interne verktøy og jobber.",
+          'rosDialog.generateStandardRiScDescription':
+            "Denne RoS'en er generert fra opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.",
           'rosDialog.fromScratch': 'Tom',
           'rosDialog.generateDefault': 'Initiell',
           'rosDialog.stepRiscDetails': 'RoS-detaljer',
+          'rosDialog.initialRiscTitle': 'Forhåndsdefinert RoS',
           'rosDialog.stepEncryption': 'Konfigurer kryptering',
+          'rosDialog.applicationType': 'Velg type applikasjon',
           'sopsConfigDialog.title': 'Kryptering',
           'sopsConfigDialog.writeLocalRiscSuffix':
             'for å lære mer om å skrive kodenær RoS lokalt.',
@@ -1141,6 +1189,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.NoSopsConfigFound':
             'Ingen SOPS-konfigurasjon funnet på default branchen til GitHub-repoet',
           'infoMessages.CreatedSops': 'SOPS-konfigurasjon opprettet',
+          'infoMessages.UpdateAction': 'Oppdaterer tiltak ...',
+          'infoMessages.UpdateInfoMessage':
+            'Vennligst vent et par sekunder mens endringene lagres.',
           'deleteDialog.title': 'Slett risiko- og sårbarhetsanalyse',
           'deleteDialog.confirmationMessage':
             'Er du sikker på at du vil slette denne risiko- og sårbarhetsanalysen?',
@@ -1153,6 +1204,13 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'filterButton.veryOutdated': 'Tiltak er veldig utdatert',
           'filterButton.outdated': 'Tiltak er utdatert',
           'filterButton.seeActions': 'Se alle utdaterte tiltak',
+          'firstRiScCard.noRiScYet': 'Ingen RoS-analyser opprettet enda',
+          'firstRiScCard.getStarted':
+            'Kom igang med risiko- og sårbarhetsanalyse for ditt team',
+          'filter.title': 'Tittel (a-å)',
+          'filter.initialRisk': 'Startrisiko (høy-lav)',
+          'filter.completedActions': 'Flest fullførte tiltak',
+          'filter.remainingActions': 'Flest gjennværende tiltak',
         },
       }),
   },

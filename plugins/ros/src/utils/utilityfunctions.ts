@@ -31,9 +31,9 @@ export function formatNOK(amount: number): string {
 
 export function getAlertSeverity(
   updateStatus: UpdateStatus,
-): 'error' | 'info' | 'warning' {
+): 'error' | 'success' | 'warning' {
   if (updateStatus.isSuccess) {
-    return 'info';
+    return 'success';
   } else if (updateStatus.isError) {
     return 'error';
   }
@@ -65,7 +65,7 @@ export function emptyRiSc(): RiSc {
 }
 
 export function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString();
+  return DateTime.fromJSDate(new Date(date)).toFormat('dd.MM.yyyy');
 }
 
 export function calculateDaysSince(dateString: Date) {
@@ -213,12 +213,6 @@ export function getTranslationKey(
   return t(`infoMessages.${key}`);
 }
 
-export function gcpProjectIdToReadableString(gcpProjectId: string) {
-  const parts = gcpProjectId.split('-');
-  parts.pop();
-  return parts.join('-');
-}
-
 export function isPublicAgeKeyValid(publicAgeKey: string) {
   if (publicAgeKey.length !== 62) {
     return false;
@@ -230,88 +224,6 @@ export function isPublicAgeKeyValid(publicAgeKey: string) {
 
   const ageKeyRegex = /^age1[ac-hj-np-z02-9]{58}$/;
   return ageKeyRegex.test(publicAgeKey);
-}
-
-export interface Duration {
-  months: number;
-  weeks: number;
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
-
-export function getPullRequestSecondaryText(
-  fromDate: Date,
-  userName: string,
-  t: (s: any) => string,
-) {
-  const now = new Date();
-  const diffMilliseconds = now.getTime() - fromDate.getTime();
-
-  const seconds = Math.floor(diffMilliseconds / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-  const weeks = Math.floor(days / 7);
-  const months =
-    now.getUTCMonth() -
-    fromDate.getUTCMonth() +
-    (now.getUTCFullYear() - fromDate.getUTCFullYear()) * 12;
-
-  const text = t('sopsConfigDialog.secondaryPullRequestText');
-
-  // Rounding up (like GitHub?)
-  if (months > 0) {
-    return `${text.replace(
-      '_n_',
-      `${months} ${
-        months > 1 ? t('dictionary.months') : t('dictionary.month')
-      }`,
-    )} ${userName}`;
-  }
-  if (weeks > 0) {
-    return `${text.replace(
-      '_n_',
-      `${weeks} ${weeks > 1 ? t('dictionary.weeks') : t('dictionary.week')}`,
-    )} ${userName}`;
-  }
-  if (days > 0) {
-    const remainingHours = hours % 24;
-    const adjustedDays = remainingHours >= 12 ? days + 1 : days;
-    return `${text.replace(
-      '_n_',
-      `${adjustedDays} ${
-        adjustedDays > 1 ? t('dictionary.days') : t('dictionary.day')
-      }`,
-    )} ${userName}`;
-  }
-  if (hours > 0) {
-    const remainingMinutes = minutes % 60;
-    const adjustedHours = remainingMinutes >= 30 ? hours + 1 : hours;
-    return `${text.replace(
-      '_n_',
-      `${adjustedHours} ${
-        adjustedHours > 1 ? t('dictionary.hours') : t('dictionary.hour')
-      }`,
-    )} ${userName}`;
-  }
-  if (minutes > 0) {
-    const remainingSeconds = seconds % 60;
-    const adjustedMinutes = remainingSeconds >= 30 ? minutes + 1 : minutes;
-    return `${text.replace(
-      '_n_',
-      `${adjustedMinutes} ${
-        adjustedMinutes > 1 ? t('dictionary.minutes') : t('dictionary.minute')
-      }`,
-    )} ${userName}`;
-  }
-  return `${text.replace(
-    '_n_',
-    `${seconds} ${
-      seconds > 1 ? t('dictionary.seconds') : t('dictionary.second')
-    }`,
-  )} ${userName}`;
 }
 
 export function deleteScenario(
@@ -535,10 +447,11 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
       if (!action.lastUpdated) {
         return { ...action, status: UpdatedStatusEnum.VERY_OUTDATED };
       }
-      const day = formatDate(action.lastUpdated);
+      const daysSinceLastUpdate = action.lastUpdated
+        ? calculateDaysSince(new Date(action.lastUpdated))
+        : null;
       const commits = riScWithMetadata.lastPublished?.numberOfCommits ?? null;
-      const daysSinceLastUpdated = calculateDaysSince(new Date(day));
-      const status = calculateUpdatedStatus(daysSinceLastUpdated, commits);
+      const status = calculateUpdatedStatus(daysSinceLastUpdate, commits);
 
       return { ...action, status };
     });

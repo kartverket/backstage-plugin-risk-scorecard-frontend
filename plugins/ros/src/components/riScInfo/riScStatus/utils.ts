@@ -12,5 +12,5 @@ export type RiScStatusEnumType =
 
 export type StatusIconMapType = Record<
   RiScStatusEnumType,
-  { icon: React.ElementType; text: string }
+  { icon: string; text: string }
 >;

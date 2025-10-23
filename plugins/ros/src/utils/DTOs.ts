@@ -1,6 +1,7 @@
 import {
   Action,
   ContentStatus,
+  DefaultRiScType,
   LastPublished,
   MigrationStatus,
   Modify,
@@ -131,11 +132,13 @@ export function riScToDTOString(
   isRequiresNewApproval: boolean,
   profile: ProfileInfo,
   sopsConfig: SopsConfigDTO,
+  initialRiScType?: DefaultRiScType[],
 ): string {
   const json = JSON.stringify({
     riSc: JSON.stringify(riScToDTO(riSc)),
     isRequiresNewApproval: isRequiresNewApproval,
     schemaVersion: riSc.schemaVersion,
+    defaultRiScTypes: initialRiScType,
     userInfo: {
       name: profile.displayName ?? '',
       email: profile.email ?? '',
@@ -190,11 +193,11 @@ export type SopsConfigDTO = {
   version?: string;
 };
 
-export type GcpKmsEntry = {
+type GcpKmsEntry = {
   resource_id: string;
   created_at: string;
 };
 
-export type AgeEntry = {
+type AgeEntry = {
   recipient: string;
 };

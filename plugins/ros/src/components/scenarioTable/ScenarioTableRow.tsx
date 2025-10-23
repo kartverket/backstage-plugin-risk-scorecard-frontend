@@ -1,23 +1,28 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { IconButton, Paper, Typography } from '@material-ui/core';
+import { IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import { useRef } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
-import { useRiScs } from '../../contexts/RiScContext';
-import { ActionStatusOptions } from '../../utils/constants';
+import { useState, useRef } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Scenario } from '../../utils/types';
+import { Scenario, Action } from '../../utils/types';
+import { useRiScs } from '../../contexts/RiScContext';
 import {
+  calculateDaysSince,
+  calculateUpdatedStatus,
   deleteScenario,
   getConsequenceLevel,
   getProbabilityLevel,
   getRiskMatrixColor,
+  UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
 import { useTableStyles } from './ScenarioTableStyles';
+import { Text, Flex, Card } from '@backstage/ui';
+import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
+import { ActionStatusOptions } from '../../utils/constants';
+import { useDrag, useDrop } from 'react-dnd';
+import { ActionsCard } from './ActionsCard.tsx';
+import { useFilteredActions } from '../../utils/hooks.ts';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -25,8 +30,10 @@ interface ScenarioTableRowProps {
   index: number;
   moveRowFinal: (dragIndex: number, dropIndex: number) => void;
   moveRowLocal: (dragIndex: number, hoverIndex: number) => void;
-  isLastRow?: boolean;
   isEditing: boolean;
+  visibleType: UpdatedStatusEnumType | null;
+  allowDrag?: boolean;
+  searchMatches?: Scenario['actions'];
 }
 
 export function ScenarioTableRow({
@@ -35,22 +42,20 @@ export function ScenarioTableRow({
   index,
   moveRowFinal,
   moveRowLocal,
-  isLastRow,
   isEditing,
+  visibleType,
+  allowDrag = true,
+  searchMatches,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const {
-    riskColor,
-    rowBackground,
-    rowBorder,
-    tableCell,
-    tableCellTitle,
-    tableCellContainer,
-  } = useTableStyles();
+  const { tableCard, riskColor, noHover } = useTableStyles();
+  const [isChildHover, setIsChildHover] = useState(false);
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
+  const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
+    useState(false);
 
-  const ref = useRef<HTMLTableRowElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const [, drop] = useDrop({
     accept: 'row',
@@ -96,46 +101,72 @@ export function ScenarioTableRow({
     }),
   }));
 
+  const actionsWithUpdatedStatus = scenario.actions.map(action => {
+    const daysSinceLastUpdate = action.lastUpdated
+      ? calculateDaysSince(new Date(action.lastUpdated))
+      : null;
+    return {
+      ...action,
+      updatedStatus: calculateUpdatedStatus(
+        daysSinceLastUpdate,
+        riSc?.lastPublished?.numberOfCommits || null,
+      ),
+    } as Action & { updatedStatus: UpdatedStatusEnumType };
+  });
+
+  const filteredActions = useFilteredActions({
+    visibleType,
+    actionsWithUpdatedStatus,
+    searchMatches,
+  });
+
   preview(drop(ref));
 
   return (
-    <TableRow
+    <Card
       ref={ref}
-      className={`${isLastRow ? undefined : rowBorder} ${rowBackground}`}
       onClick={() => viewRow(scenario.ID)}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
+      className={`${tableCard} ${isChildHover ? noHover : ''}`}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+      }}
     >
-      {isEditing && (
-        <TableCell>
+      <Flex align="center">
+        {isEditing && allowDrag && (
           <IconButton size="small" ref={drag}>
             <DragIndicatorIcon
-              aria-label="Drag"
               sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
             />
           </IconButton>
-        </TableCell>
-      )}
-      <TableCell className={tableCellTitle}>
-        <Typography color="primary" style={{ fontWeight: 600 }}>
+        )}
+        <Text
+          as="p"
+          variant="body-large"
+          weight="bold"
+          style={{ width: '35%' }}
+        >
           {scenario.title}
-        </Typography>
-      </TableCell>
-      <TableCell className={tableCell}>
-        <div className={tableCellContainer}>
+        </Text>
+        <Flex align="center" justify="start" style={{ width: '15%' }}>
           <Paper
             className={riskColor}
             style={{
               backgroundColor: getRiskMatrixColor(scenario.risk),
             }}
           />
-          {t('scenarioTable.columns.probabilityChar')}:
-          {getProbabilityLevel(scenario.risk)}{' '}
-          {t('scenarioTable.columns.consequenceChar')}:
-          {getConsequenceLevel(scenario.risk)}
-        </div>
-      </TableCell>
-      <TableCell className={tableCell}>
-        <div className={tableCellContainer}>
+          <Text variant="body-medium">
+            {t('scenarioTable.columns.probabilityChar')}:
+            {`${getProbabilityLevel(
+              scenario.risk,
+            )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.risk)}`}
+          </Text>
+        </Flex>
+
+        <Flex
+          align="center"
+          justify="start"
+          style={{ width: isEditing ? '30%' : '35%' }}
+        >
           {(() => {
             if (scenario.actions.length > 0) {
               return (
@@ -155,32 +186,51 @@ export function ScenarioTableRow({
             }
             return t('scenarioTable.noActions');
           })()}
-        </div>
-      </TableCell>
-      <TableCell className={tableCell}>
-        <div className={tableCellContainer}>
+        </Flex>
+        <Flex align="center" style={{ width: '15%' }}>
           <Paper
             className={riskColor}
             style={{
               backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
             }}
           />
-          {t('scenarioTable.columns.probabilityChar')}:
-          {getProbabilityLevel(scenario.remainingRisk)}{' '}
-          {t('scenarioTable.columns.consequenceChar')}:
-          {getConsequenceLevel(scenario.remainingRisk)}
+          <Text variant="body-medium">{`${t('scenarioTable.columns.probabilityChar')}:${getProbabilityLevel(
+            scenario.remainingRisk,
+          )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.remainingRisk)}`}</Text>
+        </Flex>
+
+        {isEditing && (
+          <Flex align="center" justify="end">
+            <IconButton
+              size="small"
+              onClick={event => {
+                event.stopPropagation();
+                setScenarioDeletionDialogOpen(true);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+            <DeleteScenarioConfirmation
+              isOpen={isScenarioDeletionDialogOpen}
+              setIsOpen={setScenarioDeletionDialogOpen}
+              onConfirm={() => deleteScenario(riSc, updateRiSc, scenario)}
+            />
+          </Flex>
+        )}
+      </Flex>
+      {filteredActions.length > 0 && (
+        <div
+          onMouseEnter={() => setIsChildHover(true)}
+          onMouseLeave={() => setIsChildHover(false)}
+        >
+          <ActionsCard
+            filteredData={filteredActions}
+            scenario={scenario}
+            updateRiSc={updateRiSc}
+            showUpdatedBadge={!!visibleType}
+          />
         </div>
-      </TableCell>
-      {isEditing && (
-        <TableCell>
-          <IconButton
-            size="small"
-            onClick={() => deleteScenario(riSc, updateRiSc, scenario)}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </TableCell>
       )}
-    </TableRow>
+    </Card>
   );
 }

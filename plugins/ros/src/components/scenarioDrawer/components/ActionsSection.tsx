@@ -1,12 +1,10 @@
 import { ActionBox } from './ActionBox';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
+import { emptyAction } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
-import { emptyState, heading3 } from '../../common/typography';
 import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Action, FormScenario } from '../../../utils/types';
@@ -14,16 +12,11 @@ import { ActionFormItem } from './ActionFormItem';
 import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
-import { ActionStatusOptions } from '../../../utils/constants';
 import Switch from '@mui/material/Switch';
 import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
-
-type ActionSectionProps = {
-  formMethods: UseFormReturn<FormScenario>;
-  isEditing: boolean;
-  onSubmit: () => void;
-  setCurrentUpdatedActionIDs: React.Dispatch<React.SetStateAction<string[]>>;
-};
+import { Text } from '@backstage/ui';
+import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
+import { filterActionsByRelevance } from '../../../utils/actions.ts';
 
 const RelevanceToggle = ({
   checked,
@@ -42,11 +35,16 @@ const RelevanceToggle = ({
         name="showOnlyRelevant"
         color="primary"
       />
-      <Typography variant="subtitle2" color="primary">
-        {t('dictionary.showOnlyRelevant')}
-      </Typography>
+      <Text variant="body-medium">{t('dictionary.showOnlyRelevant')}</Text>
     </Box>
   );
+};
+
+type ActionSectionProps = {
+  formMethods: UseFormReturn<FormScenario>;
+  isEditing: boolean;
+  onSubmit: () => void;
+  setCurrentUpdatedActionIDs: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 export function ActionsSection({
@@ -56,96 +54,44 @@ export function ActionsSection({
   setCurrentUpdatedActionIDs,
 }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { isDrawerOpen } = useScenario();
 
   const { control, watch } = formMethods;
-  const { fields, append, remove } = useFieldArray({
+  const { remove } = useFieldArray({
     control,
     name: 'actions',
   });
 
   const currentActions = watch('actions');
-
-  const { actionFilters, saveOnlyRelevantFilter } = useActionFiltersStorage();
-  const [processedActions, setProcessedActions] = useState<
-    { action: Action; originalIndex: number }[]
-  >([]);
-
-  const sortActionsByRelevance = useCallback((actions: Action[]) => {
-    return [...actions].sort((a, b) => {
-      const aIsNotRelevant = a.status === ActionStatusOptions.NotRelevant;
-      const bIsNotRelevant = b.status === ActionStatusOptions.NotRelevant;
-
-      if (aIsNotRelevant && !bIsNotRelevant) {
-        return 1;
-      }
-      if (!aIsNotRelevant && bIsNotRelevant) {
-        return -1;
-      }
-      return 0;
-    });
-  }, []);
-
-  useEffect(() => {
-    if (isDrawerOpen && currentActions?.length) {
-      const sorted = sortActionsByRelevance(currentActions);
-
-      setProcessedActions(
-        sorted.map(action => ({
-          action,
-          originalIndex: currentActions.findIndex(a => a.ID === action.ID),
-        })),
-      );
-    }
-    // ESLint-ignore: only sort when drawer opens
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDrawerOpen, sortActionsByRelevance]);
-
-  useEffect(() => {
-    if (isDrawerOpen && processedActions.length) {
-      setProcessedActions(prev =>
-        prev.map(({ action, originalIndex }) => {
-          const updated = currentActions.find(a => a.ID === action.ID);
-          return updated
-            ? { action: updated, originalIndex }
-            : { action, originalIndex };
-        }),
-      );
-    }
-  }, [isDrawerOpen, currentActions, processedActions.length]);
-
-  const visibleActions = processedActions.filter(({ action }) =>
-    actionFilters.showOnlyRelevant
-      ? action.status !== ActionStatusOptions.NotRelevant
-      : true,
+  const [sortedActions, setSortedActions] = useState<Action[] | undefined>(
+    undefined,
   );
 
+  const { actionFilters, saveOnlyRelevantFilter } = useActionFiltersStorage();
+  const sortActionsByRelevance = useSortActionsByRelevance();
+
+  useEffect(() => {
+    setSortedActions(sortedActionsState => {
+      if (sortedActionsState === undefined)
+        return sortActionsByRelevance([...currentActions]);
+
+      // sync actions
+      const updatedSortedActions: Action[] = [];
+      for (const action of sortedActionsState) {
+        const updatedAction = currentActions.find(a => a.ID === action.ID);
+        if (updatedAction) updatedSortedActions.push(updatedAction);
+      }
+      // add new actions
+      for (const action of currentActions) {
+        if (!updatedSortedActions.some(a => a.ID === action.ID)) {
+          updatedSortedActions.push(action);
+        }
+      }
+      return updatedSortedActions;
+    });
+  }, [currentActions, actionFilters, sortActionsByRelevance]);
+
   if (isEditing) {
-    return (
-      <Paper sx={section}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography sx={heading3}>{t('dictionary.measure')}</Typography>
-          <Button
-            startIcon={<AddCircle />}
-            color="primary"
-            onClick={() => append(emptyAction())}
-          >
-            {t('scenarioDrawer.measureTab.addMeasureButton')}
-          </Button>
-        </Box>
-        {fields.map((field, index) => (
-          <Fragment key={field.id}>
-            <Divider variant="fullWidth" />
-            <ActionFormItem
-              key={index}
-              formMethods={formMethods}
-              index={index}
-              remove={remove}
-            />
-          </Fragment>
-        ))}
-      </Paper>
-    );
+    return <ActionsSectionOnEdit formMethods={formMethods} />;
   }
 
   return (
@@ -158,20 +104,25 @@ export function ActionsSection({
           marginBottom: 2,
         }}
       >
-        <Typography sx={heading3}>{t('dictionary.measures')}</Typography>
+        <Text variant="title-x-small" weight="bold">
+          {t('dictionary.measures')}
+        </Text>
 
         <RelevanceToggle
           checked={actionFilters.showOnlyRelevant}
           onChange={value => saveOnlyRelevantFilter(value)}
         />
       </Box>
-      {visibleActions.length > 0 ? (
-        visibleActions.map(({ action, originalIndex }) => (
+      {sortedActions !== undefined && sortedActions.length > 0 ? (
+        filterActionsByRelevance(
+          sortedActions,
+          actionFilters.showOnlyRelevant,
+        ).map(action => (
           <Fragment key={action.ID}>
             <Divider />
             <ActionBox
               action={action}
-              index={originalIndex}
+              index={currentActions.findIndex(x => action.ID === x.ID)}
               formMethods={formMethods}
               remove={remove}
               onSubmit={onSubmit}
@@ -180,14 +131,56 @@ export function ActionsSection({
           </Fragment>
         ))
       ) : (
-        <Typography sx={emptyState}>
+        <Text variant="body-large" style={{ fontStyle: 'italic' }}>
           {!currentActions || currentActions.length === 0
             ? t('dictionary.emptyField', {
                 field: t('dictionary.measures').toLowerCase(),
               })
             : t('dictionary.noRelevantMeasures')}
-        </Typography>
+        </Text>
       )}
+    </Paper>
+  );
+}
+
+type ActionsSectionOnEditProps = {
+  formMethods: UseFormReturn<FormScenario>;
+};
+
+function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const { control } = props.formMethods;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'actions',
+  });
+
+  return (
+    <Paper sx={section}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Text variant="title-x-small" weight="bold">
+          {t('dictionary.measure')}
+        </Text>
+        <Button
+          startIcon={<AddCircle />}
+          color="primary"
+          onClick={() => append(emptyAction())}
+        >
+          {t('scenarioDrawer.measureTab.addMeasureButton')}
+        </Button>
+      </Box>
+      {fields.map((field, index) => (
+        <Fragment key={field.id}>
+          <Divider variant="fullWidth" />
+          <ActionFormItem
+            key={index}
+            formMethods={props.formMethods}
+            index={index}
+            remove={remove}
+          />
+        </Fragment>
+      ))}
     </Paper>
   );
 }

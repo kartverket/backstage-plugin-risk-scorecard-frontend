@@ -7,7 +7,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { URLS } from '../urls';
 import {
   CreateRiScResultDTO,
@@ -20,14 +20,22 @@ import {
   riScToDTOString,
   DeleteRiScResultDTO,
 } from './DTOs';
-import { latestSupportedVersion } from './constants';
+import { ActionStatusOptions, latestSupportedVersion } from './constants';
 import {
+  DefaultRiScType,
+  DefaultRiScTypeDescriptor,
   DifferenceDTO,
   GithubRepoInfo,
   RiSc,
   RiScWithMetadata,
+  Scenario,
   SubmitResponseObject,
 } from './types';
+import {
+  calculateDaysSince,
+  calculateUpdatedStatus,
+  UpdatedStatusEnumType,
+} from './utilityfunctions';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -51,6 +59,7 @@ export function useAuthenticatedFetch() {
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
 
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
+  const uriToFetchDefaultRiScDescriptors = `${backendUrl}${URLS.backend.fetchDefaultRiScTypeDescriptors}`;
 
   function uriToFetchDifference(id: string) {
     // URLS.backend.fetchDifference
@@ -295,6 +304,7 @@ export function useAuthenticatedFetch() {
     riSc: RiSc,
     generateDefault: boolean,
     sopsConfig: SopsConfigDTO,
+    initialRiScType: DefaultRiScType[],
     onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
@@ -309,7 +319,7 @@ export function useAuthenticatedFetch() {
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
         },
-        riScToDTOString(riSc, true, profile, sopsConfig),
+        riScToDTOString(riSc, true, profile, sopsConfig, initialRiScType),
       ),
     );
   }
@@ -360,6 +370,16 @@ export function useAuthenticatedFetch() {
     );
   }
 
+  function fetchDefaultRiScTypeDescriptors(
+    onSuccess: (response: DefaultRiScTypeDescriptor[]) => void,
+  ) {
+    googleAuthenticatedFetch<DefaultRiScTypeDescriptor[], void>(
+      uriToFetchDefaultRiScDescriptors,
+      'GET',
+      res => onSuccess(res),
+      () => {},
+    );
+  }
   return {
     fetchRiScs,
     fetchGcpCryptoKeys,
@@ -371,6 +391,7 @@ export function useAuthenticatedFetch() {
     setResponse,
     fetchDifference,
     postFeedback,
+    fetchDefaultRiScTypeDescriptors,
   };
 }
 
@@ -433,4 +454,196 @@ export function useDebounce<T>(
     }
   }, []);
   return { flush };
+}
+
+type UseDisplayScenarios = (
+  tempScenarios: RiSc['scenarios'] | null | undefined,
+  visibleType: UpdatedStatusEnumType | null,
+  lastPublishedCommits: number | null,
+  sortOrder?: string,
+) => RiSc['scenarios'];
+export const useDisplayScenarios: UseDisplayScenarios = (
+  tempScenarios,
+  visibleType,
+  lastPublishedCommits,
+  sortOrder,
+) => {
+  return useMemo(() => {
+    if (!tempScenarios) return [] as RiSc['scenarios'];
+
+    const filtered = !visibleType
+      ? tempScenarios
+      : tempScenarios.filter(scenario =>
+          scenario.actions.some(action => {
+            const daysSinceLastUpdate = action.lastUpdated
+              ? calculateDaysSince(new Date(action.lastUpdated))
+              : null;
+            const status = calculateUpdatedStatus(
+              daysSinceLastUpdate,
+              lastPublishedCommits,
+            );
+            return status === visibleType;
+          }),
+        );
+
+    const sorted = [...filtered].sort((a, b) => {
+      switch (sortOrder) {
+        case 'title':
+          return a.title.localeCompare(b.title, 'en');
+
+        case 'initialRisk':
+          return (
+            b.risk.consequence * b.risk.probability -
+            a.risk.consequence * a.risk.probability
+          );
+
+        case 'implementedActions':
+          return (
+            b.actions.filter(status => status.status === ActionStatusOptions.OK)
+              .length -
+            a.actions.filter(status => status.status === ActionStatusOptions.OK)
+              .length
+          );
+
+        case 'remainingActions': {
+          const remainingA = a.actions.filter(
+            action =>
+              action.status !== ActionStatusOptions.OK &&
+              action.status !== ActionStatusOptions.NotRelevant,
+          ).length;
+          const remainingB = b.actions.filter(
+            action =>
+              action.status !== ActionStatusOptions.OK &&
+              action.status !== ActionStatusOptions.NotRelevant,
+          ).length;
+          return remainingB - remainingA;
+        }
+
+        default:
+          return 0;
+      }
+    });
+
+    return sorted;
+  }, [tempScenarios, visibleType, lastPublishedCommits, sortOrder]);
+};
+
+export function useSearchActions(
+  scenarios: Scenario[] | undefined | null,
+  searchQuery: string,
+  debounceMs = 300,
+): { matches: Record<string, Scenario['actions']>; isDebouncing: boolean } {
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+  const [hasTyped, setHasTyped] = useState(false);
+  const queryRef = useRef(searchQuery);
+
+  useEffect(() => {
+    queryRef.current = searchQuery;
+    const id = setTimeout(
+      () => setDebouncedQuery(queryRef.current),
+      debounceMs,
+    );
+    return () => clearTimeout(id);
+  }, [searchQuery, debounceMs]);
+
+  const isDebouncing = searchQuery !== debouncedQuery;
+
+  useEffect(() => {
+    if (searchQuery) setHasTyped(true);
+  }, [searchQuery]);
+
+  const findMatches = useCallback(
+    (query: string) => {
+      const result: Record<string, Scenario['actions']> = {};
+      if (!query || !scenarios) return result;
+      const q = query.toLowerCase();
+
+      for (const scenario of scenarios) {
+        const filtered = (scenario.actions ?? []).filter(a =>
+          (a.title ?? '').toLowerCase().includes(q),
+        );
+        if (filtered.length > 0) result[scenario.ID] = filtered;
+      }
+      return result;
+    },
+    [scenarios],
+  );
+
+  const matches = useMemo(
+    () => findMatches(debouncedQuery),
+    [findMatches, debouncedQuery],
+  );
+  const immediateMatches = useMemo(
+    () => findMatches(searchQuery),
+    [findMatches, searchQuery],
+  );
+
+  const shouldUseImmediate = !hasTyped || (!debouncedQuery && isDebouncing);
+  const returnedMatches = shouldUseImmediate ? immediateMatches : matches;
+
+  return { matches: returnedMatches, isDebouncing };
+}
+
+export function useFilteredActions<
+  Action extends { ID: string; updatedStatus: UpdatedStatusEnumType },
+  UpdatedStatusEnumType extends string | number,
+>({
+  visibleType,
+  actionsWithUpdatedStatus,
+  searchMatches,
+}: {
+  visibleType: UpdatedStatusEnumType | null;
+  actionsWithUpdatedStatus: (Action & {
+    updatedStatus: UpdatedStatusEnumType;
+  })[];
+  searchMatches?: { ID: string }[] | null;
+}) {
+  const [displayedActions, setDisplayedActions] = useState<
+    (Action & { updatedStatus: UpdatedStatusEnumType })[]
+  >([]);
+  const [filterActive, setFilterActive] = useState(false);
+
+  useEffect(() => {
+    if (visibleType === null) {
+      setDisplayedActions([]);
+      setFilterActive(false);
+      return;
+    }
+
+    if (!filterActive) {
+      const filtered = actionsWithUpdatedStatus.filter(
+        a => a.updatedStatus === visibleType,
+      );
+      setDisplayedActions(filtered);
+      setFilterActive(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleType]);
+
+  const finalDisplayedActions = useMemo(() => {
+    if (searchMatches && searchMatches.length > 0) {
+      return searchMatches
+        .map(sm => actionsWithUpdatedStatus.find(action => action.ID === sm.ID))
+        .filter(
+          (
+            action,
+          ): action is Action & { updatedStatus: UpdatedStatusEnumType } =>
+            !!action,
+        );
+    }
+
+    if (filterActive && visibleType !== null) {
+      return displayedActions;
+    }
+
+    return [];
+  }, [
+    searchMatches,
+    actionsWithUpdatedStatus,
+    displayedActions,
+    filterActive,
+    visibleType,
+  ]);
+
+  return finalDisplayedActions;
 }

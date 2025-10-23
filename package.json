@@ -57,13 +57,14 @@
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/e2e-test-utils": "backstage:^",
+    "@microsoft/microsoft-graph-types": "^2.40.0",
     "@playwright/test": "^1.51.1",
     "@testing-library/dom": "^10.4.0",
+    "@types/node": "^24.7.0",
     "dotenv": "^16.5.0",
-    "github-markdown-css": "^5.8.1",
-    "lerna": "^8.2.2",
+    "knip": "^5.64.2",
     "prettier": "^3.6.2",
-    "typescript": "~5.8.3"
+    "typescript": "^5.9.3"
   },
   "resolutions": {
     "@mui/material": "5.16.4",
@@ -82,7 +83,9 @@
     "tmp": "^0.2.4",
     "on-headers": "^1.1.0",
     "linkifyjs": "^4.3.2",
-    "sha.js": "^2.4.12"
+    "sha.js": "^2.4.12",
+    "axios": "^1.12.0",
+    "tar-fs": "^2.1.4"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
