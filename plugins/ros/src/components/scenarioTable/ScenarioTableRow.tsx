@@ -23,6 +23,7 @@ import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
 import { ActionsCard } from './ActionsCard.tsx';
 import { useFilteredActions } from '../../utils/hooks.ts';
+import { useScenario } from '../../contexts/ScenarioContext.tsx';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -52,6 +53,7 @@ export function ScenarioTableRow({
   const [isChildHover, setIsChildHover] = useState(false);
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
+  const { hoveredScenarios } = useScenario();
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
     useState(false);
 
@@ -122,6 +124,10 @@ export function ScenarioTableRow({
 
   preview(drop(ref));
 
+  const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
+    s => s.ID === scenario.ID,
+  );
+
   return (
     <Card
       ref={ref}
@@ -129,6 +135,7 @@ export function ScenarioTableRow({
       className={`${tableCard} ${isChildHover ? noHover : ''}`}
       style={{
         opacity: isDragging ? 0.5 : 1,
+        backgroundColor: isScenarioHoveredFromRiskMatrix ? '#FFDD9D' : '',
       }}
     >
       <Flex align="center">

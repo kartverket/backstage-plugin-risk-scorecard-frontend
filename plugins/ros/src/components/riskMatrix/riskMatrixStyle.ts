@@ -43,7 +43,7 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     cursor: 'pointer',
     minHeight: theme.spacing(2.5),
     '&:hover': {
-      backgroundColor: '#9BC9FE',
+      backgroundColor: theme.palette.type === 'dark' ? '#FFDD9D' : '#FCEBCD',
     },
   },
   circleText: {
