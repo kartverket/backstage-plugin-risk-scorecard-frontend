@@ -31,9 +31,9 @@ export function formatNOK(amount: number): string {
 
 export function getAlertSeverity(
   updateStatus: UpdateStatus,
-): 'error' | 'info' | 'warning' {
+): 'error' | 'success' | 'warning' {
   if (updateStatus.isSuccess) {
-    return 'info';
+    return 'success';
   } else if (updateStatus.isError) {
     return 'error';
   }

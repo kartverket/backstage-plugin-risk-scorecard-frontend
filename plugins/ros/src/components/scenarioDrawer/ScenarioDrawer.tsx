@@ -1,6 +1,7 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Alert from '@mui/material/Alert';
+import { AlertTitle } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -22,7 +23,8 @@ import ScopeFormSection from './components/ScopeFormSection';
 import { ScopeSection } from './components/ScopeSection';
 import { useCallback } from 'react';
 import { useDebounce } from '../../utils/hooks';
-import { Text } from '@backstage/ui';
+import { Text, Flex } from '@backstage/ui';
+import { getAlertStyle } from './scenarioDrawerComponents';
 
 export function ScenarioDrawer() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -191,6 +193,48 @@ export function ScenarioDrawer() {
         </>
       ) : (
         <>
+          {updateStatus.isLoading && (
+            <Flex
+              style={{
+                position: 'fixed',
+                width: '45%',
+                zIndex: 20,
+                border: '1px solid #439CCD',
+                borderRadius: '4px',
+              }}
+            >
+              <Alert
+                severity="info"
+                style={{
+                  width: '100%',
+                }}
+                icon={<CircularProgress size={16} sx={{ color: 'inherit' }} />}
+              >
+                <AlertTitle>{t('infoMessages.UpdateAction')}</AlertTitle>
+                <Text variant="body-large">
+                  {' '}
+                  {t('infoMessages.UpdateInfoMessage')}
+                </Text>
+              </Alert>
+            </Flex>
+          )}
+          {currentUpdatedActionIDs.length === 0 &&
+            response &&
+            response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
+              <Flex
+                style={{
+                  position: 'fixed',
+                  ...getAlertStyle(getAlertSeverity(updateStatus)),
+                }}
+              >
+                <Alert
+                  severity={getAlertSeverity(updateStatus)}
+                  style={{ width: '100%' }}
+                >
+                  <Text variant="body-large">{response.statusMessage}</Text>
+                </Alert>
+              </Flex>
+            )}
           <ScopeSection />
           <RiskSection />
         </>
@@ -237,13 +281,6 @@ export function ScenarioDrawer() {
           </div>
         )}
       </Box>
-
-      {response &&
-        response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
-          <Alert severity={getAlertSeverity(updateStatus)}>
-            <Text variant="body-large">{response.statusMessage}</Text>
-          </Alert>
-        )}
 
       <DeleteScenarioConfirmation
         isOpen={deleteConfirmationIsOpen}
