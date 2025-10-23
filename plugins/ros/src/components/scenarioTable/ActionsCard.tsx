@@ -1,5 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Box, Flex, Grid, Text } from '@backstage/ui';
+import { Box, Flex, Text } from '@backstage/ui';
 import { Cached } from '@mui/icons-material';
 import { Divider } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
@@ -32,11 +32,12 @@ type ActionsCardProps = {
     onSuccess?: () => void,
     onError?: () => void,
   ) => void;
+  showUpdatedBadge?: boolean;
 };
 
 export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { filteredData, scenario, updateRiSc } = props;
+  const { filteredData, scenario, updateRiSc, showUpdatedBadge } = props;
 
   const [pendingUpdatedIDs, setPendingUpdatedIDs] = useState<string[]>([]);
   const [pendingStatusById, setPendingStatusById] = useState<
@@ -114,9 +115,6 @@ export function ActionsCard(props: ActionsCardProps) {
     const base: React.CSSProperties = {
       padding: '4px 0',
       borderRadius: '24px',
-      display: 'inline-block',
-      fontWeight: 600,
-      marginBottom: '6px',
     };
 
     if (status === UpdatedStatusEnum.VERY_OUTDATED) {
@@ -134,39 +132,48 @@ export function ActionsCard(props: ActionsCardProps) {
         border: '1px solid #FF8B38',
       };
     }
-
     return base;
   }
 
   return (
     <>
-      <Divider sx={{ marginBottom: '8px' }} />
+      <Divider sx={{ marginBottom: '16px' }} />
       {filteredData.map((action, idx) => {
+        const isPending =
+          pendingUpdatedIDs.includes(action.ID) ||
+          !!pendingLastUpdatedById[action.ID];
         const isExpanded = isActionExpanded(action.ID);
         const isLast = idx === filteredData.length - 1;
 
         return (
           <div key={action.ID}>
-            <Grid.Root columns="6">
-              <Grid.Item colSpan="4">
-                <Flex align="center" gap="1">
-                  <IconButton
-                    onClick={e => {
-                      e.stopPropagation();
-                      toggleActionExpanded(action.ID);
-                    }}
-                  >
-                    {isExpanded ? (
-                      <i className="ri-arrow-up-s-line" />
-                    ) : (
-                      <i className="ri-arrow-down-s-line" />
-                    )}
-                  </IconButton>
-                  <div>
-                    <span style={getUpdatedStatusStyle(action.updatedStatus)}>
+            <Flex align="center" justify="between" gap="1">
+              <Flex align="center">
+                <IconButton
+                  onClick={e => {
+                    e.stopPropagation();
+                    toggleActionExpanded(action.ID);
+                  }}
+                >
+                  {isExpanded ? (
+                    <i className="ri-arrow-up-s-line" />
+                  ) : (
+                    <i className="ri-arrow-down-s-line" />
+                  )}
+                </IconButton>
+                <Flex direction="column" align="start" gap="1">
+                  {!isPending && (
+                    <span
+                      style={{
+                        ...getUpdatedStatusStyle(action.updatedStatus),
+                      }}
+                    >
                       <Text
                         as="p"
-                        style={{ padding: '0 8px', color: 'var(--bui-black)' }}
+                        style={{
+                          padding: '0 8px',
+                          color: 'var(--bui-black)',
+                        }}
                       >
                         {(action.updatedStatus ===
                           UpdatedStatusEnum.VERY_OUTDATED &&
@@ -177,14 +184,32 @@ export function ActionsCard(props: ActionsCardProps) {
                           null}
                       </Text>
                     </span>
-                    <br />
-                    <Text as="p" variant="body-large">
-                      {action.title}
-                    </Text>
-                  </div>
+                  )}
+                  {showUpdatedBadge && isPending && (
+                    <span
+                      style={{
+                        padding: '4px 0',
+                        backgroundColor: '#D0ECD6',
+                        border: '1px solid #156630',
+                        borderRadius: '24px',
+                      }}
+                    >
+                      <Text
+                        style={{
+                          padding: '0 8px',
+                          color: 'var(--bui-black)',
+                        }}
+                      >
+                        {t('rosStatus.updated')}
+                      </Text>
+                    </span>
+                  )}
+                  <Text as="p" variant="body-large">
+                    {action.title}
+                  </Text>
                 </Flex>
-              </Grid.Item>
-              <Grid.Item colSpan="1">
+              </Flex>
+              <Flex>
                 <DualButtonWithMenu
                   propsCommon={{
                     color: getActionStatusColor(
@@ -233,8 +258,6 @@ export function ActionsCard(props: ActionsCardProps) {
                       value === (pendingStatusById[action.ID] ?? action.status),
                   }))}
                 />
-              </Grid.Item>
-              <Grid.Item colSpan="1">
                 {t('scenarioDrawer.action.lastUpdated')}
                 <br />
                 {(() => {
@@ -244,11 +267,10 @@ export function ActionsCard(props: ActionsCardProps) {
                     ? formatDate(last)
                     : t('scenarioDrawer.action.notUpdated');
                 })()}
-              </Grid.Item>
-            </Grid.Root>
-
+              </Flex>
+            </Flex>
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <Box ml="48px" mt="1" mb="1">
+              <Box ml="48px" mt="4" mb="2">
                 <Text
                   as="p"
                   variant="body-large"
@@ -295,7 +317,7 @@ export function ActionsCard(props: ActionsCardProps) {
                 </Box>
               </Box>
             </Collapse>
-            {!isLast && <Divider sx={{ my: 1 }} />}
+            {!isLast && <Divider sx={{ my: 2 }} />}
           </div>
         );
       })}

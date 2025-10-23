@@ -50,6 +50,7 @@ export const pluginRiScMessages = {
     discardChanges: 'Discard changes',
     edit: 'Edit',
     estimatedRisk: 'Estimated risk',
+    example: 'Example',
     initialRisk: 'Initial risk', // Starting or Initial risk
     integrity: 'Integrity',
     measure: 'Action', // Measure, Action or Initiative
@@ -122,6 +123,7 @@ export const pluginRiScMessages = {
     errorMessage: 'Failed to retrieve status',
     outdated: 'Outdated',
     veryOutdated: 'Very outdated',
+    updated: 'Updated',
     difference: {
       description: 'Summary of changes that will be approved by risk owner.',
       publishDate: 'Last published changes {{date}}',
@@ -670,6 +672,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.discardChanges': 'Forkast endringer',
           'dictionary.edit': 'Rediger',
           'dictionary.estimatedRisk': 'Estimert risiko',
+          'dictionary.example': 'Eksempel',
           'dictionary.initialRisk': 'Startrisiko',
           'dictionary.integrity': 'Integritet',
           'dictionary.measure': 'Tiltak',
@@ -720,6 +723,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.missing':
             'Når utkastet er ferdig, kan risikoeier gå gjennom og godkjenne endringene.',
           'rosStatus.outdated': 'Utdatert',
+          'rosStatus.updated': 'Oppdatert',
           'rosStatus.veryOutdated': 'Veldig utdatert',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',

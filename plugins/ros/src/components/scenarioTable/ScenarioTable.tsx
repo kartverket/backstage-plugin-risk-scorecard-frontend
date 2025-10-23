@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useDisplayScenarios, useSearchActions } from '../../utils/hooks.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
-import { Text, Grid, Card, Flex } from '@backstage/ui';
+import { Text, Flex, Box, Card } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 
@@ -93,39 +93,31 @@ export function ScenarioTable(props: ScenarioTableProps) {
 
   const allowDrag = (sortOrder ?? '') === '';
 
-  let columnCount = 7;
-  if (props.isEditing) {
-    columnCount = allowDrag ? 9 : 8;
-  }
-
   return (
     <>
-      <Grid.Root columns={`${columnCount}`} pt="40px" pb="16px">
-        {props.isEditing && allowDrag && (
-          <Grid.Item className={tableCellDragIcon} />
-        )}
-        <Grid.Item colSpan="3">
+      <Flex p=" 18px 24px" mt="40px">
+        {props.isEditing && allowDrag && <div className={tableCellDragIcon} />}
+        <Box style={{ width: props.isEditing && allowDrag ? '30%' : '35%' }}>
           <Text weight="bold" variant="body-large">
             {t('dictionary.title')}
           </Text>
-        </Grid.Item>
-        <Grid.Item colSpan="1">
+        </Box>
+        <Box style={{ width: '15%' }}>
           <Text weight="bold" variant="body-large">
-            {t('dictionary.initialRisk')}
+            {t('dictionary.measures')}
           </Text>
-        </Grid.Item>
-        <Grid.Item colSpan="2">
+        </Box>
+        <Box style={{ width: props.isEditing ? '25%' : '35%' }}>
           <Text weight="bold" variant="body-large">
             {t('dictionary.actionsWithStatus')}
           </Text>
-        </Grid.Item>
-        <Grid.Item colSpan="1">
+        </Box>
+        <Box style={{ width: '15%' }}>
           <Text weight="bold" variant="body-large">
             {t('dictionary.restRisk')}
           </Text>
-        </Grid.Item>
-        {props.isEditing && <Grid.Item colSpan="1" />}
-      </Grid.Root>
+        </Box>
+      </Flex>
       {scenariosToRender.map((scenario, idx) => (
         <ScenarioTableRow
           key={scenario.ID}

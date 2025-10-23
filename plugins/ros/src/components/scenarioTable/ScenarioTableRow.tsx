@@ -17,11 +17,12 @@ import {
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
 import { useTableStyles } from './ScenarioTableStyles';
-import { Text, Flex, Card, Grid } from '@backstage/ui';
+import { Text, Flex, Card } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
 import { ActionsCard } from './ActionsCard.tsx';
+import { useFilteredActions } from '../../utils/hooks.ts';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -47,7 +48,7 @@ export function ScenarioTableRow({
   searchMatches,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { tableCard, gridItem, riskColor, noHover } = useTableStyles();
+  const { tableCard, riskColor, noHover } = useTableStyles();
   const [isChildHover, setIsChildHover] = useState(false);
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
@@ -104,7 +105,6 @@ export function ScenarioTableRow({
     const daysSinceLastUpdate = action.lastUpdated
       ? calculateDaysSince(new Date(action.lastUpdated))
       : null;
-
     return {
       ...action,
       updatedStatus: calculateUpdatedStatus(
@@ -114,33 +114,13 @@ export function ScenarioTableRow({
     } as Action & { updatedStatus: UpdatedStatusEnumType };
   });
 
-  const filteredActions =
-    visibleType === null
-      ? []
-      : actionsWithUpdatedStatus.filter(a => a.updatedStatus === visibleType);
-
-  const displayedActions: (Action & {
-    updatedStatus: UpdatedStatusEnumType;
-  })[] =
-    searchMatches && searchMatches.length > 0
-      ? searchMatches
-          .map(sm =>
-            actionsWithUpdatedStatus.find(action => action.ID === sm.ID),
-          )
-          .filter(
-            (
-              action,
-            ): action is Action & { updatedStatus: UpdatedStatusEnumType } =>
-              !!action,
-          )
-      : filteredActions;
+  const filteredActions = useFilteredActions({
+    visibleType,
+    actionsWithUpdatedStatus,
+    searchMatches,
+  });
 
   preview(drop(ref));
-
-  let columnCount = 7;
-  if (isEditing) {
-    columnCount = allowDrag ? 9 : 8;
-  }
 
   return (
     <Card
@@ -151,76 +131,76 @@ export function ScenarioTableRow({
         opacity: isDragging ? 0.5 : 1,
       }}
     >
-      <Grid.Root columns={`${columnCount}`}>
+      <Flex align="center">
         {isEditing && allowDrag && (
-          <Grid.Item className={gridItem}>
-            <IconButton size="small" ref={drag}>
-              <DragIndicatorIcon
-                sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-              />
-            </IconButton>
-          </Grid.Item>
+          <IconButton size="small" ref={drag}>
+            <DragIndicatorIcon
+              sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            />
+          </IconButton>
         )}
-        <Grid.Item colSpan="3" className={gridItem}>
-          <Text as="p" variant="body-large" weight="bold">
-            {scenario.title}
+        <Text
+          as="p"
+          variant="body-large"
+          weight="bold"
+          style={{ width: '35%' }}
+        >
+          {scenario.title}
+        </Text>
+        <Flex align="center" justify="start" style={{ width: '15%' }}>
+          <Paper
+            className={riskColor}
+            style={{
+              backgroundColor: getRiskMatrixColor(scenario.risk),
+            }}
+          />
+          <Text variant="body-medium">
+            {t('scenarioTable.columns.probabilityChar')}:
+            {`${getProbabilityLevel(
+              scenario.risk,
+            )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.risk)}`}
           </Text>
-        </Grid.Item>
-        <Grid.Item colSpan="1" className={gridItem}>
-          <Flex align="center" justify="start">
-            <Paper
-              className={riskColor}
-              style={{
-                backgroundColor: getRiskMatrixColor(scenario.risk),
-              }}
-            />
-            <Text variant="body-medium">
-              {t('scenarioTable.columns.probabilityChar')}:
-              {`${getProbabilityLevel(
-                scenario.risk,
-              )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.risk)}`}
-            </Text>
-          </Flex>
-        </Grid.Item>
+        </Flex>
 
-        <Grid.Item colSpan="2" className={gridItem}>
-          <div style={{ paddingRight: '1rem' }}>
-            {(() => {
-              if (scenario.actions.length > 0) {
-                return (
-                  <ScenarioTableProgressBar
-                    completedCount={
-                      scenario.actions.filter(
-                        a => a.status === ActionStatusOptions.OK,
-                      ).length
-                    }
-                    totalCount={
-                      scenario.actions.filter(
-                        a => a.status !== ActionStatusOptions.NotRelevant,
-                      ).length
-                    }
-                  />
-                );
-              }
-              return t('scenarioTable.noActions');
-            })()}
-          </div>
-        </Grid.Item>
-        <Grid.Item colSpan="1" className={gridItem}>
-          <Flex align="center">
-            <Paper
-              className={riskColor}
-              style={{
-                backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
-              }}
-            />
-            <Text variant="body-medium">{`${t('scenarioTable.columns.probabilityChar')}:${getProbabilityLevel(
-              scenario.remainingRisk,
-            )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.remainingRisk)}`}</Text>
-          </Flex>
-        </Grid.Item>
+        <Flex
+          align="center"
+          justify="start"
+          style={{ width: isEditing ? '30%' : '35%' }}
+        >
+          {(() => {
+            if (scenario.actions.length > 0) {
+              return (
+                <ScenarioTableProgressBar
+                  completedCount={
+                    scenario.actions.filter(
+                      a => a.status === ActionStatusOptions.OK,
+                    ).length
+                  }
+                  totalCount={
+                    scenario.actions.filter(
+                      a => a.status !== ActionStatusOptions.NotRelevant,
+                    ).length
+                  }
+                />
+              );
+            }
+            return t('scenarioTable.noActions');
+          })()}
+        </Flex>
+        <Flex align="center" style={{ width: '15%' }}>
+          <Paper
+            className={riskColor}
+            style={{
+              backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
+            }}
+          />
+          <Text variant="body-medium">{`${t('scenarioTable.columns.probabilityChar')}:${getProbabilityLevel(
+            scenario.remainingRisk,
+          )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.remainingRisk)}`}</Text>
+        </Flex>
+
         {isEditing && (
-          <Grid.Item colSpan="1" className={gridItem}>
+          <Flex align="center" justify="end">
             <IconButton
               size="small"
               onClick={event => {
@@ -235,18 +215,19 @@ export function ScenarioTableRow({
               setIsOpen={setScenarioDeletionDialogOpen}
               onConfirm={() => deleteScenario(riSc, updateRiSc, scenario)}
             />
-          </Grid.Item>
+          </Flex>
         )}
-      </Grid.Root>
-      {displayedActions.length > 0 && (
+      </Flex>
+      {filteredActions.length > 0 && (
         <div
           onMouseEnter={() => setIsChildHover(true)}
           onMouseLeave={() => setIsChildHover(false)}
         >
           <ActionsCard
-            filteredData={displayedActions}
+            filteredData={filteredActions}
             scenario={scenario}
             updateRiSc={updateRiSc}
+            showUpdatedBadge={!!visibleType}
           />
         </div>
       )}
