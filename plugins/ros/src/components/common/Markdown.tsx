@@ -9,7 +9,7 @@ type Props = {
 
 export function Markdown({ description }: Props) {
   return (
-    <Text variant="body-large" className="markdown-body">
+    <Text variant="body-large">
       {' '}
       <ReactMarkdown remarkPlugins={[remarkBreaks]}>
         {description}
