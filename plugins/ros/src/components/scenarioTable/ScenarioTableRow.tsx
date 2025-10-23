@@ -24,6 +24,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { ActionsCard } from './ActionsCard.tsx';
 import { useFilteredActions } from '../../utils/hooks.ts';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
+import { useTheme } from '@mui/material/styles';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -49,6 +50,7 @@ export function ScenarioTableRow({
   searchMatches,
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const theme = useTheme();
   const { tableCard, riskColor, noHover } = useTableStyles();
   const [isChildHover, setIsChildHover] = useState(false);
 
@@ -127,6 +129,11 @@ export function ScenarioTableRow({
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
+  const isTextColorBlack =
+    theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;
+  const textColorAsBuiVariable = isTextColorBlack
+    ? 'var(--bui-black)'
+    : 'var(--bui-white)';
 
   return (
     <Card
@@ -150,7 +157,7 @@ export function ScenarioTableRow({
           as="p"
           variant="body-large"
           weight="bold"
-          style={{ width: '35%' }}
+          style={{ width: '35%', color: textColorAsBuiVariable }}
         >
           {scenario.title}
         </Text>
@@ -161,7 +168,7 @@ export function ScenarioTableRow({
               backgroundColor: getRiskMatrixColor(scenario.risk),
             }}
           />
-          <Text variant="body-medium">
+          <Text variant="body-medium" style={{ color: textColorAsBuiVariable }}>
             {t('scenarioTable.columns.probabilityChar')}:
             {`${getProbabilityLevel(
               scenario.risk,
@@ -188,10 +195,15 @@ export function ScenarioTableRow({
                       a => a.status !== ActionStatusOptions.NotRelevant,
                     ).length
                   }
+                  textColor={textColorAsBuiVariable}
                 />
               );
             }
-            return t('scenarioTable.noActions');
+            return (
+              <Text style={{ color: textColorAsBuiVariable }}>
+                {t('scenarioTable.noActions')}
+              </Text>
+            );
           })()}
         </Flex>
         <Flex align="center" style={{ width: '15%' }}>
@@ -201,7 +213,10 @@ export function ScenarioTableRow({
               backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
             }}
           />
-          <Text variant="body-medium">{`${t('scenarioTable.columns.probabilityChar')}:${getProbabilityLevel(
+          <Text
+            variant="body-medium"
+            style={{ color: textColorAsBuiVariable }}
+          >{`${t('scenarioTable.columns.probabilityChar')}:${getProbabilityLevel(
             scenario.remainingRisk,
           )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.remainingRisk)}`}</Text>
         </Flex>
