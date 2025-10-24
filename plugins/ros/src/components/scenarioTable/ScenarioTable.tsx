@@ -110,7 +110,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
 
   return (
     <>
-      <Flex p=" 18px 24px" mt="40px">
+      <Flex p="24px 24px 18px 24px">
         {props.isEditing && allowDrag && <div className={tableCellDragIcon} />}
         <Box style={{ width: props.isEditing && allowDrag ? '30%' : '35%' }}>
           <Text weight="bold" variant="body-large">
