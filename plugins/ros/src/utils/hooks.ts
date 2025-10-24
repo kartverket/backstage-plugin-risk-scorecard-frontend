@@ -598,28 +598,6 @@ export function useFilteredActions<
   })[];
   searchMatches?: { ID: string }[] | null;
 }) {
-  const [displayedActions, setDisplayedActions] = useState<
-    (Action & { updatedStatus: UpdatedStatusEnumType })[]
-  >([]);
-  const [filterActive, setFilterActive] = useState(false);
-
-  useEffect(() => {
-    if (visibleType === null) {
-      setDisplayedActions([]);
-      setFilterActive(false);
-      return;
-    }
-
-    if (!filterActive) {
-      const filtered = actionsWithUpdatedStatus.filter(
-        a => a.updatedStatus === visibleType,
-      );
-      setDisplayedActions(filtered);
-      setFilterActive(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleType]);
-
   const finalDisplayedActions = useMemo(() => {
     if (searchMatches && searchMatches.length > 0) {
       return searchMatches
@@ -632,18 +610,14 @@ export function useFilteredActions<
         );
     }
 
-    if (filterActive && visibleType !== null) {
-      return displayedActions;
+    if (visibleType !== null) {
+      return actionsWithUpdatedStatus.filter(
+        a => a.updatedStatus === visibleType,
+      );
     }
 
-    return [];
-  }, [
-    searchMatches,
-    actionsWithUpdatedStatus,
-    displayedActions,
-    filterActive,
-    visibleType,
-  ]);
+    return [] as (Action & { updatedStatus: UpdatedStatusEnumType })[];
+  }, [searchMatches, actionsWithUpdatedStatus, visibleType]);
 
   return finalDisplayedActions;
 }
