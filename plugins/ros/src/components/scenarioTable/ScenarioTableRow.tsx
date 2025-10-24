@@ -27,9 +27,10 @@ import { useFilteredActions } from '../../utils/hooks.ts';
 interface ScenarioTableRowProps {
   scenario: Scenario;
   viewRow: (id: string) => void;
+  id: string;
   index: number;
-  moveRowFinal: (dragIndex: number, dropIndex: number) => void;
-  moveRowLocal: (dragIndex: number, hoverIndex: number) => void;
+  moveRowFinal: (dragId: string, dropId: string) => void;
+  moveRowLocal: (dragId: string, hoverId: string) => void;
   isEditing: boolean;
   visibleType: UpdatedStatusEnumType | null;
   allowDrag?: boolean;
@@ -39,6 +40,7 @@ interface ScenarioTableRowProps {
 export function ScenarioTableRow({
   scenario,
   viewRow,
+  id,
   index,
   moveRowFinal,
   moveRowLocal,
@@ -59,40 +61,46 @@ export function ScenarioTableRow({
 
   const [, drop] = useDrop({
     accept: 'row',
-    hover(item: { index: number }, monitor) {
+    hover(item: { id: string; index: number }, monitor) {
       if (!ref.current) return;
 
-      const dragIndex = item.index;
-      const hoverIndex = index;
-      if (dragIndex === hoverIndex) return;
+      const dragId = item.id;
+      const hoverId = id;
+
+      if (dragId === hoverId) return;
 
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const hoverMiddleY =
         (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
 
-      const isMovingDown =
-        dragIndex < hoverIndex && hoverClientY < hoverMiddleY;
-      const isMovingUp = dragIndex > hoverIndex && hoverClientY > hoverMiddleY;
-      if (isMovingDown || isMovingUp) return;
+      const buffer = hoverBoundingRect.height * 0.05;
+      if (item.index < index && hoverClientY < hoverMiddleY - buffer) return;
+      if (item.index > index && hoverClientY > hoverMiddleY + buffer) return;
 
-      moveRowLocal(dragIndex, hoverIndex);
+      moveRowLocal(dragId, hoverId!);
 
-      item.index = hoverIndex;
+      item.index = index;
+    },
+    drop() {
+      return { moved: true };
     },
   });
 
   const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: 'row',
-    item: { index, originalIndex: index },
+    item: { id, index },
 
     end: (item, monitor) => {
       if (monitor.didDrop()) {
-        const finalIndex = item.index;
-        const { originalIndex } = item;
-
-        moveRowFinal(originalIndex, finalIndex);
+        const dropResult = monitor.getDropResult() as {
+          moved?: boolean;
+        } | null;
+        if (dropResult?.moved && item.id && id) {
+          moveRowFinal(item.id, id);
+        }
       }
     },
 
@@ -128,7 +136,8 @@ export function ScenarioTableRow({
       onClick={() => viewRow(scenario.ID)}
       className={`${tableCard} ${isChildHover ? noHover : ''}`}
       style={{
-        opacity: isDragging ? 0.5 : 1,
+        opacity: isDragging ? 0.3 : 1,
+        transition: isDragging ? 'none' : undefined,
       }}
     >
       <Flex align="center">
