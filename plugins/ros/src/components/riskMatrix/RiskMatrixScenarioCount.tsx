@@ -19,6 +19,7 @@ import {
   findProbabilityIndex,
 } from '../../utils/utilityfunctions';
 import { Text } from '@backstage/ui';
+import { useTheme } from '@mui/material/styles';
 
 interface ScenarioCountProps {
   riScWithMetadata: RiScWithMetadata;
@@ -34,11 +35,14 @@ export function RiskMatrixScenarioCount({
   initialRisk,
 }: ScenarioCountProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const theme = useTheme();
   const { circle, centered, tooltip, tooltipArrow, tooltipText } =
     useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const { openScenarioDrawer } = useScenario();
+  const [isHovered, setIsHovered] = useState(false);
+  const { openScenarioDrawer, hoveredScenarios, setHoveredScenarios } =
+    useScenario();
 
   function handleScenarioClick(ID: string) {
     setTooltipOpen(false);
@@ -110,8 +114,29 @@ export function RiskMatrixScenarioCount({
           className={`${circle} ${centered}`}
           elevation={10}
           onClick={() => setTooltipOpen(!tooltipOpen)}
+          onMouseEnter={() => {
+            setIsHovered(true);
+            setHoveredScenarios([...hoveredScenarios, ...scenarios]);
+          }}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setHoveredScenarios(
+              hoveredScenarios.filter(
+                scenario => !scenarios.some(s => s.ID === scenario.ID),
+              ),
+            );
+          }}
         >
-          <Text variant="body-large" weight="bold">
+          <Text
+            variant="body-large"
+            weight="bold"
+            style={{
+              color:
+                !isHovered && theme.palette.mode === 'dark'
+                  ? 'var(--bui-white)'
+                  : 'var(--bui-black)',
+            }}
+          >
             {scenarios.length}
           </Text>
         </Paper>
