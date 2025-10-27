@@ -119,7 +119,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
         </Box>
         <Box style={{ width: '15%' }}>
           <Text weight="bold" variant="body-large">
-            {t('dictionary.measures')}
+            {t('dictionary.initialRisk')}
           </Text>
         </Box>
         <Box style={{ width: props.isEditing ? '25%' : '35%' }}>
