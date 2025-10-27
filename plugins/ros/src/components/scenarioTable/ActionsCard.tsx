@@ -5,6 +5,7 @@ import { Divider } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
+import { useTheme } from '@mui/material/styles';
 import { useCallback, useEffect, useState } from 'react';
 import DualButtonWithMenu from '../../components/common/DualButtonWithMenu';
 import { useRiScs } from '../../contexts/RiScContext';
@@ -38,6 +39,7 @@ type ActionsCardProps = {
 export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { filteredData, scenario, updateRiSc, showUpdatedBadge } = props;
+  const theme = useTheme();
 
   const [pendingUpdatedIDs, setPendingUpdatedIDs] = useState<string[]>([]);
   const [pendingStatusById, setPendingStatusById] = useState<
@@ -117,19 +119,21 @@ export function ActionsCard(props: ActionsCardProps) {
       borderRadius: '24px',
     };
 
+    const isDarkMode = theme.palette.mode === 'dark';
+
     if (status === UpdatedStatusEnum.VERY_OUTDATED) {
       return {
         ...base,
-        backgroundColor: '#FFE2D4',
-        border: '1px solid #F23131',
+        backgroundColor: isDarkMode ? '#EBB095' : '#FFE2D4',
+        border: isDarkMode ? '1px solid #D04A14' : '1px solid #F23131',
       };
     }
 
     if (status === UpdatedStatusEnum.OUTDATED) {
       return {
         ...base,
-        backgroundColor: '#FCEBCD',
-        border: '1px solid #FF8B38',
+        backgroundColor: isDarkMode ? '#FFDD9D' : '#FCEBCD',
+        border: isDarkMode ? '1px solid #CF914A' : '1px solid #FF8B38',
       };
     }
     return base;
