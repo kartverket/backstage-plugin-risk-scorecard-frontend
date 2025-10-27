@@ -6,6 +6,7 @@ import { Text } from '@backstage/ui';
 interface ScenarioTableProgressBarProps {
   completedCount: number;
   totalCount: number;
+  textColor?: string | undefined;
 }
 
 const LinearProgressStyled = styled(LinearProgress)(({ theme }) => {
@@ -24,6 +25,7 @@ const LinearProgressStyled = styled(LinearProgress)(({ theme }) => {
 export function ScenarioTableProgressBar({
   completedCount,
   totalCount,
+  textColor,
 }: ScenarioTableProgressBarProps) {
   return (
     <Box display="flex" alignItems="center" gap={2} width="100%">
@@ -34,7 +36,13 @@ export function ScenarioTableProgressBar({
         />
       </Box>
       <Box sx={{ width: 65, textAlign: 'left', ml: 1 }}>
-        <Text variant="body-medium" style={{ whiteSpace: 'pre-line' }}>
+        <Text
+          variant="body-medium"
+          style={{
+            whiteSpace: 'pre-line',
+            color: textColor,
+          }}
+        >
           {' '}
           {completedCount} / {totalCount}
           {completedCount === totalCount ? ' 👑' : ''}
