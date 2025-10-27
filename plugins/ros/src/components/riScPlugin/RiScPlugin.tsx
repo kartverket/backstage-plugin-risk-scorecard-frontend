@@ -49,6 +49,7 @@ export function RiScPlugin() {
     resetRiScStatus,
     response,
     updateStatus,
+    riScs,
   } = useRiScs();
 
   const [searchParams] = useSearchParams();
@@ -88,17 +89,20 @@ export function RiScPlugin() {
       ) : (
         <>
           <RiScHeader onEditEncryption={openEditEncryptionDialog} />
-          {!isFetching && !selectedRiSc && (
-            <Flex
-              justify="center"
-              align="center"
-              style={{
-                height: '60%',
-              }}
-            >
-              <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
-            </Flex>
-          )}
+          {!isFetching &&
+            riScs !== null &&
+            riScs.length === 0 &&
+            !selectedRiSc && (
+              <Flex
+                justify="center"
+                align="center"
+                style={{
+                  height: '60%',
+                }}
+              >
+                <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
+              </Flex>
+            )}
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>
