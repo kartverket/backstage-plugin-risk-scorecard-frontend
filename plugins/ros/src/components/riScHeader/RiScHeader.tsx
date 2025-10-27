@@ -1,7 +1,6 @@
 import { Flex, Text } from '@backstage/ui';
 import { EditEncryptionButton } from '../riScDialog/EditEncryptionButton.tsx';
 import { SupportDialog } from '../riScDialog/SupportDialog.tsx';
-import { FeedbackDialog } from '../riScPlugin/FeedbackDialog.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { VersionChip } from './VersionChip.tsx';
@@ -21,10 +20,9 @@ export function RiScHeader(props: RiScHeaderProps) {
           </Text>
           <VersionChip />
         </Flex>
-        <Flex style={{ gap: '8px' }}>
+        <Flex gap="8px">
           <EditEncryptionButton onEditEncryption={props.onEditEncryption} />
           <SupportDialog />
-          <FeedbackDialog />
         </Flex>
       </Flex>
     </header>
