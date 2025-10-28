@@ -25,12 +25,6 @@ export function GcpCryptoKeyMenuItem({
       value={value}
       onClick={() => handleClick(JSON.parse(value) as GcpCryptoKeyObject)}
       disabled={!hasAccess}
-      sx={{
-        backgroundColor: isSelected ? 'inherit' : undefined,
-        '&:hover': {
-          backgroundColor: isSelected ? 'inherit' : 'grey.100',
-        },
-      }}
     >
       <ListItemAvatar>
         <Avatar
