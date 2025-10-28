@@ -1,9 +1,10 @@
 import { ReactElement, useState } from 'react';
 import { Button, Card, CardHeader, Flex, Text } from '@backstage/ui';
-import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
+import { Dialog, DialogContent } from '@material-ui/core';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { Link } from '@mui/material';
+import { FeedbackDialog } from '../riScPlugin/FeedbackDialog.tsx';
 
 export function SupportDialog() {
   const [open, setOpen] = useState(false);
@@ -19,16 +20,13 @@ export function SupportDialog() {
         {t('supportDialog.title')}
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
-        <DialogTitle>{t('supportDialog.title')}</DialogTitle>
+        <Flex px="24px" pt="18px" pb="10px">
+          <Text as="h3" variant="title-small" weight="bold">
+            {t('supportDialog.title')}
+          </Text>
+        </Flex>
         <DialogContent>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              marginBottom: '8px',
-            }}
-          >
+          <Flex direction="column" gap="8px">
             <SupportEntry
               label={t('supportDialog.entries.riscFeedbackChannel.title')}
               url="https://kartverketgroup.slack.com/archives/C075KCPTURY"
@@ -52,6 +50,9 @@ export function SupportDialog() {
                 'supportDialog.entries.riscDocumentation.description',
               )}
             />
+          </Flex>
+          <div style={{ marginTop: '24px' }}>
+            <FeedbackDialog open={open} setOpen={setOpen} />
           </div>
         </DialogContent>
       </Dialog>
