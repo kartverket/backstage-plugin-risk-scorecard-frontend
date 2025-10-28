@@ -132,8 +132,8 @@ export function ActionsCard(props: ActionsCardProps) {
     if (status === UpdatedStatusEnum.OUTDATED) {
       return {
         ...base,
-        backgroundColor: isDarkMode ? '#FFDD9D' : '#FCEBCD',
-        border: isDarkMode ? '1px solid #CF914A' : '1px solid #FF8B38',
+        backgroundColor: 'var(--Text-fill-scenario-and-action)',
+        border: '1px solid var(--Text-border-scenario-and-action)',
       };
     }
     return base;
