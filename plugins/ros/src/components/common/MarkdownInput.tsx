@@ -48,13 +48,28 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       onMarkdownChange?.(newValue || '');
     };
 
+    const onFocusCapture = (event: React.FocusEvent<HTMLDivElement>) => {
+      if (event.relatedTarget) {
+        const root = event.currentTarget as HTMLDivElement;
+        const target = root.querySelector(
+          'textarea, [contenteditable="true"]',
+        ) as HTMLElement | null;
+        if (target) {
+          setTimeout(() => target.focus());
+        }
+      }
+    };
+
     return (
       <FormControl sx={formControlStyles} error={error}>
         {label && <FormLabel sx={formLabel}>{label}</FormLabel>}
         {sublabel && (
           <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
         )}
-        <div data-color-mode={theme.palette.mode}>
+        <div
+          data-color-mode={theme.palette.mode}
+          onFocusCapture={onFocusCapture}
+        >
           <MDEditor
             ref={ref}
             value={markdownContent}
