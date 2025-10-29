@@ -3,16 +3,7 @@ import { RiScWithMetadata } from '../../utils/types.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Text,
-  Select,
-  ButtonIcon,
-  Flex,
-} from '@backstage/ui';
-import { CreateNewRiScButton } from './CreateNewRiScButton.tsx';
+import { Card, CardBody, Text, Select, ButtonIcon, Flex } from '@backstage/ui';
 
 interface Props {
   riScWithMetadata: RiScWithMetadata;
@@ -25,22 +16,12 @@ export function RiScSelectionCard(props: Props) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Card>
-      <CardHeader>
+    <Flex direction="column" gap="24px">
+      <Flex direction="column" className="SelectTrigger">
         {riScs !== null && riScs.length !== 0 && (
           <>
-            <Flex
-              justify="between"
-              style={{
-                marginBottom: '16px',
-              }}
-            >
-              <Text variant="title-small" as="h6" weight="bold">
-                {t('contentHeader.multipleRiScs')}
-              </Text>
-              <CreateNewRiScButton onCreateNew={props.onCreateNew} />
-            </Flex>
             <Select
+              aria-label={t('contentHeader.multipleRiScs')}
               options={riScs.map(riSc => ({
                 value: riSc.id,
                 label: riSc.content.title,
@@ -53,29 +34,31 @@ export function RiScSelectionCard(props: Props) {
             />
           </>
         )}
-      </CardHeader>
-      <CardBody>
-        <Flex
-          justify="between"
-          align="center"
-          style={{
-            marginBottom: '16px',
-            marginTop: '8px',
-          }}
-        >
-          <Text variant="title-x-small" as="h5" weight="bold">
-            {props.riScWithMetadata.content.title}
-          </Text>
-          <ButtonIcon
-            onClick={props.edit}
-            icon={
-              <i className="ri-pencil-line" style={{ fontSize: 'x-large' }} />
-            }
-            variant="tertiary"
-          />
-        </Flex>
-        <Markdown description={props.riScWithMetadata.content.scope} />
-      </CardBody>
-    </Card>
+      </Flex>
+      <Card>
+        <CardBody>
+          <Flex
+            justify="between"
+            align="center"
+            style={{
+              marginBottom: '16px',
+              marginTop: '8px',
+            }}
+          >
+            <Text variant="title-x-small" as="h5" weight="bold">
+              {props.riScWithMetadata.content.title}
+            </Text>
+            <ButtonIcon
+              onClick={props.edit}
+              icon={
+                <i className="ri-edit-line" style={{ fontSize: 'large' }} />
+              }
+              variant="tertiary"
+            />
+          </Flex>
+          <Markdown description={props.riScWithMetadata.content.scope} />
+        </CardBody>
+      </Card>
+    </Flex>
   );
 }
