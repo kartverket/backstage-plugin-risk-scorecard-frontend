@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useRef } from 'react';
+import { forwardRef, useState, useEffect } from 'react';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
@@ -48,11 +48,9 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       onMarkdownChange?.(newValue || '');
     };
 
-    const wrapperRef = useRef<HTMLDivElement | null>(null);
-
-    const onFocusCapture = (element: React.FocusEvent<HTMLDivElement>) => {
-      if (element.relatedTarget) {
-        const root = element.currentTarget as HTMLDivElement;
+    const onFocusCapture = (event: React.FocusEvent<HTMLDivElement>) => {
+      if (event.relatedTarget) {
+        const root = event.currentTarget as HTMLDivElement;
         const target = root.querySelector(
           'textarea, [contenteditable="true"]',
         ) as HTMLElement | null;
@@ -70,7 +68,6 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
         )}
         <div
           data-color-mode={theme.palette.mode}
-          ref={wrapperRef}
           onFocusCapture={onFocusCapture}
         >
           <MDEditor
