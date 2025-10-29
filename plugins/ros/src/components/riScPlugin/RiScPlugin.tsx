@@ -8,7 +8,6 @@ import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
-import { RiScInfo } from '../riScInfo/RiScInfo';
 import { Spinner } from '../common/Spinner';
 import { useRiScs } from '../../contexts/RiScContext';
 import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
@@ -16,6 +15,8 @@ import { RiScHeader } from '../riScHeader/RiScHeader.tsx';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper.tsx';
 import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
 import { Flex, Text } from '@backstage/ui';
+import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
+import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -108,11 +109,17 @@ export function RiScPlugin() {
           <Grid container spacing={4}>
             {selectedRiSc && (
               <>
-                <Grid item xs={12}>
-                  <RiScInfo
+                <Grid item xs={6}>
+                  <RiScSelectionCard
                     riScWithMetadata={selectedRiSc}
                     edit={openEditRiScDialog}
                     onCreateNew={openCreateRiScDialog}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <RiScStatusComponent
+                    selectedRiSc={selectedRiSc}
+                    publishRiScFn={openCreateRiScDialog}
                   />
                 </Grid>
                 <Grid item xs={12} lg={8}>
