@@ -13,7 +13,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
-import DualButtonWithMenu from '../../common/DualButtonWithMenu';
+import { DualButtonWithMenu } from '../../common/DualButtonWithMenu';
 import { useState } from 'react';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
 import { useRiScs } from '../../../contexts/RiScContext';
@@ -29,8 +29,7 @@ import {
   formatDate,
   UpdatedStatusEnum,
   getTranslatedActionStatus,
-  getActionStatusColor,
-  getActionStatusStyle,
+  getActionStatusButtonClass,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2 } from '../../common/typography';
@@ -201,15 +200,13 @@ export function ActionBox({
         >
           <DualButtonWithMenu
             propsCommon={{
-              color: getActionStatusColor(action.status),
-              style: getActionStatusStyle(action.status),
+              className: getActionStatusButtonClass(action.status),
             }}
             propsLeft={{
               children: translatedActionStatus,
             }}
             propsRight={{
-              startIcon: <Cached />,
-              sx: { padding: '0 0 0 10px', minWidth: '30px' },
+              iconEnd: <Cached />,
               onClick: () => {
                 if (isToday(action.lastUpdated ?? null)) return;
                 setIsActionUpdated(true);

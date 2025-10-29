@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { ButtonProps } from '@mui/material';
+import { ButtonProps } from '@backstage/ui';
 import { DualButton } from './DualButton';
 
 type MenuItemDef = {
@@ -117,5 +117,3 @@ export function DualButtonWithMenu({
     </div>
   );
 }
-
-export default DualButtonWithMenu;
