@@ -139,6 +139,12 @@ export function ActionsCard(props: ActionsCardProps) {
     return base;
   }
 
+  const statusBadgeStyle = {
+    padding: '0 8px',
+    fontSize: '12px',
+    color: 'var(--bui-black)',
+  };
+
   return (
     <>
       <Divider sx={{ marginBottom: '16px' }} />
@@ -172,13 +178,7 @@ export function ActionsCard(props: ActionsCardProps) {
                         ...getUpdatedStatusStyle(action.updatedStatus),
                       }}
                     >
-                      <Text
-                        as="p"
-                        style={{
-                          padding: '0 8px',
-                          color: 'var(--bui-black)',
-                        }}
-                      >
+                      <Text as="p" style={statusBadgeStyle}>
                         {(action.updatedStatus ===
                           UpdatedStatusEnum.VERY_OUTDATED &&
                           t('rosStatus.veryOutdated')) ||
@@ -198,12 +198,7 @@ export function ActionsCard(props: ActionsCardProps) {
                         borderRadius: '24px',
                       }}
                     >
-                      <Text
-                        style={{
-                          padding: '0 8px',
-                          color: 'var(--bui-black)',
-                        }}
-                      >
+                      <Text style={statusBadgeStyle}>
                         {t('rosStatus.updated')}
                       </Text>
                     </span>
