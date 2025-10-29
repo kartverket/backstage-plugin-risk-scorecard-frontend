@@ -5,8 +5,8 @@ import { RiScPlugin } from './components/riScPlugin/RiScPlugin';
 import { ScenarioProvider } from './contexts/ScenarioContext';
 import { riScRouteRef, scenarioRouteRef } from './routes';
 import { RiScProvider } from './contexts/RiScContext';
-import '@backstage/ui/css/styles.css';
 import 'remixicon/fonts/remixicon.css';
+import './theme.css';
 import { DefaultRiScTypesProvider } from './contexts/DefaultRiScTypesContext.tsx';
 
 const emotionInsertionPoint = document.createElement('meta');
