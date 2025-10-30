@@ -19,7 +19,9 @@
       "@kartverket/backstage-plugin-risk-scorecard"
     ]
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "scripts": {
     "start": "backstage-cli package start",
     "build": "backstage-cli package build",
