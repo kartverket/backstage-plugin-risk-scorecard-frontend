@@ -1,0 +1,17 @@
+/*
+This file contains custom CSS styles for the ROS plugin in Backstage, as well as our own overrides of Backstage UI styles. For colors that should vary depending on mode: declare them in both :root and [data-theme-mode='dark'] sections and then use the variables in your code.
+*/
+
+/*
+The Text-fill-scenario-and-action and Text-border-scenario-and-action variables are here as proofs of concept for how variables can be defined for both "default (light/:root) and dark mode and then our code can simply refer to the variable and don't are about the mode.
+*/
+:root {
+  --Text-fill-scenario-and-action: #fcebcd;
+  --Text-border-scenario-and-action: #ff8b38;
+}
+
+[data-theme-mode='dark'] {
+  /* Dark mode custom styles can be added here */
+  --Text-fill-scenario-and-action: #ffdd9d;
+  --Text-border-scenario-and-action: #cf914a;
+}

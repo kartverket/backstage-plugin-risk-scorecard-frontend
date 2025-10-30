@@ -57,7 +57,7 @@ export function ScenarioTableCard({
       <CardHeader>
         <ScenarioTableCardHeader />
       </CardHeader>
-      <CardBody style={{ paddingTop: '24px' }}>
+      <CardBody style={{ paddingTop: '12px' }}>
         {(veryOutdatedCount > 0 || outdatedCount > 0) && (
           <OutdatedActionsCounts
             veryOutdatedCount={veryOutdatedCount}
