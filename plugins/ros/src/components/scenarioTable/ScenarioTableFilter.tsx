@@ -24,7 +24,7 @@ type ScenarioTableFilterProps = {
 export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <Flex justify="between" mt="24px" gap="16px">
+    <Flex justify="between" gap="16px">
       <Flex style={{ flex: 1 }}>
         <SearchField
           placeholder="Søk etter tiltak ..."

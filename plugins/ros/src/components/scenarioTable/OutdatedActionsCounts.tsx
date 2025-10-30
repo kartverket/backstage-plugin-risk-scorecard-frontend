@@ -16,7 +16,7 @@ type OutdatedActionsCountsProps = {
 };
 export function OutdatedActionsCounts(props: OutdatedActionsCountsProps) {
   return (
-    <Flex>
+    <Flex mb="24px">
       {props.veryOutdatedCount > 0 && (
         <OutdatedActionsBadge
           type={UpdatedStatusEnum.VERY_OUTDATED}
@@ -54,10 +54,10 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
   ) {
     if (isSelected) {
       if (type === UpdatedStatusEnum.VERY_OUTDATED) {
-        return '#EBB095';
+        return isHover ? '#E58869' : '#EBB095';
       }
       if (type === UpdatedStatusEnum.OUTDATED) {
-        return '#FFDD9D';
+        return isHover ? '#EBBE76' : '#FFDD9D';
       }
     }
     if (type === UpdatedStatusEnum.OUTDATED) {
@@ -78,8 +78,8 @@ function OutdatedActionsBadge(props: OutdatedActionsBadgeProps) {
     borderRadius: '24px',
     border:
       props.type === UpdatedStatusEnum.VERY_OUTDATED
-        ? '1px solid #F23131'
-        : '1px solid #FF8B38',
+        ? '1px solid #A32F00'
+        : '1px solid #CF914A',
     color: 'white',
     backgroundColor: isHover
       ? getButtonBackgroundColor(true, props.type)
