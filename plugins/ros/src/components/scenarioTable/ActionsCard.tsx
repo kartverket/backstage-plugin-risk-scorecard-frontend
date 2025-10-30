@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import { useTheme } from '@mui/material/styles';
 import { useCallback, useEffect, useState } from 'react';
-import { DualButtonWithMenu } from '../../components/common/DualButtonWithMenu';
+import { DualButtonWithMenu } from '../common/DualButtonWithMenu';
 import { useRiScs } from '../../contexts/RiScContext';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { ActionStatusOptions } from '../../utils/constants';
