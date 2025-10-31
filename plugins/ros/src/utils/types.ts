@@ -44,6 +44,7 @@ export enum DefaultRiScType {
   InternalJob = 'InternalJob',
   Standard = 'Standard',
   Ops = 'Ops',
+  Begrenset = 'Begrenset',
 }
 
 export type MigrationStatus = {
