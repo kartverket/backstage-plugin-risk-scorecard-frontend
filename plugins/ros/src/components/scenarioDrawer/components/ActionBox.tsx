@@ -64,6 +64,7 @@ export function ActionBox({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
     useState(false);
+  const [isActionUpdated, setIsActionUpdated] = useState(false);
 
   const { updateStatus, selectedRiSc } = useRiScs();
 
@@ -84,9 +85,11 @@ export function ActionBox({
     setDeleteActionConfirmationIsOpen(false);
   }
 
-  const parsedDateTime = action.lastUpdated
-    ? formatDate(action.lastUpdated)
-    : t('scenarioDrawer.action.notUpdated');
+  const parsedDateTime = isActionUpdated
+    ? formatDate(new Date())
+    : action.lastUpdated
+      ? formatDate(action.lastUpdated)
+      : t('scenarioDrawer.action.notUpdated');
 
   function updateActionInScenario(updates: ActionStatusOptions) {
     const actionIndex = scenario.actions.findIndex(a => a.ID === action.ID);
@@ -98,10 +101,10 @@ export function ActionBox({
     }
 
     formMethods.setValue(`actions.${index}.status`, updates);
-
     setCurrentUpdatedActionIDs(prev =>
       prev.includes(action.ID) ? prev : [...prev, action.ID],
     );
+    setIsActionUpdated(true);
   }
 
   function handleStatusChange(newStatus: ActionStatusOptions) {
@@ -208,10 +211,7 @@ export function ActionBox({
               sx: { padding: '0 0 0 10px', minWidth: '30px' },
               onClick: () => {
                 if (isToday(action.lastUpdated ?? null)) return;
-                formMethods.setValue(
-                  `actions.${index}.lastUpdated`,
-                  new Date(),
-                );
+                setIsActionUpdated(true);
                 setCurrentUpdatedActionIDs(prev =>
                   prev.includes(action.ID) ? prev : [...prev, action.ID],
                 );
@@ -242,8 +242,10 @@ export function ActionBox({
             <Text variant="body-large">{parsedDateTime}</Text>
           </Box>
           <Exclamations
-            action={action}
-            lastPublished={selectedRiSc?.lastPublished}
+            actionLastUpdated={
+              isActionUpdated ? new Date() : action.lastUpdated
+            }
+            riScLastPublished={selectedRiSc?.lastPublished}
           />
         </Box>
         <IconButton onClick={handleDeleteAction}>
@@ -330,19 +332,19 @@ export function ActionBox({
 }
 
 function Exclamations({
-  action,
-  lastPublished,
+  actionLastUpdated,
+  riScLastPublished,
 }: {
-  action: Action;
-  lastPublished?: LastPublished;
+  actionLastUpdated: Date | undefined | null;
+  riScLastPublished?: LastPublished;
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const daysSinceLastUpdate = action.lastUpdated
-    ? calculateDaysSince(new Date(action.lastUpdated))
+  const daysSinceLastUpdate = actionLastUpdated
+    ? calculateDaysSince(new Date(actionLastUpdated))
     : null;
   const status = calculateUpdatedStatus(
     daysSinceLastUpdate,
-    lastPublished?.numberOfCommits || null,
+    riScLastPublished?.numberOfCommits || null,
   );
 
   switch (status) {
