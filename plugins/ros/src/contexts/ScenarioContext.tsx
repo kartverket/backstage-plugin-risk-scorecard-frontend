@@ -23,6 +23,8 @@ import {
   consequenceOptions,
   probabilityOptions,
 } from '../utils/constants';
+import { getActionsWithLastUpdated } from '../utils/actions.ts';
+import { getScenarioOfIdFromRiSc } from '../utils/scenario.ts';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
@@ -71,8 +73,11 @@ type ScenarioDrawerProps = {
   ) => void;
   submitEditedScenarioToRiSc: (
     editedScenario: Scenario,
-    onSuccess?: () => void,
-    onError?: () => void,
+    options?: {
+      idsOfActionsToForceUpdateLastUpdatedValue?: string[];
+      onSuccess?: () => void;
+      onError?: () => void;
+    },
   ) => void;
 
   openScenarioDrawer: (id: string, isEditingAllowed: boolean) => void;
@@ -212,6 +217,8 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
     onSuccess?: () => void,
     onError?: () => void,
   ) {
+    newScenario.actions = getActionsWithLastUpdated([], newScenario.actions);
+
     if (riSc) {
       updateRiSc(
         {
@@ -229,9 +236,23 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
   function submitEditedScenarioToRiSc(
     editedScenario: Scenario,
-    onSuccess?: () => void,
-    onError?: () => void,
+    options?: {
+      idsOfActionsToForceUpdateLastUpdatedValue?: string[];
+      onSuccess?: () => void;
+      onError?: () => void;
+    },
   ) {
+    const oldScenario = getScenarioOfIdFromRiSc(
+      editedScenario.ID,
+      selectedRiSc,
+    );
+
+    editedScenario.actions = getActionsWithLastUpdated(
+      oldScenario?.actions ?? [],
+      editedScenario.actions,
+      options?.idsOfActionsToForceUpdateLastUpdatedValue ?? [],
+    );
+
     if (riSc) {
       updateRiSc(
         {
@@ -243,8 +264,8 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
             ),
           },
         },
-        onSuccess,
-        onError,
+        options?.onSuccess,
+        options?.onError,
       );
     }
   }

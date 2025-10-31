@@ -79,12 +79,13 @@ export function ScenarioDrawer() {
                 ...a,
                 status:
                   formValues.actions?.[indexOfAction(a.ID)]?.status ?? a.status,
-                lastUpdated: new Date(),
               }
             : a,
         ),
       };
-      submitEditedScenarioToRiSc(updatedScenario);
+      submitEditedScenarioToRiSc(updatedScenario, {
+        idsOfActionsToForceUpdateLastUpdatedValue: updatedIDs,
+      });
       setCurrentUpdatedActionIDs([]);
     },
     [scenario, formMethods, submitEditedScenarioToRiSc],
@@ -119,9 +120,13 @@ export function ScenarioDrawer() {
   }
 
   const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
-    submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), () =>
-      setIsEditing(false),
-    );
+    submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), {
+      onSuccess: () => {
+        setCurrentUpdatedActionIDs([]);
+        setIsEditing(false);
+      },
+      idsOfActionsToForceUpdateLastUpdatedValue: currentUpdatedActionIDs,
+    });
   });
 
   function onSubmitAndCloseDialog() {

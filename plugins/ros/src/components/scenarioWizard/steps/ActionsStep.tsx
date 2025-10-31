@@ -160,11 +160,6 @@ export function ActionsStep({
                     label={t('dictionary.status')}
                     options={actionStatusOptions}
                   />
-                  <input
-                    type="hidden"
-                    {...register(`actions.${index}.lastUpdated`)}
-                    value={new Date().toISOString()}
-                  />
                 </Box>
               </Stack>
             </Paper>

@@ -2,13 +2,11 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Scenario, Action } from '../../utils/types';
+import { Scenario } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
-  calculateDaysSince,
-  calculateUpdatedStatus,
   deleteScenario,
   getConsequenceLevel,
   getProbabilityLevel,
@@ -22,9 +20,12 @@ import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteC
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
 import { ActionsCard } from './ActionsCard.tsx';
-import { useFilteredActions } from '../../utils/hooks.ts';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { useTheme } from '@mui/material/styles';
+import {
+  getActionsWithUpdatedStatus,
+  getFilteredActions,
+} from '../../utils/actions.ts';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -60,6 +61,10 @@ export function ScenarioTableRow({
   const { hoveredScenarios } = useScenario();
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
     useState(false);
+
+  const [actionIdsOfVisibleType, setActionIdsOfVisibleType] = useState<
+    string[]
+  >([]);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -113,24 +118,25 @@ export function ScenarioTableRow({
     }),
   }));
 
-  const actionsWithUpdatedStatus = scenario.actions.map(action => {
-    const daysSinceLastUpdate = action.lastUpdated
-      ? calculateDaysSince(new Date(action.lastUpdated))
-      : null;
-    return {
-      ...action,
-      updatedStatus: calculateUpdatedStatus(
-        daysSinceLastUpdate,
-        riSc?.lastPublished?.numberOfCommits || null,
-      ),
-    } as Action & { updatedStatus: UpdatedStatusEnumType };
-  });
-
-  const filteredActions = useFilteredActions({
-    visibleType,
+  const actionsWithUpdatedStatus = getActionsWithUpdatedStatus(
+    scenario.actions,
+    riSc?.lastPublished?.numberOfCommits || null,
+  );
+  const filteredActions = getFilteredActions(
     actionsWithUpdatedStatus,
     searchMatches,
-  });
+    actionIdsOfVisibleType,
+    visibleType,
+  );
+
+  useEffect(() => {
+    const actions = actionsWithUpdatedStatus.filter(
+      a => a.updatedStatus === visibleType,
+    );
+    const actionIds = actions.map(a => a.ID);
+    setActionIdsOfVisibleType(actionIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleType]);
 
   preview(drop(ref));
 
@@ -257,7 +263,6 @@ export function ScenarioTableRow({
           <ActionsCard
             filteredData={filteredActions}
             scenario={scenario}
-            updateRiSc={updateRiSc}
             showUpdatedBadge={!!visibleType}
           />
         </div>
