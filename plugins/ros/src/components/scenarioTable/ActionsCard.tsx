@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import { useTheme } from '@mui/material/styles';
 import { useCallback, useEffect, useState } from 'react';
-import DualButtonWithMenu from '../../components/common/DualButtonWithMenu';
+import { DualButtonWithMenu } from '../common/DualButtonWithMenu';
 import { useRiScs } from '../../contexts/RiScContext';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { ActionStatusOptions } from '../../utils/constants';
@@ -17,8 +17,7 @@ import { Action, RiScWithMetadata, Scenario } from '../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
   formatDate,
-  getActionStatusColor,
-  getActionStatusStyle,
+  getActionStatusButtonClass,
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
@@ -211,10 +210,7 @@ export function ActionsCard(props: ActionsCardProps) {
               <Flex>
                 <DualButtonWithMenu
                   propsCommon={{
-                    color: getActionStatusColor(
-                      (pendingStatusById[action.ID] ?? action.status) as any,
-                    ),
-                    style: getActionStatusStyle(
+                    className: getActionStatusButtonClass(
                       (pendingStatusById[action.ID] ?? action.status) as any,
                     ),
                   }}
@@ -228,8 +224,7 @@ export function ActionsCard(props: ActionsCardProps) {
                     ),
                   }}
                   propsRight={{
-                    startIcon: <Cached />,
-                    sx: { padding: '0 0 0 10px', minWidth: '30px' },
+                    iconEnd: <Cached />,
                     onClick: () => {
                       setPendingLastUpdatedById(prev => ({
                         ...prev,

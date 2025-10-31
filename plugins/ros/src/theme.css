@@ -8,6 +8,29 @@ The Text-fill-scenario-and-action and Text-border-scenario-and-action variables 
 :root {
   --Text-fill-scenario-and-action: #fcebcd;
   --Text-border-scenario-and-action: #ff8b38;
+
+  --green-500: #156630;
+
+  --red-bright: #d3302f;
+
+  --gray-medium: #808080;
+
+  /* -------Button styles------- */
+  .button-red {
+    background-color: var(--red-bright);
+    color: var(--bui-white);
+  }
+
+  .button-green {
+    background-color: var(--green-500);
+    color: var(--bui-white);
+  }
+
+  .button-gray {
+    background-color: var(--gray-medium);
+    color: var(--bui-white);
+  }
+  /* ---------------------------- */
 }
 
 [data-theme-mode='dark'] {

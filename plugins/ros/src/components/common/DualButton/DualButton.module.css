@@ -1,0 +1,18 @@
+.DualButton {
+  display: flex;
+  text-wrap: nowrap;
+  gap: 4px;
+
+  .DualButtonLeft {
+    border-top-left-radius: 1000px;
+    border-bottom-left-radius: 1000px;
+    text-transform: none;
+    min-width: 110px;
+  }
+
+  .DualButtonRight {
+    border-top-right-radius: 1000px;
+    border-bottom-right-radius: 1000px;
+    text-transform: none;
+  }
+}

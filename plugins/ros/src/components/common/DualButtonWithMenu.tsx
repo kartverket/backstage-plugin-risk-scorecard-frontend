@@ -1,7 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import Menu, { MenuProps } from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import { ButtonProps } from '@mui/material';
+import React, { useCallback } from 'react';
+import { ButtonProps } from '@backstage/ui';
 import { DualButton } from './DualButton';
 
 type MenuItemDef = {
@@ -16,7 +14,6 @@ type DualButtonWithMenuProps = {
   propsRight?: ButtonProps;
   propsCommon?: ButtonProps;
   menuItems?: MenuItemDef[];
-  menuProps?: Partial<MenuProps>;
   openMenuOnLeftClick?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
@@ -25,13 +22,9 @@ export function DualButtonWithMenu({
   propsRight,
   propsCommon,
   menuItems,
-  menuProps,
   openMenuOnLeftClick,
   ...props
 }: DualButtonWithMenuProps) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
   const handleLeftClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       event.stopPropagation();
@@ -41,14 +34,8 @@ export function DualButtonWithMenu({
           ? openMenuOnLeftClick
           : Boolean(menuItems && menuItems.length > 0);
       if (!shouldOpen) return;
-
-      if (open) {
-        setAnchorEl(null);
-      } else {
-        setAnchorEl(event.currentTarget);
-      }
     },
-    [propsLeft, openMenuOnLeftClick, menuItems, open],
+    [propsLeft, openMenuOnLeftClick, menuItems],
   );
 
   const handleRightClick = useCallback(
@@ -58,10 +45,6 @@ export function DualButtonWithMenu({
     },
     [propsRight],
   );
-
-  const handleMenuClose = useCallback(() => {
-    setAnchorEl(null);
-  }, []);
 
   const wrappedLeft = {
     ...(propsLeft || {}),
@@ -73,49 +56,12 @@ export function DualButtonWithMenu({
   } as ButtonProps;
 
   return (
-    <div
+    <DualButton
+      menuItems={menuItems}
+      propsLeft={wrappedLeft}
+      propsRight={wrappedRight}
+      propsCommon={propsCommon}
       {...props}
-      role="presentation"
-      onClick={e => {
-        e.stopPropagation();
-      }}
-      onKeyDown={e => {
-        e.stopPropagation();
-      }}
-    >
-      <DualButton
-        propsLeft={wrappedLeft}
-        propsRight={wrappedRight}
-        propsCommon={propsCommon}
-      />
-
-      {menuItems && (
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleMenuClose}
-          {...menuProps}
-        >
-          {menuItems.map(item => (
-            <MenuItem
-              key={item.key}
-              selected={item.selected}
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                e.stopPropagation();
-                try {
-                  item.onClick();
-                } finally {
-                  handleMenuClose();
-                }
-              }}
-            >
-              {item.label}
-            </MenuItem>
-          ))}
-        </Menu>
-      )}
-    </div>
+    />
   );
 }
-
-export default DualButtonWithMenu;
