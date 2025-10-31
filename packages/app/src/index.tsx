@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import posthog from 'posthog-js';
 import { URLS } from './urls';
+import '@backstage/ui/css/styles.css';
 
 posthog.init('phc_5i5QBLfgf4FXS4hJlnkrLsAzQERS8PALDPmF2YVFQsB', {
   api_host: URLS.external.eu_posthog_com,
