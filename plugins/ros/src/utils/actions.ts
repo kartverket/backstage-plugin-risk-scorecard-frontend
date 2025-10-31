@@ -85,13 +85,13 @@ export function getFilteredActions(
   if (updatedStatusFilter === null) {
     return actions.filter(a => {
       if (searchMatches === undefined) return true;
-      return searchMatches?.find(aa => a.ID == aa.ID);
+      return searchMatches?.find(aa => a.ID === aa.ID);
     });
   }
   return actions
     .filter(a => idsOfActionsMatchingUpdatedStatus.includes(a.ID))
     .filter(a => {
       if (searchMatches === undefined) return true;
-      return searchMatches?.find(aa => a.ID == aa.ID);
+      return searchMatches?.find(aa => a.ID === aa.ID);
     });
 }

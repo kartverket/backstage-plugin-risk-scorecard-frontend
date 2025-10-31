@@ -64,12 +64,7 @@ export function ActionsCard(props: ActionsCardProps) {
       });
       setPendingUpdatedIDs([]);
     },
-    [
-      scenario,
-      submitEditedScenarioToRiSc,
-      pendingStatusById,
-      pendingUpdatedIDs,
-    ],
+    [scenario, submitEditedScenarioToRiSc, pendingStatusById],
   );
 
   const { flush } = useDebounce(pendingUpdatedIDs, 6000, debounceCallback);

@@ -135,6 +135,7 @@ export function ScenarioTableRow({
     );
     const actionIds = actions.map(a => a.ID);
     setActionIdsOfVisibleType(actionIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleType]);
 
   preview(drop(ref));

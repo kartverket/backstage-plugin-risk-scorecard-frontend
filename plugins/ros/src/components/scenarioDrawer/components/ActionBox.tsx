@@ -85,11 +85,12 @@ export function ActionBox({
     setDeleteActionConfirmationIsOpen(false);
   }
 
-  const parsedDateTime = isActionUpdated
-    ? formatDate(new Date())
-    : action.lastUpdated
-      ? formatDate(action.lastUpdated)
-      : t('scenarioDrawer.action.notUpdated');
+  function getParsedDateTime(): string {
+    if (isActionUpdated) return formatDate(new Date());
+    if (action.lastUpdated) return formatDate(action.lastUpdated);
+    return t('scenarioDrawer.action.notUpdated');
+  }
+  const parsedDateTime = getParsedDateTime();
 
   function updateActionInScenario(updates: ActionStatusOptions) {
     const actionIndex = scenario.actions.findIndex(a => a.ID === action.ID);
