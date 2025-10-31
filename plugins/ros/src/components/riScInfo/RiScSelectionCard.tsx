@@ -4,6 +4,7 @@ import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { Card, CardBody, Text, Select, ButtonIcon, Flex } from '@backstage/ui';
+import styles from './RiScSelectionCard.module.css';
 
 interface Props {
   riScWithMetadata: RiScWithMetadata;
@@ -17,10 +18,11 @@ export function RiScSelectionCard(props: Props) {
 
   return (
     <Flex direction="column" gap="24px">
-      <Flex direction="column" className="SelectTrigger">
+      <Flex direction="column">
         {riScs !== null && riScs.length !== 0 && (
           <>
             <Select
+              className={styles.selectTrigger}
               aria-label={t('contentHeader.multipleRiScs')}
               options={riScs.map(riSc => ({
                 value: riSc.id,
