@@ -15,7 +15,6 @@ export function CreateNewRiScButton(props: CreateNewRiScButtonProps) {
       onClick={props.onCreateNew}
       style={{
         width: 'fit-content',
-        color: '#1F5492',
         fontSize: '16px',
       }}
     >

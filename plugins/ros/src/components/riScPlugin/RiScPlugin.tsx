@@ -14,7 +14,8 @@ import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { RiScHeader } from '../riScHeader/RiScHeader.tsx';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper.tsx';
 import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
-import { Flex, Text, Button } from '@backstage/ui';
+import { Flex, Text } from '@backstage/ui';
+import { CreateNewRiScButton } from '../riScInfo/CreateNewRiScButton.tsx';
 import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
 import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
@@ -114,20 +115,15 @@ export function RiScPlugin() {
             {selectedRiSc && (
               <>
                 <Grid item xs={12}>
-                  <Grid container rowSpacing={2} columnSpacing={4}>
+                  <Grid container rowSpacing={1} columnSpacing={4}>
                     <Grid item xs={6}>
                       <Flex align="center" justify="between">
                         <Text as="h3" variant="body-large" weight="bold">
                           {t('contentHeader.multipleRiScs')}
                         </Text>
-                        <Button
-                          iconStart={<i className="ri-add-circle-line" />}
-                          onClick={openCreateRiScDialog}
-                          variant="tertiary"
-                          style={{ color: '#1F5492', fontSize: '16px' }}
-                        >
-                          {t('contentHeader.createNewButton')}
-                        </Button>
+                        <CreateNewRiScButton
+                          onCreateNew={openCreateRiScDialog}
+                        />
                       </Flex>
                     </Grid>
 
