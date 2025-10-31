@@ -14,9 +14,11 @@ import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
 import { RiScHeader } from '../riScHeader/RiScHeader.tsx';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper.tsx';
 import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
-import { Flex, Text } from '@backstage/ui';
+import { Flex, Text, Button } from '@backstage/ui';
 import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
 import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -52,6 +54,8 @@ export function RiScPlugin() {
     updateStatus,
     riScs,
   } = useRiScs();
+
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [searchParams] = useSearchParams();
   const scenarioWizardStep = searchParams.get(
@@ -109,18 +113,40 @@ export function RiScPlugin() {
           <Grid container spacing={4}>
             {selectedRiSc && (
               <>
-                <Grid item xs={6}>
-                  <RiScSelectionCard
-                    riScWithMetadata={selectedRiSc}
-                    edit={openEditRiScDialog}
-                    onCreateNew={openCreateRiScDialog}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <RiScStatusComponent
-                    selectedRiSc={selectedRiSc}
-                    publishRiScFn={openCreateRiScDialog}
-                  />
+                <Grid item xs={12}>
+                  <Grid container rowSpacing={2} columnSpacing={4}>
+                    <Grid item xs={6}>
+                      <Flex align="center" justify="between">
+                        <Text as="h3" variant="body-large" weight="bold">
+                          {t('contentHeader.multipleRiScs')}
+                        </Text>
+                        <Button
+                          iconStart={<i className="ri-add-circle-line" />}
+                          onClick={openCreateRiScDialog}
+                          variant="tertiary"
+                          style={{ color: '#1F5492', fontSize: '16px' }}
+                        >
+                          {t('contentHeader.createNewButton')}
+                        </Button>
+                      </Flex>
+                    </Grid>
+
+                    <Grid item xs={6} />
+
+                    <Grid item xs={6}>
+                      <RiScSelectionCard
+                        riScWithMetadata={selectedRiSc}
+                        edit={openEditRiScDialog}
+                        onCreateNew={openCreateRiScDialog}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <RiScStatusComponent
+                        selectedRiSc={selectedRiSc}
+                        publishRiScFn={openCreateRiScDialog}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
                 <Grid item xs={12} lg={8}>
                   <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
