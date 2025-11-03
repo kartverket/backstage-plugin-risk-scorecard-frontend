@@ -58,7 +58,7 @@ export function ScenarioTableRow({
   const [isChildHover, setIsChildHover] = useState(false);
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
-  const { hoveredScenarios } = useScenario();
+  const { hoveredScenarios, setHoveredScenarios } = useScenario();
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
     useState(false);
 
@@ -143,6 +143,7 @@ export function ScenarioTableRow({
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
+  const highlightColor = theme.palette.mode === 'dark' ? '#A2A0A0' : '#FFDD9D';
   const isTextColorBlack =
     theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;
   const textColorAsBuiVariable = isTextColorBlack
@@ -151,13 +152,23 @@ export function ScenarioTableRow({
 
   return (
     <Card
+      onMouseEnter={() => {
+        setHoveredScenarios(prev =>
+          prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
+        );
+      }}
+      onMouseLeave={() => {
+        setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
+      }}
       ref={ref}
       onClick={() => viewRow(scenario.ID)}
       className={`${tableCard} ${isChildHover ? noHover : ''}`}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
-        backgroundColor: isScenarioHoveredFromRiskMatrix ? '#FFDD9D' : '',
+        backgroundColor: isScenarioHoveredFromRiskMatrix
+          ? highlightColor
+          : undefined,
       }}
     >
       <Flex align="center">
