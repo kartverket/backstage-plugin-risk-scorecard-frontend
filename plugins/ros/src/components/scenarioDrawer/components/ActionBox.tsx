@@ -1,6 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import {
-  Cached,
   Edit,
   ExpandLess,
   ExpandMore,
@@ -206,7 +205,7 @@ export function ActionBox({
               children: translatedActionStatus,
             }}
             propsRight={{
-              iconEnd: <Cached />,
+              iconEnd: <i className="ri-loop-left-line" />,
               onClick: () => {
                 if (isToday(action.lastUpdated ?? null)) return;
                 setIsActionUpdated(true);

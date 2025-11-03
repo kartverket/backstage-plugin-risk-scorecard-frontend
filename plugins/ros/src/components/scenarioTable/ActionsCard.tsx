@@ -1,6 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Box, Flex, Text } from '@backstage/ui';
-import { Cached } from '@mui/icons-material';
 import { Divider } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -194,7 +193,7 @@ export function ActionsCard(props: ActionsCardProps) {
                     ),
                   }}
                   propsRight={{
-                    iconEnd: <Cached />,
+                    iconEnd: <i className="ri-loop-left-line" />,
                     onClick: () => {
                       handleStatusChange(
                         action.ID,
