@@ -14,12 +14,11 @@ import {
   MouseEvent,
 } from 'react';
 import DualButtonWithMenu from '../../components/common/DualButtonWithMenu';
-import { useRiScs } from '../../contexts/RiScContext';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDebounce } from '../../utils/hooks';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Action, RiScWithMetadata, Scenario } from '../../utils/types';
+import { Action, Scenario } from '../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
   formatDate,
@@ -34,70 +33,44 @@ import { body2 } from '../common/typography';
 type ActionsCardProps = {
   filteredData: (Action & { updatedStatus: UpdatedStatusEnumType })[];
   scenario: Scenario;
-  updateRiSc: (
-    riSc: RiScWithMetadata,
-    onSuccess?: () => void,
-    onError?: () => void,
-  ) => void;
   showUpdatedBadge?: boolean;
 };
 
 export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { filteredData, scenario, updateRiSc, showUpdatedBadge } = props;
+  const { filteredData, scenario, showUpdatedBadge } = props;
   const theme = useTheme();
 
   const [pendingUpdatedIDs, setPendingUpdatedIDs] = useState<string[]>([]);
   const [pendingStatusById, setPendingStatusById] = useState<
     Record<string, ActionStatusOptions>
   >({});
-  const [pendingLastUpdatedById, setPendingLastUpdatedById] = useState<
-    Record<string, Date>
-  >({});
 
-  const { selectedRiSc } = useRiScs();
-  const { isActionExpanded, toggleActionExpanded } = useScenario();
+  const { isActionExpanded, toggleActionExpanded, submitEditedScenarioToRiSc } =
+    useScenario();
 
   const debounceCallback = useCallback(
     (updatedIDs: string[]) => {
-      if (!selectedRiSc) return;
       if (updatedIDs.length === 0) return;
 
-      const updatedScenarios = selectedRiSc.content.scenarios.map(s => {
-        if (s.ID !== scenario.ID) return s;
-
-        const newActions = s.actions.map(a =>
+      const updatedScenario = {
+        ...scenario,
+        actions: scenario.actions.map(a =>
           updatedIDs.includes(a.ID)
             ? {
                 ...a,
                 status: pendingStatusById[a.ID] ?? a.status,
-                lastUpdated: pendingLastUpdatedById[a.ID] ?? new Date(),
               }
             : a,
-        );
-
-        return { ...s, actions: newActions };
-      });
-
-      const updatedRiSc: RiScWithMetadata = {
-        ...selectedRiSc,
-        content: {
-          ...selectedRiSc.content,
-          scenarios: updatedScenarios,
-        },
+        ),
       };
 
-      updateRiSc(updatedRiSc);
-
+      submitEditedScenarioToRiSc(updatedScenario, {
+        idsOfActionsToForceUpdateLastUpdatedValue: updatedIDs,
+      });
       setPendingUpdatedIDs([]);
     },
-    [
-      selectedRiSc,
-      scenario.ID,
-      updateRiSc,
-      pendingStatusById,
-      pendingLastUpdatedById,
-    ],
+    [scenario, submitEditedScenarioToRiSc, pendingStatusById],
   );
 
   const { flush } = useDebounce(pendingUpdatedIDs, 6000, debounceCallback);
@@ -111,7 +84,6 @@ export function ActionsCard(props: ActionsCardProps) {
     newStatus: ActionStatusOptions,
   ) {
     setPendingStatusById(prev => ({ ...prev, [actionID]: newStatus }));
-    setPendingLastUpdatedById(prev => ({ ...prev, [actionID]: new Date() }));
     setPendingUpdatedIDs(prev =>
       prev.includes(actionID) ? prev : [...prev, actionID],
     );
@@ -155,9 +127,7 @@ export function ActionsCard(props: ActionsCardProps) {
     <>
       <Divider sx={{ marginBottom: '16px' }} />
       {filteredData.map((action, idx) => {
-        const isPending =
-          pendingUpdatedIDs.includes(action.ID) ||
-          !!pendingLastUpdatedById[action.ID];
+        const isPending = pendingStatusById[action.ID] !== undefined;
         const isExpanded = isActionExpanded(action.ID);
         const isLast = idx === filteredData.length - 1;
 
@@ -276,14 +246,9 @@ export function ActionsCard(props: ActionsCardProps) {
                         startIcon: <Cached />,
                         sx: { padding: '0 0 0 10px', minWidth: '30px' },
                         onClick: () => {
-                          setPendingLastUpdatedById(prev => ({
-                            ...prev,
-                            [action.ID]: new Date(),
-                          }));
-                          setPendingUpdatedIDs(prev =>
-                            prev.includes(action.ID)
-                              ? prev
-                              : [...prev, action.ID],
+                          handleStatusChange(
+                            action.ID,
+                            action.status as ActionStatusOptions,
                           );
                         },
                       }}
@@ -312,7 +277,7 @@ export function ActionsCard(props: ActionsCardProps) {
                   <br />
                   {(() => {
                     const last =
-                      pendingLastUpdatedById[action.ID] ?? action.lastUpdated;
+                      action.ID in pendingStatusById ? new Date() : undefined;
                     return last
                       ? formatDate(last)
                       : t('scenarioDrawer.action.notUpdated');
@@ -387,5 +352,3 @@ export function ActionsCard(props: ActionsCardProps) {
     </>
   );
 }
-
-export default ActionsCard;
