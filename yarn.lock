@@ -7085,9 +7085,11 @@ __metadata:
     "@mui/material": "npm:^5.17.1"
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:^16.3.0"
+    "@types/classnames": "npm:^2.3.4"
     "@types/luxon": "npm:^3"
     "@types/react": "npm:^18.3.20"
     "@uiw/react-md-editor": "npm:^4.0.5"
+    classnames: "npm:^2.5.1"
     github-markdown-css: "npm:^5.8.1"
     luxon: "npm:^3.6.1"
     prettier: "npm:^3.6.2"
@@ -13647,6 +13649,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/classnames@npm:^2.3.4":
+  version: 2.3.4
+  resolution: "@types/classnames@npm:2.3.4"
+  dependencies:
+    classnames: "npm:*"
+  checksum: 10c0/25de08662e5c68314d23527671a29c2125e399c015d67ffd4b304aa3330f1aacd452bcc74964e04eaad35999c4d474ded4fbb8c4c920026e43783f76560d6b0c
+  languageName: node
+  linkType: hard
+
 "@types/codemirror@npm:^0.0.90":
   version: 0.0.90
   resolution: "@types/codemirror@npm:0.0.90"
@@ -16739,7 +16750,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.2.6, classnames@npm:^2.3.1, classnames@npm:^2.5.1":
+"classnames@npm:*, classnames@npm:^2.2.6, classnames@npm:^2.3.1, classnames@npm:^2.5.1":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: 10c0/afff4f77e62cea2d79c39962980bf316bacb0d7c49e13a21adaadb9221e1c6b9d3cdb829d8bb1b23c406f4e740507f37e1dcf506f7e3b7113d17c5bab787aa69
