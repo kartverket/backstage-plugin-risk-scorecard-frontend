@@ -15,7 +15,6 @@ export function CreateNewRiScButton(props: CreateNewRiScButtonProps) {
       onClick={props.onCreateNew}
       style={{
         width: 'fit-content',
-        fontSize: '16px',
       }}
     >
       {t('contentHeader.createNewButton')}
