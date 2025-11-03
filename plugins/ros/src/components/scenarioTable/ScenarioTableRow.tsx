@@ -2,7 +2,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { useState, useRef } from 'react';
+import { useState, useRef, MouseEvent } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Scenario, Action } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
@@ -53,8 +53,7 @@ export function ScenarioTableRow({
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const theme = useTheme();
-  const { tableCard, riskColor, noHover } = useTableStyles();
-  const [isChildHover, setIsChildHover] = useState(false);
+  const { tableCard, tableCardNoHover, riskColor } = useTableStyles();
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
   const { hoveredScenarios } = useScenario();
@@ -146,12 +145,25 @@ export function ScenarioTableRow({
   return (
     <Card
       ref={ref}
-      onClick={() => viewRow(scenario.ID)}
-      className={`${tableCard} ${isChildHover ? noHover : ''}`}
+      onClick={(e: MouseEvent<HTMLDivElement>) => {
+        const target = e.target as HTMLElement | null;
+        if (
+          target &&
+          (target.closest('[data-action-root]') ||
+            target.closest('[data-action-collapse]') ||
+            target.closest('[data-no-row-toggle]'))
+        ) {
+          return;
+        }
+        viewRow(scenario.ID);
+      }}
+      className={`${tableCard} ${visibleType ? tableCardNoHover : ''}`}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
-        backgroundColor: isScenarioHoveredFromRiskMatrix ? '#FFDD9D' : '',
+        backgroundColor: isScenarioHoveredFromRiskMatrix
+          ? '#FFDD9D'
+          : undefined,
       }}
     >
       <Flex align="center">
@@ -250,10 +262,7 @@ export function ScenarioTableRow({
         )}
       </Flex>
       {filteredActions.length > 0 && (
-        <div
-          onMouseEnter={() => setIsChildHover(true)}
-          onMouseLeave={() => setIsChildHover(false)}
-        >
+        <div>
           <ActionsCard
             filteredData={filteredActions}
             scenario={scenario}
