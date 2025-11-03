@@ -4,7 +4,6 @@ import { Divider } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
-import { useTheme } from '@mui/material/styles';
 import { useCallback, useEffect, useState } from 'react';
 import { DualButtonWithMenu } from '../../components/common/DualButtonWithMenu';
 import { useScenario } from '../../contexts/ScenarioContext';
@@ -31,7 +30,6 @@ type ActionsCardProps = {
 export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { filteredData, scenario, showUpdatedBadge } = props;
-  const theme = useTheme();
 
   const [pendingUpdatedIDs, setPendingUpdatedIDs] = useState<string[]>([]);
   const [pendingStatusById, setPendingStatusById] = useState<
@@ -89,21 +87,19 @@ export function ActionsCard(props: ActionsCardProps) {
       borderRadius: '24px',
     };
 
-    const isDarkMode = theme.palette.mode === 'dark';
-
     if (status === UpdatedStatusEnum.VERY_OUTDATED) {
       return {
         ...base,
-        backgroundColor: isDarkMode ? '#EBB095' : '#FFE2D4',
-        border: isDarkMode ? '1px solid #D04A14' : '1px solid #F23131',
+        backgroundColor: 'var(--red-200)',
+        border: '1px solid var(--red-500)',
       };
     }
 
     if (status === UpdatedStatusEnum.OUTDATED) {
       return {
         ...base,
-        backgroundColor: 'var(--Text-fill-scenario-and-action)',
-        border: '1px solid var(--Text-border-scenario-and-action)',
+        backgroundColor: 'var(--orange-100)',
+        border: '1px solid var(--orange-300)',
       };
     }
     return base;
