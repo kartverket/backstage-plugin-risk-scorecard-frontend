@@ -161,9 +161,7 @@ export function ScenarioTableRow({
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
-        backgroundColor: isScenarioHoveredFromRiskMatrix
-          ? '#FFDD9D'
-          : undefined,
+        backgroundColor: isScenarioHoveredFromRiskMatrix ? '#FFDD9D' : '',
       }}
     >
       <Flex align="center">
@@ -262,14 +260,12 @@ export function ScenarioTableRow({
         )}
       </Flex>
       {filteredActions.length > 0 && (
-        <div>
-          <ActionsCard
-            filteredData={filteredActions}
-            scenario={scenario}
-            updateRiSc={updateRiSc}
-            showUpdatedBadge={!!visibleType}
-          />
-        </div>
+        <ActionsCard
+          filteredData={filteredActions}
+          scenario={scenario}
+          updateRiSc={updateRiSc}
+          showUpdatedBadge={!!visibleType}
+        />
       )}
     </Card>
   );

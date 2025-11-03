@@ -321,9 +321,9 @@ export function ActionsCard(props: ActionsCardProps) {
               </Flex>
             </div>
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/no-static-element-interactions */}
               <div
                 data-action-collapse
+                role="presentation"
                 onClick={(e: MouseEvent<HTMLDivElement>) => e.stopPropagation()}
                 onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
                   e.stopPropagation();
