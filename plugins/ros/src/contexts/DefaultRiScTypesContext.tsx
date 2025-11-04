@@ -6,13 +6,13 @@ import {
   useState,
 } from 'react';
 import { useAuthenticatedFetch } from '../utils/hooks.ts';
-import { DefaultRiScType, DefaultRiScTypeDescriptor } from '../utils/types.ts';
+import { DefaultRiScTypeDescriptor } from '../utils/types.ts';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 type DefaultRiScTypesContextObject = {
   defaultRiScTypeDescriptors: DefaultRiScTypeDescriptor[];
-  getDescriptorOfType: (
-    type: DefaultRiScType,
-  ) => DefaultRiScTypeDescriptor | null;
+  riScSelectedByDefault: DefaultRiScTypeDescriptor | undefined;
+  getDescriptorOfId: (id: string) => DefaultRiScTypeDescriptor | undefined;
 };
 
 const DefaultRiScTypesContext = createContext<
@@ -25,33 +25,48 @@ export function DefaultRiScTypesProvider({
   children: ReactNode;
 }) {
   const { fetchDefaultRiScTypeDescriptors } = useAuthenticatedFetch();
-
+  const { entity } = useEntity();
   const [defaultRiScTypeDescriptors, setDefaultRiScTypeDescriptors] = useState<
     DefaultRiScTypeDescriptor[]
   >([]);
+  const [riScSelectedByDefault, setRiScSelectedByDefault] = useState<
+    DefaultRiScTypeDescriptor | undefined
+  >(undefined);
 
   useEffect(() => {
     fetchDefaultRiScTypeDescriptors(response => {
       setDefaultRiScTypeDescriptors(response);
+      setRiScSelectedByDefault(getRiScSelectedByDefault(response));
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function getDescriptorOfType(
-    type: DefaultRiScType,
-  ): DefaultRiScTypeDescriptor | null {
-    if (defaultRiScTypeDescriptors === undefined) return null;
-
-    const descriptor = defaultRiScTypeDescriptors.find(
-      value => value.riScType === type,
+  function getRiScSelectedByDefault(
+    descriptors: DefaultRiScTypeDescriptor[],
+  ): DefaultRiScTypeDescriptor | undefined {
+    const componentType = entity.spec?.type as string | undefined;
+    if (!componentType) return undefined;
+    const selectedDescriptor = descriptors.find(
+      descriptor =>
+        descriptor.preferredBackstageComponentType === componentType,
     );
-    if (descriptor === undefined) return null;
-    return descriptor;
+    if (!selectedDescriptor && descriptors.length > 0) return descriptors[0];
+    return selectedDescriptor;
+  }
+
+  function getDescriptorOfId(
+    id: string,
+  ): DefaultRiScTypeDescriptor | undefined {
+    return defaultRiScTypeDescriptors.find(descriptor => descriptor.id === id);
   }
 
   return (
     <DefaultRiScTypesContext.Provider
-      value={{ defaultRiScTypeDescriptors, getDescriptorOfType }}
+      value={{
+        defaultRiScTypeDescriptors,
+        riScSelectedByDefault,
+        getDescriptorOfId,
+      }}
     >
       {children}
     </DefaultRiScTypesContext.Provider>

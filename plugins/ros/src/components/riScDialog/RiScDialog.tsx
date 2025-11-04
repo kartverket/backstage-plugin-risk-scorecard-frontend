@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { DefaultRiScType, RiScWithMetadata } from '../../utils/types';
+import React, { useEffect, useState } from 'react';
+import { RiScWithMetadata } from '../../utils/types';
 import { emptyRiSc, isDeeplyEqual } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -15,6 +15,7 @@ import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
 import ConfigInitialRisc from './ConfigInitialRisc';
 import { Flex, Box, Button } from '@backstage/ui';
+import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -65,7 +66,6 @@ export function RiScDialog({
   onDelete,
 }: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-
   const { selectedRiSc, createNewRiSc, deleteRiSc, updateRiSc, gcpCryptoKeys } =
     useRiScs();
   const {
@@ -92,9 +92,13 @@ export function RiScDialog({
 
   const [switchOn, setSwitchOn] = useState(false);
 
-  const [selectedRiScType, setSelectedRiScType] = useState<DefaultRiScType>(
-    DefaultRiScType.Standard,
+  const { riScSelectedByDefault } = useDefaultRiScTypeDescriptors();
+  const [selectedRiScId, setSelectedRiScId] = useState<string | undefined>(
+    riScSelectedByDefault?.id,
   );
+  useEffect(() => {
+    setSelectedRiScId(riScSelectedByDefault?.id);
+  }, [riScSelectedByDefault]);
 
   const handleNext = handleSubmit(
     () => {
@@ -124,7 +128,7 @@ export function RiScDialog({
 
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
     if (dialogState === RiScDialogStates.Create) {
-      createNewRiSc(data, switchOn, [selectedRiScType]);
+      createNewRiSc(data, switchOn, selectedRiScId);
     } else if (dialogState === RiScDialogStates.Delete) {
       deleteRiSc();
     } else {
@@ -185,8 +189,8 @@ export function RiScDialog({
                 switchOn={switchOn}
                 setSwitchOn={setSwitchOn}
                 setValue={setValue}
-                selectedRiScType={selectedRiScType}
-                setSelectedRiScType={setSelectedRiScType}
+                selectedRiScId={selectedRiScId}
+                setSelectedRiScId={setSelectedRiScId}
               />
             )}
             {activeStep === 1 && (
