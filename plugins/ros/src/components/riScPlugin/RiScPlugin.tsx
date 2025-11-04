@@ -47,6 +47,7 @@ export function RiScPlugin() {
   }
 
   const {
+    approveRiSc,
     selectedRiSc,
     isFetching,
     resetResponse,
@@ -139,7 +140,7 @@ export function RiScPlugin() {
                     <Grid item xs={6}>
                       <RiScStatusComponent
                         selectedRiSc={selectedRiSc}
-                        publishRiScFn={openCreateRiScDialog}
+                        publishRiScFn={approveRiSc}
                       />
                     </Grid>
                   </Grid>
