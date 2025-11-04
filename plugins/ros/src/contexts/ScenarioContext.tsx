@@ -6,6 +6,8 @@ import {
   useContext,
   useEffect,
   useState,
+  Dispatch,
+  SetStateAction,
 } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
@@ -62,7 +64,7 @@ type ScenarioDrawerProps = {
   collapseAllActions: () => void;
 
   hoveredScenarios: Scenario[];
-  setHoveredScenarios: (riSc: Scenario[]) => void;
+  setHoveredScenarios: Dispatch<SetStateAction<Scenario[]>>;
 
   emptyFormScenario: (scenario: Scenario) => FormScenario;
   scenario: Scenario;
