@@ -416,29 +416,15 @@ export const vulnerabiltiesOptionsToTranslationKeys: Record<
   [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
 };
 
-export const getActionStatusColor = (
-  status: string,
-): 'success' | 'error' | 'inherit' => {
+export const getActionStatusButtonClass = (status: string): string => {
   switch (status) {
     case ActionStatusOptions.OK:
-      return 'success';
+      return 'button-green';
     case ActionStatusOptions.NotOK:
-      return 'error';
+      return 'button-red';
     default:
-      return 'inherit';
+      return 'button-gray';
   }
-};
-
-export const getActionStatusStyle = (status: string) => {
-  const baseStyle = { color: 'white' };
-
-  if (status === ActionStatusOptions.NotRelevant) {
-    return {
-      ...baseStyle,
-      backgroundColor: 'rgba(128, 128, 128, 1)',
-    };
-  }
-  return baseStyle;
 };
 
 export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
