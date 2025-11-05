@@ -70,6 +70,10 @@ export function RiskMatrixScenarioCount({
   if (scenarios.length === 0) {
     return null;
   }
+  const isHighlightedFromExternal = scenarios.some(s =>
+    hoveredScenarios.some(h => h.ID === s.ID),
+  );
+  const highlightColor = theme.palette.mode === 'dark' ? '#A2A0A0' : '#FFDD9D';
 
   const tooltipList = (
     <List dense>
@@ -116,15 +120,25 @@ export function RiskMatrixScenarioCount({
           onClick={() => setTooltipOpen(!tooltipOpen)}
           onMouseEnter={() => {
             setIsHovered(true);
-            setHoveredScenarios([...hoveredScenarios, ...scenarios]);
+            // Add scenarios to hovered list using functional update and dedupe by ID
+            setHoveredScenarios(prev => {
+              const map = new Map<string, (typeof scenarios)[0]>();
+              prev.forEach(p => map.set(p.ID, p));
+              scenarios.forEach(s => map.set(s.ID, s));
+              return Array.from(map.values());
+            });
           }}
           onMouseLeave={() => {
             setIsHovered(false);
-            setHoveredScenarios(
-              hoveredScenarios.filter(
-                scenario => !scenarios.some(s => s.ID === scenario.ID),
-              ),
+            setHoveredScenarios(prev =>
+              prev.filter(s => !scenarios.some(s2 => s2.ID === s.ID)),
             );
+          }}
+          style={{
+            backgroundColor:
+              isHovered || isHighlightedFromExternal
+                ? highlightColor
+                : undefined,
           }}
         >
           <Text
@@ -132,7 +146,8 @@ export function RiskMatrixScenarioCount({
             weight="bold"
             style={{
               color:
-                !isHovered && theme.palette.mode === 'dark'
+                !(isHovered || isHighlightedFromExternal) &&
+                theme.palette.mode === 'dark'
                   ? 'var(--bui-white)'
                   : 'var(--bui-black)',
             }}
