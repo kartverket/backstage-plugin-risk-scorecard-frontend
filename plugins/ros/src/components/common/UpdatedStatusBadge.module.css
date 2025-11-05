@@ -8,7 +8,9 @@
   text-align: center;
   font-size: 12px;
   line-height: 16px;
-  color: var(--bui-black);
+}
+.text {
+  color: var(--gray-900, #000);
 }
 
 .pending {

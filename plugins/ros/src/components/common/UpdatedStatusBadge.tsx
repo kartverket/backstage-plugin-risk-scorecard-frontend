@@ -48,7 +48,9 @@ export default function UpdatedStatusBadge({
           className={`${styles.badge} ${styles.veryOutdated}`}
           aria-label={ariaLabel}
         >
-          <Text as="p">{t('rosStatus.veryOutdated')}</Text>
+          <Text as="p" className={styles.text}>
+            {t('rosStatus.veryOutdated')}
+          </Text>
         </span>
       </Tooltip>
     );
@@ -61,7 +63,9 @@ export default function UpdatedStatusBadge({
           className={`${styles.badge} ${styles.outdated}`}
           aria-label={ariaLabel}
         >
-          <Text as="p">{t('rosStatus.outdated')}</Text>
+          <Text as="p" className={styles.text}>
+            {t('rosStatus.outdated')}
+          </Text>
         </span>
       </Tooltip>
     );
