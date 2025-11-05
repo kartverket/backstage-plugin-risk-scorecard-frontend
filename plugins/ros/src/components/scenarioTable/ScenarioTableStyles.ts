@@ -137,14 +137,15 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       backgroundColor:
         theme.palette.type === 'dark' ? 'var(--bui-gray-6)' : '#E0E0E0',
+      cursor: 'pointer',
     },
-    '&$noHover': {
-      '&:hover': {
-        backgroundColor:
-          theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
-        cursor: 'default',
-      },
+    '&$tableCardNoHover:hover': {
+      backgroundColor:
+        theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
+      cursor: 'pointer',
     },
   },
-  noHover: {},
+  tableCardNoHover: {
+    cursor: 'default',
+  },
 }));

@@ -2,13 +2,11 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, MouseEvent } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Scenario, Action } from '../../utils/types';
+import { Scenario } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
-  calculateDaysSince,
-  calculateUpdatedStatus,
   deleteScenario,
   getConsequenceLevel,
   getProbabilityLevel,
@@ -22,9 +20,12 @@ import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteC
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
 import { ActionsCard } from './ActionsCard.tsx';
-import { useFilteredActions } from '../../utils/hooks.ts';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { useTheme } from '@mui/material/styles';
+import {
+  getActionsWithUpdatedStatus,
+  getFilteredActions,
+} from '../../utils/actions.ts';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -53,13 +54,16 @@ export function ScenarioTableRow({
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const theme = useTheme();
-  const { tableCard, riskColor, noHover } = useTableStyles();
-  const [isChildHover, setIsChildHover] = useState(false);
+  const { tableCard, tableCardNoHover, riskColor } = useTableStyles();
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
-  const { hoveredScenarios } = useScenario();
+  const { hoveredScenarios, setHoveredScenarios } = useScenario();
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
     useState(false);
+
+  const [actionIdsOfVisibleType, setActionIdsOfVisibleType] = useState<
+    string[]
+  >([]);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -113,30 +117,32 @@ export function ScenarioTableRow({
     }),
   }));
 
-  const actionsWithUpdatedStatus = scenario.actions.map(action => {
-    const daysSinceLastUpdate = action.lastUpdated
-      ? calculateDaysSince(new Date(action.lastUpdated))
-      : null;
-    return {
-      ...action,
-      updatedStatus: calculateUpdatedStatus(
-        daysSinceLastUpdate,
-        riSc?.lastPublished?.numberOfCommits || null,
-      ),
-    } as Action & { updatedStatus: UpdatedStatusEnumType };
-  });
-
-  const filteredActions = useFilteredActions({
-    visibleType,
+  const actionsWithUpdatedStatus = getActionsWithUpdatedStatus(
+    scenario.actions,
+    riSc?.lastPublished?.numberOfCommits || null,
+  );
+  const filteredActions = getFilteredActions(
     actionsWithUpdatedStatus,
     searchMatches,
-  });
+    actionIdsOfVisibleType,
+    visibleType,
+  );
+
+  useEffect(() => {
+    const actions = actionsWithUpdatedStatus.filter(
+      a => a.updatedStatus === visibleType,
+    );
+    const actionIds = actions.map(a => a.ID);
+    setActionIdsOfVisibleType(actionIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleType]);
 
   preview(drop(ref));
 
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
+  const highlightColor = theme.palette.mode === 'dark' ? '#A2A0A0' : '#FFDD9D';
   const isTextColorBlack =
     theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;
   const textColorAsBuiVariable = isTextColorBlack
@@ -145,13 +151,34 @@ export function ScenarioTableRow({
 
   return (
     <Card
+      onMouseEnter={() => {
+        setHoveredScenarios(prev =>
+          prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
+        );
+      }}
+      onMouseLeave={() => {
+        setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
+      }}
       ref={ref}
-      onClick={() => viewRow(scenario.ID)}
-      className={`${tableCard} ${isChildHover ? noHover : ''}`}
+      onClick={(e: MouseEvent<HTMLDivElement>) => {
+        const target = e.target as HTMLElement | null;
+        if (
+          target &&
+          (target.closest('[data-action-root]') ||
+            target.closest('[data-action-collapse]') ||
+            target.closest('[data-no-row-toggle]'))
+        ) {
+          return;
+        }
+        viewRow(scenario.ID);
+      }}
+      className={`${tableCard} ${visibleType ? tableCardNoHover : ''}`}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
-        backgroundColor: isScenarioHoveredFromRiskMatrix ? '#FFDD9D' : '',
+        backgroundColor: isScenarioHoveredFromRiskMatrix
+          ? highlightColor
+          : undefined,
       }}
     >
       <Flex align="center">
@@ -250,17 +277,11 @@ export function ScenarioTableRow({
         )}
       </Flex>
       {filteredActions.length > 0 && (
-        <div
-          onMouseEnter={() => setIsChildHover(true)}
-          onMouseLeave={() => setIsChildHover(false)}
-        >
-          <ActionsCard
-            filteredData={filteredActions}
-            scenario={scenario}
-            updateRiSc={updateRiSc}
-            showUpdatedBadge={!!visibleType}
-          />
-        </div>
+        <ActionsCard
+          filteredData={filteredActions}
+          scenario={scenario}
+          showUpdatedBadge={!!visibleType}
+        />
       )}
     </Card>
   );

@@ -1,25 +1,27 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Box, Flex, Text } from '@backstage/ui';
-import { Cached } from '@mui/icons-material';
 import { Divider } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
-import { useTheme } from '@mui/material/styles';
-import { useCallback, useEffect, useState } from 'react';
-import DualButtonWithMenu from '../../components/common/DualButtonWithMenu';
-import { useRiScs } from '../../contexts/RiScContext';
+import {
+  useCallback,
+  useEffect,
+  useState,
+  KeyboardEvent,
+  MouseEvent,
+} from 'react';
+import { DualButtonWithMenu } from '../../components/common/DualButtonWithMenu';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDebounce } from '../../utils/hooks';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Action, RiScWithMetadata, Scenario } from '../../utils/types';
+import { Action, Scenario } from '../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
   formatDate,
-  getActionStatusColor,
-  getActionStatusStyle,
   UpdatedStatusEnum,
+  getActionStatusButtonClass,
   UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { Markdown } from '../common/Markdown';
@@ -28,70 +30,43 @@ import { body2 } from '../common/typography';
 type ActionsCardProps = {
   filteredData: (Action & { updatedStatus: UpdatedStatusEnumType })[];
   scenario: Scenario;
-  updateRiSc: (
-    riSc: RiScWithMetadata,
-    onSuccess?: () => void,
-    onError?: () => void,
-  ) => void;
   showUpdatedBadge?: boolean;
 };
 
 export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { filteredData, scenario, updateRiSc, showUpdatedBadge } = props;
-  const theme = useTheme();
+  const { filteredData, scenario, showUpdatedBadge } = props;
 
   const [pendingUpdatedIDs, setPendingUpdatedIDs] = useState<string[]>([]);
   const [pendingStatusById, setPendingStatusById] = useState<
     Record<string, ActionStatusOptions>
   >({});
-  const [pendingLastUpdatedById, setPendingLastUpdatedById] = useState<
-    Record<string, Date>
-  >({});
 
-  const { selectedRiSc } = useRiScs();
-  const { isActionExpanded, toggleActionExpanded } = useScenario();
+  const { isActionExpanded, toggleActionExpanded, submitEditedScenarioToRiSc } =
+    useScenario();
 
   const debounceCallback = useCallback(
     (updatedIDs: string[]) => {
-      if (!selectedRiSc) return;
       if (updatedIDs.length === 0) return;
 
-      const updatedScenarios = selectedRiSc.content.scenarios.map(s => {
-        if (s.ID !== scenario.ID) return s;
-
-        const newActions = s.actions.map(a =>
+      const updatedScenario = {
+        ...scenario,
+        actions: scenario.actions.map(a =>
           updatedIDs.includes(a.ID)
             ? {
                 ...a,
                 status: pendingStatusById[a.ID] ?? a.status,
-                lastUpdated: pendingLastUpdatedById[a.ID] ?? new Date(),
               }
             : a,
-        );
-
-        return { ...s, actions: newActions };
-      });
-
-      const updatedRiSc: RiScWithMetadata = {
-        ...selectedRiSc,
-        content: {
-          ...selectedRiSc.content,
-          scenarios: updatedScenarios,
-        },
+        ),
       };
 
-      updateRiSc(updatedRiSc);
-
+      submitEditedScenarioToRiSc(updatedScenario, {
+        idsOfActionsToForceUpdateLastUpdatedValue: updatedIDs,
+      });
       setPendingUpdatedIDs([]);
     },
-    [
-      selectedRiSc,
-      scenario.ID,
-      updateRiSc,
-      pendingStatusById,
-      pendingLastUpdatedById,
-    ],
+    [scenario, submitEditedScenarioToRiSc, pendingStatusById],
   );
 
   const { flush } = useDebounce(pendingUpdatedIDs, 6000, debounceCallback);
@@ -105,7 +80,6 @@ export function ActionsCard(props: ActionsCardProps) {
     newStatus: ActionStatusOptions,
   ) {
     setPendingStatusById(prev => ({ ...prev, [actionID]: newStatus }));
-    setPendingLastUpdatedById(prev => ({ ...prev, [actionID]: new Date() }));
     setPendingUpdatedIDs(prev =>
       prev.includes(actionID) ? prev : [...prev, actionID],
     );
@@ -119,21 +93,19 @@ export function ActionsCard(props: ActionsCardProps) {
       borderRadius: '24px',
     };
 
-    const isDarkMode = theme.palette.mode === 'dark';
-
     if (status === UpdatedStatusEnum.VERY_OUTDATED) {
       return {
         ...base,
-        backgroundColor: isDarkMode ? '#EBB095' : '#FFE2D4',
-        border: isDarkMode ? '1px solid #D04A14' : '1px solid #F23131',
+        backgroundColor: 'var(--red-200)',
+        border: '1px solid var(--red-500)',
       };
     }
 
     if (status === UpdatedStatusEnum.OUTDATED) {
       return {
         ...base,
-        backgroundColor: 'var(--Text-fill-scenario-and-action)',
-        border: '1px solid var(--Text-border-scenario-and-action)',
+        backgroundColor: 'var(--orange-100)',
+        border: '1px solid var(--orange-300)',
       };
     }
     return base;
@@ -149,172 +121,218 @@ export function ActionsCard(props: ActionsCardProps) {
     <>
       <Divider sx={{ marginBottom: '16px' }} />
       {filteredData.map((action, idx) => {
-        const isPending =
-          pendingUpdatedIDs.includes(action.ID) ||
-          !!pendingLastUpdatedById[action.ID];
+        const isPending = pendingStatusById[action.ID] !== undefined;
         const isExpanded = isActionExpanded(action.ID);
         const isLast = idx === filteredData.length - 1;
 
         return (
           <div key={action.ID}>
-            <Flex align="center" justify="between" gap="1">
-              <Flex align="center">
-                <IconButton
-                  onClick={e => {
-                    e.stopPropagation();
-                    toggleActionExpanded(action.ID);
-                  }}
-                >
-                  {isExpanded ? (
-                    <i className="ri-arrow-up-s-line" />
-                  ) : (
-                    <i className="ri-arrow-down-s-line" />
-                  )}
-                </IconButton>
-                <Flex direction="column" align="start" gap="1">
-                  {!isPending && (
-                    <span
-                      style={{
-                        ...getUpdatedStatusStyle(action.updatedStatus),
-                      }}
-                    >
-                      <Text as="p" style={statusBadgeStyle}>
-                        {(action.updatedStatus ===
-                          UpdatedStatusEnum.VERY_OUTDATED &&
-                          t('rosStatus.veryOutdated')) ||
-                          (action.updatedStatus ===
-                            UpdatedStatusEnum.OUTDATED &&
-                            t('rosStatus.outdated')) ||
-                          null}
-                      </Text>
-                    </span>
-                  )}
-                  {showUpdatedBadge && isPending && (
-                    <span
-                      style={{
-                        padding: '4px 0',
-                        backgroundColor: '#D0ECD6',
-                        border: '1px solid #156630',
-                        borderRadius: '24px',
-                      }}
-                    >
-                      <Text style={statusBadgeStyle}>
-                        {t('rosStatus.updated')}
-                      </Text>
-                    </span>
-                  )}
-                  <Text as="p" variant="body-large">
-                    {action.title}
-                  </Text>
-                </Flex>
-              </Flex>
-              <Flex>
-                <DualButtonWithMenu
-                  propsCommon={{
-                    color: getActionStatusColor(
-                      (pendingStatusById[action.ID] ?? action.status) as any,
-                    ),
-                    style: getActionStatusStyle(
-                      (pendingStatusById[action.ID] ?? action.status) as any,
-                    ),
-                  }}
-                  propsLeft={{
-                    // @ts-ignore: mapping dynamic keys for translations
-                    children: t(
-                      actionStatusOptionsToTranslationKeys[
-                        (pendingStatusById[action.ID] ??
-                          action.status) as ActionStatusOptions
-                      ],
-                    ),
-                  }}
-                  propsRight={{
-                    startIcon: <Cached />,
-                    sx: { padding: '0 0 0 10px', minWidth: '30px' },
-                    onClick: () => {
-                      setPendingLastUpdatedById(prev => ({
-                        ...prev,
-                        [action.ID]: new Date(),
-                      }));
-                      setPendingUpdatedIDs(prev =>
-                        prev.includes(action.ID) ? prev : [...prev, action.ID],
-                      );
-                    },
-                  }}
-                  menuItems={Object.values(ActionStatusOptions).map(value => ({
-                    key: value,
-                    // @ts-ignore: mapping dynamic keys for translations
-                    label: t(
-                      actionStatusOptionsToTranslationKeys[
-                        value as ActionStatusOptions
-                      ],
-                    ),
-                    onClick: () =>
-                      handleStatusChange(
-                        action.ID,
-                        value as ActionStatusOptions,
-                      ),
-                    selected:
-                      value === (pendingStatusById[action.ID] ?? action.status),
-                  }))}
-                />
-                {t('scenarioDrawer.action.lastUpdated')}
-                <br />
-                {(() => {
-                  const last =
-                    pendingLastUpdatedById[action.ID] ?? action.lastUpdated;
-                  return last
-                    ? formatDate(last)
-                    : t('scenarioDrawer.action.notUpdated');
-                })()}
-              </Flex>
-            </Flex>
-            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <Box ml="48px" mt="4" mb="2">
-                <Text
-                  as="p"
-                  variant="body-large"
-                  style={{ marginTop: 1, fontWeight: 700 }}
-                >
-                  {t('dictionary.description')}
-                </Text>
-                <Markdown description={action.description} />
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={(e: MouseEvent<HTMLDivElement>) => {
+                e.stopPropagation();
 
-                <Box mt="16px">
-                  <Text
-                    style={{
-                      fontWeight: 700,
-                      fontSize: '14px',
-                      lineHeight: '20px',
+                const target = e.target as HTMLElement | null;
+                if (target && target.closest('[data-no-row-toggle]')) return;
+
+                toggleActionExpanded(action.ID);
+              }}
+              onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+                // Prevent keyboard event from bubbling up to parent(s)
+                e.stopPropagation();
+
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  toggleActionExpanded(action.ID);
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              <Flex align="center" justify="between" gap="1">
+                <Flex align="center">
+                  <IconButton
+                    onClick={e => {
+                      e.stopPropagation();
+                      toggleActionExpanded(action.ID);
                     }}
                   >
-                    {t('dictionary.url')}
-                  </Text>
-                  {action.url ? (
-                    <Link
-                      sx={{ ...body2, marginTop: 0 }}
-                      target="_blank"
-                      rel="noreferrer"
-                      href={
-                        action.url.startsWith('http')
-                          ? action.url
-                          : `//${action.url}`
-                      }
-                    >
-                      {action.url}
-                    </Link>
-                  ) : (
-                    <Text
-                      as="p"
-                      variant="body-large"
-                      style={{ fontStyle: 'italic' }}
-                    >
-                      {t('dictionary.emptyField', {
-                        field: t('dictionary.url').toLowerCase(),
-                      })}
+                    {isExpanded ? (
+                      <i className="ri-arrow-up-s-line" />
+                    ) : (
+                      <i className="ri-arrow-down-s-line" />
+                    )}
+                  </IconButton>
+                  <Flex direction="column" align="start" gap="1">
+                    {!isPending && (
+                      <span
+                        style={{
+                          ...getUpdatedStatusStyle(action.updatedStatus),
+                        }}
+                      >
+                        <Text as="p" style={statusBadgeStyle}>
+                          {(action.updatedStatus ===
+                            UpdatedStatusEnum.VERY_OUTDATED &&
+                            t('rosStatus.veryOutdated')) ||
+                            (action.updatedStatus ===
+                              UpdatedStatusEnum.OUTDATED &&
+                              t('rosStatus.outdated')) ||
+                            null}
+                        </Text>
+                      </span>
+                    )}
+                    {showUpdatedBadge && isPending && (
+                      <span
+                        style={{
+                          padding: '4px 0',
+                          backgroundColor: '#D0ECD6',
+                          border: '1px solid #156630',
+                          borderRadius: '24px',
+                        }}
+                      >
+                        <Text style={statusBadgeStyle}>
+                          {t('rosStatus.updated')}
+                        </Text>
+                      </span>
+                    )}
+                    <Text as="p" variant="body-large">
+                      {action.title}
                     </Text>
-                  )}
+                  </Flex>
+                </Flex>
+                <Flex>
+                  <span
+                    data-no-row-toggle
+                    role="button"
+                    tabIndex={0}
+                    style={{ display: 'inline-block' }}
+                    onClick={(e: MouseEvent<HTMLSpanElement>) =>
+                      e.stopPropagation()
+                    }
+                    onKeyDown={(e: KeyboardEvent<HTMLSpanElement>) => {
+                      e.stopPropagation();
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
+                    <DualButtonWithMenu
+                      propsCommon={{
+                        className: getActionStatusButtonClass(
+                          (pendingStatusById[action.ID] ??
+                            action.status) as any,
+                        ),
+                      }}
+                      propsLeft={{
+                        // @ts-ignore: mapping dynamic keys for translations
+                        children: t(
+                          actionStatusOptionsToTranslationKeys[
+                            (pendingStatusById[action.ID] ??
+                              action.status) as ActionStatusOptions
+                          ],
+                        ),
+                      }}
+                      propsRight={{
+                        iconEnd: <i className="ri-loop-left-line" />,
+                        onClick: () => {
+                          handleStatusChange(
+                            action.ID,
+                            action.status as ActionStatusOptions,
+                          );
+                        },
+                      }}
+                      menuItems={Object.values(ActionStatusOptions).map(
+                        value => ({
+                          key: value,
+                          // @ts-ignore: mapping dynamic keys for translations
+                          label: t(
+                            actionStatusOptionsToTranslationKeys[
+                              value as ActionStatusOptions
+                            ],
+                          ),
+                          onClick: () =>
+                            handleStatusChange(
+                              action.ID,
+                              value as ActionStatusOptions,
+                            ),
+                          selected:
+                            value ===
+                            (pendingStatusById[action.ID] ?? action.status),
+                        }),
+                      )}
+                    />
+                  </span>
+                  {t('scenarioDrawer.action.lastUpdated')}
+                  <br />
+                  {(() => {
+                    const last =
+                      action.ID in pendingStatusById ? new Date() : undefined;
+                    return last
+                      ? formatDate(last)
+                      : t('scenarioDrawer.action.notUpdated');
+                  })()}
+                </Flex>
+              </Flex>
+            </div>
+            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+              <div
+                data-action-collapse
+                role="presentation"
+                onClick={(e: MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+                onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+                  e.stopPropagation();
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                  }
+                }}
+              >
+                <Box ml="48px" mt="4" mb="2">
+                  <Text
+                    as="p"
+                    variant="body-large"
+                    style={{ marginTop: 1, fontWeight: 700 }}
+                  >
+                    {t('dictionary.description')}
+                  </Text>
+                  <Markdown description={action.description} />
+
+                  <Box mt="16px">
+                    <Text
+                      style={{
+                        fontWeight: 700,
+                        fontSize: '14px',
+                        lineHeight: '20px',
+                      }}
+                    >
+                      {t('dictionary.url')}
+                    </Text>
+                    {action.url ? (
+                      <Link
+                        sx={{ ...body2, marginTop: 0 }}
+                        target="_blank"
+                        rel="noreferrer"
+                        href={
+                          action.url.startsWith('http')
+                            ? action.url
+                            : `//${action.url}`
+                        }
+                      >
+                        {action.url}
+                      </Link>
+                    ) : (
+                      <Text
+                        as="p"
+                        variant="body-large"
+                        style={{ fontStyle: 'italic' }}
+                      >
+                        {t('dictionary.emptyField', {
+                          field: t('dictionary.url').toLowerCase(),
+                        })}
+                      </Text>
+                    )}
+                  </Box>
                 </Box>
-              </Box>
+              </div>
             </Collapse>
             {!isLast && <Divider sx={{ my: 2 }} />}
           </div>
@@ -323,5 +341,3 @@ export function ActionsCard(props: ActionsCardProps) {
     </>
   );
 }
-
-export default ActionsCard;

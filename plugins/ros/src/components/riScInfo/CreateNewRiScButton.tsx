@@ -10,8 +10,8 @@ export function CreateNewRiScButton(props: CreateNewRiScButtonProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Button
-      iconStart={<i className="ri-add-line" />}
-      variant="secondary"
+      iconStart={<i className="ri-add-circle-line" />}
+      variant="tertiary"
       onClick={props.onCreateNew}
       style={{
         width: 'fit-content',
