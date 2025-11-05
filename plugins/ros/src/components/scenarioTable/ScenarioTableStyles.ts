@@ -34,7 +34,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     '&.MuiTableRow-root': {
       borderBottom:
-        (theme as any).palette.mode === 'dark'
+        theme.palette.type === 'dark'
           ? '1px solid #616161'
           : '1px solid #0000001f',
     },
@@ -57,10 +57,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     gap: '0.4rem',
     '&.MuiTableCell-root': {
       fontSize: theme.spacing(2),
-      color:
-        (theme as any).palette.mode === 'dark'
-          ? '#F8F8F8'
-          : 'rgba(0, 0, 0, 0.87)',
+      color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
       border: 'none',
     },
   },
@@ -72,10 +69,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     width: '55%',
     '&.MuiTableCell-root': {
       fontSize: theme.spacing(2),
-      color:
-        (theme as any).palette.mode === 'dark'
-          ? '#F8F8F8'
-          : 'rgba(0, 0, 0, 0.87)',
+      color: theme.palette.type === 'dark' ? '#F8F8F8' : 'rgba(0, 0, 0, 0.87)',
       border: 'none',
     },
   },
