@@ -16,14 +16,12 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     border: 'none',
     padding: 0,
     '&.MuiTableRow-root': {
-      backgroundColor:
-        (theme as any).palette.mode === 'dark' ? '#424242' : 'white',
+      backgroundColor: theme.palette.type === 'dark' ? '#424242' : 'white',
       border: 'none',
     },
     transition: 'background-color 0.3s',
     '&:hover': {
-      backgroundColor:
-        (theme as any).palette.mode === 'dark' ? '#616161' : '#f5f5f5',
+      backgroundColor: theme.palette.type === 'dark' ? '#616161' : '#f5f5f5',
       cursor: 'pointer',
     },
   },
@@ -141,19 +139,15 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     marginBottom: '8px',
     padding: '28px 24px',
     backgroundColor:
-      (theme as any).palette.mode === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
+      theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
     '&:hover': {
       backgroundColor:
-        (theme as any).palette.mode === 'dark'
-          ? 'var(--bui-gray-6)'
-          : '#E0E0E0',
+        theme.palette.type === 'dark' ? 'var(--bui-gray-6)' : '#E0E0E0',
       cursor: 'pointer',
     },
     '&$tableCardNoHover:hover': {
       backgroundColor:
-        (theme as any).palette.mode === 'dark'
-          ? 'var(--bui-gray-5)'
-          : '#F8F8F8',
+        theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
       cursor: 'pointer',
     },
   },
