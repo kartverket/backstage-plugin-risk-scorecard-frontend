@@ -45,7 +45,12 @@ export function DefaultRiScTypesProvider({
     descriptors: DefaultRiScTypeDescriptor[],
   ): DefaultRiScTypeDescriptor | undefined {
     const componentType = entity.spec?.type as string | undefined;
-    if (!componentType) return undefined;
+
+    if (!componentType) {
+      if (descriptors.length > 0) return descriptors[0];
+      return undefined;
+    }
+
     const selectedDescriptor = descriptors.find(
       descriptor =>
         descriptor.preferredBackstageComponentType === componentType,
