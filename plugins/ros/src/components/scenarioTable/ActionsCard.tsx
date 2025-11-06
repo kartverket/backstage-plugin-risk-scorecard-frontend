@@ -154,7 +154,7 @@ export function ActionsCard(props: ActionsCardProps) {
                     </Text>
                   </Flex>
                 </Flex>
-                <Flex>
+                <Flex align="center">
                   <span
                     data-no-row-toggle
                     role="button"
