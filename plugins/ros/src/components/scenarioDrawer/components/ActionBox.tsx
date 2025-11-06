@@ -25,7 +25,6 @@ import {
   calculateDaysSince,
   calculateUpdatedStatus,
   deleteAction,
-  formatDate,
   UpdatedStatusEnum,
   getTranslatedActionStatus,
   getActionStatusButtonClass,
@@ -36,6 +35,8 @@ import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
 import { Tooltip } from '@material-ui/core';
 import { Text } from '@backstage/ui';
+import { useBackstageContext } from '../../../contexts/BackstageContext.tsx';
+import { ScenarioLastUpdatedLabel } from '../../scenario/ScenarioLastUpdatedLabel.tsx';
 
 interface ActionBoxProps {
   action: Action;
@@ -55,6 +56,7 @@ export function ActionBox({
   setCurrentUpdatedActionIDs,
 }: ActionBoxProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { profileInfo } = useBackstageContext();
 
   const { isActionExpanded, toggleActionExpanded } = useScenario();
   const isExpanded = isActionExpanded(action.ID);
@@ -82,13 +84,6 @@ export function ActionBox({
     deleteAction(remove, index, onSubmit);
     setDeleteActionConfirmationIsOpen(false);
   }
-
-  function getParsedDateTime(): string {
-    if (isActionUpdated) return formatDate(new Date());
-    if (action.lastUpdated) return formatDate(action.lastUpdated);
-    return t('scenarioDrawer.action.notUpdated');
-  }
-  const parsedDateTime = getParsedDateTime();
 
   function updateActionInScenario(updates: ActionStatusOptions) {
     const actionIndex = scenario.actions.findIndex(a => a.ID === action.ID);
@@ -139,7 +134,9 @@ export function ActionBox({
             color="primary"
             variant="contained"
             onClick={formMethods.handleSubmit((data: FormScenario) => {
-              submitEditedScenarioToRiSc(mapFormScenarioToScenario(data));
+              submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), {
+                profileInfo: profileInfo,
+              });
             })}
             disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
           >
@@ -233,10 +230,10 @@ export function ActionBox({
               whiteSpace: 'nowrap',
             }}
           >
-            <Text as="p" variant="body-large">
-              {t('scenarioDrawer.action.lastUpdated')}
-            </Text>
-            <Text variant="body-large">{parsedDateTime}</Text>
+            <ScenarioLastUpdatedLabel
+              lastUpdated={isActionUpdated ? new Date() : action.lastUpdated}
+              lastUpdatedBy={action.lastUpdatedBy}
+            ></ScenarioLastUpdatedLabel>
           </Box>
           <Exclamations
             actionLastUpdated={

@@ -19,13 +19,14 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Action, Scenario } from '../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
-  formatDate,
   UpdatedStatusEnum,
   getActionStatusButtonClass,
   UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { Markdown } from '../common/Markdown';
 import { body2 } from '../common/typography';
+import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
+import { ScenarioLastUpdatedLabel } from '../scenario/ScenarioLastUpdatedLabel.tsx';
 
 type ActionsCardProps = {
   filteredData: (Action & { updatedStatus: UpdatedStatusEnumType })[];
@@ -35,6 +36,8 @@ type ActionsCardProps = {
 
 export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { profileInfo } = useBackstageContext();
+
   const { filteredData, scenario, showUpdatedBadge } = props;
 
   const [pendingUpdatedIDs, setPendingUpdatedIDs] = useState<string[]>([]);
@@ -63,6 +66,7 @@ export function ActionsCard(props: ActionsCardProps) {
 
       submitEditedScenarioToRiSc(updatedScenario, {
         idsOfActionsToForceUpdateLastUpdatedValue: updatedIDs,
+        profileInfo: profileInfo,
       });
       setPendingUpdatedIDs([]);
     },
@@ -262,15 +266,12 @@ export function ActionsCard(props: ActionsCardProps) {
                       )}
                     />
                   </span>
-                  {t('scenarioDrawer.action.lastUpdated')}
-                  <br />
-                  {(() => {
-                    const last =
-                      action.ID in pendingStatusById ? new Date() : undefined;
-                    return last
-                      ? formatDate(last)
-                      : t('scenarioDrawer.action.notUpdated');
-                  })()}
+                  <ScenarioLastUpdatedLabel
+                    lastUpdated={
+                      action.ID in pendingStatusById ? new Date() : undefined
+                    }
+                    lastUpdatedBy={action.lastUpdatedBy}
+                  />
                 </Flex>
               </Flex>
             </div>

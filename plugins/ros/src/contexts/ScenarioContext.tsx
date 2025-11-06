@@ -1,4 +1,4 @@
-import { useRouteRef } from '@backstage/core-plugin-api';
+import { ProfileInfo, useRouteRef } from '@backstage/core-plugin-api';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import {
   ReactNode,
@@ -70,6 +70,7 @@ type ScenarioDrawerProps = {
   scenario: Scenario;
   submitNewScenario: (
     newScenario: Scenario,
+    profileInfo?: ProfileInfo,
     onSuccess?: () => void,
     onError?: () => void,
   ) => void;
@@ -77,6 +78,7 @@ type ScenarioDrawerProps = {
     editedScenario: Scenario,
     options?: {
       idsOfActionsToForceUpdateLastUpdatedValue?: string[];
+      profileInfo?: ProfileInfo;
       onSuccess?: () => void;
       onError?: () => void;
     },
@@ -216,10 +218,16 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
   function submitNewScenario(
     newScenario: Scenario,
+    profileInfo?: ProfileInfo,
     onSuccess?: () => void,
     onError?: () => void,
   ) {
-    newScenario.actions = getActionsWithLastUpdated([], newScenario.actions);
+    newScenario.actions = getActionsWithLastUpdated(
+      [],
+      newScenario.actions,
+      [],
+      profileInfo,
+    );
 
     if (riSc) {
       updateRiSc(
@@ -240,6 +248,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
     editedScenario: Scenario,
     options?: {
       idsOfActionsToForceUpdateLastUpdatedValue?: string[];
+      profileInfo?: ProfileInfo;
       onSuccess?: () => void;
       onError?: () => void;
     },
@@ -253,6 +262,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       oldScenario?.actions ?? [],
       editedScenario.actions,
       options?.idsOfActionsToForceUpdateLastUpdatedValue ?? [],
+      options?.profileInfo,
     );
 
     if (riSc) {

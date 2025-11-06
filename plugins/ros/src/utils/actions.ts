@@ -5,6 +5,7 @@ import {
   calculateUpdatedStatus,
   UpdatedStatusEnumType,
 } from './utilityfunctions.ts';
+import { ProfileInfo } from '@backstage/core-plugin-api';
 
 export function filterActionsByRelevance(
   actions: Action[],
@@ -34,12 +35,18 @@ export function getActionsWithLastUpdated(
   oldActions: Action[],
   newActions: Action[],
   idsOfActionsToForceUpdateLastUpdatedValue: string[] = [],
+  profileInfo?: ProfileInfo,
 ) {
   const actionsWithLastUpdated: Action[] = [];
-
+  const lastUpdatedBy =
+    profileInfo?.displayName || profileInfo?.email || 'User22'; // TODO: remove User22 used for testing
   for (const newAction of newActions) {
     if (idsOfActionsToForceUpdateLastUpdatedValue.includes(newAction.ID)) {
-      actionsWithLastUpdated.push({ ...newAction, lastUpdated: new Date() });
+      actionsWithLastUpdated.push({
+        ...newAction,
+        lastUpdated: new Date(),
+        lastUpdatedBy: lastUpdatedBy,
+      });
       continue;
     }
 
@@ -47,7 +54,11 @@ export function getActionsWithLastUpdated(
     if (oldAction && isActionsEqual(newAction, oldAction)) {
       actionsWithLastUpdated.push({ ...newAction });
     } else {
-      actionsWithLastUpdated.push({ ...newAction, lastUpdated: new Date() });
+      actionsWithLastUpdated.push({
+        ...newAction,
+        lastUpdated: new Date(),
+        lastUpdatedBy: lastUpdatedBy,
+      });
     }
   }
   return actionsWithLastUpdated;

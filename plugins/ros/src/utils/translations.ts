@@ -12,6 +12,7 @@ export const pluginRiScMessages = {
     multipleRiScs: 'RiSc scorecards',
   },
   dictionary: {
+    by: 'By',
     click: 'Click',
     here: 'here',
     rejectedLogin: 'Login rejected by user.',
@@ -71,6 +72,7 @@ export const pluginRiScMessages = {
     status: 'Status',
     threatActors: 'Threat actors',
     title: 'Title',
+    unknown: 'Unknown',
     url: 'URL',
     emptyField: 'No {{field}} specified',
     valuation: 'Valuation',
@@ -197,6 +199,11 @@ export const pluginRiScMessages = {
     migration50: {
       changeExplanation:
         'This migration updates the action status to a new naming convention.',
+    },
+    migration51: {
+      changeExplanation:
+        'This migration adds a last updated by field to actions.',
+      lastUpdatedBy: 'Last updated by:',
     },
   },
   comparisonDialog: {
@@ -635,6 +642,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.deleteButton': 'Slett analyse',
           'contentHeader.multipleRiScs': 'RoS-analyser',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
+          'dictionary.by': 'Av',
           'dictionary.click': 'Klikk',
           'dictionary.here': 'her',
           'dictionary.yes': 'Ja',
@@ -692,6 +700,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.status': 'Status',
           'dictionary.threatActors': 'Trusselaktører',
           'dictionary.title': 'Tittel',
+          'dictionary.unknown': 'Ukjent',
           'dictionary.url': 'URL',
           'dictionary.emptyField': 'Ingen {{field}} spesifisert',
           'dictionary.valuation': 'Verdi',
@@ -829,6 +838,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Denne migreringen legger til et sist oppdatert felt ("lastUpdated") på tiltak.',
           'migrationDialog.migration50.changeExplanation':
             'Denne migreringen oppdaterer tiltakets status til en ny navnekonvensjon.',
+          'migrationDialog.migration51.changeExplanation':
+            'Denne migreringen legger til et sist oppdater av felt ("lastUpdatedBy") på tiltak.',
+          'migrationDialog.migration51.lastUpdatedBy': 'Sist oppdatert av:',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
           'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
