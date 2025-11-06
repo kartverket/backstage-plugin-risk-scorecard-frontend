@@ -19,7 +19,6 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Action, Scenario } from '../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
-  UpdatedStatusEnum,
   getActionStatusButtonClass,
   UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
@@ -27,6 +26,7 @@ import { Markdown } from '../common/Markdown';
 import { body2 } from '../common/typography';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import { ScenarioLastUpdatedLabel } from '../scenario/ScenarioLastUpdatedLabel.tsx';
+import UpdatedStatusBadge from '../../components/common/UpdatedStatusBadge';
 
 type ActionsCardProps = {
   filteredData: (Action & { updatedStatus: UpdatedStatusEnumType })[];
@@ -89,38 +89,6 @@ export function ActionsCard(props: ActionsCardProps) {
     );
   }
 
-  function getUpdatedStatusStyle(
-    status: UpdatedStatusEnumType | null | undefined,
-  ) {
-    const base: React.CSSProperties = {
-      padding: '4px 0',
-      borderRadius: '24px',
-    };
-
-    if (status === UpdatedStatusEnum.VERY_OUTDATED) {
-      return {
-        ...base,
-        backgroundColor: 'var(--red-200)',
-        border: '1px solid var(--red-500)',
-      };
-    }
-
-    if (status === UpdatedStatusEnum.OUTDATED) {
-      return {
-        ...base,
-        backgroundColor: 'var(--orange-100)',
-        border: '1px solid var(--orange-300)',
-      };
-    }
-    return base;
-  }
-
-  const statusBadgeStyle = {
-    padding: '0 8px',
-    fontSize: '12px',
-    color: 'var(--bui-black)',
-  };
-
   return (
     <>
       <Divider sx={{ marginBottom: '16px' }} />
@@ -168,37 +136,19 @@ export function ActionsCard(props: ActionsCardProps) {
                     )}
                   </IconButton>
                   <Flex direction="column" align="start" gap="1">
-                    {!isPending && (
-                      <span
-                        style={{
-                          ...getUpdatedStatusStyle(action.updatedStatus),
-                        }}
-                      >
-                        <Text as="p" style={statusBadgeStyle}>
-                          {(action.updatedStatus ===
-                            UpdatedStatusEnum.VERY_OUTDATED &&
-                            t('rosStatus.veryOutdated')) ||
-                            (action.updatedStatus ===
-                              UpdatedStatusEnum.OUTDATED &&
-                              t('rosStatus.outdated')) ||
-                            null}
-                        </Text>
-                      </span>
-                    )}
-                    {showUpdatedBadge && isPending && (
-                      <span
-                        style={{
-                          padding: '4px 0',
-                          backgroundColor: '#D0ECD6',
-                          border: '1px solid #156630',
-                          borderRadius: '24px',
-                        }}
-                      >
-                        <Text style={statusBadgeStyle}>
-                          {t('rosStatus.updated')}
-                        </Text>
-                      </span>
-                    )}
+                    {(() => {
+                      if (isPending) {
+                        return showUpdatedBadge ? (
+                          <UpdatedStatusBadge
+                            status={action.updatedStatus}
+                            isPending={true}
+                          />
+                        ) : null;
+                      }
+                      return (
+                        <UpdatedStatusBadge status={action.updatedStatus} />
+                      );
+                    })()}
                     <Text as="p" variant="body-large">
                       {action.title}
                     </Text>
