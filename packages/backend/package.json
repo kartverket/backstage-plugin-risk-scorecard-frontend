@@ -52,6 +52,7 @@
     "@backstage/plugin-search-backend-module-techdocs": "backstage:^",
     "@backstage/plugin-search-backend-node": "backstage:^",
     "@backstage/plugin-techdocs-backend": "backstage:^",
+    "app": "link:../app",
     "jwt-decode": "^4.0.0"
   },
   "devDependencies": {
