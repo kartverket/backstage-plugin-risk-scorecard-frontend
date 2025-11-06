@@ -144,7 +144,9 @@ export function ScenarioTableRow({
   );
   const highlightColor = theme.palette.mode === 'dark' ? '#A2A0A0' : '#FFDD9D';
   const isTextColorBlack =
-    theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;
+    theme.palette.mode === 'dark'
+      ? isScenarioHoveredFromRiskMatrix && !visibleType
+      : true;
   const textColorAsBuiVariable = isTextColorBlack
     ? 'var(--bui-black)'
     : 'var(--bui-white)';
@@ -152,11 +154,13 @@ export function ScenarioTableRow({
   return (
     <Card
       onMouseEnter={() => {
+        if (visibleType) return;
         setHoveredScenarios(prev =>
           prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
         );
       }}
       onMouseLeave={() => {
+        if (visibleType) return;
         setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
       }}
       ref={ref}
@@ -176,9 +180,10 @@ export function ScenarioTableRow({
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
-        backgroundColor: isScenarioHoveredFromRiskMatrix
-          ? highlightColor
-          : undefined,
+        backgroundColor:
+          isScenarioHoveredFromRiskMatrix && !visibleType
+            ? highlightColor
+            : undefined,
       }}
     >
       <Flex align="center">
