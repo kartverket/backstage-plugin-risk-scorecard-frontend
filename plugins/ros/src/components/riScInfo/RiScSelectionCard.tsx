@@ -22,6 +22,7 @@ export function RiScSelectionCard(props: Props) {
         {riScs !== null && riScs.length !== 0 && (
           <>
             <Select
+              value={selectedRiSc?.id}
               className={styles.selectTrigger}
               aria-label={t('contentHeader.multipleRiScs')}
               options={riScs.map(riSc => ({
@@ -31,7 +32,6 @@ export function RiScSelectionCard(props: Props) {
               onSelectionChange={key => {
                 if (key) selectRiSc(key.toString());
               }}
-              defaultSelectedKey={selectedRiSc?.id ?? ''}
               size="medium"
             />
           </>
