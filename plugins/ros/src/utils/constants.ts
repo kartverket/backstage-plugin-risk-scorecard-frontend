@@ -1,4 +1,4 @@
-export const schemaPath = '../risc_schema_en_v5_0.json';
+export const schemaPath = '../risc_schema_en_v5_1.json';
 
 export const latestSupportedVersion = '5.1';
 
