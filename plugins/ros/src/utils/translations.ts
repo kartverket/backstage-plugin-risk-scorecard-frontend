@@ -204,6 +204,8 @@ export const pluginRiScMessages = {
       changeExplanation:
         'This migration adds a last updated by field to actions.',
       lastUpdatedBy: 'Last updated by:',
+      addedLastUpdatedBy:
+        'Added field to track who updated an action for {{numberOfChangedActions}} existing actions',
     },
   },
   comparisonDialog: {
@@ -841,6 +843,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration51.changeExplanation':
             'Denne migreringen legger til et sist oppdater av felt ("lastUpdatedBy") på tiltak.',
           'migrationDialog.migration51.lastUpdatedBy': 'Sist oppdatert av:',
+          'migrationDialog.migration51.addedLastUpdatedBy':
+            'La til felt for å spore hvem som oppdaterte et tiltak for {{numberOfChangedActions}} eksisterende tiltak',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
           'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',

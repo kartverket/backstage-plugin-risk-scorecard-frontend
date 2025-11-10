@@ -33,7 +33,9 @@ export function RiScMigrationChanges51({
       />
       <ChangeSetBox type={'primary'}>
         <ChangeSetBoxTitle
-          title={`"lastUpdatedBy" field added for ${numberOfChangedActions} actions`}
+          title={t('migrationDialog.migration51.addedLastUpdatedBy', {
+            numberOfChangedActions: numberOfChangedActions.toString(),
+          })}
         />
       </ChangeSetBox>
     </>
