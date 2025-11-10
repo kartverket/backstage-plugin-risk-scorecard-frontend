@@ -72,7 +72,7 @@ export function RiScPlugin() {
   }, [resetRiScStatus, resetResponse, scenarioWizardStep]);
 
   return (
-    <>
+    <div data-root-for="ros">
       {response && !updateStatus.isLoading && (
         <Alert
           severity={getAlertSeverity(updateStatus)}
@@ -166,6 +166,6 @@ export function RiScPlugin() {
       )}
 
       {!scenarioWizardStep && <ScenarioDrawer />}
-    </>
+    </div>
   );
 }
