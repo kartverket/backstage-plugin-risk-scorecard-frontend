@@ -124,7 +124,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
     >
       <Flex justify="between">
         <Text variant="title-medium" weight="bold">
-          {t('scenarioDrawer.title')}
+          {t('scenarioDrawer.newTitle')}
         </Text>
         <Button size="medium" variant="secondary" onClick={handleCloseStepper}>
           {t('dictionary.cancel')}
@@ -173,7 +173,9 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
                 size="medium"
                 isDisabled={!isDirty || updateStatus.isLoading}
               >
-                {t('dictionary.saveAndClose')}
+                {isLastStep
+                  ? t('scenarioDrawer.createNewScenario')
+                  : t('scenarioDrawer.saveAsDraft')}
               </Button>
 
               {!isLastStep && (

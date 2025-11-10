@@ -419,11 +419,14 @@ export const pluginRiScMessages = {
       notUpdated: 'Not updated yet',
     },
     title: 'Risk scenario',
+    newTitle: 'New risk scenario',
     titleError: 'Scenario title is required',
     subtitle: 'An unwanted incident that could potentially harm the component.', // harm or affect negatively?
     threatActorSubtitle: 'Someone who attempts to access or abuse the system', // system or component or both?
     vulnerabilitySubtitle:
       'Weakness in the system that the threat actor can exploit',
+    createNewScenario: 'Create new scenario',
+    saveAsDraft: 'Save as draft',
     riskMatrixModal: {
       startRisk: 'What is the risk before any mitigating actions are taken?',
       restRisk: 'What is the risk after all planned actions are completed?',
@@ -1019,7 +1022,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hva blir sannsynligheten etter alle tiltakene er fullført?',
 
           'scenarioDrawer.title': 'Risikoscenario',
+          'scenarioDrawer.newTitle': 'Nytt risikoscenario',
           'scenarioDrawer.titleError': 'Scenarioet må ha en tittel',
+          'scenarioDrawer.createNewScenario': 'Opprett nytt scenario',
+          'scenarioDrawer.saveAsDraft': 'Lagre som utkast',
           'scenarioDrawer.subtitle':
             'En uønsket hendelse som potensielt kan ramme komponenten',
           'scenarioDrawer.riskMatrixModal.title': 'Risikomatriser',
