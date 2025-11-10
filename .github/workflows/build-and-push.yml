@@ -66,7 +66,25 @@ jobs:
           docker build -f packages/backend/Dockerfile -t "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" .
 
       - name: Push the Docker image to Google Artifact Registry
+        if: github.ref == 'refs/heads/main'
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            docker push "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
-          fi
+          docker push "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+
+      - name: Deploy to Cloud Run
+        if: github.ref == 'refs/heads/main'
+        run: |
+          gcloud run deploy risc \
+            --image="${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" \
+            --region=europe-north1 \
+            --platform=managed \
+            --update-secrets=BACKEND_AUTH_KEY=backend-auth-key:latest \
+            --update-secrets=GITHUB_APP_ID=github-app-id:latest \
+            --update-secrets=GITHUB_CLIENT_ID=github-client-id:latest \
+            --update-secrets=GITHUB_CLIENT_SECRET=github-client-secret:latest \
+            --update-secrets=GITHUB_PRIVATE_KEY=github-private-key-pem:latest \
+            --update-secrets=GITHUB_WEBHOOK_SECRET=github-webhook-secret:latest \
+            --update-secrets=GOOGLE_CLIENT_ID=google-client-id:latest \
+            --update-secrets=GOOGLE_CLIENT_SECRET=google-client-secret:latest \
+            --update-secrets=ENTRA_ID_TENANT_ID=entra-id-tenant-id:latest \
+            --update-secrets=ENTRA_ID_CLIENT_ID=entra-id-client-id:latest \
+            --update-secrets=ENTRA_ID_CLIENT_SECRET=entra-id-client-secret:latest
