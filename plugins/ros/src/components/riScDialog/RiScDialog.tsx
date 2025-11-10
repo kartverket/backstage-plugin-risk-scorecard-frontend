@@ -66,8 +66,15 @@ export function RiScDialog({
 }: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  const { selectedRiSc, createNewRiSc, deleteRiSc, updateRiSc, gcpCryptoKeys } =
-    useRiScs();
+  const {
+    selectedRiSc,
+    riScs,
+    selectRiSc,
+    createNewRiSc,
+    deleteRiSc,
+    updateRiSc,
+    gcpCryptoKeys,
+  } = useRiScs();
   const {
     register,
     handleSubmit,
@@ -126,7 +133,9 @@ export function RiScDialog({
     if (dialogState === RiScDialogStates.Create) {
       createNewRiSc(data, switchOn, [selectedRiScType]);
     } else if (dialogState === RiScDialogStates.Delete) {
-      deleteRiSc();
+      deleteRiSc(() =>
+        selectRiSc(riScs && riScs.length > 0 ? riScs[0].id : ''),
+      );
     } else {
       // Do manual comparison of contents, as the sopsConfig field contains many values from the backend that are not
       // used or set by the frontend.
