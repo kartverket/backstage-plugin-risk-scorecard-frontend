@@ -38,8 +38,7 @@ export function getActionsWithLastUpdated(
   profileInfo?: ProfileInfo,
 ) {
   const actionsWithLastUpdated: Action[] = [];
-  const lastUpdatedBy =
-    profileInfo?.displayName || profileInfo?.email || 'User User'; // TODO: remove User22 used for testing
+  const lastUpdatedBy = profileInfo?.displayName || profileInfo?.email || '';
   for (const newAction of newActions) {
     if (idsOfActionsToForceUpdateLastUpdatedValue.includes(newAction.ID)) {
       actionsWithLastUpdated.push({
