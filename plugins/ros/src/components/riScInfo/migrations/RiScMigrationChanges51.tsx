@@ -31,7 +31,7 @@ export function RiScMigrationChanges51({
         )}
         changelogUrl="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md#50"
       />
-      <ChangeSetBox type={'primary'}>
+      <ChangeSetBox type="primary">
         <ChangeSetBoxTitle
           title={t('migrationDialog.migration51.addedLastUpdatedBy', {
             numberOfChangedActions: numberOfChangedActions.toString(),

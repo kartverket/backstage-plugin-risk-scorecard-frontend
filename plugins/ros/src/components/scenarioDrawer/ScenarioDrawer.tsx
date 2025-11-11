@@ -91,7 +91,7 @@ export function ScenarioDrawer() {
       });
       setCurrentUpdatedActionIDs([]);
     },
-    [scenario, formMethods, submitEditedScenarioToRiSc],
+    [scenario, formMethods, submitEditedScenarioToRiSc, profileInfo],
   );
   const { flush } = useDebounce(
     currentUpdatedActionIDs,

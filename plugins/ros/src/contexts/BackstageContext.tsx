@@ -30,8 +30,8 @@ export function BackstageContextProvider({
   useEffect(() => {
     identityApi
       .getProfileInfo()
-      .then(profileInfo => setProfileInfo(profileInfo));
-  }, []);
+      .then(fetchedProfileInfo => setProfileInfo(fetchedProfileInfo));
+  }, [identityApi]);
 
   return (
     <BackstageContext.Provider value={{ profileInfo }}>

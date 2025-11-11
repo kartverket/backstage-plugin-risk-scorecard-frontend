@@ -70,7 +70,7 @@ export function ActionsCard(props: ActionsCardProps) {
       });
       setPendingUpdatedIDs([]);
     },
-    [scenario, submitEditedScenarioToRiSc, pendingStatusById],
+    [scenario, submitEditedScenarioToRiSc, pendingStatusById, profileInfo],
   );
 
   const { flush } = useDebounce(pendingUpdatedIDs, 6000, debounceCallback);

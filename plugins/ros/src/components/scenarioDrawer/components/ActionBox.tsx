@@ -238,7 +238,7 @@ export function ActionBox({
           <ScenarioLastUpdatedLabel
             lastUpdated={isActionUpdated ? new Date() : action.lastUpdated}
             lastUpdatedBy={action.lastUpdatedBy}
-          ></ScenarioLastUpdatedLabel>
+          />
         </Box>
         <IconButton onClick={handleDeleteAction}>
           <DeleteIcon />
