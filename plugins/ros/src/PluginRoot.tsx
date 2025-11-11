@@ -6,7 +6,7 @@ import { ScenarioProvider } from './contexts/ScenarioContext';
 import { riScRouteRef, scenarioRouteRef } from './routes';
 import { RiScProvider } from './contexts/RiScContext';
 import 'remixicon/fonts/remixicon.css';
-import './theme.css';
+import '../css/theme.css';
 import { DefaultRiScTypesProvider } from './contexts/DefaultRiScTypesContext.tsx';
 
 const emotionInsertionPoint = document.createElement('meta');
