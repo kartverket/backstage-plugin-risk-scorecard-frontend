@@ -5,6 +5,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { Link } from '@mui/material';
 import { FeedbackDialog } from '../riScPlugin/FeedbackDialog.tsx';
+import DialogTitle from '@mui/material/DialogTitle';
 
 export function SupportDialog() {
   const [open, setOpen] = useState(false);
@@ -20,11 +21,7 @@ export function SupportDialog() {
         {t('supportDialog.title')}
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
-        <Flex px="24px" pt="18px" pb="10px">
-          <Text as="h3" variant="title-small" weight="bold">
-            {t('supportDialog.title')}
-          </Text>
-        </Flex>
+        <DialogTitle>{t('supportDialog.title')}</DialogTitle>
         <DialogContent>
           <Flex direction="column" gap="8px">
             <SupportEntry

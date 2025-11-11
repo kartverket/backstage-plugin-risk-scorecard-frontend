@@ -10,11 +10,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../common/mixins';
-import { Step, StepLabel, Stepper } from '@mui/material';
+import { Divider, Step, StepLabel, Stepper } from '@mui/material';
 import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
 import ConfigInitialRisc from './ConfigInitialRisc';
-import { Flex, Box, Button } from '@backstage/ui';
+import { Flex, Box, Button, Text } from '@backstage/ui';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -208,13 +208,19 @@ export function RiScDialog({
               />
             )}
             {activeStep === 2 && (
-              <ConfigEncryptionDialog
-                gcpCryptoKeys={gcpCryptoKeys}
-                setValue={setValue}
-                state={dialogState}
-                register={register}
-                errors={errors}
-              />
+              <>
+                <Divider />
+                <Text as="h2" variant="title-small" weight="bold">
+                  {t('rosDialog.stepEncryption')}
+                </Text>
+                <ConfigEncryptionDialog
+                  gcpCryptoKeys={gcpCryptoKeys}
+                  setValue={setValue}
+                  state={dialogState}
+                  register={register}
+                  errors={errors}
+                />
+              </>
             )}
           </DialogContent>
         </RiScStepper>

@@ -343,7 +343,7 @@ export const pluginRiScMessages = {
       new: 'The Risc Scorecard will be encrypted to limit access. Below please choose a key from Google Cloud Platform which you and your team can access.',
       edit: 'The Risc Scorecard will be encrypted to limit access. You can change which key is utilized from Google Cloud platform, make sure the correct people have access to the new key.',
     },
-    selectKeysTitle: 'Select keys',
+    selectKeysTitle: 'Choose encryption key',
     chooseGcpCryptoKey: 'Choose GCP key',
     gcpCryptoKeyDescription:
       'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk scorecards.',
@@ -950,7 +950,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'For å bruke kodenær RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
           'sopsConfigDialog.description.edit':
             'Risiko og sårbarhetsanalysen vil bli kryptert for å sørge for kofidiensialitet. Du kan endre hvilken krypteringsnøkkel fra Google Cloud Platform som skal bli brukt her:',
-          'sopsConfigDialog.selectKeysTitle': 'Velg nøkler',
+          'sopsConfigDialog.selectKeysTitle': 'Velg krypteringsnøkkel',
           'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':
             "Fra listen under kan du velge hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med.",

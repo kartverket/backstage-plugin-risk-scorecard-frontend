@@ -146,7 +146,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
 
   return (
     <>
-      <Divider sx={{ margin: '16px' }} />
+      <Divider />
       {props.dialogState === RiScDialogStates.Create && (
         <>
           <Box>

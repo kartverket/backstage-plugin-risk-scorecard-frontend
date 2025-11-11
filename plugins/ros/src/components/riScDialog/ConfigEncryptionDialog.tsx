@@ -26,7 +26,6 @@ import { FieldErrors } from 'react-hook-form/dist/types/errors';
 import FormHelperText from '@mui/material/FormHelperText';
 import { URLS } from '../../urls';
 import { Text, Link, Button, Flex, Box } from '@backstage/ui';
-import { Divider } from '@mui/material';
 
 interface ConfigEncryptionDialogProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
@@ -131,10 +130,6 @@ function ConfigEncryptionDialog({
 
   return (
     <Flex direction="column" gap="16px">
-      <Divider />
-      <Text as="h2" variant="title-small" weight="bold">
-        {t('rosDialog.stepEncryption')}
-      </Text>
       <DialogContentText>
         {state === RiScDialogStates.Create
           ? t('sopsConfigDialog.description.new')
@@ -143,7 +138,6 @@ function ConfigEncryptionDialog({
       <Text variant="body-medium" weight="bold">
         {t('sopsConfigDialog.selectKeysTitle')}
       </Text>
-
       {chosenGcpCryptoKey !== undefined ? (
         <>
           {t('sopsConfigDialog.gcpCryptoKeyDescription')}
