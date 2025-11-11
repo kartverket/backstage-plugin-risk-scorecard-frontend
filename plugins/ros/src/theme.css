@@ -1,0 +1,83 @@
+/*
+This file contains custom CSS styles for the ROS plugin in Backstage, as well as our own overrides of Backstage UI styles. For colors that should vary depending on mode: declare them in both :root and [data-theme-mode='dark'] sections and then use the variables in your code.
+*/
+
+/*
+The Text-fill-scenario-and-action and Text-border-scenario-and-action variables are here as proofs of concept for how variables can be defined for both "default (light/:root) and dark mode and then our code can simply refer to the variable and don't are about the mode.
+*/
+[data-root-for='ros'] {
+  --green-50: #e9f8eb;
+  --green-100: #d0ecd6;
+  --green-200: #9fd2ab;
+  --green-300: #66b077;
+  --green-500: #156630;
+
+  --light-blue-100: #cae3fe;
+  --light-blue-200: #9bc9fe;
+
+  --blue-600: #1f5492;
+
+  --red-100: #ffe2d4;
+  --red-200: #ebb095;
+  --red-300: #e58869;
+  --red-400: #d04a14;
+  --red-500: #a32f00;
+  --red-600: #862906;
+  --red-700: #722609;
+  --red-800: #541f0b;
+  --red-900: #39170a;
+  --red-bright: #d3302f;
+
+  --orange-50: #fcebcd;
+  --orange-100: #ffdd9d;
+  --orange-200: #ebbe76;
+  --orange-300: #cf914a;
+  --orange-400: #bc7729;
+  --orange-500: #8e5a1f;
+
+  --gray-50: #f8f8f8;
+  --gray-100: #eae7e7;
+  --gray-200: #c8c5c5;
+  --gray-300: #a2a0a0;
+  --gray-400: #706f6e;
+  --gray-500: #5a5858;
+  --gray-600: #4a4848;
+  --gray-700: #403f3f;
+  --gray-800: #2e2e2e;
+  --gray-900: #212121;
+  --gray-medium: #808080;
+
+  --risc-status-updated: var(--green-500);
+  --risc-status-little-outdated: var(--orange-400);
+  --risc-status-outdated: var(--red-700);
+  --risc-status-very-outdated: var(--red-400);
+  --risc-status-not-published: var(--orange-400);
+  --risc-status-error: var(--red-700);
+
+  /* -------Button styles------- */
+  .button-red {
+    background-color: var(--red-bright);
+    color: var(--bui-white);
+  }
+
+  .button-green {
+    background-color: var(--green-500);
+    color: var(--bui-white);
+  }
+
+  .button-gray {
+    background-color: var(--gray-medium);
+    color: var(--bui-white);
+  }
+  /* ---------------------------- */
+}
+
+/* Dark mode custom styles can be added here */
+[data-theme-mode='dark'] [data-root-for='ros'] {
+  --risc-status-updated: var(--green-200);
+  --risc-status-little-outdated: var(--orange-400);
+  --risc-status-outdated: var(--red-700);
+  --risc-status-very-outdated: var(--red-300);
+  --risc-status-not-published: var(--orange-100);
+  --risc-status-error: var(--red-700);
+}
