@@ -19,7 +19,12 @@ export function SupportDialog() {
       >
         {t('supportDialog.title')}
       </Button>
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        fullWidth
+        disablePortal
+      >
         <Flex px="24px" pt="18px" pb="10px">
           <Text as="h3" variant="title-small" weight="bold">
             {t('supportDialog.title')}
