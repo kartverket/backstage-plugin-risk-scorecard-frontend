@@ -47,6 +47,13 @@ The Text-fill-scenario-and-action and Text-border-scenario-and-action variables 
   --gray-900: #212121;
   --gray-medium: #808080;
 
+  --risc-status-updated: var(--green-500);
+  --risc-status-little-outdated: var(--orange-400);
+  --risc-status-outdated: var(--red-700);
+  --risc-status-very-outdated: var(--red-400);
+  --risc-status-not-published: var(--orange-400);
+  --risc-status-error: var(--red-700);
+
   /* -------Button styles------- */
   .button-red {
     background-color: var(--red-bright);
@@ -66,6 +73,11 @@ The Text-fill-scenario-and-action and Text-border-scenario-and-action variables 
 }
 
 /* Dark mode custom styles can be added here */
-/* [data-theme-mode='dark'] [data-root-for='ros'] {
-
-} */
+[data-theme-mode='dark'] [data-root-for='ros'] {
+  --risc-status-updated: var(--green-200);
+  --risc-status-little-outdated: var(--orange-400);
+  --risc-status-outdated: var(--red-700);
+  --risc-status-very-outdated: var(--red-300);
+  --risc-status-not-published: var(--orange-100);
+  --risc-status-error: var(--red-700);
+}
