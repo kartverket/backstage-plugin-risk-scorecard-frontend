@@ -177,7 +177,11 @@ export function RiScDialog({
   if (dialogState === RiScDialogStates.Create) {
     return (
       <Dialog open={true} onClose={onClose} disablePortal>
-        <DialogTitle>{t('rosDialog.titleNew')}</DialogTitle>
+        <DialogTitle>
+          <Text variant="title-small" weight="bold">
+            {t('rosDialog.titleNew')}
+          </Text>
+        </DialogTitle>
         <RiScStepper activeStep={activeStep}>
           <DialogContent
             sx={{
@@ -210,7 +214,7 @@ export function RiScDialog({
             {activeStep === 2 && (
               <>
                 <Divider />
-                <Text as="h2" variant="title-small" weight="bold">
+                <Text as="h2" variant="title-x-small" weight="bold">
                   {t('rosDialog.stepEncryption')}
                 </Text>
                 <ConfigEncryptionDialog
@@ -321,7 +325,11 @@ export function RiScDialog({
   if (dialogState === RiScDialogStates.EditEncryption) {
     return (
       <Dialog open={true} onClose={onClose} disablePortal>
-        <DialogTitle>{t('rosDialog.editEncryption')}</DialogTitle>
+        <DialogTitle>
+          <Text variant="title-small" weight="bold">
+            {t('rosDialog.editEncryption')}
+          </Text>
+        </DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
         >
