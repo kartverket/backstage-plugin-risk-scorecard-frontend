@@ -215,8 +215,15 @@ export function ActionsCard(props: ActionsCardProps) {
                   {t('scenarioDrawer.action.lastUpdated')}
                   <br />
                   {(() => {
-                    const last =
-                      action.ID in pendingStatusById ? new Date() : undefined;
+                    let last: Date | undefined;
+                    if (action.ID in pendingStatusById) {
+                      last = new Date();
+                    } else if (action.lastUpdated) {
+                      last = new Date(action.lastUpdated);
+                    } else {
+                      last = undefined;
+                    }
+
                     return last
                       ? formatDate(last)
                       : t('scenarioDrawer.action.notUpdated');
