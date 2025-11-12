@@ -12,6 +12,7 @@ import { DifferenceFetchState } from '../../utils/types';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScDifferenceDialog } from './riScStatus/RiScDifferenceDialog';
 import { dialogActions } from '../common/mixins';
+import { Text } from '@backstage/ui';
 
 interface RiScPublishDialogProps {
   openDialog: boolean;
@@ -39,9 +40,11 @@ export const RiScPublishDialog = ({
   return (
     <Dialog maxWidth="md" open={openDialog} disablePortal>
       <DialogTitle>
-        {isDeletion
-          ? t('publishDialog.titleDelete')
-          : t('publishDialog.titleUpdate')}
+        <Text variant="title-small" weight="bold">
+          {isDeletion
+            ? t('publishDialog.titleDelete')
+            : t('publishDialog.titleUpdate')}
+        </Text>
       </DialogTitle>
       <DialogContent sx={{ marginBottom: '16px' }}>
         <>

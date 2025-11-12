@@ -2,7 +2,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  DialogContentText,
   FormLabel,
   IconButton,
   List,
@@ -130,17 +129,17 @@ function ConfigEncryptionDialog({
 
   return (
     <Flex direction="column" gap="16px">
-      <DialogContentText>
+      <Text>
         {state === RiScDialogStates.Create
           ? t('sopsConfigDialog.description.new')
           : t('sopsConfigDialog.description.edit')}
-      </DialogContentText>
+      </Text>
       <Text variant="body-medium" weight="bold">
         {t('sopsConfigDialog.selectKeysTitle')}
       </Text>
       {chosenGcpCryptoKey !== undefined ? (
         <>
-          {t('sopsConfigDialog.gcpCryptoKeyDescription')}
+          <Text>{t('sopsConfigDialog.gcpCryptoKeyDescription')}</Text>
           <GcpCryptoKeyMenu
             chosenGcpCryptoKey={chosenGcpCryptoKey}
             onChange={handleChangeGcpCryptoKey}
@@ -206,7 +205,7 @@ function ConfigEncryptionDialog({
                 </Box>
               )}
               <Text as="p" variant="body-large">
-                {t('dictionary.click')}{' '}
+                {t('dictionary.click')}
                 <Link
                   href={
                     URLS.external.kartverket_atlassian_net__write_ros_locally
