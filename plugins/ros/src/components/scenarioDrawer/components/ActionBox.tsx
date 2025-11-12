@@ -6,7 +6,6 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
 import { DualButtonWithMenu } from '../../common/DualButtonWithMenu';
 import { useState } from 'react';
 import { UseFieldArrayRemove, UseFormReturn } from 'react-hook-form';
@@ -25,11 +24,10 @@ import {
   getActionStatusButtonClass,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
-import { body2 } from '../../common/typography';
 import UpdatedStatusBadge from '../../common/UpdatedStatusBadge';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
-import { Text, Flex } from '@backstage/ui';
+import { Text, Flex, Link } from '@backstage/ui';
 
 interface ActionBoxProps {
   action: Action;
@@ -301,19 +299,21 @@ export function ActionBox({
               {t('dictionary.url')}
             </Text>
             {action.url ? (
-              <Link
-                sx={{
-                  ...body2,
-                  wordBreak: 'break-all',
-                }}
-                target="_blank"
-                rel="noreferrer"
-                href={
-                  action.url.startsWith('http') ? action.url : `//${action.url}`
-                }
-              >
-                {action.url}
-              </Link>
+              <>
+                <br />
+                <Link
+                  target="_blank"
+                  rel="noreferrer"
+                  variant="body-large"
+                  href={
+                    action.url.startsWith('http')
+                      ? action.url
+                      : `//${action.url}`
+                  }
+                >
+                  {action.url}
+                </Link>
+              </>
             ) : (
               <Text as="p" variant="body-large" style={{ fontStyle: 'italic' }}>
                 {t('dictionary.emptyField', {
