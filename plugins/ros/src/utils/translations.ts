@@ -336,6 +336,7 @@ export const pluginRiScMessages = {
       'This RoS is generated from information about the codebase in kartverket.dec, security metrics and security controllers.',
     noInitialRiScFound: 'No default RoS is currently available.',
     applicationType: 'Choose application type',
+    titleAndScope: 'Title and scope',
   },
   sopsConfigDialog: {
     title: 'Encryption',
@@ -943,6 +944,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.initialRiscTitle': 'Forhåndsdefinert RoS',
           'rosDialog.stepEncryption': 'Konfigurer kryptering',
           'rosDialog.applicationType': 'Velg type applikasjon',
+          'rosDialog.titleAndScope': 'Tittel og omfang',
           'sopsConfigDialog.title': 'Kryptering',
           'sopsConfigDialog.writeLocalRiscSuffix':
             'for å lære mer om å skrive kodenær RoS lokalt.',

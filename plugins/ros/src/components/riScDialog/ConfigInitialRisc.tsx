@@ -151,8 +151,8 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
         <>
           <Box>
             <Box mb="4">
-              <Text variant="title-small" as="h6" weight="bold">
-                {t('rosDialog.initialRiscTitle')}{' '}
+              <Text variant="title-x-small" weight="bold">
+                {t('rosDialog.initialRiscTitle')}
               </Text>
             </Box>
             {defaultRiScTypeDescriptors.length > 0 && (
