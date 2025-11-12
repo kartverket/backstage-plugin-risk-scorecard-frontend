@@ -203,13 +203,19 @@ export function RiScDialog({
               />
             )}
             {activeStep === 1 && (
-              <ConfigRiscInfo
-                dialogState={dialogState}
-                register={register}
-                errors={errors}
-                setValue={setValue}
-                watch={watch}
-              />
+              <>
+                <Divider />
+                <Text as="h2" variant="title-x-small" weight="bold">
+                  {t('rosDialog.titleAndScope')}
+                </Text>
+                <ConfigRiscInfo
+                  dialogState={dialogState}
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  watch={watch}
+                />
+              </>
             )}
             {activeStep === 2 && (
               <>
@@ -279,7 +285,9 @@ export function RiScDialog({
     return (
       <Dialog open={true} onClose={onClose} disablePortal>
         <DialogTitle>
-          <Flex direction="column">{t('rosDialog.titleEdit')}</Flex>
+          <Text variant="title-small" weight="bold">
+            {t('rosDialog.titleEdit')}
+          </Text>
         </DialogTitle>
         <DialogContent
           sx={{

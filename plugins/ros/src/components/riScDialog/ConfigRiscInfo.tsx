@@ -10,8 +10,6 @@ import { RiScDialogStates } from './RiScDialog';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
-import { Divider } from '@mui/material';
-import { Text } from '@backstage/ui';
 
 interface ConfigRiscInfoProps {
   dialogState: RiScDialogStates;
@@ -26,10 +24,6 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
   const currentScope = props.watch('content.scope');
   return (
     <>
-      <Divider />
-      <Text as="h2" variant="title-x-small" weight="bold">
-        {t('rosDialog.titleAndScope')}
-      </Text>
       <Input
         required
         {...props.register('content.title', { required: true })}
