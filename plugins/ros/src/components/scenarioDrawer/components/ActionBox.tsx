@@ -146,6 +146,7 @@ export function ActionBox({
             variant="contained"
             onClick={formMethods.handleSubmit((data: FormScenario) => {
               submitEditedScenarioToRiSc(mapFormScenarioToScenario(data));
+              setIsEditing(false);
             })}
             disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
           >
