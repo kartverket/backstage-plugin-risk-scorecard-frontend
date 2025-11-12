@@ -37,7 +37,7 @@ export const RiScPublishDialog = ({
   }
 
   return (
-    <Dialog maxWidth="md" open={openDialog}>
+    <Dialog maxWidth="md" open={openDialog} disablePortal>
       <DialogTitle>
         {isDeletion
           ? t('publishDialog.titleDelete')
