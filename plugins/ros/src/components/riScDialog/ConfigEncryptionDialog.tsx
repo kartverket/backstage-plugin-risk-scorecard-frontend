@@ -128,33 +128,35 @@ function ConfigEncryptionDialog({
   }
 
   return (
-    <Flex direction="column" gap="16px">
+    <Flex direction="column">
       <Text>
         {state === RiScDialogStates.Create
           ? t('sopsConfigDialog.description.new')
           : t('sopsConfigDialog.description.edit')}
       </Text>
-      <Text variant="body-medium" weight="bold">
-        {t('sopsConfigDialog.selectKeysTitle')}
-      </Text>
-      {chosenGcpCryptoKey !== undefined ? (
-        <>
-          <Text>{t('sopsConfigDialog.gcpCryptoKeyDescription')}</Text>
-          <GcpCryptoKeyMenu
-            chosenGcpCryptoKey={chosenGcpCryptoKey}
-            onChange={handleChangeGcpCryptoKey}
-            gcpCryptoKeys={
-              gcpCryptoKeys.includes(chosenGcpCryptoKey)
-                ? gcpCryptoKeys
-                : [...gcpCryptoKeys, chosenGcpCryptoKey]
-            }
-          />
-        </>
-      ) : (
-        <Text variant="body-medium">
-          {t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}
+      <Flex direction="column" gap="0px">
+        <Text variant="body-medium" weight="bold">
+          {t('sopsConfigDialog.selectKeysTitle')}
         </Text>
-      )}
+        {chosenGcpCryptoKey !== undefined ? (
+          <>
+            <Text>{t('sopsConfigDialog.gcpCryptoKeyDescription')}</Text>
+            <GcpCryptoKeyMenu
+              chosenGcpCryptoKey={chosenGcpCryptoKey}
+              onChange={handleChangeGcpCryptoKey}
+              gcpCryptoKeys={
+                gcpCryptoKeys.includes(chosenGcpCryptoKey)
+                  ? gcpCryptoKeys
+                  : [...gcpCryptoKeys, chosenGcpCryptoKey]
+              }
+            />
+          </>
+        ) : (
+          <Text variant="body-medium">
+            {t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}
+          </Text>
+        )}
+      </Flex>
       {errors.sopsConfig !== undefined && (
         <FormHelperText error={true}>
           {t('sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage')}
