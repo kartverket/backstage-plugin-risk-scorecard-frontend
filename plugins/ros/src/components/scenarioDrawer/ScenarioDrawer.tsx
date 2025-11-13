@@ -149,6 +149,7 @@ export function ScenarioDrawer() {
 
   return (
     <Drawer
+      disablePortal
       PaperProps={{
         sx: theme => ({
           padding: theme.spacing(4),

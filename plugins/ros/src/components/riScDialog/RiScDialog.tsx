@@ -176,7 +176,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.Create) {
     return (
-      <Dialog open={true} onClose={onClose}>
+      <Dialog open={true} onClose={onClose} disablePortal>
         <DialogTitle>{t('rosDialog.titleNew')}</DialogTitle>
         <RiScStepper activeStep={activeStep}>
           <DialogContent
@@ -248,7 +248,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.Delete) {
     return (
-      <Dialog open={true} onClose={onClose}>
+      <Dialog open={true} onClose={onClose} disablePortal>
         <DialogTitle>{t('deleteDialog.title')}</DialogTitle>
         <DialogContent>
           <DialogContent>{t('deleteDialog.confirmationMessage')}</DialogContent>
@@ -267,7 +267,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.EditRiscInfo) {
     return (
-      <Dialog open={true} onClose={onClose}>
+      <Dialog open={true} onClose={onClose} disablePortal>
         <DialogTitle>
           <Flex direction="column">{t('rosDialog.titleEdit')}</Flex>
         </DialogTitle>
@@ -314,7 +314,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.EditEncryption) {
     return (
-      <Dialog open={true} onClose={onClose}>
+      <Dialog open={true} onClose={onClose} disablePortal>
         <DialogTitle>{t('rosDialog.editEncryption')}</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
