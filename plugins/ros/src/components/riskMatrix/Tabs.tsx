@@ -24,7 +24,11 @@ export function Tabs({ setTab }: TabsProps) {
       >
         <Tab
           label={
-            <Text variant="body-large" weight="bold">
+            <Text
+              variant="body-large"
+              weight="bold"
+              style={{ letterSpacing: '0px' }}
+            >
               {t('dictionary.initialRisk')}
             </Text>
           }
@@ -33,7 +37,11 @@ export function Tabs({ setTab }: TabsProps) {
         />
         <Tab
           label={
-            <Text variant="body-large" weight="bold">
+            <Text
+              variant="body-large"
+              weight="bold"
+              style={{ letterSpacing: '0px' }}
+            >
               {t('dictionary.restRisk')}
             </Text>
           }
