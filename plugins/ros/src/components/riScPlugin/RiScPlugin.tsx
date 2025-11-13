@@ -20,6 +20,7 @@ import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
 import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { getAlertStyle } from '../scenarioDrawer/scenarioDrawerComponents.ts';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -74,12 +75,21 @@ export function RiScPlugin() {
   return (
     <div data-root-for="ros">
       {response && !updateStatus.isLoading && (
-        <Alert
-          severity={getAlertSeverity(updateStatus)}
-          sx={{ marginBottom: 2 }}
+        <Flex
+          style={{
+            position: 'sticky',
+            top: 8,
+            ...getAlertStyle(getAlertSeverity(updateStatus)),
+            width: '100%',
+          }}
         >
-          <Text variant="body-large">{response.statusMessage}</Text>
-        </Alert>
+          <Alert
+            severity={getAlertSeverity(updateStatus)}
+            sx={{ width: '100%' }}
+          >
+            <Text variant="body-large">{response.statusMessage}</Text>
+          </Alert>
+        </Flex>
       )}
       {updateStatus.isLoading && (
         <LinearProgress
