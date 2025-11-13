@@ -2,7 +2,6 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Box, Flex, Radio, RadioGroup, Switch, Text } from '@backstage/ui';
 import { RiScDialogStates } from './RiScDialog';
-import { Divider } from '@mui/material';
 import {
   DefaultRiScType,
   DefaultRiScTypeDescriptor,
@@ -146,15 +145,9 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
 
   return (
     <>
-      <Divider />
       {props.dialogState === RiScDialogStates.Create && (
         <>
           <Box>
-            <Box mb="4">
-              <Text variant="title-x-small" weight="bold">
-                {t('rosDialog.initialRiscTitle')}
-              </Text>
-            </Box>
             {defaultRiScTypeDescriptors.length > 0 && (
               <>
                 <Box pb="2">

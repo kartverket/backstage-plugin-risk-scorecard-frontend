@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { DefaultRiScType, RiScWithMetadata } from '../../utils/types';
 import { emptyRiSc, isDeeplyEqual } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -10,11 +10,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { dialogActions } from '../common/mixins';
-import { Divider, Step, StepLabel, Stepper } from '@mui/material';
+import { Step, StepLabel, Stepper } from '@mui/material';
 import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
 import ConfigInitialRisc from './ConfigInitialRisc';
-import { Flex, Box, Button, Text } from '@backstage/ui';
+import { Flex, Button, Text } from '@backstage/ui';
+import Divider from '@mui/material/Divider';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -31,13 +32,7 @@ interface RiScDialogProps {
   onDelete: () => void;
 }
 
-function RiScStepper({
-  children,
-  activeStep,
-}: {
-  children: React.ReactNode;
-  activeStep: number;
-}) {
+function RiScStepper({ activeStep }: { activeStep: number }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const steps = [
@@ -46,16 +41,13 @@ function RiScStepper({
     t('rosDialog.stepEncryption'),
   ];
   return (
-    <Box style={{ width: '100%', padding: '24px' }}>
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map(label => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-      {children}
-    </Box>
+    <Stepper activeStep={activeStep} alternativeLabel>
+      {steps.map(label => (
+        <Step key={label}>
+          <StepLabel>{label}</StepLabel>
+        </Step>
+      ))}
+    </Stepper>
   );
 }
 
@@ -182,58 +174,51 @@ export function RiScDialog({
             {t('rosDialog.titleNew')}
           </Text>
         </DialogTitle>
-        <RiScStepper activeStep={activeStep}>
-          <DialogContent
+        <DialogContent>
+          <RiScStepper activeStep={activeStep} />
+          <Divider
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-              paddingX: 1,
-              paddingY: 0.5,
+              paddingTop: '16px',
             }}
+          />
+          <Text
+            as="h2"
+            variant="title-x-small"
+            weight="bold"
+            style={{ paddingTop: '16px', paddingBottom: '16px' }}
           >
-            {activeStep === 0 && (
-              <ConfigInitialRisc
-                dialogState={dialogState}
-                switchOn={switchOn}
-                setSwitchOn={setSwitchOn}
-                setValue={setValue}
-                selectedRiScType={selectedRiScType}
-                setSelectedRiScType={setSelectedRiScType}
-              />
-            )}
-            {activeStep === 1 && (
-              <>
-                <Divider />
-                <Text as="h2" variant="title-x-small" weight="bold">
-                  {t('rosDialog.titleAndScope')}
-                </Text>
-                <ConfigRiscInfo
-                  dialogState={dialogState}
-                  register={register}
-                  errors={errors}
-                  setValue={setValue}
-                  watch={watch}
-                />
-              </>
-            )}
-            {activeStep === 2 && (
-              <>
-                <Divider />
-                <Text as="h2" variant="title-x-small" weight="bold">
-                  {t('rosDialog.stepEncryption')}
-                </Text>
-                <ConfigEncryptionDialog
-                  gcpCryptoKeys={gcpCryptoKeys}
-                  setValue={setValue}
-                  state={dialogState}
-                  register={register}
-                  errors={errors}
-                />
-              </>
-            )}
-          </DialogContent>
-        </RiScStepper>
+            {activeStep === 0 && t('rosDialog.initialRiscTitle')}
+            {activeStep === 1 && t('rosDialog.titleAndScope')}
+            {activeStep === 2 && t('rosDialog.stepEncryption')}
+          </Text>
+          {activeStep === 0 && (
+            <ConfigInitialRisc
+              dialogState={dialogState}
+              switchOn={switchOn}
+              setSwitchOn={setSwitchOn}
+              setValue={setValue}
+              selectedRiScType={selectedRiScType}
+              setSelectedRiScType={setSelectedRiScType}
+            />
+          )}
+          {activeStep === 1 && (
+            <ConfigRiscInfo
+              register={register}
+              errors={errors}
+              setValue={setValue}
+              watch={watch}
+            />
+          )}
+          {activeStep === 2 && (
+            <ConfigEncryptionDialog
+              gcpCryptoKeys={gcpCryptoKeys}
+              setValue={setValue}
+              state={dialogState}
+              register={register}
+              errors={errors}
+            />
+          )}
+        </DialogContent>
         <DialogActions sx={dialogActions}>
           <Button size="medium" variant="secondary" onClick={onClose}>
             {t('dictionary.cancel')}
@@ -300,7 +285,6 @@ export function RiScDialog({
           }}
         >
           <ConfigRiscInfo
-            dialogState={dialogState}
             register={register}
             errors={errors}
             setValue={setValue}
