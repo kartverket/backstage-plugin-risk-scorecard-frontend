@@ -23,7 +23,6 @@ export function SupportDialog() {
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
-        disablePortal
       >
         <Flex px="24px" pt="18px" pb="10px">
           <Text as="h3" variant="title-small" weight="bold">
