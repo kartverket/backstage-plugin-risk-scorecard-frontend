@@ -16,6 +16,7 @@ import ConfigRiscInfo from './ConfigRiscInfo';
 import ConfigInitialRisc from './ConfigInitialRisc';
 import { Flex, Button, Text } from '@backstage/ui';
 import Divider from '@mui/material/Divider';
+import styles from './RiScDialog.module.css';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -176,16 +177,12 @@ export function RiScDialog({
         </DialogTitle>
         <DialogContent>
           <RiScStepper activeStep={activeStep} />
-          <Divider
-            sx={{
-              paddingTop: '16px',
-            }}
-          />
+          <Divider className={styles.subtitleDivider} />
           <Text
             as="h2"
             variant="title-x-small"
             weight="bold"
-            style={{ paddingTop: '16px', paddingBottom: '16px' }}
+            className={styles.subtitle}
           >
             {activeStep === 0 && t('rosDialog.initialRiscTitle')}
             {activeStep === 1 && t('rosDialog.titleAndScope')}
@@ -274,16 +271,7 @@ export function RiScDialog({
             {t('rosDialog.titleEdit')}
           </Text>
         </DialogTitle>
-        <DialogContent
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            width: '100%',
-            paddingX: 4,
-            paddingY: 3,
-          }}
-        >
+        <DialogContent>
           <ConfigRiscInfo
             register={register}
             errors={errors}
@@ -296,9 +284,9 @@ export function RiScDialog({
             size="medium"
             variant="tertiary"
             onClick={onDelete}
-            style={{ color: '#d32f2f', paddingLeft: 0 }}
+            className={styles.deleteButton}
           >
-            <i className="ri-delete-bin-line" style={{ fontSize: '16px' }} />
+            <i className={`ri-delete-bin-line ${styles.deleteButtonIcon}`} />
             {t('contentHeader.deleteButton')}
           </Button>
           <Flex>
@@ -322,9 +310,7 @@ export function RiScDialog({
             {t('rosDialog.editEncryption')}
           </Text>
         </DialogTitle>
-        <DialogContent
-          sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
-        >
+        <DialogContent>
           <ConfigEncryptionDialog
             gcpCryptoKeys={gcpCryptoKeys}
             sopsData={selectedRiSc?.sopsConfig}
