@@ -46,6 +46,10 @@ export function RiScActionChangeSet({ action }: RiScActionChangeSetProps) {
             : t('scenarioDrawer.action.notUpdated')
         }
       />
+      <ChangeSetTrackedProperty
+        title={t('migrationDialog.migration51.lastUpdatedBy')}
+        property={action.lastUpdatedBy}
+      />
     </ChangeSetBox>
   );
 }

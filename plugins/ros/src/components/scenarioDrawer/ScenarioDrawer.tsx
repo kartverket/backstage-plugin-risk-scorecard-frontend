@@ -22,9 +22,11 @@ import ScopeFormSection from './components/ScopeFormSection';
 import { useCallback } from 'react';
 import { useDebounce } from '../../utils/hooks';
 import { Text, Flex } from '@backstage/ui';
+import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import styles from '../common/alertBar.module.css';
 
 export function ScenarioDrawer() {
+  const { profileInfo } = useBackstageContext();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [isEditing, setIsEditing] = useState(false);
   const {
@@ -83,10 +85,11 @@ export function ScenarioDrawer() {
       };
       submitEditedScenarioToRiSc(updatedScenario, {
         idsOfActionsToForceUpdateLastUpdatedValue: updatedIDs,
+        profileInfo: profileInfo,
       });
       setCurrentUpdatedActionIDs([]);
     },
-    [scenario, formMethods, submitEditedScenarioToRiSc],
+    [scenario, formMethods, submitEditedScenarioToRiSc, profileInfo],
   );
   const { flush } = useDebounce(
     currentUpdatedActionIDs,
@@ -124,6 +127,7 @@ export function ScenarioDrawer() {
         setIsEditing(false);
       },
       idsOfActionsToForceUpdateLastUpdatedValue: currentUpdatedActionIDs,
+      profileInfo: profileInfo,
     });
   });
 

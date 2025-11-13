@@ -8,6 +8,7 @@ import { RiScProvider } from './contexts/RiScContext';
 import 'remixicon/fonts/remixicon.css';
 import '../css/theme.css';
 import { DefaultRiScTypesProvider } from './contexts/DefaultRiScTypesContext.tsx';
+import { BackstageContextProvider } from './contexts/BackstageContext.tsx';
 
 const emotionInsertionPoint = document.createElement('meta');
 emotionInsertionPoint.setAttribute('name', 'emotion-insertion-point');
@@ -21,13 +22,15 @@ const cache = createCache({
 function ProvidedPlugin() {
   return (
     <CacheProvider value={cache}>
-      <RiScProvider>
-        <DefaultRiScTypesProvider>
-          <ScenarioProvider>
-            <RiScPlugin />
-          </ScenarioProvider>
-        </DefaultRiScTypesProvider>
-      </RiScProvider>
+      <BackstageContextProvider>
+        <RiScProvider>
+          <DefaultRiScTypesProvider>
+            <ScenarioProvider>
+              <RiScPlugin />
+            </ScenarioProvider>
+          </DefaultRiScTypesProvider>
+        </RiScProvider>
+      </BackstageContextProvider>
     </CacheProvider>
   );
 }

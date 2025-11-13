@@ -46,6 +46,10 @@ export function RiScActionChange({ action, type }: RiScWholeActionChangeProps) {
         title={t('scenarioDrawer.action.lastUpdated')}
         value={parsedDateTime}
       />
+      <ChangeSetProperty
+        title={t('migrationDialog.migration51.lastUpdatedBy')}
+        value={action.lastUpdatedBy}
+      />
     </ChangeSetBox>
   );
 }
