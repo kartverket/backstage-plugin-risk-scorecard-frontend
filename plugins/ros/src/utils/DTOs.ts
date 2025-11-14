@@ -1,7 +1,6 @@
 import {
   Action,
   ContentStatus,
-  DefaultRiScType,
   LastPublished,
   MigrationStatus,
   Modify,
@@ -93,6 +92,7 @@ export type ActionsDTO = {
     status: string;
     url: string;
     lastUpdated?: Date | null;
+    lastUpdatedBy?: string | null;
   };
 };
 
@@ -132,13 +132,13 @@ export function riScToDTOString(
   isRequiresNewApproval: boolean,
   profile: ProfileInfo,
   sopsConfig: SopsConfigDTO,
-  initialRiScType?: DefaultRiScType[],
+  defaultRiScId?: string | undefined,
 ): string {
   const json = JSON.stringify({
     riSc: JSON.stringify(riScToDTO(riSc)),
     isRequiresNewApproval: isRequiresNewApproval,
     schemaVersion: riSc.schemaVersion,
-    defaultRiScTypes: initialRiScType,
+    defaultRiScId: defaultRiScId ?? undefined,
     userInfo: {
       name: profile.displayName ?? '',
       email: profile.email ?? '',
@@ -180,6 +180,7 @@ function actionToDTO(action: Action): ActionsDTO {
       status: action.status,
       url: action.url,
       lastUpdated: action.lastUpdated,
+      lastUpdatedBy: action.lastUpdatedBy,
     },
   };
 }

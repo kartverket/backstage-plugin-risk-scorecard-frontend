@@ -202,7 +202,7 @@ describe('useAuthenticatedFetch', () => {
           riSc,
           false,
           sopsConfig,
-          [],
+          undefined,
           onSuccess,
           onError,
         );
@@ -272,7 +272,7 @@ describe('useAuthenticatedFetch', () => {
           riSc,
           false,
           sopsConfig,
-          [],
+          undefined,
           onSuccess,
           onError,
         );
@@ -334,7 +334,7 @@ describe('useAuthenticatedFetch', () => {
           riSc,
           false,
           sopsConfig,
-          [],
+          undefined,
           onSuccess,
           onError,
         );

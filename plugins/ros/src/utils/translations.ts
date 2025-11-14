@@ -12,6 +12,7 @@ export const pluginRiScMessages = {
     multipleRiScs: 'RiSc scorecards',
   },
   dictionary: {
+    by: 'By',
     click: 'Click',
     here: 'here',
     rejectedLogin: 'Login rejected by user.',
@@ -71,6 +72,7 @@ export const pluginRiScMessages = {
     status: 'Status',
     threatActors: 'Threat actors',
     title: 'Title',
+    unknown: 'Unknown',
     url: 'URL',
     emptyField: 'No {{field}} specified',
     valuation: 'Valuation',
@@ -197,6 +199,13 @@ export const pluginRiScMessages = {
     migration50: {
       changeExplanation:
         'This migration updates the action status to a new naming convention.',
+    },
+    migration51: {
+      changeExplanation:
+        'This migration adds a last updated by field to actions.',
+      lastUpdatedBy: 'Last updated by:',
+      addedLastUpdatedBy:
+        'Added field to track who updated an action for {{numberOfChangedActions}} existing actions',
     },
   },
   comparisonDialog: {
@@ -416,14 +425,17 @@ export const pluginRiScMessages = {
       urlError: 'Invalid URL',
       emptyState: 'This scenario has no defined actions',
       lastUpdated: 'Last updated:',
-      notUpdated: 'Not updated yet',
+      notUpdated: 'No date',
     },
     title: 'Risk scenario',
+    newTitle: 'New risk scenario',
     titleError: 'Scenario title is required',
     subtitle: 'An unwanted incident that could potentially harm the component.', // harm or affect negatively?
     threatActorSubtitle: 'Someone who attempts to access or abuse the system', // system or component or both?
     vulnerabilitySubtitle:
       'Weakness in the system that the threat actor can exploit',
+    createNewScenario: 'Create new scenario',
+    saveAsDraft: 'Save as draft',
     riskMatrixModal: {
       startRisk: 'What is the risk before any mitigating actions are taken?',
       restRisk: 'What is the risk after all planned actions are completed?',
@@ -635,6 +647,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.deleteButton': 'Slett analyse',
           'contentHeader.multipleRiScs': 'RoS-analyser',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
+          'dictionary.by': 'Av',
           'dictionary.click': 'Klikk',
           'dictionary.here': 'her',
           'dictionary.yes': 'Ja',
@@ -692,6 +705,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.status': 'Status',
           'dictionary.threatActors': 'Trusselaktører',
           'dictionary.title': 'Tittel',
+          'dictionary.unknown': 'Ukjent',
           'dictionary.url': 'URL',
           'dictionary.emptyField': 'Ingen {{field}} spesifisert',
           'dictionary.valuation': 'Verdi',
@@ -716,7 +730,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.errors.remainingProbabilityTooHigh':
             'Restsannsynlighet kan ikke være høyere enn startsannsynlighet',
           'scenarioDrawer.action.lastUpdated': 'Sist oppdatert:',
-          'scenarioDrawer.action.notUpdated': 'Ingen dato satt',
+          'scenarioDrawer.action.notUpdated': 'Ingen dato',
 
           'encryption.title': 'Kryptering',
 
@@ -829,6 +843,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Denne migreringen legger til et sist oppdatert felt ("lastUpdated") på tiltak.',
           'migrationDialog.migration50.changeExplanation':
             'Denne migreringen oppdaterer tiltakets status til en ny navnekonvensjon.',
+          'migrationDialog.migration51.changeExplanation':
+            'Denne migreringen legger til et sist oppdater av felt ("lastUpdatedBy") på tiltak.',
+          'migrationDialog.migration51.lastUpdatedBy': 'Sist oppdatert av:',
+          'migrationDialog.migration51.addedLastUpdatedBy':
+            'La til felt for å spore hvem som oppdaterte et tiltak for {{numberOfChangedActions}} eksisterende tiltak',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
           'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
@@ -1019,7 +1038,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hva blir sannsynligheten etter alle tiltakene er fullført?',
 
           'scenarioDrawer.title': 'Risikoscenario',
+          'scenarioDrawer.newTitle': 'Nytt risikoscenario',
           'scenarioDrawer.titleError': 'Scenarioet må ha en tittel',
+          'scenarioDrawer.createNewScenario': 'Opprett nytt scenario',
+          'scenarioDrawer.saveAsDraft': 'Lagre som utkast',
           'scenarioDrawer.subtitle':
             'En uønsket hendelse som potensielt kan ramme komponenten',
           'scenarioDrawer.riskMatrixModal.title': 'Risikomatriser',

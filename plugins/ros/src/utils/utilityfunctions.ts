@@ -64,8 +64,45 @@ export function emptyRiSc(): RiSc {
   };
 }
 
+export function shortenName(name: string, maxCharacters: number = 16) {
+  if (name.length <= maxCharacters) return name;
+
+  const parts = name.trim().split(/\s+/);
+
+  if (parts.length === 3) {
+    const [first, middle, last] = parts;
+    const candidates = [
+      `${first} ${middle[0]}. ${last}`,
+      `${first} ${last}`,
+      `${first} ${last[0]}.`,
+      first,
+    ];
+    return (
+      candidates.find(c => c.length <= maxCharacters) ??
+      first.slice(0, maxCharacters)
+    );
+  }
+
+  if (parts.length === 2) {
+    const [first, last] = parts;
+    const candidates = [
+      `${first} ${last}`,
+      `${first} ${last[0]}.`,
+      first,
+      last,
+    ];
+
+    return (
+      candidates.find(c => c.length <= maxCharacters) ??
+      first.slice(0, maxCharacters)
+    );
+  }
+
+  return parts[parts.length - 1].slice(0, maxCharacters);
+}
+
 export function formatDate(date: Date | string): string {
-  return DateTime.fromJSDate(new Date(date)).toFormat('dd.MM.yyyy');
+  return DateTime.fromJSDate(new Date(date)).toFormat('dd.MM.yy');
 }
 
 export function calculateDaysSince(dateString: Date) {
@@ -419,11 +456,11 @@ export const vulnerabiltiesOptionsToTranslationKeys: Record<
 export const getActionStatusButtonClass = (status: string): string => {
   switch (status) {
     case ActionStatusOptions.OK:
-      return 'button-green';
+      return 'ros-button-green';
     case ActionStatusOptions.NotOK:
-      return 'button-red';
+      return 'ros-button-red';
     default:
-      return 'button-gray';
+      return 'ros-button-gray';
   }
 };
 

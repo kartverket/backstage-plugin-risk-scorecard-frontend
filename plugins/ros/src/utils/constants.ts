@@ -1,6 +1,6 @@
-export const schemaPath = '../risc_schema_en_v5_0.json';
+export const schemaPath = '../risc_schema_en_v5_1.json';
 
-export const latestSupportedVersion = '5.0';
+export const latestSupportedVersion = '5.1';
 
 export const BASE_NUMBER = 20.0;
 export const CONSEQUENCE_SCALE_OFFSET = 3;
