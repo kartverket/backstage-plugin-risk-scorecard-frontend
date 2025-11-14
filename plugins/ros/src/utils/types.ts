@@ -31,21 +31,16 @@ export type RiScWithMetadata = {
 };
 
 export type DefaultRiScTypeDescriptor = {
-  riScType: DefaultRiScType;
+  id: string;
   listName: string;
   listDescription: string;
   defaultTitle: string;
   defaultScope: string;
   numberOfScenarios: number | null;
   numberOfActions: number | null;
+  preferredBackstageComponentType: string | null;
+  priorityIndex: number | null;
 };
-
-export enum DefaultRiScType {
-  InternalJob = 'InternalJob',
-  Standard = 'Standard',
-  Ops = 'Ops',
-  Begrenset = 'Begrenset',
-}
 
 export type MigrationStatus = {
   migrationChanges: boolean;
