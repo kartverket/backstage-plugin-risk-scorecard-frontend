@@ -74,7 +74,7 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
 }
 
 /* Dark mode custom styles can be added here */
-[data-theme-mode='dark'] [data-root-for='ros'] {
+[data-theme-mode='dark'] {
   --ros-risc-status-updated: var(--ros-green-200);
   --ros-risc-status-little-outdated: var(--ros-orange-400);
   --ros-risc-status-outdated: var(--ros-red-700);
