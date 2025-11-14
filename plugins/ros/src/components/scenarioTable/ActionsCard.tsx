@@ -90,13 +90,13 @@ export function ActionsCard(props: ActionsCardProps) {
   }
 
   function getLastUpdatedDateToDisplay(action: Action) {
-      let lastUpdated: Date | undefined = undefined;
-      if (action.ID in pendingStatusById) {
-        lastUpdated = new Date();
-      } else if (action.lastUpdated) {
-        lastUpdated = new Date(action.lastUpdated);
-      }
-      return lastUpdated
+    let lastUpdated: Date | undefined = undefined;
+    if (action.ID in pendingStatusById) {
+      lastUpdated = new Date();
+    } else if (action.lastUpdated) {
+      lastUpdated = new Date(action.lastUpdated);
+    }
+    return lastUpdated;
   }
 
   return (
