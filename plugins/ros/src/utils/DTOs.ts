@@ -138,7 +138,7 @@ export function riScToDTOString(
     riSc: JSON.stringify(riScToDTO(riSc)),
     isRequiresNewApproval: isRequiresNewApproval,
     schemaVersion: riSc.schemaVersion,
-    defaultRiScId: defaultRiScId ?? null,
+    defaultRiScId: defaultRiScId ?? undefined,
     userInfo: {
       name: profile.displayName ?? '',
       email: profile.email ?? '',
