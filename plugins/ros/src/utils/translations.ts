@@ -12,7 +12,7 @@ export const pluginRiScMessages = {
     multipleRiScs: 'RiSc scorecards',
   },
   dictionary: {
-    click: 'Click',
+    click: 'Click ',
     here: 'here',
     rejectedLogin: 'Login rejected by user.',
     yes: 'Yes',
@@ -342,12 +342,12 @@ export const pluginRiScMessages = {
     title: 'Encryption',
     description: {
       new: 'The Risc Scorecard will be encrypted to limit access. Below please choose a key from Google Cloud Platform which you and your team can access.',
-      edit: 'The Risc Scorecard will be encrypted to limit access. You can change which key is utilized from Google Cloud platform, make sure the correct people have access to the new key.',
+      edit: 'The Risc Scorecard will be encrypted to limit access. You can change which key is utilized from Google Cloud Platform, make sure the correct people have access to the new key.',
     },
     selectKeysTitle: 'Choose encryption key',
     chooseGcpCryptoKey: 'Choose GCP key',
     gcpCryptoKeyDescription:
-      'From the list below, select the GCP crypto key you want to use for encrypting and decrypting Risk scorecards.',
+      'From the list below, select the GCP crypto key you want to use for encrypting and decrypting the Risk scorecard.',
     gcpCryptoKeyNoSelectableKey:
       'You do not have access to any suitable GCP crypto keys.',
     gcpCryptoKeyNonSelectedErrorMessage: 'A GCP crypto key must be selected.',
@@ -636,7 +636,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.deleteButton': 'Slett analyse',
           'contentHeader.multipleRiScs': 'RoS-analyser',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
-          'dictionary.click': 'Klikk',
+          'dictionary.click': 'Klikk ',
           'dictionary.here': 'her',
           'dictionary.yes': 'Ja',
           'dictionary.no': 'Nei',
@@ -951,11 +951,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.description.new':
             'For å bruke kodenær RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
           'sopsConfigDialog.description.edit':
-            'Risiko og sårbarhetsanalysen vil bli kryptert for å sørge for kofidiensialitet. Du kan endre hvilken krypteringsnøkkel fra Google Cloud Platform som skal bli brukt her:',
+            'Risiko og sårbarhetsanalysen vil bli kryptert for å sørge for konfidiensialitet. Du kan endre hvilken krypteringsnøkkel fra Google Cloud Platform (GCP) som skal bli brukt her:',
           'sopsConfigDialog.selectKeysTitle': 'Velg krypteringsnøkkel',
           'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':
-            "Fra listen under kan du velge hvilken GCP-nøkkel vil du bruke for å kryptere og dekryptere RoS'ene dine med.",
+            "Fra listen under kan du velge hvilken GCP-nøkkel du vil bruke for å kryptere og dekryptere RoS'en.",
           'sopsConfigDialog.gcpCryptoKeyNoSelectableKey':
             'Du har ikke tilgang til noe egnede GCP-nøkler.',
           'sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage':
