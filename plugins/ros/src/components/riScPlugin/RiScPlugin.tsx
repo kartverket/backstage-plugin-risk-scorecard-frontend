@@ -73,7 +73,7 @@ export function RiScPlugin() {
   }, [resetRiScStatus, resetResponse, scenarioWizardStep]);
 
   return (
-    <div data-root-for="ros">
+    <>
       {response && !updateStatus.isLoading && (
         <Flex className={styles.alertBarBox}>
           <AlertBar
@@ -169,6 +169,6 @@ export function RiScPlugin() {
       )}
 
       {!scenarioWizardStep && <ScenarioDrawer />}
-    </div>
+    </>
   );
 }

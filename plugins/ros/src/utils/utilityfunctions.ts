@@ -456,11 +456,11 @@ export const vulnerabiltiesOptionsToTranslationKeys: Record<
 export const getActionStatusButtonClass = (status: string): string => {
   switch (status) {
     case ActionStatusOptions.OK:
-      return 'button-green';
+      return 'ros-button-green';
     case ActionStatusOptions.NotOK:
-      return 'button-red';
+      return 'ros-button-red';
     default:
-      return 'button-gray';
+      return 'ros-button-gray';
   }
 };
 
