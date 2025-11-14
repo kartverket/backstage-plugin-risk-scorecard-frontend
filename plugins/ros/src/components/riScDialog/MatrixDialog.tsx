@@ -21,7 +21,7 @@ export function MatrixDialog({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Dialog maxWidth="lg" open={open} onClose={close} disablePortal>
+    <Dialog maxWidth="lg" open={open} onClose={close}>
       <DialogTitle>{t('scenarioDrawer.riskMatrixModal.title')}</DialogTitle>
       <IconButton
         aria-label="close"
