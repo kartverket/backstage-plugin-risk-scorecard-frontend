@@ -47,7 +47,7 @@ export function RiScSelectionCard(props: Props) {
               marginTop: '8px',
             }}
           >
-            <Text variant="title-x-small" as="h5" weight="bold">
+            <Text variant="title-small" as="h6" weight="bold">
               {props.riScWithMetadata.content.title}
             </Text>
             <ButtonIcon

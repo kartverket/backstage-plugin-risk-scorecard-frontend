@@ -2,7 +2,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  DialogContentText,
   FormLabel,
   IconButton,
   List,
@@ -26,7 +25,6 @@ import { FieldErrors } from 'react-hook-form/dist/types/errors';
 import FormHelperText from '@mui/material/FormHelperText';
 import { URLS } from '../../urls';
 import { Text, Link, Button, Flex, Box } from '@backstage/ui';
-import { Divider } from '@mui/material';
 
 interface ConfigEncryptionDialogProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
@@ -130,38 +128,35 @@ function ConfigEncryptionDialog({
   }
 
   return (
-    <Flex direction="column" gap="16px">
-      <Divider />
-      <Text as="h2" variant="title-small" weight="bold">
-        {t('rosDialog.stepEncryption')}
-      </Text>
-      <DialogContentText>
+    <Flex direction="column">
+      <Text>
         {state === RiScDialogStates.Create
           ? t('sopsConfigDialog.description.new')
           : t('sopsConfigDialog.description.edit')}
-      </DialogContentText>
-      <Text variant="body-medium" weight="bold">
-        {t('sopsConfigDialog.selectKeysTitle')}
       </Text>
-
-      {chosenGcpCryptoKey !== undefined ? (
-        <>
-          {t('sopsConfigDialog.gcpCryptoKeyDescription')}
-          <GcpCryptoKeyMenu
-            chosenGcpCryptoKey={chosenGcpCryptoKey}
-            onChange={handleChangeGcpCryptoKey}
-            gcpCryptoKeys={
-              gcpCryptoKeys.includes(chosenGcpCryptoKey)
-                ? gcpCryptoKeys
-                : [...gcpCryptoKeys, chosenGcpCryptoKey]
-            }
-          />
-        </>
-      ) : (
-        <Text variant="body-medium">
-          {t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}
+      <Flex direction="column" gap="0px">
+        <Text variant="body-medium" weight="bold">
+          {t('sopsConfigDialog.selectKeysTitle')}
         </Text>
-      )}
+        {chosenGcpCryptoKey !== undefined ? (
+          <>
+            <Text>{t('sopsConfigDialog.gcpCryptoKeyDescription')}</Text>
+            <GcpCryptoKeyMenu
+              chosenGcpCryptoKey={chosenGcpCryptoKey}
+              onChange={handleChangeGcpCryptoKey}
+              gcpCryptoKeys={
+                gcpCryptoKeys.includes(chosenGcpCryptoKey)
+                  ? gcpCryptoKeys
+                  : [...gcpCryptoKeys, chosenGcpCryptoKey]
+              }
+            />
+          </>
+        ) : (
+          <Text variant="body-medium">
+            {t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}
+          </Text>
+        )}
+      </Flex>
       {errors.sopsConfig !== undefined && (
         <FormHelperText error={true}>
           {t('sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage')}

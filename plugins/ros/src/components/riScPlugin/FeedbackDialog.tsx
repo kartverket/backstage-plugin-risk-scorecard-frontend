@@ -28,7 +28,7 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
 
   return (
     <Flex direction="column" gap="16px">
-      <Text as="h3" variant="title-small" weight="bold">
+      <Text as="h3" variant="title-x-small" weight="bold">
         {t('feedbackDialog.title')}
       </Text>
 

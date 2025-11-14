@@ -33,7 +33,7 @@ export function EstimatedRiskInfoDialog({
       }}
     >
       <DialogTitle>
-        <Text variant="title-x-small" weight="bold">
+        <Text variant="title-small" weight="bold">
           {t('infoDialog.title')}
         </Text>
       </DialogTitle>
