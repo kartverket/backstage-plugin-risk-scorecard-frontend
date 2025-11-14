@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
 import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
-import Alert from '@mui/material/Alert';
+import AlertBar from '../common/AlertBar/AlertBar';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
@@ -20,6 +20,7 @@ import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
 import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import styles from '../common/alertBar.module.css';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -74,12 +75,14 @@ export function RiScPlugin() {
   return (
     <>
       {response && !updateStatus.isLoading && (
-        <Alert
-          severity={getAlertSeverity(updateStatus)}
-          sx={{ marginBottom: 2 }}
-        >
-          <Text variant="body-large">{response.statusMessage}</Text>
-        </Alert>
+        <Flex className={styles.alertBarBox}>
+          <AlertBar
+            severity={getAlertSeverity(updateStatus)}
+            className={styles.alertBar}
+          >
+            <Text variant="body-large">{response.statusMessage}</Text>
+          </AlertBar>
+        </Flex>
       )}
       {updateStatus.isLoading && (
         <LinearProgress

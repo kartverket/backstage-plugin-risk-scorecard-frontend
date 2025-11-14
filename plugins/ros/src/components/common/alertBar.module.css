@@ -1,0 +1,30 @@
+.alertBarBox {
+  position: sticky;
+  top: 8px;
+  z-index: 100;
+}
+
+.alertBar {
+  width: 100%;
+}
+
+/* severity variants */
+.success {
+  background-color: #e9f8eb;
+  border: 1px solid #66b077;
+}
+
+.warning {
+  background-color: #fff7ed;
+  border: 1px solid #cf914a;
+}
+
+.error {
+  background-color: #fcf1e8;
+  border: 1px solid #a32f00;
+}
+
+.info {
+  background-color: #eaf6ff;
+  border: 1px solid #439ccd;
+}
