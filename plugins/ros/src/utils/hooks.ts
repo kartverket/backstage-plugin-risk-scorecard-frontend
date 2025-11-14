@@ -394,19 +394,6 @@ export function useAuthenticatedFetch() {
   };
 }
 
-export function useIsMounted() {
-  const mountedRef = useRef(false);
-
-  useEffect(() => {
-    mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
-
-  return useCallback(() => mountedRef.current, []);
-}
-
 export function useDebounce<T>(
   value: T,
   delay: number,
