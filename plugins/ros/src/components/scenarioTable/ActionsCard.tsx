@@ -19,12 +19,13 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Action, Scenario } from '../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
-  formatDate,
   getActionStatusButtonClass,
   UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { Markdown } from '../common/Markdown';
 import { body2 } from '../common/typography';
+import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
+import { ScenarioLastUpdatedLabel } from '../scenario/ScenarioLastUpdatedLabel.tsx';
 import UpdatedStatusBadge from '../../components/common/UpdatedStatusBadge';
 
 type ActionsCardProps = {
@@ -35,6 +36,8 @@ type ActionsCardProps = {
 
 export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { profileInfo } = useBackstageContext();
+
   const { filteredData, scenario, showUpdatedBadge } = props;
 
   const [pendingUpdatedIDs, setPendingUpdatedIDs] = useState<string[]>([]);
@@ -63,10 +66,11 @@ export function ActionsCard(props: ActionsCardProps) {
 
       submitEditedScenarioToRiSc(updatedScenario, {
         idsOfActionsToForceUpdateLastUpdatedValue: updatedIDs,
+        profileInfo: profileInfo,
       });
       setPendingUpdatedIDs([]);
     },
-    [scenario, submitEditedScenarioToRiSc, pendingStatusById],
+    [scenario, submitEditedScenarioToRiSc, pendingStatusById, profileInfo],
   );
 
   const { flush } = useDebounce(pendingUpdatedIDs, 6000, debounceCallback);
@@ -150,7 +154,7 @@ export function ActionsCard(props: ActionsCardProps) {
                     </Text>
                   </Flex>
                 </Flex>
-                <Flex>
+                <Flex align="center">
                   <span
                     data-no-row-toggle
                     role="button"
@@ -212,15 +216,12 @@ export function ActionsCard(props: ActionsCardProps) {
                       )}
                     />
                   </span>
-                  {t('scenarioDrawer.action.lastUpdated')}
-                  <br />
-                  {(() => {
-                    const last =
-                      action.ID in pendingStatusById ? new Date() : undefined;
-                    return last
-                      ? formatDate(last)
-                      : t('scenarioDrawer.action.notUpdated');
-                  })()}
+                  <ScenarioLastUpdatedLabel
+                    lastUpdated={
+                      action.ID in pendingStatusById ? new Date() : undefined
+                    }
+                    lastUpdatedBy={action.lastUpdatedBy}
+                  />
                 </Flex>
               </Flex>
             </div>

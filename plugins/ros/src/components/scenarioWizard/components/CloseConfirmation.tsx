@@ -22,7 +22,7 @@ export function CloseConfirmation({
 }: CloseConfirmationProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <Dialog open={isOpen} disablePortal>
+    <Dialog open={isOpen}>
       <Flex>
         <DialogTitle>{t('scenarioDrawer.closeConfirmation')}</DialogTitle>
         <Button onClick={onCloseDialog}>
