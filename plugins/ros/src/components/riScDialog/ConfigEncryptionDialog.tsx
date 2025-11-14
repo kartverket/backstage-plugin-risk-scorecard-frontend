@@ -207,7 +207,7 @@ function ConfigEncryptionDialog({
                 </Box>
               )}
               <Text as="p" variant="body-large">
-                {t('dictionary.click')}
+                {t('dictionary.click')}{' '}
                 <Link
                   href={
                     URLS.external.kartverket_atlassian_net__write_ros_locally
