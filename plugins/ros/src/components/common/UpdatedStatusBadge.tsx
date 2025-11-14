@@ -36,7 +36,9 @@ export default function UpdatedStatusBadge({
         className={`${styles.badge} ${styles.pending}`}
         aria-label={ariaLabel}
       >
-        <Text as="p">{t('rosStatus.updated')}</Text>
+        <Text as="p" className={styles.text}>
+          {t('rosStatus.updated')}
+        </Text>
       </span>
     );
   }
