@@ -1,7 +1,6 @@
 import {
   Action,
   ContentStatus,
-  DefaultRiScType,
   LastPublished,
   MigrationStatus,
   Modify,
@@ -133,13 +132,13 @@ export function riScToDTOString(
   isRequiresNewApproval: boolean,
   profile: ProfileInfo,
   sopsConfig: SopsConfigDTO,
-  initialRiScType?: DefaultRiScType[],
+  defaultRiScId?: string | undefined,
 ): string {
   const json = JSON.stringify({
     riSc: JSON.stringify(riScToDTO(riSc)),
     isRequiresNewApproval: isRequiresNewApproval,
     schemaVersion: riSc.schemaVersion,
-    defaultRiScTypes: initialRiScType,
+    defaultRiScId: defaultRiScId ?? undefined,
     userInfo: {
       name: profile.displayName ?? '',
       email: profile.email ?? '',
