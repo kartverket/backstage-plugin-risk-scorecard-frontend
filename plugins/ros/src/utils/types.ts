@@ -55,11 +55,28 @@ export type MigrationStatus = {
   migrationChanges41?: MigrationChanges41;
   migrationChanges42?: MigrationChanges42;
   migrationChanges50?: MigrationChanges50;
+  migrationChanges51?: MigrationChanges51;
 };
 
 export type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
+};
+
+export type MigrationChanges51 = {
+  scenarios: MigrationChanges51Scenario[];
+};
+
+export type MigrationChanges51Scenario = {
+  title: string;
+  id: string;
+  changedActions: MigrationChanges51Action[];
+};
+
+export type MigrationChanges51Action = {
+  title: string;
+  id: string;
+  lastUpdatedBy?: string | null;
 };
 
 export type MigrationChanges50 = {
@@ -179,6 +196,7 @@ export type Action = {
   status: string;
   url: string;
   lastUpdated?: Date | null;
+  lastUpdatedBy?: string | null;
 };
 
 export type GithubRepoInfo = {
@@ -287,6 +305,7 @@ export type ActionChange = {
   url?: SimpleTrackedProperty<string | null>;
   status?: SimpleTrackedProperty<string>;
   lastUpdated?: SimpleTrackedProperty<Date | null>;
+  lastUpdatedBy?: SimpleTrackedProperty<string | null>;
 };
 
 export type ScenarioRiskChange = {
