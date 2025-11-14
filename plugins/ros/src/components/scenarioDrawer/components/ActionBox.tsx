@@ -20,7 +20,6 @@ import {
   calculateDaysSince,
   calculateUpdatedStatus,
   deleteAction,
-  formatDate,
   getTranslatedActionStatus,
   getActionStatusButtonClass,
 } from '../../../utils/utilityfunctions';
@@ -30,6 +29,8 @@ import UpdatedStatusBadge from '../../common/UpdatedStatusBadge';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
 import { Text, Flex } from '@backstage/ui';
+import { useBackstageContext } from '../../../contexts/BackstageContext.tsx';
+import { ScenarioLastUpdatedLabel } from '../../scenario/ScenarioLastUpdatedLabel.tsx';
 
 interface ActionBoxProps {
   action: Action;
@@ -49,6 +50,7 @@ export function ActionBox({
   setCurrentUpdatedActionIDs,
 }: ActionBoxProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { profileInfo } = useBackstageContext();
 
   const { isActionExpanded, toggleActionExpanded } = useScenario();
   const isExpanded = isActionExpanded(action.ID);
@@ -76,13 +78,6 @@ export function ActionBox({
     deleteAction(remove, index, onSubmit);
     setDeleteActionConfirmationIsOpen(false);
   }
-
-  function getParsedDateTime(): string {
-    if (isActionUpdated) return formatDate(new Date());
-    if (action.lastUpdated) return formatDate(action.lastUpdated);
-    return t('scenarioDrawer.action.notUpdated');
-  }
-  const parsedDateTime = getParsedDateTime();
 
   let daysSinceLastUpdate: number | null = null;
   if (isActionUpdated) {
@@ -145,7 +140,9 @@ export function ActionBox({
             color="primary"
             variant="contained"
             onClick={formMethods.handleSubmit((data: FormScenario) => {
-              submitEditedScenarioToRiSc(mapFormScenarioToScenario(data));
+              submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), {
+                profileInfo: profileInfo,
+              });
               setIsEditing(false);
             })}
             disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
@@ -239,18 +236,10 @@ export function ActionBox({
               selected: value === action.status,
             }))}
           />
-          <Box
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <Text as="p" variant="body-large">
-              {t('scenarioDrawer.action.lastUpdated')}
-            </Text>
-            <Text variant="body-large">{parsedDateTime}</Text>
-          </Box>
+          <ScenarioLastUpdatedLabel
+            lastUpdated={isActionUpdated ? new Date() : action.lastUpdated}
+            lastUpdatedBy={action.lastUpdatedBy}
+          />
         </Box>
         <IconButton onClick={handleDeleteAction}>
           <DeleteIcon />

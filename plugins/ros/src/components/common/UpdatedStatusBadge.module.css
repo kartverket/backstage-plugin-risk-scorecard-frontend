@@ -7,20 +7,20 @@
   font-size: 12px;
 }
 .text {
-  color: var(--gray-900, #000);
+  color: var(--ros-gray-900, #000);
 }
 
 .pending {
-  background: var(--green-100);
-  border: 1px solid var(--green-500);
+  background: var(--ros-green-100);
+  border: 1px solid var(--ros-green-500);
 }
 
 .veryOutdated {
-  background: var(--red-200);
-  border: 1px solid var(--red-400);
+  background: var(--ros-red-200);
+  border: 1px solid var(--ros-red-400);
 }
 
 .outdated {
-  background: var(--orange-100);
-  border: 1px solid var(--orange-300);
+  background: var(--ros-orange-100);
+  border: 1px solid var(--ros-orange-300);
 }
