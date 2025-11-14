@@ -48,6 +48,13 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-gray-900: #212121;
   --ros-gray-medium: #808080;
 
+  --ros-risc-status-updated: var(--green-500);
+  --ros-risc-status-little-outdated: var(--orange-400);
+  --ros-risc-status-outdated: var(--red-700);
+  --ros-risc-status-very-outdated: var(--red-400);
+  --ros-risc-status-not-published: var(--orange-400);
+  --ros-risc-status-error: var(--red-700);
+
   /* -------Button styles------- */
   .ros-button-red {
     background-color: var(--ros-red-bright);
@@ -67,6 +74,11 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
 }
 
 /* Dark mode custom styles can be added here */
-/* [data-theme-mode='dark'] {
-
-} */
+[data-theme-mode='dark'] [data-root-for='ros'] {
+  --ros-risc-status-updated: var(--green-200);
+  --ros-risc-status-little-outdated: var(--orange-400);
+  --ros-risc-status-outdated: var(--red-700);
+  --ros-risc-status-very-outdated: var(--red-300);
+  --ros-risc-status-not-published: var(--orange-100);
+  --ros-risc-status-error: var(--red-700);
+}
