@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { DefaultRiScType, RiScWithMetadata } from '../../utils/types';
+import { useState, useEffect } from 'react';
+import { RiScWithMetadata } from '../../utils/types';
 import { emptyRiSc, isDeeplyEqual } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -17,6 +17,7 @@ import ConfigInitialRisc from './ConfigInitialRisc';
 import { Flex, Button, Text } from '@backstage/ui';
 import Divider from '@mui/material/Divider';
 import styles from './RiScDialog.module.css';
+import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -92,9 +93,13 @@ export function RiScDialog({
 
   const [switchOn, setSwitchOn] = useState(false);
 
-  const [selectedRiScType, setSelectedRiScType] = useState<DefaultRiScType>(
-    DefaultRiScType.Standard,
+  const { riScSelectedByDefault } = useDefaultRiScTypeDescriptors();
+  const [selectedRiScId, setSelectedRiScId] = useState<string | undefined>(
+    riScSelectedByDefault?.id,
   );
+  useEffect(() => {
+    setSelectedRiScId(riScSelectedByDefault?.id);
+  }, [riScSelectedByDefault]);
 
   const handleNext = handleSubmit(
     () => {
@@ -124,7 +129,7 @@ export function RiScDialog({
 
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
     if (dialogState === RiScDialogStates.Create) {
-      createNewRiSc(data, switchOn, [selectedRiScType]);
+      createNewRiSc(data, switchOn, selectedRiScId);
     } else if (dialogState === RiScDialogStates.Delete) {
       deleteRiSc(() =>
         selectRiSc(riScs && riScs.length > 0 ? riScs[0].id : ''),
@@ -169,7 +174,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.Create) {
     return (
-      <Dialog open={true} onClose={onClose} disablePortal>
+      <Dialog open={true} onClose={onClose}>
         <DialogTitle>
           <Text variant="title-small" weight="bold">
             {t('rosDialog.titleNew')}
@@ -194,8 +199,8 @@ export function RiScDialog({
               switchOn={switchOn}
               setSwitchOn={setSwitchOn}
               setValue={setValue}
-              selectedRiScType={selectedRiScType}
-              setSelectedRiScType={setSelectedRiScType}
+              selectedRiScId={selectedRiScId}
+              setSelectedRiScId={setSelectedRiScId}
             />
           )}
           {activeStep === 1 && (
@@ -246,7 +251,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.Delete) {
     return (
-      <Dialog open={true} onClose={onClose} disablePortal>
+      <Dialog open={true} onClose={onClose}>
         <DialogTitle>{t('deleteDialog.title')}</DialogTitle>
         <DialogContent>
           <DialogContent>{t('deleteDialog.confirmationMessage')}</DialogContent>
@@ -265,7 +270,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.EditRiscInfo) {
     return (
-      <Dialog open={true} onClose={onClose} disablePortal>
+      <Dialog open={true} onClose={onClose}>
         <DialogTitle>
           <Text variant="title-small" weight="bold">
             {t('rosDialog.titleEdit')}
@@ -304,7 +309,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.EditEncryption) {
     return (
-      <Dialog open={true} onClose={onClose} disablePortal>
+      <Dialog open={true} onClose={onClose}>
         <DialogTitle>
           <Text variant="title-small" weight="bold">
             {t('rosDialog.editEncryption')}

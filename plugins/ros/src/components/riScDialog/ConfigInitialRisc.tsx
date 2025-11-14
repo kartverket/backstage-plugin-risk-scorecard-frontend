@@ -2,11 +2,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Box, Flex, Radio, RadioGroup, Switch, Text } from '@backstage/ui';
 import { RiScDialogStates } from './RiScDialog';
-import {
-  DefaultRiScType,
-  DefaultRiScTypeDescriptor,
-  RiScWithMetadata,
-} from '../../utils/types.ts';
+import { RiScWithMetadata } from '../../utils/types.ts';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 import { UseFormSetValue } from 'react-hook-form/dist/types/form';
 import { useTheme } from '@mui/material/styles';
@@ -91,52 +87,35 @@ interface ConfigInitialRiscProps {
   switchOn: boolean;
   setSwitchOn: (val: boolean) => void;
   setValue: UseFormSetValue<RiScWithMetadata>;
-  selectedRiScType: DefaultRiScType;
-  setSelectedRiScType: (riScType: DefaultRiScType) => void;
-}
-
-function sortStandardRiScFirst(
-  defaultRiScTypeDescriptors: DefaultRiScTypeDescriptor[],
-): DefaultRiScTypeDescriptor[] {
-  return defaultRiScTypeDescriptors.sort((a, b) => {
-    if (
-      a.riScType === DefaultRiScType.Standard &&
-      b.riScType !== DefaultRiScType.Standard
-    )
-      return -1;
-    if (
-      a.riScType !== DefaultRiScType.Standard &&
-      b.riScType === DefaultRiScType.Standard
-    )
-      return 1;
-    return 0;
-  });
+  selectedRiScId: string | undefined;
+  setSelectedRiScId: (riScId: string | undefined) => void;
 }
 
 function ConfigInitialRisc(props: ConfigInitialRiscProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { defaultRiScTypeDescriptors, getDescriptorOfType } =
-    useDefaultRiScTypeDescriptors();
+  const {
+    defaultRiScTypeDescriptors,
+    riScSelectedByDefault,
+    getDescriptorOfId,
+  } = useDefaultRiScTypeDescriptors();
 
-  function onSwitchChange() {
+  function onCreateDefaultRiScSwitchChange() {
     if (props.switchOn) {
       props.setValue('content.title', '');
       props.setValue('content.scope', '');
     } else {
-      const standardDescriptor = getDescriptorOfType(DefaultRiScType.Standard);
-      props.setSelectedRiScType(DefaultRiScType.Standard);
-      if (standardDescriptor) {
-        props.setValue('content.title', standardDescriptor.defaultTitle);
-        props.setValue('content.scope', standardDescriptor.defaultScope);
+      props.setSelectedRiScId(riScSelectedByDefault?.id);
+      if (riScSelectedByDefault) {
+        props.setValue('content.title', riScSelectedByDefault.defaultTitle);
+        props.setValue('content.scope', riScSelectedByDefault.defaultScope);
       }
     }
     props.setSwitchOn(!props.switchOn);
   }
 
-  function onSelectRiScType(newRiScType: string) {
-    const defaultRiScType = newRiScType as DefaultRiScType;
-    props.setSelectedRiScType(defaultRiScType);
-    const descriptor = getDescriptorOfType(newRiScType as DefaultRiScType);
+  function onSelectRiScType(selectedDefaultRiScId: string) {
+    props.setSelectedRiScId(selectedDefaultRiScId);
+    const descriptor = getDescriptorOfId(selectedDefaultRiScId);
     if (descriptor) {
       props.setValue('content.title', descriptor.defaultTitle);
       props.setValue('content.scope', descriptor.defaultScope);
@@ -156,7 +135,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
                   </Text>
                   <Switch
                     isSelected={props.switchOn}
-                    onChange={onSwitchChange}
+                    onChange={onCreateDefaultRiScSwitchChange}
                     label={
                       props.switchOn ? t('dictionary.yes') : t('dictionary.no')
                     }
@@ -181,21 +160,19 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
                     onChange={onSelectRiScType}
                     isDisabled={!props.switchOn}
                     aria-label="Select application type"
-                    value={props.selectedRiScType}
+                    value={props.selectedRiScId}
                   >
-                    {sortStandardRiScFirst(defaultRiScTypeDescriptors).map(
-                      descriptor => (
-                        <RadioOption
-                          key={descriptor.riScType}
-                          value={descriptor.riScType}
-                          label={descriptor.listName}
-                          description={descriptor.listDescription}
-                          active={!props.switchOn}
-                          numActions={descriptor.numberOfActions}
-                          numScenarios={descriptor.numberOfScenarios}
-                        />
-                      ),
-                    )}
+                    {defaultRiScTypeDescriptors.map(descriptor => (
+                      <RadioOption
+                        key={descriptor.id}
+                        value={descriptor.id}
+                        label={descriptor.listName}
+                        description={descriptor.listDescription}
+                        active={!props.switchOn}
+                        numActions={descriptor.numberOfActions}
+                        numScenarios={descriptor.numberOfScenarios}
+                      />
+                    ))}
                   </RadioGroup>
                 </Flex>
               </>
