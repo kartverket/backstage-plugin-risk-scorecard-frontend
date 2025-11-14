@@ -1,0 +1,26 @@
+.badge {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 24px;
+  text-align: center;
+  font-size: 12px;
+}
+.text {
+  color: var(--gray-900, #000);
+}
+
+.pending {
+  background: var(--green-100);
+  border: 1px solid var(--green-500);
+}
+
+.veryOutdated {
+  background: var(--red-200);
+  border: 1px solid var(--red-400);
+}
+
+.outdated {
+  background: var(--orange-100);
+  border: 1px solid var(--orange-300);
+}

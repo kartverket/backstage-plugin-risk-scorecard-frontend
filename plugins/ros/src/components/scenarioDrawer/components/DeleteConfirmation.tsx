@@ -86,7 +86,7 @@ function ConfirmationDialog({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} onClose={onClose} disablePortal>
       <DialogTitle>{title}</DialogTitle>
       <DialogActions sx={dialogActions}>
         <Button

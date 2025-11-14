@@ -92,6 +92,7 @@ export type ActionsDTO = {
     status: string;
     url: string;
     lastUpdated?: Date | null;
+    lastUpdatedBy?: string | null;
   };
 };
 
@@ -179,6 +180,7 @@ function actionToDTO(action: Action): ActionsDTO {
       status: action.status,
       url: action.url,
       lastUpdated: action.lastUpdated,
+      lastUpdatedBy: action.lastUpdatedBy,
     },
   };
 }

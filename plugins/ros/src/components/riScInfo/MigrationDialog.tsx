@@ -37,7 +37,7 @@ export const RiScMigrationDialog = ({
   }
 
   return (
-    <Dialog maxWidth="md" open={openDialog}>
+    <Dialog maxWidth="md" open={openDialog} disablePortal>
       <DialogTitle>{t('migrationDialog.title')}</DialogTitle>
       <DialogContent>
         <Box sx={{ marginBottom: '16px' }}>

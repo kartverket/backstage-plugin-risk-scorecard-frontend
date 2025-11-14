@@ -66,8 +66,16 @@ export function RiScDialog({
   onDelete,
 }: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { selectedRiSc, createNewRiSc, deleteRiSc, updateRiSc, gcpCryptoKeys } =
-    useRiScs();
+
+  const {
+    selectedRiSc,
+    riScs,
+    selectRiSc,
+    createNewRiSc,
+    deleteRiSc,
+    updateRiSc,
+    gcpCryptoKeys,
+  } = useRiScs();
   const {
     register,
     handleSubmit,
@@ -130,7 +138,9 @@ export function RiScDialog({
     if (dialogState === RiScDialogStates.Create) {
       createNewRiSc(data, switchOn, selectedRiScId);
     } else if (dialogState === RiScDialogStates.Delete) {
-      deleteRiSc();
+      deleteRiSc(() =>
+        selectRiSc(riScs && riScs.length > 0 ? riScs[0].id : ''),
+      );
     } else {
       // Do manual comparison of contents, as the sopsConfig field contains many values from the backend that are not
       // used or set by the frontend.
@@ -171,7 +181,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.Create) {
     return (
-      <Dialog open={true} onClose={onClose}>
+      <Dialog open={true} onClose={onClose} disablePortal>
         <DialogTitle>{t('rosDialog.titleNew')}</DialogTitle>
         <RiScStepper activeStep={activeStep}>
           <DialogContent
@@ -243,7 +253,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.Delete) {
     return (
-      <Dialog open={true} onClose={onClose}>
+      <Dialog open={true} onClose={onClose} disablePortal>
         <DialogTitle>{t('deleteDialog.title')}</DialogTitle>
         <DialogContent>
           <DialogContent>{t('deleteDialog.confirmationMessage')}</DialogContent>
@@ -262,7 +272,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.EditRiscInfo) {
     return (
-      <Dialog open={true} onClose={onClose}>
+      <Dialog open={true} onClose={onClose} disablePortal>
         <DialogTitle>
           <Flex direction="column">{t('rosDialog.titleEdit')}</Flex>
         </DialogTitle>
@@ -309,7 +319,7 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.EditEncryption) {
     return (
-      <Dialog open={true} onClose={onClose}>
+      <Dialog open={true} onClose={onClose} disablePortal>
         <DialogTitle>{t('rosDialog.editEncryption')}</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}

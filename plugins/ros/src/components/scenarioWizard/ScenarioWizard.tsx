@@ -26,8 +26,10 @@ import { FormScenario, Scenario } from '../../utils/types';
 import { useSearchParams } from 'react-router-dom';
 import { getAlertSeverity } from '../../utils/utilityfunctions';
 import { Text, Button, Flex } from '@backstage/ui';
+import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 
 export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
+  const { profileInfo } = useBackstageContext();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { isFetching, response, updateStatus } = useRiScs();
   const [, setSearchParams] = useSearchParams();
@@ -62,7 +64,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
     formMethods.trigger();
 
     if (isValid) {
-      submitNewScenario(submitScenario, () => closeScenarioForm());
+      submitNewScenario(submitScenario, profileInfo, () => closeScenarioForm());
     } else {
       formMethods.trigger();
     }

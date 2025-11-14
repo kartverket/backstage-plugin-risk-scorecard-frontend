@@ -1,10 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import {
-  Edit,
-  ExpandLess,
-  ExpandMore,
-  PriorityHigh,
-} from '@mui/icons-material';
+import { Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -19,23 +14,23 @@ import { useRiScs } from '../../../contexts/RiScContext';
 import { useScenario } from '../../../contexts/ScenarioContext';
 import { ActionStatusOptions } from '../../../utils/constants';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { Action, FormScenario, LastPublished } from '../../../utils/types';
+import { Action, FormScenario } from '../../../utils/types';
 import {
   actionStatusOptionsToTranslationKeys,
   calculateDaysSince,
   calculateUpdatedStatus,
   deleteAction,
-  formatDate,
-  UpdatedStatusEnum,
   getTranslatedActionStatus,
   getActionStatusButtonClass,
 } from '../../../utils/utilityfunctions';
 import { Markdown } from '../../common/Markdown';
 import { body2 } from '../../common/typography';
+import UpdatedStatusBadge from '../../common/UpdatedStatusBadge';
 import { ActionFormItem } from './ActionFormItem';
 import { DeleteActionConfirmation } from './DeleteConfirmation';
-import { Tooltip } from '@material-ui/core';
-import { Text } from '@backstage/ui';
+import { Text, Flex } from '@backstage/ui';
+import { useBackstageContext } from '../../../contexts/BackstageContext.tsx';
+import { ScenarioLastUpdatedLabel } from '../../scenario/ScenarioLastUpdatedLabel.tsx';
 
 interface ActionBoxProps {
   action: Action;
@@ -55,6 +50,7 @@ export function ActionBox({
   setCurrentUpdatedActionIDs,
 }: ActionBoxProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { profileInfo } = useBackstageContext();
 
   const { isActionExpanded, toggleActionExpanded } = useScenario();
   const isExpanded = isActionExpanded(action.ID);
@@ -83,12 +79,17 @@ export function ActionBox({
     setDeleteActionConfirmationIsOpen(false);
   }
 
-  function getParsedDateTime(): string {
-    if (isActionUpdated) return formatDate(new Date());
-    if (action.lastUpdated) return formatDate(action.lastUpdated);
-    return t('scenarioDrawer.action.notUpdated');
+  let daysSinceLastUpdate: number | null = null;
+  if (isActionUpdated) {
+    daysSinceLastUpdate = calculateDaysSince(new Date());
+  } else if (action.lastUpdated) {
+    daysSinceLastUpdate = calculateDaysSince(new Date(action.lastUpdated));
   }
-  const parsedDateTime = getParsedDateTime();
+
+  const computedUpdatedStatus = calculateUpdatedStatus(
+    daysSinceLastUpdate,
+    selectedRiSc?.lastPublished?.numberOfCommits || null,
+  );
 
   function updateActionInScenario(updates: ActionStatusOptions) {
     const actionIndex = scenario.actions.findIndex(a => a.ID === action.ID);
@@ -139,7 +140,9 @@ export function ActionBox({
             color="primary"
             variant="contained"
             onClick={formMethods.handleSubmit((data: FormScenario) => {
-              submitEditedScenarioToRiSc(mapFormScenarioToScenario(data));
+              submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), {
+                profileInfo: profileInfo,
+              });
             })}
             disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
           >
@@ -183,11 +186,17 @@ export function ActionBox({
           <IconButton>
             {isExpanded ? <ExpandLess /> : <ExpandMore />}
           </IconButton>
-          <Text variant="body-large">
-            {isActionTitlePresent
-              ? action.title
-              : `${t('dictionary.measure')} ${index + 1}`}
-          </Text>
+          <Flex direction="column" align="start" gap="1">
+            <UpdatedStatusBadge
+              status={computedUpdatedStatus}
+              isPending={isActionUpdated}
+            />
+            <Text variant="body-large">
+              {isActionTitlePresent
+                ? action.title
+                : `${t('dictionary.measure')} ${index + 1}`}
+            </Text>
+          </Flex>
         </Box>
         <Box
           sx={{
@@ -226,23 +235,9 @@ export function ActionBox({
               selected: value === action.status,
             }))}
           />
-          <Box
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <Text as="p" variant="body-large">
-              {t('scenarioDrawer.action.lastUpdated')}
-            </Text>
-            <Text variant="body-large">{parsedDateTime}</Text>
-          </Box>
-          <Exclamations
-            actionLastUpdated={
-              isActionUpdated ? new Date() : action.lastUpdated
-            }
-            riScLastPublished={selectedRiSc?.lastPublished}
+          <ScenarioLastUpdatedLabel
+            lastUpdated={isActionUpdated ? new Date() : action.lastUpdated}
+            lastUpdatedBy={action.lastUpdatedBy}
           />
         </Box>
         <IconButton onClick={handleDeleteAction}>
@@ -326,52 +321,4 @@ export function ActionBox({
       />
     </Box>
   );
-}
-
-function Exclamations({
-  actionLastUpdated,
-  riScLastPublished,
-}: {
-  actionLastUpdated: Date | undefined | null;
-  riScLastPublished?: LastPublished;
-}) {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const daysSinceLastUpdate = actionLastUpdated
-    ? calculateDaysSince(new Date(actionLastUpdated))
-    : null;
-  const status = calculateUpdatedStatus(
-    daysSinceLastUpdate,
-    riScLastPublished?.numberOfCommits || null,
-  );
-
-  switch (status) {
-    case UpdatedStatusEnum.VERY_OUTDATED:
-      return (
-        <Tooltip title={t('rosStatus.updatedStatus.tooltip.VERY_OUTDATED')}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              color: '#FF4444',
-            }}
-          >
-            <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
-            <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
-          </Box>
-        </Tooltip>
-      );
-    case UpdatedStatusEnum.OUTDATED:
-      return (
-        <Tooltip title={t('rosStatus.updatedStatus.tooltip.OUTDATED')}>
-          <Box sx={{ color: '#FF8B38', minWidth: '24px', textAlign: 'right' }}>
-            <PriorityHigh sx={{ marginRight: '-6px', marginLeft: '-6px' }} />
-          </Box>
-        </Tooltip>
-      );
-    case UpdatedStatusEnum.UPDATED:
-    case UpdatedStatusEnum.LITTLE_OUTDATED:
-      return <Box sx={{ minWidth: '24px' }} />;
-    default:
-      return null;
-  }
 }
