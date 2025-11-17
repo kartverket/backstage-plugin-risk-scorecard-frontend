@@ -143,6 +143,7 @@ export function ActionBox({
               submitEditedScenarioToRiSc(mapFormScenarioToScenario(data), {
                 profileInfo: profileInfo,
               });
+              setIsEditing(false);
             })}
             disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
           >
