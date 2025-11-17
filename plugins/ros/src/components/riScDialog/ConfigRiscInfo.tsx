@@ -6,14 +6,12 @@ import {
   UseFormWatch,
 } from 'react-hook-form/dist/types/form';
 import { RiScWithMetadata } from '../../utils/types';
-import { RiScDialogStates } from './RiScDialog';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
-import { Divider } from '@mui/material';
+import { Flex } from '@backstage/ui';
 
 interface ConfigRiscInfoProps {
-  dialogState: RiScDialogStates;
   register: UseFormRegister<RiScWithMetadata>;
   errors: FieldErrors<RiScWithMetadata>;
   setValue: UseFormSetValue<RiScWithMetadata>;
@@ -24,8 +22,7 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const currentScope = props.watch('content.scope');
   return (
-    <>
-      <Divider />
+    <Flex gap="16px" direction="column">
       <Input
         required
         {...props.register('content.title', { required: true })}
@@ -42,7 +39,7 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
         minRows={8}
         onMarkdownChange={value => props.setValue('content.scope', value)}
       />
-    </>
+    </Flex>
   );
 }
 
