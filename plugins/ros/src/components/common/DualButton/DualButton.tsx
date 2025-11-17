@@ -15,7 +15,7 @@ type MenuItemDef = {
   selected?: boolean;
 };
 
-export type DualButtonProps = {
+type DualButtonProps = {
   menuItems?: MenuItemDef[];
   propsLeft?: ButtonProps;
   propsRight?: ButtonProps;
