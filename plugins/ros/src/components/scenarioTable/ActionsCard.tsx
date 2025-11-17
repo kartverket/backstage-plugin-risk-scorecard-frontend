@@ -89,6 +89,16 @@ export function ActionsCard(props: ActionsCardProps) {
     );
   }
 
+  function getLastUpdatedDateToDisplay(action: Action) {
+    let lastUpdated: Date | undefined = undefined;
+    if (action.ID in pendingStatusById) {
+      lastUpdated = new Date();
+    } else if (action.lastUpdated) {
+      lastUpdated = new Date(action.lastUpdated);
+    }
+    return lastUpdated;
+  }
+
   return (
     <>
       <Divider sx={{ marginBottom: '16px' }} />
@@ -217,9 +227,7 @@ export function ActionsCard(props: ActionsCardProps) {
                     />
                   </span>
                   <ScenarioLastUpdatedLabel
-                    lastUpdated={
-                      action.ID in pendingStatusById ? new Date() : undefined
-                    }
+                    lastUpdated={getLastUpdatedDateToDisplay(action)}
                     lastUpdatedBy={action.lastUpdatedBy}
                   />
                 </Flex>
