@@ -22,7 +22,6 @@ import {
 } from './DTOs';
 import { ActionStatusOptions, latestSupportedVersion } from './constants';
 import {
-  DefaultRiScType,
   DefaultRiScTypeDescriptor,
   DifferenceDTO,
   GithubRepoInfo,
@@ -304,7 +303,7 @@ export function useAuthenticatedFetch() {
     riSc: RiSc,
     generateDefault: boolean,
     sopsConfig: SopsConfigDTO,
-    initialRiScType: DefaultRiScType[],
+    defaultRiScId: string | undefined,
     onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
@@ -319,7 +318,7 @@ export function useAuthenticatedFetch() {
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
         },
-        riScToDTOString(riSc, true, profile, sopsConfig, initialRiScType),
+        riScToDTOString(riSc, true, profile, sopsConfig, defaultRiScId),
       ),
     );
   }

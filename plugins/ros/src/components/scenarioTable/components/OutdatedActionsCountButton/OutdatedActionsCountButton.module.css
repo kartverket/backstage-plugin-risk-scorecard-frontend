@@ -34,37 +34,37 @@
 }
 
 .OutdatedActionsCountButton--very-outdated {
-  background-color: var(--red-200);
-  border: var(--border-size) solid var(--red-500);
+  background-color: var(--ros-red-200);
+  border: var(--border-size) solid var(--ros-red-500);
 
   .OutdatedActionsCountIndicator {
-    background-color: var(--red-500);
+    background-color: var(--ros-red-500);
   }
 
   &:hover {
-    background-color: var(--red-300);
-    border: var(--border-size) solid var(--red-600);
+    background-color: var(--ros-red-300);
+    border: var(--border-size) solid var(--ros-red-600);
 
     .OutdatedActionsCountIndicator {
-      background-color: var(--red-600);
+      background-color: var(--ros-red-600);
     }
   }
 
   &.OutdatedActionsCountButton--selected {
-    background-color: var(--red-300);
-    border: var(--border-size) solid var(--red-600);
+    background-color: var(--ros-red-300);
+    border: var(--border-size) solid var(--ros-red-600);
 
     .OutdatedActionsCountCloseIcon {
-      color: var(--red-800);
+      color: var(--ros-red-800);
     }
 
     .OutdatedActionsCountIndicator {
-      background-color: var(--red-600);
+      background-color: var(--ros-red-600);
     }
 
     &:hover {
       .OutdatedActionsCountCloseIcon {
-        background-color: var(--red-400);
+        background-color: var(--ros-red-400);
         border-radius: 50%;
       }
     }
@@ -72,37 +72,37 @@
 }
 
 .OutdatedActionsCountButton--outdated {
-  background-color: var(--orange-100);
-  border: var(--border-size) solid var(--orange-300);
+  background-color: var(--ros-orange-100);
+  border: var(--border-size) solid var(--ros-orange-300);
 
   .OutdatedActionsCountIndicator {
-    background-color: var(--orange-300);
+    background-color: var(--ros-orange-300);
   }
 
   &:hover {
-    background-color: var(--orange-200);
-    border: var(--border-size) solid var(--orange-400);
+    background-color: var(--ros-orange-200);
+    border: var(--border-size) solid var(--ros-orange-400);
 
     .OutdatedActionsCountIndicator {
-      background-color: var(--orange-400);
+      background-color: var(--ros-orange-400);
     }
   }
 
   &.OutdatedActionsCountButton--selected {
-    background-color: var(--orange-200);
-    border: var(--border-size) solid var(--orange-400);
+    background-color: var(--ros-orange-200);
+    border: var(--border-size) solid var(--ros-orange-400);
 
     .OutdatedActionsCountCloseIcon {
-      color: var(--orange-500);
+      color: var(--ros-orange-500);
     }
 
     .OutdatedActionsCountIndicator {
-      background-color: var(--orange-400);
+      background-color: var(--ros-orange-400);
     }
 
     &:hover {
       .OutdatedActionsCountCloseIcon {
-        background-color: var(--orange-300);
+        background-color: var(--ros-orange-300);
         border-radius: 50%;
       }
     }
