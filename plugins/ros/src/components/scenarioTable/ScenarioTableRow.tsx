@@ -1,5 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { IconButton, Paper } from '@material-ui/core';
+import { Collapse, IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useState, useRef, useEffect, MouseEvent } from 'react';
@@ -64,6 +64,8 @@ export function ScenarioTableRow({
   const [actionIdsOfVisibleType, setActionIdsOfVisibleType] = useState<
     string[]
   >([]);
+
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -187,6 +189,20 @@ export function ScenarioTableRow({
       }}
     >
       <Flex align="center">
+        <IconButton
+          size="small"
+          data-action-root
+          onClick={e => {
+            e.stopPropagation();
+            setIsExpanded(prev => !prev);
+          }}
+        >
+          {isExpanded ? (
+            <i className="ri-arrow-up-s-line" />
+          ) : (
+            <i className="ri-arrow-down-s-line" />
+          )}
+        </IconButton>
         {isEditing && allowDrag && (
           <IconButton size="small" ref={drag}>
             <DragIndicatorIcon
@@ -281,12 +297,29 @@ export function ScenarioTableRow({
           </Flex>
         )}
       </Flex>
-      {filteredActions.length > 0 && (
-        <ActionsCard
-          filteredData={filteredActions}
-          scenario={scenario}
-          showUpdatedBadge={!!visibleType}
-        />
+      {/* If there are filtered actions (search or updated badge), show them as before.
+          If the user expands the row, show all actions for the scenario regardless
+          of the current filters. */}
+      {filteredActions.length > 0 && !isExpanded && (
+        <div data-action-root>
+          <ActionsCard
+            filteredData={filteredActions}
+            scenario={scenario}
+            showUpdatedBadge={!!visibleType}
+          />
+        </div>
+      )}
+
+      {isExpanded && (
+        <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+          <div data-action-root>
+            <ActionsCard
+              filteredData={actionsWithUpdatedStatus}
+              scenario={scenario}
+              showUpdatedBadge={!!visibleType}
+            />
+          </div>
+        </Collapse>
       )}
     </Card>
   );
