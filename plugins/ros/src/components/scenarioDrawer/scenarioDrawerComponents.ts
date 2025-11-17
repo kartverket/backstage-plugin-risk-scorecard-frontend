@@ -33,25 +33,3 @@ export const selectSection: SxProps<Theme> = {
   gap: '24px',
   rowGap: '16px',
 };
-
-export const getAlertStyle = (severity: 'success' | 'warning' | 'error') => {
-  const backgroundMap = {
-    success: '#E9F8EB',
-    warning: '#FFF7ED',
-    error: '#FCF1E8',
-  };
-
-  const borderMap = {
-    success: '1px solid #66B077',
-    warning: '1px solid #CF914A',
-    error: '1px solid #A32F00',
-  };
-
-  return {
-    width: '45%',
-    zIndex: 20,
-    borderRadius: '4px',
-    backgroundColor: backgroundMap[severity],
-    border: borderMap[severity],
-  };
-};
