@@ -6,6 +6,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { RiskMatrixTabs } from './utils';
 import { Text } from '@backstage/ui';
 import styles from './Tabs.module.css';
+import { useTabsStyle } from './tabsStyle';
 
 interface TabsProps {
   setTab: (tab: RiskMatrixTabs) => void;
@@ -13,6 +14,7 @@ interface TabsProps {
 
 export function Tabs({ setTab }: TabsProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const tabsStyle = useTabsStyle();
 
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -33,7 +35,7 @@ export function Tabs({ setTab }: TabsProps) {
             </Text>
           }
           value={RiskMatrixTabs.initialRisk}
-          className={styles.tab}
+          className={tabsStyle.tab}
         />
         <Tab
           disableRipple
@@ -47,7 +49,7 @@ export function Tabs({ setTab }: TabsProps) {
             </Text>
           }
           value={RiskMatrixTabs.remainingRisk}
-          className={styles.tab}
+          className={tabsStyle.tab}
         />
       </TabList>
     </Box>
