@@ -69,6 +69,13 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
         <div
           data-color-mode={theme.palette.mode}
           onFocusCapture={onFocusCapture}
+          style={{
+            border:
+              theme.palette.mode === 'dark' // align with MUI TextField border
+                ? '1px solid rgba(255, 255, 255, 0.23)'
+                : '1px solid rgba(0, 0, 0, 0.23)',
+            borderRadius: '4px',
+          }}
         >
           <MDEditor
             ref={ref}
@@ -79,6 +86,8 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
             style={{
               color: commonTextColor(theme, disabled),
               backgroundColor: commonBackgroundColor(theme, disabled),
+              border: 'none', // remove MDEditor default border
+              boxShadow: 'none',
             }}
           />
         </div>
