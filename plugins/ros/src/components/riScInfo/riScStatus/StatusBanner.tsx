@@ -123,7 +123,7 @@ interface IconWithTextProps {
   color?: string;
 }
 
-export function IconWithText(props: IconWithTextProps) {
+function IconWithText(props: IconWithTextProps) {
   return (
     <Flex direction="row" align="center" gap="2">
       <i
