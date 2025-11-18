@@ -19,7 +19,7 @@
 .matrixDialog {
   width: 1050px;
   margin: 32px;
-  padding: 16px 24px;
+  padding: 24px;
   border-radius: 4px;
 }
 
@@ -31,13 +31,26 @@
   padding: 16px 0;
 }
 
+.riscDialogTitle {
+  padding: 0;
+}
+
 .createRiscDialog {
-  padding: 16px 24px;
+  padding: 24px;
   border-radius: 4px;
   width: 600px;
 }
 
-.createRiscDialogFooter {
+.riscDialogBody {
+  padding: 16px 1px;
+}
+
+.riscDialogFooter {
   display: flex;
   justify-content: space-between;
+  padding: 16px 0 0 0;
+}
+
+.riscDialogBodyNoFooter {
+  padding: 16px 0 0 0;
 }

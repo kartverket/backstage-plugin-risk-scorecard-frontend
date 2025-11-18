@@ -185,12 +185,12 @@ export function RiScDialog({
           onOpenChange={onClose}
           className={styles.createRiscDialog}
         >
-          <DialogHeader>
+          <DialogHeader className={styles.riscDialogTitle}>
             <Text variant="title-small" weight="bold">
               {t('rosDialog.titleNew')}
             </Text>
           </DialogHeader>
-          <DialogBody>
+          <DialogBody className={styles.riscDialogBody}>
             <RiScStepper activeStep={activeStep} />
             <Divider className={styles.subtitleDivider} />
             <Text
@@ -231,7 +231,7 @@ export function RiScDialog({
               />
             )}
           </DialogBody>
-          <DialogFooter className={styles.createRiscDialogFooter}>
+          <DialogFooter className={styles.riscDialogFooter}>
             <Button size="medium" variant="secondary" onClick={onClose}>
               {t('dictionary.cancel')}
             </Button>
@@ -269,12 +269,12 @@ export function RiScDialog({
           onOpenChange={onClose}
           className={styles.createRiscDialog}
         >
-          <DialogHeader>
+          <DialogHeader className={styles.riscDialogTitle}>
             <Text variant="title-x-small" weight="bold">
               {t('deleteDialog.title')}
             </Text>
           </DialogHeader>
-          <DialogBody>
+          <DialogBody className={styles.riscDialogBody}>
             <Flex direction="column">
               {t('deleteDialog.confirmationMessage')}
               <Flex justify="between" pt="16px">
@@ -301,12 +301,12 @@ export function RiScDialog({
           onOpenChange={onClose}
           className={styles.createRiscDialog}
         >
-          <DialogHeader>
+          <DialogHeader className={styles.riscDialogTitle}>
             <Text variant="title-x-small" weight="bold">
               {t('rosDialog.titleEdit')}
             </Text>
           </DialogHeader>
-          <DialogBody>
+          <DialogBody className={styles.riscDialogBody}>
             <ConfigRiscInfo
               register={register}
               errors={errors}
@@ -314,7 +314,7 @@ export function RiScDialog({
               watch={watch}
             />
           </DialogBody>
-          <DialogFooter className={styles.createRiscDialogFooter}>
+          <DialogFooter className={styles.riscDialogFooter}>
             <Button
               size="medium"
               variant="tertiary"
@@ -342,13 +342,17 @@ export function RiScDialog({
     return (
       // TODO: STYLE DIALOG
       <DialogTrigger>
-        <Dialog isOpen={true} onOpenChange={onClose}>
-          <DialogHeader>
+        <Dialog
+          isOpen={true}
+          onOpenChange={onClose}
+          className={styles.createRiscDialog}
+        >
+          <DialogHeader className={styles.riscDialogTitle}>
             <Text variant="title-small" weight="bold">
               {t('rosDialog.editEncryption')}
             </Text>
           </DialogHeader>
-          <DialogBody>
+          <DialogBody className={styles.riscDialogBody}>
             <ConfigEncryptionDialog
               gcpCryptoKeys={gcpCryptoKeys}
               sopsData={selectedRiSc?.sopsConfig}
@@ -358,7 +362,7 @@ export function RiScDialog({
               errors={errors}
             />
           </DialogBody>
-          <DialogFooter>
+          <DialogFooter className={styles.riscDialogFooter}>
             <Button size="medium" variant="secondary" onClick={onClose}>
               {t('dictionary.cancel')}
             </Button>
