@@ -15,3 +15,15 @@
 .deleteButtonIcon {
   font-size: 16px;
 }
+.matrixDialog {
+  width: 1050px;
+  margin: 32px;
+  padding: 16px 24px;
+  border-radius: 4px;
+}
+.matrixDialogBody {
+  padding-bottom: 32px;
+}
+.matrixDialogFooter {
+  padding: 16px 0;
+}
