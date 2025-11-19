@@ -2,13 +2,13 @@
   background-color: transparent;
 }
 
-.migrationDialog {
+.riScInfoDialog {
   padding: 12px 8px;
   border-radius: 4px;
   width: 800px;
 }
 
-.migrationDialogFooter {
-  display: 'flex';
-  justify-content: 'space-between';
+.riscInfoDialogFooter {
+  display: flex;
+  justify-content: space-between;
 }

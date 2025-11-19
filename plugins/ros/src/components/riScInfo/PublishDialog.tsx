@@ -1,18 +1,22 @@
 import { ReactComponentElement, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
+
 import Checkbox from '@mui/material/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { DifferenceFetchState } from '../../utils/types';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScDifferenceDialog } from './riScStatus/RiScDifferenceDialog';
-import { dialogActions } from '../common/mixins';
-import { Text } from '@backstage/ui';
+import {
+  Text,
+  Dialog,
+  DialogTrigger,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from '@backstage/ui';
+import styles from './RiScSelectionCard.module.css';
 
 interface RiScPublishDialogProps {
   openDialog: boolean;
@@ -38,50 +42,58 @@ export const RiScPublishDialog = ({
   }
 
   return (
-    <Dialog maxWidth="md" open={openDialog}>
-      <DialogTitle>
-        <Text variant="title-small" weight="bold">
-          {isDeletion
-            ? t('publishDialog.titleDelete')
-            : t('publishDialog.titleUpdate')}
-        </Text>
-      </DialogTitle>
-      <DialogContent sx={{ marginBottom: '16px' }}>
-        <>
-          {!isDeletion && (
-            <RiScDifferenceDialog differenceFetchState={differenceFetchState} />
-          )}
-          <Alert severity="info" icon={false}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  color="primary"
-                  checked={riskOwnerApproves}
-                  onChange={handleCheckboxInput}
-                />
-              }
-              label={
-                isDeletion
-                  ? t('publishDialog.checkboxLabelDelete')
-                  : t('publishDialog.checkboxLabelUpdate')
-              }
-            />
-          </Alert>
-        </>
-      </DialogContent>
-      <DialogActions sx={dialogActions}>
-        <Button variant="outlined" color="primary" onClick={handleCancel}>
-          {t('dictionary.cancel')}
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handlePublish}
-          disabled={!riskOwnerApproves}
-        >
-          {t('dictionary.confirm')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <DialogTrigger>
+      <Dialog
+        isOpen={openDialog}
+        onOpenChange={handleCancel}
+        className={styles.riScInfoDialog}
+      >
+        <DialogHeader>
+          <Text variant="title-small" weight="bold">
+            {isDeletion
+              ? t('publishDialog.titleDelete')
+              : t('publishDialog.titleUpdate')}
+          </Text>
+        </DialogHeader>
+        <DialogBody className={styles.riscInfoDialogBody}>
+          <>
+            {!isDeletion && (
+              <RiScDifferenceDialog
+                differenceFetchState={differenceFetchState}
+              />
+            )}
+            <Alert severity="info" icon={false}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    color="primary"
+                    checked={riskOwnerApproves}
+                    onChange={handleCheckboxInput}
+                  />
+                }
+                label={
+                  isDeletion
+                    ? t('publishDialog.checkboxLabelDelete')
+                    : t('publishDialog.checkboxLabelUpdate')
+                }
+              />
+            </Alert>
+          </>
+        </DialogBody>
+        <DialogFooter className={styles.riscInfoDialogFooter}>
+          <Button variant="outlined" color="primary" onClick={handleCancel}>
+            {t('dictionary.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handlePublish}
+            disabled={!riskOwnerApproves}
+          >
+            {t('dictionary.confirm')}
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </DialogTrigger>
   );
 };

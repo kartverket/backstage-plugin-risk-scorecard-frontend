@@ -11,7 +11,7 @@ import { RiScMigrationChanges } from './migrations/RiScMigrationChanges.tsx';
 import {
   Text,
   DialogTrigger,
-  Dialog as D,
+  Dialog,
   DialogHeader,
   DialogBody,
   DialogFooter,
@@ -41,7 +41,11 @@ export const RiScMigrationDialog = ({
 
   return (
     <DialogTrigger>
-      <D isOpen={openDialog} className={styles.migrationDialog}>
+      <Dialog
+        isOpen={openDialog}
+        onOpenChange={handleCancel}
+        className={styles.riScInfoDialog}
+      >
         <DialogHeader>
           <Text variant="title-x-small" weight="bold">
             {t('migrationDialog.title')}
@@ -64,7 +68,7 @@ export const RiScMigrationDialog = ({
             />
           </Alert>
         </DialogBody>
-        <DialogFooter className={styles.migrationDialogFooter}>
+        <DialogFooter className={styles.riscInfoDialogFooter}>
           <Button variant="outlined" color="primary" onClick={handleCancel}>
             {t('dictionary.cancel')}
           </Button>
@@ -76,7 +80,7 @@ export const RiScMigrationDialog = ({
             {t('dictionary.confirm')}
           </Button>
         </DialogFooter>
-      </D>
+      </Dialog>
     </DialogTrigger>
   );
 };
