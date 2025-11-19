@@ -1,3 +1,14 @@
 .selectTrigger button {
   background-color: transparent;
 }
+
+.migrationDialog {
+  padding: 12px 8px;
+  border-radius: 4px;
+  width: 800px;
+}
+
+.migrationDialogFooter {
+  display: 'flex';
+  justify-content: 'space-between';
+}

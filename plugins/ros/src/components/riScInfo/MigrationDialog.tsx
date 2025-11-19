@@ -1,19 +1,22 @@
 import { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
 import Checkbox from '@mui/material/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { MigrationStatus } from '../../utils/types';
-import { dialogActions } from '../common/mixins';
 import { RiScMigrationChanges } from './migrations/RiScMigrationChanges.tsx';
-import { Text } from '@backstage/ui';
+import {
+  Text,
+  DialogTrigger,
+  Dialog as D,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from '@backstage/ui';
+import styles from './RiScSelectionCard.module.css';
 
 interface RiScMigrationDialogProps {
   openDialog: boolean;
@@ -37,37 +40,43 @@ export const RiScMigrationDialog = ({
   }
 
   return (
-    <Dialog maxWidth="md" open={openDialog}>
-      <DialogTitle>{t('migrationDialog.title')}</DialogTitle>
-      <DialogContent>
-        <Box sx={{ marginBottom: '16px' }}>
-          <Text variant="body-large">{t('migrationDialog.description')}</Text>
-        </Box>
-        <RiScMigrationChanges migrationStatus={migrationStatus} />
-        <Alert severity="info" icon={false}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={saveMigration}
-                onChange={handleCheckboxInput}
-              />
-            }
-            label={t('migrationDialog.checkboxLabel')}
-          />
-        </Alert>
-      </DialogContent>
-      <DialogActions sx={dialogActions} style={{ paddingTop: '16px' }}>
-        <Button variant="outlined" color="primary" onClick={handleCancel}>
-          {t('dictionary.cancel')}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleUpdate}
-          disabled={!saveMigration}
-        >
-          {t('dictionary.confirm')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <DialogTrigger>
+      <D isOpen={openDialog} className={styles.migrationDialog}>
+        <DialogHeader>
+          <Text variant="title-x-small" weight="bold">
+            {t('migrationDialog.title')}
+          </Text>
+        </DialogHeader>
+        <DialogBody>
+          <Box sx={{ marginBottom: '16px' }}>
+            <Text variant="body-large">{t('migrationDialog.description')}</Text>
+          </Box>
+          <RiScMigrationChanges migrationStatus={migrationStatus} />
+          <Alert severity="info" icon={false}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={saveMigration}
+                  onChange={handleCheckboxInput}
+                />
+              }
+              label={t('migrationDialog.checkboxLabel')}
+            />
+          </Alert>
+        </DialogBody>
+        <DialogFooter className={styles.migrationDialogFooter}>
+          <Button variant="outlined" color="primary" onClick={handleCancel}>
+            {t('dictionary.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleUpdate}
+            disabled={!saveMigration}
+          >
+            {t('dictionary.confirm')}
+          </Button>
+        </DialogFooter>
+      </D>
+    </DialogTrigger>
   );
 };
