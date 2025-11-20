@@ -1,6 +1,6 @@
 .subtitle {
-  padding-top: 16px;
-  padding-bottom: 16px;
+  padding-top: 24px;
+  padding-bottom: 8px;
 }
 
 .subtitleDivider {
@@ -42,7 +42,7 @@
 }
 
 .riscDialogBody {
-  padding: 16px 0;
+  padding: 24px 0 0 0;
 }
 
 .riscDialogFooter {
@@ -52,5 +52,9 @@
 }
 
 .riscDialogBodyNoFooter {
-  padding: 16px 0 0 0;
+  padding: 24px 0 0 0;
+}
+
+.initRiscDialogTitle {
+  padding: 0 0 16px 0;
 }

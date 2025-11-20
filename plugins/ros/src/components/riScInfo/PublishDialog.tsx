@@ -9,12 +9,12 @@ import { DifferenceFetchState } from '../../utils/types';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScDifferenceDialog } from './riScStatus/RiScDifferenceDialog';
 import {
+  Flex,
   Text,
   Dialog,
   DialogTrigger,
   DialogHeader,
   DialogBody,
-  DialogFooter,
 } from '@backstage/ui';
 import styles from './RiScSelectionCard.module.css';
 
@@ -48,14 +48,14 @@ export const RiScPublishDialog = ({
         onOpenChange={handleCancel}
         className={styles.riScInfoDialog}
       >
-        <DialogHeader>
+        <DialogHeader className={styles.riscSelectionDialogHeader}>
           <Text variant="title-small" weight="bold">
             {isDeletion
               ? t('publishDialog.titleDelete')
               : t('publishDialog.titleUpdate')}
           </Text>
         </DialogHeader>
-        <DialogBody className={styles.riscInfoDialogBody}>
+        <DialogBody className={styles.riscSelectionDialogBody}>
           <>
             {!isDeletion && (
               <RiScDifferenceDialog
@@ -79,20 +79,20 @@ export const RiScPublishDialog = ({
               />
             </Alert>
           </>
+          <Flex justify="between" pt="24px">
+            <Button variant="outlined" color="primary" onClick={handleCancel}>
+              {t('dictionary.cancel')}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handlePublish}
+              disabled={!riskOwnerApproves}
+            >
+              {t('dictionary.confirm')}
+            </Button>
+          </Flex>
         </DialogBody>
-        <DialogFooter className={styles.riscInfoDialogFooter}>
-          <Button variant="outlined" color="primary" onClick={handleCancel}>
-            {t('dictionary.cancel')}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handlePublish}
-            disabled={!riskOwnerApproves}
-          >
-            {t('dictionary.confirm')}
-          </Button>
-        </DialogFooter>
       </Dialog>
     </DialogTrigger>
   );

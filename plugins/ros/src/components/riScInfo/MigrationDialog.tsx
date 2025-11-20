@@ -9,12 +9,12 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { MigrationStatus } from '../../utils/types';
 import { RiScMigrationChanges } from './migrations/RiScMigrationChanges.tsx';
 import {
+  Flex,
   Text,
   DialogTrigger,
   Dialog,
   DialogHeader,
   DialogBody,
-  DialogFooter,
 } from '@backstage/ui';
 import styles from './RiScSelectionCard.module.css';
 
@@ -46,12 +46,12 @@ export const RiScMigrationDialog = ({
         onOpenChange={handleCancel}
         className={styles.riScInfoDialog}
       >
-        <DialogHeader>
+        <DialogHeader className={styles.riscSelectionDialogHeader}>
           <Text variant="title-x-small" weight="bold">
             {t('migrationDialog.title')}
           </Text>
         </DialogHeader>
-        <DialogBody>
+        <DialogBody className={styles.riscSelectionDialogBody}>
           <Box sx={{ marginBottom: '16px' }}>
             <Text variant="body-large">{t('migrationDialog.description')}</Text>
           </Box>
@@ -67,19 +67,19 @@ export const RiScMigrationDialog = ({
               label={t('migrationDialog.checkboxLabel')}
             />
           </Alert>
+          <Flex justify="between" pt="24px">
+            <Button variant="outlined" color="primary" onClick={handleCancel}>
+              {t('dictionary.cancel')}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleUpdate}
+              disabled={!saveMigration}
+            >
+              {t('dictionary.confirm')}
+            </Button>
+          </Flex>
         </DialogBody>
-        <DialogFooter className={styles.riscInfoDialogFooter}>
-          <Button variant="outlined" color="primary" onClick={handleCancel}>
-            {t('dictionary.cancel')}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleUpdate}
-            disabled={!saveMigration}
-          >
-            {t('dictionary.confirm')}
-          </Button>
-        </DialogFooter>
       </Dialog>
     </DialogTrigger>
   );

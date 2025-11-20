@@ -184,14 +184,13 @@ export function RiScDialog({
           onOpenChange={onClose}
           className={styles.createRiscDialog}
         >
-          <DialogHeader className={styles.riscDialogTitle}>
+          <DialogHeader className={styles.initRiscDialogTitle}>
             <Text variant="title-small" weight="bold">
               {t('rosDialog.titleNew')}
             </Text>
           </DialogHeader>
           <DialogBody className={styles.riscDialogBody}>
             <RiScStepper activeStep={activeStep} />
-            <Divider className={styles.subtitleDivider} />
             <Text
               as="h2"
               variant="title-x-small"
@@ -229,31 +228,35 @@ export function RiScDialog({
                 errors={errors}
               />
             )}
-          </DialogBody>
-          <DialogFooter className={styles.riscDialogFooter}>
-            <Button size="medium" variant="secondary" onClick={onClose}>
-              {t('dictionary.cancel')}
-            </Button>
-            <Flex>
-              <Button
-                size="medium"
-                variant="secondary"
-                isDisabled={activeStep === 0}
-                onClick={handleBack}
-              >
-                {t('dictionary.previous')}
+            <Flex pt="16px" justify="between">
+              <Button size="medium" variant="secondary" onClick={onClose}>
+                {t('dictionary.cancel')}
               </Button>
-              {activeStep < 2 ? (
-                <Button size="medium" variant="primary" onClick={handleNext}>
-                  {t('dictionary.next')}
+              <Flex>
+                <Button
+                  size="medium"
+                  variant="secondary"
+                  isDisabled={activeStep === 0}
+                  onClick={handleBack}
+                >
+                  {t('dictionary.previous')}
                 </Button>
-              ) : (
-                <Button size="medium" variant="primary" onClick={handleFinish}>
-                  {t('dictionary.save')}
-                </Button>
-              )}
+                {activeStep < 2 ? (
+                  <Button size="medium" variant="primary" onClick={handleNext}>
+                    {t('dictionary.next')}
+                  </Button>
+                ) : (
+                  <Button
+                    size="medium"
+                    variant="primary"
+                    onClick={handleFinish}
+                  >
+                    {t('dictionary.save')}
+                  </Button>
+                )}
+              </Flex>
             </Flex>
-          </DialogFooter>
+          </DialogBody>
         </Dialog>
       </DialogTrigger>
     );
@@ -357,15 +360,15 @@ export function RiScDialog({
               register={register}
               errors={errors}
             />
+            <Flex justify="between" className={styles.riscDialogFooter}>
+              <Button size="medium" variant="secondary" onClick={onClose}>
+                {t('dictionary.cancel')}
+              </Button>
+              <Button size="medium" variant="primary" onClick={handleFinish}>
+                {t('dictionary.save')}
+              </Button>
+            </Flex>
           </DialogBody>
-          <DialogFooter className={styles.riscDialogFooter}>
-            <Button size="medium" variant="secondary" onClick={onClose}>
-              {t('dictionary.cancel')}
-            </Button>
-            <Button size="medium" variant="primary" onClick={handleFinish}>
-              {t('dictionary.save')}
-            </Button>
-          </DialogFooter>
         </Dialog>
       </DialogTrigger>
     );
