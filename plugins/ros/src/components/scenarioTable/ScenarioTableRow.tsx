@@ -131,6 +131,14 @@ export function ScenarioTableRow({
   );
 
   useEffect(() => {
+    if (visibleType || isExpanded) {
+      setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
+    }
+    // only run when visibleType or expansion changes for this scenario
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleType, isExpanded]);
+
+  useEffect(() => {
     const actions = actionsWithUpdatedStatus.filter(
       a => a.updatedStatus === visibleType,
     );
@@ -156,13 +164,13 @@ export function ScenarioTableRow({
   return (
     <Card
       onMouseEnter={() => {
-        if (visibleType) return;
+        if (visibleType || isExpanded) return;
         setHoveredScenarios(prev =>
           prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
         );
       }}
       onMouseLeave={() => {
-        if (visibleType) return;
+        if (visibleType || isExpanded) return;
         setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
       }}
       ref={ref}
@@ -178,7 +186,7 @@ export function ScenarioTableRow({
         }
         viewRow(scenario.ID);
       }}
-      className={`${tableCard} ${visibleType ? tableCardNoHover : ''}`}
+      className={`${tableCard} ${visibleType || isExpanded ? tableCardNoHover : ''}`}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
@@ -198,9 +206,9 @@ export function ScenarioTableRow({
           }}
         >
           {isExpanded ? (
-            <i className="ri-arrow-up-s-line" />
-          ) : (
             <i className="ri-arrow-down-s-line" />
+          ) : (
+            <i className="ri-arrow-right-s-line" />
           )}
         </IconButton>
         {isEditing && allowDrag && (
