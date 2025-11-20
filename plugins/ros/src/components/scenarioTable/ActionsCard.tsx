@@ -134,6 +134,7 @@ export function ActionsCard(props: ActionsCardProps) {
               <Flex align="center" justify="between" gap="1">
                 <Flex align="center">
                   <IconButton
+                    size="small"
                     onClick={e => {
                       e.stopPropagation();
                       toggleActionExpanded(action.ID);

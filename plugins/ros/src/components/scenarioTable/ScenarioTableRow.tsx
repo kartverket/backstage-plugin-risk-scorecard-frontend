@@ -198,12 +198,13 @@ export function ScenarioTableRow({
     >
       <Flex align="center">
         <IconButton
-          size="small"
+          size="medium"
           data-action-root
           onClick={e => {
             e.stopPropagation();
             setIsExpanded(prev => !prev);
           }}
+          style={{ padding: 0 }}
         >
           {isExpanded ? (
             <i className="ri-arrow-down-s-line" />
