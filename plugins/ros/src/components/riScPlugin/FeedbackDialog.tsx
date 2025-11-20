@@ -28,7 +28,7 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
 
   return (
     <Flex direction="column" gap="16px">
-      <Text as="h3" variant="title-small" weight="bold">
+      <Text as="h3" variant="title-x-small" weight="bold">
         {t('feedbackDialog.title')}
       </Text>
 
@@ -60,7 +60,7 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
           </Button>
         </Flex>
       ) : (
-        <Flex justify="between" pb="18px">
+        <Flex justify="between">
           <Button onClick={() => props.setOpen(false)} variant="secondary">
             {t('dictionary.cancel')}
           </Button>

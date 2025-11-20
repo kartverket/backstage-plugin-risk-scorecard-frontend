@@ -1,11 +1,12 @@
 import TabList from '@material-ui/lab/TabList/TabList';
 import { Tab } from '@material-ui/core';
 import Box from '@mui/material/Box';
-import { useTabsStyle } from './tabsStyle';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { RiskMatrixTabs } from './utils';
 import { Text } from '@backstage/ui';
+import styles from './Tabs.module.css';
+import { useTabsStyle } from './tabsStyle';
 
 interface TabsProps {
   setTab: (tab: RiskMatrixTabs) => void;
@@ -23,8 +24,13 @@ export function Tabs({ setTab }: TabsProps) {
         indicatorColor="primary"
       >
         <Tab
+          disableRipple
           label={
-            <Text variant="body-large" weight="bold">
+            <Text
+              variant="body-large"
+              weight="bold"
+              className={styles.tabLabel}
+            >
               {t('dictionary.initialRisk')}
             </Text>
           }
@@ -32,8 +38,13 @@ export function Tabs({ setTab }: TabsProps) {
           className={tabsStyle.tab}
         />
         <Tab
+          disableRipple
           label={
-            <Text variant="body-large" weight="bold">
+            <Text
+              variant="body-large"
+              weight="bold"
+              className={styles.tabLabel}
+            >
               {t('dictionary.restRisk')}
             </Text>
           }

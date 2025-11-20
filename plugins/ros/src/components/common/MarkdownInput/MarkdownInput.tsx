@@ -3,14 +3,11 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import MDEditor from '@uiw/react-md-editor';
-import { formHelperText, formLabel } from './typography';
+import { formHelperText, formLabel } from '../typography';
 import { TextFieldProps } from '@material-ui/core';
-import { useTheme } from '@mui/material/styles';
-import {
-  commonTextColor,
-  commonBackgroundColor,
-  formControlStyles,
-} from '../../utils/style';
+import classNames from 'classnames';
+import { getActiveTheme } from '../../../utils/utilityfunctions';
+import styles from './MarkdownInput.module.css';
 
 type Props = TextFieldProps & {
   sublabel?: string;
@@ -37,8 +34,6 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       value,
     );
 
-    const theme = useTheme();
-
     useEffect(() => {
       setMarkdownContent(value);
     }, [value]);
@@ -59,16 +54,20 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
         }
       }
     };
+    const editorClassName = classNames(styles.MarkDownInput, {
+      [styles['MarkDownInput--disabled']]: disabled,
+    });
 
     return (
-      <FormControl sx={formControlStyles} error={error}>
+      <FormControl className={styles.MarkDownInputFormControl} error={error}>
         {label && <FormLabel sx={formLabel}>{label}</FormLabel>}
         {sublabel && (
           <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
         )}
         <div
-          data-color-mode={theme.palette.mode}
           onFocusCapture={onFocusCapture}
+          data-color-mode={getActiveTheme()}
+          className={styles.MarkDownInputWrapper}
         >
           <MDEditor
             ref={ref}
@@ -76,10 +75,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
             onChange={handleMarkdownChange}
             preview="edit"
             height={minRows ? minRows * 24 : 64}
-            style={{
-              color: commonTextColor(theme, disabled),
-              backgroundColor: commonBackgroundColor(theme, disabled),
-            }}
+            className={editorClassName}
           />
         </div>
         {helperText && <FormHelperText>{helperText}</FormHelperText>}

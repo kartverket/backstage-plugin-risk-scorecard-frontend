@@ -1,11 +1,15 @@
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { dialogActions } from '../../common/mixins';
 import type { SetState } from '../../../utils/types';
+import {
+  Text,
+  Dialog,
+  DialogTrigger,
+  DialogHeader,
+  DialogBody,
+} from '@backstage/ui';
+import styles from '../components/ScenarioDrawer.module.css';
 
 type DeleteScenarioConfirmationProps = {
   isOpen: ConfirmationDialogProps['isOpen'];
@@ -86,28 +90,38 @@ function ConfirmationDialog({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogActions sx={dialogActions}>
-        <Button
-          variant="outlined"
-          onClick={event => {
-            event.stopPropagation();
-            onClose?.();
-          }}
-        >
-          {t('dictionary.cancel')}
-        </Button>
-        <Button
-          onClick={event => {
-            event.stopPropagation();
-            onConfirm?.();
-          }}
-          variant="contained"
-        >
-          {confirmButtonText}
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <DialogTrigger>
+      <Dialog
+        isOpen={isOpen}
+        onOpenChange={onClose}
+        className={styles.deleteConfirmationDialog}
+      >
+        <DialogHeader>
+          <Text variant="title-x-small" weight="bold">
+            {title}
+          </Text>
+        </DialogHeader>
+        <DialogBody className={styles.deleteConfirmationDialogBody}>
+          <Button
+            variant="outlined"
+            onClick={event => {
+              event.stopPropagation();
+              onClose?.();
+            }}
+          >
+            {t('dictionary.cancel')}
+          </Button>
+          <Button
+            onClick={event => {
+              event.stopPropagation();
+              onConfirm?.();
+            }}
+            variant="contained"
+          >
+            {confirmButtonText}
+          </Button>
+        </DialogBody>
+      </Dialog>
+    </DialogTrigger>
   );
 }
