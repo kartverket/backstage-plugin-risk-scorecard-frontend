@@ -1,6 +1,6 @@
 .subtitle {
-  padding-top: 16px;
-  padding-bottom: 16px;
+  padding-top: 24px;
+  padding-bottom: 8px;
 }
 
 .subtitleDivider {
@@ -14,4 +14,47 @@
 
 .deleteButtonIcon {
   font-size: 16px;
+}
+
+.matrixDialog {
+  width: 1050px;
+  margin: 32px;
+  padding: 24px;
+  border-radius: 4px;
+}
+
+.matrixDialogBody {
+  padding-bottom: 32px;
+}
+
+.matrixDialogFooter {
+  padding: 16px 0;
+}
+
+.riscDialogTitle {
+  padding: 0 0 16px 0;
+}
+
+.createRiscDialog {
+  padding: 24px;
+  border-radius: 4px;
+  width: 600px;
+}
+
+.riscDialogBody {
+  padding: 24px 0 0 0;
+}
+
+.riscDialogFooter {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0 0 0;
+}
+
+.riscDialogBodyNoFooter {
+  padding: 24px 0 0 0;
+}
+
+.initRiscDialogTitle {
+  padding: 0 0 16px 0;
 }
