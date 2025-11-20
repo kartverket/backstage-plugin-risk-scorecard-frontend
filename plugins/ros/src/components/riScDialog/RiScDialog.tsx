@@ -178,7 +178,6 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.Create) {
     return (
-      // TODO: STYLE DIALOG
       <DialogTrigger>
         <Dialog
           isOpen={true}
@@ -262,7 +261,6 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.Delete) {
     return (
-      // TODO : STYLE DIALOG
       <DialogTrigger>
         <Dialog
           isOpen={true}
@@ -294,7 +292,6 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.EditRiscInfo) {
     return (
-      // TODO: STYLE DIALOG
       <DialogTrigger>
         <Dialog
           isOpen={true}
@@ -340,7 +337,6 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.EditEncryption) {
     return (
-      // TODO: STYLE DIALOG
       <DialogTrigger>
         <Dialog
           isOpen={true}
