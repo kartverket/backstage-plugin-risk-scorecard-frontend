@@ -1,7 +1,7 @@
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Button from '@mui/material/Button';
-import styles from '../scenarioWizard.module.css';
+import styles from '../ScenarioWizard.module.css';
 import {
   Text,
   Dialog,
