@@ -58,9 +58,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
         ).filter(el => !el.hasAttribute('disabled'));
 
         const index = focusable.indexOf(active);
-        const direction = (e as KeyboardEvent & { shiftKey?: boolean }).shiftKey
-          ? -1
-          : 1;
+        const direction = e.shiftKey ? -1 : 1;
         const nextIndex = index + direction;
         const next =
           focusable[nextIndex] ??
@@ -68,7 +66,6 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
         next?.focus();
       };
 
-      // capture phase to run before editor's own handlers and to stop propagation
       root.addEventListener('keydown', handleKeyDown, true);
 
       return () => {
