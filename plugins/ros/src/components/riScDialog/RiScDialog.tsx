@@ -19,7 +19,6 @@ import {
   DialogBody,
   DialogFooter,
 } from '@backstage/ui';
-import Divider from '@mui/material/Divider';
 import styles from './RiScDialog.module.css';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 
