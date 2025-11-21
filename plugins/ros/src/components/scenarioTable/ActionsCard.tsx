@@ -38,7 +38,7 @@ export function ActionsCard(props: ActionsCardProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { profileInfo } = useBackstageContext();
 
-  const { filteredData, scenario, showUpdatedBadge } = props;
+  const { filteredData, scenario } = props;
 
   const [pendingUpdatedIDs, setPendingUpdatedIDs] = useState<string[]>([]);
   const [pendingStatusById, setPendingStatusById] = useState<
@@ -134,26 +134,27 @@ export function ActionsCard(props: ActionsCardProps) {
               <Flex align="center" justify="between" gap="1">
                 <Flex align="center">
                   <IconButton
+                    size="small"
                     onClick={e => {
                       e.stopPropagation();
                       toggleActionExpanded(action.ID);
                     }}
                   >
                     {isExpanded ? (
-                      <i className="ri-arrow-up-s-line" />
-                    ) : (
                       <i className="ri-arrow-down-s-line" />
+                    ) : (
+                      <i className="ri-arrow-right-s-line" />
                     )}
                   </IconButton>
                   <Flex direction="column" align="start" gap="1">
                     {(() => {
                       if (isPending) {
-                        return showUpdatedBadge ? (
+                        return (
                           <UpdatedStatusBadge
                             status={action.updatedStatus}
                             isPending={true}
                           />
-                        ) : null;
+                        );
                       }
                       return (
                         <UpdatedStatusBadge status={action.updatedStatus} />
