@@ -1,6 +1,6 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
-export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
+export const useRiskMatrixStyles = makeStyles((theme: any) => ({
   gridWrapper: {
     display: 'flex',
     justifyContent: 'center',
@@ -43,7 +43,7 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
     cursor: 'pointer',
     minHeight: theme.spacing(2.5),
     '&:hover': {
-      backgroundColor: theme.palette.type === 'dark' ? '#FFDD9D' : '#FCEBCD',
+      backgroundColor: theme.palette.mode === 'dark' ? '#A2A0A0' : '#FFDD9D',
     },
   },
   circleText: {
@@ -51,16 +51,16 @@ export const useRiskMatrixStyles = makeStyles((theme: Theme) => ({
   },
   tooltip: {
     backgroundColor:
-      theme.palette.type === 'dark' ? 'var(--bui-bg)' : 'var(--bui-white)',
+      theme.palette.mode === 'dark' ? 'var(--bui-bg)' : 'var(--bui-white)',
     padding: theme.spacing(2),
     maxWidth: 500,
   },
   tooltipArrow: {
-    color: theme.palette.type === 'dark' ? 'var(--bui-bg)' : 'var(--bui-white)',
+    color: theme.palette.mode === 'dark' ? 'var(--bui-bg)' : 'var(--bui-white)',
   },
   tooltipText: {
     padding: 0,
     color:
-      theme.palette.type === 'dark' ? 'var(--bui-white)' : 'var(--bui-black)',
+      theme.palette.mode === 'dark' ? 'var(--bui-white)' : 'var(--bui-black)',
   },
 }));
