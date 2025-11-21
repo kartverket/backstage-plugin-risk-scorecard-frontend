@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import { Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Edit } from '@mui/icons-material';
 import { Flex, Text } from '@backstage/ui';
 import UpdatedStatusBadge from '../common/UpdatedStatusBadge.tsx';
 import { DualButtonWithMenu } from '../common/DualButtonWithMenu.tsx';
@@ -14,17 +14,16 @@ import { ScenarioLastUpdatedLabel } from '../scenario/ScenarioLastUpdatedLabel.t
 import DeleteIcon from '@mui/icons-material/Delete';
 import Collapse from '@mui/material/Collapse';
 import { Markdown } from '../common/Markdown.tsx';
-import Link from '@mui/material/Link';
-import { body2 } from '../common/typography.ts';
 import { DeleteActionConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Action } from '../../utils/types.ts';
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { ActionEdit } from './ActionEdit.tsx';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { getUpdatedStatus } from '../../utils/actions.ts';
+import { ActionURL } from './ActionURL.tsx';
 
 export const getActionStatusButtonClass = (status: string): string => {
   switch (status) {
@@ -82,155 +81,113 @@ export function ActionRow(props: ActionRowProps) {
 
   return (
     <div key={props.action.ID}>
-      <Flex align="center" gap="1">
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            cursor: 'pointer',
-            width: '100%',
-          }}
-          onClick={() => toggleActionExpanded(props.action.ID)}
-        >
-          <IconButton>
-            {isExpanded ? <ExpandLess /> : <ExpandMore />}
-          </IconButton>
-          <Flex direction="column" align="start" gap="1">
-            <UpdatedStatusBadge
-              status={props.optimisticUpdatedStatus ?? updatedStatus}
-              isPending={!!props.optimisticUpdatedStatus}
-            />
-            <Text variant="body-large">
-              {props.action.title ??
-                `${t('dictionary.measure')} ${props.index ?? ''}`}
-            </Text>
-          </Flex>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            gap: 2,
-            alignItems: 'center',
-          }}
-        >
-          <DualButtonWithMenu
-            propsCommon={{
-              className: getActionStatusButtonClass(
-                props.optimisticStatus ?? props.action.status,
-              ),
-            }}
-            propsLeft={{
-              children: getTranslatedActionStatus(
-                props.optimisticStatus ?? props.action.status,
-                t,
-              ),
-            }}
-            propsRight={{
-              iconEnd: <i className="ri-loop-left-line" />,
-              onClick: () => {
-                props.onRefreshActionStatus(props.action);
-              },
-            }}
-            menuItems={Object.values(ActionStatusOptions).map(value => ({
-              key: value,
-              // @ts-ignore
-              label: t(
-                actionStatusOptionsToTranslationKeys[
-                  value as ActionStatusOptions
-                ],
-              ),
-              onClick: () => props.onNewActionStatus(props.action.ID, value),
-              //selected: value === action.status, TODO: sjekk ut
-              selected: props.optimisticStatus
-                ? value === props.optimisticStatus
-                : value === props.action.status,
-            }))}
-          />
-          <ScenarioLastUpdatedLabel
-            lastUpdated={
-              !!props.optimisticStatus ? new Date() : props.action.lastUpdated
-            }
-            lastUpdatedBy={props.action.lastUpdatedBy}
-          />
-        </Box>
-        {props.allowDeletion && (
-          <IconButton onClick={() => setDeleteActionConfirmationIsOpen(true)}>
-            <DeleteIcon />
-          </IconButton>
-        )}
-      </Flex>
-      <Collapse in={isExpanded} sx={{ marginTop: 1 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Text
-            variant="body-medium"
-            weight="bold"
-            style={{ paddingBottom: '0.4rem', marginTop: '4px' }}
-          >
-            {t('dictionary.description')}
-          </Text>
-          {props.allowEdit && (
+      <div
+        onClick={(e: MouseEvent<HTMLDivElement>) => {
+          e.stopPropagation();
+          toggleActionExpanded(props.action.ID);
+        }}
+        style={{ cursor: 'pointer' }}
+      >
+        <Flex align="center" gap="1" justify="between">
+          <Flex align="center" justify="start">
             <IconButton
-              sx={{
-                marginLeft: 'auto',
-                transition: 'opacity 300ms ease-in',
+              onClick={e => {
+                e.stopPropagation();
+                toggleActionExpanded(props.action.ID);
               }}
-              onClick={() => setIsEditing(!isEditing)}
             >
-              <Edit />
+              {isExpanded ? (
+                <i className="ri-arrow-up-s-line" />
+              ) : (
+                <i className="ri-arrow-down-s-line" />
+              )}
             </IconButton>
-          )}
-        </Box>
-        <Markdown description={props.action.description} />
-
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'end',
-            marginTop: '16px',
-          }}
-        >
-          <Box>
-            <Text
-              variant="body-medium"
-              weight="bold"
-              style={{ paddingBottom: '0.4rem', marginTop: '4px' }}
-            >
-              {' '}
-              {t('dictionary.url')}
-            </Text>
-            {props.action.url ? (
-              <Link
-                sx={{
-                  ...body2,
-                  wordBreak: 'break-all',
-                }}
-                target="_blank"
-                rel="noreferrer"
-                href={
-                  props.action.url.startsWith('http')
-                    ? props.action.url
-                    : `//${props.action.url}`
-                }
-              >
-                {props.action.url}
-              </Link>
-            ) : (
-              <Text as="p" variant="body-large" style={{ fontStyle: 'italic' }}>
-                {t('dictionary.emptyField', {
-                  field: t('dictionary.url').toLowerCase(),
-                })}
+            <Flex direction="column" gap="1">
+              <UpdatedStatusBadge
+                status={props.optimisticUpdatedStatus ?? updatedStatus}
+                isPending={!!props.optimisticUpdatedStatus}
+              />
+              <Text variant="body-large">
+                {props.action.title ??
+                  `${t('dictionary.measure')} ${props.index ?? ''}`}
               </Text>
+            </Flex>
+          </Flex>
+          <Flex align="center" justify="end">
+            <DualButtonWithMenu
+              propsCommon={{
+                className: getActionStatusButtonClass(
+                  props.optimisticStatus ?? props.action.status,
+                ),
+              }}
+              propsLeft={{
+                children: getTranslatedActionStatus(
+                  props.optimisticStatus ?? props.action.status,
+                  t,
+                ),
+              }}
+              propsRight={{
+                iconEnd: <i className="ri-loop-left-line" />,
+                onClick: () => {
+                  props.onRefreshActionStatus(props.action);
+                },
+              }}
+              menuItems={Object.values(ActionStatusOptions).map(value => ({
+                key: value,
+                // @ts-ignore
+                label: t(
+                  actionStatusOptionsToTranslationKeys[
+                    value as ActionStatusOptions
+                  ],
+                ),
+                onClick: () => props.onNewActionStatus(props.action.ID, value),
+                //selected: value === action.status, TODO: sjekk ut
+                selected: props.optimisticStatus
+                  ? value === props.optimisticStatus
+                  : value === props.action.status,
+              }))}
+            />
+            <ScenarioLastUpdatedLabel
+              lastUpdated={
+                !!props.optimisticStatus ? new Date() : props.action.lastUpdated
+              }
+              lastUpdatedBy={props.action.lastUpdatedBy}
+            />
+            {props.allowDeletion && (
+              <IconButton
+                onClick={() => setDeleteActionConfirmationIsOpen(true)}
+              >
+                <DeleteIcon />
+              </IconButton>
             )}
-          </Box>
+          </Flex>
+        </Flex>
+      </div>
+      <Collapse
+        in={isExpanded}
+        sx={{ marginTop: 1 }}
+        timeout="auto"
+        unmountOnExit
+      >
+        <Box ml="48px" mt="4" mb="2">
+          <Flex justify="between" mt="8px" align="end">
+            <Text as="p" variant="body-large" weight="bold">
+              {t('dictionary.description')}
+            </Text>
+            {props.allowEdit && (
+              <IconButton
+                sx={{
+                  marginLeft: 'auto',
+                  transition: 'opacity 300ms ease-in',
+                }}
+                onClick={() => setIsEditing(!isEditing)}
+              >
+                <Edit />
+              </IconButton>
+            )}
+          </Flex>
+          <Markdown description={props.action.description} />
+          <ActionURL url={props.action.url} />
         </Box>
       </Collapse>
       <DeleteActionConfirmation
