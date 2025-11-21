@@ -21,6 +21,12 @@ export function generateRandomId(): string {
     .join('');
 }
 
+export function getValue(obj: any, path: string) {
+  return path.split('.').reduce((prev, curr) => {
+    return prev?.[curr];
+  }, obj);
+}
+
 const formatter = new Intl.NumberFormat('nb-NO', {
   maximumFractionDigits: 0,
 });
