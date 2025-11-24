@@ -126,7 +126,7 @@ export type UpdatedStatusEnumType =
   (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
 
 function calculateUpdatedStatusFromDaysOnly(daysSinceLastModified: number) {
-  if (daysSinceLastModified < 2 * 7) return UpdatedStatusEnum.UPDATED;
+  if (daysSinceLastModified < 1 * 7) return UpdatedStatusEnum.UPDATED;
   if (daysSinceLastModified < 4 * 7) return UpdatedStatusEnum.LITTLE_OUTDATED;
   if (daysSinceLastModified < 8 * 7) return UpdatedStatusEnum.OUTDATED;
   return UpdatedStatusEnum.VERY_OUTDATED;
@@ -491,8 +491,11 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
   const outdatedCount = allActions.filter(
     action => action.status === UpdatedStatusEnum.OUTDATED,
   ).length;
+  const updatedCount = allActions.filter(
+    action => action.status === UpdatedStatusEnum.UPDATED,
+  ).length;
 
-  return { veryOutdatedCount, outdatedCount };
+  return { veryOutdatedCount, outdatedCount, updatedCount };
 }
 
 export function getActiveTheme() {
