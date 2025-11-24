@@ -56,8 +56,6 @@ export function ActionRow(props: ActionRowProps) {
     props.action,
     selectedRiSc?.lastPublished?.numberOfCommits ?? null,
   );
-  console.log(updatedStatus);
-  console.log(selectedRiSc?.lastPublished?.numberOfCommits ?? null);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const { isActionExpanded, toggleActionExpanded } = useScenario();

@@ -54,13 +54,6 @@ export function ActionRowList(props: ActionRowListProps) {
   };
 
   const onSaveAction = (newAction: Action) => {
-    const x = {
-      ...props.scenario,
-      actions: props.scenario.actions.map(a =>
-        a.ID === newAction.ID ? newAction : a,
-      ),
-    };
-    console.log(x);
     submitEditedScenarioToRiSc(
       {
         ...props.scenario,
