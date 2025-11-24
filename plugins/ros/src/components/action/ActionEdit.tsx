@@ -12,7 +12,7 @@ type ActionEditProps = {
   action: Action;
   onCancelEdit: () => void;
   onSaveAction: (newAction: Action) => void;
-  onDeleteAction: (actionId: string) => void;
+  onDeleteAction: () => void;
   onFormSubmitted?: () => void;
 };
 
@@ -45,10 +45,10 @@ export function ActionEdit(props: ActionEditProps) {
   };
 
   return (
-    <form onSubmit={formMethods.handleSubmit(onSubmit)}>
+    <>
       <ActionFormItem
         formMethods={formMethods}
-        handleDelete={() => props.onDeleteAction(props.action.ID)}
+        handleDelete={props.onDeleteAction}
       />
       <Box display="flex" gap={1}>
         <Button
@@ -67,6 +67,6 @@ export function ActionEdit(props: ActionEditProps) {
         </Button>
         <Button onClick={props.onCancelEdit}>{t('dictionary.cancel')}</Button>
       </Box>
-    </form>
+    </>
   );
 }

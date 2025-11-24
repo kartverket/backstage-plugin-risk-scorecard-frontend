@@ -64,130 +64,134 @@ export function ActionRow(props: ActionRowProps) {
   const [deleteActionConfirmationIsOpen, setDeleteActionConfirmationIsOpen] =
     useState(false);
 
-  if (isEditing)
-    return (
-      <ActionEdit
-        onSaveAction={(a: Action) => {
-          props.onSaveAction(a);
-          setIsEditing(false);
-        }}
-        onDeleteAction={props.onDeleteAction}
-        onCancelEdit={() => setIsEditing(false)}
-        action={props.action}
-      />
-    );
-
   return (
     <div key={props.action.ID}>
-      <div
-        onClick={(e: MouseEvent<HTMLDivElement>) => {
-          e.stopPropagation();
-          toggleActionExpanded(props.action.ID);
-        }}
-        style={{ cursor: 'pointer' }}
-      >
-        <Flex align="center" gap="1" justify="between">
-          <Flex align="center" justify="start">
-            <IconButton
-              onClick={e => {
-                e.stopPropagation();
-                toggleActionExpanded(props.action.ID);
-              }}
-            >
-              {isExpanded ? (
-                <i className="ri-arrow-up-s-line" />
-              ) : (
-                <i className="ri-arrow-down-s-line" />
-              )}
-            </IconButton>
-            <Flex direction="column" gap="1">
-              <UpdatedStatusBadge
-                status={props.optimisticUpdatedStatus ?? updatedStatus}
-                isPending={!!props.optimisticUpdatedStatus}
-              />
-              <Text variant="body-large">
-                {props.action.title ??
-                  `${t('dictionary.measure')} ${props.index ?? ''}`}
-              </Text>
+      {isEditing ? (
+        <ActionEdit
+          onSaveAction={(a: Action) => {
+            props.onSaveAction(a);
+            setIsEditing(false);
+          }}
+          onDeleteAction={() => setDeleteActionConfirmationIsOpen(true)}
+          onCancelEdit={() => setIsEditing(false)}
+          action={props.action}
+        />
+      ) : (
+        <>
+          <div
+            onClick={(e: MouseEvent<HTMLDivElement>) => {
+              e.stopPropagation();
+              toggleActionExpanded(props.action.ID);
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            <Flex align="center" gap="1" justify="between">
+              <Flex align="center" justify="start">
+                <IconButton
+                  onClick={e => {
+                    e.stopPropagation();
+                    toggleActionExpanded(props.action.ID);
+                  }}
+                >
+                  {isExpanded ? (
+                    <i className="ri-arrow-up-s-line" />
+                  ) : (
+                    <i className="ri-arrow-down-s-line" />
+                  )}
+                </IconButton>
+                <Flex direction="column" gap="1">
+                  <UpdatedStatusBadge
+                    status={props.optimisticUpdatedStatus ?? updatedStatus}
+                    isPending={!!props.optimisticUpdatedStatus}
+                  />
+                  <Text variant="body-large">
+                    {props.action.title ??
+                      `${t('dictionary.measure')} ${props.index ?? ''}`}
+                  </Text>
+                </Flex>
+              </Flex>
+              <Flex align="center" justify="end">
+                <DualButtonWithMenu
+                  propsCommon={{
+                    className: getActionStatusButtonClass(
+                      props.optimisticStatus ?? props.action.status,
+                    ),
+                  }}
+                  propsLeft={{
+                    children: getTranslatedActionStatus(
+                      props.optimisticStatus ?? props.action.status,
+                      t,
+                    ),
+                  }}
+                  propsRight={{
+                    iconEnd: <i className="ri-loop-left-line" />,
+                    onClick: () => {
+                      props.onRefreshActionStatus(props.action);
+                    },
+                  }}
+                  menuItems={Object.values(ActionStatusOptions).map(value => ({
+                    key: value,
+                    // @ts-ignore
+                    label: t(
+                      actionStatusOptionsToTranslationKeys[
+                        value as ActionStatusOptions
+                      ],
+                    ),
+                    onClick: () =>
+                      props.onNewActionStatus(props.action.ID, value),
+                    //selected: value === action.status, TODO: sjekk ut
+                    selected: props.optimisticStatus
+                      ? value === props.optimisticStatus
+                      : value === props.action.status,
+                  }))}
+                />
+                <ScenarioLastUpdatedLabel
+                  lastUpdated={
+                    !!props.optimisticStatus
+                      ? new Date()
+                      : props.action.lastUpdated
+                  }
+                  lastUpdatedBy={props.action.lastUpdatedBy}
+                />
+                {props.allowDeletion && (
+                  <IconButton
+                    onClick={() => setDeleteActionConfirmationIsOpen(true)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </Flex>
             </Flex>
-          </Flex>
-          <Flex align="center" justify="end">
-            <DualButtonWithMenu
-              propsCommon={{
-                className: getActionStatusButtonClass(
-                  props.optimisticStatus ?? props.action.status,
-                ),
-              }}
-              propsLeft={{
-                children: getTranslatedActionStatus(
-                  props.optimisticStatus ?? props.action.status,
-                  t,
-                ),
-              }}
-              propsRight={{
-                iconEnd: <i className="ri-loop-left-line" />,
-                onClick: () => {
-                  props.onRefreshActionStatus(props.action);
-                },
-              }}
-              menuItems={Object.values(ActionStatusOptions).map(value => ({
-                key: value,
-                // @ts-ignore
-                label: t(
-                  actionStatusOptionsToTranslationKeys[
-                    value as ActionStatusOptions
-                  ],
-                ),
-                onClick: () => props.onNewActionStatus(props.action.ID, value),
-                //selected: value === action.status, TODO: sjekk ut
-                selected: props.optimisticStatus
-                  ? value === props.optimisticStatus
-                  : value === props.action.status,
-              }))}
-            />
-            <ScenarioLastUpdatedLabel
-              lastUpdated={
-                !!props.optimisticStatus ? new Date() : props.action.lastUpdated
-              }
-              lastUpdatedBy={props.action.lastUpdatedBy}
-            />
-            {props.allowDeletion && (
-              <IconButton
-                onClick={() => setDeleteActionConfirmationIsOpen(true)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            )}
-          </Flex>
-        </Flex>
-      </div>
-      <Collapse
-        in={isExpanded}
-        sx={{ marginTop: 1 }}
-        timeout="auto"
-        unmountOnExit
-      >
-        <Box ml="48px" mt="4" mb="2">
-          <Flex justify="between" mt="8px" align="end">
-            <Text as="p" variant="body-large" weight="bold">
-              {t('dictionary.description')}
-            </Text>
-            {props.allowEdit && (
-              <IconButton
-                sx={{
-                  marginLeft: 'auto',
-                  transition: 'opacity 300ms ease-in',
-                }}
-                onClick={() => setIsEditing(!isEditing)}
-              >
-                <Edit />
-              </IconButton>
-            )}
-          </Flex>
-          <Markdown description={props.action.description} />
-          <ActionURL url={props.action.url} />
-        </Box>
-      </Collapse>
+          </div>
+          <Collapse
+            in={isExpanded}
+            sx={{ marginTop: 1 }}
+            timeout="auto"
+            unmountOnExit
+          >
+            <Box ml="48px" mt="4" mb="2">
+              <Flex justify="between" mt="8px" align="end">
+                <Text as="p" variant="body-large" weight="bold">
+                  {t('dictionary.description')}
+                </Text>
+                {props.allowEdit && (
+                  <IconButton
+                    sx={{
+                      marginLeft: 'auto',
+                      transition: 'opacity 300ms ease-in',
+                    }}
+                    onClick={() => setIsEditing(!isEditing)}
+                  >
+                    <Edit />
+                  </IconButton>
+                )}
+              </Flex>
+              <Markdown description={props.action.description} />
+              <ActionURL url={props.action.url} />
+            </Box>
+          </Collapse>
+        </>
+      )}
       <DeleteActionConfirmation
         isOpen={deleteActionConfirmationIsOpen}
         setIsOpen={setDeleteActionConfirmationIsOpen}
