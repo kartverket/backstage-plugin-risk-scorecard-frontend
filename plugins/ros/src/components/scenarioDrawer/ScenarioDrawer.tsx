@@ -163,6 +163,7 @@ export function ScenarioDrawer() {
         }),
       }}
       variant="temporary"
+      ModalProps={{ sx: { zIndex: 100 } }}
       anchor="right"
       open={isDrawerOpen}
       onClose={onClose}

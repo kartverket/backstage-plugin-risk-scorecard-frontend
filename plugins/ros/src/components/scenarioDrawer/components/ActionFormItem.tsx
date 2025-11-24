@@ -102,7 +102,7 @@ export function ActionFormItem({
               value={value}
               onMarkdownChange={onChange}
               error={!!error}
-              minRows={4}
+              minRows={8}
             />
           )}
         />

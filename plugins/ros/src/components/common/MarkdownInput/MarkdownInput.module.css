@@ -1,0 +1,27 @@
+.MarkDownInput {
+  color: inherit;
+  background-color: inherit;
+  border: none;
+  box-shadow: none;
+}
+
+.MarkDownInputFormControl {
+  width: 100%;
+  gap: 4px;
+}
+
+.MarkDownInput--disabled {
+  color: var(--ros-input-text-color);
+  background-color: var(--ros-input-disabledBackground);
+}
+
+.MarkDownInputWrapper {
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 4px;
+}
+
+:global([data-theme-mode='dark']) {
+  .MarkDownInputWrapper {
+    border: 1px solid rgba(255, 255, 255, 0.23);
+  }
+}

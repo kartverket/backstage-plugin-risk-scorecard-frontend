@@ -1,16 +1,13 @@
-import { forwardRef, useState, useEffect } from 'react';
+import { forwardRef, useState, useEffect, useRef } from 'react';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import MDEditor from '@uiw/react-md-editor';
-import { formHelperText, formLabel } from './typography';
+import { formHelperText, formLabel } from '../typography';
 import { TextFieldProps } from '@material-ui/core';
-import { useTheme } from '@mui/material/styles';
-import {
-  commonTextColor,
-  commonBackgroundColor,
-  formControlStyles,
-} from '../../utils/style';
+import classNames from 'classnames';
+import { getActiveTheme } from '../../../utils/utilityfunctions';
+import styles from './MarkdownInput.module.css';
 
 type Props = TextFieldProps & {
   sublabel?: string;
@@ -37,11 +34,44 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       value,
     );
 
-    const theme = useTheme();
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
       setMarkdownContent(value);
     }, [value]);
+
+    useEffect(() => {
+      const root = wrapperRef.current;
+      if (!root) return () => {};
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key !== 'Tab') return;
+        const active = document.activeElement as HTMLElement | null;
+        if (!active || !root.contains(active)) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const focusable = Array.from(
+          document.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          ),
+        ).filter(el => !el.hasAttribute('disabled'));
+
+        const index = focusable.indexOf(active);
+        const direction = e.shiftKey ? -1 : 1;
+        const nextIndex = index + direction;
+        const next =
+          focusable[nextIndex] ??
+          (direction === 1 ? focusable[0] : focusable[focusable.length - 1]);
+        next?.focus();
+      };
+
+      root.addEventListener('keydown', handleKeyDown, true);
+
+      return () => {
+        root.removeEventListener('keydown', handleKeyDown, true);
+      };
+    }, [wrapperRef]);
 
     const handleMarkdownChange = (newValue: string | undefined) => {
       setMarkdownContent(newValue || '');
@@ -59,16 +89,21 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
         }
       }
     };
+    const editorClassName = classNames(styles.MarkDownInput, {
+      [styles['MarkDownInput--disabled']]: disabled,
+    });
 
     return (
-      <FormControl sx={formControlStyles} error={error}>
+      <FormControl className={styles.MarkDownInputFormControl} error={error}>
         {label && <FormLabel sx={formLabel}>{label}</FormLabel>}
         {sublabel && (
           <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
         )}
         <div
-          data-color-mode={theme.palette.mode}
+          ref={wrapperRef}
           onFocusCapture={onFocusCapture}
+          data-color-mode={getActiveTheme()}
+          className={styles.MarkDownInputWrapper}
         >
           <MDEditor
             ref={ref}
@@ -76,10 +111,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
             onChange={handleMarkdownChange}
             preview="edit"
             height={minRows ? minRows * 24 : 64}
-            style={{
-              color: commonTextColor(theme, disabled),
-              backgroundColor: commonBackgroundColor(theme, disabled),
-            }}
+            className={editorClassName}
           />
         </div>
         {helperText && <FormHelperText>{helperText}</FormHelperText>}

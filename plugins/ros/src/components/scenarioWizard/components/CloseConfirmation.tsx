@@ -1,11 +1,14 @@
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
-import { dialogActions } from '../../common/mixins';
-import { Flex } from '@backstage/ui';
+import styles from '../ScenarioWizard.module.css';
+import {
+  Text,
+  Dialog,
+  DialogTrigger,
+  DialogHeader,
+  DialogBody,
+} from '@backstage/ui';
 
 interface CloseConfirmationProps {
   isOpen: boolean;
@@ -22,22 +25,27 @@ export function CloseConfirmation({
 }: CloseConfirmationProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <Dialog open={isOpen}>
-      <Flex>
-        <DialogTitle>{t('scenarioDrawer.closeConfirmation')}</DialogTitle>
-        <Button onClick={onCloseDialog}>
-          <i className="ri-close-large-line" />
-        </Button>
-      </Flex>
-      <DialogActions sx={dialogActions}>
-        <Button variant="outlined" onClick={close}>
-          {t('dictionary.discardChanges')}
-        </Button>
+    <DialogTrigger>
+      <Dialog
+        isOpen={isOpen}
+        onOpenChange={onCloseDialog}
+        className={styles.scenarioWizardDialog}
+      >
+        <DialogHeader>
+          <Text variant="title-x-small" weight="bold">
+            {t('scenarioDrawer.closeConfirmation')}
+          </Text>
+        </DialogHeader>
+        <DialogBody className={styles.scenarioWizardDialogBody}>
+          <Button variant="outlined" onClick={close}>
+            {t('dictionary.discardChanges')}
+          </Button>
 
-        <Button variant="contained" onClick={save}>
-          {t('dictionary.save')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+          <Button variant="contained" onClick={save}>
+            {t('dictionary.save')}
+          </Button>
+        </DialogBody>
+      </Dialog>
+    </DialogTrigger>
   );
 }
