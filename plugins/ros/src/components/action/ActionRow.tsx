@@ -17,7 +17,7 @@ import { Markdown } from '../common/Markdown.tsx';
 import { DeleteActionConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Action } from '../../utils/types.ts';
-import { MouseEvent, useState } from 'react';
+import { useState } from 'react';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { ActionEdit } from './ActionEdit.tsx';
@@ -79,9 +79,24 @@ export function ActionRow(props: ActionRowProps) {
       ) : (
         <>
           <div
-            onClick={(e: MouseEvent<HTMLDivElement>) => {
+            role="button"
+            tabIndex={0}
+            onClick={e => {
               e.stopPropagation();
+
+              const target = e.target as HTMLElement | null;
+              if (target && target.closest('[data-no-row-toggle]')) return;
+
               toggleActionExpanded(props.action.ID);
+            }}
+            onKeyDown={e => {
+              // Prevent keyboard event from bubbling up to parent(s)
+              e.stopPropagation();
+
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleActionExpanded(props.action.ID);
+              }
             }}
             style={{ cursor: 'pointer' }}
           >
@@ -139,7 +154,6 @@ export function ActionRow(props: ActionRowProps) {
                     ),
                     onClick: () =>
                       props.onNewActionStatus(props.action.ID, value),
-                    //selected: value === action.status, TODO: sjekk ut
                     selected: props.optimisticStatus
                       ? value === props.optimisticStatus
                       : value === props.action.status,

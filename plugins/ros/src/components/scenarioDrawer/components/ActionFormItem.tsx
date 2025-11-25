@@ -21,7 +21,7 @@ import { Text } from '@backstage/ui';
 
 function addPeriodToBaseObjectPath(s: string) {
   if (!s) return '';
-  return s + '.';
+  return `${s}.`;
 }
 
 type ActionFormItemProps = {
