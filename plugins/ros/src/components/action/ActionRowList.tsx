@@ -120,10 +120,6 @@ export function ActionRowList(props: ActionRowListProps) {
     debounceCallback,
   );
 
-  if (!props.scenario.actions) {
-    return <h1>nothing</h1>;
-  }
-
   const actions = props.displayedActions ?? props.scenario.actions ?? [];
 
   return (
