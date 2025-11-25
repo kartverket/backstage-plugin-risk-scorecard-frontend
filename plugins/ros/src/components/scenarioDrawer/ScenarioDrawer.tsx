@@ -24,6 +24,8 @@ import { useDebounce } from '../../utils/hooks';
 import { Text, Flex } from '@backstage/ui';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import styles from '../common/alertBar.module.css';
+import { ScopeSection } from './components/ScopeSection.tsx';
+import { RiskSection } from './components/RiskSection.tsx';
 
 export function ScenarioDrawer() {
   const { profileInfo } = useBackstageContext();
@@ -161,6 +163,7 @@ export function ScenarioDrawer() {
         }),
       }}
       variant="temporary"
+      ModalProps={{ sx: { zIndex: 100 } }}
       anchor="right"
       open={isDrawerOpen}
       onClose={onClose}
@@ -232,6 +235,8 @@ export function ScenarioDrawer() {
                 </AlertBar>
               </Flex>
             )}
+          <ScopeSection />
+          <RiskSection />
         </>
       )}
 

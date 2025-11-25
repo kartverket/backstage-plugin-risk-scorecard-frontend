@@ -494,3 +494,7 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
 
   return { veryOutdatedCount, outdatedCount };
 }
+
+export function getActiveTheme() {
+  return document.body.getAttribute('data-theme-mode');
+}

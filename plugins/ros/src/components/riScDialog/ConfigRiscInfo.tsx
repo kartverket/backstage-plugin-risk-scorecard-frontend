@@ -22,7 +22,7 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const currentScope = props.watch('content.scope');
   return (
-    <Flex gap="16px" direction="column">
+    <Flex gap="16px" direction="column" px="1px">
       <Input
         required
         {...props.register('content.title', { required: true })}
