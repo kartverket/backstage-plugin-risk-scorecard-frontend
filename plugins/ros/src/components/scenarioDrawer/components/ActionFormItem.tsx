@@ -19,7 +19,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import { Tooltip } from '@material-ui/core';
 import { Text } from '@backstage/ui';
 
-function x(s: string) {
+function addPeriodToBaseObjectPath(s: string) {
   if (!s) return '';
   return s + '.';
 }
@@ -83,9 +83,12 @@ export function ActionFormItem({
         </Box>
         <Input
           required
-          {...register(`${x(baseObjectPathToActionOfForm)}title`, {
-            required: true,
-          })}
+          {...register(
+            `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}title`,
+            {
+              required: true,
+            },
+          )}
           error={errorObject?.title !== undefined}
           label={t('dictionary.title')}
           helperText={
@@ -95,7 +98,7 @@ export function ActionFormItem({
         />
         <Controller
           control={control}
-          name={`${x(baseObjectPathToActionOfForm)}description`}
+          name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}description`}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <MarkdownInput
               label={t('dictionary.description')}
@@ -114,20 +117,23 @@ export function ActionFormItem({
           }}
         >
           <Input
-            {...register(`${x(baseObjectPathToActionOfForm)}url`, {
-              pattern: {
-                value: urlRegExpPattern,
-                message: t('scenarioDrawer.action.urlError'),
+            {...register(
+              `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
+              {
+                pattern: {
+                  value: urlRegExpPattern,
+                  message: t('scenarioDrawer.action.urlError'),
+                },
               },
-            })}
+            )}
             label={<UrlLabel />}
-            helperText={errorObject?.url?.message} // TODO
-            error={errorObject?.url?.message} // TODO
+            helperText={errorObject?.url?.message}
+            error={errorObject?.url?.message}
           />
           <Select
             required
             control={control}
-            name={`${x(baseObjectPathToActionOfForm)}status`} // TODO
+            name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}status`}
             label={t('dictionary.status')}
             options={actionStatusOptions}
           />
