@@ -1,5 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { IconButton, Paper } from '@material-ui/core';
+import { Collapse, IconButton, Paper } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useState, useRef, useEffect, MouseEvent } from 'react';
@@ -65,6 +65,8 @@ export function ScenarioTableRow({
     string[]
   >([]);
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drop] = useDrop({
@@ -129,6 +131,14 @@ export function ScenarioTableRow({
   );
 
   useEffect(() => {
+    if (visibleType || isExpanded) {
+      setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
+    }
+    // only run when visibleType or expansion changes for this scenario
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleType, isExpanded]);
+
+  useEffect(() => {
     const actions = actionsWithUpdatedStatus.filter(
       a => a.updatedStatus === visibleType,
     );
@@ -154,13 +164,13 @@ export function ScenarioTableRow({
   return (
     <Card
       onMouseEnter={() => {
-        if (visibleType) return;
+        if (visibleType || isExpanded) return;
         setHoveredScenarios(prev =>
           prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
         );
       }}
       onMouseLeave={() => {
-        if (visibleType) return;
+        if (visibleType || isExpanded) return;
         setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
       }}
       ref={ref}
@@ -176,7 +186,7 @@ export function ScenarioTableRow({
         }
         viewRow(scenario.ID);
       }}
-      className={`${tableCard} ${visibleType ? tableCardNoHover : ''}`}
+      className={`${tableCard} ${visibleType || isExpanded ? tableCardNoHover : ''}`}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
@@ -187,6 +197,21 @@ export function ScenarioTableRow({
       }}
     >
       <Flex align="center">
+        <IconButton
+          size="medium"
+          data-action-root
+          onClick={e => {
+            e.stopPropagation();
+            setIsExpanded(prev => !prev);
+          }}
+          style={{ padding: 0 }}
+        >
+          {isExpanded ? (
+            <i className="ri-arrow-down-s-line" />
+          ) : (
+            <i className="ri-arrow-right-s-line" />
+          )}
+        </IconButton>
         {isEditing && allowDrag && (
           <IconButton size="small" ref={drag}>
             <DragIndicatorIcon
@@ -281,8 +306,21 @@ export function ScenarioTableRow({
           </Flex>
         )}
       </Flex>
-      {filteredActions.length > 0 && (
-        <ActionRowList scenario={scenario} displayedActions={filteredActions} />
+      {/* If there are filtered actions (search or updated badge), show them as before.
+          If the user expands the row, show all actions for the scenario regardless
+          of the current filters. */}
+      {filteredActions.length > 0 && !isExpanded && (
+        <div data-action-root>
+          <ActionRowList scenario={scenario} displayedActions={filteredActions} />
+        </div>
+      )}
+
+      {isExpanded && (
+        <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+          <div data-action-root>
+            <ActionRowList scenario={scenario} displayedActions={filteredActions} />
+          </div>
+        </Collapse>
       )}
     </Card>
   );
