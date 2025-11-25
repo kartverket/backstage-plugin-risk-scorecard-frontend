@@ -19,13 +19,13 @@ import { Text, Flex, Card } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
-import { ActionsCard } from './ActionsCard.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { useTheme } from '@mui/material/styles';
 import {
   getActionsWithUpdatedStatus,
   getFilteredActions,
 } from '../../utils/actions.ts';
+import { ActionRowList } from '../action/ActionRowList.tsx';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -282,11 +282,7 @@ export function ScenarioTableRow({
         )}
       </Flex>
       {filteredActions.length > 0 && (
-        <ActionsCard
-          filteredData={filteredActions}
-          scenario={scenario}
-          showUpdatedBadge={!!visibleType}
-        />
+        <ActionRowList scenario={scenario} displayedActions={filteredActions} />
       )}
     </Card>
   );

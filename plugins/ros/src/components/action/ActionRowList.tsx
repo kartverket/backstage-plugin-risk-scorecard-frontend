@@ -13,6 +13,8 @@ import { UpdatedStatusEnum } from '../../utils/utilityfunctions.ts';
 type ActionRowListProps = {
   scenario: Scenario;
   displayedActions?: Action[]; // Specify if not every action of scenario is to be displayed
+  allowDeletion?: boolean;
+  allowEdit?: boolean;
 };
 
 export function ActionRowList(props: ActionRowListProps) {
@@ -89,8 +91,21 @@ export function ActionRowList(props: ActionRowListProps) {
       submitEditedScenarioToRiSc(updatedScenario, {
         idsOfActionsToForceUpdateLastUpdatedValue: Object.keys(updates),
         profileInfo: profileInfo,
+        onSuccess: () => {
+          setPendingActionStatusUpdates({});
+        },
+        onError: () => {
+          // TODO: Should probably retry once before canceling updates
+          setPendingActionStatusUpdates(prevStatusUpdates => {
+            setPendingActionUpdatesHistory(prevHistory =>
+              prevHistory.filter(actionId =>
+                Object.keys(prevStatusUpdates).includes(actionId),
+              ),
+            );
+            return {};
+          });
+        },
       });
-      setPendingActionStatusUpdates({});
     },
     [
       props.scenario,
@@ -100,7 +115,7 @@ export function ActionRowList(props: ActionRowListProps) {
     ],
   );
 
-  useDebounce<Record<string, ActionStatusOptions>>( // TODO: maybe do something with flush function?
+  useDebounce<Record<string, ActionStatusOptions>>( // TODO: Flush?
     pendingActionStatusUpdates,
     6000,
     debounceCallback,
@@ -131,8 +146,8 @@ export function ActionRowList(props: ActionRowListProps) {
                 : undefined
             }
             optimisticStatus={pendingActionStatusUpdates[action.ID]}
-            allowDeletion
-            allowEdit
+            allowDeletion={props.allowDeletion}
+            allowEdit={props.allowEdit}
           />
           <Divider />
         </>

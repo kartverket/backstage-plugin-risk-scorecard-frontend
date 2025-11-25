@@ -86,7 +86,7 @@ export function ActionRow(props: ActionRowProps) {
             style={{ cursor: 'pointer' }}
           >
             <Flex align="center" gap="1" justify="between">
-              <Flex align="center" justify="start">
+              <Flex align="center" justify="start" style={{ width: '40%' }}>
                 <IconButton
                   onClick={e => {
                     e.stopPropagation();
@@ -94,9 +94,9 @@ export function ActionRow(props: ActionRowProps) {
                   }}
                 >
                   {isExpanded ? (
-                    <i className="ri-arrow-up-s-line" />
-                  ) : (
                     <i className="ri-arrow-down-s-line" />
+                  ) : (
+                    <i className="ri-arrow-right-s-line" />
                   )}
                 </IconButton>
                 <Flex direction="column" gap="1">
@@ -155,7 +155,10 @@ export function ActionRow(props: ActionRowProps) {
                 />
                 {props.allowDeletion && (
                   <IconButton
-                    onClick={() => setDeleteActionConfirmationIsOpen(true)}
+                    onClick={e => {
+                      e.stopPropagation();
+                      setDeleteActionConfirmationIsOpen(true);
+                    }}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -180,7 +183,10 @@ export function ActionRow(props: ActionRowProps) {
                       marginLeft: 'auto',
                       transition: 'opacity 300ms ease-in',
                     }}
-                    onClick={() => setIsEditing(!isEditing)}
+                    onClick={e => {
+                      e.stopPropagation();
+                      setIsEditing(!isEditing);
+                    }}
                   >
                     <Edit />
                   </IconButton>

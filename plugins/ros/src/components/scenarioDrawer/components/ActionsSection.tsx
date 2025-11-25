@@ -109,6 +109,8 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
             sortedActions,
             actionFilters.showOnlyRelevant,
           )}
+          allowDeletion
+          allowEdit
         />
       ) : (
         <Text variant="body-large" style={{ fontStyle: 'italic' }}>

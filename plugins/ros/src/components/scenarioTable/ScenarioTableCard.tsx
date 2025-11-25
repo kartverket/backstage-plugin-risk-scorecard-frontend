@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { RiScWithMetadata, Scenario } from '../../utils/types';
+import { RiScWithMetadata } from '../../utils/types';
 import {
   computeStatusCount,
   UpdatedStatusEnumType,
@@ -12,8 +12,6 @@ import { AddScenarioButton } from './AddScenarioButton.tsx';
 import { ScenarioTable } from './ScenarioTable.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { ScenarioTableFilter } from './ScenarioTableFilter.tsx';
-import { ActionRowList } from '../action/ActionRowList.tsx';
-import Divider from '@mui/material/Divider';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
@@ -97,10 +95,6 @@ export function ScenarioTableCard({
             />
           </>
         )}
-        <Divider sx={{ marginBottom: '100px' }} />
-        <ActionRowList
-          scenario={riScWithMetadata?.content.scenarios[0] as Scenario}
-        />
       </CardBody>
     </Card>
   );
