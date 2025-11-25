@@ -110,6 +110,7 @@ export function GcpCryptoKeyMenu({
         )}
       </ListItemButton>
       <Menu
+        disablePortal
         anchorEl={anchorEl}
         open={open}
         onClose={() => setAnchorEl(null)}
