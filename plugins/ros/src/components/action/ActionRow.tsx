@@ -186,7 +186,7 @@ export function ActionRow(props: ActionRowProps) {
             timeout="auto"
             unmountOnExit
           >
-            <Box ml="48px" mt="4" mb="2">
+            <Box ml="56px" mt="4" mb="2">
               <Flex justify="between" mt="8px" align="end">
                 <Text as="p" variant="body-large" weight="bold">
                   {t('dictionary.description')}
