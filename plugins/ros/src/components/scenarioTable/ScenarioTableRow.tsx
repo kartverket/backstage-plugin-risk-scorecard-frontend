@@ -311,14 +311,17 @@ export function ScenarioTableRow({
           of the current filters. */}
       {filteredActions.length > 0 && !isExpanded && (
         <div data-action-root>
-          <ActionRowList scenario={scenario} displayedActions={filteredActions} />
+          <ActionRowList
+            scenario={scenario}
+            displayedActions={filteredActions}
+          />
         </div>
       )}
 
       {isExpanded && (
         <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           <div data-action-root>
-            <ActionRowList scenario={scenario} displayedActions={filteredActions} />
+            <ActionRowList scenario={scenario} />
           </div>
         </Collapse>
       )}
