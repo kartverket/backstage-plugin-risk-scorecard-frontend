@@ -69,7 +69,6 @@ export function ActionRowList(props: ActionRowListProps) {
     );
   };
 
-  // DEBOUNCE START
   const debounceCallback = useCallback(
     (updates: Record<string, ActionStatusOptions>) => {
       if (Object.keys(updates).length === 0) return;
@@ -120,7 +119,6 @@ export function ActionRowList(props: ActionRowListProps) {
     6000,
     debounceCallback,
   );
-  // DEBOUNCE STOP
 
   if (!props.scenario.actions) {
     return <h1>nothing</h1>;
