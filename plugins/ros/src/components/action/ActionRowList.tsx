@@ -86,10 +86,9 @@ export function ActionRowList(props: ActionRowListProps) {
     (updates: Record<string, Record<string, ActionStatusOptions>>) => {
       if (Object.keys(updates).length === 0) return;
 
-      for (const scenarioId in updates) {
+      Object.keys(updates).forEach(scenarioId => {
         const oldScenario = getScenarioOfIdFromRiSc(scenarioId, selectedRiSc);
         if (!oldScenario) return;
-
         const newActionArray = oldScenario.actions.map(a =>
           a.ID in updates[scenarioId]
             ? {
@@ -126,9 +125,9 @@ export function ActionRowList(props: ActionRowListProps) {
             });
           },
         });
-      }
+      });
     },
-    [props.scenarioId, submitEditedScenarioToRiSc, profileInfo],
+    [submitEditedScenarioToRiSc, profileInfo, selectedRiSc],
   );
 
   const { flush } = useDebounce<
@@ -145,7 +144,7 @@ export function ActionRowList(props: ActionRowListProps) {
       // flush on unmount. makes sure changes are saved
       flush();
     };
-  }, []);
+  }, [flush]);
 
   return (
     <Flex direction="column">
