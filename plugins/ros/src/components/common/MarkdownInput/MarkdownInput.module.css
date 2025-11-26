@@ -20,8 +20,6 @@
   border-radius: 4px;
 }
 
-:global([data-theme-mode='dark']) {
-  .MarkDownInputWrapper {
+[data-theme-mode='dark'] .MarkDownInputWrapper {
     border: 1px solid rgba(255, 255, 255, 0.23);
-  }
 }
