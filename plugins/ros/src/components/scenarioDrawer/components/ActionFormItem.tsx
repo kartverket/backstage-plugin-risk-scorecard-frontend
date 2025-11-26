@@ -19,32 +19,30 @@ import HelpIcon from '@mui/icons-material/Help';
 import { Tooltip } from '@material-ui/core';
 import { Text } from '@backstage/ui';
 
-function getObjectPath(formIndex?: number) {
-  if (!formIndex) return '';
-  return `actions.${formIndex}.`;
+function addPeriodToBaseObjectPath(s: string) {
+  if (!s) return '';
+  return `${s}.`;
 }
 
 type ActionFormItemProps = {
   formMethods: UseFormReturn<any>;
   handleDelete: () => void;
   displayedIndex?: number;
-  // Use formIndex if the action is nested in a scenario object. i.e. {actions: [], ...}
-  formIndex?: number;
+  // Specify baseObjectPathToActionOfForm where in the form of formMethods the action object is (use if nested)
+  // Example value: "actions.1"
+  baseObjectPathToActionOfForm?: string;
 };
 
 export function ActionFormItem({
   formMethods,
   handleDelete,
   displayedIndex,
-  formIndex,
+  baseObjectPathToActionOfForm = '',
 }: ActionFormItemProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const { control, register, formState } = formMethods;
-  const errorObject = getValue(
-    formState.errors,
-    formIndex ? `actions.${formIndex}` : '',
-  );
+  const errorObject = getValue(formState.errors, baseObjectPathToActionOfForm);
 
   const actionStatusOptions = Object.values(ActionStatusOptions).map(
     actionStatus => ({
@@ -85,9 +83,12 @@ export function ActionFormItem({
         </Box>
         <Input
           required
-          {...register(`${getObjectPath(formIndex)}title`, {
-            required: true,
-          })}
+          {...register(
+            `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}title`,
+            {
+              required: true,
+            },
+          )}
           error={errorObject?.title !== undefined}
           label={t('dictionary.title')}
           helperText={
@@ -97,7 +98,7 @@ export function ActionFormItem({
         />
         <Controller
           control={control}
-          name={`${getObjectPath(formIndex)}description`}
+          name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}description`}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <MarkdownInput
               label={t('dictionary.description')}
@@ -116,12 +117,15 @@ export function ActionFormItem({
           }}
         >
           <Input
-            {...register(`${getObjectPath(formIndex)}url`, {
-              pattern: {
-                value: urlRegExpPattern,
-                message: t('scenarioDrawer.action.urlError'),
+            {...register(
+              `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
+              {
+                pattern: {
+                  value: urlRegExpPattern,
+                  message: t('scenarioDrawer.action.urlError'),
+                },
               },
-            })}
+            )}
             label={<UrlLabel />}
             helperText={errorObject?.url?.message}
             error={errorObject?.url?.message}
@@ -129,7 +133,7 @@ export function ActionFormItem({
           <Select
             required
             control={control}
-            name={`${getObjectPath(formIndex)}status`}
+            name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}status`}
             label={t('dictionary.status')}
             options={actionStatusOptions}
           />
