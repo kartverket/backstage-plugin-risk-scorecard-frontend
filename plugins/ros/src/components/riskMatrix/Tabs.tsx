@@ -1,57 +1,53 @@
-import TabList from '@material-ui/lab/TabList/TabList';
-import { Tab } from '@material-ui/core';
-import Box from '@mui/material/Box';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { RiskMatrixTabs } from './utils';
-import { Text } from '@backstage/ui';
+import { Text, Button, Flex } from '@backstage/ui';
 import styles from './Tabs.module.css';
-import { useTabsStyle } from './tabsStyle';
 
-interface TabsProps {
+interface MatrixTabsProps {
   setTab: (tab: RiskMatrixTabs) => void;
+  currentTab: RiskMatrixTabs;
 }
 
-export function Tabs({ setTab }: TabsProps) {
+export function MatrixTabs({ setTab, currentTab }: MatrixTabsProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const tabsStyle = useTabsStyle();
 
   return (
-    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-      <TabList
-        onChange={(_: any, newValue: RiskMatrixTabs) => setTab(newValue)}
-        variant="fullWidth"
-        indicatorColor="primary"
+    <Flex pt="12px">
+      <Button
+        variant={
+          currentTab === RiskMatrixTabs.initialRisk ? 'primary' : 'secondary'
+        }
+        onClick={() => setTab(RiskMatrixTabs.initialRisk)}
+        aria-label="Initial risk"
+        className={styles.riskMatrixButton}
       >
-        <Tab
-          disableRipple
-          label={
-            <Text
-              variant="body-large"
-              weight="bold"
-              className={styles.tabLabel}
-            >
-              {t('dictionary.initialRisk')}
-            </Text>
-          }
-          value={RiskMatrixTabs.initialRisk}
-          className={tabsStyle.tab}
-        />
-        <Tab
-          disableRipple
-          label={
-            <Text
-              variant="body-large"
-              weight="bold"
-              className={styles.tabLabel}
-            >
-              {t('dictionary.restRisk')}
-            </Text>
-          }
-          value={RiskMatrixTabs.remainingRisk}
-          className={tabsStyle.tab}
-        />
-      </TabList>
-    </Box>
+        <Text
+          variant="body-large"
+          weight="bold"
+          className={styles.tabButtonTextBase}
+          data-selected={currentTab === RiskMatrixTabs.initialRisk}
+        >
+          {t('dictionary.initialRisk')}
+        </Text>
+      </Button>
+      <Button
+        variant={
+          currentTab === RiskMatrixTabs.remainingRisk ? 'primary' : 'secondary'
+        }
+        onClick={() => setTab(RiskMatrixTabs.remainingRisk)}
+        aria-label="Remaining risk"
+        className={styles.riskMatrixButton}
+      >
+        <Text
+          variant="body-large"
+          weight="bold"
+          className={styles.tabButtonTextBase}
+          data-selected={currentTab === RiskMatrixTabs.remainingRisk}
+        >
+          {t('dictionary.restRisk')}
+        </Text>
+      </Button>
+    </Flex>
   );
 }
