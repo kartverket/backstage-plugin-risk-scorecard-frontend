@@ -104,7 +104,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
       </Box>
       {sortedActions !== undefined && sortedActions.length > 0 ? (
         <ActionRowList
-          scenario={scenario}
+          scenarioId={scenario.ID}
           displayedActions={filterActionsByRelevance(
             sortedActions,
             actionFilters.showOnlyRelevant,

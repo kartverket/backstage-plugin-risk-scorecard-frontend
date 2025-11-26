@@ -1,6 +1,6 @@
-import { Action, Scenario } from '../../utils/types.ts';
+import { Action } from '../../utils/types.ts';
 import { ActionRow } from './ActionRow.tsx';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { isToday } from '../../utils/date.ts';
 import { ActionStatusOptions } from '../../utils/constants.ts';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
@@ -9,19 +9,22 @@ import Divider from '@mui/material/Divider';
 import { useDebounce } from '../../utils/hooks.ts';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import { UpdatedStatusEnum } from '../../utils/utilityfunctions.ts';
+import { useRiScs } from '../../contexts/RiScContext.tsx';
+import { getScenarioOfIdFromRiSc } from '../../utils/scenario.ts';
 
 type ActionRowListProps = {
-  scenario: Scenario;
+  scenarioId: string;
   displayedActions?: Action[]; // Specify if not every action of scenario is to be displayed
   allowDeletion?: boolean;
   allowEdit?: boolean;
 };
 
 export function ActionRowList(props: ActionRowListProps) {
+  const { selectedRiSc } = useRiScs();
   const { submitEditedScenarioToRiSc } = useScenario();
   const { profileInfo } = useBackstageContext();
   const [pendingActionStatusUpdates, setPendingActionStatusUpdates] = useState<
-    Record<string, ActionStatusOptions>
+    Record<string, Record<string, ActionStatusOptions>>
   >({});
   const [pendingActionUpdatesHistory, setPendingActionUpdatesHistory] =
     useState<string[]>([]);
@@ -31,7 +34,10 @@ export function ActionRowList(props: ActionRowListProps) {
 
     setPendingActionStatusUpdates(prev => ({
       ...prev,
-      [action.ID]: action.status as ActionStatusOptions,
+      [props.scenarioId]: {
+        ...prev[props.scenarioId],
+        [action.ID]: action.status as ActionStatusOptions,
+      },
     }));
     setPendingActionUpdatesHistory(prev => [...prev, action.ID]);
   };
@@ -42,24 +48,31 @@ export function ActionRowList(props: ActionRowListProps) {
   ) => {
     setPendingActionStatusUpdates(prev => ({
       ...prev,
-      [actionId]: newStatus,
+      [props.scenarioId]: {
+        ...prev[props.scenarioId],
+        [actionId]: newStatus,
+      },
     }));
     setPendingActionUpdatesHistory(prev => [...prev, actionId]);
   };
 
   const onDeleteAction = (actionId: string) => {
+    const oldScenario = getScenarioOfIdFromRiSc(props.scenarioId, selectedRiSc);
+    if (!oldScenario) return;
     const newScenario = {
-      ...props.scenario,
-      actions: props.scenario.actions.filter(a => a.ID !== actionId),
+      ...oldScenario,
+      actions: oldScenario.actions.filter(a => a.ID !== actionId),
     };
     submitEditedScenarioToRiSc(newScenario);
   };
 
   const onSaveAction = (newAction: Action) => {
+    const oldScenario = getScenarioOfIdFromRiSc(props.scenarioId, selectedRiSc);
+    if (!oldScenario) return;
     submitEditedScenarioToRiSc(
       {
-        ...props.scenario,
-        actions: props.scenario.actions.map(a =>
+        ...oldScenario,
+        actions: oldScenario.actions.map(a =>
           a.ID === newAction.ID ? newAction : a,
         ),
       },
@@ -70,57 +83,69 @@ export function ActionRowList(props: ActionRowListProps) {
   };
 
   const debounceCallback = useCallback(
-    (updates: Record<string, ActionStatusOptions>) => {
+    (updates: Record<string, Record<string, ActionStatusOptions>>) => {
       if (Object.keys(updates).length === 0) return;
 
-      const newActionArray = props.scenario.actions.map(a =>
-        a.ID in updates
-          ? {
-              ...a,
-              status: pendingActionStatusUpdates[a.ID] ?? a.status,
-            }
-          : a,
-      );
+      for (const scenarioId in updates) {
+        const oldScenario = getScenarioOfIdFromRiSc(scenarioId, selectedRiSc);
+        if (!oldScenario) return;
 
-      const updatedScenario = {
-        ...props.scenario,
-        actions: newActionArray,
-      };
+        const newActionArray = oldScenario.actions.map(a =>
+          a.ID in updates[scenarioId]
+            ? {
+                ...a,
+                status: updates[scenarioId][a.ID] ?? a.status,
+              }
+            : a,
+        );
 
-      submitEditedScenarioToRiSc(updatedScenario, {
-        idsOfActionsToForceUpdateLastUpdatedValue: Object.keys(updates),
-        profileInfo: profileInfo,
-        onSuccess: () => {
-          setPendingActionStatusUpdates({});
-        },
-        onError: () => {
-          // TODO: Should probably retry once before canceling updates
-          setPendingActionStatusUpdates(prevStatusUpdates => {
-            setPendingActionUpdatesHistory(prevHistory =>
-              prevHistory.filter(actionId =>
-                Object.keys(prevStatusUpdates).includes(actionId),
-              ),
-            );
-            return {};
-          });
-        },
-      });
+        const updatedScenario = {
+          ...oldScenario,
+          actions: newActionArray,
+        };
+
+        submitEditedScenarioToRiSc(updatedScenario, {
+          idsOfActionsToForceUpdateLastUpdatedValue: Object.keys(
+            updates[scenarioId],
+          ),
+          profileInfo: profileInfo,
+          onSuccess: () => {
+            setPendingActionStatusUpdates({});
+          },
+          onError: () => {
+            // TODO: Should probably retry once before canceling updates
+            setPendingActionStatusUpdates(prevStatusUpdates => {
+              setPendingActionUpdatesHistory(prevHistory =>
+                prevHistory.filter(actionId =>
+                  Object.keys(prevStatusUpdates[scenarioId] ?? {}).includes(
+                    actionId,
+                  ),
+                ),
+              );
+              return {};
+            });
+          },
+        });
+      }
     },
-    [
-      props.scenario,
-      submitEditedScenarioToRiSc,
-      pendingActionStatusUpdates,
-      profileInfo,
-    ],
+    [props.scenarioId, submitEditedScenarioToRiSc, profileInfo],
   );
 
-  useDebounce<Record<string, ActionStatusOptions>>( // TODO: Flush?
-    pendingActionStatusUpdates,
-    6000,
-    debounceCallback,
-  );
+  const { flush } = useDebounce<
+    Record<string, Record<string, ActionStatusOptions>>
+  >(pendingActionStatusUpdates, 6000, debounceCallback);
 
-  const actions = props.displayedActions ?? props.scenario.actions ?? [];
+  const actions =
+    props.displayedActions ??
+    getScenarioOfIdFromRiSc(props.scenarioId, selectedRiSc)?.actions ??
+    [];
+
+  useEffect(() => {
+    return () => {
+      // flush on unmount. makes sure changes are saved
+      flush();
+    };
+  }, []);
 
   return (
     <Flex direction="column">
@@ -139,7 +164,9 @@ export function ActionRowList(props: ActionRowListProps) {
                 ? UpdatedStatusEnum.UPDATED
                 : undefined
             }
-            optimisticStatus={pendingActionStatusUpdates[action.ID]}
+            optimisticStatus={
+              pendingActionStatusUpdates[props.scenarioId]?.[action.ID]
+            }
             allowDeletion={props.allowDeletion}
             allowEdit={props.allowEdit}
           />
