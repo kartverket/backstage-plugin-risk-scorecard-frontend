@@ -160,7 +160,7 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
             formMethods={props.formMethods}
             displayedIndex={index}
             handleDelete={() => remove(index)}
-            baseObjectPathToActionOfForm={`actions.${index}`}
+            formIndex={index}
           />
         </Fragment>
       ))}
