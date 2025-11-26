@@ -11,6 +11,7 @@ export function AddScenarioButton(props: AddScenarioButtonProps) {
   return (
     <Button
       iconStart={<i className="ri-add-line" />}
+      variant="secondary"
       onClick={props.onNewScenario}
     >
       {t('scenarioTable.addScenarioButton')}
