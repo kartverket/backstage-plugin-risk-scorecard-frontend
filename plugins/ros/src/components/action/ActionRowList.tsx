@@ -1,6 +1,6 @@
 import { Action } from '../../utils/types.ts';
 import { ActionRow } from './ActionRow.tsx';
-import { useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { isToday } from '../../utils/date.ts';
 import { ActionStatusOptions } from '../../utils/constants.ts';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
@@ -150,7 +150,7 @@ export function ActionRowList(props: ActionRowListProps) {
     <Flex direction="column">
       <Divider />
       {actions.map((action, index) => (
-        <>
+        <Fragment key={`Action-${action.ID}-${index}`}>
           <ActionRow
             action={action}
             index={index}
@@ -170,7 +170,7 @@ export function ActionRowList(props: ActionRowListProps) {
             allowEdit={props.allowEdit}
           />
           <Divider />
-        </>
+        </Fragment>
       ))}
     </Flex>
   );
