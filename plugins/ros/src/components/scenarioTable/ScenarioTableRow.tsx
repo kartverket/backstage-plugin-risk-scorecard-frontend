@@ -152,7 +152,10 @@ export function ScenarioTableRow({
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
-  const highlightColor = theme.palette.mode === 'dark' ? '#A2A0A0' : '#FFDD9D';
+  const highlightColor =
+    theme.palette.mode === 'dark'
+      ? 'var(--ros-gray-300)'
+      : 'var(--ros-gray-100)';
   const isTextColorBlack =
     theme.palette.mode === 'dark'
       ? isScenarioHoveredFromRiskMatrix && !visibleType
