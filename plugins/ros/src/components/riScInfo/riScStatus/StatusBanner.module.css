@@ -1,0 +1,10 @@
+.boxStyle {
+    background-color: #FCEBCD;
+    padding: 8px 16px;
+    margin-top: 8px;
+    border-radius: 4px;
+}
+
+[data-theme-mode='dark'] .boxStyle {
+    background-color: var(--bui-gray-5);
+}
