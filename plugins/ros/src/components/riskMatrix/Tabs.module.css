@@ -22,3 +22,17 @@
 .tabButtonTextBase[data-selected='true'] {
   color: #ffffff;
 }
+
+[data-theme-mode='dark'] {
+  .riskMatrixButton {
+    border: 1px solid var(--ros-light-blue-200, transparent);
+  }
+  .tabButtonTextBase[data-selected='true'] {
+    color: var(--ros-gray-900);
+  }
+  .tabButtonTextBase {
+    text-align: center;
+    width: 100%;
+    color: var(--ros-light-blue-200);
+  }
+}
