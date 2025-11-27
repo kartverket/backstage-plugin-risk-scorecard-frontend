@@ -73,7 +73,10 @@ export function RiskMatrixScenarioCount({
   const isHighlightedFromExternal = scenarios.some(s =>
     hoveredScenarios.some(h => h.ID === s.ID),
   );
-  const highlightColor = theme.palette.mode === 'dark' ? '#A2A0A0' : '#FFDD9D';
+  const highlightColor =
+    theme.palette.mode === 'dark'
+      ? 'var(--ros-gray-300)'
+      : 'var(--ros-gray-100)';
 
   const tooltipList = (
     <List dense>
