@@ -85,6 +85,16 @@ export function getActionsWithUpdatedStatus(
   });
 }
 
+export function getUpdatedStatus(
+  action: Action,
+  numberOfCommitsOnRisc: number | null,
+) {
+  const daysSinceLastUpdate = action.lastUpdated
+    ? calculateDaysSince(new Date(action.lastUpdated))
+    : null;
+  return calculateUpdatedStatus(daysSinceLastUpdate, numberOfCommitsOnRisc);
+}
+
 export function getFilteredActions(
   actions: ActionWithUpdatedStatus[],
   searchMatches: Action[] | undefined,

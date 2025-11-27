@@ -1,9 +1,8 @@
-import { ActionBox } from './ActionBox';
 import { Fragment, useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { emptyAction } from '../../../contexts/ScenarioContext';
+import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
 import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
@@ -17,6 +16,7 @@ import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
 import { Text } from '@backstage/ui';
 import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
 import { filterActionsByRelevance } from '../../../utils/actions.ts';
+import { ActionRowList } from '../../action/ActionRowList.tsx';
 
 const RelevanceToggle = ({
   checked,
@@ -43,29 +43,18 @@ const RelevanceToggle = ({
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
   isEditing: boolean;
-  onSubmit: () => void;
-  setCurrentUpdatedActionIDs: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-export function ActionsSection({
-  formMethods,
-  isEditing,
-  onSubmit,
-  setCurrentUpdatedActionIDs,
-}: ActionSectionProps) {
+export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { scenario } = useScenario();
 
-  const { control, watch } = formMethods;
-  const { remove } = useFieldArray({
-    control,
-    name: 'actions',
-  });
-
+  const { watch } = formMethods;
   const currentActions = watch('actions');
+
   const [sortedActions, setSortedActions] = useState<Action[] | undefined>(
     undefined,
   );
-
   const { actionFilters, saveOnlyRelevantFilter } = useActionFiltersStorage();
   const sortActionsByRelevance = useSortActionsByRelevance();
 
@@ -114,22 +103,15 @@ export function ActionsSection({
         />
       </Box>
       {sortedActions !== undefined && sortedActions.length > 0 ? (
-        filterActionsByRelevance(
-          sortedActions,
-          actionFilters.showOnlyRelevant,
-        ).map(action => (
-          <Fragment key={action.ID}>
-            <Divider />
-            <ActionBox
-              action={action}
-              index={currentActions.findIndex(x => action.ID === x.ID)}
-              formMethods={formMethods}
-              remove={remove}
-              onSubmit={onSubmit}
-              setCurrentUpdatedActionIDs={setCurrentUpdatedActionIDs}
-            />
-          </Fragment>
-        ))
+        <ActionRowList
+          scenarioId={scenario.ID}
+          displayedActions={filterActionsByRelevance(
+            sortedActions,
+            actionFilters.showOnlyRelevant,
+          )}
+          allowDeletion
+          allowEdit
+        />
       ) : (
         <Text variant="body-large" style={{ fontStyle: 'italic' }}>
           {!currentActions || currentActions.length === 0
@@ -176,8 +158,9 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
           <ActionFormItem
             key={index}
             formMethods={props.formMethods}
-            index={index}
-            remove={remove}
+            displayedIndex={index}
+            handleDelete={() => remove(index)}
+            baseObjectPathToActionOfForm={`actions.${index}`}
           />
         </Fragment>
       ))}
