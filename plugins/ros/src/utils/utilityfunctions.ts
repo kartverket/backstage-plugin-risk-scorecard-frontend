@@ -10,7 +10,13 @@ import {
   latestSupportedVersion,
   riskMatrix,
 } from './constants';
-import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
+import {
+  RiSc,
+  RiScWithMetadata,
+  Risk,
+  Scenario,
+  SubmitResponseObject,
+} from './types';
 
 export function generateRandomId(): string {
   return [...Array(5)]
@@ -31,12 +37,19 @@ export function formatNOK(amount: number): string {
 
 export function getAlertSeverity(
   updateStatus: UpdateStatus,
+  response?: SubmitResponseObject,
 ): 'error' | 'success' | 'warning' {
   if (updateStatus.isSuccess) {
     return 'success';
   } else if (updateStatus.isError) {
     return 'error';
   }
+
+  if (response && typeof response.status === 'string') {
+    if (response.status.includes('Error')) return 'error';
+    return 'success';
+  }
+
   return 'warning';
 }
 

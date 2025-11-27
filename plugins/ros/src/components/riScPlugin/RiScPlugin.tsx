@@ -77,7 +77,7 @@ export function RiScPlugin() {
       {response && !updateStatus.isLoading && (
         <Flex className={styles.alertBarBox}>
           <AlertBar
-            severity={getAlertSeverity(updateStatus)}
+            severity={getAlertSeverity(updateStatus, response)}
             className={styles.alertBar}
           >
             <Text variant="body-large">{response.statusMessage}</Text>

@@ -229,7 +229,7 @@ export function ScenarioDrawer() {
               <Flex className={styles.alertBarBox}>
                 <AlertBar
                   className={styles.alertBar}
-                  severity={getAlertSeverity(updateStatus)}
+                  severity={getAlertSeverity(updateStatus, response)}
                 >
                   <Text variant="body-large">{response?.statusMessage}</Text>
                 </AlertBar>
