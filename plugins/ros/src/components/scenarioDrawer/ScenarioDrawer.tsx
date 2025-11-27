@@ -19,8 +19,6 @@ import { ActionsSection } from './components/ActionsSection';
 import { DeleteScenarioConfirmation } from './components/DeleteConfirmation';
 import RiskFormSection from './components/RiskFormSection';
 import ScopeFormSection from './components/ScopeFormSection';
-import { useCallback } from 'react';
-import { useDebounce } from '../../utils/hooks';
 import { Text, Flex } from '@backstage/ui';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import styles from '../common/alertBar.module.css';
@@ -65,40 +63,6 @@ export function ScenarioDrawer() {
     mode: 'onChange',
   });
 
-  const debounceCallback = useCallback(
-    (updatedIDs: string[]) => {
-      const indexOfAction = (ID: string) => {
-        return scenario.actions.findIndex(a => a.ID === ID);
-      };
-      if (updatedIDs.length === 0) return;
-
-      const formValues = formMethods.getValues();
-      const updatedScenario = {
-        ...scenario,
-        actions: scenario.actions.map(a =>
-          updatedIDs.includes(a.ID)
-            ? {
-                ...a,
-                status:
-                  formValues.actions?.[indexOfAction(a.ID)]?.status ?? a.status,
-              }
-            : a,
-        ),
-      };
-      submitEditedScenarioToRiSc(updatedScenario, {
-        idsOfActionsToForceUpdateLastUpdatedValue: updatedIDs,
-        profileInfo: profileInfo,
-      });
-      setCurrentUpdatedActionIDs([]);
-    },
-    [scenario, formMethods, submitEditedScenarioToRiSc, profileInfo],
-  );
-  const { flush } = useDebounce(
-    currentUpdatedActionIDs,
-    6000,
-    debounceCallback,
-  );
-
   function onCancel() {
     formMethods.reset(mapScenarioToFormScenario(scenario));
     setIsEditing(false);
@@ -115,7 +79,6 @@ export function ScenarioDrawer() {
     if (formMethods.formState.isDirty) {
       setShowCloseConfirmation(true);
     } else {
-      flush();
       closeScenarioForm();
       setIsEditing(false);
       collapseAllActions();
@@ -240,12 +203,7 @@ export function ScenarioDrawer() {
         </>
       )}
 
-      <ActionsSection
-        formMethods={formMethods}
-        isEditing={isEditing}
-        onSubmit={onSubmit}
-        setCurrentUpdatedActionIDs={setCurrentUpdatedActionIDs}
-      />
+      <ActionsSection formMethods={formMethods} isEditing={isEditing} />
       <Box
         sx={{
           display: 'flex',
