@@ -11,7 +11,7 @@ type Props = {
   alertProps?: Partial<AlertProps>;
 };
 
-export function AlertBar({ severity, children, className, alertProps }: Props) {
+function AlertBar({ severity, children, className, alertProps }: Props) {
   const severityClass = (styles as any)[severity] || '';
 
   return (

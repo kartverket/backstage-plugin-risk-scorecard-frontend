@@ -153,7 +153,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
           {stepComponents[step]}
 
           {response && (
-            <Alert severity={getAlertSeverity(updateStatus)}>
+            <Alert severity={getAlertSeverity(updateStatus, response)}>
               <Text variant="body-large">{response.statusMessage}</Text>
             </Alert>
           )}
