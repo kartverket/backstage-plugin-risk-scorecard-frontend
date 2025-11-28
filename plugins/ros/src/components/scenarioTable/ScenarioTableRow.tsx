@@ -19,13 +19,13 @@ import { Text, Flex, Card } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
 import { useDrag, useDrop } from 'react-dnd';
-import { ActionsCard } from './ActionsCard.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { useTheme } from '@mui/material/styles';
 import {
   getActionsWithUpdatedStatus,
   getFilteredActions,
 } from '../../utils/actions.ts';
+import { ActionRowList } from '../action/ActionRowList.tsx';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -152,7 +152,10 @@ export function ScenarioTableRow({
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
-  const highlightColor = theme.palette.mode === 'dark' ? '#A2A0A0' : '#FFDD9D';
+  const highlightColor =
+    theme.palette.mode === 'dark'
+      ? 'var(--ros-gray-300)'
+      : 'var(--ros-gray-100)';
   const isTextColorBlack =
     theme.palette.mode === 'dark'
       ? isScenarioHoveredFromRiskMatrix && !visibleType
@@ -311,10 +314,9 @@ export function ScenarioTableRow({
           of the current filters. */}
       {filteredActions.length > 0 && !isExpanded && (
         <div data-action-root>
-          <ActionsCard
-            filteredData={filteredActions}
-            scenario={scenario}
-            showUpdatedBadge={!!visibleType}
+          <ActionRowList
+            scenarioId={scenario.ID}
+            displayedActions={filteredActions}
           />
         </div>
       )}
@@ -322,11 +324,7 @@ export function ScenarioTableRow({
       {isExpanded && (
         <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           <div data-action-root>
-            <ActionsCard
-              filteredData={actionsWithUpdatedStatus}
-              scenario={scenario}
-              showUpdatedBadge={!!visibleType}
-            />
+            <ActionRowList scenarioId={scenario.ID} />
           </div>
         </Collapse>
       )}

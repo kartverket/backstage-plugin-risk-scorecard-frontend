@@ -11,7 +11,6 @@ export function CreateNewRiScButton(props: CreateNewRiScButtonProps) {
   return (
     <Button
       iconStart={<i className="ri-add-circle-line" />}
-      variant="tertiary"
       onClick={props.onCreateNew}
       style={{
         width: 'fit-content',

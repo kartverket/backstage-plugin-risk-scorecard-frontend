@@ -1,14 +1,13 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Box, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import InfoIcon from '@mui/icons-material/Info';
 import { useState } from 'react';
-import { useFontStyles } from '../../utils/style';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiSc } from '../../utils/types';
 import { formatNumber } from '../../utils/utilityfunctions';
 import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
-import { Flex, Text } from '@backstage/ui';
-import { useTheme } from '@mui/material/styles';
+import { Box, Flex, Text } from '@backstage/ui';
+import styles from './AggregatedCost.module.css';
 
 interface AggregatedCostProps {
   riSc: RiSc;
@@ -17,8 +16,6 @@ interface AggregatedCostProps {
 
 export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const theme = useTheme();
-  const { body2 } = useFontStyles();
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -32,18 +29,12 @@ export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
     .reduce((a, b) => a + b, 0);
 
   return (
-    <Box
-      style={{
-        backgroundColor:
-          theme.palette.mode === 'dark' ? 'var(--bui-gray-5)' : '#FCEBCD',
-        padding: '8px 16px',
-      }}
-    >
+    <Box className={styles.boxStyle}>
       <Text as="h3" variant="body-large" weight="bold">
         {t('riskMatrix.estimatedRisk.title')}
       </Text>
       <Flex align="center" gap="0">
-        <Text variant="body-large" className={body2}>
+        <Text variant="body-large">
           {formatNumber(cost, t)}{' '}
           {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
         </Text>
