@@ -24,7 +24,7 @@ export function ScenarioTableCard({
 }: ScenarioTableProps) {
   const riSc = riScWithMetadata.content;
   const { openNewScenarioWizard } = useScenario();
-  const { veryOutdatedCount, outdatedCount } =
+  const { veryOutdatedCount, outdatedCount, updatedCount } =
     computeStatusCount(riScWithMetadata);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -62,6 +62,7 @@ export function ScenarioTableCard({
           <OutdatedActionsCounts
             veryOutdatedCount={veryOutdatedCount}
             outdatedCount={outdatedCount}
+            updatedCount={updatedCount}
             onToggle={handleToggle}
             visibleType={visibleType}
           />

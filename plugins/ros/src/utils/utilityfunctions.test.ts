@@ -69,8 +69,8 @@ describe('calculateUpdatedStatus', () => {
   it('returns correct status when commits is null', () => {
     expect(calculateUpdatedStatus(0, null)).toBe(UpdatedStatusEnum.UPDATED);
     expect(calculateUpdatedStatus(5, null)).toBe(UpdatedStatusEnum.UPDATED);
-    expect(calculateUpdatedStatus(13, null)).toBe(UpdatedStatusEnum.UPDATED);
-    expect(calculateUpdatedStatus(14, null)).toBe(
+    expect(calculateUpdatedStatus(6, null)).toBe(UpdatedStatusEnum.UPDATED);
+    expect(calculateUpdatedStatus(7, null)).toBe(
       UpdatedStatusEnum.LITTLE_OUTDATED,
     );
     expect(calculateUpdatedStatus(20, null)).toBe(

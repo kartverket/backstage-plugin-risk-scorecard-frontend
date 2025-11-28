@@ -8,6 +8,7 @@ import { OutdatedActionsCountButton } from './components/OutdatedActionsCountBut
 type OutdatedActionsCountsProps = {
   veryOutdatedCount: number;
   outdatedCount: number;
+  updatedCount: number;
   onToggle: (type: UpdatedStatusEnumType) => void;
   visibleType: UpdatedStatusEnumType | null;
 };
@@ -28,6 +29,14 @@ export function OutdatedActionsCounts(props: OutdatedActionsCountsProps) {
           count={props.outdatedCount}
           onToggle={props.onToggle}
           isSelected={props.visibleType === UpdatedStatusEnum.OUTDATED}
+        />
+      )}
+      {props.updatedCount > 0 && (
+        <OutdatedActionsCountButton
+          type={UpdatedStatusEnum.UPDATED}
+          count={props.updatedCount}
+          onToggle={props.onToggle}
+          isSelected={props.visibleType === UpdatedStatusEnum.UPDATED}
         />
       )}
     </Flex>

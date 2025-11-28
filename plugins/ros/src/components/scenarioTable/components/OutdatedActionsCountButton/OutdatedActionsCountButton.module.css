@@ -108,3 +108,39 @@
     }
   }
 }
+
+.OutdatedActionsCountButton--updated {
+  color: var(--ros-updated-actions-badge);
+  background-color: transparent;
+  border: var(--border-size) solid var(--ros-updated-actions-badge);
+
+  .OutdatedActionsCountIndicator {
+    background-color: var(--ros-green-500);
+  }
+  &:hover {
+    color: var(--ros-green-500);
+    background-color: var(--ros-green-200);
+    border: var(--border-size) solid var(--ros-green-500);
+  }
+
+  &.OutdatedActionsCountButton--selected {
+    color: var(--ros-green-500);
+    background-color: var(--ros-green-100);
+    border: var(--border-size) solid var(--ros-green-500);
+
+    .OutdatedActionsCountCloseIcon {
+      color: var(--ros-green-500);
+    }
+
+    .OutdatedActionsCountIndicator {
+      background-color: var(--ros-green-300);
+    }
+
+    &:hover {
+      .OutdatedActionsCountCloseIcon {
+        background-color: var(--ros-green-300);
+        border-radius: 50%;
+      }
+    }
+  }
+}

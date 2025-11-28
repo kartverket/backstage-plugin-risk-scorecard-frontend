@@ -26,6 +26,8 @@ export function OutdatedActionsCountButton(
       props.type === UpdatedStatusEnum.VERY_OUTDATED,
     [styles['OutdatedActionsCountButton--outdated']]:
       props.type === UpdatedStatusEnum.OUTDATED,
+    [styles['OutdatedActionsCountButton--updated']]:
+      props.type === UpdatedStatusEnum.UPDATED,
   });
 
   const countIndicatorClassName = classNames(
@@ -49,19 +51,26 @@ export function OutdatedActionsCountButton(
     <i className={closeIndicatorClassName} />
   ) : undefined;
 
+  const translationKey = (() => {
+    if (props.type === UpdatedStatusEnum.VERY_OUTDATED) {
+      return 'filterButton.veryOutdated';
+    } else if (props.type === UpdatedStatusEnum.OUTDATED) {
+      return 'filterButton.outdated';
+    }
+    return 'filterButton.listUpdatedActions';
+  })();
+
   return (
     <Button
       className={className}
       size="medium"
       onClick={() => onToggle(props.type)}
-      iconStart={countIndicator}
+      iconStart={
+        props.type !== UpdatedStatusEnum.UPDATED ? countIndicator : undefined
+      }
       iconEnd={closeIndicator}
     >
-      {t(
-        props.type === UpdatedStatusEnum.VERY_OUTDATED
-          ? 'filterButton.veryOutdated'
-          : 'filterButton.outdated',
-      )}
+      {t(translationKey)}
     </Button>
   );
 }
