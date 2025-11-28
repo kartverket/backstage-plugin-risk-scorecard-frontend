@@ -28,7 +28,6 @@ import {
   RiSc,
   RiScWithMetadata,
   Scenario,
-  SubmitResponseObject,
 } from './types';
 import {
   calculateDaysSince,
@@ -79,28 +78,6 @@ export function useAuthenticatedFetch() {
     // URLS.backend.publishRiSc
     return `${riScUri}/publish/${id}`;
   }
-
-  function useResponse(): [
-    SubmitResponseObject | null,
-    (submitStatus: SubmitResponseObject | null) => void,
-  ] {
-    const [submitResponse, setSubmitResponse] =
-      useState<SubmitResponseObject | null>(null);
-    // use callback to avoid infinite loop
-    const displaySubmitResponse = useCallback(
-      (submitStatus: SubmitResponseObject | null) => {
-        setSubmitResponse(submitStatus);
-        setTimeout(() => {
-          setSubmitResponse(null);
-        }, 10000);
-      },
-      [],
-    );
-
-    return [submitResponse, displaySubmitResponse];
-  }
-
-  const [response, setResponse] = useResponse();
 
   const configApi = useApi(configApiRef);
 
@@ -288,7 +265,6 @@ export function useAuthenticatedFetch() {
         uriToPublishRiSc(riScId),
         'POST',
         res => {
-          setResponse(res);
           if (onSuccess) onSuccess(res);
         },
         (error, rejectedLogin) => {
@@ -312,7 +288,6 @@ export function useAuthenticatedFetch() {
         `${riScUri}?generateDefault=${generateDefault}`,
         'POST',
         res => {
-          setResponse(res);
           if (onSuccess) onSuccess(res);
         },
         (error, rejectedLogin) => {
@@ -336,7 +311,6 @@ export function useAuthenticatedFetch() {
         uriToFetchRiSc(riSc.id),
         'PUT',
         res => {
-          setResponse(res);
           if (onSuccess) onSuccess(res);
         },
         (error, rejectedLogin) => {
@@ -386,8 +360,6 @@ export function useAuthenticatedFetch() {
     putRiScs,
     deleteRiScs,
     publishRiScs,
-    response,
-    setResponse,
     fetchDifference,
     postFeedback,
     fetchDefaultRiScTypeDescriptors,
