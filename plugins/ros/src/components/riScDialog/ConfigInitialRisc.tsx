@@ -133,13 +133,17 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
                   <Text variant="body-medium" as="p">
                     {t('rosDialog.initialRiscScopeDescription')}
                   </Text>
-                  <Switch
-                    isSelected={props.switchOn}
-                    onChange={onCreateDefaultRiScSwitchChange}
-                    label={
-                      props.switchOn ? t('dictionary.yes') : t('dictionary.no')
-                    }
-                  />
+                  <Box pt="2">
+                    <Switch
+                      isSelected={props.switchOn}
+                      onChange={onCreateDefaultRiScSwitchChange}
+                      label={
+                        props.switchOn
+                          ? t('dictionary.yes')
+                          : t('dictionary.no')
+                      }
+                    />
+                  </Box>
                 </Box>
                 <Flex direction="column" justify="between" mt="2" gap="2">
                   <Text
