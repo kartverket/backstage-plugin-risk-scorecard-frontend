@@ -55,6 +55,10 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-risc-status-not-published: var(--ros-orange-400);
   --ros-risc-status-error: var(--ros-red-700);
 
+  --ros-action-updated-status-updated: var(--ros-green-500);
+  --ros-action-updated-status-very-outdated: var(--ros-red-500);
+  --ros-action-updated-status-outdated: var(--ros-orange-300);
+
   --ros-input-text-color: #757575;
   --ros-input-disabledBackground: rgba(0, 0, 0, 0.12);
 
@@ -84,6 +88,9 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-risc-status-very-outdated: var(--ros-red-300);
   --ros-risc-status-not-published: var(--ros-orange-100);
   --ros-risc-status-error: var(--ros-red-700);
+
+  --ros-action-updated-status-updated: var(--ros-green-200);
+  --ros-action-updated-status-outdated: var(--ros-orange-200);
 
   --ros-input-text-color: #ffffff80;
   --ros-input-disabledBackground: rgba(255, 255, 255, 0.12);

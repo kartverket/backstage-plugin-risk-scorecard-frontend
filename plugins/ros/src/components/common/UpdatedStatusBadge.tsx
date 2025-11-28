@@ -1,5 +1,4 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Text } from '@backstage/ui';
 import { Tooltip } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import {
@@ -19,41 +18,22 @@ export default function UpdatedStatusBadge({
 }: Props) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  let ariaLabel: string | undefined;
-  if (isPending) {
-    ariaLabel = t('rosStatus.updated');
-  } else if (status === UpdatedStatusEnum.VERY_OUTDATED) {
-    ariaLabel = t('rosStatus.veryOutdated');
-  } else if (status === UpdatedStatusEnum.OUTDATED) {
-    ariaLabel = t('rosStatus.outdated');
-  } else {
-    ariaLabel = undefined;
-  }
-
   if (isPending) {
     return (
-      <span
-        className={`${styles.badge} ${styles.pending}`}
-        aria-label={ariaLabel}
-      >
-        <Text as="p" className={styles.text}>
-          {t('rosStatus.updated')}
-        </Text>
-      </span>
+      <i
+        className={`ri-checkbox-circle-fill ${styles.updatedIcon}`}
+        aria-label={t('rosStatus.updated')}
+      />
     );
   }
 
   if (status === UpdatedStatusEnum.VERY_OUTDATED) {
     return (
       <Tooltip title={t('rosStatus.updatedStatus.tooltip.VERY_OUTDATED')}>
-        <span
-          className={`${styles.badge} ${styles.veryOutdated}`}
-          aria-label={ariaLabel}
-        >
-          <Text as="p" className={styles.text}>
-            {t('rosStatus.veryOutdated')}
-          </Text>
-        </span>
+        <i
+          className={`ri-error-warning-fill ${styles.veryOutdatedIcon}`}
+          aria-label={t('rosStatus.veryOutdated')}
+        />
       </Tooltip>
     );
   }
@@ -61,16 +41,12 @@ export default function UpdatedStatusBadge({
   if (status === UpdatedStatusEnum.OUTDATED) {
     return (
       <Tooltip title={t('rosStatus.updatedStatus.tooltip.OUTDATED')}>
-        <span
-          className={`${styles.badge} ${styles.outdated}`}
-          aria-label={ariaLabel}
-        >
-          <Text as="p" className={styles.text}>
-            {t('rosStatus.outdated')}
-          </Text>
-        </span>
+        <i
+          className={`ri-error-warning-fill ${styles.outdatedIcon}`}
+          aria-label={t('rosStatus.outdated')}
+        />
       </Tooltip>
     );
   }
-  return null;
+  return <i className={`ri-error-warning-fill ${styles.emptyIcon}`} />;
 }
