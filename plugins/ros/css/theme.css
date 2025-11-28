@@ -87,4 +87,8 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
 
   --ros-input-text-color: #ffffff80;
   --ros-input-disabledBackground: rgba(255, 255, 255, 0.12);
+
+  .bui-SwitchIndicator {
+    background-color: var(--bui-gray-6);
+  }
 }
