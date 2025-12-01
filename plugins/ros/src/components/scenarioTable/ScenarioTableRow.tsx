@@ -26,6 +26,7 @@ import {
   getFilteredActions,
 } from '../../utils/actions.ts';
 import { ActionRowList } from '../action/ActionRowList.tsx';
+import { usePrevious } from '../../utils/hooks.ts';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -129,6 +130,7 @@ export function ScenarioTableRow({
     actionIdsOfVisibleType,
     visibleType,
   );
+  const prevFilteredActions = usePrevious(filteredActions);
 
   useEffect(() => {
     if (visibleType || isExpanded) {
@@ -163,6 +165,25 @@ export function ScenarioTableRow({
   const textColorAsBuiVariable = isTextColorBlack
     ? 'var(--bui-black)'
     : 'var(--bui-white)';
+
+  useEffect(() => {
+    if (
+      (prevFilteredActions === undefined || prevFilteredActions.length === 0) &&
+      filteredActions.length > 0
+    ) {
+      // User has activated some filter
+      setIsExpanded(true);
+    }
+
+    if (
+      prevFilteredActions &&
+      prevFilteredActions.length > 0 &&
+      filteredActions.length === 0
+    ) {
+      // User has deactivated filter
+      setIsExpanded(false);
+    }
+  }, [filteredActions]);
 
   return (
     <Card
@@ -312,22 +333,16 @@ export function ScenarioTableRow({
       {/* If there are filtered actions (search or updated badge), show them as before.
           If the user expands the row, show all actions for the scenario regardless
           of the current filters. */}
-      {filteredActions.length > 0 && !isExpanded && (
+      <Collapse in={isExpanded} timeout="auto" unmountOnExit>
         <div data-action-root>
           <ActionRowList
             scenarioId={scenario.ID}
-            displayedActions={filteredActions}
+            displayedActions={
+              filteredActions.length > 0 ? filteredActions : scenario.actions
+            }
           />
         </div>
-      )}
-
-      {isExpanded && (
-        <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-          <div data-action-root>
-            <ActionRowList scenarioId={scenario.ID} />
-          </div>
-        </Collapse>
-      )}
+      </Collapse>
     </Card>
   );
 }
