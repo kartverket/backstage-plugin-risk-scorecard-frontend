@@ -263,6 +263,7 @@ export const pluginRiScMessages = {
     },
     editButton: 'Edit list',
     doneEditing: 'Finish editing',
+    noActionsLong: 'The scenario has no actions',
   },
   riskMatrix: {
     title: 'Risk matrix', // Risk matrix or Risk overview
@@ -887,6 +888,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioTable.columns.completed': 'fullført',
           'scenarioTable.editButton': 'Rediger liste',
           'scenarioTable.doneEditing': 'Avslutt redigering',
+          'scenarioTable.noActionsLong': 'Scenarioet har ingen tiltak',
 
           'riskMatrix.title': 'Risikomatrise',
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',
