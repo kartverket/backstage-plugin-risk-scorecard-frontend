@@ -183,7 +183,7 @@ export function ScenarioTableRow({
       // User has deactivated filter
       setIsExpanded(false);
     }
-  }, [filteredActions]);
+  }, [filteredActions, prevFilteredActions]);
 
   return (
     <Card
