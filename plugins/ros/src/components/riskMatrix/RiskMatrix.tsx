@@ -4,7 +4,7 @@ import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
 import { RiScWithMetadata } from '../../utils/types';
 import { MatrixTabs } from './Tabs';
-import { riskMatrix } from '../../utils/constants';
+import { riskMatrix, riskMatrixStroke } from '../../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useFontStyles } from '../../utils/style';
@@ -73,7 +73,12 @@ export function RiskMatrix({
                 {row.map((col, colIndex) => (
                   <Box
                     className={`${square} ${centered}`}
-                    style={{ backgroundColor: col }}
+                    style={{
+                      backgroundColor: col,
+                      borderStyle: 'solid',
+                      borderColor: riskMatrixStroke[rowIndex][colIndex],
+                      borderWidth: '1px',
+                    }}
                     key={colIndex}
                   >
                     <RiskMatrixScenarioCount
