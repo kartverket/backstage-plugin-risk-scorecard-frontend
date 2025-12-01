@@ -1,11 +1,38 @@
-.tabLabel {
-  letter-spacing: 0;
-}
-
 .tab {
   background-color: transparent;
 }
 
 .riskMatrixDialog {
   padding: 16px;
+}
+
+.riskMatrixButton {
+  display: flex;
+  padding: 20px 0;
+  flex: 1;
+  border-radius: 24px;
+  border: 1px solid var(--ros-blue-600, transparent);
+}
+.tabButtonTextBase {
+  text-align: center;
+  width: 100%;
+  color: var(--ros-blue-600);
+}
+
+.tabButtonTextBase[data-selected='true'] {
+  color: #ffffff;
+}
+
+[data-theme-mode='dark'] {
+  .riskMatrixButton {
+    border: 1px solid var(--ros-light-blue-200, transparent);
+  }
+  .tabButtonTextBase[data-selected='true'] {
+    color: var(--ros-gray-900);
+  }
+  .tabButtonTextBase {
+    text-align: center;
+    width: 100%;
+    color: var(--ros-light-blue-200);
+  }
 }

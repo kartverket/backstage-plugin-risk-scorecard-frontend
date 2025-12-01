@@ -10,7 +10,13 @@ import {
   latestSupportedVersion,
   riskMatrix,
 } from './constants';
-import { RiSc, RiScWithMetadata, Risk, Scenario } from './types';
+import {
+  RiSc,
+  RiScWithMetadata,
+  Risk,
+  Scenario,
+  SubmitResponseObject,
+} from './types';
 
 export function generateRandomId(): string {
   return [...Array(5)]
@@ -19,6 +25,31 @@ export function generateRandomId(): string {
       return Math.random() < 0.5 ? randomChar.toUpperCase() : randomChar;
     })
     .join('');
+}
+
+/**
+ * Gets value from a nested object based on input path to the value.
+ * Example:
+ * {
+ *   test: {
+ *      somethings: [
+ *       {
+ *         title: 'Test1',
+ *         name: 'Name1',
+ *       },
+ *       ...
+ *     ]
+ *   }
+ * }
+ * getValue(theObjectFromAbove, 'test.somethings.0.title') => 'Test1'
+ *
+ * @param obj Object to get value from
+ * @param path Path to value
+ */
+export function getValue(obj: any, path: string) {
+  return path.split('.').reduce((prev, curr) => {
+    return prev?.[curr];
+  }, obj);
 }
 
 const formatter = new Intl.NumberFormat('nb-NO', {
@@ -31,12 +62,19 @@ export function formatNOK(amount: number): string {
 
 export function getAlertSeverity(
   updateStatus: UpdateStatus,
+  response?: SubmitResponseObject,
 ): 'error' | 'success' | 'warning' {
   if (updateStatus.isSuccess) {
     return 'success';
   } else if (updateStatus.isError) {
     return 'error';
   }
+
+  if (response && typeof response.status === 'string') {
+    if (response.status.includes('Error')) return 'error';
+    return 'success';
+  }
+
   return 'warning';
 }
 
