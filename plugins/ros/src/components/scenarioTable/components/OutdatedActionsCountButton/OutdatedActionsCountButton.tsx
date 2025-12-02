@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../../utils/translations.ts';
-import { Box, Button } from '@backstage/ui';
+import { Button } from '@backstage/ui';
 import {
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
@@ -30,18 +30,6 @@ export function OutdatedActionsCountButton(
       props.type === UpdatedStatusEnum.UPDATED,
   });
 
-  const countIndicatorClassName = classNames(
-    styles.OutdatedActionsCountIndicator,
-    {
-      [styles['OutdatedActionsCountIndicator--wide']]: props.count > 99,
-    },
-  );
-  const countIndicator = (
-    <Box className={countIndicatorClassName}>
-      <span>{props.count}</span>
-    </Box>
-  );
-
   const closeIndicatorClassName = classNames(
     styles.OutdatedActionsCountCloseIcon,
     'ri-close-line ri-lg',
@@ -65,12 +53,9 @@ export function OutdatedActionsCountButton(
       className={className}
       size="medium"
       onClick={() => onToggle(props.type)}
-      iconStart={
-        props.type !== UpdatedStatusEnum.UPDATED ? countIndicator : undefined
-      }
       iconEnd={closeIndicator}
     >
-      {t(translationKey)}
+      {t(translationKey)} ({props.count})
     </Button>
   );
 }
