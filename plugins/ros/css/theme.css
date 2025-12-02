@@ -18,6 +18,7 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
 
   --ros-blue-600: #1f5492;
 
+  --ros-red-50: #fcf1e8;
   --ros-red-100: #ffe2d4;
   --ros-red-200: #ebb095;
   --ros-red-300: #e58869;
@@ -55,6 +56,27 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-risc-status-not-published: var(--ros-orange-400);
   --ros-risc-status-error: var(--ros-red-700);
 
+  /*--------Custom updated/outdated styles---------*/
+  --ros-very-outdated: var(--ros-red-600);
+  --ros-very-outdated-hover: var(--ros-red-50);
+  --ros-very-outdated-hover-text: var(--ros-red-600);
+  --ros-very-outdated-selected-text: var(--bui-white);
+  --ros-very-outdated-selected-bg: var(--ros-red-600);
+
+  --ros-outdated: var(--ros-orange-400);
+  --ros-outdated-hover-bg: var(--ros-orange-50);
+  --ros-outdated-hover-text: var(--ros-orange-400);
+  --ros-outdated-selected-bg: var(--ros-orange-300);
+  --ros-outdated-selected-border: transparent;
+  --ros-outdated-selected-text: var(--bui-white);
+
+  --ros-updated: var(--ros-green-500);
+  --ros-updated-hover: var(--ros-green-500);
+  --ros-updated-hover-bg: var(--ros-green-100);
+  --ros-updated-selected-text: var(--bui-white);
+  --ros-updated-selected-bg: var(--ros-green-500);
+  --ros-updated-selected-border: var(--ros-green-500);
+
   --ros-input-text-color: #757575;
   --ros-input-disabledBackground: rgba(0, 0, 0, 0.12);
 
@@ -79,11 +101,29 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
 /* Dark mode custom styles can be added here */
 [data-theme-mode='dark'] {
   --ros-risc-status-updated: var(--ros-green-200);
-  --ros-risc-status-little-outdated: var(--ros-orange-400);
-  --ros-risc-status-outdated: var(--ros-red-700);
   --ros-risc-status-very-outdated: var(--ros-red-300);
   --ros-risc-status-not-published: var(--ros-orange-100);
-  --ros-risc-status-error: var(--ros-red-700);
+
+  /* Dark mode custom styles for outdate/updated badges */
+  --ros-very-outdated: var(--ros-red-200);
+  --ros-very-outdated-hover: transparent;
+  --ros-very-outdated-hover-text: var(--ros-red-300);
+  --ros-very-outdated-selected-bg: var(--ros-red-200);
+  --ros-very-outdated-selected-text: var(--ros-gray-700);
+
+  --ros-outdated: var(--ros-orange-100);
+  --ros-outdated-hover-bg: transparent;
+  --ros-outdated-hover: var(--ros-orange-200);
+  --ros-outdated-selected: var(--ros-orange-100);
+  --ros-outdated-selected-text: var(--ros-gray-700);
+  --ros-outdated-selected-border: var(--ros-gray-700);
+
+  --ros-updated: var(--ros-green-200);
+  --ros-updated-hover: var(--ros-green-300);
+  --ros-updated-hover-bg: transparent;
+  --ros-updated-selected-text: var(--ros-gray-700);
+  --ros-updated-selected-bg: var(--ros-green-200);
+  --ros-updated-selected-border: var(--ros-green-200);
 
   --ros-input-text-color: #ffffff80;
   --ros-input-disabledBackground: rgba(255, 255, 255, 0.12);

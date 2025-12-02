@@ -2,7 +2,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Collapse, IconButton } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { useState, useRef, useEffect, MouseEvent } from 'react';
+import { useState, useRef, useEffect, useMemo, MouseEvent } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { Scenario } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
@@ -121,15 +121,29 @@ export function ScenarioTableRow({
     }),
   }));
 
-  const actionsWithUpdatedStatus = getActionsWithUpdatedStatus(
-    scenario.actions,
-    riSc?.lastPublished?.numberOfCommits || null,
+  const actionsWithUpdatedStatus = useMemo(
+    () =>
+      getActionsWithUpdatedStatus(
+        scenario.actions,
+        riSc?.lastPublished?.numberOfCommits || null,
+      ),
+    [scenario.actions, riSc?.lastPublished?.numberOfCommits],
   );
-  const filteredActions = getFilteredActions(
-    actionsWithUpdatedStatus,
-    searchMatches,
-    actionIdsOfVisibleType,
-    visibleType,
+
+  const filteredActions = useMemo(
+    () =>
+      getFilteredActions(
+        actionsWithUpdatedStatus,
+        searchMatches,
+        actionIdsOfVisibleType,
+        visibleType,
+      ),
+    [
+      actionsWithUpdatedStatus,
+      searchMatches,
+      actionIdsOfVisibleType,
+      visibleType,
+    ],
   );
 
   useEffect(() => {
