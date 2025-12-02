@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../../utils/translations.ts';
-import { Box, Button } from '@backstage/ui';
+import { Button } from '@backstage/ui';
 import {
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
@@ -26,19 +26,9 @@ export function OutdatedActionsCountButton(
       props.type === UpdatedStatusEnum.VERY_OUTDATED,
     [styles['OutdatedActionsCountButton--outdated']]:
       props.type === UpdatedStatusEnum.OUTDATED,
+    [styles['OutdatedActionsCountButton--updated']]:
+      props.type === UpdatedStatusEnum.UPDATED,
   });
-
-  const countIndicatorClassName = classNames(
-    styles.OutdatedActionsCountIndicator,
-    {
-      [styles['OutdatedActionsCountIndicator--wide']]: props.count > 99,
-    },
-  );
-  const countIndicator = (
-    <Box className={countIndicatorClassName}>
-      <span>{props.count}</span>
-    </Box>
-  );
 
   const closeIndicatorClassName = classNames(
     styles.OutdatedActionsCountCloseIcon,
@@ -49,19 +39,23 @@ export function OutdatedActionsCountButton(
     <i className={closeIndicatorClassName} />
   ) : undefined;
 
+  const translationKey = (() => {
+    if (props.type === UpdatedStatusEnum.VERY_OUTDATED) {
+      return 'filterButton.veryOutdated';
+    } else if (props.type === UpdatedStatusEnum.OUTDATED) {
+      return 'filterButton.outdated';
+    }
+    return 'filterButton.listUpdatedActions';
+  })();
+
   return (
     <Button
       className={className}
-      size="medium"
+      size="small"
       onClick={() => onToggle(props.type)}
-      iconStart={countIndicator}
       iconEnd={closeIndicator}
     >
-      {t(
-        props.type === UpdatedStatusEnum.VERY_OUTDATED
-          ? 'filterButton.veryOutdated'
-          : 'filterButton.outdated',
-      )}
+      {t(translationKey)} ({props.count})
     </Button>
   );
 }

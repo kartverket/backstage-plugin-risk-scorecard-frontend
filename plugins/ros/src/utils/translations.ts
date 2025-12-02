@@ -618,6 +618,7 @@ export const pluginRiScMessages = {
     veryOutdated: 'Actions are very outdated',
     outdated: 'Actions are outdated',
     seeActions: 'See all outdated actions',
+    listUpdatedActions: 'Recently updated actions',
   },
   firstRiScCard: {
     noRiScYet: 'No RiSc analyses created yet',
@@ -1227,9 +1228,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'feedbackDialog.feedbackButton': 'Gi tilbakemelding',
           'feedbackDialog.errorMessage': 'Kunne ikke sende tilbakemelding.',
           'feedbackDialog.sendButton': 'Send',
-          'filterButton.veryOutdated': 'Tiltak er veldig utdatert',
-          'filterButton.outdated': 'Tiltak er utdatert',
           'filterButton.seeActions': 'Se alle utdaterte tiltak',
+          'filterButton.veryOutdated': 'Veldig utdaterte tiltak',
+          'filterButton.outdated': 'Utdaterte tiltak',
+          'filterButton.listUpdatedActions': 'Nylig oppdaterte tiltak',
           'firstRiScCard.noRiScYet': 'Ingen RoS-analyser opprettet enda',
           'firstRiScCard.getStarted':
             'Kom igang med risiko- og sårbarhetsanalyse for ditt team',
