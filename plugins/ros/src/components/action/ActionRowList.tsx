@@ -4,13 +4,16 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 import { isToday } from '../../utils/date.ts';
 import { ActionStatusOptions } from '../../utils/constants.ts';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
-import { Flex } from '@backstage/ui';
+import { Flex, Text } from '@backstage/ui';
 import Divider from '@mui/material/Divider';
 import { useDebounce } from '../../utils/hooks.ts';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import { UpdatedStatusEnum } from '../../utils/utilityfunctions.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { getScenarioOfIdFromRiSc } from '../../utils/scenario.ts';
+import styles from './ActionRowList.module.css';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 
 type ActionRowListProps = {
   scenarioId: string;
@@ -20,6 +23,7 @@ type ActionRowListProps = {
 };
 
 export function ActionRowList(props: ActionRowListProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc } = useRiScs();
   const { submitEditedScenarioToRiSc } = useScenario();
   const { profileInfo } = useBackstageContext();
@@ -145,6 +149,17 @@ export function ActionRowList(props: ActionRowListProps) {
       flush();
     };
   }, [flush]);
+
+  if (actions.length === 0) {
+    return (
+      <Flex align="center" direction="column">
+        <Divider flexItem />
+        <Text className={styles.noActionsText}>
+          {t('scenarioTable.noActionsLong')}
+        </Text>
+      </Flex>
+    );
+  }
 
   return (
     <Flex direction="column">

@@ -1,5 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Collapse, IconButton, Paper } from '@material-ui/core';
+import { Collapse, IconButton } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useState, useRef, useEffect, MouseEvent } from 'react';
@@ -8,9 +8,10 @@ import { Scenario } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
   deleteScenario,
+  findConsequenceIndex,
+  findProbabilityIndex,
   getConsequenceLevel,
   getProbabilityLevel,
-  getRiskMatrixColor,
   UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
@@ -27,6 +28,7 @@ import {
 } from '../../utils/actions.ts';
 import { ActionRowList } from '../action/ActionRowList.tsx';
 import { usePrevious } from '../../utils/hooks.ts';
+import { RiskMatrixSquare } from '../riskMatrix/RiskMatrixSquare.tsx';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -55,7 +57,7 @@ export function ScenarioTableRow({
 }: ScenarioTableRowProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const theme = useTheme();
-  const { tableCard, tableCardNoHover, riskColor } = useTableStyles();
+  const { tableCard, tableCardNoHover } = useTableStyles();
 
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
   const { hoveredScenarios, setHoveredScenarios } = useScenario();
@@ -221,6 +223,13 @@ export function ScenarioTableRow({
       }}
     >
       <Flex align="center">
+        {isEditing && allowDrag && (
+          <IconButton size="small" ref={drag}>
+            <DragIndicatorIcon
+              sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            />
+          </IconButton>
+        )}
         <IconButton
           size="medium"
           data-action-root
@@ -236,13 +245,6 @@ export function ScenarioTableRow({
             <i className="ri-arrow-right-s-line" />
           )}
         </IconButton>
-        {isEditing && allowDrag && (
-          <IconButton size="small" ref={drag}>
-            <DragIndicatorIcon
-              sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-            />
-          </IconButton>
-        )}
         <Text
           as="p"
           variant="body-large"
@@ -252,11 +254,10 @@ export function ScenarioTableRow({
           {scenario.title}
         </Text>
         <Flex align="center" justify="start" style={{ width: '15%' }}>
-          <Paper
-            className={riskColor}
-            style={{
-              backgroundColor: getRiskMatrixColor(scenario.risk),
-            }}
+          <RiskMatrixSquare
+            size="small"
+            probability={findProbabilityIndex(scenario.risk.probability)}
+            consequence={findConsequenceIndex(scenario.risk.consequence)}
           />
           <Text variant="body-medium" style={{ color: textColorAsBuiVariable }}>
             {t('scenarioTable.columns.probabilityChar')}:
@@ -297,11 +298,14 @@ export function ScenarioTableRow({
           })()}
         </Flex>
         <Flex align="center" style={{ width: '15%' }}>
-          <Paper
-            className={riskColor}
-            style={{
-              backgroundColor: getRiskMatrixColor(scenario.remainingRisk),
-            }}
+          <RiskMatrixSquare
+            size="small"
+            probability={findProbabilityIndex(
+              scenario.remainingRisk.probability,
+            )}
+            consequence={findConsequenceIndex(
+              scenario.remainingRisk.consequence,
+            )}
           />
           <Text
             variant="body-medium"
