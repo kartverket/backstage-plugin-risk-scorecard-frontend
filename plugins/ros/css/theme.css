@@ -118,7 +118,7 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-outdated-selected-text: var(--ros-gray-700);
   --ros-outdated-selected-border: var(--ros-gray-700);
 
-  --ros-updated-badge: var(--ros-green-200);
+  --ros-updated: var(--ros-green-200);
   --ros-updated-hover: var(--ros-green-300);
   --ros-updated-hover-bg: transparent;
   --ros-updated-selected-text: var(--ros-gray-700);
