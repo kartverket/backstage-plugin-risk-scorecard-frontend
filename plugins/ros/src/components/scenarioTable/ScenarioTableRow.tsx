@@ -214,6 +214,13 @@ export function ScenarioTableRow({
       }}
     >
       <Flex align="center">
+        {isEditing && allowDrag && (
+          <IconButton size="small" ref={drag}>
+            <DragIndicatorIcon
+              sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            />
+          </IconButton>
+        )}
         <IconButton
           size="medium"
           data-action-root
@@ -229,13 +236,6 @@ export function ScenarioTableRow({
             <i className="ri-arrow-right-s-line" />
           )}
         </IconButton>
-        {isEditing && allowDrag && (
-          <IconButton size="small" ref={drag}>
-            <DragIndicatorIcon
-              sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-            />
-          </IconButton>
-        )}
         <Text
           as="p"
           variant="body-large"
