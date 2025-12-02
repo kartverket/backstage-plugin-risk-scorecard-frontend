@@ -14,7 +14,7 @@ type OutdatedActionsCountsProps = {
 };
 export function OutdatedActionsCounts(props: OutdatedActionsCountsProps) {
   return (
-    <Flex mb="24px">
+    <Flex mb="24px" style={{ flexWrap: 'wrap' }}>
       {props.veryOutdatedCount > 0 && (
         <OutdatedActionsCountButton
           type={UpdatedStatusEnum.VERY_OUTDATED}

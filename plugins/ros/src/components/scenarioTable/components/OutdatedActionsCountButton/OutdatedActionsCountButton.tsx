@@ -51,7 +51,7 @@ export function OutdatedActionsCountButton(
   return (
     <Button
       className={className}
-      size="medium"
+      size="small"
       onClick={() => onToggle(props.type)}
       iconEnd={closeIndicator}
     >
