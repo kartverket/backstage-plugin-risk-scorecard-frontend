@@ -1,15 +1,15 @@
 .squareWithRiScCount {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: 1;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10%;
 }
 
 .smallSquare {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
 }
