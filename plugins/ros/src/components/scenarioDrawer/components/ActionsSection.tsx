@@ -42,12 +42,14 @@ const RelevanceToggle = ({
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
   isEditing: boolean;
+  allowDeletion?: boolean;
 };
 
 export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { scenario, showDeleteIcons, setShowDeleteIcons } = useScenario();
+  const { scenario } = useScenario();
 
+  const [allowActionDeletion, setActionDeletion] = useState<boolean>(false);
   const { watch } = formMethods;
   const currentActions = watch('actions');
 
@@ -96,19 +98,19 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
           <TooltipTrigger>
             <Button
               iconStart={
-                showDeleteIcons ? (
+                allowActionDeletion ? (
                   <i className="ri-checkbox-circle-line" />
                 ) : (
                   <i className="ri-pencil-line" />
                 )
               }
               variant="secondary"
-              onClick={() => setShowDeleteIcons(prev => !prev)}
+              onClick={() => setActionDeletion(prev => !prev)}
             >
-              {showDeleteIcons}
+              {allowActionDeletion}
             </Button>
             <Tooltip>
-              {showDeleteIcons
+              {allowActionDeletion
                 ? t('scenarioTable.doneEditing')
                 : t('scenarioTable.editButton')}
             </Tooltip>
@@ -122,7 +124,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
             sortedActions,
             actionFilters.showOnlyRelevant,
           )}
-          allowDeletion
+          allowDeletion={allowActionDeletion}
           allowEdit
         />
       ) : (

@@ -66,9 +66,6 @@ type ScenarioDrawerProps = {
   hoveredScenarios: Scenario[];
   setHoveredScenarios: Dispatch<SetStateAction<Scenario[]>>;
 
-  showDeleteIcons: boolean;
-  setShowDeleteIcons: Dispatch<SetStateAction<boolean>>;
-
   emptyFormScenario: (scenario: Scenario) => FormScenario;
   scenario: Scenario;
   submitNewScenario: (
@@ -129,8 +126,6 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
     [key: string]: boolean;
   }>({});
 
-  const [showDeleteIcons, setShowDeleteIcons] = useState(false);
-
   function toggleActionExpanded(actionId: string) {
     setExpandedActions(prevState => ({
       ...prevState,
@@ -179,7 +174,6 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
         setIsDrawerOpen(false);
-        setShowDeleteIcons(false);
         const s = emptyScenario();
 
         setScenario(s);
@@ -218,7 +212,6 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
   function closeScenarioForm() {
     if (riSc) {
-      setShowDeleteIcons(false);
       navigate(getRiScPath({ riScId: riSc.id }));
     }
   }
@@ -347,9 +340,6 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
     hoveredScenarios,
     setHoveredScenarios,
-
-    showDeleteIcons,
-    setShowDeleteIcons,
 
     emptyFormScenario,
     scenario,

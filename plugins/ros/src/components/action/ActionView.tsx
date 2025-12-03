@@ -48,8 +48,7 @@ const getActionStatusButtonClass = (status: string): string => {
 
 export function ActionView(props: ActionViewProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { isActionExpanded, toggleActionExpanded, showDeleteIcons } =
-    useScenario();
+  const { isActionExpanded, toggleActionExpanded } = useScenario();
   const isExpanded = isActionExpanded(props.action.ID);
 
   const { selectedRiSc } = useRiScs();
@@ -144,7 +143,7 @@ export function ActionView(props: ActionViewProps) {
               }
               lastUpdatedBy={props.action.lastUpdatedBy}
             />
-            {props.allowDeletion && showDeleteIcons && (
+            {props.allowDeletion && (
               <IconButton
                 onClick={e => {
                   e.stopPropagation();
