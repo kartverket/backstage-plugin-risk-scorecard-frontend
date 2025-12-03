@@ -179,6 +179,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       // If there is no scenario ID in the URL, close the drawer and reset the scenario to an empty state
       if (!scenarioIdFromParams) {
         setIsDrawerOpen(false);
+        setShowDeleteIcons(false);
         const s = emptyScenario();
 
         setScenario(s);
@@ -217,6 +218,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
   function closeScenarioForm() {
     if (riSc) {
+      setShowDeleteIcons(false);
       navigate(getRiScPath({ riScId: riSc.id }));
     }
   }
