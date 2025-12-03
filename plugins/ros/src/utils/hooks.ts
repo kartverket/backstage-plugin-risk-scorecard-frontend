@@ -541,3 +541,18 @@ export function useSearchActions(
 
   return { matches: returnedMatches, isDebouncing };
 }
+
+/**
+ * When a value is changed from a to b, usePrevious will return a.
+ * It returns the previous value of some variable.
+ * @param value
+ */
+export function usePrevious<T>(value: T): T | undefined {
+  const ref = useRef<T>();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}

@@ -184,7 +184,7 @@ export function ActionRowList(props: ActionRowListProps) {
             allowDeletion={props.allowDeletion}
             allowEdit={props.allowEdit}
           />
-          <Divider />
+          {index < actions.length - 1 && <Divider />}
         </Fragment>
       ))}
     </Flex>
