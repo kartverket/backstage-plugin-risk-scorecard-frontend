@@ -1,6 +1,5 @@
 import { Fragment, useState } from 'react';
 import Box from '@mui/material/Box';
-import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount';
 import { AggregatedCost } from './AggregatedCost';
 import { RiScWithMetadata } from '../../utils/types';
 import { MatrixTabs } from './Tabs';
@@ -11,6 +10,7 @@ import { useFontStyles } from '../../utils/style';
 import { useRiskMatrixStyles } from './riskMatrixStyle';
 import { RiskMatrixTabs } from './utils';
 import { Card, CardBody, CardHeader, Text } from '@backstage/ui';
+import { RiskMatrixSquare } from './RiskMatrixSquare.tsx';
 
 export function RiskMatrix({
   riScWithMetadata,
@@ -19,15 +19,8 @@ export function RiskMatrix({
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { label2 } = useFontStyles();
-  const {
-    grid,
-    gridWrapper,
-    konsekvens,
-    sannsynlighet,
-    square,
-    text,
-    centered,
-  } = useRiskMatrixStyles();
+  const { grid, gridWrapper, konsekvens, sannsynlighet, text, centered } =
+    useRiskMatrixStyles();
 
   const [tab, setTab] = useState<RiskMatrixTabs>(RiskMatrixTabs.initialRisk);
 
@@ -70,19 +63,16 @@ export function RiskMatrix({
                     {5 - rowIndex}
                   </Text>
                 </Box>
-                {row.map((col, colIndex) => (
-                  <Box
-                    className={`${square} ${centered}`}
-                    style={{ backgroundColor: col }}
-                    key={colIndex}
-                  >
-                    <RiskMatrixScenarioCount
-                      riScWithMetadata={riScWithMetadata}
-                      probability={colIndex}
-                      consequence={4 - rowIndex}
-                      initialRisk={tab === RiskMatrixTabs.initialRisk}
-                    />
-                  </Box>
+                {row.map((_, colIndex) => (
+                  <RiskMatrixSquare
+                    size="grid"
+                    consequence={4 - rowIndex}
+                    probability={colIndex}
+                    riScCountObject={{
+                      isInitialRisk: tab === RiskMatrixTabs.initialRisk,
+                      riSc: riScWithMetadata,
+                    }}
+                  />
                 ))}
               </Fragment>
             ))}
