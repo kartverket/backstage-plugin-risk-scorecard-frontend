@@ -105,7 +105,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
               variant="secondary"
               onClick={() => setShowDeleteIcons(prev => !prev)}
             >
-              {/* toggle delete icons */}
+              {showDeleteIcons}
             </Button>
             <Tooltip>
               {showDeleteIcons
