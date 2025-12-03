@@ -108,9 +108,9 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
               {/* toggle delete icons */}
             </Button>
             <Tooltip>
-              {!setShowDeleteIcons
-                ? t('scenarioTable.editButton')
-                : t('scenarioTable.doneEditing')}
+              {showDeleteIcons
+                ? t('scenarioTable.doneEditing')
+                : t('scenarioTable.editButton')}
             </Tooltip>
           </TooltipTrigger>
         </Flex>
