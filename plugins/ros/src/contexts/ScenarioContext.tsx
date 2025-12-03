@@ -66,6 +66,9 @@ type ScenarioDrawerProps = {
   hoveredScenarios: Scenario[];
   setHoveredScenarios: Dispatch<SetStateAction<Scenario[]>>;
 
+  showDeleteIcons: boolean;
+  setShowDeleteIcons: Dispatch<SetStateAction<boolean>>;
+
   emptyFormScenario: (scenario: Scenario) => FormScenario;
   scenario: Scenario;
   submitNewScenario: (
@@ -125,6 +128,8 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
   const [expandedActions, setExpandedActions] = useState<{
     [key: string]: boolean;
   }>({});
+
+  const [showDeleteIcons, setShowDeleteIcons] = useState(false);
 
   function toggleActionExpanded(actionId: string) {
     setExpandedActions(prevState => ({
@@ -340,6 +345,9 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
     hoveredScenarios,
     setHoveredScenarios,
+
+    showDeleteIcons,
+    setShowDeleteIcons,
 
     emptyFormScenario,
     scenario,

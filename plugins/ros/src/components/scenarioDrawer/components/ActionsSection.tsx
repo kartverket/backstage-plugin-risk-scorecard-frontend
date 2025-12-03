@@ -8,12 +8,11 @@ import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Action, FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
-import Button from '@mui/material/Button';
 import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch';
 import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
-import { Text } from '@backstage/ui';
+import { Text, Tooltip, TooltipTrigger, Flex, Button } from '@backstage/ui';
 import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
 import { filterActionsByRelevance } from '../../../utils/actions.ts';
 import { ActionRowList } from '../../action/ActionRowList.tsx';
@@ -47,7 +46,7 @@ type ActionSectionProps = {
 
 export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { scenario } = useScenario();
+  const { scenario, showDeleteIcons, setShowDeleteIcons } = useScenario();
 
   const { watch } = formMethods;
   const currentActions = watch('actions');
@@ -85,23 +84,37 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
 
   return (
     <Paper sx={section}>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 2,
-        }}
-      >
+      <Flex justify="between" mb="2">
         <Text variant="title-x-small" weight="bold">
           {t('dictionary.measures')}
         </Text>
-
-        <RelevanceToggle
-          checked={actionFilters.showOnlyRelevant}
-          onChange={value => saveOnlyRelevantFilter(value)}
-        />
-      </Box>
+        <Flex align="center">
+          <RelevanceToggle
+            checked={actionFilters.showOnlyRelevant}
+            onChange={value => saveOnlyRelevantFilter(value)}
+          />
+          <TooltipTrigger>
+            <Button
+              iconStart={
+                showDeleteIcons ? (
+                  <i className="ri-checkbox-circle-line" />
+                ) : (
+                  <i className="ri-pencil-line" />
+                )
+              }
+              variant="secondary"
+              onClick={() => setShowDeleteIcons(prev => !prev)}
+            >
+              {/* toggle delete icons */}
+            </Button>
+            <Tooltip>
+              {!setShowDeleteIcons
+                ? t('scenarioTable.editButton')
+                : t('scenarioTable.doneEditing')}
+            </Tooltip>
+          </TooltipTrigger>
+        </Flex>
+      </Flex>
       {sortedActions !== undefined && sortedActions.length > 0 ? (
         <ActionRowList
           scenarioId={scenario.ID}
@@ -145,8 +158,8 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
           {t('dictionary.measure')}
         </Text>
         <Button
-          startIcon={<AddCircle />}
-          color="primary"
+          iconStart={<AddCircle />}
+          variant="primary"
           onClick={() => append(emptyAction())}
         >
           {t('scenarioDrawer.measureTab.addMeasureButton')}
