@@ -63,37 +63,10 @@ export function ScenarioTableRow({
   allowDrag = true,
   searchMatches,
 }: ScenarioTableRowProps) {
+  // Getting global state
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const theme = useTheme();
-  const { tableCard, tableCardNoHover } = useTableStyles();
-
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
   const { hoveredScenarios, setHoveredScenarios } = useScenario();
-  const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
-    useState(false);
-
-  const [actionIdsOfVisibleType, setActionIdsOfVisibleType] = useState<
-    string[]
-  >([]);
-
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const ref = useRef<HTMLDivElement>(null);
-
-  const [, drop] = useScenarioTableDrop(
-    listIndex,
-    scenario.ID,
-    setTempScenarios,
-    ref,
-  );
-
-  const [{ isDragging }, drag, preview] = useScenarioTableDrag(
-    listIndex,
-    scenario.ID,
-    setTempScenarios,
-    riScWithMetadata,
-  );
-
   const actionsWithUpdatedStatus = useMemo(
     () =>
       getActionsWithUpdatedStatus(
@@ -103,6 +76,15 @@ export function ScenarioTableRow({
     [scenario.actions, riSc?.lastPublished?.numberOfCommits],
   );
 
+  // Initializing local state
+  const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
+    useState(false);
+  const [actionIdsOfVisibleType, setActionIdsOfVisibleType] = useState<
+    string[]
+  >([]);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Action filtering
   const filteredActions = useMemo(
     () =>
       getFilteredActions(
@@ -136,11 +118,32 @@ export function ScenarioTableRow({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleType]);
 
+  // Drag n Drop functionality definitions
+  const ref = useRef<HTMLDivElement>(null);
+
+  const [, drop] = useScenarioTableDrop(
+    listIndex,
+    scenario.ID,
+    setTempScenarios,
+    ref,
+  );
+
+  const [{ isDragging }, drag, preview] = useScenarioTableDrag(
+    listIndex,
+    scenario.ID,
+    setTempScenarios,
+    riScWithMetadata,
+  );
+
   preview(drop(ref));
 
+  // Styling
+  const theme = useTheme();
+  const { tableCard, tableCardNoHover } = useTableStyles();
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
+
   const highlightColor =
     theme.palette.mode === 'dark'
       ? 'var(--ros-gray-300)'
