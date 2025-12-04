@@ -1,7 +1,6 @@
 import { Avatar, ListItemButton, ListSubheader, Menu } from '@mui/material';
 import { GcpCryptoKeyObject } from '../../utils/DTOs';
 import { GcpCryptoKeyMenuItem } from './GcpCryptoKeyMenuItem';
-import Box from '@mui/material/Box';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { VpnKey } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
@@ -11,6 +10,8 @@ import AddIcon from '@mui/icons-material/Add';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState, MouseEvent } from 'react';
+import { Box } from '@backstage/ui';
+import styles from './sopsConfigDialog.module.css';
 
 interface GcpCryptoKeyMenuProps {
   chosenGcpCryptoKey: GcpCryptoKeyObject;
@@ -49,17 +50,7 @@ export function GcpCryptoKeyMenu({
   }, {});
 
   return (
-    <Box
-      sx={{
-        position: 'relative',
-        left: 0,
-        marginTop: 1,
-        border: '1px solid',
-        borderColor: theme =>
-          theme.palette.mode === 'dark' ? 'white' : 'grey.300',
-        borderRadius: '4px',
-      }}
-    >
+    <Box className={styles.GcpCryptoKeyMenuContainer}>
       <ListItemButton
         onClick={handleClick}
         sx={{
