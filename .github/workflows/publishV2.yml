@@ -1,0 +1,52 @@
+name: Publish RiSc plugin to npmjs (semantic-release)
+permissions:
+  contents: write # Needed to create releases and push tags
+  issues: write # Needed to comment on released issues
+  pull-requests: write # Needed to comment on released PRs
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '**'
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for semantic-release
+          persist-credentials: false
+
+      - run: corepack enable
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '22.x' # From mise.toml
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@kartverket'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build plugin
+        run: |
+          yarn tsc
+          yarn build
+        working-directory: plugins/ros
+
+      - name: Semantic Release (Dry Run)
+        if: github.ref != 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.KARTVERKET_BACKSTAGE_NPM_TOKEN }}
+        run: npx semantic-release --dry-run
+        working-directory: plugins/ros
+
+      - name: Semantic Release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.KARTVERKET_BACKSTAGE_NPM_TOKEN }}
+        run: npx semantic-release
+        working-directory: plugins/ros
