@@ -24,7 +24,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const { tableCellDragIcon, tableCard } = useTableStyles();
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
-  const { updateRiSc, updateStatus } = useRiScs();
+  const { updateStatus } = useRiScs();
   const visibleType = props.visibleType;
   const sortOrder = props.sortOrder;
 
@@ -48,44 +48,6 @@ export function ScenarioTable(props: ScenarioTableProps) {
     setTempScenarios([...updatedScenarios, ...scenariosNotInTemp]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [riSc.scenarios, updateStatus.isSuccess]);
-
-  function moveRowLocal(dragId: string, hoverId: string) {
-    setTempScenarios(prev => {
-      const dragIndex = prev.findIndex(s => s.ID === dragId);
-      const hoverIndex = prev.findIndex(s => s.ID === hoverId);
-
-      if (dragIndex === -1 || hoverIndex === -1) return prev;
-
-      const updated = [...prev];
-      const [removed] = updated.splice(dragIndex, 1);
-
-      updated.splice(hoverIndex, 0, removed);
-      return updated;
-    });
-  }
-
-  function moveRowFinal(dragId: string, dropId: string) {
-    setTempScenarios(prev => {
-      const dragIndex = prev.findIndex(item => item.ID === dragId);
-      const dropIndex = prev.findIndex(item => item.ID === dropId);
-
-      if (dragIndex === -1 || dropIndex === -1) return prev;
-
-      const updatedScenarios = [...prev];
-      const [removed] = updatedScenarios.splice(dragIndex, 1);
-      updatedScenarios.splice(dropIndex, 0, removed);
-
-      const updatedRiSc = {
-        ...props.riScWithMetadata,
-        content: {
-          ...riSc,
-          scenarios: updatedScenarios,
-        },
-      };
-      updateRiSc(updatedRiSc, () => {});
-      return updatedScenarios;
-    });
-  }
 
   const lastPublishedCommits =
     props.riScWithMetadata.lastPublished?.numberOfCommits ?? null;
@@ -148,11 +110,11 @@ export function ScenarioTable(props: ScenarioTableProps) {
           viewRow={(id: string) =>
             openScenarioDrawer(id, props.isEditingAllowed)
           }
-          moveRowFinal={moveRowFinal}
-          moveRowLocal={moveRowLocal}
           isEditing={props.isEditing}
           allowDrag={allowDrag}
           searchMatches={searchedActions[scenario.ID]}
+          setTempScenarios={setTempScenarios}
+          riScWithMetadata={props.riScWithMetadata}
         />
       ))}
       {props.searchQuery && scenariosToRender.length === 0 && (

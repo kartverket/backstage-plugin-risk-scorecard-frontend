@@ -2,9 +2,17 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Collapse, IconButton } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { useState, useRef, useEffect, useMemo, MouseEvent } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  MouseEvent,
+  SetStateAction,
+  Dispatch,
+} from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Scenario } from '../../utils/types';
+import { RiScWithMetadata, Scenario } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
   deleteScenario,
@@ -19,7 +27,6 @@ import { useTableStyles } from './ScenarioTableStyles';
 import { Text, Flex, Card } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
-import { useDrag, useDrop } from 'react-dnd';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -28,16 +35,20 @@ import {
 } from '../../utils/actions.ts';
 import { ActionRowList } from '../action/ActionRowList.tsx';
 import { RiskMatrixSquare } from '../riskMatrix/RiskMatrixSquare.tsx';
+import {
+  useScenarioTableDrag,
+  useScenarioTableDrop,
+} from '../../hooks/UseScenarioTableDnD.ts';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
   viewRow: (id: string) => void;
   id: string;
   index: number;
-  moveRowFinal: (dragId: string, dropId: string) => void;
-  moveRowLocal: (dragId: string, hoverId: string) => void;
   isEditing: boolean;
   visibleType: UpdatedStatusEnumType | null;
+  setTempScenarios: Dispatch<SetStateAction<Scenario[]>>;
+  riScWithMetadata: RiScWithMetadata;
   allowDrag?: boolean;
   searchMatches?: Scenario['actions'];
 }
@@ -47,10 +58,10 @@ export function ScenarioTableRow({
   viewRow,
   id,
   index,
-  moveRowFinal,
-  moveRowLocal,
   isEditing,
   visibleType,
+  setTempScenarios,
+  riScWithMetadata,
   allowDrag = true,
   searchMatches,
 }: ScenarioTableRowProps) {
@@ -71,55 +82,14 @@ export function ScenarioTableRow({
 
   const ref = useRef<HTMLDivElement>(null);
 
-  const [, drop] = useDrop({
-    accept: 'row',
-    hover(item: { id: string; index: number }, monitor) {
-      if (!ref.current) return;
+  const [, drop] = useScenarioTableDrop(index, id, setTempScenarios, ref);
 
-      const dragId = item.id;
-      const hoverId = id;
-
-      if (dragId === hoverId) return;
-
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-      const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
-
-      const buffer = hoverBoundingRect.height * 0.05;
-      if (item.index < index && hoverClientY < hoverMiddleY - buffer) return;
-      if (item.index > index && hoverClientY > hoverMiddleY + buffer) return;
-
-      moveRowLocal(dragId, hoverId!);
-
-      item.index = index;
-    },
-    drop() {
-      return { moved: true };
-    },
-  });
-
-  const [{ isDragging }, drag, preview] = useDrag(() => ({
-    type: 'row',
-    item: { id, index },
-
-    end: (item, monitor) => {
-      if (monitor.didDrop()) {
-        const dropResult = monitor.getDropResult() as {
-          moved?: boolean;
-        } | null;
-        if (dropResult?.moved && item.id && id) {
-          moveRowFinal(item.id, id);
-        }
-      }
-    },
-
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-    }),
-  }));
+  const [{ isDragging }, drag, preview] = useScenarioTableDrag(
+    index,
+    id,
+    setTempScenarios,
+    riScWithMetadata,
+  );
 
   const actionsWithUpdatedStatus = useMemo(
     () =>
