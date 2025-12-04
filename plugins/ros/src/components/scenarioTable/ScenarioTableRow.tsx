@@ -43,8 +43,7 @@ import {
 interface ScenarioTableRowProps {
   scenario: Scenario;
   viewRow: (id: string) => void;
-  id: string;
-  index: number;
+  listIndex: number;
   isEditing: boolean;
   visibleType: UpdatedStatusEnumType | null;
   setTempScenarios: Dispatch<SetStateAction<Scenario[]>>;
@@ -56,8 +55,7 @@ interface ScenarioTableRowProps {
 export function ScenarioTableRow({
   scenario,
   viewRow,
-  id,
-  index,
+  listIndex,
   isEditing,
   visibleType,
   setTempScenarios,
@@ -82,11 +80,16 @@ export function ScenarioTableRow({
 
   const ref = useRef<HTMLDivElement>(null);
 
-  const [, drop] = useScenarioTableDrop(index, id, setTempScenarios, ref);
+  const [, drop] = useScenarioTableDrop(
+    listIndex,
+    scenario.ID,
+    setTempScenarios,
+    ref,
+  );
 
   const [{ isDragging }, drag, preview] = useScenarioTableDrag(
-    index,
-    id,
+    listIndex,
+    scenario.ID,
     setTempScenarios,
     riScWithMetadata,
   );

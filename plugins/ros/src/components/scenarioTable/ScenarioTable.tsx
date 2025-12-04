@@ -104,8 +104,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
         <ScenarioTableRow
           key={scenario.ID}
           scenario={scenario}
-          id={scenario.ID}
-          index={idx}
+          listIndex={idx}
           visibleType={visibleType}
           viewRow={(id: string) =>
             openScenarioDrawer(id, props.isEditingAllowed)
