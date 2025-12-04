@@ -24,6 +24,7 @@ export default function RiskOptionDisplay({
           alignItems: 'center',
           width: '24px',
           height: '24px',
+          minWidth: '24px',
           borderRadius: '50%',
           backgroundColor: isSelected ? 'primary.main' : 'transparent',
           border: '1px solid',
