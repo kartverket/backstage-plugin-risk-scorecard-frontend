@@ -11,7 +11,7 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState, MouseEvent } from 'react';
 import { Box } from '@backstage/ui';
-import styles from './sopsConfigDialog.module.css';
+import styles from './SopsConfigDialog.module.css';
 
 interface GcpCryptoKeyMenuProps {
   chosenGcpCryptoKey: GcpCryptoKeyObject;
