@@ -28,6 +28,7 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
       <Flex style={{ flex: 1 }}>
         <SearchField
           placeholder="Søk etter tiltak ..."
+          aria-label="search field"
           value={props.searchQuery}
           onChange={value => props.onSearchQueryChange(value)}
         />
