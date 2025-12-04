@@ -48,7 +48,7 @@ interface ScenarioTableRowProps {
   visibleType: UpdatedStatusEnumType | null;
   setTempScenarios: Dispatch<SetStateAction<Scenario[]>>;
   riScWithMetadata: RiScWithMetadata;
-  allowDrag?: boolean;
+  isDnDAllowed?: boolean;
   searchMatches?: Scenario['actions'];
 }
 
@@ -60,7 +60,7 @@ export function ScenarioTableRow({
   visibleType,
   setTempScenarios,
   riScWithMetadata,
-  allowDrag = true,
+  isDnDAllowed = true,
   searchMatches,
 }: ScenarioTableRowProps) {
   // Getting global state
@@ -192,7 +192,7 @@ export function ScenarioTableRow({
       }}
     >
       <Flex align="center">
-        {isEditing && allowDrag && (
+        {isEditing && isDnDAllowed && (
           <IconButton size="small" ref={drag}>
             <DragIndicatorIcon
               sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}

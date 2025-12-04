@@ -68,15 +68,17 @@ export function ScenarioTable(props: ScenarioTableProps) {
       ? displayScenarios.filter(search => Boolean(searchedActions[search.ID]))
       : displayScenarios;
 
-  const allowDrag = (sortOrder ?? '') === '';
+  const isDnDAllowed = (sortOrder ?? '') === '';
 
   return (
     <>
       <Flex p="24px 24px 18px 24px">
-        {props.isEditing && allowDrag && <div className={tableCellDragIcon} />}
+        {props.isEditing && isDnDAllowed && (
+          <div className={tableCellDragIcon} />
+        )}
         <Box
           style={{
-            width: props.isEditing && allowDrag ? '33%' : '40%',
+            width: props.isEditing && isDnDAllowed ? '33%' : '40%',
             paddingLeft: '5%',
           }}
         >
@@ -110,7 +112,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
             openScenarioDrawer(id, props.isEditingAllowed)
           }
           isEditing={props.isEditing}
-          allowDrag={allowDrag}
+          isDnDAllowed={isDnDAllowed}
           searchMatches={searchedActions[scenario.ID]}
           setTempScenarios={setTempScenarios}
           riScWithMetadata={props.riScWithMetadata}
