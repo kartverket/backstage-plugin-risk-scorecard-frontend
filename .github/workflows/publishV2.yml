@@ -3,13 +3,14 @@ permissions:
   contents: write # Needed to create releases and push tags
   issues: write # Needed to comment on released issues
   pull-requests: write # Needed to comment on released PRs
+  id-token: write # to enable use of OIDC for trusted publishing and npm provenance
 on:
   workflow_dispatch:
   push:
     branches:
-      - '**'
+      - '**' # TODO: change so that it only runs for main, but runs a dry run on PR's to main
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,20 +40,9 @@ jobs:
         if: github.ref != 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.KARTVERKET_BACKSTAGE_NPM_TOKEN }}
+          NPM_TOKEN: 'npm_placeholder_token_for_dryrun_only'
         run: |
-          npx semantic-release@25.0.2 --dry-run > release-output.txt 2>&1 || true
-          cat release-output.txt
-
-          # Extract and display the version that would be published
-          if grep -q "Published release" release-output.txt; then
-            VERSION=$(grep "Published release" release-output.txt | sed 's/.*Published release \(.*\) on.*/\1/')
-            echo "### 🎯 Dry Run: Would publish version $VERSION" >> $GITHUB_STEP_SUMMARY
-          elif grep -q "There are no relevant changes" release-output.txt; then
-            echo "### ℹ️ Dry Run: No release needed (no relevant changes)" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "### ❓ Dry Run: Check logs for details" >> $GITHUB_STEP_SUMMARY
-          fi
+          npx semantic-release@25.0.2 --dry-run --no-ci
         working-directory: plugins/ros
 
       - name: Semantic Release
