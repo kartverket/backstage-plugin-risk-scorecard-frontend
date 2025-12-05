@@ -2,13 +2,8 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Button from '@mui/material/Button';
 import styles from '../ScenarioWizard.module.css';
-import {
-  Text,
-  Dialog,
-  DialogTrigger,
-  DialogHeader,
-  DialogBody,
-} from '@backstage/ui';
+import { Flex } from '@backstage/ui';
+import DialogComponent from '../../dialog/DialogComponent';
 
 interface CloseConfirmationProps {
   isOpen: boolean;
@@ -25,27 +20,21 @@ export function CloseConfirmation({
 }: CloseConfirmationProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <DialogTrigger>
-      <Dialog
-        isOpen={isOpen}
-        onOpenChange={onCloseDialog}
-        className={styles.scenarioWizardDialog}
-      >
-        <DialogHeader>
-          <Text variant="title-x-small" weight="bold">
-            {t('scenarioDrawer.closeConfirmation')}
-          </Text>
-        </DialogHeader>
-        <DialogBody className={styles.scenarioWizardDialogBody}>
-          <Button variant="outlined" onClick={close}>
-            {t('dictionary.discardChanges')}
-          </Button>
+    <DialogComponent
+      isOpen={isOpen}
+      onClick={() => onCloseDialog?.()}
+      className={styles.scenarioWizardDialog}
+      header={t('scenarioDrawer.closeConfirmation')}
+    >
+      <Flex justify="between">
+        <Button variant="outlined" onClick={close}>
+          {t('dictionary.discardChanges')}
+        </Button>
 
-          <Button variant="contained" onClick={save}>
-            {t('dictionary.save')}
-          </Button>
-        </DialogBody>
-      </Dialog>
-    </DialogTrigger>
+        <Button variant="contained" onClick={save}>
+          {t('dictionary.save')}
+        </Button>
+      </Flex>
+    </DialogComponent>
   );
 }

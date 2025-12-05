@@ -2,8 +2,9 @@ import Button from '@mui/material/Button';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import type { SetState } from '../../../utils/types';
-import { Text, Dialog, DialogHeader, DialogBody } from '@backstage/ui';
+import { Flex } from '@backstage/ui';
 import styles from '../components/ScenarioDrawer.module.css';
+import DialogComponent from '../../dialog/DialogComponent';
 
 type DeleteScenarioConfirmationProps = {
   isOpen: ConfirmationDialogProps['isOpen'];
@@ -84,17 +85,13 @@ function ConfirmationDialog({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Dialog
+    <DialogComponent
       isOpen={isOpen}
-      onOpenChange={onClose}
+      onClick={() => onClose?.()}
+      header={title}
       className={styles.deleteConfirmationDialog}
     >
-      <DialogHeader>
-        <Text variant="title-x-small" weight="bold">
-          {title}
-        </Text>
-      </DialogHeader>
-      <DialogBody className={styles.deleteConfirmationDialogBody}>
+      <Flex justify="between">
         <Button
           variant="outlined"
           onClick={event => {
@@ -113,7 +110,7 @@ function ConfirmationDialog({
         >
           {confirmButtonText}
         </Button>
-      </DialogBody>
-    </Dialog>
+      </Flex>
+    </DialogComponent>
   );
 }

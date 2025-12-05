@@ -8,15 +8,9 @@ import Box from '@mui/material/Box';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { MigrationStatus } from '../../utils/types';
 import { RiScMigrationChanges } from './migrations/RiScMigrationChanges.tsx';
-import {
-  Flex,
-  Text,
-  DialogTrigger,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-} from '@backstage/ui';
+import { Flex, Text } from '@backstage/ui';
 import styles from './RiScSelectionCard.module.css';
+import DialogComponent from '../dialog/DialogComponent.tsx';
 
 interface RiScMigrationDialogProps {
   openDialog: boolean;
@@ -40,47 +34,36 @@ export const RiScMigrationDialog = ({
   }
 
   return (
-    <DialogTrigger>
-      <Dialog
-        isOpen={openDialog}
-        onOpenChange={handleCancel}
-        className={styles.riScInfoDialog}
-      >
-        <DialogHeader className={styles.riscSelectionDialogHeader}>
-          <Text variant="title-x-small" weight="bold">
-            {t('migrationDialog.title')}
-          </Text>
-        </DialogHeader>
-        <DialogBody className={styles.riscSelectionDialogBody}>
-          <Box sx={{ marginBottom: '16px' }}>
-            <Text variant="body-large">{t('migrationDialog.description')}</Text>
-          </Box>
-          <RiScMigrationChanges migrationStatus={migrationStatus} />
-          <Alert severity="info" icon={false}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={saveMigration}
-                  onChange={handleCheckboxInput}
-                />
-              }
-              label={t('migrationDialog.checkboxLabel')}
-            />
-          </Alert>
-          <Flex justify="between" pt="24px">
-            <Button variant="outlined" color="primary" onClick={handleCancel}>
-              {t('dictionary.cancel')}
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleUpdate}
-              disabled={!saveMigration}
-            >
-              {t('dictionary.confirm')}
-            </Button>
-          </Flex>
-        </DialogBody>
-      </Dialog>
-    </DialogTrigger>
+    <DialogComponent
+      isOpen={openDialog}
+      onClick={handleCancel}
+      header={t('migrationDialog.title')}
+      className={styles.riScInfoDialog}
+    >
+      <Box sx={{ marginBottom: '16px' }}>
+        <Text variant="body-large">{t('migrationDialog.description')}</Text>
+      </Box>
+      <RiScMigrationChanges migrationStatus={migrationStatus} />
+      <Alert severity="info" icon={false}>
+        <FormControlLabel
+          control={
+            <Checkbox checked={saveMigration} onChange={handleCheckboxInput} />
+          }
+          label={t('migrationDialog.checkboxLabel')}
+        />
+      </Alert>
+      <Flex justify="between" pt="24px">
+        <Button variant="outlined" color="primary" onClick={handleCancel}>
+          {t('dictionary.cancel')}
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleUpdate}
+          disabled={!saveMigration}
+        >
+          {t('dictionary.confirm')}
+        </Button>
+      </Flex>
+    </DialogComponent>
   );
 };
