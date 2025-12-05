@@ -9,18 +9,10 @@ import { Step, StepLabel, Stepper } from '@mui/material';
 import ConfigEncryptionDialog from './ConfigEncryptionDialog';
 import ConfigRiscInfo from './ConfigRiscInfo';
 import ConfigInitialRisc from './ConfigInitialRisc';
-import {
-  Flex,
-  Button,
-  Text,
-  Dialog,
-  DialogTrigger,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-} from '@backstage/ui';
+import { Flex, Button, Text } from '@backstage/ui';
 import styles from './RiScDialog.module.css';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
+import DialogComponent from '../dialog/DialogComponent.tsx';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -177,199 +169,164 @@ export function RiScDialog({
 
   if (dialogState === RiScDialogStates.Create) {
     return (
-      <DialogTrigger>
-        <Dialog
-          isOpen={true}
-          onOpenChange={onClose}
-          className={styles.createRiscDialog}
+      <DialogComponent
+        isOpen={true}
+        onClick={onClose}
+        header={t('rosDialog.titleNew')}
+        className={styles.createRiscDialog}
+      >
+        {/* // TODO STYLE HEADER */}
+        <RiScStepper activeStep={activeStep} />
+        <Text
+          as="h2"
+          variant="title-x-small"
+          weight="bold"
+          className={styles.subtitle}
         >
-          <DialogHeader className={styles.initRiscDialogTitle}>
-            <Text variant="title-small" weight="bold">
-              {t('rosDialog.titleNew')}
-            </Text>
-          </DialogHeader>
-          <DialogBody className={styles.riscDialogBody}>
-            <RiScStepper activeStep={activeStep} />
-            <Text
-              as="h2"
-              variant="title-x-small"
-              weight="bold"
-              className={styles.subtitle}
+          {activeStep === 0 && t('rosDialog.initialRiscTitle')}
+          {activeStep === 1 && t('rosDialog.titleAndScope')}
+          {activeStep === 2 && t('rosDialog.stepEncryption')}
+        </Text>
+        {activeStep === 0 && (
+          <ConfigInitialRisc
+            dialogState={dialogState}
+            switchOn={switchOn}
+            setSwitchOn={setSwitchOn}
+            setValue={setValue}
+            selectedRiScId={selectedRiScId}
+            setSelectedRiScId={setSelectedRiScId}
+          />
+        )}
+        {activeStep === 1 && (
+          <ConfigRiscInfo
+            register={register}
+            errors={errors}
+            setValue={setValue}
+            watch={watch}
+          />
+        )}
+        {activeStep === 2 && (
+          <ConfigEncryptionDialog
+            gcpCryptoKeys={gcpCryptoKeys}
+            setValue={setValue}
+            state={dialogState}
+            register={register}
+            errors={errors}
+          />
+        )}
+        <Flex pt="16px" justify="between">
+          <Button size="medium" variant="secondary" onClick={onClose}>
+            {t('dictionary.cancel')}
+          </Button>
+          <Flex>
+            <Button
+              size="medium"
+              variant="secondary"
+              isDisabled={activeStep === 0}
+              onClick={handleBack}
             >
-              {activeStep === 0 && t('rosDialog.initialRiscTitle')}
-              {activeStep === 1 && t('rosDialog.titleAndScope')}
-              {activeStep === 2 && t('rosDialog.stepEncryption')}
-            </Text>
-            {activeStep === 0 && (
-              <ConfigInitialRisc
-                dialogState={dialogState}
-                switchOn={switchOn}
-                setSwitchOn={setSwitchOn}
-                setValue={setValue}
-                selectedRiScId={selectedRiScId}
-                setSelectedRiScId={setSelectedRiScId}
-              />
-            )}
-            {activeStep === 1 && (
-              <ConfigRiscInfo
-                register={register}
-                errors={errors}
-                setValue={setValue}
-                watch={watch}
-              />
-            )}
-            {activeStep === 2 && (
-              <ConfigEncryptionDialog
-                gcpCryptoKeys={gcpCryptoKeys}
-                setValue={setValue}
-                state={dialogState}
-                register={register}
-                errors={errors}
-              />
-            )}
-            <Flex pt="16px" justify="between">
-              <Button size="medium" variant="secondary" onClick={onClose}>
-                {t('dictionary.cancel')}
+              {t('dictionary.previous')}
+            </Button>
+            {activeStep < 2 ? (
+              <Button size="medium" variant="primary" onClick={handleNext}>
+                {t('dictionary.next')}
               </Button>
-              <Flex>
-                <Button
-                  size="medium"
-                  variant="secondary"
-                  isDisabled={activeStep === 0}
-                  onClick={handleBack}
-                >
-                  {t('dictionary.previous')}
-                </Button>
-                {activeStep < 2 ? (
-                  <Button size="medium" variant="primary" onClick={handleNext}>
-                    {t('dictionary.next')}
-                  </Button>
-                ) : (
-                  <Button
-                    size="medium"
-                    variant="primary"
-                    onClick={handleFinish}
-                  >
-                    {t('dictionary.save')}
-                  </Button>
-                )}
-              </Flex>
-            </Flex>
-          </DialogBody>
-        </Dialog>
-      </DialogTrigger>
+            ) : (
+              <Button size="medium" variant="primary" onClick={handleFinish}>
+                {t('dictionary.save')}
+              </Button>
+            )}
+          </Flex>
+        </Flex>
+      </DialogComponent>
     );
   }
 
   if (dialogState === RiScDialogStates.Delete) {
     return (
-      <DialogTrigger>
-        <Dialog
-          isOpen={true}
-          onOpenChange={onClose}
-          className={styles.createRiscDialog}
-        >
-          <DialogHeader className={styles.riscDialogTitle}>
-            <Text variant="title-x-small" weight="bold">
-              {t('deleteDialog.title')}
-            </Text>
-          </DialogHeader>
-          <DialogBody className={styles.riscDialogBody}>
-            <Flex direction="column">
-              {t('deleteDialog.confirmationMessage')}
-              <Flex justify="between" pt="16px">
-                <Button size="medium" variant="secondary" onClick={onClose}>
-                  {t('dictionary.cancel')}
-                </Button>
-                <Button size="medium" variant="primary" onClick={handleFinish}>
-                  {t('dictionary.delete')}
-                </Button>
-              </Flex>
-            </Flex>
-          </DialogBody>
-        </Dialog>
-      </DialogTrigger>
+      <DialogComponent
+        isOpen={true}
+        onClick={onClose}
+        header={t('deleteDialog.title')}
+        className={styles.createRiscDialog}
+      >
+        <Flex direction="column">
+          {t('deleteDialog.confirmationMessage')}
+          <Flex justify="between" pt="16px">
+            <Button size="medium" variant="secondary" onClick={onClose}>
+              {t('dictionary.cancel')}
+            </Button>
+            <Button size="medium" variant="primary" onClick={handleFinish}>
+              {t('dictionary.delete')}
+            </Button>
+          </Flex>
+        </Flex>
+      </DialogComponent>
     );
   }
 
   if (dialogState === RiScDialogStates.EditRiscInfo) {
     return (
-      <DialogTrigger>
-        <Dialog
-          isOpen={true}
-          onOpenChange={onClose}
-          className={styles.createRiscDialog}
-        >
-          <DialogHeader className={styles.riscDialogTitle}>
-            <Text variant="title-x-small" weight="bold">
-              {t('rosDialog.titleEdit')}
-            </Text>
-          </DialogHeader>
-          <DialogBody className={styles.riscDialogBody}>
-            <ConfigRiscInfo
-              register={register}
-              errors={errors}
-              setValue={setValue}
-              watch={watch}
-            />
-          </DialogBody>
-          <DialogFooter className={styles.riscDialogFooter}>
-            <Button
-              size="medium"
-              variant="tertiary"
-              onClick={onDelete}
-              className={styles.deleteButton}
-            >
-              <i className={`ri-delete-bin-line ${styles.deleteButtonIcon}`} />
-              {t('contentHeader.deleteButton')}
+      <DialogComponent
+        isOpen={true}
+        onClick={onClose}
+        header={t('rosDialog.titleEdit')}
+        className={styles.createRiscDialog}
+      >
+        <ConfigRiscInfo
+          register={register}
+          errors={errors}
+          setValue={setValue}
+          watch={watch}
+        />
+        <Flex justify="between" pt="16px">
+          <Button
+            size="medium"
+            variant="tertiary"
+            onClick={onDelete}
+            className={styles.deleteButton}
+          >
+            <i className={`ri-delete-bin-line ${styles.deleteButtonIcon}`} />
+            {t('contentHeader.deleteButton')}
+          </Button>
+          <Flex>
+            <Button size="medium" variant="secondary" onClick={onClose}>
+              {t('dictionary.cancel')}
             </Button>
-            <Flex>
-              <Button size="medium" variant="secondary" onClick={onClose}>
-                {t('dictionary.cancel')}
-              </Button>
-              <Button size="medium" variant="primary" onClick={handleFinish}>
-                {t('dictionary.save')}
-              </Button>
-            </Flex>
-          </DialogFooter>
-        </Dialog>
-      </DialogTrigger>
+            <Button size="medium" variant="primary" onClick={handleFinish}>
+              {t('dictionary.save')}
+            </Button>
+          </Flex>
+        </Flex>
+      </DialogComponent>
     );
   }
 
   if (dialogState === RiScDialogStates.EditEncryption) {
     return (
-      <DialogTrigger>
-        <Dialog
-          isOpen={true}
-          onOpenChange={onClose}
-          className={styles.createRiscDialog}
-        >
-          <DialogHeader className={styles.riscDialogTitle}>
-            <Text variant="title-small" weight="bold">
-              {t('rosDialog.editEncryption')}
-            </Text>
-          </DialogHeader>
-          <DialogBody className={styles.riscDialogBody}>
-            <ConfigEncryptionDialog
-              gcpCryptoKeys={gcpCryptoKeys}
-              sopsData={selectedRiSc?.sopsConfig}
-              setValue={setValue}
-              state={dialogState}
-              register={register}
-              errors={errors}
-            />
-            <Flex justify="between" className={styles.riscDialogFooter}>
-              <Button size="medium" variant="secondary" onClick={onClose}>
-                {t('dictionary.cancel')}
-              </Button>
-              <Button size="medium" variant="primary" onClick={handleFinish}>
-                {t('dictionary.save')}
-              </Button>
-            </Flex>
-          </DialogBody>
-        </Dialog>
-      </DialogTrigger>
+      <DialogComponent
+        isOpen={true}
+        onClick={onClose}
+        header={t('rosDialog.editEncryption')}
+        className={styles.createRiscDialog}
+      >
+        <ConfigEncryptionDialog
+          gcpCryptoKeys={gcpCryptoKeys}
+          sopsData={selectedRiSc?.sopsConfig}
+          setValue={setValue}
+          state={dialogState}
+          register={register}
+          errors={errors}
+        />
+        <Flex justify="between" pt="16px">
+          <Button size="medium" variant="secondary" onClick={onClose}>
+            {t('dictionary.cancel')}
+          </Button>
+          <Button size="medium" variant="primary" onClick={handleFinish}>
+            {t('dictionary.save')}
+          </Button>
+        </Flex>
+      </DialogComponent>
     );
   }
 
