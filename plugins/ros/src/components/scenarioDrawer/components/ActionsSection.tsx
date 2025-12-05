@@ -42,14 +42,14 @@ const RelevanceToggle = ({
 type ActionSectionProps = {
   formMethods: UseFormReturn<FormScenario>;
   isEditing: boolean;
-  allowDeletion?: boolean;
 };
 
 export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { scenario } = useScenario();
 
-  const [allowActionDeletion, setActionDeletion] = useState<boolean>(false);
+  const [allowActionDeletion, setAllowActionDeletion] =
+    useState<boolean>(false);
   const { watch } = formMethods;
   const currentActions = watch('actions');
 
@@ -105,7 +105,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
                 )
               }
               variant="secondary"
-              onClick={() => setActionDeletion(prev => !prev)}
+              onClick={() => setAllowActionDeletion(prev => !prev)}
             >
               {allowActionDeletion}
             </Button>
