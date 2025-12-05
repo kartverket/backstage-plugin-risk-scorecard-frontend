@@ -3,7 +3,7 @@ permissions:
   contents: write # Needed to create releases and push tags
   issues: write # Needed to comment on released issues
   pull-requests: write # Needed to comment on released PRs
-  id-token: write # to enable use of OIDC for trusted publishing and npm provenance
+  # id-token: write # to enable use of OIDC for trusted publishing and npm provenance
 on:
   workflow_dispatch:
   push:
@@ -40,7 +40,7 @@ jobs:
         if: github.ref != 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: 'npm_placeholder_token_for_dryrun_only'
+          NPM_TOKEN: ${{ secrets.KARTVERKET_BACKSTAGE_NPM_TOKEN }}
         run: |
           npx semantic-release@25.0.2 --dry-run --no-ci
         working-directory: plugins/ros
