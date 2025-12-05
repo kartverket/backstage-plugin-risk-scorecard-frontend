@@ -1,10 +1,4 @@
-import {
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-  Text,
-} from '@backstage/ui';
+import { Dialog, DialogHeader, DialogBody, Text } from '@backstage/ui';
 import styles from './DialogComponent.module.css';
 
 type DialogComponentProps = {
@@ -21,7 +15,6 @@ function DialogComponent({
   onClick,
   header,
   children,
-  footer,
   className,
 }: DialogComponentProps) {
   return (
@@ -32,9 +25,6 @@ function DialogComponent({
         </Text>
       </DialogHeader>
       <DialogBody>{children}</DialogBody>
-      {footer && (
-        <DialogFooter className={styles.DialogFooter}>{footer}</DialogFooter>
-      )}
     </Dialog>
   );
 }

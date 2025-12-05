@@ -22,7 +22,7 @@ export function CloseConfirmation({
   return (
     <DialogComponent
       isOpen={isOpen}
-      onClick={onCloseDialog || (() => {})}
+      onClick={() => onCloseDialog?.()}
       className={styles.scenarioWizardDialog}
       header={t('scenarioDrawer.closeConfirmation')}
     >

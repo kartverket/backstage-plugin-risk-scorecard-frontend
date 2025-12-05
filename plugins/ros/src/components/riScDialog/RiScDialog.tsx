@@ -175,7 +175,6 @@ export function RiScDialog({
         header={t('rosDialog.titleNew')}
         className={styles.createRiscDialog}
       >
-        {/* // TODO STYLE HEADER */}
         <RiScStepper activeStep={activeStep} />
         <Text
           as="h2"

@@ -3,7 +3,7 @@ import { ProbabilityTableInfoWithHeaders } from '../scenarioWizard/components/Pr
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import Box from '@mui/material/Box';
-import { Button, Text } from '@backstage/ui';
+import { Text } from '@backstage/ui';
 import styles from './RiScDialog.module.css';
 import DialogComponent from '../dialog/DialogComponent';
 
@@ -21,7 +21,6 @@ export function MatrixDialog({
       isOpen={open}
       onClick={close}
       header={t('scenarioDrawer.riskMatrixModal.title')}
-      footer={<Button onClick={close}>{t('dictionary.close')}</Button>}
       className={styles.matrixDialog}
     >
       <Text as="p" variant="body-large" className={styles.matrixDialogBody}>
