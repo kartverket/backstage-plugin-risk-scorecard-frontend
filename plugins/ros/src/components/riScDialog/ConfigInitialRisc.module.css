@@ -1,0 +1,10 @@
+.radioGroup {
+  height: 300px;
+  overflow-y: auto;
+}
+
+@media (max-height: 770px) {
+  .radioGroup {
+    height: 200px;
+  }
+}
