@@ -188,7 +188,6 @@ export function RiScDialog({
         </Text>
         {activeStep === 0 && (
           <ConfigInitialRisc
-            dialogState={dialogState}
             switchOn={switchOn}
             setSwitchOn={setSwitchOn}
             setValue={setValue}

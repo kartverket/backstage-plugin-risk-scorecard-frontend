@@ -29,3 +29,12 @@
   border-radius: 4px;
   width: 600px;
 }
+
+.accordionContainer {
+  border: 1px solid var(--ros-gray-200);
+  border-radius: 4px;
+}
+
+[data-theme-mode='dark'] .accordionContainer {
+  border: 1px solid var(--bui-white);
+}
