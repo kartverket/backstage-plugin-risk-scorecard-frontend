@@ -33,8 +33,8 @@ import {
   calculateDaysSince,
   calculateUpdatedStatus,
   UpdatedStatusEnumType,
+  UpdatedStatusEnum,
 } from './utilityfunctions';
-
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
     useEntity().entity.metadata.annotations?.['backstage.io/view-url'].match(
@@ -417,13 +417,11 @@ export function useDebounce<T>(
 type UseDisplayScenarios = (
   tempScenarios: RiSc['scenarios'] | null | undefined,
   visibleType: UpdatedStatusEnumType | null,
-  lastPublishedCommits: number | null,
   sortOrder?: string,
 ) => RiSc['scenarios'];
 export const useDisplayScenarios: UseDisplayScenarios = (
   tempScenarios,
   visibleType,
-  lastPublishedCommits,
   sortOrder,
 ) => {
   return useMemo(() => {
@@ -436,10 +434,10 @@ export const useDisplayScenarios: UseDisplayScenarios = (
             const daysSinceLastUpdate = action.lastUpdated
               ? calculateDaysSince(new Date(action.lastUpdated))
               : null;
-            const status = calculateUpdatedStatus(
-              daysSinceLastUpdate,
-              lastPublishedCommits,
-            );
+            const status =
+              daysSinceLastUpdate !== null
+                ? calculateUpdatedStatus(daysSinceLastUpdate)
+                : UpdatedStatusEnum.VERY_OUTDATED;
             return status === visibleType;
           }),
         );
@@ -483,7 +481,7 @@ export const useDisplayScenarios: UseDisplayScenarios = (
     });
 
     return sorted;
-  }, [tempScenarios, visibleType, lastPublishedCommits, sortOrder]);
+  }, [tempScenarios, visibleType, sortOrder]);
 };
 
 export function useSearchActions(

@@ -122,12 +122,8 @@ export function ScenarioTableRow({
   }));
 
   const actionsWithUpdatedStatus = useMemo(
-    () =>
-      getActionsWithUpdatedStatus(
-        scenario.actions,
-        riSc?.lastPublished?.numberOfCommits || null,
-      ),
-    [scenario.actions, riSc?.lastPublished?.numberOfCommits],
+    () => getActionsWithUpdatedStatus(scenario.actions),
+    [scenario.actions],
   );
 
   const filteredActions = useMemo(
