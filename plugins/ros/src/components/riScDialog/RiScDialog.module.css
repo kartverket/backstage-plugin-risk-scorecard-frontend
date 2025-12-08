@@ -58,3 +58,12 @@
 .initRiscDialogTitle {
   padding: 0 0 16px 0;
 }
+
+.accordionContainer {
+  border: 1px solid var(--ros-gray-200);
+  border-radius: 4px;
+}
+
+[data-theme-mode='dark'] .accordionContainer {
+  border: 1px solid var(--bui-white);
+}

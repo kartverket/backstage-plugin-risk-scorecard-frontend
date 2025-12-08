@@ -1,11 +1,11 @@
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Box, Flex, Radio, RadioGroup, Switch, Text } from '@backstage/ui';
-import { RiScDialogStates } from './RiScDialog';
 import { RiScWithMetadata } from '../../utils/types.ts';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 import { UseFormSetValue } from 'react-hook-form/dist/types/form';
 import { useTheme } from '@mui/material/styles';
+import styles from './ConfigInitialRisc.module.css';
 
 type RadioOptionProps = {
   value: string;
@@ -83,7 +83,6 @@ const RadioOption = ({
 };
 
 interface ConfigInitialRiscProps {
-  dialogState: RiScDialogStates;
   switchOn: boolean;
   setSwitchOn: (val: boolean) => void;
   setValue: UseFormSetValue<RiScWithMetadata>;
@@ -123,71 +122,64 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
   }
 
   return (
-    <>
-      {props.dialogState === RiScDialogStates.Create && (
+    <Box>
+      {defaultRiScTypeDescriptors.length > 0 && (
         <>
-          <Box>
-            {defaultRiScTypeDescriptors.length > 0 && (
-              <>
-                <Box pb="2">
-                  <Text variant="body-medium" as="p">
-                    {t('rosDialog.initialRiscScopeDescription')}
-                  </Text>
-                  <Box pt="2">
-                    <Switch
-                      isSelected={props.switchOn}
-                      onChange={onCreateDefaultRiScSwitchChange}
-                      label={
-                        props.switchOn
-                          ? t('dictionary.yes')
-                          : t('dictionary.no')
-                      }
-                    />
-                  </Box>
-                </Box>
-                <Flex direction="column" justify="between" mt="2" gap="2">
-                  <Text
-                    weight="bold"
-                    as="p"
-                    color={!props.switchOn ? 'secondary' : 'primary'}
-                  >
-                    {t('rosDialog.applicationType')}
-                  </Text>
-                  <Text
-                    variant="body-medium"
-                    color={!props.switchOn ? 'secondary' : 'primary'}
-                  >
-                    {t('rosDialog.initialRiscApplicationType')}
-                  </Text>
-
-                  <RadioGroup
-                    onChange={onSelectRiScType}
-                    isDisabled={!props.switchOn}
-                    aria-label="Select application type"
-                    value={props.selectedRiScId}
-                  >
-                    {defaultRiScTypeDescriptors.map(descriptor => (
-                      <RadioOption
-                        key={descriptor.id}
-                        value={descriptor.id}
-                        label={descriptor.listName}
-                        description={descriptor.listDescription}
-                        active={!props.switchOn}
-                        numActions={descriptor.numberOfActions}
-                        numScenarios={descriptor.numberOfScenarios}
-                      />
-                    ))}
-                  </RadioGroup>
-                </Flex>
-              </>
-            )}
-            {defaultRiScTypeDescriptors.length === 0 && (
-              <Text>{t('rosDialog.noInitialRiScFound')}</Text>
-            )}
+          <Box pb="2">
+            <Text variant="body-medium" as="p">
+              {t('rosDialog.initialRiscScopeDescription')}
+            </Text>
+            <Box pt="2">
+              <Switch
+                isSelected={props.switchOn}
+                onChange={onCreateDefaultRiScSwitchChange}
+                label={
+                  props.switchOn ? t('dictionary.yes') : t('dictionary.no')
+                }
+              />
+            </Box>
           </Box>
+          <Flex direction="column" justify="between" mt="2" gap="2">
+            <Text
+              weight="bold"
+              as="p"
+              color={!props.switchOn ? 'secondary' : 'primary'}
+            >
+              {t('rosDialog.applicationType')}
+            </Text>
+            <Text
+              variant="body-medium"
+              color={!props.switchOn ? 'secondary' : 'primary'}
+            >
+              {t('rosDialog.initialRiscApplicationType')}
+            </Text>
+
+            <RadioGroup
+              onChange={onSelectRiScType}
+              isDisabled={!props.switchOn}
+              aria-label="Select application type"
+              value={props.selectedRiScId}
+              className={styles.radioGroup}
+            >
+              {defaultRiScTypeDescriptors.map(descriptor => (
+                <RadioOption
+                  key={descriptor.id}
+                  value={descriptor.id}
+                  label={descriptor.listName}
+                  description={descriptor.listDescription}
+                  active={!props.switchOn}
+                  numActions={descriptor.numberOfActions}
+                  numScenarios={descriptor.numberOfScenarios}
+                />
+              ))}
+            </RadioGroup>
+          </Flex>
         </>
       )}
-    </>
+      {defaultRiScTypeDescriptors.length === 0 && (
+        <Text>{t('rosDialog.noInitialRiScFound')}</Text>
+      )}
+    </Box>
   );
 }
 
