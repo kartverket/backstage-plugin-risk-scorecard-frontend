@@ -55,13 +55,17 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
       </>
       {feedbackSent ? (
         <Flex pb="18px">
-          <Button onClick={onClose} variant="secondary">
+          <Button onClick={onClose} size="medium" variant="secondary">
             {t('dictionary.close')}
           </Button>
         </Flex>
       ) : (
         <Flex justify="between">
-          <Button onClick={() => props.setOpen(false)} variant="secondary">
+          <Button
+            onClick={() => props.setOpen(false)}
+            size="medium"
+            variant="secondary"
+          >
             {t('dictionary.cancel')}
           </Button>
           <Button
@@ -74,6 +78,7 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
               }
             }}
             isDisabled={!feedbackText.trim()}
+            size="medium"
             variant="primary"
           >
             {t('feedbackDialog.sendButton')}
