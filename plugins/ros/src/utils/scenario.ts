@@ -51,7 +51,7 @@ export function getScenarioOfIdFromRiSc(
  *
  * @return A map where a scenarioId is mapped to a list of actionIds
  */
-export function useFilteredActionsForScenarios(
+export function getFilteredActionsForScenarios(
   scenarios: Scenario[],
   visibleUpdatedStatus: UpdatedStatusEnumType | null | undefined,
   actionSearchQuery: string,

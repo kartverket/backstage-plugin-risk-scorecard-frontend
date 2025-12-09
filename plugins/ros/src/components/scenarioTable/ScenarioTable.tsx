@@ -11,7 +11,7 @@ import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 import {
   sortScenarios,
   toScenarioSortingOption,
-  useFilteredActionsForScenarios,
+  getFilteredActionsForScenarios,
 } from '../../utils/scenario.ts';
 import { useDebouncedValue } from '../../utils/hooks.ts';
 
@@ -64,12 +64,12 @@ export function ScenarioTable(props: ScenarioTableProps) {
    */
   const filteredActionsForScenarios = useMemo(
     () =>
-      useFilteredActionsForScenarios(
+      getFilteredActionsForScenarios(
         tempScenarios,
         props.visibleType,
         debouncedSearchQuery,
       ),
-    [props.visibleType, debouncedSearchQuery],
+    [props.visibleType, debouncedSearchQuery, tempScenarios],
   );
 
   const scenariosWithAnyAction = tempScenarios.filter(scenario =>
