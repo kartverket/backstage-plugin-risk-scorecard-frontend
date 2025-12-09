@@ -37,16 +37,21 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
         <Select
           aria-label="sortering"
           selectedKey={props.value ?? ''}
-          onSelectionChange={key => props.onChange(key?.toString() ?? null)}
+          onSelectionChange={key =>
+            props.onChange(key?.toString() ?? 'NoSorting')
+          }
           options={[
-            { value: '', label: t('dictionary.customOrder') },
-            { value: 'title', label: t('filter.title') },
-            { value: 'initialRisk', label: t('filter.initialRisk') },
+            { value: 'NoSorting', label: t('dictionary.customOrder') },
+            { value: 'TitleAlphabetical', label: t('filter.title') },
+            { value: 'HighestInitialRisk', label: t('filter.initialRisk') },
             {
-              value: 'implementedActions',
+              value: 'MostImplementedActions',
               label: t('filter.completedActions'),
             },
-            { value: 'remainingActions', label: t('filter.remainingActions') },
+            {
+              value: 'MostRemainingActions',
+              label: t('filter.remainingActions'),
+            },
           ]}
         />
         {props.isEditingAllowed && (

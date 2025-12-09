@@ -6,13 +6,12 @@ import {
   useState,
   useRef,
   useEffect,
-  useMemo,
   MouseEvent,
   SetStateAction,
   Dispatch,
 } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { RiScWithMetadata, Scenario } from '../../utils/types';
+import { Action, RiScWithMetadata, Scenario } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
   deleteScenario,
@@ -20,7 +19,6 @@ import {
   findProbabilityIndex,
   getConsequenceLevel,
   getProbabilityLevel,
-  UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
 import { useTableStyles } from './ScenarioTableStyles';
@@ -29,10 +27,6 @@ import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteC
 import { ActionStatusOptions } from '../../utils/constants';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { useTheme } from '@mui/material/styles';
-import {
-  getActionsWithUpdatedStatus,
-  getFilteredActions,
-} from '../../utils/actions.ts';
 import { ActionRowList } from '../action/ActionRowList.tsx';
 import { RiskMatrixSquare } from '../riskMatrix/RiskMatrixSquare.tsx';
 import {
@@ -42,81 +36,34 @@ import {
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
+  filteredActions?: Action[];
+  isAnyFilterEnabled: boolean;
   viewRow: (id: string) => void;
   listIndex: number;
   isEditing: boolean;
-  visibleType: UpdatedStatusEnumType | null;
   setTempScenarios: Dispatch<SetStateAction<Scenario[]>>;
   riScWithMetadata: RiScWithMetadata;
-  isDnDAllowed?: boolean;
-  searchMatches?: Scenario['actions'];
 }
 
 export function ScenarioTableRow({
   scenario,
+  filteredActions,
+  isAnyFilterEnabled,
   viewRow,
   listIndex,
   isEditing,
-  visibleType,
   setTempScenarios,
   riScWithMetadata,
-  isDnDAllowed = true,
-  searchMatches,
 }: ScenarioTableRowProps) {
   // Getting global state
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
   const { hoveredScenarios, setHoveredScenarios } = useScenario();
-  const actionsWithUpdatedStatus = useMemo(
-    () =>
-      getActionsWithUpdatedStatus(
-        scenario.actions,
-        riSc?.lastPublished?.numberOfCommits || null,
-      ),
-    [scenario.actions, riSc?.lastPublished?.numberOfCommits],
-  );
 
   // Initializing local state
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
     useState(false);
-  const [actionIdsOfVisibleType, setActionIdsOfVisibleType] = useState<
-    string[]
-  >([]);
   const [isExpanded, setIsExpanded] = useState(false);
-
-  // Action filtering
-  const filteredActions = useMemo(
-    () =>
-      getFilteredActions(
-        actionsWithUpdatedStatus,
-        searchMatches,
-        actionIdsOfVisibleType,
-        visibleType,
-      ),
-    [
-      actionsWithUpdatedStatus,
-      searchMatches,
-      actionIdsOfVisibleType,
-      visibleType,
-    ],
-  );
-
-  useEffect(() => {
-    if (visibleType || isExpanded) {
-      setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
-    }
-    // only run when visibleType or expansion changes for this scenario
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleType, isExpanded]);
-
-  useEffect(() => {
-    const actions = actionsWithUpdatedStatus.filter(
-      a => a.updatedStatus === visibleType,
-    );
-    const actionIds = actions.map(a => a.ID);
-    setActionIdsOfVisibleType(actionIds);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleType]);
 
   // Drag n Drop functionality definitions
   const ref = useRef<HTMLDivElement>(null);
@@ -128,6 +75,10 @@ export function ScenarioTableRow({
     ref,
   );
 
+  useEffect(() => {
+    setIsExpanded(!!filteredActions);
+  }, [filteredActions]);
+
   const [{ isDragging }, drag, preview] = useScenarioTableDrag(
     listIndex,
     scenario.ID,
@@ -138,6 +89,14 @@ export function ScenarioTableRow({
   preview(drop(ref));
 
   // Styling
+  useEffect(() => {
+    if (isExpanded) {
+      setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
+    }
+    // only run when visibleType or expansion changes for this scenario
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExpanded]);
+
   const theme = useTheme();
   const { tableCard, tableCardNoHover } = useTableStyles();
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
@@ -149,9 +108,7 @@ export function ScenarioTableRow({
       ? 'var(--ros-gray-300)'
       : 'var(--ros-gray-100)';
   const isTextColorBlack =
-    theme.palette.mode === 'dark'
-      ? isScenarioHoveredFromRiskMatrix && !visibleType
-      : true;
+    theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;
   const textColorAsBuiVariable = isTextColorBlack
     ? 'var(--bui-black)'
     : 'var(--bui-white)';
@@ -159,13 +116,13 @@ export function ScenarioTableRow({
   return (
     <Card
       onMouseEnter={() => {
-        if (visibleType || isExpanded) return;
+        if (isExpanded) return;
         setHoveredScenarios(prev =>
           prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
         );
       }}
       onMouseLeave={() => {
-        if (visibleType || isExpanded) return;
+        if (isExpanded) return;
         setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
       }}
       ref={ref}
@@ -181,18 +138,17 @@ export function ScenarioTableRow({
         }
         viewRow(scenario.ID);
       }}
-      className={`${tableCard} ${visibleType || isExpanded ? tableCardNoHover : ''}`}
+      className={`${tableCard} ${isExpanded ? tableCardNoHover : ''}`}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
-        backgroundColor:
-          isScenarioHoveredFromRiskMatrix && !visibleType
-            ? highlightColor
-            : undefined,
+        backgroundColor: isScenarioHoveredFromRiskMatrix
+          ? highlightColor
+          : undefined,
       }}
     >
       <Flex align="center">
-        {isEditing && isDnDAllowed && (
+        {isEditing && !isAnyFilterEnabled && (
           <IconButton size="small" ref={drag}>
             <DragIndicatorIcon
               sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
@@ -303,22 +259,15 @@ export function ScenarioTableRow({
           </Flex>
         )}
       </Flex>
-      {/* If there are filtered actions (search or updated badge), show them as before.
-          If the user expands the row, show all actions for the scenario regardless
-          of the current filters. */}
-      {filteredActions.length > 0 && !isExpanded && (
-        <div data-action-root>
-          <ActionRowList
-            scenarioId={scenario.ID}
-            displayedActions={filteredActions}
-          />
-        </div>
-      )}
-
       {isExpanded && (
         <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           <div data-action-root>
-            <ActionRowList scenarioId={scenario.ID} />
+            <ActionRowList
+              scenarioId={scenario.ID}
+              displayedActions={
+                isAnyFilterEnabled ? (filteredActions ?? []) : scenario.actions
+              }
+            />
           </div>
         </Collapse>
       )}

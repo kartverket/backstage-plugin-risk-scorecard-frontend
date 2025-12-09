@@ -415,11 +415,11 @@ export function useDebounce<T>(
 }
 
 type UseDisplayScenarios = (
-  tempScenarios: RiSc['scenarios'] | null | undefined,
+  tempScenarios: Scenario[] | null | undefined,
   visibleType: UpdatedStatusEnumType | null,
   lastPublishedCommits: number | null,
   sortOrder?: string,
-) => RiSc['scenarios'];
+) => Scenario[];
 export const useDisplayScenarios: UseDisplayScenarios = (
   tempScenarios,
   visibleType,
@@ -427,7 +427,7 @@ export const useDisplayScenarios: UseDisplayScenarios = (
   sortOrder,
 ) => {
   return useMemo(() => {
-    if (!tempScenarios) return [] as RiSc['scenarios'];
+    if (!tempScenarios) return [] as Scenario[];
 
     const filtered = !visibleType
       ? tempScenarios
