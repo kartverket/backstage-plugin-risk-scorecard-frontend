@@ -8,7 +8,11 @@ import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Text, Flex, Box, Card } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
-import { useFilteredActionsForScenarios } from '../../utils/scenario.ts';
+import {
+  sortScenarios,
+  toScenarioSortingOption,
+  useFilteredActionsForScenarios,
+} from '../../utils/scenario.ts';
 
 type ScenarioTableProps = {
   sortOrder?: string | null;
@@ -28,10 +32,10 @@ export function ScenarioTable(props: ScenarioTableProps) {
 
   const { openScenarioDrawer } = useScenario();
 
-  const isAnyFilterEnabled =
-    (props.sortOrder && props.sortOrder !== 'NoSorting') ||
-    !!props.searchQuery ||
-    !!props.visibleType;
+  const isAnyFilterEnabled = !!props.searchQuery || !!props.visibleType;
+  const isDndAllowed =
+    !isAnyFilterEnabled &&
+    toScenarioSortingOption(props.sortOrder) === 'NoSorting';
 
   useEffect(() => {
     if (!updateStatus.isSuccess) {
@@ -74,15 +78,17 @@ export function ScenarioTable(props: ScenarioTableProps) {
     ? scenariosWithAnyAction
     : tempScenarios;
 
+  sortScenarios(scenariosToDisplay, toScenarioSortingOption(props.sortOrder));
+
   return (
     <>
       <Flex p="24px 24px 18px 24px">
-        {props.isEditing && !isAnyFilterEnabled && (
+        {props.isEditing && isDndAllowed && (
           <div className={tableCellDragIcon} />
         )}
         <Box
           style={{
-            width: props.isEditing && !isAnyFilterEnabled ? '33%' : '40%',
+            width: props.isEditing && isDndAllowed ? '33%' : '40%',
             paddingLeft: '5%',
           }}
         >
@@ -116,6 +122,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
               : undefined
           }
           isAnyFilterEnabled={isAnyFilterEnabled}
+          isDnDAllowed={isDndAllowed}
           listIndex={idx}
           viewRow={(id: string) =>
             openScenarioDrawer(id, props.isEditingAllowed)

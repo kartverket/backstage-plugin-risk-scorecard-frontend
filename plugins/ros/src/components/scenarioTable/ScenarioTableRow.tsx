@@ -38,6 +38,7 @@ interface ScenarioTableRowProps {
   scenario: Scenario;
   filteredActionIds?: string[];
   isAnyFilterEnabled: boolean;
+  isDnDAllowed?: boolean;
   viewRow: (id: string) => void;
   listIndex: number;
   isEditing: boolean;
@@ -49,6 +50,7 @@ export function ScenarioTableRow({
   scenario,
   filteredActionIds,
   isAnyFilterEnabled,
+  isDnDAllowed,
   viewRow,
   listIndex,
   isEditing,
@@ -148,7 +150,7 @@ export function ScenarioTableRow({
       }}
     >
       <Flex align="center">
-        {isEditing && !isAnyFilterEnabled && (
+        {isEditing && isDnDAllowed && (
           <IconButton size="small" ref={drag}>
             <DragIndicatorIcon
               sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
