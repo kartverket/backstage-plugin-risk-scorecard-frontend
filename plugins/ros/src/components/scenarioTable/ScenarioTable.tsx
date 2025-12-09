@@ -9,9 +9,9 @@ import { Text, Flex, Box, Card } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 import {
-  sortScenarios,
   toScenarioSortingOption,
   getFilteredActionsForScenarios,
+  getSortedScenarios,
 } from '../../utils/scenario.ts';
 import { useDebouncedValue } from '../../utils/hooks.ts';
 
@@ -76,12 +76,8 @@ export function ScenarioTable(props: ScenarioTableProps) {
     filteredActionsForScenarios.has(scenario.ID),
   );
 
-  const scenariosToDisplay = isAnyFilterEnabled
-    ? scenariosWithAnyAction
-    : tempScenarios;
-
-  sortScenarios(
-    scenariosToDisplay,
+  const scenariosToDisplaySorted = getSortedScenarios(
+    isAnyFilterEnabled ? scenariosWithAnyAction : tempScenarios,
     toScenarioSortingOption(props.scenarioSortOrder),
   );
 
@@ -117,7 +113,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
           </Text>
         </Box>
       </Flex>
-      {scenariosToDisplay.map((scenario, idx) => (
+      {scenariosToDisplaySorted.map((scenario, idx) => (
         <ScenarioTableRow
           key={scenario.ID}
           scenario={scenario}

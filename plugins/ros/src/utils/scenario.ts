@@ -99,12 +99,14 @@ export function getFilteredActionsForScenarios(
   return scenarioFilteredActionsMap;
 }
 
-export function sortScenarios(
+export function getSortedScenarios(
   scenarios: Scenario[],
   sortOrder: ScenarioSortingOptions,
 ) {
+  const sortedScenarios = [...scenarios];
+
   if (sortOrder !== 'NoSorting') {
-    scenarios.sort((a, b) => {
+    sortedScenarios.sort((a, b) => {
       switch (sortOrder) {
         case 'TitleAlphabetical':
           return a.title.localeCompare(b.title, 'en');
@@ -142,4 +144,5 @@ export function sortScenarios(
       }
     });
   }
+  return sortedScenarios;
 }
