@@ -63,16 +63,16 @@ export function ScenarioTable(props: ScenarioTableProps) {
         props.visibleType,
         props.searchQuery,
       ),
-    [props.visibleType, props.searchQuery, tempScenarios],
+    [props.visibleType, props.searchQuery],
   );
 
-  const scenariosWithAnyAction = useMemo(
-    () =>
-      tempScenarios.filter(scenario =>
-        filteredActionsForScenarios.has(scenario.ID),
-      ),
-    [tempScenarios, filteredActionsForScenarios],
+  const scenariosWithAnyAction = tempScenarios.filter(scenario =>
+    filteredActionsForScenarios.has(scenario.ID),
   );
+
+  const scenariosToDisplay = isAnyFilterEnabled
+    ? scenariosWithAnyAction
+    : tempScenarios;
 
   return (
     <>
@@ -106,11 +106,11 @@ export function ScenarioTable(props: ScenarioTableProps) {
           </Text>
         </Box>
       </Flex>
-      {scenariosWithAnyAction.map((scenario, idx) => (
+      {scenariosToDisplay.map((scenario, idx) => (
         <ScenarioTableRow
           key={scenario.ID}
           scenario={scenario}
-          filteredActions={
+          filteredActionIds={
             isAnyFilterEnabled
               ? filteredActionsForScenarios.get(scenario.ID)
               : undefined

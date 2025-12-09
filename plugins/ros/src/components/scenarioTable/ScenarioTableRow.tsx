@@ -11,7 +11,7 @@ import {
   Dispatch,
 } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Action, RiScWithMetadata, Scenario } from '../../utils/types';
+import { RiScWithMetadata, Scenario } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
   deleteScenario,
@@ -36,7 +36,7 @@ import {
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
-  filteredActions?: Action[];
+  filteredActionIds?: string[];
   isAnyFilterEnabled: boolean;
   viewRow: (id: string) => void;
   listIndex: number;
@@ -47,7 +47,7 @@ interface ScenarioTableRowProps {
 
 export function ScenarioTableRow({
   scenario,
-  filteredActions,
+  filteredActionIds,
   isAnyFilterEnabled,
   viewRow,
   listIndex,
@@ -76,8 +76,8 @@ export function ScenarioTableRow({
   );
 
   useEffect(() => {
-    setIsExpanded(!!filteredActions);
-  }, [filteredActions]);
+    setIsExpanded(!!filteredActionIds);
+  }, [filteredActionIds]);
 
   const [{ isDragging }, drag, preview] = useScenarioTableDrag(
     listIndex,
@@ -264,9 +264,11 @@ export function ScenarioTableRow({
           <div data-action-root>
             <ActionRowList
               scenarioId={scenario.ID}
-              displayedActions={
-                isAnyFilterEnabled ? (filteredActions ?? []) : scenario.actions
-              }
+              displayedActions={scenario.actions.filter(action =>
+                isAnyFilterEnabled && filteredActionIds
+                  ? filteredActionIds.includes(action.ID)
+                  : true,
+              )}
             />
           </div>
         </Collapse>

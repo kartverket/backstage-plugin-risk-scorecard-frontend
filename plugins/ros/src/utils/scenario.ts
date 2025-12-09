@@ -1,4 +1,4 @@
-import { Action, RiScWithMetadata, Scenario } from './types.ts';
+import { RiScWithMetadata, Scenario } from './types.ts';
 import {
   calculateDaysSince,
   calculateUpdatedStatus,
@@ -48,17 +48,19 @@ export function getScenarioOfIdFromRiSc(
  * @param scenarios
  * @param visibleUpdatedStatus
  * @param actionSearchQuery
+ *
+ * @return A map where a scenarioId is mapped to a list of actionIds
  */
 export function useFilteredActionsForScenarios(
   scenarios: Scenario[],
   visibleUpdatedStatus: UpdatedStatusEnumType | null | undefined,
   actionSearchQuery: string,
-): Map<string, Action[]> {
+): Map<string, string[]> {
   const { selectedRiSc } = useRiScs();
   const lastPublishedCommits =
     selectedRiSc?.lastPublished?.numberOfCommits ?? null;
 
-  const scenarioFilteredActionsMap = new Map<string, Action[]>();
+  const scenarioFilteredActionsMap = new Map<string, string[]>();
 
   scenarios.forEach(scenario => {
     const actions = [...scenario.actions];
@@ -84,7 +86,10 @@ export function useFilteredActionsForScenarios(
         );
         return status === visibleUpdatedStatus;
       });
-    scenarioFilteredActionsMap.set(scenario.ID, filteredActions);
+    scenarioFilteredActionsMap.set(
+      scenario.ID,
+      filteredActions.map(action => action.ID),
+    );
   });
 
   // Remove scenarios with no actions
