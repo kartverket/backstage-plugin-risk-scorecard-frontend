@@ -17,7 +17,6 @@ import { Markdown } from '../common/Markdown.tsx';
 import { ActionURL } from './ActionURL.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Action } from '../../utils/types.ts';
-import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { getUpdatedStatus } from '../../utils/actions.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
@@ -51,11 +50,7 @@ export function ActionView(props: ActionViewProps) {
   const { isActionExpanded, toggleActionExpanded } = useScenario();
   const isExpanded = isActionExpanded(props.action.ID);
 
-  const { selectedRiSc } = useRiScs();
-  const updatedStatus = getUpdatedStatus(
-    props.action,
-    selectedRiSc?.lastPublished?.numberOfCommits ?? null,
-  );
+  const updatedStatus = getUpdatedStatus(props.action);
 
   return (
     <>

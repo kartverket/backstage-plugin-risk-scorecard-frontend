@@ -42,8 +42,6 @@ function ConsequenceTableInfo() {
       <>
         <Box sx={riskLabelCell}>
           <Text as="p" variant="body-large" weight="bold">
-            {' '}
-            hei
             {/* @ts-ignore */}
             {t(`consequenceTable.columns.${resourceKey}`)}
           </Text>

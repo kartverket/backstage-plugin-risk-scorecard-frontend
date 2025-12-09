@@ -25,6 +25,7 @@ import { FieldErrors } from 'react-hook-form/dist/types/errors';
 import FormHelperText from '@mui/material/FormHelperText';
 import { URLS } from '../../urls';
 import { Text, Link, Button, Flex, Box } from '@backstage/ui';
+import styles from '../riScDialog/RiScDialog.module.css';
 
 interface ConfigEncryptionDialogProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
@@ -162,8 +163,8 @@ function ConfigEncryptionDialog({
           {t('sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage')}
         </FormHelperText>
       )}
-      <Box>
-        <Accordion elevation={1} defaultExpanded={publicAgeKeys.length > 0}>
+      <Box className={styles.accordionContainer}>
+        <Accordion elevation={0} defaultExpanded={publicAgeKeys.length > 0}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel1-content"

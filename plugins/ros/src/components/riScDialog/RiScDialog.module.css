@@ -3,10 +3,6 @@
   padding-bottom: 8px;
 }
 
-.subtitleDivider {
-  padding-top: 16px;
-}
-
 .deleteButton {
   color: #d32f2f;
   padding-left: 0;
@@ -27,34 +23,18 @@
   padding-bottom: 32px;
 }
 
-.matrixDialogFooter {
-  padding: 16px 0;
-}
-
-.riscDialogTitle {
-  padding: 0 0 16px 0;
-}
-
 .createRiscDialog {
-  padding: 24px;
+  padding: 16px 12px;
+  gap: 16px;
   border-radius: 4px;
   width: 600px;
 }
 
-.riscDialogBody {
-  padding: 24px 0 0 0;
+.accordionContainer {
+  border: 1px solid var(--ros-gray-200);
+  border-radius: 4px;
 }
 
-.riscDialogFooter {
-  display: flex;
-  justify-content: space-between;
-  padding: 16px 0 0 0;
-}
-
-.riscDialogBodyNoFooter {
-  padding: 24px 0 0 0;
-}
-
-.initRiscDialogTitle {
-  padding: 0 0 16px 0;
+[data-theme-mode='dark'] .accordionContainer {
+  border: 1px solid var(--bui-white);
 }
