@@ -491,17 +491,6 @@ export const vulnerabiltiesOptionsToTranslationKeys: Record<
   [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
 };
 
-export const getActionStatusButtonClass = (status: string): string => {
-  switch (status) {
-    case ActionStatusOptions.OK:
-      return 'ros-button-green';
-    case ActionStatusOptions.NotOK:
-      return 'ros-button-red';
-    default:
-      return 'ros-button-gray';
-  }
-};
-
 export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
   const scenariosWithData = riScWithMetadata.content.scenarios.map(scenario => {
     const actionsWithStatus = (scenario.actions ?? []).map(action => {

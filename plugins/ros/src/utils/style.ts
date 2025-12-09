@@ -67,9 +67,6 @@ export const commonTextColor = (theme: Theme, disabled: boolean) => {
   return 'inherit';
 };
 
-export const commonBackgroundColor = (theme: Theme, disabled: boolean) =>
-  disabled ? theme.palette.action.disabledBackground : 'inherit';
-
 export const formControlStyles = {
   width: '100%',
   gap: '4px',
