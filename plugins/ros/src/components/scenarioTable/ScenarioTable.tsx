@@ -13,6 +13,7 @@ import {
   toScenarioSortingOption,
   useFilteredActionsForScenarios,
 } from '../../utils/scenario.ts';
+import { useDebouncedValue } from '../../utils/hooks.ts';
 
 type ScenarioTableProps = {
   sortOrder?: string | null;
@@ -28,11 +29,12 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const { tableCellDragIcon, tableCard } = useTableStyles();
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
+  const debouncedSearchQuery = useDebouncedValue(props.searchQuery);
   const { updateStatus } = useRiScs();
 
   const { openScenarioDrawer } = useScenario();
 
-  const isAnyFilterEnabled = !!props.searchQuery || !!props.visibleType;
+  const isAnyFilterEnabled = !!debouncedSearchQuery || !!props.visibleType;
   const isDndAllowed =
     !isAnyFilterEnabled &&
     toScenarioSortingOption(props.sortOrder) === 'NoSorting';
@@ -65,9 +67,9 @@ export function ScenarioTable(props: ScenarioTableProps) {
       useFilteredActionsForScenarios(
         tempScenarios,
         props.visibleType,
-        props.searchQuery,
+        debouncedSearchQuery,
       ),
-    [props.visibleType, props.searchQuery],
+    [props.visibleType, debouncedSearchQuery],
   );
 
   const scenariosWithAnyAction = tempScenarios.filter(scenario =>
@@ -132,10 +134,10 @@ export function ScenarioTable(props: ScenarioTableProps) {
           riScWithMetadata={props.riScWithMetadata}
         />
       ))}
-      {props.searchQuery && filteredActionsForScenarios.size === 0 && (
+      {debouncedSearchQuery && filteredActionsForScenarios.size === 0 && (
         <Card className={tableCard}>
           <Flex align="center" justify="center">
-            {t('dictionary.searchQuery')} "{props.searchQuery}"
+            {t('dictionary.searchQuery')} "{debouncedSearchQuery}"
           </Flex>
         </Card>
       )}
