@@ -13,3 +13,92 @@
   height: 16px;
   border-radius: 4px;
 }
+.gridWrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 32px;
+}
+
+.grid {
+  width: 100%;
+  max-width: 400px;
+  display: grid;
+  grid-template-rows: repeat(5, 1fr) auto auto;
+  grid-template-columns: 30px 30px repeat(5, 1fr);
+  gap: 4px;
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.konsekvens {
+  grid-row: 1 / span 5;
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+}
+
+.sannsynlighet {
+  grid-row: 7;
+  grid-column: 3 / span 5;
+}
+
+.circle.circle {
+  height: 60%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  cursor: pointer;
+  min-height: 20px;
+}
+
+.circleHovered.circleHovered {
+  background-color: var(--ros-gray-300);
+}
+
+.tooltip.tooltip {
+  background-color: var(--bui-white);
+  padding: 16px;
+  max-width: 500px;
+}
+
+.tooltipText {
+  padding: 0;
+  color: var(--bui-black);
+}
+
+.tooltipArrow.tooltipArrow {
+  color: var(--bui-white);
+}
+
+[data-theme-mode='dark'] {
+  .circleHovered.circleHovered {
+    background-color: var(--ros-gray-300);
+  }
+
+  .circleHovered.circleHovered .circleText {
+    color: var(--bui-black);
+  }
+
+  .tooltip.tooltip {
+    background-color: var(--bui-bg);
+  }
+
+  .tooltipText {
+    color: var(--bui-white);
+  }
+
+  .tooltipArrow.tooltipArrow {
+    color: var(--bui-bg);
+  }
+
+  .matrixText {
+    color: var(--bui-white);
+  }
+}
