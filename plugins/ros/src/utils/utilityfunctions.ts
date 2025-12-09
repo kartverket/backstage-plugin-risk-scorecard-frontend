@@ -201,21 +201,16 @@ function calculateUpdatedStatusFromDaysAndCommits(
 }
 
 export function calculateUpdatedStatus(
-  daysSinceLastModified: number | null,
-  numOfCommitsBehind: number | null,
+  daysSinceLastModified: number,
+  numOfCommitsBehind?: number,
 ): UpdatedStatusEnumType {
-  if (daysSinceLastModified !== null && numOfCommitsBehind === null) {
+  if (numOfCommitsBehind === undefined) {
     return calculateUpdatedStatusFromDaysOnly(daysSinceLastModified);
   }
-
-  if (daysSinceLastModified !== null && numOfCommitsBehind !== null) {
-    return calculateUpdatedStatusFromDaysAndCommits(
-      daysSinceLastModified,
-      numOfCommitsBehind,
-    );
-  }
-
-  return UpdatedStatusEnum.VERY_OUTDATED;
+  return calculateUpdatedStatusFromDaysAndCommits(
+    daysSinceLastModified,
+    numOfCommitsBehind,
+  );
 }
 
 export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
@@ -511,8 +506,10 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
       const daysSinceLastUpdate = action.lastUpdated
         ? calculateDaysSince(new Date(action.lastUpdated))
         : null;
-      const commits = riScWithMetadata.lastPublished?.numberOfCommits ?? null;
-      const status = calculateUpdatedStatus(daysSinceLastUpdate, commits);
+      const status =
+        daysSinceLastUpdate !== null
+          ? calculateUpdatedStatus(daysSinceLastUpdate)
+          : UpdatedStatusEnum.VERY_OUTDATED;
 
       return { ...action, status };
     });

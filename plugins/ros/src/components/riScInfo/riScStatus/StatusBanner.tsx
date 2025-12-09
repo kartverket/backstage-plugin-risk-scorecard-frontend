@@ -19,10 +19,10 @@ type StatusBannerProps = {
 };
 
 export function StatusBanner(props: StatusBannerProps) {
-  const updatedStatus = calculateUpdatedStatus(
-    props.daysSinceLastModified,
-    props.numOfCommitsBehind,
-  );
+  const updatedStatus =
+    props.daysSinceLastModified !== null
+      ? calculateUpdatedStatus(props.daysSinceLastModified)
+      : UpdatedStatusEnum.UPDATED;
 
   return (
     <Flex className={styles.boxStyle}>

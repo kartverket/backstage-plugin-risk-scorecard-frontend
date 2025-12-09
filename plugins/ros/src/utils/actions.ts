@@ -4,6 +4,7 @@ import {
   calculateDaysSince,
   calculateUpdatedStatus,
   UpdatedStatusEnumType,
+  UpdatedStatusEnum,
 } from './utilityfunctions.ts';
 import { ProfileInfo } from '@backstage/core-plugin-api';
 
@@ -69,30 +70,32 @@ export type ActionWithUpdatedStatus = Action & {
 
 export function getActionsWithUpdatedStatus(
   actions: Action[],
-  numberOfCommitsOnRisc: number | null,
 ): ActionWithUpdatedStatus[] {
   return actions.map(action => {
     const daysSinceLastUpdate = action.lastUpdated
       ? calculateDaysSince(new Date(action.lastUpdated))
       : null;
+    const updatedStatus =
+      daysSinceLastUpdate !== null
+        ? calculateUpdatedStatus(daysSinceLastUpdate)
+        : UpdatedStatusEnum.VERY_OUTDATED;
     return {
       ...action,
-      updatedStatus: calculateUpdatedStatus(
-        daysSinceLastUpdate,
-        numberOfCommitsOnRisc,
-      ),
+      updatedStatus: updatedStatus,
     } as ActionWithUpdatedStatus;
   });
 }
 
-export function getUpdatedStatus(
-  action: Action,
-  numberOfCommitsOnRisc: number | null,
-) {
+export function getUpdatedStatus(action: Action) {
   const daysSinceLastUpdate = action.lastUpdated
     ? calculateDaysSince(new Date(action.lastUpdated))
     : null;
-  return calculateUpdatedStatus(daysSinceLastUpdate, numberOfCommitsOnRisc);
+
+  const status =
+    daysSinceLastUpdate !== null
+      ? calculateUpdatedStatus(daysSinceLastUpdate)
+      : UpdatedStatusEnum.VERY_OUTDATED;
+  return status;
 }
 
 export function getFilteredActions(

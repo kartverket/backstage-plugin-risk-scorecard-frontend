@@ -87,13 +87,9 @@ export function ScenarioTable(props: ScenarioTableProps) {
     });
   }
 
-  const lastPublishedCommits =
-    props.riScWithMetadata.lastPublished?.numberOfCommits ?? null;
-
   const displayScenarios: RiSc['scenarios'] = useDisplayScenarios(
     tempScenarios,
     visibleType,
-    lastPublishedCommits,
     sortOrder ?? undefined,
   );
 
