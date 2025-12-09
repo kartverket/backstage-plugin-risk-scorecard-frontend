@@ -2,10 +2,10 @@ import { RiScWithMetadata, Scenario } from './types.ts';
 import {
   calculateDaysSince,
   calculateUpdatedStatus,
+  UpdatedStatusEnum,
   UpdatedStatusEnumType,
 } from './utilityfunctions.ts';
 import { ActionStatusOptions } from './constants.ts';
-import { useRiScs } from '../contexts/RiScContext.tsx';
 
 export type ScenarioSortingOptions =
   | 'NoSorting'
@@ -56,10 +56,6 @@ export function useFilteredActionsForScenarios(
   visibleUpdatedStatus: UpdatedStatusEnumType | null | undefined,
   actionSearchQuery: string,
 ): Map<string, string[]> {
-  const { selectedRiSc } = useRiScs();
-  const lastPublishedCommits =
-    selectedRiSc?.lastPublished?.numberOfCommits ?? null;
-
   const scenarioFilteredActionsMap = new Map<string, string[]>();
 
   scenarios.forEach(scenario => {
@@ -80,11 +76,12 @@ export function useFilteredActionsForScenarios(
           ? calculateDaysSince(new Date(action.lastUpdated))
           : null;
 
-        const status = calculateUpdatedStatus(
-          daysSinceLastUpdate,
-          lastPublishedCommits,
-        );
-        return status === visibleUpdatedStatus;
+        const updatedStatus =
+          daysSinceLastUpdate !== null
+            ? calculateUpdatedStatus(daysSinceLastUpdate)
+            : UpdatedStatusEnum.VERY_OUTDATED;
+
+        return updatedStatus === visibleUpdatedStatus;
       });
     scenarioFilteredActionsMap.set(
       scenario.ID,
