@@ -16,12 +16,12 @@ import {
 import { useDebouncedValue } from '../../utils/hooks.ts';
 
 type ScenarioTableProps = {
-  sortOrder?: string | null;
+  scenarioSortOrder?: string | null;
   isEditing: boolean;
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
   visibleType: UpdatedStatusEnumType | null;
-  searchQuery: string;
+  actionSearchQuery: string;
 };
 
 export function ScenarioTable(props: ScenarioTableProps) {
@@ -29,7 +29,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const { tableCellDragIcon, tableCard } = useTableStyles();
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
-  const debouncedSearchQuery = useDebouncedValue(props.searchQuery);
+  const debouncedSearchQuery = useDebouncedValue(props.actionSearchQuery);
   const { updateStatus } = useRiScs();
 
   const { openScenarioDrawer } = useScenario();
@@ -37,7 +37,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const isAnyFilterEnabled = !!debouncedSearchQuery || !!props.visibleType;
   const isDndAllowed =
     !isAnyFilterEnabled &&
-    toScenarioSortingOption(props.sortOrder) === 'NoSorting';
+    toScenarioSortingOption(props.scenarioSortOrder) === 'NoSorting';
 
   useEffect(() => {
     if (!updateStatus.isSuccess) {
@@ -59,7 +59,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
   }, [riSc.scenarios, updateStatus.isSuccess]);
 
   /*
-  The following functions are wrapped in useMemo to prevent recalculation
+  The following function are wrapped in useMemo to prevent recalculation
   when hovering rows in the scenario table.
    */
   const filteredActionsForScenarios = useMemo(
@@ -80,7 +80,10 @@ export function ScenarioTable(props: ScenarioTableProps) {
     ? scenariosWithAnyAction
     : tempScenarios;
 
-  sortScenarios(scenariosToDisplay, toScenarioSortingOption(props.sortOrder));
+  sortScenarios(
+    scenariosToDisplay,
+    toScenarioSortingOption(props.scenarioSortOrder),
+  );
 
   return (
     <>

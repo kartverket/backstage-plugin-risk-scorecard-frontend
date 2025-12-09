@@ -43,9 +43,11 @@ export function ScenarioTableCard({
   function handleActionCountClick(type: UpdatedStatusEnumType) {
     setSelectedUpdatedStatus(prev => (prev === type ? null : type));
   }
-  const [sortOrder, setSortOrder] = useState<string | null>(null);
+  const [scenarioSortOrder, setScenarioSortOrder] = useState<string | null>(
+    null,
+  );
 
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [actionSearchQuery, setActionSearchQuery] = useState<string>('');
 
   return (
     <Card>
@@ -69,27 +71,27 @@ export function ScenarioTableCard({
         ) : (
           <>
             <ScenarioTableFilter
-              value={sortOrder}
-              onChange={setSortOrder}
-              isEditing={isEditing}
-              isEditingAllowed={
+              scenarioSortOrder={scenarioSortOrder}
+              onScenarioSortOrderChange={setScenarioSortOrder}
+              isEditingScenarioTable={isEditing}
+              actionSearchQuery={actionSearchQuery}
+              onActionSearchQueryChange={setActionSearchQuery}
+              isEditingScenarioTableAllowed={
                 riScWithMetadata.content.scenarios.length > 0 && editingAllowed
               }
-              onNewScenario={openNewScenarioWizard}
-              onToggleEdit={() =>
+              onToggleEditScenarioTable={() =>
                 isEditing ? setIsEditing(false) : setIsEditing(true)
               }
-              searchQuery={searchQuery}
-              onSearchQueryChange={setSearchQuery}
+              onNewScenario={openNewScenarioWizard}
             />
 
             <ScenarioTable
-              sortOrder={sortOrder}
+              riScWithMetadata={riScWithMetadata}
               isEditingAllowed={editingAllowed}
               isEditing={isEditing}
-              riScWithMetadata={riScWithMetadata}
               visibleType={updatedStatusToDisplay}
-              searchQuery={searchQuery}
+              actionSearchQuery={actionSearchQuery}
+              scenarioSortOrder={scenarioSortOrder}
             />
           </>
         )}

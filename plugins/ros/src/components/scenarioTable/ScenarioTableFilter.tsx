@@ -11,14 +11,14 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 
 type ScenarioTableFilterProps = {
-  value: string | null;
-  onChange: (sortOrder: string | null) => void;
-  isEditing: boolean;
-  isEditingAllowed: boolean;
+  scenarioSortOrder: string | null;
+  onScenarioSortOrderChange: (sortOrder: string | null) => void;
+  actionSearchQuery: string;
+  onActionSearchQueryChange: (query: string) => void;
+  isEditingScenarioTable: boolean;
+  isEditingScenarioTableAllowed: boolean;
+  onToggleEditScenarioTable: () => void;
   onNewScenario: () => void;
-  onToggleEdit: () => void;
-  searchQuery: string;
-  onSearchQueryChange: (query: string) => void;
 };
 
 export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
@@ -29,16 +29,16 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
         <SearchField
           placeholder="Søk etter tiltak ..."
           aria-label="search field"
-          value={props.searchQuery}
-          onChange={value => props.onSearchQueryChange(value)}
+          value={props.actionSearchQuery}
+          onChange={value => props.onActionSearchQueryChange(value)}
         />
       </Flex>
       <Flex>
         <Select
           aria-label="sortering"
-          selectedKey={props.value ?? ''}
+          selectedKey={props.scenarioSortOrder ?? ''}
           onSelectionChange={key =>
-            props.onChange(key?.toString() ?? 'NoSorting')
+            props.onScenarioSortOrderChange(key?.toString() ?? 'NoSorting')
           }
           options={[
             { value: 'NoSorting', label: t('dictionary.customOrder') },
@@ -54,25 +54,25 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
             },
           ]}
         />
-        {props.isEditingAllowed && (
+        {props.isEditingScenarioTableAllowed && (
           <>
             <AddScenarioButton onNewScenario={props.onNewScenario} />
             <TooltipTrigger>
               <Button
                 iconStart={
-                  props.isEditing ? (
+                  props.isEditingScenarioTable ? (
                     <i className="ri-checkbox-circle-line" />
                   ) : (
                     <i className="ri-pencil-line" />
                   )
                 }
                 variant="secondary"
-                onClick={props.onToggleEdit}
+                onClick={props.onToggleEditScenarioTable}
               >
-                {props.isEditing}
+                {props.isEditingScenarioTable}
               </Button>
               <Tooltip>
-                {props.isEditing
+                {props.isEditingScenarioTable
                   ? t('scenarioTable.doneEditing')
                   : t('scenarioTable.editButton')}
               </Tooltip>
