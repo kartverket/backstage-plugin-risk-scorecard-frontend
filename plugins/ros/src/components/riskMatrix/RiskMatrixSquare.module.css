@@ -34,11 +34,6 @@
   justify-content: center;
 }
 
-.text {
-  font-weight: 700;
-  font-size: 20px;
-}
-
 .konsekvens {
   grid-row: 1 / span 5;
   writing-mode: vertical-lr;
@@ -75,6 +70,10 @@
 
 .tooltipArrow.tooltipArrow {
   color: var(--bui-white);
+}
+
+.estimatedCostContainer {
+  margin-top: 18px;
 }
 
 [data-theme-mode='dark'] {
