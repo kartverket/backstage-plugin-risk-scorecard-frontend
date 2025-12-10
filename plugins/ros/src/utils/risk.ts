@@ -40,3 +40,26 @@ function calcCompletedActionsRatio(scenario: Scenario) {
 
   return numOfCompletedActions / numOfRelevantActions;
 }
+
+export function getCurrentCostColor(
+  currentCost: number,
+  initialCost: number,
+  targetCost: number,
+): string {
+  if (initialCost === targetCost) return 'var(--ros-green-100)';
+
+  const progressRatio = Math.max(
+    0,
+    Math.min(1, (initialCost - currentCost) / (initialCost - targetCost)),
+  );
+  if (progressRatio < 0.33) {
+    return 'var(--ros-red-400)'; // dark red
+  }
+  if (progressRatio < 0.66) {
+    return 'var(--ros-red-300)'; // red
+  }
+  if (progressRatio < 0.9) {
+    return 'var(--ros-orange-100)'; // yellow
+  }
+  return 'var(--ros-green-100)'; // green
+}

@@ -31,6 +31,25 @@ export function MatrixTabs({ setTab, currentTab }: MatrixTabsProps) {
           {t('dictionary.initialRisk')}
         </Text>
       </Button>
+
+      <Button
+        variant={
+          currentTab === RiskMatrixTabs.currentRisk ? 'primary' : 'secondary'
+        }
+        onClick={() => setTab(RiskMatrixTabs.currentRisk)}
+        aria-label="current risk"
+        className={styles.riskMatrixButton}
+      >
+        <Text
+          variant="body-large"
+          weight="bold"
+          className={styles.tabButtonTextBase}
+          data-selected={currentTab === RiskMatrixTabs.currentRisk}
+        >
+          Nå risiko
+        </Text>
+      </Button>
+
       <Button
         variant={
           currentTab === RiskMatrixTabs.remainingRisk ? 'primary' : 'secondary'
