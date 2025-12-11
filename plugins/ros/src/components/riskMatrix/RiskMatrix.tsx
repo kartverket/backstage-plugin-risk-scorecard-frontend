@@ -1,27 +1,20 @@
 import { Fragment, useState } from 'react';
-import Box from '@mui/material/Box';
 import { AggregatedCost } from './AggregatedCost';
 import { RiScWithMetadata } from '../../utils/types';
 import { MatrixTabs } from './Tabs';
 import { riskMatrix } from '../../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useFontStyles } from '../../utils/style';
-import { useRiskMatrixStyles } from './riskMatrixStyle';
 import { RiskMatrixTabs } from './utils';
-import { Card, CardBody, CardHeader, Text } from '@backstage/ui';
+import { Card, CardBody, CardHeader, Text, Box } from '@backstage/ui';
 import { RiskMatrixSquare } from './RiskMatrixSquare.tsx';
-
+import styles from './RiskMatrixSquare.module.css';
 export function RiskMatrix({
   riScWithMetadata,
 }: {
   riScWithMetadata: RiScWithMetadata;
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { label2 } = useFontStyles();
-  const { grid, gridWrapper, konsekvens, sannsynlighet, text, centered } =
-    useRiskMatrixStyles();
-
   const [tab, setTab] = useState<RiskMatrixTabs>(RiskMatrixTabs.initialRisk);
 
   return (
@@ -34,32 +27,28 @@ export function RiskMatrix({
       <CardBody>
         <MatrixTabs setTab={setTab} currentTab={tab} />
         {riScWithMetadata.content.scenarios.length > 0 && (
-          <Box
-            style={{
-              marginTop: '18px',
-            }}
-          >
+          <Box className={styles.estimatedCostContainer}>
             <AggregatedCost
               riSc={riScWithMetadata.content}
               initialRisk={tab === RiskMatrixTabs.initialRisk}
             />
           </Box>
         )}
-        <Box className={gridWrapper}>
-          <Box className={grid}>
-            <Box className={konsekvens}>
+        <Box className={styles.gridWrapper}>
+          <Box className={styles.grid}>
+            <Box className={styles.konsekvens}>
               <Text
-                variant="body-large"
+                variant="title-x-small"
                 weight="bold"
-                className={`${centered} ${label2}`}
+                className={styles.centered}
               >
                 {t('dictionary.consequence')}
               </Text>
             </Box>
             {riskMatrix.map((row, rowIndex) => (
               <Fragment key={rowIndex}>
-                <Box className={centered}>
-                  <Text variant="title-x-small" weight="bold" className={text}>
+                <Box className={styles.centered}>
+                  <Text variant="title-x-small" weight="bold">
                     {5 - rowIndex}
                   </Text>
                 </Box>
@@ -76,20 +65,20 @@ export function RiskMatrix({
                 ))}
               </Fragment>
             ))}
-            <Box className={centered} />
-            <Box className={centered} />
+            <Box className={styles.centered} />
+            <Box className={styles.centered} />
             {riskMatrix.map((_, col) => (
-              <Box className={centered} key={col}>
-                <Text variant="title-x-small" weight="bold" className={text}>
+              <Box className={styles.centered} key={col}>
+                <Text variant="title-x-small" weight="bold">
                   {col + 1}
                 </Text>
               </Box>
             ))}
-            <Box className={sannsynlighet}>
+            <Box className={styles.sannsynlighet}>
               <Text
                 weight="bold"
-                variant="body-large"
-                className={`${centered} ${label2}`}
+                variant="title-x-small"
+                className={styles.centered}
               >
                 {t('dictionary.probability')}
               </Text>
