@@ -7,7 +7,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { URLS } from '../urls';
 import {
   CreateRiScResultDTO,
@@ -20,21 +20,15 @@ import {
   riScToDTOString,
   DeleteRiScResultDTO,
 } from './DTOs';
-import { ActionStatusOptions, latestSupportedVersion } from './constants';
+import { latestSupportedVersion } from './constants';
 import {
   DefaultRiScTypeDescriptor,
   DifferenceDTO,
   GithubRepoInfo,
   RiSc,
   RiScWithMetadata,
-  Scenario,
 } from './types';
-import {
-  calculateDaysSince,
-  calculateUpdatedStatus,
-  UpdatedStatusEnumType,
-  UpdatedStatusEnum,
-} from './utilityfunctions';
+
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
     useEntity().entity.metadata.annotations?.['backstage.io/view-url'].match(
@@ -366,6 +360,20 @@ export function useAuthenticatedFetch() {
   };
 }
 
+export const useDebouncedValue = <T>(value: T, delay = 500) => {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(timeout);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
 export function useDebounce<T>(
   value: T,
   delay: number,
@@ -412,130 +420,4 @@ export function useDebounce<T>(
     }
   }, []);
   return { flush };
-}
-
-type UseDisplayScenarios = (
-  tempScenarios: RiSc['scenarios'] | null | undefined,
-  visibleType: UpdatedStatusEnumType | null,
-  sortOrder?: string,
-) => RiSc['scenarios'];
-export const useDisplayScenarios: UseDisplayScenarios = (
-  tempScenarios,
-  visibleType,
-  sortOrder,
-) => {
-  return useMemo(() => {
-    if (!tempScenarios) return [] as RiSc['scenarios'];
-
-    const filtered = !visibleType
-      ? tempScenarios
-      : tempScenarios.filter(scenario =>
-          scenario.actions.some(action => {
-            const daysSinceLastUpdate = action.lastUpdated
-              ? calculateDaysSince(new Date(action.lastUpdated))
-              : null;
-            const status =
-              daysSinceLastUpdate !== null
-                ? calculateUpdatedStatus(daysSinceLastUpdate)
-                : UpdatedStatusEnum.VERY_OUTDATED;
-            return status === visibleType;
-          }),
-        );
-
-    const sorted = [...filtered].sort((a, b) => {
-      switch (sortOrder) {
-        case 'title':
-          return a.title.localeCompare(b.title, 'en');
-
-        case 'initialRisk':
-          return (
-            b.risk.consequence * b.risk.probability -
-            a.risk.consequence * a.risk.probability
-          );
-
-        case 'implementedActions':
-          return (
-            b.actions.filter(status => status.status === ActionStatusOptions.OK)
-              .length -
-            a.actions.filter(status => status.status === ActionStatusOptions.OK)
-              .length
-          );
-
-        case 'remainingActions': {
-          const remainingA = a.actions.filter(
-            action =>
-              action.status !== ActionStatusOptions.OK &&
-              action.status !== ActionStatusOptions.NotRelevant,
-          ).length;
-          const remainingB = b.actions.filter(
-            action =>
-              action.status !== ActionStatusOptions.OK &&
-              action.status !== ActionStatusOptions.NotRelevant,
-          ).length;
-          return remainingB - remainingA;
-        }
-
-        default:
-          return 0;
-      }
-    });
-
-    return sorted;
-  }, [tempScenarios, visibleType, sortOrder]);
-};
-
-export function useSearchActions(
-  scenarios: Scenario[] | undefined | null,
-  searchQuery: string,
-  debounceMs = 300,
-): { matches: Record<string, Scenario['actions']>; isDebouncing: boolean } {
-  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
-  const [hasTyped, setHasTyped] = useState(false);
-  const queryRef = useRef(searchQuery);
-
-  useEffect(() => {
-    queryRef.current = searchQuery;
-    const id = setTimeout(
-      () => setDebouncedQuery(queryRef.current),
-      debounceMs,
-    );
-    return () => clearTimeout(id);
-  }, [searchQuery, debounceMs]);
-
-  const isDebouncing = searchQuery !== debouncedQuery;
-
-  useEffect(() => {
-    if (searchQuery) setHasTyped(true);
-  }, [searchQuery]);
-
-  const findMatches = useCallback(
-    (query: string) => {
-      const result: Record<string, Scenario['actions']> = {};
-      if (!query || !scenarios) return result;
-      const q = query.toLowerCase();
-
-      for (const scenario of scenarios) {
-        const filtered = (scenario.actions ?? []).filter(a =>
-          (a.title ?? '').toLowerCase().includes(q),
-        );
-        if (filtered.length > 0) result[scenario.ID] = filtered;
-      }
-      return result;
-    },
-    [scenarios],
-  );
-
-  const matches = useMemo(
-    () => findMatches(debouncedQuery),
-    [findMatches, debouncedQuery],
-  );
-  const immediateMatches = useMemo(
-    () => findMatches(searchQuery),
-    [findMatches, searchQuery],
-  );
-
-  const shouldUseImmediate = !hasTyped || (!debouncedQuery && isDebouncing);
-  const returnedMatches = shouldUseImmediate ? immediateMatches : matches;
-
-  return { matches: returnedMatches, isDebouncing };
 }

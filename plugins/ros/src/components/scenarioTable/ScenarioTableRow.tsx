@@ -2,9 +2,16 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Collapse, IconButton } from '@material-ui/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { useState, useRef, useEffect, useMemo, MouseEvent } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  MouseEvent,
+  SetStateAction,
+  Dispatch,
+} from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Scenario } from '../../utils/types';
+import { RiScWithMetadata, Scenario } from '../../utils/types';
 import { useRiScs } from '../../contexts/RiScContext';
 import {
   deleteScenario,
@@ -12,166 +19,98 @@ import {
   findProbabilityIndex,
   getConsequenceLevel,
   getProbabilityLevel,
-  UpdatedStatusEnumType,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
 import { useTableStyles } from './ScenarioTableStyles';
 import { Text, Flex, Card } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
-import { useDrag, useDrop } from 'react-dnd';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { useTheme } from '@mui/material/styles';
-import {
-  getActionsWithUpdatedStatus,
-  getFilteredActions,
-} from '../../utils/actions.ts';
 import { ActionRowList } from '../action/ActionRowList.tsx';
 import { RiskMatrixSquare } from '../riskMatrix/RiskMatrixSquare.tsx';
+import {
+  useScenarioTableDrag,
+  useScenarioTableDrop,
+} from '../../hooks/UseScenarioTableDnD.ts';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
+  filteredActionIds?: string[];
+  isAnyFilterEnabled: boolean;
+  isDnDAllowed?: boolean;
   viewRow: (id: string) => void;
-  id: string;
-  index: number;
-  moveRowFinal: (dragId: string, dropId: string) => void;
-  moveRowLocal: (dragId: string, hoverId: string) => void;
+  listIndex: number;
   isEditing: boolean;
-  visibleType: UpdatedStatusEnumType | null;
-  allowDrag?: boolean;
-  searchMatches?: Scenario['actions'];
+  setTempScenarios: Dispatch<SetStateAction<Scenario[]>>;
+  riScWithMetadata: RiScWithMetadata;
 }
 
 export function ScenarioTableRow({
   scenario,
+  filteredActionIds,
+  isAnyFilterEnabled,
+  isDnDAllowed,
   viewRow,
-  id,
-  index,
-  moveRowFinal,
-  moveRowLocal,
+  listIndex,
   isEditing,
-  visibleType,
-  allowDrag = true,
-  searchMatches,
+  setTempScenarios,
+  riScWithMetadata,
 }: ScenarioTableRowProps) {
+  // Getting global state
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const theme = useTheme();
-  const { tableCard, tableCardNoHover } = useTableStyles();
-
   const { selectedRiSc: riSc, updateRiSc } = useRiScs();
   const { hoveredScenarios, setHoveredScenarios } = useScenario();
+
+  // Initializing local state
   const [isScenarioDeletionDialogOpen, setScenarioDeletionDialogOpen] =
     useState(false);
-
-  const [actionIdsOfVisibleType, setActionIdsOfVisibleType] = useState<
-    string[]
-  >([]);
-
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Drag n Drop functionality definitions
   const ref = useRef<HTMLDivElement>(null);
 
-  const [, drop] = useDrop({
-    accept: 'row',
-    hover(item: { id: string; index: number }, monitor) {
-      if (!ref.current) return;
-
-      const dragId = item.id;
-      const hoverId = id;
-
-      if (dragId === hoverId) return;
-
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-      const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
-
-      const buffer = hoverBoundingRect.height * 0.05;
-      if (item.index < index && hoverClientY < hoverMiddleY - buffer) return;
-      if (item.index > index && hoverClientY > hoverMiddleY + buffer) return;
-
-      moveRowLocal(dragId, hoverId!);
-
-      item.index = index;
-    },
-    drop() {
-      return { moved: true };
-    },
-  });
-
-  const [{ isDragging }, drag, preview] = useDrag(() => ({
-    type: 'row',
-    item: { id, index },
-
-    end: (item, monitor) => {
-      if (monitor.didDrop()) {
-        const dropResult = monitor.getDropResult() as {
-          moved?: boolean;
-        } | null;
-        if (dropResult?.moved && item.id && id) {
-          moveRowFinal(item.id, id);
-        }
-      }
-    },
-
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-    }),
-  }));
-
-  const actionsWithUpdatedStatus = useMemo(
-    () => getActionsWithUpdatedStatus(scenario.actions),
-    [scenario.actions],
-  );
-
-  const filteredActions = useMemo(
-    () =>
-      getFilteredActions(
-        actionsWithUpdatedStatus,
-        searchMatches,
-        actionIdsOfVisibleType,
-        visibleType,
-      ),
-    [
-      actionsWithUpdatedStatus,
-      searchMatches,
-      actionIdsOfVisibleType,
-      visibleType,
-    ],
+  const [, drop] = useScenarioTableDrop(
+    listIndex,
+    scenario.ID,
+    setTempScenarios,
+    ref,
   );
 
   useEffect(() => {
-    if (visibleType || isExpanded) {
+    setIsExpanded(!!filteredActionIds);
+  }, [filteredActionIds]);
+
+  const [{ isDragging }, drag, preview] = useScenarioTableDrag(
+    listIndex,
+    scenario.ID,
+    setTempScenarios,
+    riScWithMetadata,
+  );
+
+  preview(drop(ref));
+
+  // Styling
+  useEffect(() => {
+    if (isExpanded) {
       setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
     }
     // only run when visibleType or expansion changes for this scenario
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleType, isExpanded]);
+  }, [isExpanded]);
 
-  useEffect(() => {
-    const actions = actionsWithUpdatedStatus.filter(
-      a => a.updatedStatus === visibleType,
-    );
-    const actionIds = actions.map(a => a.ID);
-    setActionIdsOfVisibleType(actionIds);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleType]);
-
-  preview(drop(ref));
-
+  const theme = useTheme();
+  const { tableCard, tableCardNoHover } = useTableStyles();
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
+
   const highlightColor =
     theme.palette.mode === 'dark'
       ? 'var(--ros-gray-300)'
       : 'var(--ros-gray-100)';
   const isTextColorBlack =
-    theme.palette.mode === 'dark'
-      ? isScenarioHoveredFromRiskMatrix && !visibleType
-      : true;
+    theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;
   const textColorAsBuiVariable = isTextColorBlack
     ? 'var(--bui-black)'
     : 'var(--bui-white)';
@@ -179,13 +118,13 @@ export function ScenarioTableRow({
   return (
     <Card
       onMouseEnter={() => {
-        if (visibleType || isExpanded) return;
+        if (isExpanded) return;
         setHoveredScenarios(prev =>
           prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
         );
       }}
       onMouseLeave={() => {
-        if (visibleType || isExpanded) return;
+        if (isExpanded) return;
         setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
       }}
       ref={ref}
@@ -201,18 +140,17 @@ export function ScenarioTableRow({
         }
         viewRow(scenario.ID);
       }}
-      className={`${tableCard} ${visibleType || isExpanded ? tableCardNoHover : ''}`}
+      className={`${tableCard} ${isExpanded ? tableCardNoHover : ''}`}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
-        backgroundColor:
-          isScenarioHoveredFromRiskMatrix && !visibleType
-            ? highlightColor
-            : undefined,
+        backgroundColor: isScenarioHoveredFromRiskMatrix
+          ? highlightColor
+          : undefined,
       }}
     >
       <Flex align="center">
-        {isEditing && allowDrag && (
+        {isEditing && isDnDAllowed && (
           <IconButton size="small" ref={drag}>
             <DragIndicatorIcon
               sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
@@ -323,22 +261,17 @@ export function ScenarioTableRow({
           </Flex>
         )}
       </Flex>
-      {/* If there are filtered actions (search or updated badge), show them as before.
-          If the user expands the row, show all actions for the scenario regardless
-          of the current filters. */}
-      {filteredActions.length > 0 && !isExpanded && (
-        <div data-action-root>
-          <ActionRowList
-            scenarioId={scenario.ID}
-            displayedActions={filteredActions}
-          />
-        </div>
-      )}
-
       {isExpanded && (
         <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           <div data-action-root>
-            <ActionRowList scenarioId={scenario.ID} />
+            <ActionRowList
+              scenarioId={scenario.ID}
+              displayedActions={scenario.actions.filter(action =>
+                isAnyFilterEnabled && filteredActionIds
+                  ? filteredActionIds.includes(action.ID)
+                  : true,
+              )}
+            />
           </div>
         </Collapse>
       )}
