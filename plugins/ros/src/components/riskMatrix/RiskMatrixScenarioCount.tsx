@@ -1,14 +1,5 @@
-import {
-  ClickAwayListener,
-  List,
-  ListItem,
-  ListItemText,
-  ListSubheader,
-  Paper,
-  Tooltip,
-} from '@material-ui/core';
+import { ClickAwayListener, Paper, Tooltip } from '@material-ui/core';
 import { useState } from 'react';
-import CircleIcon from '@material-ui/icons/FiberManualRecord';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -20,6 +11,7 @@ import {
 } from '../../utils/utilityfunctions';
 import { Text } from '@backstage/ui';
 import { useTheme } from '@mui/material/styles';
+import styles from './RiskMatrixScenarioCount.module.css';
 
 interface ScenarioCountProps {
   riScWithMetadata: RiScWithMetadata;
@@ -36,8 +28,7 @@ export function RiskMatrixScenarioCount({
 }: ScenarioCountProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const theme = useTheme();
-  const { circle, centered, tooltip, tooltipArrow, tooltipText } =
-    useRiskMatrixStyles();
+  const { circle, centered, tooltip, tooltipArrow } = useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -79,32 +70,25 @@ export function RiskMatrixScenarioCount({
       : 'var(--ros-gray-100)';
 
   const tooltipList = (
-    <List dense>
-      <ListSubheader className={tooltipText}>
-        <Text variant="title-x-small" weight="bold" className={tooltipText}>
-          {t('riskMatrix.tooltip.title')}
-        </Text>
-      </ListSubheader>
-      {scenarios.map(s => (
-        <ListItem
-          key={s.ID}
-          button
-          disableGutters
-          className={tooltipText}
-          onClick={() => {
-            handleScenarioClick(s.ID);
-          }}
-        >
-          <CircleIcon className={tooltipText} style={{ width: '10px' }} />
-          <ListItemText
-            className={tooltipText}
-            style={{ paddingLeft: '0.6rem' }}
+    <div>
+      <Text variant="title-x-small" weight="bold">
+        {t('riskMatrix.tooltip.title')}
+      </Text>
+      <ul className={styles.tooltipList}>
+        {scenarios.map(scenario => (
+          <li
+            key={scenario.ID}
+            className={styles.tooltipListItem}
+            onClick={e => {
+              e.stopPropagation();
+              handleScenarioClick(scenario.ID);
+            }}
           >
-            <span>{s.title}</span>
-          </ListItemText>
-        </ListItem>
-      ))}
-    </List>
+            <Text>{scenario.title}</Text>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 
   return (

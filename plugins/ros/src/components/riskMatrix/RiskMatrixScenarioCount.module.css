@@ -1,0 +1,28 @@
+.tooltipList {
+    padding-left: 16px;
+    font-size: 16px;
+    color: var(--bui-black);
+}
+
+[data-theme-mode='dark'] .tooltipList {
+    color: var(--bui-white);
+}
+
+
+
+.tooltipListItem {
+    margin-bottom: 16px;
+}
+
+.tooltipListItem {
+    &:hover {
+        cursor: pointer;
+        background-color: var(--ros-gray-50);
+    }
+}
+
+[data-theme-mode='dark'] .tooltipListItem {
+    &:hover {
+        background-color: var(--ros-gray-600);
+    }
+}
