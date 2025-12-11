@@ -1,24 +1,21 @@
 import classNames from 'classnames';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../../../utils/translations.ts';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { Button } from '@backstage/ui';
 import {
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
-} from '../../../../utils/utilityfunctions.ts';
-import styles from './OutdatedActionsCountButton.module.css';
+} from '../../utils/utilityfunctions.ts';
+import styles from './ActionsCountButton.module.css';
 
-type OutdatedActionsCountButtonProps = {
+type ActionsCountButtonProps = {
   type: UpdatedStatusEnumType;
   count: number;
-  onToggle: (type: UpdatedStatusEnumType) => void;
+  onActionCountClick: (type: UpdatedStatusEnumType) => void;
   isSelected: boolean;
 };
-export function OutdatedActionsCountButton(
-  props: OutdatedActionsCountButtonProps,
-) {
+export function ActionsCountButton(props: ActionsCountButtonProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { onToggle } = props;
 
   const className = classNames(styles.OutdatedActionsCountButton, {
     [styles['OutdatedActionsCountButton--selected']]: props.isSelected,
@@ -52,7 +49,7 @@ export function OutdatedActionsCountButton(
     <Button
       className={className}
       size="small"
-      onClick={() => onToggle(props.type)}
+      onClick={() => props.onActionCountClick(props.type)}
       iconEnd={closeIndicator}
     >
       {t(translationKey)} ({props.count})
