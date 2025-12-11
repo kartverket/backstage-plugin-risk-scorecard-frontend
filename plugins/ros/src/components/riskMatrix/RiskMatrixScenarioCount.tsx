@@ -10,7 +10,6 @@ import {
 } from '../../utils/utilityfunctions';
 import { Text } from '@backstage/ui';
 import styles from './RiskMatrixScenarioCount.module.css';
-import riskMatrixSquareStyles from './RiskMatrixSquare.module.css';
 
 interface ScenarioCountProps {
   riScWithMetadata: RiScWithMetadata;
@@ -89,8 +88,8 @@ export function RiskMatrixScenarioCount({
       <Tooltip
         interactive
         classes={{
-          tooltip: riskMatrixSquareStyles.tooltip,
-          arrow: riskMatrixSquareStyles.tooltipArrow,
+          tooltip: styles.tooltip,
+          arrow: styles.tooltipArrow,
         }}
         title={tooltipList}
         placement="right"
@@ -98,10 +97,8 @@ export function RiskMatrixScenarioCount({
         open={tooltipOpen}
       >
         <Paper
-          className={`${riskMatrixSquareStyles.circle} ${riskMatrixSquareStyles.centered} ${
-            isHovered || isHighlightedFromExternal
-              ? riskMatrixSquareStyles.circleHovered
-              : ''
+          className={`${styles.circle} ${styles.centered} ${
+            isHovered || isHighlightedFromExternal ? styles.circleHovered : ''
           }`}
           elevation={10}
           onClick={() => setTooltipOpen(!tooltipOpen)}
@@ -122,11 +119,7 @@ export function RiskMatrixScenarioCount({
             );
           }}
         >
-          <Text
-            variant="body-large"
-            weight="bold"
-            className={riskMatrixSquareStyles.circleText}
-          >
+          <Text variant="body-large" weight="bold">
             {scenarios.length}
           </Text>
         </Paper>

@@ -45,58 +45,11 @@
   grid-column: 3 / span 5;
 }
 
-.circle.circle {
-  height: 60%;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  cursor: pointer;
-  min-height: 20px;
-}
-
-.circleHovered.circleHovered {
-  background-color: var(--ros-gray-300);
-}
-
-.tooltip.tooltip {
-  background-color: var(--bui-white);
-  padding: 16px;
-  max-width: 500px;
-}
-
-.tooltipText {
-  padding: 0;
-  color: var(--bui-black);
-}
-
-.tooltipArrow.tooltipArrow {
-  color: var(--bui-white);
-}
-
 .estimatedCostContainer {
   margin-top: 18px;
 }
 
 [data-theme-mode='dark'] {
-  .circleHovered.circleHovered {
-    background-color: var(--ros-gray-300);
-  }
-
-  .circleHovered.circleHovered .circleText {
-    color: var(--bui-black);
-  }
-
-  .tooltip.tooltip {
-    background-color: var(--bui-bg);
-  }
-
-  .tooltipText {
-    color: var(--bui-white);
-  }
-
-  .tooltipArrow.tooltipArrow {
-    color: var(--bui-bg);
-  }
-
   .matrixText {
     color: var(--bui-white);
   }
