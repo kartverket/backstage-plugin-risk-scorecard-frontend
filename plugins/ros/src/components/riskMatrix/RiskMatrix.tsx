@@ -8,7 +8,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiskMatrixTabs } from './utils';
 import { Card, CardBody, CardHeader, Text, Box } from '@backstage/ui';
 import { RiskMatrixSquare } from './RiskMatrixSquare.tsx';
-import styles from './RiskMatrixSquare.module.css';
+import styles from './RiskMatrix.module.css';
 export function RiskMatrix({
   riScWithMetadata,
 }: {
