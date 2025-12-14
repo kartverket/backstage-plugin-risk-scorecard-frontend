@@ -71,9 +71,17 @@ export function RiskMatrixScenarioCount({
           <li
             key={scenario.ID}
             className={styles.tooltipListItem}
+            role="button"
+            tabIndex={0}
             onClick={e => {
               e.stopPropagation();
               handleScenarioClick(scenario.ID);
+            }}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleScenarioClick(scenario.ID);
+              }
             }}
           >
             <Text>{scenario.title}</Text>
