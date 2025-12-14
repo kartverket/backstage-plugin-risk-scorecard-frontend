@@ -11,7 +11,10 @@ type ActionRowProps = {
   onRefreshActionStatus: (action: Action) => void;
   onNewActionStatus: (actionId: string, newStatus: ActionStatusOptions) => void;
   onDeleteAction: (actionId: string) => void;
-  onSaveAction: (newAction: Action) => void;
+  onSaveAction: (
+    newAction: Action,
+    setIsEditing?: (isEditing: boolean) => void,
+  ) => void;
   allowDeletion?: boolean;
   allowEdit?: boolean;
   optimisticStatus?: ActionStatusOptions;
@@ -29,8 +32,7 @@ export function ActionRow(props: ActionRowProps) {
       {isEditing ? (
         <ActionEdit
           onSaveAction={(a: Action) => {
-            props.onSaveAction(a);
-            setIsEditing(false);
+            props.onSaveAction(a, setIsEditing);
           }}
           onDeleteAction={() => setDeleteActionConfirmationIsOpen(true)}
           onCancelEdit={() => setIsEditing(false)}
