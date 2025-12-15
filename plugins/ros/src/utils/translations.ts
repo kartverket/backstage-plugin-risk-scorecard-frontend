@@ -63,6 +63,7 @@ export const pluginRiScMessages = {
     previous: 'Previous',
     probability: 'Probability', // Likelihood or Probability
     restRisk: 'Remaining risk', // Residual or Remaining risk
+    currentRisk: 'Current risk',
     removed: 'Removed',
     risk: 'Risk',
     save: 'Save',
@@ -284,6 +285,11 @@ export const pluginRiScMessages = {
     },
     tooltip: {
       title: 'Risk scenarios',
+    },
+    currentRisk: {
+      title: 'Risc reduction',
+      description:
+        "The diagram illustrates the development from today's initial risk to the calculated final risk. <strong>{{actionsOk}}</strong> completed actions represent a reduciton of <strong>{{reduction}} NOK/year.</strong>",
     },
   },
   infoDialog: {
@@ -699,6 +705,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.previous': 'Forrige',
           'dictionary.probability': 'Sannsynlighet',
           'dictionary.restRisk': 'Restrisiko',
+          'dictionary.currentRisk': 'Nårisiko',
           'dictionary.removed': 'Fjernet',
           'dictionary.risk': 'Risiko',
           'dictionary.save': 'Lagre',
@@ -905,6 +912,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             '{{count}} billioner',
           'riskMatrix.estimatedRisk.unit.nokPerYear': 'kr/år',
           'riskMatrix.tooltip.title': 'Risikoscenarioer',
+          'riskMatrix.currentRisk.title': 'Reduksjon i risiko',
+          'riskMatrix.currentRisk.description':
+            'Diagrammet illustrerer utviklingen fra dagens startrisiko mot beregnet sluttrisiko. <strong>{{actionsOk}}</strong> fullførte tiltak utgjør en reduksjon på <strong>{{reduction}} kr/år.</strong>',
 
           'infoDialog.title': 'Estimert risiko',
           'infoDialog.description':

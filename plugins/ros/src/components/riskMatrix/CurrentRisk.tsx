@@ -1,23 +1,21 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScWithMetadata } from '../../utils/types';
-import { Box, Text } from '@backstage/ui';
+import { Box, Text, Flex } from '@backstage/ui';
 import { ActionStatusOptions } from '../../utils/constants';
-import { calcRiskCostOfRiSc, getCurrentCostColor } from '../../utils/risk';
+import { calcRiskCostOfRiSc, getRiskGradient } from '../../utils/risk';
 import { RiskMatrixTabs } from './utils';
+import styles from './RiskMatrixSquare.module.css';
+import { formatNumber } from '../../utils/utilityfunctions';
 
 type CurrentRiskProps = {
   risc: RiScWithMetadata;
-  currentTab: RiskMatrixTabs;
 };
 
-export function CurrentRisk({ risc, currentTab }: CurrentRiskProps) {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
+// Bruke en gradient bar for å vise om current risk faktisk er bra/dårlig.
 
-  const totalActions = risc.content.scenarios.reduce(
-    (total, scenario) => total + scenario.actions.length,
-    0,
-  );
+export function CurrentRisk({ risc }: CurrentRiskProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const actionsOk = risc.content.scenarios.reduce(
     (total, scenario) =>
@@ -28,159 +26,99 @@ export function CurrentRisk({ risc, currentTab }: CurrentRiskProps) {
     0,
   );
 
-  const progressPercentage =
-    totalActions > 0 ? (actionsOk / totalActions) * 100 : 0;
+  const initialRiskCost = calcRiskCostOfRiSc(
+    risc.content,
+    RiskMatrixTabs.initialRisk,
+  );
+  const remainingRiskCost = calcRiskCostOfRiSc(
+    risc.content,
+    RiskMatrixTabs.remainingRisk,
+  );
+  const estimatedCurrentCost = calcRiskCostOfRiSc(
+    risc.content,
+    RiskMatrixTabs.currentRisk,
+  );
 
-  // Calculate initial and remaining risk costs
-  const initialRiskCost = calcRiskCostOfRiSc(risc.content, currentTab);
-
-  const remainingRiskCost = risc.content.scenarios
-    .map(
-      scenario =>
-        scenario.remainingRisk.probability * scenario.remainingRisk.consequence,
-    )
-    .reduce((a, b) => a + b, 0);
-
-  // Estimate current cost based on action completion (linear interpolation)
   const costReduction = initialRiskCost - remainingRiskCost;
-  const estimatedCurrentCost =
-    initialRiskCost - (costReduction * actionsOk) / totalActions;
 
-  // Calculate current cost as percentage of initial risk cost
-  const currentCostPercentage =
-    initialRiskCost > 0 ? (estimatedCurrentCost / initialRiskCost) * 100 : 0;
+  // Calculate progress percentage (how much cost has been reduced)
+  const costReductionPercentage =
+    costReduction > 0
+      ? ((initialRiskCost - estimatedCurrentCost) / costReduction) * 100
+      : 0;
+
+  const reduction = formatNumber(initialRiskCost - estimatedCurrentCost, t);
+
+  const description = t('riskMatrix.currentRisk.description', {
+    actionsOk: String(actionsOk),
+    reduction,
+  });
 
   return (
-    <Box style={{ marginTop: '18px' }}>
-      <Text variant="title-x-small" weight="bold">
-        Current Risk Component for {risc.content.title}
-      </Text>
-
-      <Box style={{ marginTop: '16px' }}>
-        <Text variant="body-large" weight="bold">
-          Overall Risk Cost Progress
+    <Flex direction="column" mt="18px">
+      <Flex direction="column" mt="16px">
+        <Text variant="title-x-small" weight="bold">
+          {t('riskMatrix.currentRisk.title')}
         </Text>
-        <Box
-          style={{
-            width: '100%',
-            height: '60px',
-            backgroundColor: 'var(--ros-gray-100)',
-            borderRadius: '8px',
-            overflow: 'hidden',
-            position: 'relative',
-            marginTop: '8px',
-            border: '2px solid black',
-          }}
-        >
-          {/* Calculate percentages for cost visualization */}
-          {initialRiskCost > 0 && (
-            <>
-              {/* Green fill for progress from current to target */}
-              <Box
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  right: `${(100 - (estimatedCurrentCost / initialRiskCost) * 100).toFixed(2)}%`,
-                  top: 0,
-                  bottom: 0,
-                  backgroundColor: getCurrentCostColor(
-                    estimatedCurrentCost,
-                    initialRiskCost,
-                    remainingRiskCost,
-                  ),
-                  transition: 'all 0.3s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                  paddingRight: '8px',
-                }}
-              >
-                {/* Percentage text inside the filled area */}
-                {currentCostPercentage > 10 && (
-                  <Text
-                    variant="body-large"
-                    weight="bold"
-                    style={{
-                      color: 'white',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-                    }}
-                  >
-                    {Math.round(currentCostPercentage)}%
-                  </Text>
-                )}
-              </Box>
-              {/* Current Cost marker */}
-              <Box
-                style={{
-                  position: 'absolute',
-                  left: `${((estimatedCurrentCost / initialRiskCost) * 100).toFixed(2)}%`,
-                  top: 0,
-                  bottom: 0,
-                  width: '1px',
-                  backgroundColor: 'var(--bui-black)',
-                  transform: 'translateX(-50%)',
-                }}
-              />
-            </>
-          )}
-        </Box>
-      </Box>
-
-      <Box style={{ marginTop: '24px' }}>
-        <Text variant="body-large" weight="bold">
-          Action Progress
-        </Text>
-        <Box
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            marginTop: '8px',
-          }}
-        >
-          <Box style={{ flex: 1 }}>
-            <Box
+        <Flex direction="column" gap="0">
+          <Flex justify="between" px="4px" align="end">
+            <Flex direction="column" align="start" gap="0">
+              <Text variant="body-small" weight="bold">
+                {formatNumber(initialRiskCost, t)}
+              </Text>
+              <Text variant="body-medium">← {t('dictionary.initialRisk')}</Text>
+            </Flex>
+            <Flex direction="column" align="end" gap="0">
+              <Text variant="body-small" weight="bold">
+                {formatNumber(remainingRiskCost, t)}
+              </Text>
+              <Text variant="body-medium">{t('dictionary.restRisk')} →</Text>
+            </Flex>
+          </Flex>
+          <Flex justify="center" className={styles.currentRiskPercentageLabel}>
+            <Text
+              variant="body-small"
+              weight="bold"
               style={{
-                width: '100%',
-                height: '40px',
-                backgroundColor: 'var(--ros-grey-100)',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                position: 'relative',
-                border: '2px solid black',
+                position: 'absolute',
+                top: '-20px',
+                left: `${costReductionPercentage.toFixed(2)}%`,
+                transform: 'translateX(-50%)',
+                transition: 'left 0.3s ease',
               }}
             >
-              <Box
-                style={{
-                  width: `${progressPercentage}%`,
-                  height: '100%',
-                  backgroundColor: 'var(--ros-green-300)',
-                  transition: 'width 0.3s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              />
-              <Box
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Text variant="body-large" weight="bold">
-                  {actionsOk} / {totalActions} Actions Completed
-                </Text>
-              </Box>
-            </Box>
+              {t('dictionary.currentRisk')}
+            </Text>
+          </Flex>
+          <Box className={styles.currentRiskBarContainer}>
+            {initialRiskCost > 0 && (
+              <>
+                <Flex
+                  align="center"
+                  justify="end"
+                  className={styles.currentRiskBarFill}
+                  style={{
+                    background: getRiskGradient(),
+                  }}
+                />
+                <Box
+                  className={styles.currentRiskMarker}
+                  style={{
+                    left: `${costReductionPercentage.toFixed(2)}%`,
+                  }}
+                />
+              </>
+            )}
           </Box>
-        </Box>
-      </Box>
-    </Box>
+        </Flex>
+      </Flex>
+
+      <Flex>
+        <Text
+          variant="body-large"
+          dangerouslySetInnerHTML={{ __html: description }}
+        />
+      </Flex>
+    </Flex>
   );
 }
