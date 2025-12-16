@@ -289,7 +289,7 @@ export const pluginRiScMessages = {
     currentRisk: {
       title: 'Risc reduction',
       description:
-        "The diagram illustrates the development from today's initial risk to the calculated final risk. <strong>{{actionsOk}}</strong> completed actions represent a reduciton of <strong>{{reduction}} NOK/year.</strong>",
+        "The diagram illustrates the development from today's initial risk to the calculated final risk. <strong>{{actionsOk}}</strong> completed actions represent a reduction of <strong>{{reduction}} NOK/year.</strong>",
     },
   },
   infoDialog: {

@@ -26,7 +26,7 @@ function calcRiskCostOfScenario(
       startRiskCost + (endRiskCost - startRiskCost) * completedActionsRatio
     );
   }
-  return -1; // Should never happen
+  throw new Error('Unable to calculate risk cost: unhandled risk type');
 }
 
 function calcCompletedActionsRatio(scenario: Scenario) {
