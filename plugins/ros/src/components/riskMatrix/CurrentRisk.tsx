@@ -5,7 +5,7 @@ import { Box, Text, Flex } from '@backstage/ui';
 import { ActionStatusOptions } from '../../utils/constants';
 import { calcRiskCostOfRiSc, getRiskGradient } from '../../utils/risk';
 import { RiskMatrixTabs } from './utils';
-import styles from './RiskMatrixSquare.module.css';
+import styles from './CurrentRisk.module.css';
 import { formatNumber } from '../../utils/utilityfunctions';
 
 type CurrentRiskProps = {
@@ -47,6 +47,18 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
       ? ((initialRiskCost - estimatedCurrentCost) / costReduction) * 100
       : 0;
 
+  const clampedPercentage = Math.max(
+    0,
+    Math.min(100, Number(costReductionPercentage.toFixed(2))),
+  );
+
+  let labelTransform = 'translateX(-50%)';
+  if (clampedPercentage <= 5) {
+    labelTransform = 'translateX(0%)';
+  } else if (clampedPercentage >= 95) {
+    labelTransform = 'translateX(-100%)';
+  }
+
   const reduction = formatNumber(initialRiskCost - estimatedCurrentCost, t);
 
   const description = t('riskMatrix.currentRisk.description', {
@@ -56,7 +68,7 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
 
   return (
     <Flex direction="column" mt="18px">
-      <Flex direction="column" mt="16px">
+      <Flex direction="column" mt="16px" mb="16px">
         <Text variant="title-x-small" weight="bold">
           {t('riskMatrix.currentRisk.title')}
         </Text>
@@ -64,51 +76,51 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
           <Flex justify="between" px="4px" align="end">
             <Flex direction="column" align="start" gap="0">
               <Text variant="body-small" weight="bold">
-                {formatNumber(initialRiskCost, t)}
+                {formatNumber(initialRiskCost, t)}{' '}
+                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
               </Text>
               <Text variant="body-medium">← {t('dictionary.initialRisk')}</Text>
             </Flex>
             <Flex direction="column" align="end" gap="0">
               <Text variant="body-small" weight="bold">
-                {formatNumber(remainingRiskCost, t)}
+                {formatNumber(remainingRiskCost, t)}{' '}
+                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
               </Text>
               <Text variant="body-medium">{t('dictionary.restRisk')} →</Text>
             </Flex>
           </Flex>
-          <Flex justify="center" className={styles.currentRiskPercentageLabel}>
-            <Text
-              variant="body-small"
-              weight="bold"
+          <Box className={styles.currentRiskBarWrapper}>
+            <Box className={styles.currentRiskBarContainer}>
+              {initialRiskCost > 0 && (
+                <>
+                  <Flex
+                    align="center"
+                    justify="end"
+                    className={styles.currentRiskBarFill}
+                    style={{
+                      background: getRiskGradient(),
+                    }}
+                  />
+                  <Box
+                    className={styles.currentRiskMarker}
+                    style={{
+                      left: `${clampedPercentage}%`,
+                    }}
+                  />
+                </>
+              )}
+            </Box>
+            <Flex
+              className={styles.currentRiskPercentageLabel}
               style={{
-                position: 'absolute',
-                top: '-20px',
-                left: `${costReductionPercentage.toFixed(2)}%`,
-                transform: 'translateX(-50%)',
-                transition: 'left 0.3s ease',
+                left: `${clampedPercentage}%`,
+                transform: labelTransform,
               }}
             >
-              {t('dictionary.currentRisk')}
-            </Text>
-          </Flex>
-          <Box className={styles.currentRiskBarContainer}>
-            {initialRiskCost > 0 && (
-              <>
-                <Flex
-                  align="center"
-                  justify="end"
-                  className={styles.currentRiskBarFill}
-                  style={{
-                    background: getRiskGradient(),
-                  }}
-                />
-                <Box
-                  className={styles.currentRiskMarker}
-                  style={{
-                    left: `${costReductionPercentage.toFixed(2)}%`,
-                  }}
-                />
-              </>
-            )}
+              <Text variant="body-small" weight="bold">
+                {t('dictionary.currentRisk')}
+              </Text>
+            </Flex>
           </Box>
         </Flex>
       </Flex>

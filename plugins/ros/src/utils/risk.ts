@@ -12,9 +12,11 @@ function calcRiskCostOfScenario(
   scenario: Scenario,
   riskType?: RiskMatrixTabs,
 ): number {
-  const startRiskCost = scenario.risk.probability * scenario.risk.consequence;
+  const startRiskCost =
+    (scenario.risk?.probability ?? 0) * (scenario.risk?.consequence ?? 0);
   const endRiskCost =
-    scenario.remainingRisk.probability * scenario.remainingRisk.consequence;
+    (scenario.remainingRisk?.probability ?? 0) *
+    (scenario.remainingRisk?.consequence ?? 0);
   if (riskType === RiskMatrixTabs.initialRisk) return startRiskCost;
   if (riskType === RiskMatrixTabs.remainingRisk) return endRiskCost;
 
@@ -37,6 +39,10 @@ function calcCompletedActionsRatio(scenario: Scenario) {
       (action.status as ActionStatusOptions) !==
       ActionStatusOptions.NotRelevant,
   ).length;
+
+  if (numOfRelevantActions === 0) {
+    return 0;
+  }
 
   return numOfCompletedActions / numOfRelevantActions;
 }
