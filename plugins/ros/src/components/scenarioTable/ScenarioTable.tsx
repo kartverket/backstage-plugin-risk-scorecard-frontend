@@ -2,21 +2,26 @@ import { useTableStyles } from './ScenarioTableStyles.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
-import { useEffect, useState } from 'react';
-import { useDisplayScenarios, useSearchActions } from '../../utils/hooks.ts';
+import { useEffect, useMemo, useState } from 'react';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Text, Flex, Box, Card } from '@backstage/ui';
 import { ScenarioTableRow } from './ScenarioTableRow.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
+import {
+  toScenarioSortingOption,
+  getFilteredActionsForScenarios,
+  getSortedScenarios,
+} from '../../utils/scenario.ts';
+import { useDebouncedValue } from '../../utils/hooks.ts';
 
 type ScenarioTableProps = {
-  sortOrder?: string | null;
+  scenarioSortOrder?: string | null;
   isEditing: boolean;
   isEditingAllowed: boolean;
   riScWithMetadata: RiScWithMetadata;
   visibleType: UpdatedStatusEnumType | null;
-  searchQuery: string;
+  actionSearchQuery: string;
 };
 
 export function ScenarioTable(props: ScenarioTableProps) {
@@ -24,11 +29,15 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const { tableCellDragIcon, tableCard } = useTableStyles();
   const riSc = props.riScWithMetadata.content;
   const [tempScenarios, setTempScenarios] = useState(riSc.scenarios);
-  const { updateRiSc, updateStatus } = useRiScs();
-  const visibleType = props.visibleType;
-  const sortOrder = props.sortOrder;
+  const debouncedSearchQuery = useDebouncedValue(props.actionSearchQuery);
+  const { updateStatus } = useRiScs();
 
   const { openScenarioDrawer } = useScenario();
+
+  const isAnyFilterEnabled = !!debouncedSearchQuery || !!props.visibleType;
+  const isDndAllowed =
+    !isAnyFilterEnabled &&
+    toScenarioSortingOption(props.scenarioSortOrder) === 'NoSorting';
 
   useEffect(() => {
     if (!updateStatus.isSuccess) {
@@ -49,68 +58,38 @@ export function ScenarioTable(props: ScenarioTableProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [riSc.scenarios, updateStatus.isSuccess]);
 
-  function moveRowLocal(dragId: string, hoverId: string) {
-    setTempScenarios(prev => {
-      const dragIndex = prev.findIndex(s => s.ID === dragId);
-      const hoverIndex = prev.findIndex(s => s.ID === hoverId);
-
-      if (dragIndex === -1 || hoverIndex === -1) return prev;
-
-      const updated = [...prev];
-      const [removed] = updated.splice(dragIndex, 1);
-
-      updated.splice(hoverIndex, 0, removed);
-      return updated;
-    });
-  }
-
-  function moveRowFinal(dragId: string, dropId: string) {
-    setTempScenarios(prev => {
-      const dragIndex = prev.findIndex(item => item.ID === dragId);
-      const dropIndex = prev.findIndex(item => item.ID === dropId);
-
-      if (dragIndex === -1 || dropIndex === -1) return prev;
-
-      const updatedScenarios = [...prev];
-      const [removed] = updatedScenarios.splice(dragIndex, 1);
-      updatedScenarios.splice(dropIndex, 0, removed);
-
-      const updatedRiSc = {
-        ...props.riScWithMetadata,
-        content: {
-          ...riSc,
-          scenarios: updatedScenarios,
-        },
-      };
-      updateRiSc(updatedRiSc, () => {});
-      return updatedScenarios;
-    });
-  }
-
-  const displayScenarios: RiSc['scenarios'] = useDisplayScenarios(
-    tempScenarios,
-    visibleType,
-    sortOrder ?? undefined,
+  /*
+  The following function are wrapped in useMemo to prevent recalculation
+  when hovering rows in the scenario table.
+   */
+  const filteredActionsForScenarios = useMemo(
+    () =>
+      getFilteredActionsForScenarios(
+        tempScenarios,
+        props.visibleType,
+        debouncedSearchQuery,
+      ),
+    [props.visibleType, debouncedSearchQuery, tempScenarios],
   );
 
-  const { matches: searchedActions } = useSearchActions(
-    riSc.scenarios,
-    props.searchQuery,
+  const scenariosWithAnyAction = tempScenarios.filter(scenario =>
+    filteredActionsForScenarios.has(scenario.ID),
   );
-  const scenariosToRender =
-    (props.searchQuery ?? '')
-      ? displayScenarios.filter(search => Boolean(searchedActions[search.ID]))
-      : displayScenarios;
 
-  const allowDrag = (sortOrder ?? '') === '';
+  const scenariosToDisplaySorted = getSortedScenarios(
+    isAnyFilterEnabled ? scenariosWithAnyAction : tempScenarios,
+    toScenarioSortingOption(props.scenarioSortOrder),
+  );
 
   return (
     <>
       <Flex p="24px 24px 18px 24px">
-        {props.isEditing && allowDrag && <div className={tableCellDragIcon} />}
+        {props.isEditing && isDndAllowed && (
+          <div className={tableCellDragIcon} />
+        )}
         <Box
           style={{
-            width: props.isEditing && allowDrag ? '33%' : '40%',
+            width: props.isEditing && isDndAllowed ? '33%' : '40%',
             paddingLeft: '5%',
           }}
         >
@@ -134,27 +113,30 @@ export function ScenarioTable(props: ScenarioTableProps) {
           </Text>
         </Box>
       </Flex>
-      {scenariosToRender.map((scenario, idx) => (
+      {scenariosToDisplaySorted.map((scenario, idx) => (
         <ScenarioTableRow
           key={scenario.ID}
           scenario={scenario}
-          id={scenario.ID}
-          index={idx}
-          visibleType={visibleType}
+          filteredActionIds={
+            isAnyFilterEnabled
+              ? filteredActionsForScenarios.get(scenario.ID)
+              : undefined
+          }
+          isAnyFilterEnabled={isAnyFilterEnabled}
+          isDnDAllowed={isDndAllowed}
+          listIndex={idx}
           viewRow={(id: string) =>
             openScenarioDrawer(id, props.isEditingAllowed)
           }
-          moveRowFinal={moveRowFinal}
-          moveRowLocal={moveRowLocal}
           isEditing={props.isEditing}
-          allowDrag={allowDrag}
-          searchMatches={searchedActions[scenario.ID]}
+          setTempScenarios={setTempScenarios}
+          riScWithMetadata={props.riScWithMetadata}
         />
       ))}
-      {props.searchQuery && scenariosToRender.length === 0 && (
+      {debouncedSearchQuery && filteredActionsForScenarios.size === 0 && (
         <Card className={tableCard}>
           <Flex align="center" justify="center">
-            {t('dictionary.searchQuery')} "{props.searchQuery}"
+            {t('dictionary.searchQuery')} "{debouncedSearchQuery}"
           </Flex>
         </Card>
       )}

@@ -1,25 +1,15 @@
-import {
-  ClickAwayListener,
-  List,
-  ListItem,
-  ListItemText,
-  ListSubheader,
-  Paper,
-  Tooltip,
-} from '@material-ui/core';
+import { ClickAwayListener, Paper, Tooltip } from '@material-ui/core';
 import { useState } from 'react';
-import CircleIcon from '@material-ui/icons/FiberManualRecord';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useRiskMatrixStyles } from './riskMatrixStyle';
 import { useScenario } from '../../contexts/ScenarioContext';
 import {
   findConsequenceIndex,
   findProbabilityIndex,
 } from '../../utils/utilityfunctions';
 import { Text } from '@backstage/ui';
-import { useTheme } from '@mui/material/styles';
+import styles from './RiskMatrixScenarioCount.module.css';
 
 interface ScenarioCountProps {
   riScWithMetadata: RiScWithMetadata;
@@ -35,9 +25,6 @@ export function RiskMatrixScenarioCount({
   initialRisk,
 }: ScenarioCountProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const theme = useTheme();
-  const { circle, centered, tooltip, tooltipArrow, tooltipText } =
-    useRiskMatrixStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -73,52 +60,55 @@ export function RiskMatrixScenarioCount({
   const isHighlightedFromExternal = scenarios.some(s =>
     hoveredScenarios.some(h => h.ID === s.ID),
   );
-  const highlightColor =
-    theme.palette.mode === 'dark'
-      ? 'var(--ros-gray-300)'
-      : 'var(--ros-gray-100)';
 
   const tooltipList = (
-    <List dense>
-      <ListSubheader className={tooltipText}>
-        <Text variant="title-x-small" weight="bold" className={tooltipText}>
-          {t('riskMatrix.tooltip.title')}
-        </Text>
-      </ListSubheader>
-      {scenarios.map(s => (
-        <ListItem
-          key={s.ID}
-          button
-          disableGutters
-          className={tooltipText}
-          onClick={() => {
-            handleScenarioClick(s.ID);
-          }}
-        >
-          <CircleIcon className={tooltipText} style={{ width: '10px' }} />
-          <ListItemText
-            className={tooltipText}
-            style={{ paddingLeft: '0.6rem' }}
-          >
-            <span>{s.title}</span>
-          </ListItemText>
-        </ListItem>
-      ))}
-    </List>
+    <div>
+      <Text variant="title-x-small" weight="bold">
+        {t('riskMatrix.tooltip.title')}
+      </Text>
+      <ul className={styles.tooltipList}>
+        {scenarios.map(scenario => (
+          <li key={scenario.ID}>
+            <div
+              className={styles.tooltipListItem}
+              role="button"
+              tabIndex={0}
+              onClick={e => {
+                e.stopPropagation();
+                handleScenarioClick(scenario.ID);
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleScenarioClick(scenario.ID);
+                }
+              }}
+            >
+              <Text>{scenario.title}</Text>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 
   return (
     <ClickAwayListener onClickAway={() => setTooltipOpen(false)}>
       <Tooltip
         interactive
-        classes={{ tooltip: tooltip, arrow: tooltipArrow }}
+        classes={{
+          tooltip: styles.tooltip,
+          arrow: styles.tooltipArrow,
+        }}
         title={tooltipList}
         placement="right"
         arrow
         open={tooltipOpen}
       >
         <Paper
-          className={`${circle} ${centered}`}
+          className={`${styles.circle} ${styles.centered} ${
+            isHovered || isHighlightedFromExternal ? styles.circleHovered : ''
+          }`}
           elevation={10}
           onClick={() => setTooltipOpen(!tooltipOpen)}
           onMouseEnter={() => {
@@ -137,24 +127,8 @@ export function RiskMatrixScenarioCount({
               prev.filter(s => !scenarios.some(s2 => s2.ID === s.ID)),
             );
           }}
-          style={{
-            backgroundColor:
-              isHovered || isHighlightedFromExternal
-                ? highlightColor
-                : undefined,
-          }}
         >
-          <Text
-            variant="body-large"
-            weight="bold"
-            style={{
-              color:
-                !(isHovered || isHighlightedFromExternal) &&
-                theme.palette.mode === 'dark'
-                  ? 'var(--bui-white)'
-                  : 'var(--bui-black)',
-            }}
-          >
+          <Text variant="body-large" weight="bold">
             {scenarios.length}
           </Text>
         </Paper>

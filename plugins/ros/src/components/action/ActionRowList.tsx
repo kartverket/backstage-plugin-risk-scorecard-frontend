@@ -70,7 +70,10 @@ export function ActionRowList(props: ActionRowListProps) {
     submitEditedScenarioToRiSc(newScenario);
   };
 
-  const onSaveAction = (newAction: Action) => {
+  const onSaveAction = (
+    newAction: Action,
+    setIsEditing?: (isEditing: boolean) => void,
+  ) => {
     const oldScenario = getScenarioOfIdFromRiSc(props.scenarioId, selectedRiSc);
     if (!oldScenario) return;
     submitEditedScenarioToRiSc(
@@ -82,6 +85,11 @@ export function ActionRowList(props: ActionRowListProps) {
       },
       {
         profileInfo: profileInfo,
+        onSuccess: () => {
+          if (setIsEditing) {
+            setIsEditing(false);
+          }
+        },
       },
     );
   };

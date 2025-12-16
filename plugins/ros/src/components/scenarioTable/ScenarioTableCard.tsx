@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
 import {
   computeStatusCount,
@@ -7,7 +7,7 @@ import {
 } from '../../utils/utilityfunctions';
 import { Card, CardBody, CardHeader, Flex } from '@backstage/ui';
 import { ScenarioTableCardHeader } from './ScenarioTableCardHeader.tsx';
-import { OutdatedActionsCounts } from './OutdatedActionsCounts.tsx';
+import { ActionCountButtons } from './ActionCountButtons.tsx';
 import { AddScenarioButton } from './AddScenarioButton.tsx';
 import { ScenarioTable } from './ScenarioTable.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
@@ -22,35 +22,32 @@ export function ScenarioTableCard({
   riScWithMetadata,
   editingAllowed,
 }: ScenarioTableProps) {
-  const riSc = riScWithMetadata.content;
   const { openNewScenarioWizard } = useScenario();
-  const { veryOutdatedCount, outdatedCount, updatedCount } =
-    computeStatusCount(riScWithMetadata);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const [visibleType, setVisibleType] = useState<UpdatedStatusEnumType | null>(
+  const { veryOutdatedCount, outdatedCount, updatedCount } =
+    computeStatusCount(riScWithMetadata);
+  const [selectedUpdatedStatus, setSelectedUpdatedStatus] =
+    useState<UpdatedStatusEnumType | null>(null);
+
+  // Remove updated status selection if there is none to display
+  const updatedStatusToDisplay =
+    (selectedUpdatedStatus === UpdatedStatusEnum.VERY_OUTDATED &&
+      veryOutdatedCount === 0) ||
+    (selectedUpdatedStatus === UpdatedStatusEnum.OUTDATED &&
+      outdatedCount === 0)
+      ? null
+      : selectedUpdatedStatus;
+
+  function handleActionCountClick(type: UpdatedStatusEnumType) {
+    setSelectedUpdatedStatus(prev => (prev === type ? null : type));
+  }
+  const [scenarioSortOrder, setScenarioSortOrder] = useState<string | null>(
     null,
   );
 
-  useEffect(() => {
-    if (
-      visibleType === UpdatedStatusEnum.VERY_OUTDATED &&
-      veryOutdatedCount === 0
-    ) {
-      setVisibleType(null);
-    }
-    if (visibleType === UpdatedStatusEnum.OUTDATED && outdatedCount === 0) {
-      setVisibleType(null);
-    }
-  }, [visibleType, veryOutdatedCount, outdatedCount]);
-
-  function handleToggle(type: UpdatedStatusEnumType) {
-    setVisibleType(prev => (prev === type ? null : type));
-  }
-  const [sortOrder, setSortOrder] = useState<string | null>(null);
-
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [actionSearchQuery, setActionSearchQuery] = useState<string>('');
 
   return (
     <Card>
@@ -59,40 +56,42 @@ export function ScenarioTableCard({
       </CardHeader>
       <CardBody style={{ paddingTop: '12px' }}>
         {(veryOutdatedCount > 0 || outdatedCount > 0) && (
-          <OutdatedActionsCounts
+          <ActionCountButtons
             veryOutdatedCount={veryOutdatedCount}
             outdatedCount={outdatedCount}
             updatedCount={updatedCount}
-            onToggle={handleToggle}
-            visibleType={visibleType}
+            onActionCountClick={handleActionCountClick}
+            updatedStatusToDisplay={updatedStatusToDisplay}
           />
         )}
-        {riSc.scenarios.length === 0 && editingAllowed ? (
+        {riScWithMetadata.content.scenarios.length === 0 && editingAllowed ? (
           <Flex justify="center">
             <AddScenarioButton onNewScenario={openNewScenarioWizard} />
           </Flex>
         ) : (
           <>
             <ScenarioTableFilter
-              value={sortOrder}
-              onChange={setSortOrder}
-              isEditing={isEditing}
-              isEditingAllowed={riSc.scenarios.length > 0 && editingAllowed}
-              onNewScenario={openNewScenarioWizard}
-              onToggleEdit={() =>
+              scenarioSortOrder={scenarioSortOrder}
+              onScenarioSortOrderChange={setScenarioSortOrder}
+              isEditingScenarioTable={isEditing}
+              actionSearchQuery={actionSearchQuery}
+              onActionSearchQueryChange={setActionSearchQuery}
+              isEditingScenarioTableAllowed={
+                riScWithMetadata.content.scenarios.length > 0 && editingAllowed
+              }
+              onToggleEditScenarioTable={() =>
                 isEditing ? setIsEditing(false) : setIsEditing(true)
               }
-              searchQuery={searchQuery}
-              onSearchQueryChange={setSearchQuery}
+              onNewScenario={openNewScenarioWizard}
             />
 
             <ScenarioTable
-              sortOrder={sortOrder}
+              riScWithMetadata={riScWithMetadata}
               isEditingAllowed={editingAllowed}
               isEditing={isEditing}
-              riScWithMetadata={riScWithMetadata}
-              visibleType={visibleType}
-              searchQuery={searchQuery}
+              visibleType={updatedStatusToDisplay}
+              actionSearchQuery={actionSearchQuery}
+              scenarioSortOrder={scenarioSortOrder}
             />
           </>
         )}
