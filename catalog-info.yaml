@@ -12,6 +12,6 @@ spec:
   consumesApis:
     - backstage-plugin-risk-scorecard-backend-api
   dependsOn:
-    - backstage-plugin-risk-scorecard-backend
-    - backstage-plugin-risk-crypto-service
-    - initialize-risc-api
+    - component:backstage-plugin-risk-scorecard-backend
+    - component:backstage-plugin-risk-crypto-service
+    - component:initialize-risc-api
