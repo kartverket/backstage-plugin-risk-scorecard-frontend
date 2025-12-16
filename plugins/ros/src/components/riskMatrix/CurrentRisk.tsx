@@ -12,8 +12,6 @@ type CurrentRiskProps = {
   risc: RiScWithMetadata;
 };
 
-// Bruke en gradient bar for å vise om current risk faktisk er bra/dårlig.
-
 export function CurrentRisk({ risc }: CurrentRiskProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -41,7 +39,6 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
 
   const costReduction = initialRiskCost - remainingRiskCost;
 
-  // Calculate progress percentage (how much cost has been reduced)
   const costReductionPercentage =
     costReduction > 0
       ? ((initialRiskCost - estimatedCurrentCost) / costReduction) * 100
