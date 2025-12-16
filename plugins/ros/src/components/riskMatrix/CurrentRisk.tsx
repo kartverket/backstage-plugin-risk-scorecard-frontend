@@ -64,13 +64,13 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
   });
 
   return (
-    <Flex direction="column" mt="18px">
-      <Flex direction="column" mt="16px" mb="16px">
+    <Flex direction="column" pt="30px">
+      <Flex direction="column" pb="16px">
         <Text variant="title-x-small" weight="bold">
           {t('riskMatrix.currentRisk.title')}
         </Text>
         <Flex direction="column" gap="0">
-          <Flex justify="between" px="4px" align="end">
+          <Flex justify="between" px="4px" align="end" pb="4px">
             <Flex direction="column" align="start" gap="0">
               <Text variant="body-small" weight="bold">
                 {formatNumber(initialRiskCost, t)}{' '}
@@ -114,7 +114,7 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
                 transform: labelTransform,
               }}
             >
-              <Text variant="body-small" weight="bold">
+              <Text variant="body-medium" weight="bold">
                 {t('dictionary.currentRisk')}
               </Text>
             </Flex>

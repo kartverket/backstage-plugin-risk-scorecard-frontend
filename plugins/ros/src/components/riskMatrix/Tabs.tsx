@@ -46,7 +46,7 @@ export function MatrixTabs({ setTab, currentTab }: MatrixTabsProps) {
           className={styles.tabButtonTextBase}
           data-selected={currentTab === RiskMatrixTabs.currentRisk}
         >
-          Nå risiko
+          {t('dictionary.currentRisk')}
         </Text>
       </Button>
 
