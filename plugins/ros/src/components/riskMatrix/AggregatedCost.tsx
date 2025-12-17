@@ -8,30 +8,32 @@ import { formatNumber } from '../../utils/utilityfunctions';
 import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
 import { Box, Flex, Text } from '@backstage/ui';
 import styles from './AggregatedCost.module.css';
+import { calcRiskCostOfRiSc } from '../../utils/risk';
+import { RiskMatrixTabs } from './utils';
 
 interface AggregatedCostProps {
   riSc: RiSc;
-  initialRisk: boolean;
+  riskType?: RiskMatrixTabs;
 }
 
-export function AggregatedCost({ riSc, initialRisk }: AggregatedCostProps) {
+export function AggregatedCost({ riSc, riskType }: AggregatedCostProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [showDialog, setShowDialog] = useState(false);
 
-  const cost = riSc.scenarios
-    .map(scenario => {
-      return initialRisk
-        ? scenario.risk.probability * scenario.risk.consequence
-        : scenario.remainingRisk.probability *
-            scenario.remainingRisk.consequence;
-    })
-    .reduce((a, b) => a + b, 0);
+  const cost = calcRiskCostOfRiSc(riSc, riskType);
+
+  const riskLabel = {
+    [RiskMatrixTabs.initialRisk]: t('dictionary.initialRisk'),
+    [RiskMatrixTabs.remainingRisk]: t('dictionary.restRisk'),
+    [RiskMatrixTabs.currentRisk]: t('dictionary.currentRisk'),
+  };
 
   return (
     <Box className={styles.boxStyle}>
       <Text as="h3" variant="body-large" weight="bold">
-        {t('riskMatrix.estimatedRisk.title')}
+        {t('riskMatrix.estimatedRisk.title')}{' '}
+        {riskType && `(${riskLabel[riskType]})`}
       </Text>
       <Flex align="center" gap="0">
         <Text variant="body-large">
