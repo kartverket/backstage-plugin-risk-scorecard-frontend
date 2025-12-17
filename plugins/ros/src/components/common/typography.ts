@@ -1,18 +1,5 @@
 import { SxProps, Theme } from '@mui/material/styles';
 
-export const body2: SxProps<Theme> = {
-  fontSize: '1rem',
-  fontWeight: 400,
-  whiteSpace: 'pre-line',
-};
-
-export const label: SxProps<Theme> = {
-  fontSize: '0.875rem',
-  fontWeight: 700,
-  textTransform: 'uppercase',
-  paddingBottom: '0.4rem',
-};
-
 export const formLabel: SxProps<Theme> = {
   fontSize: '0.875rem',
   fontWeight: 700,

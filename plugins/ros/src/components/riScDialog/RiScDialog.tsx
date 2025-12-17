@@ -41,7 +41,9 @@ function RiScStepper({ activeStep }: { activeStep: number }) {
     <Stepper activeStep={activeStep} alternativeLabel>
       {steps.map(label => (
         <Step key={label}>
-          <StepLabel>{label}</StepLabel>
+          <StepLabel>
+            <Text>{label}</Text>
+          </StepLabel>
         </Step>
       ))}
     </Stepper>

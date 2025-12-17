@@ -20,7 +20,6 @@ import {
 } from '../../contexts/ScenarioContext';
 import { useRiScs } from '../../contexts/RiScContext';
 import Container from '@mui/material/Container';
-import { label } from '../common/typography';
 import { useForm } from 'react-hook-form';
 import { FormScenario, Scenario } from '../../utils/types';
 import { useSearchParams } from 'react-router-dom';
@@ -139,8 +138,8 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
       >
         {scenarioWizardSteps.map(wizardStep => (
           <Step key={wizardStep} completed={false}>
-            <StepButton sx={label} onClick={() => selectStep(wizardStep)}>
-              {t(`dictionary.${wizardStep}`)}
+            <StepButton onClick={() => selectStep(wizardStep)}>
+              <Text>{t(`dictionary.${wizardStep}`)}</Text>
             </StepButton>
           </Step>
         ))}
