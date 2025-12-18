@@ -8,12 +8,16 @@ import { Flex, Text } from '@backstage/ui';
 import Divider from '@mui/material/Divider';
 import { useDebounce } from '../../utils/hooks.ts';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
-import { UpdatedStatusEnum } from '../../utils/utilityfunctions.ts';
+import {
+  UpdatedStatusEnum,
+  UpdatedStatusEnumType,
+} from '../../utils/utilityfunctions.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { getScenarioOfIdFromRiSc } from '../../utils/scenario.ts';
 import styles from './ActionRowList.module.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { getUpdatedStatus } from '../../utils/actions.ts';
 
 type ActionRowListProps = {
   scenarioId: string;
@@ -172,29 +176,47 @@ export function ActionRowList(props: ActionRowListProps) {
   return (
     <Flex direction="column">
       <Divider />
-      {actions.map((action, index) => (
-        <Fragment key={`Action-${action.ID}-${index}`}>
-          <ActionRow
-            action={action}
-            index={index}
-            onRefreshActionStatus={onRefreshActionStatus}
-            onNewActionStatus={onNewActionStatus}
-            onDeleteAction={onDeleteAction}
-            onSaveAction={onSaveAction}
-            optimisticUpdatedStatus={
-              pendingActionUpdatesHistory.includes(action.ID)
-                ? UpdatedStatusEnum.UPDATED
-                : undefined
-            }
-            optimisticStatus={
-              pendingActionStatusUpdates[props.scenarioId]?.[action.ID]
-            }
-            allowDeletion={props.allowDeletion}
-            allowEdit={props.allowEdit}
-          />
-          <Divider />
-        </Fragment>
-      ))}
+      {actions.map((action, index) => {
+        const isActionUpdating =
+          !!pendingActionStatusUpdates[props.scenarioId]?.[action.ID];
+        let s: string = '';
+        if (isActionUpdating) {
+          s = 'LOADING';
+        } else {
+          if (pendingActionUpdatesHistory.includes(action.ID)) {
+            s = 'UPDATED';
+          } else {
+            s =
+              getUpdatedStatus(action).toString() === 'UPDATED'
+                ? 'NONE'
+                : getUpdatedStatus(action).toString(); // this gives updated. should be none or outdated/very outdated
+          }
+        }
+        return (
+          <Fragment key={`Action-${action.ID}-${index}`}>
+            <ActionRow
+              action={action}
+              index={index}
+              onRefreshActionStatus={onRefreshActionStatus}
+              onNewActionStatus={onNewActionStatus}
+              onDeleteAction={onDeleteAction}
+              onSaveAction={onSaveAction}
+              updatedStatus={s as UpdatedStatusEnumType | 'LOADING'}
+              optimisticUpdatedStatus={
+                pendingActionUpdatesHistory.includes(action.ID)
+                  ? UpdatedStatusEnum.UPDATED
+                  : undefined
+              }
+              optimisticStatus={
+                pendingActionStatusUpdates[props.scenarioId]?.[action.ID]
+              }
+              allowDeletion={props.allowDeletion}
+              allowEdit={props.allowEdit}
+            />
+            <Divider />
+          </Fragment>
+        );
+      })}
     </Flex>
   );
 }
