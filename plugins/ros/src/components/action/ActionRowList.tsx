@@ -183,7 +183,7 @@ export function ActionRowList(props: ActionRowListProps) {
       {actions.map((action, index) => {
         const isActionUpdating =
           !!pendingActionStatusUpdates[props.scenarioId]?.[action.ID];
-        let s: string = '';
+        let s: string;
         if (isActionUpdating) {
           s = 'LOADING';
         } else {
