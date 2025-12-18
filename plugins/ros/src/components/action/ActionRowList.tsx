@@ -47,7 +47,6 @@ export function ActionRowList(props: ActionRowListProps) {
         [action.ID]: action.status as ActionStatusOptions,
       },
     }));
-    setPendingActionUpdatesHistory(prev => [...prev, action.ID]);
   };
 
   const onNewActionStatus = (
@@ -61,7 +60,6 @@ export function ActionRowList(props: ActionRowListProps) {
         [actionId]: newStatus,
       },
     }));
-    setPendingActionUpdatesHistory(prev => [...prev, actionId]);
   };
 
   const onDeleteAction = (actionId: string) => {
@@ -125,20 +123,26 @@ export function ActionRowList(props: ActionRowListProps) {
           ),
           profileInfo: profileInfo,
           onSuccess: () => {
-            setPendingActionStatusUpdates({});
+            setPendingActionStatusUpdates(prevStatusUpdates => {
+              const scenarioUpdates = prevStatusUpdates[scenarioId];
+
+              if (scenarioUpdates) {
+                const actionIds = Object.keys(scenarioUpdates);
+
+                if (actionIds.length > 0) {
+                  setPendingActionUpdatesHistory(prevHistory => [
+                    ...prevHistory,
+                    ...actionIds,
+                  ]);
+                }
+              }
+
+              return {};
+            });
           },
           onError: () => {
             // TODO: Should probably retry once before canceling updates
-            setPendingActionStatusUpdates(prevStatusUpdates => {
-              setPendingActionUpdatesHistory(prevHistory =>
-                prevHistory.filter(actionId =>
-                  Object.keys(prevStatusUpdates[scenarioId] ?? {}).includes(
-                    actionId,
-                  ),
-                ),
-              );
-              return {};
-            });
+            setPendingActionStatusUpdates({});
           },
         });
       });
