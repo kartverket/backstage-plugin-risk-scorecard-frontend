@@ -4,7 +4,6 @@ import { Tooltip } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions';
 import styles from './UpdatedStatusBadgeV2.module.css';
-import CircularProgress from '@mui/material/CircularProgress';
 
 type Props = {
   status?: UpdatedStatusEnumType | 'LOADING';
@@ -27,9 +26,8 @@ export function UpdatedStatusBadgeV2({ status }: Props) {
     return (
       <span className={`${styles.badge} ${styles.loading}`}>
         <Flex direction="row" gap="4px">
-          <CircularProgress size={15} />
           <Text as="p" className={styles.text}>
-            Oppdaterer
+            Lagrer...
           </Text>
         </Flex>
       </span>
