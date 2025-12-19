@@ -229,7 +229,7 @@ function getUpdatedStatusOfAction(
       updatedStatus =
         getUpdatedStatus(action).toString() === 'UPDATED'
           ? 'NONE'
-          : getUpdatedStatus(action); // this gives updated. should be none or outdated/very outdated
+          : getUpdatedStatus(action);
     }
   }
   return updatedStatus;
