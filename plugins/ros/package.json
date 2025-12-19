@@ -35,7 +35,6 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
-    "publishToNpm": "npm publish",
     "tsc": "tsc",
     "_rm-node-modules": "rm -rf node_modules/ && cp -vnr node_modules_dummy/ node_modules/",
     "rm-node-modules": "yarn run _rm-node-modules"
