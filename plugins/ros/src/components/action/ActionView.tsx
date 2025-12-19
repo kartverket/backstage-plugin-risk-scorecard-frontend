@@ -18,7 +18,7 @@ import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Action } from '../../utils/types.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { UpdatedStatusBadgeV2 } from '../common/UpdatedStatusBadgeV2.tsx';
+import { UpdatedStatusBadge } from '../common/UpdatedStatusBadge.tsx';
 
 type ActionViewProps = {
   action: Action;
@@ -26,11 +26,10 @@ type ActionViewProps = {
   onNewActionStatus: (actionId: string, newStatus: ActionStatusOptions) => void;
   toggleEditMode: () => void;
   openDeleteDialog: () => void;
+  updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
+  optimisticStatus?: ActionStatusOptions;
   allowDeletion?: boolean;
   allowEdit?: boolean;
-  optimisticStatus?: ActionStatusOptions;
-  optimisticUpdatedStatus?: UpdatedStatusEnumType;
-  updatedStatus?: UpdatedStatusEnumType | 'LOADING';
   index?: number;
 };
 
@@ -87,7 +86,7 @@ export function ActionView(props: ActionViewProps) {
               />
             </IconButton>
             <Flex direction="column" gap="1">
-              <UpdatedStatusBadgeV2 status={props.updatedStatus} />
+              <UpdatedStatusBadge status={props.updatedStatus} />
               <Text variant="body-large">
                 {props.action.title ??
                   `${t('dictionary.measure')} ${props.index ?? ''}`}

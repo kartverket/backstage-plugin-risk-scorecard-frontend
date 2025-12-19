@@ -1,40 +1,22 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Text } from '@backstage/ui';
+import { Flex, Text } from '@backstage/ui';
 import { Tooltip } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import {
-  UpdatedStatusEnum,
-  UpdatedStatusEnumType,
-} from '../../utils/utilityfunctions';
+import { UpdatedStatusEnumType } from '../../utils/utilityfunctions';
 import styles from './UpdatedStatusBadge.module.css';
 
-type Props = {
-  status?: UpdatedStatusEnumType | null;
-  isPending?: boolean;
+type UpdatedStatusBadgeProps = {
+  status?: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
 };
 
-export default function UpdatedStatusBadge({
-  status,
-  isPending = false,
-}: Props) {
+export function UpdatedStatusBadge(props: UpdatedStatusBadgeProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  let ariaLabel: string | undefined;
-  if (isPending) {
-    ariaLabel = t('rosStatus.updated');
-  } else if (status === UpdatedStatusEnum.VERY_OUTDATED) {
-    ariaLabel = t('rosStatus.veryOutdated');
-  } else if (status === UpdatedStatusEnum.OUTDATED) {
-    ariaLabel = t('rosStatus.outdated');
-  } else {
-    ariaLabel = undefined;
-  }
-
-  if (isPending) {
+  if (props.status === 'UPDATED') {
     return (
       <span
-        className={`${styles.badge} ${styles.pending}`}
-        aria-label={ariaLabel}
+        className={`${styles.badge} ${styles.updated}`}
+        aria-label={t('rosStatus.updated')}
       >
         <Text as="p" className={styles.text}>
           {t('rosStatus.updated')}
@@ -43,12 +25,27 @@ export default function UpdatedStatusBadge({
     );
   }
 
-  if (status === UpdatedStatusEnum.VERY_OUTDATED) {
+  if (props.status === 'UPDATING') {
+    return (
+      <span
+        className={`${styles.badge} ${styles.updating}`}
+        aria-label={t('rosStatus.updating')}
+      >
+        <Flex direction="row" gap="4px">
+          <Text as="p" className={styles.text}>
+            {t('rosStatus.updating')}
+          </Text>
+        </Flex>
+      </span>
+    );
+  }
+
+  if (props.status === 'VERY_OUTDATED') {
     return (
       <Tooltip title={t('rosStatus.updatedStatus.tooltip.VERY_OUTDATED')}>
         <span
           className={`${styles.badge} ${styles.veryOutdated}`}
-          aria-label={ariaLabel}
+          aria-label={t('rosStatus.veryOutdated')}
         >
           <Text as="p" className={styles.text}>
             {t('rosStatus.veryOutdated')}
@@ -58,12 +55,12 @@ export default function UpdatedStatusBadge({
     );
   }
 
-  if (status === UpdatedStatusEnum.OUTDATED) {
+  if (props.status === 'OUTDATED') {
     return (
       <Tooltip title={t('rosStatus.updatedStatus.tooltip.OUTDATED')}>
         <span
           className={`${styles.badge} ${styles.outdated}`}
-          aria-label={ariaLabel}
+          aria-label={t('rosStatus.outdated')}
         >
           <Text as="p" className={styles.text}>
             {t('rosStatus.outdated')}

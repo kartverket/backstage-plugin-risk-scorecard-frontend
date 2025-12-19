@@ -8,10 +8,7 @@ import { Flex, Text } from '@backstage/ui';
 import Divider from '@mui/material/Divider';
 import { useDebounce } from '../../utils/hooks.ts';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
-import {
-  UpdatedStatusEnum,
-  UpdatedStatusEnumType,
-} from '../../utils/utilityfunctions.ts';
+import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { getScenarioOfIdFromRiSc } from '../../utils/scenario.ts';
 import styles from './ActionRowList.module.css';
@@ -181,21 +178,12 @@ export function ActionRowList(props: ActionRowListProps) {
     <Flex direction="column">
       <Divider />
       {actions.map((action, index) => {
-        const isActionUpdating =
-          !!pendingActionStatusUpdates[props.scenarioId]?.[action.ID];
-        let s: string;
-        if (isActionUpdating) {
-          s = 'LOADING';
-        } else {
-          if (pendingActionUpdatesHistory.includes(action.ID)) {
-            s = 'UPDATED';
-          } else {
-            s =
-              getUpdatedStatus(action).toString() === 'UPDATED'
-                ? 'NONE'
-                : getUpdatedStatus(action).toString(); // this gives updated. should be none or outdated/very outdated
-          }
-        }
+        const updatedStatus = getUpdatedStatusOfAction(
+          props.scenarioId,
+          action,
+          pendingActionStatusUpdates,
+          pendingActionUpdatesHistory,
+        );
         return (
           <Fragment key={`Action-${action.ID}-${index}`}>
             <ActionRow
@@ -205,12 +193,7 @@ export function ActionRowList(props: ActionRowListProps) {
               onNewActionStatus={onNewActionStatus}
               onDeleteAction={onDeleteAction}
               onSaveAction={onSaveAction}
-              updatedStatus={s as UpdatedStatusEnumType | 'LOADING'}
-              optimisticUpdatedStatus={
-                pendingActionUpdatesHistory.includes(action.ID)
-                  ? UpdatedStatusEnum.UPDATED
-                  : undefined
-              }
+              updatedStatus={updatedStatus}
               optimisticStatus={
                 pendingActionStatusUpdates[props.scenarioId]?.[action.ID]
               }
@@ -223,4 +206,31 @@ export function ActionRowList(props: ActionRowListProps) {
       })}
     </Flex>
   );
+}
+
+function getUpdatedStatusOfAction(
+  scenarioId: string,
+  action: Action,
+  pendingActionStatusUpdates: Record<
+    string,
+    Record<string, ActionStatusOptions>
+  >,
+  pendingActionUpdatesHistory: string[],
+) {
+  const isActionUpdating =
+    !!pendingActionStatusUpdates[scenarioId]?.[action.ID];
+  let updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
+  if (isActionUpdating) {
+    updatedStatus = 'UPDATING';
+  } else {
+    if (pendingActionUpdatesHistory.includes(action.ID)) {
+      updatedStatus = 'UPDATED';
+    } else {
+      updatedStatus =
+        getUpdatedStatus(action).toString() === 'UPDATED'
+          ? 'NONE'
+          : getUpdatedStatus(action); // this gives updated. should be none or outdated/very outdated
+    }
+  }
+  return updatedStatus;
 }

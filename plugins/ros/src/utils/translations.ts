@@ -127,6 +127,7 @@ export const pluginRiScMessages = {
     outdated: 'Outdated',
     veryOutdated: 'Very outdated',
     updated: 'Updated',
+    updating: 'Saving...',
     difference: {
       description: 'Summary of changes that will be approved by risk owner.',
       publishDate: 'Last published changes {{date}}',
@@ -748,6 +749,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.outdated': 'Utdatert',
           'rosStatus.updated': 'Oppdatert',
           'rosStatus.veryOutdated': 'Veldig utdatert',
+          'rosStatus.updating': 'Lagrer...',
           'rosStatus.statusBadge.approved': 'Godkjent av risikoeier',
           'rosStatus.statusBadge.error': 'Kunne ikke hente status',
           'rosStatus.statusBadge.migration.title':
