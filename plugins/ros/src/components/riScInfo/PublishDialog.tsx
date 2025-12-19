@@ -68,10 +68,7 @@ export const RiScPublishDialog = ({
         </Alert>
       </>
       <Flex justify="between" pt="24px">
-        <Button
-          size="medium"
-          variant="secondary"
-          onClick={handleCancel}>
+        <Button size="medium" variant="secondary" onClick={handleCancel}>
           {t('dictionary.cancel')}
         </Button>
         <Button
