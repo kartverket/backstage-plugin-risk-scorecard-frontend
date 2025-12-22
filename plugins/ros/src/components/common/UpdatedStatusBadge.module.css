@@ -11,7 +11,7 @@
   color: var(--ros-gray-900, #000);
 }
 
-.pending {
+.updated {
   background: var(--ros-green-100);
   border: 1px solid var(--ros-green-500);
 }
@@ -24,4 +24,9 @@
 .outdated {
   background: var(--ros-orange-100);
   border: 1px solid var(--ros-orange-300);
+}
+
+.updating {
+  background-color: #eaf6ff;
+  border: 1px solid #439ccd;
 }

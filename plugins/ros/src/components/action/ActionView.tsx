@@ -1,6 +1,5 @@
 import { Flex, Text } from '@backstage/ui';
 import IconButton from '@mui/material/IconButton';
-import UpdatedStatusBadge from '../common/UpdatedStatusBadge.tsx';
 import { DualButtonWithMenu } from '../common/DualButtonWithMenu.tsx';
 import {
   actionStatusOptionsToTranslationKeys,
@@ -17,9 +16,9 @@ import { Markdown } from '../common/Markdown.tsx';
 import { ActionURL } from './ActionURL.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Action } from '../../utils/types.ts';
-import { getUpdatedStatus } from '../../utils/actions.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { UpdatedStatusBadge } from '../common/UpdatedStatusBadge.tsx';
 
 type ActionViewProps = {
   action: Action;
@@ -27,10 +26,10 @@ type ActionViewProps = {
   onNewActionStatus: (actionId: string, newStatus: ActionStatusOptions) => void;
   toggleEditMode: () => void;
   openDeleteDialog: () => void;
+  updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
+  optimisticStatus?: ActionStatusOptions;
   allowDeletion?: boolean;
   allowEdit?: boolean;
-  optimisticStatus?: ActionStatusOptions;
-  optimisticUpdatedStatus?: UpdatedStatusEnumType;
   index?: number;
 };
 
@@ -49,8 +48,6 @@ export function ActionView(props: ActionViewProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { isActionExpanded, toggleActionExpanded } = useScenario();
   const isExpanded = isActionExpanded(props.action.ID);
-
-  const updatedStatus = getUpdatedStatus(props.action);
 
   return (
     <>
@@ -89,10 +86,7 @@ export function ActionView(props: ActionViewProps) {
               />
             </IconButton>
             <Flex direction="column" gap="1">
-              <UpdatedStatusBadge
-                status={props.optimisticUpdatedStatus ?? updatedStatus}
-                isPending={!!props.optimisticUpdatedStatus}
-              />
+              <UpdatedStatusBadge status={props.updatedStatus} />
               <Text variant="body-large">
                 {props.action.title ??
                   `${t('dictionary.measure')} ${props.index ?? ''}`}
