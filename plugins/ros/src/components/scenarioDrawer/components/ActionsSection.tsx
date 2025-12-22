@@ -8,7 +8,6 @@ import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Action, FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
 import { AddCircle } from '@mui/icons-material';
-import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch';
 import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
 import {
@@ -18,10 +17,12 @@ import {
   Flex,
   Button,
   Card,
+  Box,
 } from '@backstage/ui';
 import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
 import { filterActionsByRelevance } from '../../../utils/actions.ts';
 import { ActionRowList } from '../../action/ActionRowList.tsx';
+import styles from './ActionsSection.module.css';
 
 const RelevanceToggle = ({
   checked,
@@ -33,7 +34,7 @@ const RelevanceToggle = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Flex align="center" gap="0" className={styles.noRelevantActionToggle}>
       <Switch
         checked={checked}
         onChange={e => onChange(e.target.checked)}
@@ -41,7 +42,7 @@ const RelevanceToggle = ({
         color="primary"
       />
       <Text variant="body-medium">{t('dictionary.showOnlyRelevant')}</Text>
-    </Box>
+    </Flex>
   );
 };
 
@@ -134,7 +135,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
           allowEdit
         />
       ) : (
-        <Text variant="body-large" style={{ fontStyle: 'italic' }}>
+        <Text variant="body-large" className={styles.italicText}>
           {!currentActions || currentActions.length === 0
             ? t('dictionary.emptyField', {
                 field: t('dictionary.measures').toLowerCase(),
@@ -161,13 +162,13 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
 
   return (
     <Paper sx={section}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box>
         <Text variant="title-x-small" weight="bold">
           {t('dictionary.measures')}
         </Text>
       </Box>
       {fields.map((field, index) => (
-        <Card key={field.id} style={{ padding: '12px' }}>
+        <Card key={field.id} className={styles.actionFormItemCard}>
           <ActionFormItem
             key={index}
             formMethods={props.formMethods}
@@ -181,7 +182,7 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
         iconStart={<AddCircle />}
         variant="primary"
         onClick={() => append(emptyAction())}
-        style={{ width: 'fit-content' }}
+        className={styles.addActionButton}
       >
         {t('scenarioDrawer.measureTab.addMeasureButton')}
       </Button>
