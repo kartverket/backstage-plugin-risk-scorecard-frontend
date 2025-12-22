@@ -212,10 +212,12 @@ export function ScenarioDrawer() {
       >
         {isEditing && (
           <Button
-            color="primary"
-            variant="contained"
+            size="medium"
+            variant="primary"
             onClick={onSubmit}
-            disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
+            isDisabled={
+              !formMethods.formState.isDirty || updateStatus.isLoading
+            }
           >
             {t('dictionary.save')}
             {updateStatus.isLoading && (
