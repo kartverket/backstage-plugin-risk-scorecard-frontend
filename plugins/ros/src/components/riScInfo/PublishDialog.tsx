@@ -1,6 +1,6 @@
 import { ReactComponentElement, useState } from 'react';
 import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
+import { Button } from '@backstage/ui';
 
 import Checkbox from '@mui/material/Checkbox';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -68,14 +68,14 @@ export const RiScPublishDialog = ({
         </Alert>
       </>
       <Flex justify="between" pt="24px">
-        <Button variant="outlined" color="primary" onClick={handleCancel}>
+        <Button size="medium" variant="secondary" onClick={handleCancel}>
           {t('dictionary.cancel')}
         </Button>
         <Button
-          variant="contained"
-          color="primary"
+          size="medium"
+          variant="primary"
           onClick={handlePublish}
-          disabled={!riskOwnerApproves}
+          isDisabled={!riskOwnerApproves}
         >
           {t('dictionary.confirm')}
         </Button>

@@ -3,7 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { AlertTitle } from '@mui/material';
 import AlertBar from '../common/AlertBar/AlertBar';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { Button } from '@backstage/ui';
 import CircularProgress from '@mui/material/CircularProgress';
 import Drawer from '@mui/material/Drawer';
 import { useEffect, useRef, useState } from 'react';
@@ -140,16 +140,16 @@ export function ScenarioDrawer() {
       >
         {!isEditing && isEditingAllowed && (
           <Button
-            color="primary"
-            variant="contained"
+            size="medium"
+            variant="primary"
             onClick={() => setIsEditing(true)}
           >
             {t('dictionary.edit')}
           </Button>
         )}
         <Button
-          variant="outlined"
-          color="primary"
+          size="medium"
+          variant="secondary"
           onClick={isEditing ? onCancel : onClose}
         >
           {t(isEditing ? 'dictionary.cancel' : 'dictionary.close')}
@@ -212,10 +212,12 @@ export function ScenarioDrawer() {
       >
         {isEditing && (
           <Button
-            color="primary"
-            variant="contained"
+            size="medium"
+            variant="primary"
             onClick={onSubmit}
-            disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
+            isDisabled={
+              !formMethods.formState.isDirty || updateStatus.isLoading
+            }
           >
             {t('dictionary.save')}
             {updateStatus.isLoading && (
@@ -229,11 +231,10 @@ export function ScenarioDrawer() {
         {isEditingAllowed && (
           <div ref={deleteScenarioRef}>
             <Button
-              startIcon={<DeleteIcon />}
-              variant="text"
-              color="primary"
+              iconStart={<DeleteIcon />}
+              size="medium"
+              variant="tertiary"
               onClick={() => setDeleteConfirmationIsOpen(true)}
-              sx={{ marginLeft: 'auto' }}
             >
               {t('scenarioDrawer.deleteScenarioButton')}
             </Button>

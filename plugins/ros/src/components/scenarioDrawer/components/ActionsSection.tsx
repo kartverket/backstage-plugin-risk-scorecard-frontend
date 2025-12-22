@@ -1,21 +1,28 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
-import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Action, FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
 import { AddCircle } from '@mui/icons-material';
-import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch';
 import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
-import { Text, Tooltip, TooltipTrigger, Flex, Button } from '@backstage/ui';
+import {
+  Text,
+  Tooltip,
+  TooltipTrigger,
+  Flex,
+  Button,
+  Card,
+  Box,
+} from '@backstage/ui';
 import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
 import { filterActionsByRelevance } from '../../../utils/actions.ts';
 import { ActionRowList } from '../../action/ActionRowList.tsx';
+import styles from './ActionsSection.module.css';
 
 const RelevanceToggle = ({
   checked,
@@ -27,7 +34,7 @@ const RelevanceToggle = ({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Flex align="center" gap="0" className={styles.noRelevantActionToggle}>
       <Switch
         checked={checked}
         onChange={e => onChange(e.target.checked)}
@@ -35,7 +42,7 @@ const RelevanceToggle = ({
         color="primary"
       />
       <Text variant="body-medium">{t('dictionary.showOnlyRelevant')}</Text>
-    </Box>
+    </Flex>
   );
 };
 
@@ -128,7 +135,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
           allowEdit
         />
       ) : (
-        <Text variant="body-large" style={{ fontStyle: 'italic' }}>
+        <Text variant="body-large" className={styles.italicText}>
           {!currentActions || currentActions.length === 0
             ? t('dictionary.emptyField', {
                 field: t('dictionary.measures').toLowerCase(),
@@ -155,21 +162,13 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
 
   return (
     <Paper sx={section}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box>
         <Text variant="title-x-small" weight="bold">
-          {t('dictionary.measure')}
+          {t('dictionary.measures')}
         </Text>
-        <Button
-          iconStart={<AddCircle />}
-          variant="primary"
-          onClick={() => append(emptyAction())}
-        >
-          {t('scenarioDrawer.measureTab.addMeasureButton')}
-        </Button>
       </Box>
       {fields.map((field, index) => (
-        <Fragment key={field.id}>
-          <Divider variant="fullWidth" />
+        <Card key={field.id} className={styles.actionFormItemCard}>
           <ActionFormItem
             key={index}
             formMethods={props.formMethods}
@@ -177,8 +176,16 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
             handleDelete={() => remove(index)}
             baseObjectPathToActionOfForm={`actions.${index}`}
           />
-        </Fragment>
+        </Card>
       ))}
+      <Button
+        iconStart={<AddCircle />}
+        variant="primary"
+        onClick={() => append(emptyAction())}
+        className={styles.addActionButton}
+      >
+        {t('scenarioDrawer.measureTab.addMeasureButton')}
+      </Button>
     </Paper>
   );
 }

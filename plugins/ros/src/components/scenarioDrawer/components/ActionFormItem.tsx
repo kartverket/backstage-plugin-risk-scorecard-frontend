@@ -68,7 +68,7 @@ export function ActionFormItem({
             alignItems: 'center',
           }}
         >
-          {displayedIndex ? (
+          {displayedIndex !== undefined && displayedIndex !== null ? (
             <Text variant="title-x-small" weight="bold">
               {t('dictionary.measure')} {displayedIndex + 1}
             </Text>
