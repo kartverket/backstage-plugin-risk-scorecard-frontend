@@ -15,10 +15,10 @@ type ActionRowProps = {
     newAction: Action,
     setIsEditing?: (isEditing: boolean) => void,
   ) => void;
+  updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
+  optimisticStatus?: ActionStatusOptions;
   allowDeletion?: boolean;
   allowEdit?: boolean;
-  optimisticStatus?: ActionStatusOptions;
-  optimisticUpdatedStatus?: UpdatedStatusEnumType;
   index?: number;
 };
 
@@ -47,8 +47,8 @@ export function ActionRow(props: ActionRowProps) {
           openDeleteDialog={() => setDeleteActionConfirmationIsOpen(true)}
           allowDeletion={props.allowDeletion}
           allowEdit={props.allowEdit}
+          updatedStatus={props.updatedStatus}
           optimisticStatus={props.optimisticStatus}
-          optimisticUpdatedStatus={props.optimisticUpdatedStatus}
           index={props.index}
         />
       )}
