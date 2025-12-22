@@ -235,7 +235,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
           ...riSc,
           content: {
             ...riSc.content,
-            scenarios: riSc.content.scenarios.concat(newScenario),
+            scenarios: [newScenario, ...riSc.content.scenarios],
           },
         },
         onSuccess,
