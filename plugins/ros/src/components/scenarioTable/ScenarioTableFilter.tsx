@@ -36,7 +36,7 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
       <Flex>
         <Select
           aria-label="sortering"
-          selectedKey={props.scenarioSortOrder ?? ''}
+          defaultValue={props.scenarioSortOrder ?? 'NoSorting'}
           onSelectionChange={key =>
             props.onScenarioSortOrderChange(key?.toString() ?? 'NoSorting')
           }
