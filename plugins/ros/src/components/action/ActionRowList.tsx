@@ -226,10 +226,8 @@ function getUpdatedStatusOfAction(
     if (pendingActionUpdatesHistory.includes(action.ID)) {
       updatedStatus = 'UPDATED';
     } else {
-      updatedStatus =
-        getUpdatedStatus(action).toString() === 'UPDATED'
-          ? 'NONE'
-          : getUpdatedStatus(action);
+      const baseStatus = getUpdatedStatus(action);
+      updatedStatus = baseStatus === 'UPDATED' ? 'NONE' : baseStatus;
     }
   }
   return updatedStatus;
