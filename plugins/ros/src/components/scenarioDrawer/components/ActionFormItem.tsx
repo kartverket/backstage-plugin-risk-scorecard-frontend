@@ -53,91 +53,93 @@ export function ActionFormItem({
   );
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gap: '24px',
-        padding: 0,
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        {displayedIndex !== undefined && displayedIndex !== null ? (
-          <Text variant="title-x-small" weight="bold">
-            {t('dictionary.measure')} {displayedIndex + 1}
-          </Text>
-        ) : (
-          <Text variant="title-x-small" weight="bold">
-            {t('dictionary.edit')}
-          </Text>
-        )}
-        <IconButton onClick={handleDelete} color="primary">
-          <DeleteIcon aria-label="Delete" />
-        </IconButton>
-      </Box>
-      <Input
-        required
-        {...register(
-          `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}title`,
-          {
-            required: true,
-          },
-        )}
-        error={errorObject?.title !== undefined}
-        label={t('dictionary.title')}
-        helperText={
-          errorObject?.title &&
-          t('scenarioDrawer.measureTab.addMeasureTitleError')
-        }
-      />
-      <Controller
-        control={control}
-        name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}description`}
-        render={({ field: { onChange, value }, fieldState: { error } }) => (
-          <MarkdownInput
-            label={t('dictionary.description')}
-            value={value}
-            onMarkdownChange={onChange}
-            error={!!error}
-            minRows={8}
-          />
-        )}
-      />
+    <>
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: '2fr 1fr',
           gap: '24px',
+          padding: 0,
         }}
       >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          {displayedIndex !== undefined && displayedIndex !== null ? (
+            <Text variant="title-x-small" weight="bold">
+              {t('dictionary.measure')} {displayedIndex + 1}
+            </Text>
+          ) : (
+            <Text variant="title-x-small" weight="bold">
+              {t('dictionary.edit')}
+            </Text>
+          )}
+          <IconButton onClick={handleDelete} color="primary">
+            <DeleteIcon aria-label="Delete" />
+          </IconButton>
+        </Box>
         <Input
+          required
           {...register(
-            `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
+            `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}title`,
             {
-              pattern: {
-                value: urlRegExpPattern,
-                message: t('scenarioDrawer.action.urlError'),
-              },
+              required: true,
             },
           )}
-          label={<UrlLabel />}
-          helperText={errorObject?.url?.message}
-          error={errorObject?.url?.message}
+          error={errorObject?.title !== undefined}
+          label={t('dictionary.title')}
+          helperText={
+            errorObject?.title &&
+            t('scenarioDrawer.measureTab.addMeasureTitleError')
+          }
         />
-        <Select
-          required
+        <Controller
           control={control}
-          name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}status`}
-          label={t('dictionary.status')}
-          options={actionStatusOptions}
+          name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}description`}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <MarkdownInput
+              label={t('dictionary.description')}
+              value={value}
+              onMarkdownChange={onChange}
+              error={!!error}
+              minRows={8}
+            />
+          )}
         />
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: '2fr 1fr',
+            gap: '24px',
+          }}
+        >
+          <Input
+            {...register(
+              `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
+              {
+                pattern: {
+                  value: urlRegExpPattern,
+                  message: t('scenarioDrawer.action.urlError'),
+                },
+              },
+            )}
+            label={<UrlLabel />}
+            helperText={errorObject?.url?.message}
+            error={errorObject?.url?.message}
+          />
+          <Select
+            required
+            control={control}
+            name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}status`}
+            label={t('dictionary.status')}
+            options={actionStatusOptions}
+          />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 
