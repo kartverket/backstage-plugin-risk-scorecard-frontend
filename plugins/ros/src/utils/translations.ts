@@ -1145,13 +1145,13 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'probabilityTable.rows.4': 'Stor',
           'probabilityTable.rows.5': 'Svært stor',
           'probabilityTable.cells.1':
-            'Scenarioet er usannsynlig å inntreffe.\n\nDet inntreffer sjeldnere enn hvert 100. år',
+            'Scenarioet er usannsynlig å inntreffe.\n\nDet inntreffer sjeldnere enn hvert 400. år',
           'probabilityTable.cells.2':
-            'Scenarioet er lite sannsynlig å inntreffe.\n\nDet kan inntreffe hvert 10. år',
+            'Scenarioet er usannsynlig å inntreffe.\n\nDet kan inntreffe hvert 20. år',
           'probabilityTable.cells.3':
             'Scenarioet kan inntreffe.\n\nDet kan inntreffe nærmest årlig',
           'probabilityTable.cells.4':
-            'Scenarioet vil med stor sannsynlighet inntreffe.\n\nDet kan inntreffe nærmest ukentlig',
+            'Scenarioet vil med stor sannsynlighet inntreffe.\n\nDet kan inntreffe nærmest månedlig',
           'probabilityTable.cells.5':
             'Scenarioet er nesten garantert å inntreffe.\n\nDet kan inntreffe nærmest daglig',
           'threatActors.Script kiddie': 'Datasnok',

@@ -1,6 +1,4 @@
-import { Box, Text } from '@backstage/ui';
-import Link from '@mui/material/Link';
-import { body2 } from '../common/typography.ts';
+import { Box, Link, Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 
@@ -18,11 +16,8 @@ export function ActionURL(props: ActionURLProps) {
       </Text>
       {props.url ? (
         <Link
-          sx={{
-            ...body2,
-            wordBreak: 'break-all',
-          }}
           target="_blank"
+          variant="body-large"
           rel="noreferrer"
           href={props.url.startsWith('http') ? props.url : `//${props.url}`}
         >
