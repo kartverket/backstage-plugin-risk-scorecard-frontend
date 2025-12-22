@@ -14,6 +14,7 @@ type RadioOptionProps = {
   active?: boolean;
   numActions: number | null;
   numScenarios: number | null;
+  recommendedBackstageComponentType?: string | null;
 };
 
 const RadioOption = ({
@@ -23,6 +24,7 @@ const RadioOption = ({
   active = true,
   numActions,
   numScenarios,
+  recommendedBackstageComponentType,
 }: RadioOptionProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const theme = useTheme();
@@ -76,6 +78,15 @@ const RadioOption = ({
               {description}
             </Text>
           </Flex>
+        )}
+        {recommendedBackstageComponentType && (
+          <Text
+            color={active ? 'secondary' : 'primary'}
+            style={{ ...style, marginLeft: 'var(--bui-space-6)' }}
+          >
+            <i className="ri-star-fill" /> Recommended for{' '}
+            <b>{recommendedBackstageComponentType}</b> components
+          </Text>
         )}
       </Flex>
     </>
@@ -170,6 +181,9 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
                   active={!props.switchOn}
                   numActions={descriptor.numberOfActions}
                   numScenarios={descriptor.numberOfScenarios}
+                  recommendedBackstageComponentType={
+                    descriptor.preferredBackstageComponentType
+                  }
                 />
               ))}
             </RadioGroup>
