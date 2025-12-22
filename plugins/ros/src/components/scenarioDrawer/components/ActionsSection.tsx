@@ -1,10 +1,9 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
 import { section } from '../scenarioDrawerComponents';
-import Divider from '@mui/material/Divider';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Action, FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
@@ -12,7 +11,14 @@ import { AddCircle } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch';
 import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
-import { Text, Tooltip, TooltipTrigger, Flex, Button } from '@backstage/ui';
+import {
+  Text,
+  Tooltip,
+  TooltipTrigger,
+  Flex,
+  Button,
+  Card,
+} from '@backstage/ui';
 import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
 import { filterActionsByRelevance } from '../../../utils/actions.ts';
 import { ActionRowList } from '../../action/ActionRowList.tsx';
@@ -157,19 +163,11 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
     <Paper sx={section}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Text variant="title-x-small" weight="bold">
-          {t('dictionary.measure')}
+          {t('dictionary.measures')}
         </Text>
-        <Button
-          iconStart={<AddCircle />}
-          variant="primary"
-          onClick={() => append(emptyAction())}
-        >
-          {t('scenarioDrawer.measureTab.addMeasureButton')}
-        </Button>
       </Box>
       {fields.map((field, index) => (
-        <Fragment key={field.id}>
-          <Divider variant="fullWidth" />
+        <Card key={field.id} style={{ padding: '12px' }}>
           <ActionFormItem
             key={index}
             formMethods={props.formMethods}
@@ -177,8 +175,16 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
             handleDelete={() => remove(index)}
             baseObjectPathToActionOfForm={`actions.${index}`}
           />
-        </Fragment>
+        </Card>
       ))}
+      <Button
+        iconStart={<AddCircle />}
+        variant="primary"
+        onClick={() => append(emptyAction())}
+        style={{ width: 'fit-content' }}
+      >
+        {t('scenarioDrawer.measureTab.addMeasureButton')}
+      </Button>
     </Paper>
   );
 }
