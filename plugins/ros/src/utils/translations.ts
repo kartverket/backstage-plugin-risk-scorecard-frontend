@@ -701,7 +701,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.estimatedRemainingRisk': 'Estimert restrisiko',
           'dictionary.estimatedCurrentRisk': 'Estimert nårisiko',
           'dictionary.example': 'Eksempel',
-          'dictionary.initialRisk': 'Startrisiko HEI',
+          'dictionary.initialRisk': 'Startrisiko',
           'dictionary.integrity': 'Integritet',
           'dictionary.measure': 'Tiltak',
           'dictionary.measures': 'Tiltak',
