@@ -23,6 +23,7 @@ import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByReleva
 import { filterActionsByRelevance } from '../../../utils/actions.ts';
 import { ActionRowList } from '../../action/ActionRowList.tsx';
 import styles from './ActionsSection.module.css';
+import { ActionStatusOptions } from '../../../utils/constants.ts';
 
 const RelevanceToggle = ({
   checked,
@@ -91,6 +92,9 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
     return <ActionsSectionOnEdit formMethods={formMethods} />;
   }
 
+  const doesCurrentActionsContainNotRelevantActions = currentActions.some(
+    action => action.status === ActionStatusOptions.NotRelevant,
+  );
   return (
     <Paper sx={section}>
       <Flex justify="between" mb="2">
@@ -98,10 +102,12 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
           {t('dictionary.measures')}
         </Text>
         <Flex align="center">
-          <RelevanceToggle
-            checked={actionFilters.showOnlyRelevant}
-            onChange={value => saveOnlyRelevantFilter(value)}
-          />
+          {doesCurrentActionsContainNotRelevantActions && (
+            <RelevanceToggle
+              checked={actionFilters.showOnlyRelevant}
+              onChange={value => saveOnlyRelevantFilter(value)}
+            />
+          )}
           <TooltipTrigger>
             <Button
               iconStart={
