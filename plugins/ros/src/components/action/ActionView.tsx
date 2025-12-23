@@ -123,13 +123,17 @@ export function ActionView(props: ActionViewProps) {
                   : value === props.action.status,
               }))}
             />
-            <ScenarioLastUpdatedLabel
-              lastUpdated={
-                !!props.optimisticStatus ? new Date() : props.action.lastUpdated
-              }
-              lastUpdatedBy={props.action.lastUpdatedBy}
-            />
-            <UpdatedStatusBadge status={props.updatedStatus} />
+            <Flex gap="0">
+              <ScenarioLastUpdatedLabel
+                lastUpdated={
+                  !!props.optimisticStatus
+                    ? new Date()
+                    : props.action.lastUpdated
+                }
+                lastUpdatedBy={props.action.lastUpdatedBy}
+              />
+              <UpdatedStatusBadge status={props.updatedStatus} />
+            </Flex>
             {props.allowDeletion && (
               <IconButton
                 onClick={e => {
