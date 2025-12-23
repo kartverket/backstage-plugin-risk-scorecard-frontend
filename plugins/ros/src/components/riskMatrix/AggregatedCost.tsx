@@ -23,17 +23,20 @@ export function AggregatedCost({ riSc, riskType }: AggregatedCostProps) {
 
   const cost = calcRiskCostOfRiSc(riSc, riskType);
 
-  const riskLabel = {
-    [RiskMatrixTabs.initialRisk]: t('dictionary.initialRisk'),
-    [RiskMatrixTabs.remainingRisk]: t('dictionary.restRisk'),
-    [RiskMatrixTabs.currentRisk]: t('dictionary.currentRisk'),
-  };
+  const estimatedRiskTitle = {
+    [RiskMatrixTabs.initialRisk]: t('dictionary.estimatedInitialRisk'),
+    [RiskMatrixTabs.remainingRisk]: t('dictionary.estimatedRemainingRisk'),
+    [RiskMatrixTabs.currentRisk]: t('dictionary.estimatedCurrentRisk'),
+  } as const;
+
+  const title = riskType
+    ? estimatedRiskTitle[riskType]
+    : t('riskMatrix.estimatedRisk.title');
 
   return (
     <Box className={styles.boxStyle}>
       <Text as="h3" variant="body-large" weight="bold">
-        {t('riskMatrix.estimatedRisk.title')}{' '}
-        {riskType && `(${riskLabel[riskType]})`}
+        {title}
       </Text>
       <Flex align="center" gap="0">
         <Text variant="body-large">
