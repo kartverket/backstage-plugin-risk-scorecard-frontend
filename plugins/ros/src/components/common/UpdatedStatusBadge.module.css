@@ -30,3 +30,31 @@
   background-color: #eaf6ff;
   border: 1px solid #439ccd;
 }
+
+.outdatedIcon {
+    font-size: 32px;
+    color: var(--ros-orange-300);
+}
+
+[data-theme-mode='dark'] .outdatedIcon {
+    color: var(--ros-orange-200);
+}
+
+.veryOutdatedIcon {
+    font-size: 32px;
+    color: var(--ros-red-500);
+}
+
+.updatedIcon {
+    font-size: 32px;
+    color: var(--ros-green-500);
+}
+
+[data-theme-mode='dark'] .updatedIcon {
+    color: var(--ros-green-200);
+}
+
+.emptyIcon {
+    font-size: 32px;
+    color: transparent;
+}

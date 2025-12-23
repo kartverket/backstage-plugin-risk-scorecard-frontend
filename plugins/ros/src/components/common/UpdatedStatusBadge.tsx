@@ -1,9 +1,9 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Flex, Text } from '@backstage/ui';
 import { Tooltip } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions';
 import styles from './UpdatedStatusBadge.module.css';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type UpdatedStatusBadgeProps = {
   status?: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
@@ -14,43 +14,30 @@ export function UpdatedStatusBadge(props: UpdatedStatusBadgeProps) {
 
   if (props.status === 'UPDATED') {
     return (
-      <span
-        className={`${styles.badge} ${styles.updated}`}
-        aria-label={t('rosStatus.updated')}
-      >
-        <Text as="p" className={styles.text}>
-          {t('rosStatus.updated')}
-        </Text>
-      </span>
+      <Tooltip title={t('rosStatus.updated')}>
+        <i
+          className={`ri-checkbox-circle-fill ${styles.updatedIcon}`}
+          aria-label={t('rosStatus.updated')}
+        />
+      </Tooltip>
     );
   }
 
   if (props.status === 'UPDATING') {
     return (
-      <span
-        className={`${styles.badge} ${styles.updating}`}
-        aria-label={t('rosStatus.updating')}
-      >
-        <Flex direction="row" gap="4px">
-          <Text as="p" className={styles.text}>
-            {t('rosStatus.updating')}
-          </Text>
-        </Flex>
-      </span>
+      <Tooltip title={t('rosStatus.updating')}>
+        <CircularProgress size="32px" />
+      </Tooltip>
     );
   }
 
   if (props.status === 'VERY_OUTDATED') {
     return (
       <Tooltip title={t('rosStatus.updatedStatus.tooltip.VERY_OUTDATED')}>
-        <span
-          className={`${styles.badge} ${styles.veryOutdated}`}
+        <i
+          className={`ri-error-warning-fill ${styles.veryOutdatedIcon}`}
           aria-label={t('rosStatus.veryOutdated')}
-        >
-          <Text as="p" className={styles.text}>
-            {t('rosStatus.veryOutdated')}
-          </Text>
-        </span>
+        />
       </Tooltip>
     );
   }
@@ -58,16 +45,12 @@ export function UpdatedStatusBadge(props: UpdatedStatusBadgeProps) {
   if (props.status === 'OUTDATED') {
     return (
       <Tooltip title={t('rosStatus.updatedStatus.tooltip.OUTDATED')}>
-        <span
-          className={`${styles.badge} ${styles.outdated}`}
+        <i
+          className={`ri-error-warning-fill ${styles.outdatedIcon}`}
           aria-label={t('rosStatus.outdated')}
-        >
-          <Text as="p" className={styles.text}>
-            {t('rosStatus.outdated')}
-          </Text>
-        </span>
+        />
       </Tooltip>
     );
   }
-  return null;
+  return <i className={`ri-error-warning-fill ${styles.emptyIcon}`} />;
 }
