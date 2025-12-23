@@ -97,7 +97,6 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   );
 
   const isActionsEmpty = currentActions.length === 0;
-  console.log(currentActions.length);
 
   return (
     <Paper sx={section}>
