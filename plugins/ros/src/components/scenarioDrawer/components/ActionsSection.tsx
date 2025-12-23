@@ -95,6 +95,10 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   const doesCurrentActionsContainNotRelevantActions = currentActions.some(
     action => action.status === ActionStatusOptions.NotRelevant,
   );
+
+  const isActionsEmpty = currentActions.length === 0;
+  console.log(currentActions.length);
+
   return (
     <Paper sx={section}>
       <Flex justify="between" mb="2">
@@ -108,26 +112,28 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
               onChange={value => saveOnlyRelevantFilter(value)}
             />
           )}
-          <TooltipTrigger>
-            <Button
-              iconStart={
-                allowActionDeletion ? (
-                  <i className="ri-checkbox-circle-line" />
-                ) : (
-                  <i className="ri-pencil-line" />
-                )
-              }
-              variant="secondary"
-              onClick={() => setAllowActionDeletion(prev => !prev)}
-            >
-              {allowActionDeletion}
-            </Button>
-            <Tooltip>
-              {allowActionDeletion
-                ? t('scenarioTable.doneEditing')
-                : t('scenarioTable.editButton')}
-            </Tooltip>
-          </TooltipTrigger>
+          {!isActionsEmpty && (
+            <TooltipTrigger>
+              <Button
+                iconStart={
+                  allowActionDeletion ? (
+                    <i className="ri-checkbox-circle-line" />
+                  ) : (
+                    <i className="ri-pencil-line" />
+                  )
+                }
+                variant="secondary"
+                onClick={() => setAllowActionDeletion(prev => !prev)}
+              >
+                {allowActionDeletion}
+              </Button>
+              <Tooltip>
+                {allowActionDeletion
+                  ? t('scenarioTable.doneEditing')
+                  : t('scenarioTable.editButton')}
+              </Tooltip>
+            </TooltipTrigger>
+          )}
         </Flex>
       </Flex>
       {sortedActions !== undefined && sortedActions.length > 0 ? (
