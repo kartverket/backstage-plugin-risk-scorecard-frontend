@@ -32,21 +32,21 @@
 }
 
 .outdatedIcon {
-    font-size: 32px;
-    color: var(--ros-outdated);
+  font-size: 32px;
+  color: var(--ros-outdated);
 }
 
 .veryOutdatedIcon {
-    font-size: 32px;
-    color: var(--ros-very-outdated);
+  font-size: 32px;
+  color: var(--ros-very-outdated);
 }
 
 .updatedIcon {
-    font-size: 32px;
-    color: var(--ros-updated);
+  font-size: 32px;
+  color: var(--ros-updated);
 }
 
 .emptyIcon {
-    font-size: 32px;
-    color: transparent;
+  font-size: 32px;
+  color: transparent;
 }

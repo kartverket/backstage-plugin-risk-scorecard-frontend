@@ -22,32 +22,16 @@
   color: var(--ros-very-outdated);
   border: var(--border-size) solid var(--ros-very-outdated);
 
-  .OutdatedActionsCountIndicator {
-    background-color: var(--ros-red-500);
-  }
-
   &:hover {
+    color: var(--ros-very-outdated-hover-text);
     background-color: var(--ros-very-outdated-hover);
     border: var(--border-size) solid var(--ros-very-outdated-hover-text);
-    color: var(--ros-very-outdated-hover-text);
-
-    .OutdatedActionsCountIndicator {
-      background-color: var(--ros-red-600);
-    }
   }
 
   &.OutdatedActionsCountButton--selected {
     color: var(--ros-very-outdated-selected-text);
     background-color: var(--ros-very-outdated-selected-bg);
     border: var(--border-size) solid var(--ros-very-outdated-selected-text);
-
-    .OutdatedActionsCountCloseIcon {
-      color: var(--ros-very-outdated-selected-text);
-    }
-
-    .OutdatedActionsCountIndicator {
-      background-color: var(--ros-red-600);
-    }
 
     &:hover {
       .OutdatedActionsCountCloseIcon {
@@ -59,27 +43,19 @@
 }
 
 .OutdatedActionsCountButton--outdated {
-  border: var(--border-size) solid var(--ros-outdated);
   color: var(--ros-outdated);
+  border: var(--border-size) solid var(--ros-outdated);
 
   &:hover {
+    color: var(--ros-outdated-hover-text);
     background-color: var(--ros-outdated-hover-bg);
     border: var(--border-size) solid var(--ros-outdated-hover-text);
-    color: var(--ros-outdated-hover-text);
-
-    .OutdatedActionsCountIndicator {
-      background-color: var(--ros-orange-300);
-    }
   }
 
   &.OutdatedActionsCountButton--selected {
+    color: var(--ros-outdated-selected-text);
     background-color: var(--ros-outdated-selected-bg);
     border: var(--border-size) solid var(--ros-outdated-selected-border);
-    color: var(--ros-outdated-selected-text);
-
-    .OutdatedActionsCountCloseIcon {
-      color: var(--ros-very-outdated-selected-text);
-    }
 
     &:hover {
       .OutdatedActionsCountCloseIcon {
@@ -92,7 +68,6 @@
 
 .OutdatedActionsCountButton--updated {
   color: var(--ros-updated);
-  background-color: transparent;
   border: var(--border-size) solid var(--ros-updated);
 
   &:hover {
@@ -105,10 +80,6 @@
     color: var(--ros-updated-selected-text);
     background-color: var(--ros-updated-selected-bg);
     border: var(--border-size) solid var(--ros-updated-selected-border);
-
-    .OutdatedActionsCountCloseIcon {
-      color: var(--ros-updated-selected-text);
-    }
 
     &:hover {
       .OutdatedActionsCountCloseIcon {
