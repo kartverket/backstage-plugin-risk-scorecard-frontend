@@ -209,6 +209,13 @@ export const pluginRiScMessages = {
       addedLastUpdatedBy:
         'Added field to track who updated an action for {{numberOfChangedActions}} existing actions',
     },
+    migration52: {
+      changeExplanation:
+        'This migration removes valuations ("valuations") from the RiSc document.',
+      title: 'Valuations removed',
+      oldValue: 'Existing valuations removed',
+    },
+    removed: 'Removed',
   },
   comparisonDialog: {
     noChanges: 'No changes',
@@ -859,6 +866,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration51.lastUpdatedBy': 'Sist oppdatert av:',
           'migrationDialog.migration51.addedLastUpdatedBy':
             'La til felt for å spore hvem som oppdaterte et tiltak for {{numberOfChangedActions}} eksisterende tiltak',
+          'migrationDialog.migration52.changeExplanation':
+            'Denne migreringen fjerner verdivurderinger ("valuations") fra RiSc-dokumentet.',
+          'migrationDialog.migration52.title': 'Verdivurderinger fjernet',
+          'migrationDialog.migration52.oldValue':
+            'Fjernet eksisterende verdivurderinger',
+          'migrationDialog.removed': 'Fjernet',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
           'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
