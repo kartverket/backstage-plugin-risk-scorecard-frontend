@@ -7,46 +7,23 @@
   font-size: 12px;
   width: fit-content;
 }
-.text {
-  color: var(--ros-gray-900, #000);
-}
 
-.updated {
-  background: var(--ros-green-100);
-  border: 1px solid var(--ros-green-500);
-}
-
-.veryOutdated {
-  background: var(--ros-red-200);
-  border: 1px solid var(--ros-red-400);
-}
-
-.outdated {
-  background: var(--ros-orange-100);
-  border: 1px solid var(--ros-orange-300);
-}
-
-.updating {
-  background-color: #eaf6ff;
-  border: 1px solid #439ccd;
+.iconBase {
+  font-size: 32px;
 }
 
 .outdatedIcon {
-  font-size: 32px;
   color: var(--ros-outdated);
 }
 
 .veryOutdatedIcon {
-  font-size: 32px;
   color: var(--ros-very-outdated);
 }
 
 .updatedIcon {
-  font-size: 32px;
   color: var(--ros-updated);
 }
 
 .emptyIcon {
-  font-size: 32px;
   color: transparent;
 }

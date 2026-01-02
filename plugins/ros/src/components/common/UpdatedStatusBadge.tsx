@@ -16,7 +16,7 @@ export function UpdatedStatusBadge(props: UpdatedStatusBadgeProps) {
     return (
       <Tooltip title={t('rosStatus.updated')}>
         <i
-          className={`ri-checkbox-circle-fill ${styles.updatedIcon}`}
+          className={`ri-checkbox-circle-fill ${styles.updatedIcon} ${styles.iconBase}`}
           aria-label={t('rosStatus.updated')}
         />
       </Tooltip>
@@ -35,7 +35,7 @@ export function UpdatedStatusBadge(props: UpdatedStatusBadgeProps) {
     return (
       <Tooltip title={t('rosStatus.updatedStatus.tooltip.VERY_OUTDATED')}>
         <i
-          className={`ri-error-warning-fill ${styles.veryOutdatedIcon}`}
+          className={`ri-error-warning-fill ${styles.veryOutdatedIcon} ${styles.iconBase}`}
           aria-label={t('rosStatus.veryOutdated')}
         />
       </Tooltip>
@@ -46,11 +46,15 @@ export function UpdatedStatusBadge(props: UpdatedStatusBadgeProps) {
     return (
       <Tooltip title={t('rosStatus.updatedStatus.tooltip.OUTDATED')}>
         <i
-          className={`ri-error-warning-fill ${styles.outdatedIcon}`}
+          className={`ri-error-warning-fill ${styles.outdatedIcon} ${styles.iconBase}`}
           aria-label={t('rosStatus.outdated')}
         />
       </Tooltip>
     );
   }
-  return <i className={`ri-error-warning-fill ${styles.emptyIcon}`} />;
+  return (
+    <i
+      className={`ri-error-warning-fill ${styles.emptyIcon} ${styles.iconBase}`}
+    />
+  );
 }
