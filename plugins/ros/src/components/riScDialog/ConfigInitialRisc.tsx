@@ -81,11 +81,12 @@ const RadioOption = ({
         )}
         {recommendedBackstageComponentType && (
           <Text
+            variant="body-large"
             color={active ? 'secondary' : 'primary'}
-            style={{ ...style, marginLeft: 'var(--bui-space-6)' }}
+            style={{ marginLeft: 'var(--bui-space-6)', fontStyle: 'italic' }}
           >
-            <i className="ri-star-fill" /> Recommended for{' '}
-            <b>{recommendedBackstageComponentType}</b> components
+            {t('rosDialog.recommendedForComponentOfType')}{' '}
+            <b>{recommendedBackstageComponentType}</b>.
           </Text>
         )}
       </Flex>
