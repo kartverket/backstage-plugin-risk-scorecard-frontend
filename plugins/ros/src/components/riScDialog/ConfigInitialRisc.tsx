@@ -83,7 +83,7 @@ const RadioOption = ({
           <Text
             variant="body-large"
             color={active ? 'secondary' : 'primary'}
-            style={{ marginLeft: 'var(--bui-space-6)', fontStyle: 'italic' }}
+            className={styles.recommendedForComponentTypeText}
           >
             {t('rosDialog.recommendedForComponentOfType')}{' '}
             <b>{recommendedBackstageComponentType}</b>.

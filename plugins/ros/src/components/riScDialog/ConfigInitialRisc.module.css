@@ -8,3 +8,8 @@
     height: 200px;
   }
 }
+
+.recommendedForComponentTypeText {
+    margin-left: var(--bui-space-4);
+    font-style: italic;
+}
