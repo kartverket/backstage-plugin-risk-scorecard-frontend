@@ -211,7 +211,7 @@ export const pluginRiScMessages = {
     },
     migration52: {
       changeExplanation:
-        'This migration removes valuations ("valuations") from the RiSc document.',
+        'This migration removes the unused concept of valuations from the RiSc document.',
       title: 'Valuations removed',
       oldValue: 'Existing valuations removed',
     },
@@ -867,7 +867,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration51.addedLastUpdatedBy':
             'La til felt for å spore hvem som oppdaterte et tiltak for {{numberOfChangedActions}} eksisterende tiltak',
           'migrationDialog.migration52.changeExplanation':
-            'Denne migreringen fjerner verdivurderinger ("valuations") fra RiSc-dokumentet.',
+            'Denne migreringen fjerner det ubrukte konseptet verdivurderinger ("valuations") fra RiSc-dokumentet.',
           'migrationDialog.migration52.title': 'Verdivurderinger fjernet',
           'migrationDialog.migration52.oldValue':
             'Fjernet eksisterende verdivurderinger',
