@@ -37,7 +37,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
     useScenario();
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
-  const [riskValidationError, setRiskValidationError] = useState<string>('');
+  const [riskValidationError, setRiskValidationError] = useState<string[]>([]);
 
   const validateRemainingRiskNotHigher = (
     formData: FormScenario,
@@ -73,14 +73,11 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
     const validation = validateRemainingRiskNotHigher(data);
 
     if (!validation.isValid) {
-      const errorMessages = validation.errors
-        .map(errorKey => errorKey)
-        .join('\n');
-      setRiskValidationError(errorMessages);
+      setRiskValidationError(validation.errors);
       return;
     }
 
-    setRiskValidationError('');
+    setRiskValidationError([]);
 
     const submitScenario: Scenario = {
       ...data,
@@ -192,9 +189,9 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
               <Text variant="body-large">{response.statusMessage}</Text>
             </Alert>
           )}
-          {riskValidationError && (
+          {riskValidationError.length > 0 && (
             <Alert severity="error">
-              {riskValidationError.split('\n').map((line, index) => (
+              {riskValidationError.map((line, index) => (
                 <div key={index}>
                   <Text variant="body-large">{line}</Text>
                 </div>
