@@ -123,7 +123,7 @@ export function ActionView(props: ActionViewProps) {
                   : value === props.action.status,
               }))}
             />
-            <Flex gap="0">
+            <Flex gap="0" align="center">
               <ScenarioLastUpdatedLabel
                 lastUpdated={
                   !!props.optimisticStatus
