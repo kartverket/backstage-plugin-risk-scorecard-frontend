@@ -37,6 +37,30 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
     useScenario();
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+  const [riskValidationError, setRiskValidationError] = useState<string>('');
+
+  const validateRemainingRiskNotHigher = (
+    formData: FormScenario,
+  ): { isValid: boolean; errors: string[] } => {
+    const initialProbability = Number(formData.risk.probability);
+    const initialConsequence = Number(formData.risk.consequence);
+    const remainingProbability = Number(formData.remainingRisk.probability);
+    const remainingConsequence = Number(formData.remainingRisk.consequence);
+
+    const errors: string[] = [];
+
+    if (remainingProbability > initialProbability) {
+      errors.push(t('scenarioDrawer.errors.remainingProbabilityTooHigh'));
+    }
+    if (remainingConsequence > initialConsequence) {
+      errors.push(t('scenarioDrawer.errors.remainingConsequenceTooHigh'));
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  };
 
   const formMethods = useForm<FormScenario>({
     defaultValues: emptyFormScenario(scenario),
@@ -46,6 +70,18 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   const { isDirty, isValid } = formMethods.formState;
 
   const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
+    const validation = validateRemainingRiskNotHigher(data);
+
+    if (!validation.isValid) {
+      const errorMessages = validation.errors
+        .map(errorKey => errorKey)
+        .join('\n');
+      setRiskValidationError(errorMessages);
+      return;
+    }
+
+    setRiskValidationError('');
+
     const submitScenario: Scenario = {
       ...data,
       risk: {
@@ -154,6 +190,15 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
           {response && (
             <Alert severity={getAlertSeverity(updateStatus, response)}>
               <Text variant="body-large">{response.statusMessage}</Text>
+            </Alert>
+          )}
+          {riskValidationError && (
+            <Alert severity="error">
+              {riskValidationError.split('\n').map((line, index) => (
+                <div key={index}>
+                  <Text variant="body-large">{line}</Text>
+                </div>
+              ))}
             </Alert>
           )}
           <Flex justify={isFirstStep ? 'end' : 'between'}>
