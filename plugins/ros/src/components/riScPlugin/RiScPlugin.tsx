@@ -22,7 +22,11 @@ import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import styles from '../common/alertBar.module.css';
 
-export function RiScPlugin() {
+interface RiScPluginProps {
+  versionInfo?: string;
+}
+
+export function RiScPlugin(props: RiScPluginProps) {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
     RiScDialogStates.Closed,
   );
@@ -98,7 +102,10 @@ export function RiScPlugin() {
         <ScenarioWizard step={scenarioWizardStep} />
       ) : (
         <>
-          <RiScHeader onEditEncryption={openEditEncryptionDialog} />
+          <RiScHeader
+            onEditEncryption={openEditEncryptionDialog}
+            versionInfo={props.versionInfo}
+          />
           {!isFetching &&
             riScs !== null &&
             riScs.length === 0 &&

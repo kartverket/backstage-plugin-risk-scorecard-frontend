@@ -7,10 +7,12 @@ import { VersionChip } from './VersionChip.tsx';
 
 type RiScHeaderProps = {
   onEditEncryption: () => void;
+  versionInfo?: string;
 };
 
 export function RiScHeader(props: RiScHeaderProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
   return (
     <header style={{ position: 'relative' }}>
       <Flex justify="between" align="center" style={{ marginBottom: '16px' }}>
@@ -18,7 +20,7 @@ export function RiScHeader(props: RiScHeaderProps) {
           <Text variant="title-medium" weight="bold">
             {t('contentHeader.title')}
           </Text>
-          <VersionChip />
+          <VersionChip versionInfo={props.versionInfo} />
         </Flex>
         <Flex gap="8px">
           <EditEncryptionButton onEditEncryption={props.onEditEncryption} />

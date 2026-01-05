@@ -2,9 +2,17 @@ import { Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 
-export function VersionChip() {
+interface VersionChipProps {
+  versionInfo?: string;
+}
+
+export function VersionChip({ versionInfo }: VersionChipProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const version = require('../../../package.json').version;
+
+  if (!versionInfo) {
+    return null;
+  }
+
   return (
     <div
       style={{
@@ -14,7 +22,7 @@ export function VersionChip() {
       }}
     >
       <Text weight="bold">
-        {t('dictionary.version')} {version}
+        {t('dictionary.version')} {versionInfo}
       </Text>
     </div>
   );

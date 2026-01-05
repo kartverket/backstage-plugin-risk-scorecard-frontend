@@ -18,14 +18,18 @@ const cache = createCache({
   insertionPoint: emotionInsertionPoint,
 });
 
-function ProvidedPlugin() {
+interface PluginRootProps {
+  versionInfo?: string;
+}
+
+function ProvidedPlugin(props: PluginRootProps) {
   return (
     <CacheProvider value={cache}>
       <BackstageContextProvider>
         <RiScProvider>
           <DefaultRiScTypesProvider>
             <ScenarioProvider>
-              <RiScPlugin />
+              <RiScPlugin versionInfo={props.versionInfo} />
             </ScenarioProvider>
           </DefaultRiScTypesProvider>
         </RiScProvider>
@@ -34,12 +38,15 @@ function ProvidedPlugin() {
   );
 }
 
-export function PluginRoot() {
+export function PluginRoot(props: PluginRootProps) {
   return (
     <Routes>
-      <Route path="/" element={<ProvidedPlugin />} />
-      <Route path={riScRouteRef.path} element={<ProvidedPlugin />} />
-      <Route path={scenarioRouteRef.path} element={<ProvidedPlugin />} />
+      <Route path="/" element={<ProvidedPlugin {...props} />} />
+      <Route path={riScRouteRef.path} element={<ProvidedPlugin {...props} />} />
+      <Route
+        path={scenarioRouteRef.path}
+        element={<ProvidedPlugin {...props} />}
+      />
     </Routes>
   );
 }

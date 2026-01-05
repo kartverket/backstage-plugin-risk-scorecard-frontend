@@ -68,6 +68,7 @@ import {
 } from '@backstage-community/plugin-grafana';
 import { RiScPage } from '@kartverket/backstage-plugin-risk-scorecard';
 import { URLS } from '../../urls';
+import appPackageJson from '../../../package.json'; // Consumers can pass the plugin version from their package.json like this
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -219,7 +220,13 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path={URLS.frontend.risc} title="ROS">
-      <RiScPage />
+      <RiScPage
+        versionInfo={
+          appPackageJson.dependencies[
+            '@kartverket/backstage-plugin-risk-scorecard'
+          ]
+        }
+      />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -254,7 +261,13 @@ const websiteEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path={URLS.frontend.risc} title="Risk Scorecard">
-      <RiScPage />
+      <RiScPage
+        versionInfo={
+          appPackageJson.dependencies[
+            '@kartverket/backstage-plugin-risk-scorecard'
+          ]
+        }
+      />
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -418,7 +431,13 @@ const systemPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path={URLS.frontend.risc} title="ROS">
-      <RiScPage />
+      <RiScPage
+        versionInfo={
+          appPackageJson.dependencies[
+            '@kartverket/backstage-plugin-risk-scorecard'
+          ]
+        }
+      />
     </EntityLayout.Route>
   </EntityLayout>
 );
