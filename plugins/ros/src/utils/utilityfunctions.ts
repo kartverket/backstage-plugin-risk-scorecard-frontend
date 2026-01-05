@@ -525,3 +525,33 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
 export function getActiveTheme() {
   return document.body.getAttribute('data-theme-mode');
 }
+
+export function validateRemainingRiskNotHigher(
+  formData: {
+    risk: { probability: number | string; consequence: number | string };
+    remainingRisk: {
+      probability: number | string;
+      consequence: number | string;
+    };
+  },
+  t: (key: string, options?: any) => string,
+): { isValid: boolean; errors: string[] } {
+  const initialProbability = Number(formData.risk.probability);
+  const initialConsequence = Number(formData.risk.consequence);
+  const remainingProbability = Number(formData.remainingRisk.probability);
+  const remainingConsequence = Number(formData.remainingRisk.consequence);
+
+  const errors: string[] = [];
+
+  if (remainingProbability > initialProbability) {
+    errors.push(t('scenarioDrawer.errors.remainingProbabilityTooHigh'));
+  }
+  if (remainingConsequence > initialConsequence) {
+    errors.push(t('scenarioDrawer.errors.remainingConsequenceTooHigh'));
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}

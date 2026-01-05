@@ -23,7 +23,10 @@ import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form';
 import { FormScenario, Scenario } from '../../utils/types';
 import { useSearchParams } from 'react-router-dom';
-import { getAlertSeverity } from '../../utils/utilityfunctions';
+import {
+  getAlertSeverity,
+  validateRemainingRiskNotHigher,
+} from '../../utils/utilityfunctions';
 import { Text, Button, Flex } from '@backstage/ui';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 
@@ -39,29 +42,6 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [riskValidationError, setRiskValidationError] = useState<string[]>([]);
 
-  const validateRemainingRiskNotHigher = (
-    formData: FormScenario,
-  ): { isValid: boolean; errors: string[] } => {
-    const initialProbability = Number(formData.risk.probability);
-    const initialConsequence = Number(formData.risk.consequence);
-    const remainingProbability = Number(formData.remainingRisk.probability);
-    const remainingConsequence = Number(formData.remainingRisk.consequence);
-
-    const errors: string[] = [];
-
-    if (remainingProbability > initialProbability) {
-      errors.push(t('scenarioDrawer.errors.remainingProbabilityTooHigh'));
-    }
-    if (remainingConsequence > initialConsequence) {
-      errors.push(t('scenarioDrawer.errors.remainingConsequenceTooHigh'));
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
-  };
-
   const formMethods = useForm<FormScenario>({
     defaultValues: emptyFormScenario(scenario),
     mode: 'onBlur',
@@ -70,7 +50,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   const { isDirty, isValid } = formMethods.formState;
 
   const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
-    const validation = validateRemainingRiskNotHigher(data);
+    const validation = validateRemainingRiskNotHigher(data, t);
 
     if (!validation.isValid) {
       setRiskValidationError(validation.errors);
