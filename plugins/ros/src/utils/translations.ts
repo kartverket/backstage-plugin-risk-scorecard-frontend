@@ -325,6 +325,18 @@ export const pluginRiScMessages = {
       part2: ' and probability ',
       part3: ' has an estimated risk of ',
     },
+    currentRisk: {
+      title: 'Current risk calculations',
+      description:
+        'Current risk blends the starting risk, the planned end risk, and how far the mitigation actions have progressed. For each scenario, we first compute the initial risk cost',
+      remainingRiskCost: 'and the remaining risk cost',
+      actionRatio:
+        'Then we measure how many relevant actions are completed (ratio) = (number of completed actions) / (number of actions not marked “Not relevant”). If no relevant actions, ratio = 0.',
+      currentRiskCost:
+        'The current risk cost interpolates between start and remaining risk based on that ratio',
+      aggregated: 'The aggregated current risk is the sum of ',
+      aggregatedSums: 'across all scenarios, reported in NOK per year.',
+    },
   },
   rosDialog: {
     titleNew: 'New risk scorecard',
@@ -947,7 +959,18 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.units.nokPerIncident': 'kr/hendelse',
           'infoDialog.units.incidentsPerYear': 'hendelser/år',
           'infoDialog.units.nokPerYear': 'kr/år',
-
+          'infoDialog.currentRisk.title': 'Nårisiko utregning',
+          'infoDialog.currentRisk.description':
+            'Nåværende risiko kombinerer startrisikoen, den planlagte sluttrisikoen og hvor langt risikoreduserende tiltak har kommet. For hvert scenario beregnes startrisiko: ',
+          'infoDialog.currentRisk.actionRatio':
+            'Så måler vi hvor mange relevante tiltak som er fullført (ratio) = (antall fullførte tiltak) / (antall tiltak som ikke er merket «Ikke relevant»). Hvis det ikke finnes relevante tiltak, settes forholdet til 0.',
+          'infoDialog.currentRisk.aggregated':
+            'Den aggregerte nåværende risikoen er summen ',
+          'infoDialog.currentRisk.currentRiskCost':
+            'Den Aggregert nårisiko kostnaden interpolerer mellom start- og restrisiko basert på forholdet',
+          'infoDialog.currentRisk.aggregatedSums':
+            'på tvers av alle scenarier, rapportert i NOK per år.',
+          'infoDialog.currentRisk.remainingRiskCost': 'og sluttrisiko',
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
           'rosDialog.initialRiscScopeDescription':
