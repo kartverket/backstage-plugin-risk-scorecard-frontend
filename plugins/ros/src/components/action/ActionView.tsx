@@ -85,13 +85,10 @@ export function ActionView(props: ActionViewProps) {
                 className={`ri-arrow-${isExpanded ? 'down' : 'right'}-s-line`}
               />
             </IconButton>
-            <Flex direction="column" gap="1">
-              <UpdatedStatusBadge status={props.updatedStatus} />
-              <Text variant="body-large">
-                {props.action.title ??
-                  `${t('dictionary.measure')} ${props.index ?? ''}`}
-              </Text>
-            </Flex>
+            <Text variant="body-large">
+              {props.action.title ??
+                `${t('dictionary.measure')} ${props.index ?? ''}`}
+            </Text>
           </Flex>
           <Flex align="center" justify="end">
             <DualButtonWithMenu
@@ -126,12 +123,17 @@ export function ActionView(props: ActionViewProps) {
                   : value === props.action.status,
               }))}
             />
-            <ScenarioLastUpdatedLabel
-              lastUpdated={
-                !!props.optimisticStatus ? new Date() : props.action.lastUpdated
-              }
-              lastUpdatedBy={props.action.lastUpdatedBy}
-            />
+            <Flex gap="0" align="center">
+              <ScenarioLastUpdatedLabel
+                lastUpdated={
+                  !!props.optimisticStatus
+                    ? new Date()
+                    : props.action.lastUpdated
+                }
+                lastUpdatedBy={props.action.lastUpdatedBy}
+              />
+              <UpdatedStatusBadge status={props.updatedStatus} />
+            </Flex>
             {props.allowDeletion && (
               <IconButton
                 onClick={e => {

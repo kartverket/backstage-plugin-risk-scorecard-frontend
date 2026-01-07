@@ -1,5 +1,5 @@
 import { ClickAwayListener, Paper, Tooltip } from '@material-ui/core';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
@@ -30,6 +30,10 @@ export function RiskMatrixScenarioCount({
   const [isHovered, setIsHovered] = useState(false);
   const { openScenarioDrawer, hoveredScenarios, setHoveredScenarios } =
     useScenario();
+
+  useEffect(() => {
+    setTooltipOpen(false);
+  }, [initialRisk]);
 
   function handleScenarioClick(ID: string) {
     setTooltipOpen(false);

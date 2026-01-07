@@ -16,8 +16,11 @@ export function ScenarioLastUpdatedLabel(props: ScenarioLastUpdatedLabelProps) {
     ? formatDate(props.lastUpdated)
     : t('scenarioDrawer.action.notUpdated');
 
+  const totalLabelWidth =
+    t('currentLanguage') === 'en' ? `${144 + 8}px` : `${169 + 8}px`;
+
   return (
-    <Flex direction="column" gap="0" className={styles.flex}>
+    <Flex direction="column" gap="0" style={{ width: totalLabelWidth }}>
       <Text as="p" variant="body-medium">
         {t('scenarioDrawer.action.lastUpdated')} {parsedLastUpdated}
       </Text>

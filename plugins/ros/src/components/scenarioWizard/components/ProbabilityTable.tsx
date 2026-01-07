@@ -1,19 +1,18 @@
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { riskTable, riskCell, riskRow, riskLabelCell } from '../wizardStyles';
 import { useController, UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
 import { RiskRadioButton } from './RiskRadioButton';
 import RadioGroup from '@mui/material/RadioGroup';
-import Box from '@mui/material/Box';
 import { probabilityOptions } from '../../../utils/constants';
-import { Text } from '@backstage/ui';
+import { Text, Box } from '@backstage/ui';
+import styles from '../ScenarioWizardTable.module.css';
 
 function ProbabilityTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   function getContentCell(row: number) {
     return (
-      <Box sx={riskCell}>
+      <Box className={styles.riskCell}>
         {/* @ts-ignore */}
         {t(`probabilityTable.cells.${row + 1}`)}
       </Box>
@@ -21,7 +20,7 @@ function ProbabilityTableInfo() {
   }
 
   return (
-    <Box sx={riskRow}>
+    <Box className={styles.riskRow}>
       {getContentCell(0)}
       {getContentCell(1)}
       {getContentCell(2)}
@@ -61,8 +60,8 @@ export function ProbabilityTable({
   }
 
   return (
-    <Box sx={riskTable}>
-      <RadioGroup {...field} sx={riskRow}>
+    <Box className={styles.riskTable}>
+      <RadioGroup {...field} className={styles.riskRow}>
         {getRadioCell(0)}
         {getRadioCell(1)}
         {getRadioCell(2)}
@@ -84,16 +83,9 @@ export function ProbabilityTableInfoWithHeaders() {
     );
   }
   return (
-    <Box sx={riskTable}>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'auto repeat(5, 1fr)',
-          gap: '4px',
-          overflow: 'auto',
-        }}
-      >
-        <Box sx={riskLabelCell} />
+    <Box className={styles.riskTable}>
+      <Box className={styles.consequenceGrid}>
+        <Box className={styles.riskLabelCell} />
         {getRadioLabel(1)}
         {getRadioLabel(2)}
         {getRadioLabel(3)}

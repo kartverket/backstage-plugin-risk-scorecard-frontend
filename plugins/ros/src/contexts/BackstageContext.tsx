@@ -10,9 +10,11 @@ import {
   ProfileInfo,
   useApi,
 } from '@backstage/core-plugin-api';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 type BackstageContextObject = {
   profileInfo: ProfileInfo | undefined;
+  componentType: string | undefined;
 };
 
 const BackstageContext = createContext<BackstageContextObject | undefined>(
@@ -25,6 +27,7 @@ export function BackstageContextProvider({
   children: ReactNode;
 }) {
   const identityApi = useApi(identityApiRef);
+  const { entity } = useEntity();
 
   const [profileInfo, setProfileInfo] = useState<ProfileInfo | undefined>();
   useEffect(() => {
@@ -33,8 +36,10 @@ export function BackstageContextProvider({
       .then(fetchedProfileInfo => setProfileInfo(fetchedProfileInfo));
   }, [identityApi]);
 
+  const componentType = entity.spec?.type as string | undefined;
+
   return (
-    <BackstageContext.Provider value={{ profileInfo }}>
+    <BackstageContext.Provider value={{ profileInfo, componentType }}>
       {children}
     </BackstageContext.Provider>
   );
