@@ -4,6 +4,7 @@ import {
 } from '@backstage/core-plugin-api/alpha';
 
 export const pluginRiScMessages = {
+  currentLanguage: 'en',
   contentHeader: {
     title: 'Risk scorecard',
     createNewButton: 'Create new scorecard',
@@ -650,6 +651,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
     no: () =>
       Promise.resolve({
         default: {
+          currentLanguage: 'no',
           'contentHeader.title': 'Risiko- og sårbarhetsanalyse',
           'contentHeader.createNewButton': 'Opprett ny analyse',
           'contentHeader.editEncryption': 'Rediger kryptering',
