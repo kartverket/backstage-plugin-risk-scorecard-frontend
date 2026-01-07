@@ -11,10 +11,12 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { stringifyEntityRef } from '@backstage/catalog-model';
 
 type BackstageContextObject = {
   profileInfo: ProfileInfo | undefined;
   componentType: string | undefined;
+  entityRef: string | undefined;
 };
 
 const BackstageContext = createContext<BackstageContextObject | undefined>(
@@ -38,8 +40,15 @@ export function BackstageContextProvider({
 
   const componentType = entity.spec?.type as string | undefined;
 
+  const entityRef = stringifyEntityRef({
+    kind: entity.kind,
+    name: entity.metadata.name,
+  });
+
   return (
-    <BackstageContext.Provider value={{ profileInfo, componentType }}>
+    <BackstageContext.Provider
+      value={{ profileInfo, componentType, entityRef }}
+    >
       {children}
     </BackstageContext.Provider>
   );
