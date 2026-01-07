@@ -23,17 +23,37 @@ export function AggregatedCost({ riSc, riskType }: AggregatedCostProps) {
 
   const cost = calcRiskCostOfRiSc(riSc, riskType);
 
-  const riskLabel = {
-    [RiskMatrixTabs.initialRisk]: t('dictionary.initialRisk'),
-    [RiskMatrixTabs.remainingRisk]: t('dictionary.restRisk'),
-    [RiskMatrixTabs.currentRisk]: t('dictionary.currentRisk'),
-  };
+  const estimatedRiskTitle = {
+    [RiskMatrixTabs.initialRisk]: t('dictionary.estimatedInitialRisk'),
+    [RiskMatrixTabs.remainingRisk]: t('dictionary.estimatedRemainingRisk'),
+    [RiskMatrixTabs.currentRisk]: t('dictionary.estimatedCurrentRisk'),
+  } as const;
+
+  const riskExplanation = {
+    [RiskMatrixTabs.initialRisk]: t('dictionary.riskExplanation.initial'),
+    [RiskMatrixTabs.currentRisk]: t('dictionary.riskExplanation.current'),
+    [RiskMatrixTabs.remainingRisk]: t('dictionary.riskExplanation.remaining'),
+  } as const;
+
+  const title = riskType
+    ? estimatedRiskTitle[riskType]
+    : t('riskMatrix.estimatedRisk.title');
+
+  const explanation = riskType ? riskExplanation[riskType] : undefined;
 
   return (
     <Box className={styles.boxStyle}>
-      <Text as="h3" variant="body-large" weight="bold">
-        {t('riskMatrix.estimatedRisk.title')}{' '}
-        {riskType && `(${riskLabel[riskType]})`}
+      <Text as="h3" variant="body-large">
+        <Text as="span" weight="bold">
+          {title}
+        </Text>
+
+        {explanation && (
+          <Text as="span" weight="regular">
+            {' '}
+            ({explanation})
+          </Text>
+        )}
       </Text>
       <Flex align="center" gap="0">
         <Text variant="body-large">

@@ -52,6 +52,9 @@ export const pluginRiScMessages = {
     discardChanges: 'Discard changes',
     edit: 'Edit',
     estimatedRisk: 'Estimated risk',
+    estimatedInitialRisk: 'Estimated initial risk',
+    estimatedRemainingRisk: 'Estimated remaining risk',
+    estimatedCurrentRisk: 'Estimated current risk',
     example: 'Example',
     initialRisk: 'Initial risk', // Starting or Initial risk
     integrity: 'Integrity',
@@ -67,6 +70,11 @@ export const pluginRiScMessages = {
     currentRisk: 'Current risk',
     removed: 'Removed',
     risk: 'Risk',
+    riskExplanation: {
+      initial: 'Risk before actions are completed',
+      current: 'Current risk based on current action status',
+      remaining: 'Risk after all actions are completed',
+    },
     save: 'Save',
     saveAndClose: 'Save and close',
     scenario: 'Scenario',
@@ -697,6 +705,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.discardChanges': 'Forkast endringer',
           'dictionary.edit': 'Rediger',
           'dictionary.estimatedRisk': 'Estimert risiko',
+          'dictionary.estimatedInitialRisk': 'Estimert startrisiko',
+          'dictionary.estimatedRemainingRisk': 'Estimert restrisiko',
+          'dictionary.estimatedCurrentRisk': 'Estimert nårisiko',
           'dictionary.example': 'Eksempel',
           'dictionary.initialRisk': 'Startrisiko',
           'dictionary.integrity': 'Integritet',
@@ -711,6 +722,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.currentRisk': 'Nårisiko',
           'dictionary.removed': 'Fjernet',
           'dictionary.risk': 'Risiko',
+          'dictionary.riskExplanation.initial': 'Risiko før tiltak er fullført',
+          'dictionary.riskExplanation.current':
+            'Nåværende risiko basert på faktisk tiltaksstatus',
+          'dictionary.riskExplanation.remaining':
+            'Risiko etter at alle tiltak er fullført',
           'dictionary.save': 'Lagre',
           'dictionary.saveAndClose': 'Lagre og lukk',
           'dictionary.scenario': 'Scenario',
