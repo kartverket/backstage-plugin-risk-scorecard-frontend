@@ -23,7 +23,10 @@ import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form';
 import { FormScenario, Scenario } from '../../utils/types';
 import { useSearchParams } from 'react-router-dom';
-import { getAlertSeverity } from '../../utils/utilityfunctions';
+import {
+  getAlertSeverity,
+  validateRemainingRiskNotHigher,
+} from '../../utils/utilityfunctions';
 import { Text, Button, Flex } from '@backstage/ui';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 
@@ -37,6 +40,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
     useScenario();
 
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+  const [riskValidationError, setRiskValidationError] = useState<string[]>([]);
 
   const formMethods = useForm<FormScenario>({
     defaultValues: emptyFormScenario(scenario),
@@ -46,6 +50,15 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   const { isDirty, isValid } = formMethods.formState;
 
   const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
+    const validation = validateRemainingRiskNotHigher(data, t);
+
+    if (!validation.isValid) {
+      setRiskValidationError(validation.errors);
+      return;
+    }
+
+    setRiskValidationError([]);
+
     const submitScenario: Scenario = {
       ...data,
       risk: {
@@ -154,6 +167,15 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
           {response && (
             <Alert severity={getAlertSeverity(updateStatus, response)}>
               <Text variant="body-large">{response.statusMessage}</Text>
+            </Alert>
+          )}
+          {riskValidationError.length > 0 && (
+            <Alert severity="error">
+              {riskValidationError.map((line, index) => (
+                <div key={index}>
+                  <Text variant="body-large">{line}</Text>
+                </div>
+              ))}
             </Alert>
           )}
           <Flex justify={isFirstStep ? 'end' : 'between'}>

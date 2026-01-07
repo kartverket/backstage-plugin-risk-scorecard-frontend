@@ -1,0 +1,55 @@
+.riskTable {
+  overflow: auto;
+}
+
+.consequenceGrid {
+  display: grid;
+  grid-template-columns: auto repeat(5, 1fr);
+  gap: 4px;
+  overflow: auto;
+}
+
+.riskLabelCell {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  text-transform: uppercase;
+  padding-right: 0;
+  padding-left: 8px;
+  width: 1.5rem;
+}
+
+.riskRow {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+
+.consequenceRow {
+  display: grid !important;
+  grid-template-columns: auto repeat(5, 1fr);
+  gap: 4px;
+}
+
+.riskCell {
+  padding: 8px;
+  border: 1px solid var(--ros-gray-400);
+  text-align: left;
+  vertical-align: top;
+  min-width: 135px;
+  white-space: pre-line;
+}
+
+.riskVoidCell {
+  padding: 8px;
+  border: 1px solid var(--ros-gray-400);
+  color: var(--ros-gray-700);
+  text-align: left;
+  vertical-align: top;
+}
+
+[data-theme-mode='dark'] {
+  .riskVoidCell {
+    color: var(--ros-gray-400);
+  }
+}
