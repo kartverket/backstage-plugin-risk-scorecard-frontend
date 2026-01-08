@@ -7,26 +7,23 @@
   font-size: 12px;
   width: fit-content;
 }
-.text {
-  color: var(--ros-gray-900, #000);
+
+.iconBase {
+  font-size: 32px;
 }
 
-.updated {
-  background: var(--ros-green-100);
-  border: 1px solid var(--ros-green-500);
+.outdatedIcon {
+  color: var(--ros-outdated);
 }
 
-.veryOutdated {
-  background: var(--ros-red-200);
-  border: 1px solid var(--ros-red-400);
+.veryOutdatedIcon {
+  color: var(--ros-very-outdated);
 }
 
-.outdated {
-  background: var(--ros-orange-100);
-  border: 1px solid var(--ros-orange-300);
+.updatedIcon {
+  color: var(--ros-updated);
 }
 
-.updating {
-  background-color: #eaf6ff;
-  border: 1px solid #439ccd;
+.emptyIcon {
+  color: transparent;
 }
