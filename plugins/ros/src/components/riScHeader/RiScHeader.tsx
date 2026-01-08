@@ -3,7 +3,6 @@ import { EditEncryptionButton } from '../riScDialog/EditEncryptionButton.tsx';
 import { SupportDialog } from '../riScDialog/SupportDialog.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { VersionChip } from './VersionChip.tsx';
 
 type RiScHeaderProps = {
   onEditEncryption: () => void;
@@ -18,7 +17,6 @@ export function RiScHeader(props: RiScHeaderProps) {
           <Text variant="title-medium" weight="bold">
             {t('contentHeader.title')}
           </Text>
-          <VersionChip />
         </Flex>
         <Flex gap="8px">
           <EditEncryptionButton onEditEncryption={props.onEditEncryption} />
