@@ -9,6 +9,7 @@ import { ChangeSetChangedProperty } from '../changeset/components/ChangeSetChang
 import { RiScMigrationChanges42 } from './RiScMigrationChanges42.tsx';
 import { RiScMigrationChanges50 } from './RiScMigrationChanges50.tsx';
 import { RiScMigrationChanges51 } from './RiScMigrationChanges51.tsx';
+import { RiScMigrationChanges52 } from './RiScMigrationChanges52.tsx';
 
 interface RiScMigrationChangesProps {
   migrationStatus: MigrationStatus;
@@ -43,6 +44,9 @@ export function RiScMigrationChanges({
       )}
       {migrationStatus.migrationChanges51 && (
         <RiScMigrationChanges51 changes={migrationStatus.migrationChanges51} />
+      )}
+      {migrationStatus.migrationChanges52 && (
+        <RiScMigrationChanges52 changes={migrationStatus.migrationChanges52} />
       )}
     </div>
   );
