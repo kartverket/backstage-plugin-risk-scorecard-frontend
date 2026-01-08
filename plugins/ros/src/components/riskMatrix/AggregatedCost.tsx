@@ -67,6 +67,7 @@ export function AggregatedCost({ riSc, riskType }: AggregatedCostProps) {
       <EstimatedRiskInfoDialog
         isOpen={showDialog}
         onClose={() => setShowDialog(false)}
+        riskTab={riskType}
       />
     </Box>
   );
