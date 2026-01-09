@@ -63,6 +63,7 @@ export function RiskMatrix({
                   </Box>
                   {row.map((_, colIndex) => (
                     <RiskMatrixSquare
+                      key={`S:${colIndex} K:${4 - rowIndex}`}
                       size="grid"
                       consequence={4 - rowIndex}
                       probability={colIndex}

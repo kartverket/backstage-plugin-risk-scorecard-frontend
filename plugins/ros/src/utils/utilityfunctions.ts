@@ -97,7 +97,6 @@ export function emptyRiSc(): RiSc {
     schemaVersion: latestSupportedVersion,
     title: '',
     scope: '',
-    valuations: [],
     scenarios: [],
   };
 }
