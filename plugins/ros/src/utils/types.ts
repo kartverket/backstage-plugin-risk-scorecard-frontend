@@ -51,11 +51,16 @@ export type MigrationStatus = {
   migrationChanges42?: MigrationChanges42;
   migrationChanges50?: MigrationChanges50;
   migrationChanges51?: MigrationChanges51;
+  migrationChanges52?: MigrationChanges52;
 };
 
 export type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
+};
+
+export type MigrationChanges52 = {
+  valuations?: DeletedProperty<Valuations[]>;
 };
 
 export type MigrationChanges51 = {

@@ -52,6 +52,9 @@ export const pluginRiScMessages = {
     discardChanges: 'Discard changes',
     edit: 'Edit',
     estimatedRisk: 'Estimated risk',
+    estimatedInitialRisk: 'Estimated initial risk',
+    estimatedRemainingRisk: 'Estimated remaining risk',
+    estimatedCurrentRisk: 'Estimated current risk',
     example: 'Example',
     initialRisk: 'Initial risk', // Starting or Initial risk
     integrity: 'Integrity',
@@ -67,6 +70,11 @@ export const pluginRiScMessages = {
     currentRisk: 'Current risk',
     removed: 'Removed',
     risk: 'Risk',
+    riskExplanation: {
+      initial: 'Risk before actions are completed',
+      current: 'Current risk based on current action status',
+      remaining: 'Risk after all actions are completed',
+    },
     save: 'Save',
     saveAndClose: 'Save and close',
     scenario: 'Scenario',
@@ -210,6 +218,13 @@ export const pluginRiScMessages = {
       addedLastUpdatedBy:
         'Added field to track who updated an action for {{numberOfChangedActions}} existing actions',
     },
+    migration52: {
+      changeExplanation:
+        'This migration removes the unused concept of valuations from the RiSc document.',
+      title: 'Valuations removed',
+      oldValue: 'Existing valuations removed',
+    },
+    removed: 'Removed',
   },
   comparisonDialog: {
     noChanges: 'No changes',
@@ -325,6 +340,18 @@ export const pluginRiScMessages = {
       part1: 'A risk scenario with consequence ',
       part2: ' and probability ',
       part3: ' has an estimated risk of ',
+    },
+    currentRisk: {
+      title: 'Current risk calculations',
+      description:
+        'Current risk blends the starting risk, the planned end risk, and how far the mitigation actions have progressed. For each scenario, we first compute the initial risk cost',
+      remainingRiskCost: 'and the remaining risk cost',
+      actionRatio:
+        'Then we measure how many relevant actions are completed (ratio) = (number of completed actions) / (number of actions not marked “Not relevant”). If no relevant actions, ratio = 0.',
+      currentRiskCost:
+        'The current risk cost interpolates between start and remaining risk based on that ratio',
+      aggregated: 'The aggregated current risk is the sum of ',
+      aggregatedSums: 'across all scenarios, reported in NOK per year.',
     },
   },
   rosDialog: {
@@ -697,6 +724,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.discardChanges': 'Forkast endringer',
           'dictionary.edit': 'Rediger',
           'dictionary.estimatedRisk': 'Estimert risiko',
+          'dictionary.estimatedInitialRisk': 'Estimert startrisiko',
+          'dictionary.estimatedRemainingRisk': 'Estimert restrisiko',
+          'dictionary.estimatedCurrentRisk': 'Estimert nårisiko',
           'dictionary.example': 'Eksempel',
           'dictionary.initialRisk': 'Startrisiko',
           'dictionary.integrity': 'Integritet',
@@ -711,6 +741,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.currentRisk': 'Nårisiko',
           'dictionary.removed': 'Fjernet',
           'dictionary.risk': 'Risiko',
+          'dictionary.riskExplanation.initial': 'Risiko før tiltak er fullført',
+          'dictionary.riskExplanation.current':
+            'Nåværende risiko basert på faktisk tiltaksstatus',
+          'dictionary.riskExplanation.remaining':
+            'Risiko etter at alle tiltak er fullført',
           'dictionary.save': 'Lagre',
           'dictionary.saveAndClose': 'Lagre og lukk',
           'dictionary.scenario': 'Scenario',
@@ -862,6 +897,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration51.lastUpdatedBy': 'Sist oppdatert av:',
           'migrationDialog.migration51.addedLastUpdatedBy':
             'La til felt for å spore hvem som oppdaterte et tiltak for {{numberOfChangedActions}} eksisterende tiltak',
+          'migrationDialog.migration52.changeExplanation':
+            'Denne migreringen fjerner det ubrukte konseptet verdivurderinger ("valuations") fra RiSc-dokumentet.',
+          'migrationDialog.migration52.title': 'Verdivurderinger fjernet',
+          'migrationDialog.migration52.oldValue':
+            'Fjernet eksisterende verdivurderinger',
+          'migrationDialog.removed': 'Fjernet',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
           'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
@@ -950,7 +991,18 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.units.nokPerIncident': 'kr/hendelse',
           'infoDialog.units.incidentsPerYear': 'hendelser/år',
           'infoDialog.units.nokPerYear': 'kr/år',
-
+          'infoDialog.currentRisk.title': 'Nårisiko utregning',
+          'infoDialog.currentRisk.description':
+            'Nåværende risiko kombinerer startrisikoen, den planlagte sluttrisikoen og hvor langt risikoreduserende tiltak har kommet. For hvert scenario beregnes startrisiko: ',
+          'infoDialog.currentRisk.actionRatio':
+            'Så måler vi hvor mange relevante tiltak som er fullført (ratio) = (antall fullførte tiltak) / (antall tiltak som ikke er merket «Ikke relevant»). Hvis det ikke finnes relevante tiltak, settes forholdet til 0.',
+          'infoDialog.currentRisk.aggregated':
+            'Den aggregerte nåværende risikoen er summen ',
+          'infoDialog.currentRisk.currentRiskCost':
+            'Den Aggregert nårisiko kostnaden interpolerer mellom start- og restrisiko basert på forholdet',
+          'infoDialog.currentRisk.aggregatedSums':
+            'på tvers av alle scenarier, rapportert i NOK per år.',
+          'infoDialog.currentRisk.remainingRiskCost': 'og sluttrisiko',
           'rosDialog.titleNew': 'Ny risiko- og sårbarhetsanalyse',
           'rosDialog.titleEdit': 'Rediger tittel og omfang',
           'rosDialog.initialRiscScopeDescription':
