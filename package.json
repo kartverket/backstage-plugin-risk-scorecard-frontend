@@ -75,7 +75,8 @@
     "tough-cookie": "5.1.2",
     "linkifyjs": "^4.3.2",
     "jws": "^4.0.1",
-    "qs": "^6.14.1"
+    "qs": "^6.14.1",
+    "@remix-run/router": "^1.23.2"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
