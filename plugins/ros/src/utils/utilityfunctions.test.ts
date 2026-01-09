@@ -149,14 +149,6 @@ describe('requiresNewApproval', () => {
     title: 'Test Title',
     scope: 'Scope',
     scenarios: [scenario],
-    valuations: [
-      {
-        description: 'Valuation 1',
-        confidentiality: 'High',
-        integrity: 'Medium',
-        availability: 'Low',
-      },
-    ],
   };
 
   it('returns false if risc is equal', () => {
