@@ -168,15 +168,13 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     fetchGcpCryptoKeys(
       res => {
-        setGcpCryptoKeys(res);
-        // Sorts the crypto keys on whether the user has encrypt/decrypt role on it
+        // Sorts the crypto keys by the number of permissions (descending)
         setGcpCryptoKeys(
-          res.sort((a, b) => {
-            if (b.hasEncryptDecryptAccess === a.hasEncryptDecryptAccess) {
-              return 0;
-            }
-            return b.hasEncryptDecryptAccess ? 1 : -1;
-          }),
+          res.sort(
+            (a, b) =>
+              (b.userPermissions?.length ?? 0) -
+              (a.userPermissions?.length ?? 0),
+          ),
         );
         isFetchingGcpCryptoKeysRef.current = false;
         setIsFetchingGcpCryptoKeys(isFetchingGcpCryptoKeysRef.current);
