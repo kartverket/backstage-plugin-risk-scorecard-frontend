@@ -1,0 +1,17 @@
+.description {
+  margin-bottom: var(--bui-space-2);
+}
+
+.radioItem {
+  padding: var(--bui-space-1);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.radioItem:hover {
+  background-color: var(--ros-gray-50);
+}
+
+[data-theme-mode='dark'] .radioItem:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
