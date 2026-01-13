@@ -17,6 +17,7 @@ import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
 import { Flex, Text } from '@backstage/ui';
 import { CreateNewRiScButton } from '../riScInfo/CreateNewRiScButton.tsx';
 import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
+import { RiScRelationComponent } from '../riScInfo/RiScRelationComponent.tsx';
 import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -120,7 +121,7 @@ export function RiScPlugin() {
               <>
                 <Grid item xs={12}>
                   <Grid container rowSpacing={1} columnSpacing={4}>
-                    <Grid item xs={6}>
+                    <Grid item xs={8}>
                       <Flex align="center" justify="between">
                         <Text as="h3" variant="body-large" weight="bold">
                           {t('contentHeader.multipleRiScs')}
@@ -133,26 +134,28 @@ export function RiScPlugin() {
 
                     <Grid item xs={6} />
 
-                    <Grid item xs={6}>
-                      <RiScSelectionCard
-                        riScWithMetadata={selectedRiSc}
-                        edit={openEditRiScDialog}
-                        onCreateNew={openCreateRiScDialog}
-                      />
+                    <Grid item xs={8}>
+                      <Flex gap="24px" direction="column">
+                        <RiScSelectionCard
+                          riScWithMetadata={selectedRiSc}
+                          edit={openEditRiScDialog}
+                          onCreateNew={openCreateRiScDialog}
+                        />
+                        <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
+                      </Flex>
                     </Grid>
-                    <Grid item xs={6}>
-                      <RiScStatusComponent
-                        selectedRiSc={selectedRiSc}
-                        publishRiScFn={approveRiSc}
-                      />
+
+                    <Grid item xs={4}>
+                      <Flex gap="24px" direction="column">
+                        <RiScStatusComponent
+                          selectedRiSc={selectedRiSc}
+                          publishRiScFn={approveRiSc}
+                        />
+                        <RiScRelationComponent />
+                        <RiskMatrix riScWithMetadata={selectedRiSc} />
+                      </Flex>
                     </Grid>
                   </Grid>
-                </Grid>
-                <Grid item xs={12} lg={8}>
-                  <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
-                </Grid>
-                <Grid item xs={12} lg={4}>
-                  <RiskMatrix riScWithMetadata={selectedRiSc} />
                 </Grid>
               </>
             )}
