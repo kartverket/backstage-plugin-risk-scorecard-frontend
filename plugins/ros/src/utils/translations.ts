@@ -767,7 +767,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.customOrder': 'Egendefinert rekkefølge',
           'dictionary.searchQuery': 'Ingen resultater for ',
           'dictionary.actionsWithStatus': 'Tiltak som er OK',
-          'dictionary.refresh': 'Oppdater',
+          'dictionary.refresh': 'Prøv igjen',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
