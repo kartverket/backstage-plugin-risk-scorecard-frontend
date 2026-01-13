@@ -104,10 +104,10 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     | { type: 'SET_STATUS'; updateStatus: UpdateStatus }
     | { type: 'SET_RESPONSE'; response: SubmitResponseObject | null }
     | {
-    type: 'SET_BOTH';
-    updateStatus: UpdateStatus;
-    response: SubmitResponseObject | null;
-  };
+        type: 'SET_BOTH';
+        updateStatus: UpdateStatus;
+        response: SubmitResponseObject | null;
+      };
 
   const initialLocalState: LocalState = {
     updateStatus: { isLoading: false, isError: false, isSuccess: false },
@@ -192,8 +192,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
             status: ProcessingStatus.ErrorWhenFetchingGcpCryptoKeys,
             statusMessage: loginRejected
               ? `${t('errorMessages.ErrorWhenFetchingGcpCryptoKeys')}. ${t(
-                'dictionary.rejectedLogin',
-              )}`
+                  'dictionary.rejectedLogin',
+                )}`
               : t('errorMessages.ErrorWhenFetchingGcpCryptoKeys'),
           },
         });
@@ -281,8 +281,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
             status: ProcessingStatus.ErrorWhenFetchingRiScs,
             statusMessage: loginRejected
               ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t(
-                'dictionary.rejectedLogin',
-              )}`
+                  'dictionary.rejectedLogin',
+                )}`
               : t('errorMessages.ErrorWhenFetchingRiScs'),
           },
         });
@@ -378,8 +378,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
             ...error,
             statusMessage: loginRejected
               ? `${getTranslationKey('error', error.status, t)}. ${t(
-                'dictionary.rejectedLogin',
-              )}`
+                  'dictionary.rejectedLogin',
+                )}`
               : getTranslationKey('error', error.status, t),
           },
         });
@@ -436,8 +436,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
               ...error,
               statusMessage: loginRejected
                 ? `${getTranslationKey('error', error.status, t)}. ${t(
-                  'dictionary.rejectedLogin',
-                )}`
+                    'dictionary.rejectedLogin',
+                  )}`
                 : getTranslationKey('error', error.status, t),
             },
           });
@@ -510,8 +510,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
               ...error,
               statusMessage: loginRejected
                 ? `${getTranslationKey('error', error.status, t)}. ${t(
-                  'dictionary.rejectedLogin',
-                )}`
+                    'dictionary.rejectedLogin',
+                  )}`
                 : getTranslationKey('error', error.status, t),
             },
           });
