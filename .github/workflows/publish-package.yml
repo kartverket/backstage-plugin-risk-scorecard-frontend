@@ -4,6 +4,11 @@ permissions:
   issues: write # Needed to comment on released issues
   pull-requests: write # Needed to comment on released PRs
   id-token: write # This will hopefully be used in the futureto enable use of OIDC for trusted publishing and npm provenance instead of the token it currently uses
+
+# Make sure that only one publish job runs on main at the same time to avoid version conflicts
+concurrency:
+  group: publish-${{ github.ref}}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 on:
   workflow_dispatch:
   push:
