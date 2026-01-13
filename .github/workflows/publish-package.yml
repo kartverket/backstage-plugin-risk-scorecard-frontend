@@ -3,7 +3,7 @@ permissions:
   contents: write # Needed to create releases and push tags
   issues: write # Needed to comment on released issues
   pull-requests: write # Needed to comment on released PRs
-  id-token: write # to enable use of OIDC for trusted publishing and npm provenance
+  id-token: write # This will hopefully be used in the futureto enable use of OIDC for trusted publishing and npm provenance instead of the token it currently uses
 on:
   workflow_dispatch:
   push:
@@ -44,6 +44,7 @@ jobs:
         id: semantic_dry_run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_NPM_TOKEN }}
         run: |
           # Run semantic-release in dry-run mode and capture output
           GITHUB_REF=${{ github.head_ref }} # This is a hack necessary together with the --branches argument below. A bit unsure why, but there are some internals in the various semantic-release plugins that needs both these set in order for it to approve running on a PR.
