@@ -107,5 +107,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_NPM_TOKEN }}
         run: npx semantic-release@25.0.2
         working-directory: plugins/ros
