@@ -33,13 +33,13 @@ export function RiScRelationComponent() {
             <Table aria-label="Related Components">
               <TableHeader>
                 <Column isRowHeader>Name</Column>
-                <Column>Relation Type</Column>
+                <Column>Kind</Column>
               </TableHeader>
               <TableBody>
                 {componentRelations.map((comp, index) => (
                   <Row key={index}>
                     <Cell title={comp.name} />
-                    <Cell title={comp.relationType} />
+                    <Cell title={comp.kind} />
                   </Row>
                 ))}
               </TableBody>
