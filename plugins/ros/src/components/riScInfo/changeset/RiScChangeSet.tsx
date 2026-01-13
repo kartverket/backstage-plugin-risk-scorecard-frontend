@@ -5,7 +5,6 @@ import { RiScScenarioChangeSet } from './RiScScenarioChangeSet.tsx';
 import { RiScScenarioChange } from './RiScScenarioChange.tsx';
 import { dtoToScenario } from '../../../utils/DTOs.ts';
 import { ChangeSetSimpleBox } from './components/ChangeSetSimpleBox.tsx';
-import { RiScValuationChange } from './RiScValuationChange.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 
@@ -47,9 +46,6 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
             prop={changes.scope}
             title={t('dictionary.scope')}
           />
-          {changes.valuations.map(valuation => (
-            <RiScValuationChange valuation={valuation} />
-          ))}
           {changes.scenarios.map(scenario => (
             <>
               {(scenario.type === 'ADDED' || scenario.type === 'DELETED') && (
