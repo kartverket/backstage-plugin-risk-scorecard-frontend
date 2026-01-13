@@ -160,11 +160,11 @@ export type RiSc = {
   schemaVersion: string;
   title: string;
   scope: string;
-  valuations: Valuations[];
   scenarios: Scenario[];
 };
 
-export type Valuations = {
+// The Valuations concept was removed in PR #850 and the remaining code referencing it can be removed when old schema migration code including to v4 is removed.
+type Valuations = {
   description: string;
   confidentiality: string;
   integrity: string;

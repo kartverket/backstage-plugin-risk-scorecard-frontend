@@ -9,7 +9,6 @@ import {
   RiScStatus,
   Risk,
   Scenario,
-  Valuations,
 } from './types';
 import { ProfileInfo } from '@backstage/core-plugin-api';
 
@@ -56,7 +55,6 @@ export type RiScDTO = {
   schemaVersion: string;
   title: string;
   scope: string;
-  valuations: Valuations[];
   scenarios: ScenarioDTO[];
 };
 
