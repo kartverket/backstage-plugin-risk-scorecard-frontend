@@ -4,6 +4,8 @@ import { MigrationTitle } from './components/MigrationTitle.tsx';
 import { ChangeSetBoxTitle } from '../changeset/components/ChangeSetBoxTitle.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
+import { ChangeSetAddedProperty } from '../changeset/components/ChangeSetAddedProperty.tsx';
+import { ChangeSetText } from '../changeset/components/ChangeSetText.tsx';
 
 interface RiScMigrationChanges53Props {
   changes: MigrationChanges53;
@@ -18,13 +20,19 @@ export function RiScMigrationChanges53(props: RiScMigrationChanges53Props) {
         from="5.2"
         to="5.3"
         migrationExplanation={t(
-          'migrationDialog.migration51.changeExplanation',
+          'migrationDialog.migration53.changeExplanation',
         )}
         changelogUrl="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md#53"
       />
       <ChangeSetBox type="primary">
-        <ChangeSetBoxTitle title={'5.3 is out!!'} />
-        <h1>{JSON.stringify(props)}</h1>
+        <ChangeSetBoxTitle title={t('migrationDialog.migration53.title')} />
+        <ChangeSetText
+          text={t('migrationDialog.migration53.changeExplanation')}
+        />
+        <ChangeSetAddedProperty
+          propertyName={`${t('migrationDialog.migration53.initializedTo')}: "${props.changes.metadataUnencrypted.backstage.entityRef}"`}
+          newValue={''}
+        />
       </ChangeSetBox>
     </>
   );

@@ -225,6 +225,14 @@ export const pluginRiScMessages = {
       title: 'Valuations removed',
       oldValue: 'Existing valuations removed',
     },
+    migration53: {
+      changeExplanation:
+        'This migration adds an object for holding unencrypted metadata. ' +
+        'Initially the field backstage.entityRef is introduced. ' +
+        'The field holds what backstage entity the RiSc belongs to.',
+      title: 'Added unencrypted metadata',
+      initializedTo: 'backstage.entityRef is initially set to the value',
+    },
     removed: 'Removed',
   },
   comparisonDialog: {
@@ -910,6 +918,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration52.title': 'Verdivurderinger fjernet',
           'migrationDialog.migration52.oldValue':
             'Fjernet eksisterende verdivurderinger',
+          'migrationDialog.migration53.title': 'Lagt til ukryptert metadata',
+          'migrationDialog.migration53.changeExplanation':
+            'Denne migreringen legger til et objekt for å lagre ukryptert metadata. I utgangspunktet har feltet backstage.entityRef blitt lagt til. Feltet lagrer hvilken backstage entitet RoSen tilhører.',
+          'migrationDialog.migration53.initializedTo':
+            'backstage.entityRef er i utgangspunktet satt til verdien',
           'migrationDialog.removed': 'Fjernet',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
