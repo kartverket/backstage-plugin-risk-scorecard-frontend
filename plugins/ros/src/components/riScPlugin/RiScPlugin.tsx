@@ -133,6 +133,7 @@ export function RiScPlugin() {
                     </Grid>
 
                     <Grid item xs={6} />
+                    <Grid item xs={12} />
 
                     <Grid item xs={8}>
                       <Flex gap="24px" direction="column">
@@ -141,6 +142,7 @@ export function RiScPlugin() {
                           edit={openEditRiScDialog}
                           onCreateNew={openCreateRiScDialog}
                         />
+                        <RiScRelationComponent />
                         <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
                       </Flex>
                     </Grid>
@@ -151,7 +153,6 @@ export function RiScPlugin() {
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
                         />
-                        <RiScRelationComponent />
                         <RiskMatrix riScWithMetadata={selectedRiSc} />
                       </Flex>
                     </Grid>
