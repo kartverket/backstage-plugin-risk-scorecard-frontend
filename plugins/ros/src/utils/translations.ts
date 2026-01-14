@@ -62,6 +62,7 @@ export const pluginRiScMessages = {
     measures: 'Actions', // Measure, Action or Initiative
     measuresInitialRiSc: 'actions',
     measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
+    metadataUnencrypted: 'Unencrypted metadata',
     next: 'Next',
     planned: 'Planned',
     previous: 'Previous',
@@ -234,6 +235,12 @@ export const pluginRiScMessages = {
     risk: {
       probabilityUnit: 'occurrences/year',
       consequenceUnit: 'NOK/incident',
+    },
+    metadata: {
+      backstage: {
+        entityRef: 'Backstage entity reference (entityRef)',
+        changes: 'Changes to backstage metadata',
+      },
     },
     valuation: {
       integrity: {
@@ -733,6 +740,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.measure': 'Tiltak',
           'dictionary.measures': 'Tiltak',
           'dictionary.measureOwner': 'Tiltakseier',
+          'dictionary.metadataUnencrypted': 'Ukryptert metadata',
           'dictionary.next': 'Neste',
           'dictionary.planned': 'Planlagt',
           'dictionary.previous': 'Forrige',
@@ -909,6 +917,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'comparisonDialog.noURL': 'Ingen URL spesifisert',
           'comparisonDialog.risk.consequenceUnit': 'NOK/hendelse',
           'comparisonDialog.risk.probabilityUnit': 'hendelser/år',
+          'comparisonDialog.metadata.backstage.changes':
+            'Endringer av backstage metadata',
+          'comparisonDialog.metadata.backstage.entityRef':
+            'Backstage entitetsreferanse (entityRef)',
           'comparisonDialog.valuation.integrity.Insignificant': 'Insignifikant',
           'comparisonDialog.valuation.integrity.Expected': 'Forventet',
           'comparisonDialog.valuation.integrity.Dependent': 'Avhengig',

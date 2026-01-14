@@ -52,11 +52,20 @@ export type MigrationStatus = {
   migrationChanges50?: MigrationChanges50;
   migrationChanges51?: MigrationChanges51;
   migrationChanges52?: MigrationChanges52;
+  migrationChanges53?: MigrationChanges53;
 };
 
 export type MigrationVersions = {
   fromVersion: string;
   toVersion: string;
+};
+
+export type MigrationChanges53 = {
+  metadataUnencrypted: {
+    backstage: {
+      entityRef: string;
+    };
+  };
 };
 
 export type MigrationChanges52 = {
@@ -283,6 +292,7 @@ export type Difference = {
   scope?: SimpleTrackedProperty<string>;
   valuations: SimpleTrackedProperty<Valuations>[];
   scenarios: TrackedProperty<ScenarioChange, ScenarioDTO>[];
+  metadataUnencrypted?: MetadataUnencryptedChange;
 };
 
 export type ScenarioChange = {
@@ -312,6 +322,14 @@ export type ScenarioRiskChange = {
   summary?: SimpleTrackedProperty<string | null>;
   probability: SimpleTrackedProperty<number>;
   consequence: SimpleTrackedProperty<number>;
+};
+
+export type MetadataUnencryptedChange = {
+  backstage?: BackstageMetadataChange;
+};
+
+export type BackstageMetadataChange = {
+  entityRef?: SimpleTrackedProperty<string | null>;
 };
 
 export type SimpleTrackedProperty<T> = TrackedProperty<T, T>;
