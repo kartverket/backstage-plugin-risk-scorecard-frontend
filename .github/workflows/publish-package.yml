@@ -1,0 +1,112 @@
+name: Publish RiSc plugin to npmjs (semantic-release)
+permissions:
+  contents: write # Needed to create releases and push tags
+  issues: write # Needed to comment on released issues
+  pull-requests: write # Needed to comment on released PRs
+  id-token: write # This will hopefully be used in the futureto enable use of OIDC for trusted publishing and npm provenance instead of the token it currently uses
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for semantic-release
+          persist-credentials: false
+
+      - run: corepack enable
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '22.x' # From mise.toml
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@kartverket'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build plugin
+        run: |
+          yarn tsc
+          yarn build
+        working-directory: plugins/ros
+
+      - name: Semantic Release (Dry Run)
+        if: github.event_name == 'pull_request'
+        id: semantic_dry_run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_NPM_TOKEN }}
+        run: |
+          # Run semantic-release in dry-run mode and capture output
+          GITHUB_REF=${{ github.head_ref }} # This is a hack necessary together with the --branches argument below. A bit unsure why, but there are some internals in the various semantic-release plugins that needs both these set in order for it to approve running on a PR.
+          npx semantic-release@25.0.2 --no-ci --dry-run --branches ${{ github.head_ref }} > release-output.txt 2>&1 || true
+          cat release-output.txt
+
+          # Extract version from text "Release note for version X.X.X:" which is outputted by semantic-release in the step above
+          if grep -q "Release note for version" release-output.txt; then
+            NEW_VERSION=$(grep "Release note for version" release-output.txt | sed -n 's/.*Release note for version \([0-9.]*\):.*/\1/p')
+            
+            # A url to a version diff is also outputted, with parts looking like this (vX.X.X is then the current version): /compare/vX.X.X...vY.Y.Y
+            CURRENT_VERSION=$(grep -o '/compare/v[0-9.]*\.\.\.' release-output.txt | sed 's|/compare/v||; s/\.\.\.//')
+            
+            if [ -n "$CURRENT_VERSION" ] && [ -n "$NEW_VERSION" ]; then
+              echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+              echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+              echo "will_release=true" >> $GITHUB_OUTPUT
+            else
+              echo "will_release=unknown" >> $GITHUB_OUTPUT
+            fi
+          elif grep -q "There are no relevant changes" release-output.txt; then
+            echo "will_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "will_release=unknown" >> $GITHUB_OUTPUT
+          fi
+        working-directory: plugins/ros
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          WILL_RELEASE="${{ steps.semantic_dry_run.outputs.will_release }}"
+          VERSION="${{ steps.semantic_dry_run.outputs.version }}"
+          CURRENT_VERSION="${{ steps.semantic_dry_run.outputs.current_version }}"
+
+          # Build comment body
+          if [ "$WILL_RELEASE" = "true" ]; then
+            COMMENT="## 🚀 Semantic Release Preview
+
+          Current version: \`$CURRENT_VERSION\`
+          New version: \`$VERSION\`"
+          elif [ "$WILL_RELEASE" = "false" ]; then
+            COMMENT="## ℹ️ Semantic Release Preview
+
+          This PR will **not** trigger a release.
+
+          No relevant changes detected (commits must follow conventional commit format)."
+          else
+            COMMENT="## ❓ Semantic Release Preview
+
+          Unable to determine release information. Check the workflow logs for details."
+          fi
+
+          # Create or update comment
+          gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT" --edit-last || \
+            gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
+
+      - name: Semantic Release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_NPM_TOKEN }}
+        run: npx semantic-release@25.0.2
+        working-directory: plugins/ros
