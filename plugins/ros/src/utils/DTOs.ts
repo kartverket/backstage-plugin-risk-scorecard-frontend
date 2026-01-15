@@ -2,6 +2,7 @@ import {
   Action,
   ContentStatus,
   LastPublished,
+  MetadataUnencrypted,
   MigrationStatus,
   Modify,
   ProcessingStatus,
@@ -56,6 +57,15 @@ export type RiScDTO = {
   title: string;
   scope: string;
   scenarios: ScenarioDTO[];
+  metadata_unencrypted: MetadataUnencryptedDTO;
+};
+
+export type MetadataUnencryptedDTO = {
+  backstage: BackstageMetadataDTO;
+};
+
+export type BackstageMetadataDTO = {
+  entityRef: string | null;
 };
 
 export type GcpCryptoKeyObject = {
@@ -96,7 +106,10 @@ export type ActionsDTO = {
 
 export function dtoToRiSc(riScDTO: RiScDTO): RiSc {
   return {
-    ...riScDTO,
+    schemaVersion: riScDTO.schemaVersion,
+    title: riScDTO.title,
+    scope: riScDTO.scope,
+    metadata: dtoToMetadata(riScDTO.metadata_unencrypted),
     // TODO implementere løsning for migrering, kan bumpe fra 3.2 til 3.3 på denne måten manuelt ved å åpne og lagre riscen:
     // skjemaVersjon: '3.3',
     scenarios: riScDTO.scenarios.map(dtoToScenario),
@@ -148,8 +161,29 @@ export function riScToDTOString(
 
 function riScToDTO(riSc: RiSc): RiScDTO {
   return {
-    ...riSc,
+    schemaVersion: riSc.schemaVersion,
+    title: riSc.title,
+    scope: riSc.scope,
+    metadata_unencrypted: metadataToDTO(riSc.metadata),
     scenarios: riSc.scenarios.map(scenarioToDTO),
+  };
+}
+
+function metadataToDTO(metadata: MetadataUnencrypted): MetadataUnencryptedDTO {
+  return {
+    backstage: {
+      entityRef: metadata.backstage.entityRef,
+    },
+  };
+}
+
+function dtoToMetadata(
+  metadataDTO: MetadataUnencryptedDTO,
+): MetadataUnencrypted {
+  return {
+    backstage: {
+      entityRef: metadataDTO.backstage.entityRef ?? '',
+    },
   };
 }
 
