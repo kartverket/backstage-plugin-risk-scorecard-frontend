@@ -170,6 +170,15 @@ export type RiSc = {
   title: string;
   scope: string;
   scenarios: Scenario[];
+  metadata: MetadataUnencrypted;
+};
+
+export type MetadataUnencrypted = {
+  backstage: BackstageMetadata;
+};
+
+export type BackstageMetadata = {
+  entityRef: string;
 };
 
 // The Valuations concept was removed in PR #850 and the remaining code referencing it can be removed when old schema migration code including to v4 is removed.
