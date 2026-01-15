@@ -5,6 +5,7 @@ export interface ComponentRelation {
   namespace?: string;
   kind: string;
   relationType: string;
+  riscUrl: string;
 }
 
 /**
@@ -42,6 +43,7 @@ export function useComponentRelations(): ComponentRelation[] {
         namespace,
         kind,
         relationType: relation.type,
+        riscUrl: `/catalog/${namespace}/${kind}/${name}/risc`,
       };
     });
 }

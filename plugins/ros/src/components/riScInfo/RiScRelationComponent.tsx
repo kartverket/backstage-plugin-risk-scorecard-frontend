@@ -38,7 +38,11 @@ export function RiScRelationComponent() {
               <TableBody>
                 {componentRelations.map((comp, index) => (
                   <Row key={index}>
-                    <Cell title={comp.name} />
+                    <Cell
+                      title={comp.name}
+                      leadingIcon={<i className="ri-link" />}
+                      href={comp.riscUrl}
+                    />
                     <Cell title={comp.kind} />
                   </Row>
                 ))}
