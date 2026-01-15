@@ -95,6 +95,7 @@ export const pluginRiScMessages = {
     customOrder: 'Custom order',
     searchQuery: 'No result for ',
     actionsWithStatus: 'Actions that are OK',
+    refresh: 'Refresh',
   },
   encryption: {
     title: 'Encryption',
@@ -782,6 +783,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.customOrder': 'Egendefinert rekkefølge',
           'dictionary.searchQuery': 'Ingen resultater for ',
           'dictionary.actionsWithStatus': 'Tiltak som er OK',
+          'dictionary.refresh': 'Prøv igjen',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
