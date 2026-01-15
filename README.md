@@ -97,25 +97,40 @@ yarn upgrade-interactive
 
 ## Publishing a new plugin version
 
-If you want to publish a new version of the plugin, you first need to update the version in `plugins/ros/package.json` (line 3). Follow [semantic versioning](https://semver.org/).
+This repo utilizes [https://github.com/semantic-release/semantic-release](semantic-release) to automatically publish new versions of the plugin (as a NPM package) for each PR that is merged. This uses [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) in combination with our [GitHub tags](https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/tags) to determine the next version. This means that if no commits in a PR dictates that a new version should be published, that particular PR will not result in a new published version. NOTE that conventional commits comes in several flavours. So a simple summary of kinds om commits is given below.
 
-Once the new version is updated on the `main` branch, you can create a new release with tags.
+The publish action will comment on the PR with what type of change merging would result in. Note that this is only guaranteed to be valid at the time the comment was created. If another PR is merged before yours, the resulting version will be different. But the actual bump will be the same.
 
-**To create a new tag manually on GitHub:**
+For example:
 
-- Navigate to **Releases** in the right-hand menu on the repository homepage.
-- Click **Draft a new release**.
-- Under **Choose a new tag**, define the same version number that you updated the repository to (formatted as `vx.x.x`).
-- Write release notes or click **Generate release notes**.
-- Click **Publish release**.
+Your PR results in the version going from 13.36.0 to 13.37.0 since you had at least one commit with `feat:` in it.
+Then, another similar PR is merged before yours, so the LIVE version on GitHub and NPM is then 13.37.0. When your PR is merged, the new version will then be 13.38.0. Still a minor version bump, but the base has changed from when your PR was first created.
 
-**Alternatively, run the following in the terminal:**
+When a PR with an actual version change is merged, the new version of the plugin will be pushed to Kartverket's npm registry. The new version should be visible [here](https://www.npmjs.com/package/@kartverket/backstage-plugin-risk-scorecard).
 
-```bash
-git tag -a vx.x.x -m "A message explaining the new version"
-git push origin --tags
-```
-
-Once the tag is created, a GitHub Action workflow will build the plugin and publish it to Kartverket’s npm registry. The new version should be visible [here](https://www.npmjs.com/package/@kartverket/backstage-plugin-risk-scorecard).
+But what if two PR's are merged at the same time :scream:? Don't worry. There's a concurrency group in place in the pubish action that makes sure that no two runs on main happes at the same time. This also applies for PRs, but since you probably only care about your most recent push, any previous run of the publish action (which runs in dry-run mode for PRs) will simply be cancelled.
 
 After that, users of the plugin can bump the version to include the latest changes.
+
+NOTE: The version in the plugin's package.json will never change in the source code. There are many [valid reasons](https://semantic-release.gitbook.io/semantic-release/support/faq#why-is-the-package.jsons-version-not-updated-in-my-repository) for this, but the primary is that this would require the publish action (a bot basically) to be able to commit directly on the main branch.
+
+### :warning: NPM Authentication :warning:
+
+Unfortunately, the [yarn plugin](https://github.com/hongaar/semantic-release-yarn) we have to use in order for semantic-release to work for us doesn't support [trusted publishing](https://docs.npmjs.com/trusted-publishers). So for now, we use an NPM Auth token with granular access that bypasses 2FA. This isn't reallt reccomended, so the token life time is set to 90 days. For the publishing to work the [secret](https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/settings/secrets/actions) has to be updated before the token expires.
+
+Also, the yarn plugin repo seems a bit dead. So while this works for now, we'll probably want to look for alternatives in the future.
+
+### Example commits and resulting version bumps
+
+```text
+fix: This is a fix, which will bump the patch portion of the version (13.37.0 --> 13.37.1)
+feat: This is a new feature, which will bump the minor portion of the version (13.36.0 --> 13.37.0)
+feat!: This is also a new feature but with a BANG
+
+It also requires a line below (with a space like this) and the word BREAKING to trigger a new major bump (13.37.0 --> 14.0.0)
+chore: This is actually also a breaking change :/
+
+Because whenever you have BREAKING below, it will treat it as a new major
+```
+
+All other commits will not yield any version bump, but feel free to use prefixes like `chore`, `skip` or `docs` so signalize intent (but it's not that much of a big deal).
