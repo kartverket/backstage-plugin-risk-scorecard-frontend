@@ -17,6 +17,7 @@ import {
   Scenario,
   SubmitResponseObject,
 } from './types';
+import { useBackstageContext } from '../contexts/BackstageContext.tsx';
 
 export function generateRandomId(): string {
   return [...Array(5)]
@@ -98,6 +99,24 @@ export function emptyRiSc(): RiSc {
     title: '',
     scope: '',
     scenarios: [],
+    metadata: {
+      backstage: {
+        entityRef: '',
+      },
+    },
+  };
+}
+
+export function useEmptyRiScWithMetadata(): RiSc {
+  const { entityRef } = useBackstageContext();
+
+  return {
+    ...emptyRiSc(),
+    metadata: {
+      backstage: {
+        entityRef: entityRef ?? '',
+      },
+    },
   };
 }
 
