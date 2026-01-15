@@ -60,7 +60,7 @@ export type MigrationVersions = {
 };
 
 export type MigrationChanges52 = {
-  valuations?: DeletedProperty<Valuations[]>;
+  removedValuationsCount?: number;
 };
 
 export type MigrationChanges51 = {
