@@ -21,6 +21,8 @@ import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import styles from '../common/alertBar.module.css';
+import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
+import { ErrorState } from '../riScInfo/ErrorState.tsx';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -106,13 +108,20 @@ export function RiScPlugin() {
               <Flex
                 justify="center"
                 align="center"
-                style={{
-                  height: '60%',
-                }}
+                className={riscStyles.componentLayout}
               >
                 <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
               </Flex>
             )}
+          {!isFetching && riScs === null && (
+            <Flex
+              align="center"
+              justify="center"
+              className={riscStyles.componentLayout}
+            >
+              <ErrorState />
+            </Flex>
+          )}
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>
