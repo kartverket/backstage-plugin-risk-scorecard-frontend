@@ -58,14 +58,20 @@ export type RiScDTO = {
   scenarios: ScenarioDTO[];
 };
 
+export enum CryptoKeyPermission {
+  UNKNOWN = 'UNKNOWN',
+  DECRYPT = 'DECRYPT',
+  ENCRYPT = 'ENCRYPT',
+}
+
 export type GcpCryptoKeyObject = {
   projectId: string;
   keyRing: string;
-  keyName: string;
+  name: string;
   locations: string;
   resourceId: string;
   createdAt: string;
-  hasEncryptDecryptAccess?: boolean;
+  userPermissions: CryptoKeyPermission[];
 };
 
 export type ScenarioDTO = {
