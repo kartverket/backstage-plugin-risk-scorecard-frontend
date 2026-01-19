@@ -37,21 +37,11 @@
           },
           "integrity": {
             "type": "string",
-            "enum": [
-              "Insignificant",
-              "Expected",
-              "Dependent",
-              "Critical"
-            ]
+            "enum": ["Insignificant", "Expected", "Dependent", "Critical"]
           },
           "availability": {
             "type": "string",
-            "enum": [
-              "Insignificant",
-              "2 days",
-              "4 hours",
-              "Immediate"
-            ]
+            "enum": ["Insignificant", "2 days", "4 hours", "Immediate"]
           }
         },
         "required": [
@@ -76,10 +66,7 @@
             "$ref": "#/$defs/scenario"
           }
         },
-        "required": [
-          "title",
-          "scenario"
-        ],
+        "required": ["title", "scenario"],
         "additionalProperties": false
       }
     },
@@ -95,19 +82,14 @@
       "type": "object"
     }
   },
-  "required": [
-    "schemaVersion",
-    "title",
-    "scope",
-    "scenarios"
-  ],
+  "required": ["schemaVersion", "title", "scope", "scenarios"],
   "additionalProperties": false,
   "$defs": {
     "backstage": {
       "type": "object",
       "properties": {
         "entityRef": {
-          "type":  "string"
+          "type": "string"
         }
       }
     },
@@ -146,10 +128,7 @@
           ]
         }
       },
-      "required": [
-        "probability",
-        "consequence"
-      ],
+      "required": ["probability", "consequence"],
       "additionalProperties": false
     },
     "url": {
@@ -215,10 +194,7 @@
                 "$ref": "#/$defs/action"
               }
             },
-            "required": [
-              "title",
-              "action"
-            ],
+            "required": ["title", "action"],
             "additionalProperties": false
           }
         },
@@ -249,7 +225,7 @@
         },
         "url": {
           "anyOf": [
-            {"$ref": "#/$defs/url"},
+            { "$ref": "#/$defs/url" },
             {
               "type": "string",
               "maxLength": 0
@@ -258,11 +234,7 @@
         },
         "status": {
           "type": "string",
-          "enum": [
-            "OK",
-            "Not OK",
-            "Not relevant"
-          ]
+          "enum": ["OK", "Not OK", "Not relevant"]
         },
         "lastUpdated": {
           "type": "string",
@@ -272,11 +244,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "ID",
-        "description",
-        "status"
-      ],
+      "required": ["ID", "description", "status"],
       "additionalProperties": false
     }
   }

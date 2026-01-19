@@ -31,7 +31,7 @@ export function RiScMigrationChanges53(props: RiScMigrationChanges53Props) {
         />
         <ChangeSetAddedProperty
           propertyName={`${t('migrationDialog.migration53.initializedTo')}: "${props.changes.metadataUnencrypted.backstage.entityRef}"`}
-          newValue={''}
+          newValue=""
         />
       </ChangeSetBox>
     </>

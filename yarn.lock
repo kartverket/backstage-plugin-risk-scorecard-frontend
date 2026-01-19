@@ -7350,6 +7350,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@kartverket/backstage-plugin-risk-scorecard@workspace:plugins/ros"
   dependencies:
+    "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-app-api": "backstage:^"
     "@backstage/core-components": "backstage:^"
