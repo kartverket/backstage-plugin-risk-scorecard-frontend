@@ -34,5 +34,7 @@ For example:
   - via initial RiSc and empty
   - can select encryption key
 - Check that RiSc can be updated, both in table and drawer (e.g., click refresh on an action).
+- If you've made changes regarding encryption: Make sure that RiSc's are still getting encrypted.
 - Check any new/modified UI elements in both dark and light mode.
 - Verify changes with designer(s) or at least one other team member if the team is without a designer.
+
