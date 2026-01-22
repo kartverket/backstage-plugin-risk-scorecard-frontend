@@ -55,7 +55,8 @@ export function useAuthenticatedFetch() {
 
   function uriToFetchDifference(id: string) {
     // URLS.backend.fetchDifference
-    return `${riScUri}/${id}/difference`;
+    const uri = `${riScUri}/${id}/difference`;
+    return uri;
   }
 
   function uriToFetchRiSc(id: string) {
@@ -344,7 +345,7 @@ export function useAuthenticatedFetch() {
       uriToFetchDefaultRiScDescriptors,
       'GET',
       res => onSuccess(res),
-      () => {},
+      () => { },
     );
   }
   return {
