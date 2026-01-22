@@ -51,7 +51,7 @@ jobs:
         id: dry_run
         run: |
           chmod +x ./build-tools/*.sh
-          ./build-tools/release.sh --dry-run >> $GITHUB_OUTPUT
+          ./build-tools/release.sh --dry-run --testing >> $GITHUB_OUTPUT
 
       - name: Comment on PR
         if: github.event_name == 'pull_request'
