@@ -10,6 +10,16 @@ We use GitHub issues to track bugs and feature requests.
 
 Follow the steps in the [README.md](README.md).
 
+## Versioning
+
+The plugin is published as a NPM-package. The following rules apply for when we expect different kinds of version bumps:
+
+**Major**: When introducing BREAKING changes. Meaning ALL changes to the RoS-schema as well as any change that's dependent on a backend change.
+
+**Minor**: New features should result in a new minor version.
+
+**Patch**: Bugfixes and small changes (like text or pixel-nudging).
+
 ## Process for PRs
 
 All PR's should be reviewed and approved by a member of the RoS-team. After that, the "Request review" feature can be used to assign a person from SKVIS. This signals that the PR is done with internal review and is ready for final approval and merging. In most cases, the person from SKVIS should simply approve and merge (at own discretion of course, but a high level of trust between the teams should be the foundation of this process).
@@ -28,6 +38,7 @@ For example:
 
 **The list:**
 
+- A proper version bump will happen on merge - see [versioning](#versioning).
 - Introduced changes work as expected.
 - Verify that you can navigate between Risk scorecards.
 - Check that RiScs can be created:
@@ -37,4 +48,3 @@ For example:
 - If you've made changes regarding encryption: Make sure that RiSc's are still getting encrypted.
 - Check any new/modified UI elements in both dark and light mode.
 - Verify changes with designer(s) or at least one other team member if the team is without a designer.
-
