@@ -247,8 +247,9 @@ export const pluginRiScMessages = {
     },
     metadata: {
       backstage: {
-        entityRef: 'Backstage entity reference (entityRef)',
-        changes: 'Changes to backstage metadata',
+        entityRef:
+          'The reference to the backstage entity associated with this RiSc has been changed',
+        changes: 'Changes to backstage configuration',
       },
     },
     valuation: {
@@ -933,9 +934,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'comparisonDialog.risk.consequenceUnit': 'NOK/hendelse',
           'comparisonDialog.risk.probabilityUnit': 'hendelser/år',
           'comparisonDialog.metadata.backstage.changes':
-            'Endringer av backstage metadata',
+            'Endringer av backstage konfigurasjonen',
           'comparisonDialog.metadata.backstage.entityRef':
-            'Backstage entitetsreferanse (entityRef)',
+            'Referansen til entiteten denne RoSen tilhører er endret',
           'comparisonDialog.valuation.integrity.Insignificant': 'Insignifikant',
           'comparisonDialog.valuation.integrity.Expected': 'Forventet',
           'comparisonDialog.valuation.integrity.Dependent': 'Avhengig',
