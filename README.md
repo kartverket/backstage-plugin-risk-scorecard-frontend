@@ -95,7 +95,7 @@ yarn upgrade-interactive
 
 ## Publishing a new plugin version
 
-This repo utilizes [https://github.com/semantic-release/semantic-release](semantic-release) to automatically publish new versions of the plugin (as a NPM package) for each PR that is merged. This uses [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) in combination with our [GitHub tags](https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/tags) to determine the next version. This means that if no commits in a PR dictates that a new version should be published, that particular PR will not result in a new published version. NOTE that conventional commits comes in several flavours. So a simple summary of kinds om commits is given below.
+This repo utilizes a home made script located in the [build-tools](./build-tools/) workspace to automatically publish new versions of the plugin (as a NPM package) for each PR that is merged. This uses [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) in combination with our [GitHub tags](https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/tags) to determine the next version. This means that if no commits in a PR dictates that a new version should be published, that particular PR will not result in a new published version. NOTE that conventional commits comes in several flavours. So a simple summary of kinds of commits is given below (we use the [default preset](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits)).
 
 The publish action will comment on the PR with what type of change merging would result in. Note that this is only guaranteed to be valid at the time the comment was created. If another PR is merged before yours, the resulting version will be different. But the actual bump will be the same.
 
@@ -116,12 +116,6 @@ NOTE: The version in the plugin's package.json will never change in the source c
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md#versioning)
 
-### :warning: NPM Authentication :warning:
-
-Unfortunately, the [yarn plugin](https://github.com/hongaar/semantic-release-yarn) we have to use in order for semantic-release to work for us doesn't support [trusted publishing](https://docs.npmjs.com/trusted-publishers). So for now, we use an NPM Auth token with granular access that bypasses 2FA. This isn't really recommended, so the token life time is set to 90 days. For the publishing to work the [secret](https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/settings/secrets/actions) has to be updated before the token expires.
-
-Also, the yarn plugin repo seems a bit dead. So while this works for now, we'll probably want to look for alternatives in the future.
-
 ### Example commits and resulting version bumps
 
 ```text
@@ -129,10 +123,10 @@ fix: This is a fix, which will bump the patch portion of the version (13.37.0 --
 feat: This is a new feature, which will bump the minor portion of the version (13.36.0 --> 13.37.0)
 feat!: This is also a new feature but with a BANG
 
-It also requires a line below (with a space like this) and the word BREAKING to trigger a new major bump (13.37.0 --> 14.0.0)
+BREAKING CHANGE: this line is strictly OPTIONAL. The !: is enough to trigger a new major bump (13.37.0 --> 14.0.0)
 chore: This is actually also a breaking change :/
 
-Because whenever you have BREAKING below, it will treat it as a new major
+BREAKING CHANGE: Because whenever you have BREAKING CHANGE at the start of the line below, it will treat it as a new major
 ```
 
 All other commits will not yield any version bump, but feel free to use prefixes like `chore`, `skip` or `docs` so signalize intent (but it's not that much of a big deal).
