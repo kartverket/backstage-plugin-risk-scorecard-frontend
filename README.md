@@ -114,9 +114,13 @@ After that, users of the plugin can bump the version to include the latest chang
 
 NOTE: The version in the plugin's package.json will never change in the source code. There are many [valid reasons](https://semantic-release.gitbook.io/semantic-release/support/faq#why-is-the-package.jsons-version-not-updated-in-my-repository) for this, but the primary is that this would require the publish action (a bot basically) to be able to commit directly on the main branch.
 
+### What version to publish?
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md#versioning)
+
 ### :warning: NPM Authentication :warning:
 
-Unfortunately, the [yarn plugin](https://github.com/hongaar/semantic-release-yarn) we have to use in order for semantic-release to work for us doesn't support [trusted publishing](https://docs.npmjs.com/trusted-publishers). So for now, we use an NPM Auth token with granular access that bypasses 2FA. This isn't reallt reccomended, so the token life time is set to 90 days. For the publishing to work the [secret](https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/settings/secrets/actions) has to be updated before the token expires.
+Unfortunately, the [yarn plugin](https://github.com/hongaar/semantic-release-yarn) we have to use in order for semantic-release to work for us doesn't support [trusted publishing](https://docs.npmjs.com/trusted-publishers). So for now, we use an NPM Auth token with granular access that bypasses 2FA. This isn't really recommended, so the token life time is set to 90 days. For the publishing to work the [secret](https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/settings/secrets/actions) has to be updated before the token expires.
 
 Also, the yarn plugin repo seems a bit dead. So while this works for now, we'll probably want to look for alternatives in the future.
 
