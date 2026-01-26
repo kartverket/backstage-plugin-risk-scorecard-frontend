@@ -6,36 +6,40 @@
 import { MigrationStatus, RiScWithMetadata } from './types.ts';
 import { useBackstageContext } from '../contexts/BackstageContext.tsx';
 
-export function useMigratedRiSc(riSc: RiScWithMetadata): RiScWithMetadata {
+export function usePopulatedRiSc(riSc: RiScWithMetadata): RiScWithMetadata {
   const { entityRef } = useBackstageContext();
 
-  const migratedRiSc = structuredClone(riSc);
-  addRiScDataFor53Migration(migratedRiSc, entityRef);
-  return migratedRiSc;
+  const populatedRiSc = structuredClone(riSc);
+  populateRiScForMigration53(populatedRiSc, entityRef);
+  return populatedRiSc;
 }
 
-function addRiScDataFor53Migration(
+/** Adds entityRef to RiSc */
+function populateRiScForMigration53(
   riSc: RiScWithMetadata,
   entityRef: string | undefined,
 ) {
   riSc.content.metadata.backstage.entityRef = entityRef || '';
 }
 
-export function useMigratedMigrationStatus(
+export function usePopulatedMigrationStatus(
   migrationStatus: MigrationStatus,
-  migratedRiSc: RiScWithMetadata,
+  populatedRiSc: RiScWithMetadata,
 ) {
-  const migratedMigrationStatus = structuredClone(migrationStatus);
-  addMigrationStatusDataFor53Migration(migratedMigrationStatus, migratedRiSc);
-  return migratedMigrationStatus;
+  const populatedMigrationStatus = structuredClone(migrationStatus);
+  populateMigrationStatusForMigration53(
+    populatedMigrationStatus,
+    populatedRiSc,
+  );
+  return populatedMigrationStatus;
 }
 
-function addMigrationStatusDataFor53Migration(
+function populateMigrationStatusForMigration53(
   migrationStatus: MigrationStatus,
-  migratedRiSc: RiScWithMetadata,
+  populatedRiSc: RiScWithMetadata,
 ) {
   if (migrationStatus.migrationChanges53) {
     migrationStatus.migrationChanges53.metadataUnencrypted =
-      migratedRiSc.content.metadata;
+      populatedRiSc.content.metadata;
   }
 }

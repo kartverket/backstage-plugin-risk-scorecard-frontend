@@ -13,8 +13,8 @@ import styles from './RiScSelectionCard.module.css';
 import DialogComponent from '../dialog/DialogComponent.tsx';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import {
-  useMigratedMigrationStatus,
-  useMigratedRiSc,
+  usePopulatedMigrationStatus,
+  usePopulatedRiSc,
 } from '../../utils/migration.ts';
 
 interface RiScMigrationDialogProps {
@@ -34,10 +34,10 @@ export const RiScMigrationDialog = ({
   const { updateRiSc } = useRiScs();
 
   const [saveMigration, setSaveMigration] = useState<boolean>(false);
-  const migratedRiSc = useMigratedRiSc(selectedRiSc);
-  const migratedMigrationStatus = useMigratedMigrationStatus(
+  const populatedRiSc = usePopulatedRiSc(selectedRiSc);
+  const populatedMigrationStatus = usePopulatedMigrationStatus(
     migrationStatus,
-    migratedRiSc,
+    populatedRiSc,
   );
 
   function handleCheckboxInput(event: React.ChangeEvent<HTMLInputElement>) {
@@ -49,7 +49,7 @@ export const RiScMigrationDialog = ({
   }
 
   const handleSaveMigration = () => {
-    updateRiSc(migratedRiSc);
+    updateRiSc(populatedRiSc);
     setMigrationDialogIsOpen(false);
   };
 
@@ -63,7 +63,7 @@ export const RiScMigrationDialog = ({
       <Box sx={{ marginBottom: '16px' }}>
         <Text variant="body-large">{t('migrationDialog.description')}</Text>
       </Box>
-      <RiScMigrationChanges migrationStatus={migratedMigrationStatus} />
+      <RiScMigrationChanges migrationStatus={populatedMigrationStatus} />
       <Alert severity="info" icon={false}>
         <FormControlLabel
           control={
