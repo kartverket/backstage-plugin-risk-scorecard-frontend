@@ -425,7 +425,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
             );
           }
           if (onSuccess) onSuccess();
-          if (onSuccess) onSuccess();
         },
         (error, loginRejected) => {
           setSelectedRiSc(originalRiSc);
@@ -499,7 +498,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
             riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
           );
           setIsRequesting(false);
-          if (onSuccess) onSuccess();
           if (onSuccess) onSuccess();
         },
         (error, loginRejected) => {
