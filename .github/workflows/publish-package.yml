@@ -4,6 +4,11 @@ permissions:
   issues: write # Needed to comment on released issues
   pull-requests: write # Needed to comment on released PRs
   id-token: write # This will hopefully be used in the futureto enable use of OIDC for trusted publishing and npm provenance instead of the token it currently uses
+
+# Make sure that only one publish job runs on main at the same time to avoid version conflicts
+concurrency:
+  group: publish-${{ github.ref}}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 on:
   workflow_dispatch:
   push:
@@ -48,8 +53,17 @@ jobs:
         run: |
           # Run semantic-release in dry-run mode and capture output
           GITHUB_REF=${{ github.head_ref }} # This is a hack necessary together with the --branches argument below. A bit unsure why, but there are some internals in the various semantic-release plugins that needs both these set in order for it to approve running on a PR.
-          npx semantic-release@25.0.2 --no-ci --dry-run --branches ${{ github.head_ref }} > release-output.txt 2>&1 || true
+          set +e  # Temporarily disable exit on error
+          npx semantic-release@25.0.2 --no-ci --dry-run --branches ${{ github.head_ref }} > release-output.txt 2>&1
+          EXIT_CODE=$?
+          set -e  # Re-enable exit on error
           cat release-output.txt
+
+          # If semantic-release failed with an actual error (not just "no changes"), fail the job
+          if [ $EXIT_CODE -ne 0 ] && ! grep -q "There are no relevant changes" release-output.txt; then
+            echo "::error::Semantic release failed with exit code $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
 
           # Extract version from text "Release note for version X.X.X:" which is outputted by semantic-release in the step above
           if grep -q "Release note for version" release-output.txt; then

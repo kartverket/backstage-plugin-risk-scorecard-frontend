@@ -45,8 +45,8 @@ export function RiScMigrationChanges({
       {migrationStatus.migrationChanges51 && (
         <RiScMigrationChanges51 changes={migrationStatus.migrationChanges51} />
       )}
-      {migrationStatus.migrationChanges52 && (
-        <RiScMigrationChanges52 changes={migrationStatus.migrationChanges52} />
+      {migrationStatus.migrationVersions?.toVersion === '5.2' && (
+        <RiScMigrationChanges52 />
       )}
     </div>
   );
