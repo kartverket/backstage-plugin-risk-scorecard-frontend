@@ -395,6 +395,11 @@ export const pluginRiScMessages = {
     chooseGcpCryptoKey: 'Choose GCP key',
     gcpCryptoKeyDescription:
       'From the list below, select the GCP crypto key you want to use for encrypting and decrypting the Risk scorecard.',
+    cryptoKeyOptionInfo:
+      '(Project: {{projectId}}, Permissions: {{permissions}})',
+    cryptoKeyPermissionENCRYPT: 'Encrypt',
+    cryptoKeyPermissionDECRYPT: 'Decrypt',
+    cryptoKeyPermissionUNKNOWN: '⚠️ Unknown - you should switch to another key',
     gcpCryptoKeyNoSelectableKey:
       'You do not have access to any suitable GCP crypto keys.',
     gcpCryptoKeyNonSelectedErrorMessage: 'A GCP crypto key must be selected.',
@@ -432,10 +437,6 @@ export const pluginRiScMessages = {
       "Do you want to re-encrypt the RiSc's on the default branch of ",
     openPR: 'Create pull request',
     gotoPullRequest: 'Go to pull request',
-    gcpKeyHaveAccess: 'Has access',
-    gcpKeyDoNotHaveAccess: 'Do not have access',
-    gcpKeyDoNotHaveAccessDescription:
-      'You cannot choose this key as you do not have the role Cloud KMS CryptoKey Encrypter/Decrypter on it.',
   },
   scenarioStepper: {
     initialRiskStep: {
@@ -1048,6 +1049,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':
             "Fra listen under kan du velge hvilken GCP-nøkkel du vil bruke for å kryptere og dekryptere RoS'en.",
+          'sopsConfigDialog.cryptoKeyOptionInfo':
+            '(Prosjekt: {{projectId}}, Tilganger: {{permissions}})',
+          'sopsConfigDialog.cryptoKeyPermissionENCRYPT': 'Kryptere',
+          'sopsConfigDialog.cryptoKeyPermissionDECRYPT': 'Dekryptere',
+          'sopsConfigDialog.cryptoKeyPermissionUNKNOWN':
+            '⚠️ Ukjent - du bør bytte til en annen nøkkel',
           'sopsConfigDialog.gcpCryptoKeyNoSelectableKey':
             'Du har ikke tilgang til noe egnede GCP-nøkler.',
           'sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage':
@@ -1092,11 +1099,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             "Vil du rekryptere eksisterende RoS'er på hoved-branchen til",
           'sopsConfigDialog.openPR': 'Åpne pull request',
           'sopsConfigDialog.gotoPullRequest': 'Gå til pull request',
-          'sopsConfigDialog.gcpKeyHaveAccess': 'Har tilgang',
-          'sopsConfigDialog.gcpKeyDoNotHaveAccess': 'Har ikke tilgang',
-          'sopsConfigDialog.gcpKeyDoNotHaveAccessDescription':
-            'Du kan ikke velge denne nøkkelen fordi du ikke har Cloud KMS CryptoKey Encrypter/Decrypter rollen på nøkkelen.',
-
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
             'Risikoen er kombinasjonen av konsekvensen av scenarioet og sannsynligheten for at det inntreffer.',
