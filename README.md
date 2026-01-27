@@ -2,8 +2,6 @@
 
 Contains frontend on port `3000` and Backstage backend on port `7007`.
 
-<br>
-
 ## Tooling
 
 This project currently uses node v22. It is up to each developer how to install and setup their tools.
