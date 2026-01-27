@@ -9,6 +9,7 @@ backend.add(import('@backstage/plugin-app-backend'));
 
 // Auth
 backend.add(import('@backstage/plugin-auth-backend'));
+backend.add(import('@backstage/plugin-auth-backend-module-atlassian-provider'));
 backend.add(authModuleMicrosoftProvider);
 backend.add(import('@backstage/plugin-auth-backend-module-github-provider')); // Required for ROS Plugin
 backend.add(import('@backstage/plugin-auth-backend-module-google-provider')); // Required for ROS Plugin

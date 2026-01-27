@@ -18,6 +18,7 @@ import { Select } from '../../common/Select';
 import HelpIcon from '@mui/icons-material/Help';
 import { Tooltip } from '@material-ui/core';
 import { Text } from '@backstage/ui';
+import { JiraConnection } from './JiraConnection';
 
 function addPeriodToBaseObjectPath(s: string) {
   if (!s) return '';
@@ -136,6 +137,10 @@ export function ActionFormItem({
             name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}status`}
             label={t('dictionary.status')}
             options={actionStatusOptions}
+          />
+          <JiraConnection
+            formMethods={formMethods}
+            baseObjectPathToActionOfForm={baseObjectPathToActionOfForm}
           />
         </Box>
       </Box>

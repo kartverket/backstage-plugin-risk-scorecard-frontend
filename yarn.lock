@@ -3542,6 +3542,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-auth-backend-module-atlassian-provider@backstage:^::backstage=1.44.1&npm=0.4.8, @backstage/plugin-auth-backend-module-atlassian-provider@npm:^0.4.8":
+  version: 0.4.10
+  resolution: "@backstage/plugin-auth-backend-module-atlassian-provider@npm:0.4.10"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.6.0"
+    "@backstage/plugin-auth-node": "npm:^0.6.10"
+    express: "npm:^4.22.0"
+    passport: "npm:^0.7.0"
+    passport-atlassian-oauth2: "npm:^2.1.0"
+    zod: "npm:^3.22.4"
+  checksum: 10c0/a55be9bbf09c7f6a7ca7779ea04398fd7d22a05cc1a73c501f06519d3ae7e7ad0071cd1485350bfba616b10a5110b38ea50f48e3cba6ed4b8128c8af79e4b864
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-auth-backend-module-github-provider@backstage:^::backstage=1.44.1&npm=0.3.8, @backstage/plugin-auth-backend-module-github-provider@npm:^0.3.8":
   version: 0.3.8
   resolution: "@backstage/plugin-auth-backend-module-github-provider@npm:0.3.8"
@@ -16169,6 +16183,7 @@ __metadata:
     "@backstage/errors": "backstage:^"
     "@backstage/plugin-app-backend": "backstage:^"
     "@backstage/plugin-auth-backend": "backstage:^"
+    "@backstage/plugin-auth-backend-module-atlassian-provider": "backstage:^"
     "@backstage/plugin-auth-backend-module-github-provider": "backstage:^"
     "@backstage/plugin-auth-backend-module-google-provider": "backstage:^"
     "@backstage/plugin-auth-backend-module-guest-provider": "backstage:^"
@@ -28707,6 +28722,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"passport-atlassian-oauth2@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "passport-atlassian-oauth2@npm:2.1.0"
+  dependencies:
+    passport-oauth2: "npm:^1.4.0"
+  checksum: 10c0/039f20842049eb6222c39be0ff6de7b976a7af6246fde5f5271a4ca12fc00d7078c76c987a3dd93f08b94ce3e13cef2cc7ab3b5324640479063eb1c7e177ae39
+  languageName: node
+  linkType: hard
+
 "passport-github2@npm:^0.1.12":
   version: 0.1.12
   resolution: "passport-github2@npm:0.1.12"
@@ -28734,7 +28758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport-oauth2@npm:1.8.0, passport-oauth2@npm:1.x.x, passport-oauth2@npm:^1.7.0":
+"passport-oauth2@npm:1.8.0, passport-oauth2@npm:1.x.x, passport-oauth2@npm:^1.4.0, passport-oauth2@npm:^1.7.0":
   version: 1.8.0
   resolution: "passport-oauth2@npm:1.8.0"
   dependencies:

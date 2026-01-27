@@ -1,4 +1,5 @@
 import {
+  atlassianAuthApiRef,
   configApiRef,
   fetchApiRef,
   githubAuthApiRef,
@@ -46,6 +47,7 @@ export function useAuthenticatedFetch() {
   const googleApi = useApi(googleAuthApiRef);
   const gitHubApi = useApi(githubAuthApiRef);
   const identityApi = useApi(identityApiRef);
+  const atlassianApi = useApi(atlassianAuthApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
@@ -347,6 +349,48 @@ export function useAuthenticatedFetch() {
       () => {},
     );
   }
+
+  const makeRequest = async (
+    endpoint: string,
+    method: string = 'GET',
+    body?: any,
+  ) => {
+    const token = await atlassianApi.getAccessToken([
+      'read:jira-user',
+      'read:jira-work',
+      'write:jira-work',
+    ]);
+
+    const options: RequestInit = {
+      method,
+      headers: { Authorization: `Bearer ${token}` },
+    };
+    if (body) {
+      options.body = JSON.stringify(body);
+      options.headers = {
+        ...options.headers,
+        'Content-Type': 'application/json',
+      };
+    }
+    const response = await fetch(
+      `http://localhost:8080/api/jira${endpoint}`,
+      options,
+    );
+    return response.json();
+  };
+
+  const createIssue = async (issue: {
+    title: string;
+    description: string;
+    issueType?: string;
+  }) => {
+    return makeRequest('/issue/create', 'POST', issue);
+  };
+
+  const deleteIssue = async (issueId: string) => {
+    return makeRequest(`/issue/${issueId}`, 'DELETE');
+  };
+
   return {
     fetchRiScs,
     fetchGcpCryptoKeys,
@@ -357,6 +401,8 @@ export function useAuthenticatedFetch() {
     fetchDifference,
     postFeedback,
     fetchDefaultRiScTypeDescriptors,
+    createIssue,
+    deleteIssue,
   };
 }
 
