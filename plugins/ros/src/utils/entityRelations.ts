@@ -5,6 +5,7 @@ export interface ComponentRelation {
   namespace?: string;
   kind: string;
   relationType: string;
+  entityRef: string;
   riscUrl: string;
 }
 
@@ -14,7 +15,7 @@ export interface ComponentRelation {
  *
  * @returns Array of component relations with name, namespace, kind, and relation type
  */
-export function useComponentRelations(): ComponentRelation[] {
+export function useSystemChildComponents(): ComponentRelation[] {
   const { entity } = useEntity();
 
   if (entity.kind?.toLowerCase() !== 'system') {
@@ -43,6 +44,7 @@ export function useComponentRelations(): ComponentRelation[] {
         namespace,
         kind,
         relationType: relation.type,
+        entityRef: `${kind}:${namespace}/${name}`,
         riscUrl: `/catalog/${namespace}/${kind}/${name}/risc`,
       };
     });

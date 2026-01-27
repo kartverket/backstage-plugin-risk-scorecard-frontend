@@ -11,11 +11,11 @@ import {
   Cell,
   Row,
 } from '@backstage/ui';
-import { useComponentRelations } from '../../utils/entityRelations.ts';
+import { useSystemChildComponents } from '../../utils/entityRelations.ts';
 
 export function RiScRelationComponent() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const componentRelations = useComponentRelations();
+  const componentRelations = useSystemChildComponents();
 
   return (
     <>
@@ -36,8 +36,8 @@ export function RiScRelationComponent() {
                 <Column>Kind</Column>
               </TableHeader>
               <TableBody>
-                {componentRelations.map((comp, index) => (
-                  <Row key={index}>
+                {componentRelations.map(comp => (
+                  <Row key={comp.entityRef}>
                     <Cell
                       title={comp.name}
                       leadingIcon={<i className="ri-link" />}
