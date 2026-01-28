@@ -149,6 +149,11 @@ describe('requiresNewApproval', () => {
     title: 'Test Title',
     scope: 'Scope',
     scenarios: [scenario],
+    metadata: {
+      backstage: {
+        entityRef: '',
+      },
+    },
   };
 
   it('returns false if risc is equal', () => {
