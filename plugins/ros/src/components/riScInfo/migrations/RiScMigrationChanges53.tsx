@@ -85,7 +85,11 @@ export function RiScMigrationChanges53(props: RiScMigrationChanges53Props) {
   );
 }
 
-function EntityLink(props: { entity: Entity }) {
+type EntityLinkProps = {
+  entity: Entity;
+};
+
+function EntityLink(props: EntityLinkProps) {
   const styles = useChangeSetStyles();
   const entityUrl = useEntityUrl(props.entity);
   return (
