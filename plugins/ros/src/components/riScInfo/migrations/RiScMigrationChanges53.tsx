@@ -4,8 +4,12 @@ import { MigrationTitle } from './components/MigrationTitle.tsx';
 import { ChangeSetBoxTitle } from '../changeset/components/ChangeSetBoxTitle.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
-import { ChangeSetAddedProperty } from '../changeset/components/ChangeSetAddedProperty.tsx';
 import { ChangeSetText } from '../changeset/components/ChangeSetText.tsx';
+import { useBackstageContext } from '../../../contexts/BackstageContext.tsx';
+import { Link } from '@backstage/ui';
+import { useEntityUrl } from '../../../utils/backstage.ts';
+import { isComponentEntity, isSystemEntity } from '@backstage/catalog-model';
+import { useChangeSetStyles } from '../changeset/components/changeSetStyles.ts';
 
 interface RiScMigrationChanges53Props {
   changes: MigrationChanges53;
@@ -13,6 +17,30 @@ interface RiScMigrationChanges53Props {
 
 export function RiScMigrationChanges53(props: RiScMigrationChanges53Props) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const styles = useChangeSetStyles();
+
+  const { currentEntity, useBackstageRepoOfCurrentEntity } =
+    useBackstageContext();
+
+  const backstageRepo = useBackstageRepoOfCurrentEntity(true);
+
+  let kindText = '';
+  if (isSystemEntity(currentEntity)) {
+    kindText = t('dictionary.theSystem');
+  } else if (isComponentEntity(currentEntity)) {
+    kindText = t('dictionary.theComponent');
+  } else {
+    kindText = currentEntity.kind;
+  }
+
+  const initializedToText = t('migrationDialog.migration53.initializedTo', {
+    kind: kindText,
+    title: currentEntity.metadata.title
+      ? `(${t('dictionary.title').toLowerCase()}: "${currentEntity.metadata.title}")`
+      : '',
+    entityRef: props.changes.metadataUnencrypted.backstage.entityRef,
+    name: currentEntity.metadata.name,
+  });
 
   return (
     <>
@@ -29,10 +57,31 @@ export function RiScMigrationChanges53(props: RiScMigrationChanges53Props) {
         <ChangeSetText
           text={t('migrationDialog.migration53.changeExplanation')}
         />
-        <ChangeSetAddedProperty
-          propertyName={`${t('migrationDialog.migration53.initializedTo')}: "${props.changes.metadataUnencrypted.backstage.entityRef}"`}
-          newValue=""
-        />
+        <p className={styles.text}>
+          <strong>{initializedToText}</strong>
+        </p>
+        {backstageRepo.entitiesOfRepo.length > 0 && (
+          <>
+            <p className={styles.text} style={{ marginTop: '32px' }}>
+              <i>{t('migrationDialog.migration53.warning')}</i>
+            </p>
+            <ul
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
+              {backstageRepo.entitiesOfRepo.map(e => (
+                <li>
+                  <Link
+                    className={styles.text}
+                    href={useEntityUrl(e)}
+                    target="_blank"
+                  >
+                    {e.metadata.title ?? e.metadata.name} ({e.kind})
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </ChangeSetBox>
     </>
   );
