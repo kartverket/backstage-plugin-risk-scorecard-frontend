@@ -68,14 +68,20 @@ export type BackstageMetadataDTO = {
   entityRef: string | null;
 };
 
+export enum CryptoKeyPermission {
+  UNKNOWN = 'UNKNOWN',
+  DECRYPT = 'DECRYPT',
+  ENCRYPT = 'ENCRYPT',
+}
+
 export type GcpCryptoKeyObject = {
   projectId: string;
   keyRing: string;
-  keyName: string;
+  name: string;
   locations: string;
   resourceId: string;
   createdAt: string;
-  hasEncryptDecryptAccess?: boolean;
+  userPermissions: CryptoKeyPermission[];
 };
 
 export type ScenarioDTO = {
