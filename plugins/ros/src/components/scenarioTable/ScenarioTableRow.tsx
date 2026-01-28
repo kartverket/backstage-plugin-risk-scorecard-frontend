@@ -109,6 +109,11 @@ export function ScenarioTableRow({
     theme.palette.mode === 'dark'
       ? 'var(--ros-gray-300)'
       : 'var(--ros-gray-100)';
+
+  // Necessary because the darkmode card color in theme.css overwrites the color defined in ScenarioTableStyles.ts
+  const cardBgColor =
+    theme.palette.mode === 'dark' ? 'var(--bui-bg-surface-3)' : undefined;
+
   const isTextColorBlack =
     theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;
   const textColorAsBuiVariable = isTextColorBlack
@@ -146,7 +151,7 @@ export function ScenarioTableRow({
         transition: isDragging ? 'none' : undefined,
         backgroundColor: isScenarioHoveredFromRiskMatrix
           ? highlightColor
-          : undefined,
+          : cardBgColor,
       }}
     >
       <Flex align="center">
