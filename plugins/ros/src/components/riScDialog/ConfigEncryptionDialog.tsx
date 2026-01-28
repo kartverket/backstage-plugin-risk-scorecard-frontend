@@ -10,12 +10,16 @@ import {
   ListItemText,
   TextField,
 } from '@mui/material';
-import { GcpCryptoKeyMenu } from '../sopsConfigDialog/GcpCryptoKeyMenu';
+import { GcpCryptoKeyRadioGroup } from '../sopsConfigDialog/GcpCryptoKeyRadioGroup';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { AddCircle, ExpandMore } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { GcpCryptoKeyObject, SopsConfigDTO } from '../../utils/DTOs';
+import {
+  CryptoKeyPermission,
+  GcpCryptoKeyObject,
+  SopsConfigDTO,
+} from '../../utils/DTOs';
 import { useEffect, useState } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
@@ -56,27 +60,38 @@ function ConfigEncryptionDialog({
     return [];
   });
 
-  const [chosenGcpCryptoKey, setChosenGcpCryptoKey] =
-    useState<GcpCryptoKeyObject>(() => {
-      if (state === RiScDialogStates.EditEncryption && sopsData?.gcp_kms) {
-        const gcpKms = sopsData.gcp_kms[0];
-        if (gcpKms?.resource_id) {
-          const resourceParts = gcpKms.resource_id.split('/');
-          if (resourceParts.length === 8) {
-            return {
-              projectId: resourceParts[1],
-              keyRing: resourceParts[5],
-              keyName: resourceParts[7],
-              locations: resourceParts[3],
-              resourceId: gcpKms.resource_id,
-              createdAt: gcpKms.created_at,
-              hasEncryptDecryptAccess: true,
-            };
-          }
-        }
-      }
-      return gcpCryptoKeys[0];
-    });
+  // The RiSc may have been encrypted with a key that
+  // no longer matches the naming convention of keys
+  // returned from the backend. But we still want to show
+  // that key as an option in the radio group, so we
+  // build a key object from the sops data of the RiSc if needed.
+  const riscCryptoKey =
+    state === RiScDialogStates.EditEncryption && sopsData?.gcp_kms
+      ? (gcpCryptoKeys.find(
+          key => key.resourceId === sopsData.gcp_kms![0].resource_id,
+        ) ?? buildKeyFromSopsData(sopsData))
+      : undefined;
+
+  const choosableCryptoKeys = riscCryptoKey
+    ? [
+        riscCryptoKey,
+        ...gcpCryptoKeys.filter(
+          key => key.resourceId !== riscCryptoKey.resourceId,
+        ),
+      ]
+    : gcpCryptoKeys;
+
+  const [chosenGcpCryptoKey, setChosenGcpCryptoKey] = useState<
+    GcpCryptoKeyObject | undefined
+  >(() => {
+    if (state === RiScDialogStates.EditEncryption && sopsData?.gcp_kms) {
+      const gcpKms = sopsData.gcp_kms[0];
+      return choosableCryptoKeys.find(
+        key => key.resourceId === gcpKms?.resource_id,
+      );
+    }
+    return gcpCryptoKeys[0];
+  });
 
   const [isAddPublicAgeKeyVisible, setIsAddPublicAgeKeyVisible] =
     useState(false);
@@ -139,24 +154,11 @@ function ConfigEncryptionDialog({
         <Text variant="body-medium" weight="bold">
           {t('sopsConfigDialog.selectKeysTitle')}
         </Text>
-        {chosenGcpCryptoKey !== undefined ? (
-          <>
-            <Text>{t('sopsConfigDialog.gcpCryptoKeyDescription')}</Text>
-            <GcpCryptoKeyMenu
-              chosenGcpCryptoKey={chosenGcpCryptoKey}
-              onChange={handleChangeGcpCryptoKey}
-              gcpCryptoKeys={
-                gcpCryptoKeys.includes(chosenGcpCryptoKey)
-                  ? gcpCryptoKeys
-                  : [...gcpCryptoKeys, chosenGcpCryptoKey]
-              }
-            />
-          </>
-        ) : (
-          <Text variant="body-medium">
-            {t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}
-          </Text>
-        )}
+        <GcpCryptoKeyRadioGroup
+          chosenGcpCryptoKey={chosenGcpCryptoKey}
+          onChange={handleChangeGcpCryptoKey}
+          gcpCryptoKeys={choosableCryptoKeys}
+        />
       </Flex>
       {errors.sopsConfig !== undefined && (
         <FormHelperText error={true}>
@@ -281,3 +283,24 @@ function ConfigEncryptionDialog({
 }
 
 export default ConfigEncryptionDialog;
+
+function buildKeyFromSopsData(sopsData: SopsConfigDTO | undefined) {
+  const gcpKms = sopsData?.gcp_kms?.[0];
+  if (!gcpKms || !gcpKms.resource_id) {
+    return undefined;
+  }
+  const resourceParts = gcpKms.resource_id.split('/');
+  if (resourceParts.length === 8) {
+    return {
+      projectId: resourceParts[1],
+      keyRing: resourceParts[5],
+      name: resourceParts[7],
+      locations: resourceParts[3],
+      resourceId: gcpKms.resource_id,
+      createdAt: gcpKms.created_at,
+      userPermissions: [CryptoKeyPermission.UNKNOWN],
+    };
+  }
+
+  return undefined;
+}
