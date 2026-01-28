@@ -26,16 +26,16 @@ export function useBackstageRepo(
     // fetches component and system entities of backstage within same repo as current entity
     const fetchEntities = async () => {
       if (!repoUrl) return;
-      const entities = await catalogApi.getEntities({
+      const fetchedEntities = await catalogApi.getEntities({
         filter: {
           kind: ['Component', 'System'],
           'metadata.annotations.backstage.io/managed-by-location': repoUrl,
         },
       });
-      setEntities(entities.items);
+      setEntities(fetchedEntities.items);
     };
     fetchEntities();
-  }, [repoUrl]);
+  }, [repoUrl, catalogApi]);
 
   // sorting entities. systems appears before components
   let sortedAndFilteredEntities = (entities ?? []).sort((a, b) => {

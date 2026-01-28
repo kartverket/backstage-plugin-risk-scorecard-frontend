@@ -8,7 +8,11 @@ import { ChangeSetText } from '../changeset/components/ChangeSetText.tsx';
 import { useBackstageContext } from '../../../contexts/BackstageContext.tsx';
 import { Link } from '@backstage/ui';
 import { useEntityUrl } from '../../../utils/backstage.ts';
-import { isComponentEntity, isSystemEntity } from '@backstage/catalog-model';
+import {
+  Entity,
+  isComponentEntity,
+  isSystemEntity,
+} from '@backstage/catalog-model';
 import { useChangeSetStyles } from '../changeset/components/changeSetStyles.ts';
 
 interface RiScMigrationChanges53Props {
@@ -70,13 +74,7 @@ export function RiScMigrationChanges53(props: RiScMigrationChanges53Props) {
             >
               {backstageRepo.entitiesOfRepo.map(e => (
                 <li>
-                  <Link
-                    className={styles.text}
-                    href={useEntityUrl(e)}
-                    target="_blank"
-                  >
-                    {e.metadata.title ?? e.metadata.name} ({e.kind})
-                  </Link>
+                  <EntityLink entity={e} />
                 </li>
               ))}
             </ul>
@@ -84,5 +82,16 @@ export function RiScMigrationChanges53(props: RiScMigrationChanges53Props) {
         )}
       </ChangeSetBox>
     </>
+  );
+}
+
+function EntityLink(props: { entity: Entity }) {
+  const styles = useChangeSetStyles();
+  const entityUrl = useEntityUrl(props.entity);
+  return (
+    <Link className={styles.text} href={entityUrl} target="_blank">
+      {props.entity.metadata.title ?? props.entity.metadata.name} (
+      {props.entity.kind})
+    </Link>
   );
 }
