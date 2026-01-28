@@ -3,7 +3,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { Box, Flex, Radio, RadioGroup, Switch, Text } from '@backstage/ui';
 import { RiScWithMetadata } from '../../utils/types.ts';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
-import { UseFormSetValue } from 'react-hook-form/dist/types/form';
+import { UseFormSetValue } from 'react-hook-form';
 import { useTheme } from '@mui/material/styles';
 import styles from './ConfigInitialRisc.module.css';
 
