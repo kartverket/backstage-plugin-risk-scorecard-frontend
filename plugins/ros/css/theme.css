@@ -132,4 +132,8 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   .bui-SwitchIndicator {
     background-color: var(--bui-gray-6);
   }
+
+  .bui-Card {
+    background-color: var(--bui-bg-surface-2);
+  }
 }

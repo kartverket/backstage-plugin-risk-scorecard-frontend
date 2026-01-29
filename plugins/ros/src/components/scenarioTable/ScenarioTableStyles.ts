@@ -133,7 +133,7 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     marginBottom: '8px',
     padding: '28px 24px',
     backgroundColor:
-      theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
+      theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8', // dark mode color does not apply because of override in theme.css
     '&:hover': {
       backgroundColor:
         theme.palette.type === 'dark' ? 'var(--bui-gray-6)' : '#E0E0E0',

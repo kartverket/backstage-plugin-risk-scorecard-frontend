@@ -4,11 +4,11 @@ import {
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
-} from 'react-hook-form/dist/types/form';
+} from 'react-hook-form';
 import { RiScWithMetadata } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { FieldErrors } from 'react-hook-form/dist/types/errors';
+import { FieldErrors } from 'react-hook-form';
 import { Flex } from '@backstage/ui';
 
 interface ConfigRiscInfoProps {

@@ -25,7 +25,7 @@ import { RiScWithMetadata } from '../../utils/types';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { RiScDialogStates } from './RiScDialog';
 import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
-import { FieldErrors } from 'react-hook-form/dist/types/errors';
+import { FieldErrors } from 'react-hook-form';
 import FormHelperText from '@mui/material/FormHelperText';
 import { URLS } from '../../urls';
 import { Text, Link, Button, Flex, Box } from '@backstage/ui';
