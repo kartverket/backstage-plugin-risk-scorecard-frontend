@@ -387,8 +387,22 @@ export function useAuthenticatedFetch() {
     return makeRequest('/issue/create', 'POST', issue);
   };
 
-  const deleteIssue = async (issueId: string) => {
-    return makeRequest(`/issue/${issueId}`, 'DELETE');
+  const deleteIssue = async (issueKeyOrUrl: string) => {
+    let issueKey = issueKeyOrUrl;
+
+    // If it's a URL, extract the issue key
+    if (issueKeyOrUrl.includes('/')) {
+      const match = issueKeyOrUrl.match(/\/browse\/([A-Z]+-\d+)/);
+      if (match) {
+        issueKey = match[1];
+      }
+    }
+
+    if (!issueKey) {
+      throw new Error('Invalid issue key or URL');
+    }
+
+    return makeRequest(`/issue/${issueKey}`, 'DELETE');
   };
 
   return {

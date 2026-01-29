@@ -37,6 +37,10 @@ auth:
       development:
         clientId: <GITHUB CLIENT ID>
         clientSecret: <GITHUB CLIENT SECRET>
+    atlassian:
+      development:
+        clientId: <ATLASSIAN CLIENT ID>
+        clientSecret: <ATLASSIAN CLIENT SECRET>
 
 ### Setting up integration towards Microsoft Graph API to retrieve organization data ###
 # Backstage needs credentials to retrieve users and groups from Microsoft Entra ID,
