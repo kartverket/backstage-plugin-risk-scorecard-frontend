@@ -46,7 +46,7 @@ export function EstimatedRiskInfoDialog({
               <Text>
                 {' '}
                 {t('infoDialog.calculatedHow')}
-                <sup>{t('infoDialog.calculatedHowExponent')}</sup>
+                <sup>{t('infoDialog.calculatedHowExponent')}</sup>{' '}
                 {t('riskMatrix.estimatedRisk.unit.nokPerYear')}.
               </Text>
             </Flex>
