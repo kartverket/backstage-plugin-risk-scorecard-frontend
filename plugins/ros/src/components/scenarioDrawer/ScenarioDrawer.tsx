@@ -186,7 +186,8 @@ export function ScenarioDrawer() {
               </AlertBar>
             </Flex>
           )}
-          {currentUpdatedActionIDs.length === 0 &&
+          {!updateStatus.isLoading &&
+            updateStatus.isSuccess &&
             response &&
             response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
               <Flex className={styles.alertBarBox}>
