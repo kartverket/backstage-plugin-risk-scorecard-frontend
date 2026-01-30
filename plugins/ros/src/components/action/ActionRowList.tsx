@@ -37,6 +37,9 @@ export function ActionRowList(props: ActionRowListProps) {
   const onRefreshActionStatus = (action: Action) => {
     if (isToday(action.lastUpdated ?? null)) return;
 
+    // Clear history when new pending updates arrive
+    setPendingActionUpdatesHistory([]);
+
     setPendingActionStatusUpdates(prev => ({
       ...prev,
       [props.scenarioId]: {
@@ -50,6 +53,8 @@ export function ActionRowList(props: ActionRowListProps) {
     actionId: string,
     newStatus: ActionStatusOptions,
   ) => {
+    setPendingActionUpdatesHistory([]);
+
     setPendingActionStatusUpdates(prev => ({
       ...prev,
       [props.scenarioId]: {
@@ -120,21 +125,30 @@ export function ActionRowList(props: ActionRowListProps) {
           ),
           profileInfo: profileInfo,
           onSuccess: () => {
+            const savedActionIds = Object.keys(updates[scenarioId]);
+
             setPendingActionStatusUpdates(prevStatusUpdates => {
-              const scenarioUpdates = prevStatusUpdates[scenarioId];
+              const remainingUpdates = { ...prevStatusUpdates };
+              if (remainingUpdates[scenarioId]) {
+                const updatedScenarioActions = {
+                  ...remainingUpdates[scenarioId],
+                };
 
-              if (scenarioUpdates) {
-                const actionIds = Object.keys(scenarioUpdates);
-
-                if (actionIds.length > 0) {
-                  setPendingActionUpdatesHistory(prevHistory => [
-                    ...prevHistory,
-                    ...actionIds,
-                  ]);
+                savedActionIds.forEach(actionId => {
+                  delete updatedScenarioActions[actionId];
+                });
+                if (Object.keys(updatedScenarioActions).length === 0) {
+                  delete remainingUpdates[scenarioId];
+                } else {
+                  remainingUpdates[scenarioId] = updatedScenarioActions;
                 }
               }
+              setPendingActionUpdatesHistory(prevHistory => [
+                ...prevHistory,
+                ...savedActionIds,
+              ]);
 
-              return {};
+              return remainingUpdates;
             });
           },
           onError: () => {
@@ -219,11 +233,14 @@ function getUpdatedStatusOfAction(
 ) {
   const isActionUpdating =
     !!pendingActionStatusUpdates[scenarioId]?.[action.ID];
+  const hasPendingUpdates = Object.keys(pendingActionStatusUpdates).length > 0;
+
   let updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
   if (isActionUpdating) {
     updatedStatus = 'UPDATING';
   } else {
-    if (pendingActionUpdatesHistory.includes(action.ID)) {
+    // Don't show 'UPDATED' banner if there are pending updates
+    if (!hasPendingUpdates && pendingActionUpdatesHistory.includes(action.ID)) {
       updatedStatus = 'UPDATED';
     } else {
       const baseStatus = getUpdatedStatus(action);
