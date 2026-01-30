@@ -56,26 +56,6 @@ export function EstimatedRiskInfoDialog({
                 weight="bold"
                 style={{ marginTop: '8px' }}
               >
-                {t('infoDialog.consequenceTitle')}
-              </Text>
-              <Flex direction="column" gap="1">
-                {consequenceOptions.map((option, index) => (
-                  <Text key={index}>
-                    <b>{index + 1}</b>: 20<sup>{index + 3}</sup> ={' '}
-                    {formatNOK(option)} {t('infoDialog.consequenceUnit')} ={' '}
-                    <b>
-                      {t(consequenceIndexToTranslationKeys[index] as any, {})}
-                    </b>
-                  </Text>
-                ))}
-              </Flex>
-            </Flex>
-            <Flex direction="column" gap="0">
-              <Text
-                variant="body-large"
-                weight="bold"
-                style={{ marginTop: '8px' }}
-              >
                 {t('infoDialog.probabilityTitle')}
               </Text>
               <Flex direction="column" gap="1">
@@ -97,16 +77,36 @@ export function EstimatedRiskInfoDialog({
                 weight="bold"
                 style={{ marginTop: '8px' }}
               >
+                {t('infoDialog.consequenceTitle')}
+              </Text>
+              <Flex direction="column" gap="1">
+                {consequenceOptions.map((option, index) => (
+                  <Text key={index}>
+                    <b>{index + 1}</b>: 20<sup>{index + 3}</sup> ={' '}
+                    {formatNOK(option)} {t('infoDialog.consequenceUnit')} ={' '}
+                    <b>
+                      {t(consequenceIndexToTranslationKeys[index] as any, {})}
+                    </b>
+                  </Text>
+                ))}
+              </Flex>
+            </Flex>
+            <Flex direction="column" gap="0">
+              <Text
+                variant="body-large"
+                weight="bold"
+                style={{ marginTop: '8px' }}
+              >
                 {t('dictionary.example')}
               </Text>
               <Text>
                 {t('infoDialog.example.part1')}
+                <b>4</b> (20<sup>1</sup> = 20 {t('infoDialog.probabilityUnit')})
+                {t('infoDialog.example.part2')}
                 <b>2</b> (20<sup>4</sup> = 160,000{' '}
                 {t('infoDialog.consequenceUnit')})
-                {t('infoDialog.example.part2')}
-                <b>4</b> (20<sup>1</sup> = 20 {t('infoDialog.probabilityUnit')})
                 {t('infoDialog.example.part3')}
-                20<sup>1+4-1</sup> = 160,000{' '}
+                20<sup>4+2-1</sup> = 3,200,000{' '}
                 {t('riskMatrix.estimatedRisk.unit.nokPerYear')}.
               </Text>
             </Flex>
