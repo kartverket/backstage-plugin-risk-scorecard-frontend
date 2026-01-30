@@ -603,7 +603,7 @@ export const pluginRiScMessages = {
     'Not relevant': 'Not relevant',
   },
   errorMessages: {
-    DefaultErrorMessage: 'An error occured',
+    DefaultErrorMessage: 'An error occurred',
     ErrorWhenNoWriteAccessToRepository:
       'Unable to update RiSc. You do not have write access to {{owner}}/{{name}}.',
     ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
@@ -1244,7 +1244,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.Not relevant': 'Ikke relevant',
           'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
           'errorMessages.ErrorWhenNoWriteAccessToRepository':
-            'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til {{owner}}/{{name}} .',
+            'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til {{owner}}/{{name}}.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
           'errorMessages.ErrorWhenDeletingRiSc':

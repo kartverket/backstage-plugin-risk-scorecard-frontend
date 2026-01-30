@@ -321,6 +321,15 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_RESPONSE', response: null });
   }, [dispatch]);
 
+  const getTranslationContext = useCallback(
+    (status: ProcessingStatus) => {
+      return status === ProcessingStatus.ErrorWhenNoWriteAccessToRepository
+        ? { owner: repoInfo.owner, name: repoInfo.name }
+        : undefined;
+    },
+    [repoInfo.owner, repoInfo.name],
+  );
+
   function selectRiSc(id: string) {
     const selectedRiScId = riScs?.find(riSc => riSc.id === id)?.id;
     if (selectedRiScId) {
@@ -374,10 +383,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         setSelectedRiSc(selectedRiSc);
         setIsFetching(false);
 
-        const translationContext =
-          error.status === ProcessingStatus.ErrorWhenNoWriteAccessToRepository
-            ? { owner: repoInfo.owner, name: repoInfo.name }
-            : undefined;
+        const translationContext = getTranslationContext(error.status);
 
         dispatch({
           type: 'SET_BOTH',
@@ -438,10 +444,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         (error, loginRejected) => {
           setSelectedRiSc(originalRiSc);
 
-          const translationContext =
-            error.status === ProcessingStatus.ErrorWhenNoWriteAccessToRepository
-              ? { owner: repoInfo.owner, name: repoInfo.name }
-              : undefined;
+          const translationContext = getTranslationContext(error.status);
 
           dispatch({
             type: 'SET_BOTH',
@@ -522,10 +525,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           if (onSuccess) onSuccess();
         },
         (error, loginRejected) => {
-          const translationContext =
-            error.status === ProcessingStatus.ErrorWhenNoWriteAccessToRepository
-              ? { owner: repoInfo.owner, name: repoInfo.name }
-              : undefined;
+          const translationContext = getTranslationContext(error.status);
 
           dispatch({
             type: 'SET_BOTH',
@@ -623,10 +623,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           });
         },
         (error, loginRejected) => {
-          const translationContext =
-            error.status === ProcessingStatus.ErrorWhenNoWriteAccessToRepository
-              ? { owner: repoInfo.owner, name: repoInfo.name }
-              : undefined;
+          const translationContext = getTranslationContext(error.status);
 
           dispatch({
             type: 'SET_BOTH',
