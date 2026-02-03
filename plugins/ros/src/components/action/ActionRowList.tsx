@@ -37,8 +37,7 @@ export function ActionRowList(props: ActionRowListProps) {
   const onRefreshActionStatus = (action: Action) => {
     if (isToday(action.lastUpdated ?? null)) return;
 
-    // Clear history when new pending updates arrive
-    setPendingActionUpdatesHistory([]);
+    setPendingActionUpdatesHistory(prev => prev.filter(id => id !== action.ID));
 
     setPendingActionStatusUpdates(prev => ({
       ...prev,
@@ -53,7 +52,7 @@ export function ActionRowList(props: ActionRowListProps) {
     actionId: string,
     newStatus: ActionStatusOptions,
   ) => {
-    setPendingActionUpdatesHistory([]);
+    setPendingActionUpdatesHistory(prev => prev.filter(id => id !== actionId));
 
     setPendingActionStatusUpdates(prev => ({
       ...prev,
@@ -233,14 +232,12 @@ function getUpdatedStatusOfAction(
 ) {
   const isActionUpdating =
     !!pendingActionStatusUpdates[scenarioId]?.[action.ID];
-  const hasPendingUpdates = Object.keys(pendingActionStatusUpdates).length > 0;
 
   let updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
   if (isActionUpdating) {
     updatedStatus = 'UPDATING';
   } else {
-    // Don't show 'UPDATED' banner if there are pending updates
-    if (!hasPendingUpdates && pendingActionUpdatesHistory.includes(action.ID)) {
+    if (pendingActionUpdatesHistory.includes(action.ID)) {
       updatedStatus = 'UPDATED';
     } else {
       const baseStatus = getUpdatedStatus(action);
