@@ -344,7 +344,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   ) {
     setIsFetching(true);
     setSelectedRiSc(null);
-
+    dispatch({
+      type: 'SET_BOTH',
+      updateStatus: { isLoading: true, isError: false, isSuccess: false },
+      response: null,
+    });
     const newRiSc: RiScWithMetadata = {
       ...riSc,
       schemaVersion: latestSupportedVersion,
@@ -410,8 +414,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       const originalRiSc = selectedRiSc;
 
       dispatch({
-        type: 'SET_STATUS',
+        type: 'SET_BOTH',
         updateStatus: { isLoading: true, isError: false, isSuccess: false },
+        response: null,
       });
       deleteRiScs(
         selectedRiSc.id,
@@ -497,8 +502,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       const originalRiSc = selectedRiSc;
       setSelectedRiSc(updatedRiSc);
       dispatch({
-        type: 'SET_STATUS',
+        type: 'SET_BOTH',
         updateStatus: { isLoading: true, isError: false, isSuccess: false },
+        response: null,
       });
       putRiScs(
         updatedRiSc,
