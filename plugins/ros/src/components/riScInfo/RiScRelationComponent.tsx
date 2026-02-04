@@ -4,12 +4,12 @@ import {
   Card,
   CardBody,
   Text,
-  Table,
   TableHeader,
   Column,
   TableBody,
-  Cell,
+  CellText,
   Row,
+  TableRoot,
 } from '@backstage/ui';
 import { useSystemChildComponents } from '../../utils/entityRelations.ts';
 
@@ -30,7 +30,7 @@ export function RiScRelationComponent() {
             >
               {t('dictionary.relatedComponents')}
             </Text>
-            <Table aria-label="Related Components">
+            <TableRoot aria-label="Related Components">
               <TableHeader>
                 <Column isRowHeader>Name</Column>
                 <Column>Kind</Column>
@@ -38,16 +38,16 @@ export function RiScRelationComponent() {
               <TableBody>
                 {componentRelations.map(comp => (
                   <Row key={comp.entityRef}>
-                    <Cell
+                    <CellText
                       title={comp.name}
                       leadingIcon={<i className="ri-link" />}
                       href={comp.riscUrl}
                     />
-                    <Cell title={comp.kind} />
+                    <CellText title={comp.kind} />
                   </Row>
                 ))}
               </TableBody>
-            </Table>
+            </TableRoot>
           </CardBody>
         </Card>
       )}
