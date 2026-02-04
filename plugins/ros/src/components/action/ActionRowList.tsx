@@ -129,17 +129,17 @@ export function ActionRowList(props: ActionRowListProps) {
             setPendingActionStatusUpdates(prevStatusUpdates => {
               const remainingUpdates = { ...prevStatusUpdates };
               if (remainingUpdates[scenarioId]) {
-                const updatedScenarioActions = {
+                const remainingActionUpdates = {
                   ...remainingUpdates[scenarioId],
                 };
 
                 savedActionIds.forEach(actionId => {
-                  delete updatedScenarioActions[actionId];
+                  delete remainingActionUpdates[actionId];
                 });
-                if (Object.keys(updatedScenarioActions).length === 0) {
+                if (Object.keys(remainingActionUpdates).length === 0) {
                   delete remainingUpdates[scenarioId];
                 } else {
-                  remainingUpdates[scenarioId] = updatedScenarioActions;
+                  remainingUpdates[scenarioId] = remainingActionUpdates;
                 }
               }
               setPendingActionUpdatesHistory(prevHistory => [
