@@ -37,6 +37,8 @@ export function ActionRowList(props: ActionRowListProps) {
   const onRefreshActionStatus = (action: Action) => {
     if (isToday(action.lastUpdated ?? null)) return;
 
+    setPendingActionUpdatesHistory(prev => prev.filter(id => id !== action.ID));
+
     setPendingActionStatusUpdates(prev => ({
       ...prev,
       [props.scenarioId]: {
@@ -50,6 +52,8 @@ export function ActionRowList(props: ActionRowListProps) {
     actionId: string,
     newStatus: ActionStatusOptions,
   ) => {
+    setPendingActionUpdatesHistory(prev => prev.filter(id => id !== actionId));
+
     setPendingActionStatusUpdates(prev => ({
       ...prev,
       [props.scenarioId]: {
@@ -120,21 +124,30 @@ export function ActionRowList(props: ActionRowListProps) {
           ),
           profileInfo: profileInfo,
           onSuccess: () => {
+            const savedActionIds = Object.keys(updates[scenarioId]);
+
             setPendingActionStatusUpdates(prevStatusUpdates => {
-              const scenarioUpdates = prevStatusUpdates[scenarioId];
+              const remainingUpdates = { ...prevStatusUpdates };
+              if (remainingUpdates[scenarioId]) {
+                const remainingActionUpdates = {
+                  ...remainingUpdates[scenarioId],
+                };
 
-              if (scenarioUpdates) {
-                const actionIds = Object.keys(scenarioUpdates);
-
-                if (actionIds.length > 0) {
-                  setPendingActionUpdatesHistory(prevHistory => [
-                    ...prevHistory,
-                    ...actionIds,
-                  ]);
+                savedActionIds.forEach(actionId => {
+                  delete remainingActionUpdates[actionId];
+                });
+                if (Object.keys(remainingActionUpdates).length === 0) {
+                  delete remainingUpdates[scenarioId];
+                } else {
+                  remainingUpdates[scenarioId] = remainingActionUpdates;
                 }
               }
+              setPendingActionUpdatesHistory(prevHistory => [
+                ...prevHistory,
+                ...savedActionIds,
+              ]);
 
-              return {};
+              return remainingUpdates;
             });
           },
           onError: () => {
@@ -219,6 +232,7 @@ function getUpdatedStatusOfAction(
 ) {
   const isActionUpdating =
     !!pendingActionStatusUpdates[scenarioId]?.[action.ID];
+
   let updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
   if (isActionUpdating) {
     updatedStatus = 'UPDATING';

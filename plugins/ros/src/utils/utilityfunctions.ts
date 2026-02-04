@@ -294,11 +294,15 @@ export function getTranslationKey(
   type: string,
   key: string,
   t: (s: any, c?: any) => string,
+  context?: any,
 ): string {
   if (type === 'error') {
-    return t([`errorMessages.${key}`, 'errorMessages.DefaultErrorMessage']);
+    return t(
+      [`errorMessages.${key}`, 'errorMessages.DefaultErrorMessage'],
+      context,
+    );
   }
-  return t(`infoMessages.${key}`);
+  return t(`infoMessages.${key}`, context);
 }
 
 export function isPublicAgeKeyValid(publicAgeKey: string) {

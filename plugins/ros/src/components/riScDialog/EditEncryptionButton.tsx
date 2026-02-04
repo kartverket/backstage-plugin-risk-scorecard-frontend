@@ -9,6 +9,7 @@ export function EditEncryptionButton({
   onEditEncryption: () => void;
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
   const { selectedRiSc } = useRiScs();
 
   if (!selectedRiSc) {
