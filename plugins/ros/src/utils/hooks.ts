@@ -28,6 +28,8 @@ import {
   RiSc,
   RiScWithMetadata,
 } from './types';
+import { useBackstageContext } from '../contexts/BackstageContext.tsx';
+import { emptyRiSc } from './utilityfunctions.ts';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -38,6 +40,19 @@ export function useGithubRepositoryInformation(): GithubRepoInfo {
   return {
     owner: org,
     name: repo,
+  };
+}
+
+export function useEmptyRiScWithMetadata(): RiSc {
+  const { entityRef } = useBackstageContext();
+
+  return {
+    ...emptyRiSc(),
+    metadata: {
+      backstage: {
+        entityRef: entityRef ?? '',
+      },
+    },
   };
 }
 

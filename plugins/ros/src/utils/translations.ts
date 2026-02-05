@@ -236,7 +236,7 @@ export const pluginRiScMessages = {
         'In this case, this means that the RiSc will belong to the {{kind}} named "{{name}}" {{title}}. This corresponds to the entity reference "{{entityRef}}".',
       title: 'Added link between RiSc and Backstage entity',
       warning:
-        '⚠️WARNING: Multiple entities are defined in this repository. Do you want the RiSc to be associated with one of these entities instead?',
+        '⚠️WARNING: Multiple entities are defined in this repository. Want to associate this RiSc with a different entity? Select an entity below to navigate to its RiSc, then approve the migration.',
     },
     removed: 'Removed',
   },
@@ -936,7 +936,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration53.initializedTo':
             'I dette tilfellet betyr det at denne RoS-en vil tilhøre {{kind}} med navn "{{name}}" {{title}}. Dette tilsvarer entitetsreferansen "{{entityRef}}".',
           'migrationDialog.migration53.warning':
-            '⚠️ ADVARSEL: Det er definert flere entiteter i dette repositoriet. Ønsker du at RoS-en i stedet skal knyttes til en av disse entitetene?',
+            '⚠️ ADVARSEL: Det er definert flere entiteter i dette repositoriet. Vil du knytte denne RiSc-en til en annen entitet? Velg en entitet nedenfor for å gå til RoSen, og godkjenn deretter migreringen.',
           'migrationDialog.removed': 'Fjernet',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',

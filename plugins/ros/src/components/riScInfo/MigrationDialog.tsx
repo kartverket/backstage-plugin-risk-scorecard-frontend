@@ -15,7 +15,7 @@ import { useRiScs } from '../../contexts/RiScContext.tsx';
 import {
   usePopulatedMigrationStatus,
   usePopulatedRiSc,
-} from '../../utils/migration.ts';
+} from '../../utils/frontendMigrationHelpers.ts';
 
 interface RiScMigrationDialogProps {
   selectedRiSc: RiScWithMetadata;

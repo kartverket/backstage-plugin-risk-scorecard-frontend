@@ -57,7 +57,7 @@ export type RiScDTO = {
   title: string;
   scope: string;
   scenarios: ScenarioDTO[];
-  metadata_unencrypted: MetadataUnencryptedDTO;
+  metadata_unencrypted: MetadataUnencryptedDTO | undefined;
 };
 
 export type MetadataUnencryptedDTO = {
@@ -184,11 +184,11 @@ function metadataToDTO(metadata: MetadataUnencrypted): MetadataUnencryptedDTO {
 }
 
 function dtoToMetadata(
-  metadataDTO: MetadataUnencryptedDTO,
+  metadataDTO: MetadataUnencryptedDTO | undefined,
 ): MetadataUnencrypted {
   return {
     backstage: {
-      entityRef: metadataDTO.backstage.entityRef ?? '',
+      entityRef: metadataDTO?.backstage?.entityRef ?? '',
     },
   };
 }
