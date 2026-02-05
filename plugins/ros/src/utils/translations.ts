@@ -95,6 +95,7 @@ export const pluginRiScMessages = {
     searchQuery: 'No result for ',
     actionsWithStatus: 'Actions that are OK',
     refresh: 'Refresh',
+    relatedComponents: 'Associated Components',
   },
   encryption: {
     title: 'Encryption',
@@ -316,7 +317,7 @@ export const pluginRiScMessages = {
       'The estimated risk is a calculation based on the risks the different scenarios pose. If there is a high probability that a serious consequence will occur, this could potentially become a large cost for the organization. In other words, the cost is an attempt to make the risk value more tangible and is the sum of the estimated risk for all the risk scenarios in this risk scorecard.',
     calculatedHowTitle: 'How do we calculate the estimated risk?',
     calculatedHow:
-      'Consequence (C) is measured in cost (in NOK) per incident and probability (P) is measured in incidents per year. ' +
+      'Probability (P) is measured in incidents per year and consequence (C) is measured in cost (in NOK) per incident. ' +
       'The estimated risk is calculated as 20',
     calculatedHowExponent: 'P+C-1',
     consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
@@ -338,8 +339,8 @@ export const pluginRiScMessages = {
       daily: 'Daily',
     },
     example: {
-      part1: 'A risk scenario with consequence ',
-      part2: ' and probability ',
+      part1: 'A risk scenario with probability ',
+      part2: ' and consequence ',
       part3: ' has an estimated risk of ',
     },
     currentRisk: {
@@ -395,6 +396,11 @@ export const pluginRiScMessages = {
     chooseGcpCryptoKey: 'Choose GCP key',
     gcpCryptoKeyDescription:
       'From the list below, select the GCP crypto key you want to use for encrypting and decrypting the Risk scorecard.',
+    cryptoKeyOptionInfo:
+      '(Project: {{projectId}}, Permissions: {{permissions}})',
+    cryptoKeyPermissionENCRYPT: 'Encrypt',
+    cryptoKeyPermissionDECRYPT: 'Decrypt',
+    cryptoKeyPermissionUNKNOWN: '⚠️ Unknown - you should switch to another key',
     gcpCryptoKeyNoSelectableKey:
       'You do not have access to any suitable GCP crypto keys.',
     gcpCryptoKeyNonSelectedErrorMessage: 'A GCP crypto key must be selected.',
@@ -432,10 +438,6 @@ export const pluginRiScMessages = {
       "Do you want to re-encrypt the RiSc's on the default branch of ",
     openPR: 'Create pull request',
     gotoPullRequest: 'Go to pull request',
-    gcpKeyHaveAccess: 'Has access',
-    gcpKeyDoNotHaveAccess: 'Do not have access',
-    gcpKeyDoNotHaveAccessDescription:
-      'You cannot choose this key as you do not have the role Cloud KMS CryptoKey Encrypter/Decrypter on it.',
   },
   scenarioStepper: {
     initialRiskStep: {
@@ -602,9 +604,9 @@ export const pluginRiScMessages = {
     'Not relevant': 'Not relevant',
   },
   errorMessages: {
-    DefaultErrorMessage: 'An error occured',
-    NoWriteAccessToRepository:
-      'Unable to update RiSc. You do not have write access to this repository.',
+    DefaultErrorMessage: 'An error occurred',
+    ErrorWhenNoWriteAccessToRepository:
+      'Unable to update RiSc. You do not have write access to {{owner}}/{{name}}.',
     ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
     ErrorWhenDeletingRiSc: 'Failed to delete risk scorecard',
     ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
@@ -768,6 +770,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.searchQuery': 'Ingen resultater for ',
           'dictionary.actionsWithStatus': 'Tiltak som er OK',
           'dictionary.refresh': 'Prøv igjen',
+          'dictionary.relatedComponents': 'Tilhørende komponenter',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
@@ -969,7 +972,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.calculatedHowTitle':
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
-            'Konsekvens (K) måles i kroner per hendelse og sannsynlighet (S) måles i hendelser per år. Den estimerte risikoen blir da: 20',
+            'Sannsynlighet (S) måles i hendelser per år og konsekvens (K) måles i kroner per hendelse. Den estimerte risikoen blir da: 20',
           'infoDialog.calculatedHowExponent': 'S+K-1',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
           'infoDialog.consequenceUnit': 'kr/hendelse',
@@ -987,8 +990,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.probabilityDescription.annualy': 'Årlig',
           'infoDialog.probabilityDescription.monthly': 'Månedlig',
           'infoDialog.probabilityDescription.daily': 'Daglig',
-          'infoDialog.example.part1': 'Et risikoscenario med konsekvens ',
-          'infoDialog.example.part2': ' og sannsynlighet ',
+          'infoDialog.example.part1': 'Et risikoscenario med sannsynlighet ',
+          'infoDialog.example.part2': ' og konsekvens ',
           'infoDialog.example.part3': ' har en estimert risiko på ',
           'infoDialog.units.nokPerIncident': 'kr/hendelse',
           'infoDialog.units.incidentsPerYear': 'hendelser/år',
@@ -1048,6 +1051,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.chooseGcpCryptoKey': 'Velg GCP-nøkkel',
           'sopsConfigDialog.gcpCryptoKeyDescription':
             "Fra listen under kan du velge hvilken GCP-nøkkel du vil bruke for å kryptere og dekryptere RoS'en.",
+          'sopsConfigDialog.cryptoKeyOptionInfo':
+            '(Prosjekt: {{projectId}}, Tilganger: {{permissions}})',
+          'sopsConfigDialog.cryptoKeyPermissionENCRYPT': 'Kryptere',
+          'sopsConfigDialog.cryptoKeyPermissionDECRYPT': 'Dekryptere',
+          'sopsConfigDialog.cryptoKeyPermissionUNKNOWN':
+            '⚠️ Ukjent - du bør bytte til en annen nøkkel',
           'sopsConfigDialog.gcpCryptoKeyNoSelectableKey':
             'Du har ikke tilgang til noe egnede GCP-nøkler.',
           'sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage':
@@ -1092,11 +1101,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             "Vil du rekryptere eksisterende RoS'er på hoved-branchen til",
           'sopsConfigDialog.openPR': 'Åpne pull request',
           'sopsConfigDialog.gotoPullRequest': 'Gå til pull request',
-          'sopsConfigDialog.gcpKeyHaveAccess': 'Har tilgang',
-          'sopsConfigDialog.gcpKeyDoNotHaveAccess': 'Har ikke tilgang',
-          'sopsConfigDialog.gcpKeyDoNotHaveAccessDescription':
-            'Du kan ikke velge denne nøkkelen fordi du ikke har Cloud KMS CryptoKey Encrypter/Decrypter rollen på nøkkelen.',
-
           'scenarioStepper.initialRiskStep.title': 'Startrisiko',
           'scenarioStepper.initialRiskStep.subtitle':
             'Risikoen er kombinasjonen av konsekvensen av scenarioet og sannsynligheten for at det inntreffer.',
@@ -1241,8 +1245,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.Not OK': 'Ikke OK',
           'actionStatus.Not relevant': 'Ikke relevant',
           'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
-          'errorMessages.NoWriteAccessToRepository':
-            'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til dette repoet.',
+          'errorMessages.ErrorWhenNoWriteAccessToRepository':
+            'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til {{owner}}/{{name}}.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
           'errorMessages.ErrorWhenDeletingRiSc':

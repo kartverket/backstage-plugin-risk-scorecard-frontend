@@ -1,18 +1,10 @@
-import { Markdown } from '../common/Markdown.tsx';
-import { RiScWithMetadata } from '../../utils/types.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { Card, CardBody, Text, Select, ButtonIcon, Flex } from '@backstage/ui';
+import { Select, Flex } from '@backstage/ui';
 import styles from './RiScSelectionCard.module.css';
 
-interface Props {
-  riScWithMetadata: RiScWithMetadata;
-  edit: () => void;
-  onCreateNew: () => void;
-}
-
-export function RiScSelectionCard(props: Props) {
+export function RiScSelectionCard() {
   const { riScs, selectedRiSc, selectRiSc } = useRiScs();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -37,30 +29,6 @@ export function RiScSelectionCard(props: Props) {
           </>
         )}
       </Flex>
-      <Card>
-        <CardBody>
-          <Flex
-            justify="between"
-            align="center"
-            style={{
-              marginBottom: '16px',
-              marginTop: '8px',
-            }}
-          >
-            <Text variant="title-small" as="h6" weight="bold">
-              {props.riScWithMetadata.content.title}
-            </Text>
-            <ButtonIcon
-              onClick={props.edit}
-              icon={
-                <i className="ri-edit-line" style={{ fontSize: 'large' }} />
-              }
-              variant="tertiary"
-            />
-          </Flex>
-          <Markdown description={props.riScWithMetadata.content.scope} />
-        </CardBody>
-      </Card>
     </Flex>
   );
 }
