@@ -5,8 +5,6 @@ import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
 import { RiskMatrix } from '../riskMatrix/RiskMatrix';
 import AlertBar from '../common/AlertBar/AlertBar';
 import Grid from '@mui/material/Grid';
-import LinearProgress from '@mui/material/LinearProgress';
-import { getAlertSeverity } from '../../utils/utilityfunctions';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
 import { Spinner } from '../common/Spinner';
 import { useRiScs } from '../../contexts/RiScContext';
@@ -78,26 +76,13 @@ export function RiScPlugin() {
 
   return (
     <>
-      {response && !updateStatus.isLoading && (
-        <Flex className={styles.alertBarBox}>
-          <AlertBar
-            severity={getAlertSeverity(updateStatus, response)}
-            className={styles.alertBar}
-          >
-            <Text variant="body-large">{response.statusMessage}</Text>
-          </AlertBar>
-        </Flex>
-      )}
-      {updateStatus.isLoading && (
-        <LinearProgress
-          sx={{
-            position: 'sticky',
-            top: 0,
-            margin: 2,
-          }}
+      <Flex className={styles.alertBarBox}>
+        <AlertBar
+          updateStatus={updateStatus}
+          response={response}
+          statusText={response?.statusMessage}
         />
-      )}
-
+      </Flex>
       {scenarioWizardStep !== null ? (
         <ScenarioWizard step={scenarioWizardStep} />
       ) : (

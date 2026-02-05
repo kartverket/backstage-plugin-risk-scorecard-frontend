@@ -1,7 +1,5 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { AlertTitle } from '@mui/material';
-import AlertBar from '../common/AlertBar/AlertBar';
 import Box from '@mui/material/Box';
 import { Button } from '@backstage/ui';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -11,19 +9,20 @@ import { useForm } from 'react-hook-form';
 import { useRiScs } from '../../contexts/RiScContext';
 import { useScenario } from '../../contexts/ScenarioContext';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { FormScenario, ProcessingStatus } from '../../utils/types';
-import { deleteScenario, getAlertSeverity } from '../../utils/utilityfunctions';
+import { FormScenario } from '../../utils/types';
+import { deleteScenario } from '../../utils/utilityfunctions';
 import { MatrixDialog } from '../riScDialog/MatrixDialog';
 import { CloseConfirmation } from '../scenarioWizard/components/CloseConfirmation';
 import { ActionsSection } from './components/ActionsSection';
 import { DeleteScenarioConfirmation } from './components/DeleteConfirmation';
 import RiskFormSection from './components/RiskFormSection';
 import ScopeFormSection from './components/ScopeFormSection';
-import { Text, Flex } from '@backstage/ui';
+import { Flex } from '@backstage/ui';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import styles from '../common/alertBar.module.css';
 import { ScopeSection } from './components/ScopeSection.tsx';
 import { RiskSection } from './components/RiskSection.tsx';
+import AlertBar from '../common/AlertBar/AlertBar.tsx';
 
 export function ScenarioDrawer() {
   const { profileInfo } = useBackstageContext();
@@ -166,44 +165,17 @@ export function ScenarioDrawer() {
         </>
       ) : (
         <>
-          {updateStatus.isLoading && (
-            <Flex className={styles.alertBarBox}>
-              <AlertBar
-                className={styles.alertBar}
-                severity="info"
-                alertProps={{
-                  icon: (
-                    <CircularProgress size={16} sx={{ color: 'inherit' }} />
-                  ),
-                }}
-              >
-                <>
-                  <AlertTitle>{t('infoMessages.UpdateAction')}</AlertTitle>
-                  <Text variant="body-large">
-                    {t('infoMessages.UpdateInfoMessage')}
-                  </Text>
-                </>
-              </AlertBar>
-            </Flex>
-          )}
-          {!updateStatus.isLoading &&
-            updateStatus.isSuccess &&
-            response &&
-            response.status !== ProcessingStatus.ErrorWhenFetchingRiScs && (
-              <Flex className={styles.alertBarBox}>
-                <AlertBar
-                  className={styles.alertBar}
-                  severity={getAlertSeverity(updateStatus, response)}
-                >
-                  <Text variant="body-large">{response?.statusMessage}</Text>
-                </AlertBar>
-              </Flex>
-            )}
+          <Flex className={styles.alertBarBox}>
+            <AlertBar
+              updateStatus={updateStatus}
+              response={response}
+              statusText={response?.statusMessage}
+            />
+          </Flex>
           <ScopeSection />
           <RiskSection />
         </>
       )}
-
       <ActionsSection formMethods={formMethods} isEditing={isEditing} />
       <Box
         sx={{
