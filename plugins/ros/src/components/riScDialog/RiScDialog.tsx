@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
-import { emptyRiSc, isDeeplyEqual } from '../../utils/utilityfunctions';
+import { isDeeplyEqual } from '../../utils/utilityfunctions';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useRiScs } from '../../contexts/RiScContext';
@@ -13,6 +13,7 @@ import { Flex, Button, Text } from '@backstage/ui';
 import styles from './RiScDialog.module.css';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 import DialogComponent from '../dialog/DialogComponent.tsx';
+import { useEmptyRiScWithMetadata } from '../../utils/hooks.ts';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -56,7 +57,7 @@ export function RiScDialog({
   onDelete,
 }: RiScDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-
+  const emptyRiScWithMetadata = useEmptyRiScWithMetadata();
   const {
     selectedRiSc,
     riScs,
@@ -66,6 +67,7 @@ export function RiScDialog({
     updateRiSc,
     gcpCryptoKeys,
   } = useRiScs();
+
   const {
     register,
     handleSubmit,
@@ -78,7 +80,7 @@ export function RiScDialog({
       dialogState === RiScDialogStates.EditEncryption
         ? selectedRiSc!
         : {
-            content: emptyRiSc(),
+            content: emptyRiScWithMetadata,
             sopsConfig: {
               shamir_threshold: 2,
             },

@@ -40,6 +40,7 @@
     "rm-node-modules": "yarn run _rm-node-modules"
   },
   "dependencies": {
+    "@backstage/catalog-model": "backstage:^",
     "@backstage/core-components": "backstage:^",
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",

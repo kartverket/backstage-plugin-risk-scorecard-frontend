@@ -11,10 +11,18 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
+import { BackstageRepo, useBackstageRepo } from '../utils/backstage.ts';
 
 type BackstageContextObject = {
   profileInfo: ProfileInfo | undefined;
   componentType: string | undefined;
+  entityRef: string | undefined;
+  backstageRepo: BackstageRepo;
+  currentEntity: Entity;
+  useBackstageRepoOfCurrentEntity: (
+    excludeCurrentEntity: boolean,
+  ) => BackstageRepo;
 };
 
 const BackstageContext = createContext<BackstageContextObject | undefined>(
@@ -38,8 +46,28 @@ export function BackstageContextProvider({
 
   const componentType = entity.spec?.type as string | undefined;
 
+  const entityRef = stringifyEntityRef({
+    kind: entity.kind,
+    name: entity.metadata.name,
+  });
+
+  const backstageRepo = useBackstageRepo(entity, true);
+
+  const useBackstageRepoOfCurrentEntity = (excludeCurrentEntity: boolean) => {
+    return useBackstageRepo(entity, excludeCurrentEntity);
+  };
+
   return (
-    <BackstageContext.Provider value={{ profileInfo, componentType }}>
+    <BackstageContext.Provider
+      value={{
+        profileInfo,
+        componentType,
+        entityRef,
+        backstageRepo,
+        currentEntity: entity,
+        useBackstageRepoOfCurrentEntity,
+      }}
+    >
       {children}
     </BackstageContext.Provider>
   );

@@ -101,6 +101,9 @@ export function emptyRiSc(): RiSc {
     title: '',
     scope: '',
     scenarios: [],
+    metadata: {
+      belongsTo: '',
+    },
   };
 }
 

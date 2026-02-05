@@ -7,7 +7,6 @@ import {
 } from '../../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { useRiScs } from '../../../contexts/RiScContext';
 import { useAuthenticatedFetch } from '../../../utils/hooks';
 import { RiScMigrationDialog } from '../MigrationDialog';
 import { RiScPublishDialog } from '../PublishDialog';
@@ -67,8 +66,6 @@ export function RiScStatusComponent({
   const [differenceFetchState, setDifferenceFetchState] =
     useState<DifferenceFetchState>(emptyDifferenceFetchState);
 
-  const { updateRiSc } = useRiScs();
-
   function handleApproveAndPublish() {
     publishRiScFn();
     setPublishRiScDialogIsOpen(false);
@@ -104,12 +101,6 @@ export function RiScStatusComponent({
       },
     );
   }
-
-  function handleUpdate() {
-    updateRiSc(selectedRiSc);
-    setMigrationDialogIsOpen(false);
-  }
-
   function handleOpenPublishRiScDialog() {
     setPublishRiScDialogIsOpen(true);
     getDifferences();
@@ -276,10 +267,10 @@ export function RiScStatusComponent({
               </Button>
             </Flex>
             <RiScMigrationDialog
+              selectedRiSc={selectedRiSc}
               openDialog={migrationDialogIsOpen}
-              handleUpdate={handleUpdate}
-              handleCancel={() => setMigrationDialogIsOpen(false)}
               migrationStatus={selectedRiSc.migrationStatus}
+              setMigrationDialogIsOpen={setMigrationDialogIsOpen}
             />
           </Box>
         )}

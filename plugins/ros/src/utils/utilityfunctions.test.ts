@@ -149,6 +149,9 @@ describe('requiresNewApproval', () => {
     title: 'Test Title',
     scope: 'Scope',
     scenarios: [scenario],
+    metadata: {
+      belongsTo: '',
+    },
   };
 
   it('returns false if risc is equal', () => {
