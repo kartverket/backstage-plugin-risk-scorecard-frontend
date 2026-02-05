@@ -49,9 +49,7 @@ export function useEmptyRiScWithMetadata(): RiSc {
   return {
     ...emptyRiSc(),
     metadata: {
-      backstage: {
-        entityRef: entityRef ?? '',
-      },
+      belongsTo: entityRef ?? '',
     },
   };
 }

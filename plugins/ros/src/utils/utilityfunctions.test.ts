@@ -150,9 +150,7 @@ describe('requiresNewApproval', () => {
     scope: 'Scope',
     scenarios: [scenario],
     metadata: {
-      backstage: {
-        entityRef: '',
-      },
+      belongsTo: '',
     },
   };
 

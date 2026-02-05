@@ -61,11 +61,7 @@ export type RiScDTO = {
 };
 
 export type MetadataUnencryptedDTO = {
-  backstage: BackstageMetadataDTO;
-};
-
-export type BackstageMetadataDTO = {
-  entityRef: string | null;
+  belongsTo: string | null;
 };
 
 export enum CryptoKeyPermission {
@@ -177,9 +173,7 @@ function riScToDTO(riSc: RiSc): RiScDTO {
 
 function metadataToDTO(metadata: MetadataUnencrypted): MetadataUnencryptedDTO {
   return {
-    backstage: {
-      entityRef: metadata.backstage.entityRef,
-    },
+    belongsTo: metadata.belongsTo,
   };
 }
 
@@ -187,9 +181,7 @@ function dtoToMetadata(
   metadataDTO: MetadataUnencryptedDTO | undefined,
 ): MetadataUnencrypted {
   return {
-    backstage: {
-      entityRef: metadataDTO?.backstage?.entityRef ?? '',
-    },
+    belongsTo: metadataDTO?.belongsTo ?? '',
   };
 }
 

@@ -195,7 +195,7 @@ describe('useAuthenticatedFetch', () => {
             actions: [{ ID: '1' } as Partial<Action>],
           } as Partial<Scenario>,
         ],
-        metadata: { backstage: { entityRef: '' } },
+        metadata: { belongsTo: '' },
       } as Partial<RiSc> as RiSc;
 
       await act(async () => {
@@ -266,7 +266,7 @@ describe('useAuthenticatedFetch', () => {
             actions: [{ ID: '1' } as Partial<Action>],
           } as Partial<Scenario>,
         ],
-        metadata: { backstage: { entityRef: '' } },
+        metadata: { belongsTo: '' },
       } as Partial<RiSc> as RiSc;
 
       await act(async () => {
@@ -329,7 +329,7 @@ describe('useAuthenticatedFetch', () => {
             actions: [{ ID: '1' } as Partial<Action>],
           } as Partial<Scenario>,
         ],
-        metadata: { backstage: { entityRef: '' } },
+        metadata: { belongsTo: '' },
       } as Partial<RiSc> as RiSc;
 
       await act(async () => {
@@ -386,7 +386,7 @@ describe('useAuthenticatedFetch', () => {
               actions: [{ ID: '1' } as Partial<Action>],
             } as Partial<Scenario>,
           ],
-          metadata: { backstage: { entityRef: '' } },
+          metadata: { belongsTo: '' },
         } as Partial<RiSc> as RiSc,
       } as Partial<RiScWithMetadata> as RiScWithMetadata;
 
@@ -445,7 +445,7 @@ describe('useAuthenticatedFetch', () => {
               actions: [{ ID: '1' } as Partial<Action>],
             } as Partial<Scenario>,
           ],
-          metadata: { backstage: { entityRef: '' } },
+          metadata: { belongsTo: '' },
         } as Partial<RiSc> as RiSc,
       } as Partial<RiScWithMetadata> as RiScWithMetadata;
 
@@ -504,7 +504,7 @@ describe('useAuthenticatedFetch', () => {
               actions: [{ ID: '1' } as Partial<Action>],
             } as Partial<Scenario>,
           ],
-          metadata: { backstage: { entityRef: '' } },
+          metadata: { belongsTo: '' },
         } as Partial<RiSc> as RiSc,
       } as Partial<RiScWithMetadata> as RiScWithMetadata;
 
@@ -682,7 +682,7 @@ describe('useAuthenticatedFetch', () => {
               actions: [{ ID: '1' } as Partial<Action>],
             } as Partial<Scenario>,
           ],
-          metadata: { backstage: { entityRef: '' } },
+          metadata: { belongsTo: '' },
         } as Partial<RiSc> as RiSc,
       } as Partial<RiScWithMetadata> as RiScWithMetadata;
 
@@ -745,7 +745,7 @@ describe('useAuthenticatedFetch', () => {
               actions: [{ ID: '1' } as Partial<Action>],
             } as Partial<Scenario>,
           ],
-          metadata: { backstage: { entityRef: '' } },
+          metadata: { belongsTo: '' },
         } as Partial<RiSc> as RiSc,
       } as Partial<RiScWithMetadata> as RiScWithMetadata;
 
@@ -808,7 +808,7 @@ describe('useAuthenticatedFetch', () => {
               actions: [{ ID: '1' } as Partial<Action>],
             } as Partial<Scenario>,
           ],
-          metadata: { backstage: { entityRef: '' } },
+          metadata: { belongsTo: '' },
         } as Partial<RiSc> as RiSc,
       } as Partial<RiScWithMetadata> as RiScWithMetadata;
 

@@ -62,9 +62,7 @@ export type MigrationVersions = {
 
 export type MigrationChanges53 = {
   metadataUnencrypted: {
-    backstage: {
-      entityRef: string;
-    };
+    belongsTo: string;
   };
 };
 
@@ -174,11 +172,7 @@ export type RiSc = {
 };
 
 export type MetadataUnencrypted = {
-  backstage: BackstageMetadata;
-};
-
-export type BackstageMetadata = {
-  entityRef: string;
+  belongsTo: string;
 };
 
 // The Valuations concept was removed in PR #850 and the remaining code referencing it can be removed when old schema migration code including to v4 is removed.
@@ -334,11 +328,7 @@ export type ScenarioRiskChange = {
 };
 
 export type MetadataUnencryptedChange = {
-  backstage?: BackstageMetadataChange;
-};
-
-export type BackstageMetadataChange = {
-  entityRef?: SimpleTrackedProperty<string | null>;
+  belongsTo?: SimpleTrackedProperty<string | null>;
 };
 
 export type SimpleTrackedProperty<T> = TrackedProperty<T, T>;

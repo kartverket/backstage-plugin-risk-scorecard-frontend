@@ -99,9 +99,7 @@ export function emptyRiSc(): RiSc {
     scope: '',
     scenarios: [],
     metadata: {
-      backstage: {
-        entityRef: '',
-      },
+      belongsTo: '',
     },
   };
 }
