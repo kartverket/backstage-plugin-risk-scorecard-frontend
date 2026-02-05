@@ -1,30 +1,49 @@
-import React from 'react';
-import Alert, { AlertProps } from '@mui/material/Alert';
+import Alert from '@mui/material/Alert';
 import styles from '../alertBar.module.css';
-
-type Severity = 'success' | 'warning' | 'error' | 'info';
+import { UpdateStatus } from '../../../contexts/RiScContext';
+import { SubmitResponseObject } from '../../../utils/types';
+import { AlertTitle, CircularProgress } from '@mui/material';
+import { getAlertSeverity } from '../../../utils/utilityfunctions';
+import { Text } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
 
 type Props = {
-  severity: Severity;
-  children: React.ReactNode;
-  className?: string; // applied to wrapper
-  alertProps?: Partial<AlertProps>;
+  updateStatus: UpdateStatus;
+  response: SubmitResponseObject | null;
+  statusText?: string;
 };
 
-function AlertBar({ severity, children, className, alertProps }: Props) {
+function AlertBar({ updateStatus, response, statusText }: Props) {
+  const severity = getAlertSeverity(updateStatus, response ?? undefined);
   const severityClass = (styles as any)[severity] || '';
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  return (
-    <div className={className}>
+  if (!updateStatus) return null; // Prevents error if prop is missing
+
+  if (updateStatus.isLoading) {
+    return (
       <Alert
-        severity={severity as any}
-        className={`${styles.alertBar} ${severityClass}`}
-        {...(alertProps as any)}
+        severity="info"
+        className={`${styles.alertBar} ${styles.info}`}
+        icon={<CircularProgress size={16} sx={{ color: 'inherit' }} />}
       >
-        {children}
+        <AlertTitle>{t('infoMessages.UpdateAction')}</AlertTitle>
+        <Text variant="body-large">{t('infoMessages.UpdateInfoMessage')}</Text>
       </Alert>
-    </div>
-  );
+    );
+  }
+  if (response) {
+    return (
+      <Alert
+        severity={severity}
+        className={`${styles.alertBar} ${severityClass}`}
+      >
+        <Text variant="body-large">{statusText}</Text>
+      </Alert>
+    );
+  }
+  return null;
 }
 
 export default AlertBar;

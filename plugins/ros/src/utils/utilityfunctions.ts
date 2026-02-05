@@ -63,7 +63,10 @@ export function formatNOK(amount: number): string {
 export function getAlertSeverity(
   updateStatus: UpdateStatus,
   response?: SubmitResponseObject,
-): 'error' | 'success' | 'warning' {
+): 'error' | 'success' | 'warning' | 'info' {
+  if (updateStatus.isLoading) {
+    return 'info';
+  }
   if (updateStatus.isSuccess) {
     return 'success';
   } else if (updateStatus.isError) {
