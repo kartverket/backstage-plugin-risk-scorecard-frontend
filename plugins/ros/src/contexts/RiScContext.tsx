@@ -81,6 +81,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   const {
     fetchRiScs,
+    fetchSingleRiSc,
     fetchGcpCryptoKeys,
     postRiScs,
     deleteRiScs,
@@ -556,44 +557,51 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const refetchRiScs = useCallback(() => {
-    fetchRiScs(
-      res => {
-        const fetchedRiScs: RiScWithMetadata[] = res
-          .filter(risk => risk.status === ContentStatus.Success)
-          .map(riScDTO => {
-            const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
-            const content = dtoToRiSc(json);
-            return {
-              id: riScDTO.riScId,
-              content,
-              sopsConfig: riScDTO.sopsConfig,
-              status: riScDTO.riScStatus,
-              pullRequestUrl: riScDTO.pullRequestUrl,
-              migrationStatus: riScDTO.migrationStatus,
-              lastPublished: riScDTO.lastPublished,
-            };
+  const refetchRiSc = useCallback(
+    (riScId: string) => {
+      fetchSingleRiSc(
+        riScId,
+        riScDTO => {
+          if (riScDTO?.status !== ContentStatus.Success) {
+            setRiScs(riScs?.filter(r => r.id !== riScDTO.riScId) || riScs);
+            setSelectedRiSc(riScs?.[0] || null);
+            return;
+          }
+          const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
+          const content = dtoToRiSc(json);
+          const mapped = {
+            id: riScDTO.riScId,
+            content,
+            sopsConfig: riScDTO.sopsConfig,
+            status: riScDTO.riScStatus,
+            pullRequestUrl: riScDTO.pullRequestUrl,
+            migrationStatus: riScDTO.migrationStatus,
+            lastPublished: riScDTO.lastPublished,
+          };
+
+          const newRiScs = riScs?.filter(r => r.id !== mapped.id) || [];
+          const allRiScs: RiScWithMetadata[] = [...newRiScs, mapped];
+          setRiScs(allRiScs);
+
+          setSelectedRiSc(prev =>
+            prev ? (allRiScs.find(r => r.id === prev.id) ?? prev) : prev,
+          );
+        },
+        loginRejected => {
+          dispatch({
+            type: 'SET_RESPONSE',
+            response: {
+              status: ProcessingStatus.ErrorWhenFetchingRiScs,
+              statusMessage: loginRejected
+                ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t('dictionary.rejectedLogin')}`
+                : t('errorMessages.ErrorWhenFetchingRiScs'),
+            },
           });
-
-        setRiScs(fetchedRiScs);
-
-        setSelectedRiSc(prev =>
-          prev ? (fetchedRiScs.find(r => r.id === prev.id) ?? prev) : prev,
-        );
-      },
-      loginRejected => {
-        dispatch({
-          type: 'SET_RESPONSE',
-          response: {
-            status: ProcessingStatus.ErrorWhenFetchingRiScs,
-            statusMessage: loginRejected
-              ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t('dictionary.rejectedLogin')}`
-              : t('errorMessages.ErrorWhenFetchingRiScs'),
-          },
-        });
-      },
-    );
-  }, [fetchRiScs, dispatch, t]);
+        },
+      );
+    },
+    [fetchSingleRiSc, dispatch, t, riScs],
+  );
 
   function approveRiSc() {
     if (selectedRiSc && riScs) {
@@ -661,12 +669,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     }
 
     const id = window.setInterval(() => {
-      refetchRiScs();
+      refetchRiSc(selectedRiSc!.id);
     }, 5000);
 
     return () => window.clearInterval(id);
-  }, [selectedRiSc?.status, refetchRiScs]);
-
+  }, [selectedRiSc, refetchRiSc]);
   const value = {
     riScs,
     selectRiSc,
