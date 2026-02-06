@@ -112,6 +112,10 @@ After that, users of the plugin can bump the version to include the latest chang
 
 NOTE: The version in the plugin's package.json will never change in the source code. There are many [valid reasons](https://semantic-release.gitbook.io/semantic-release/support/faq#why-is-the-package.jsons-version-not-updated-in-my-repository) for this, but the primary is that this would require the publish action (a bot basically) to be able to commit directly on the main branch.
 
+### ⚠️ A note about merge method ⚠️
+
+As of writing we are using squash to merge. This has the unfortunate consequence of making the PR title the sole source of determining what kind of bump will be done when the release process is run on main. This makes the use of titles with `!` to indicate major changes the safest, though it should work if the first line in the PR-description is "BREAKING CHANGE: some description" as well. However, use `feat!: ` or `fix! ` to be sure. During the release process the PR title will be validated against the commits on your branch. If they don't indicate the same version bump, the action will fail. If so, just rename your PR and the action will rerun automatically.
+
 ### What version to publish?
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md#versioning)

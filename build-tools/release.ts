@@ -316,7 +316,7 @@ async function main() {
 
 // Only run main() when executed directly, not when imported
 const isMainModule =
-  import.meta.url === `file://${process.argv[1]?.replace(/\\/g, '/')}`;
+  resolve(fileURLToPath(import.meta.url)) === resolve(process.argv[1] ?? '');
 if (isMainModule) {
   main();
 }
