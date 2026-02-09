@@ -16,7 +16,6 @@ type ConfirmationDialogWithCheckboxProps = {
   children?: ReactNode;
   className?: string;
   confirmButtonText?: string;
-  cancelButtonText?: string;
 };
 
 export function ConfirmationDialogWithCheckbox({
@@ -28,7 +27,6 @@ export function ConfirmationDialogWithCheckbox({
   children,
   className,
   confirmButtonText,
-  cancelButtonText,
 }: ConfirmationDialogWithCheckboxProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [isChecked, setIsChecked] = useState(false);
@@ -68,19 +66,17 @@ export function ConfirmationDialogWithCheckbox({
         />
       </Alert>
       <Flex justify="between" pt="24px">
-        <>
-          <Button variant="secondary" size="medium" onClick={handleCancel}>
-            {cancelButtonText || t('dictionary.cancel')}
-          </Button>
-          <Button
-            variant="primary"
-            size="medium"
-            onClick={handleConfirm}
-            isDisabled={!isChecked}
-          >
-            {confirmButtonText || t('dictionary.confirm')}
-          </Button>
-        </>
+        <Button variant="secondary" size="medium" onClick={handleCancel}>
+          {t('dictionary.cancel')}
+        </Button>
+        <Button
+          variant="primary"
+          size="medium"
+          onClick={handleConfirm}
+          isDisabled={!isChecked}
+        >
+          {confirmButtonText || t('dictionary.confirm')}
+        </Button>
       </Flex>
     </DialogComponent>
   );
@@ -88,22 +84,20 @@ export function ConfirmationDialogWithCheckbox({
 
 interface ConfirmationDialogWithoutCheckboxProps {
   isOpen: boolean;
-  onClose?: () => void;
-  onConfirm?: () => void;
+  onCancel: () => void;
+  onConfirm: () => void;
   title: string;
   confirmButtonText?: string;
-  cancelButtonText?: string;
   className?: string;
   children?: ReactNode;
 }
 
 export function ConfirmationDialogWithoutCheckbox({
   isOpen,
-  onClose,
+  onCancel,
   onConfirm,
   title,
   confirmButtonText,
-  cancelButtonText,
   className,
   children,
 }: ConfirmationDialogWithoutCheckboxProps) {
@@ -112,7 +106,7 @@ export function ConfirmationDialogWithoutCheckbox({
   return (
     <DialogComponent
       isOpen={isOpen}
-      onClick={() => onClose?.()}
+      onClick={() => onCancel()}
       header={title}
       className={className}
     >
@@ -121,17 +115,15 @@ export function ConfirmationDialogWithoutCheckbox({
         <Button
           variant="secondary"
           size="medium"
-          onClick={event => {
-            event.stopPropagation();
-            onClose?.();
+          onClick={() => {
+            onCancel?.();
           }}
         >
-          {cancelButtonText || t('dictionary.cancel')}
+          {t('dictionary.cancel')}
         </Button>
         <Button
-          onClick={event => {
-            event.stopPropagation();
-            onConfirm?.();
+          onClick={() => {
+            onConfirm();
           }}
           variant="primary"
           size="medium"

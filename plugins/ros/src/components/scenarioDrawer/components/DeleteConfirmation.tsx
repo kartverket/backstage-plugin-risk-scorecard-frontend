@@ -20,7 +20,7 @@ export function DeleteScenarioConfirmation({
   return (
     <ConfirmationDialogWithoutCheckbox
       isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
+      onCancel={() => setIsOpen(false)}
       onConfirm={() => {
         setIsOpen(false);
         onConfirm?.();
@@ -48,7 +48,7 @@ export function DeleteActionConfirmation({
   return (
     <ConfirmationDialogWithoutCheckbox
       isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
+      onCancel={() => setIsOpen(false)}
       onConfirm={() => {
         setIsOpen(false);
         onConfirm?.();
