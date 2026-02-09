@@ -50,7 +50,8 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "plugins/*"
+      "plugins/*",
+      "build-tools"
     ]
   },
   "devDependencies": {
@@ -58,8 +59,11 @@
     "@backstage/e2e-test-utils": "backstage:^",
     "@microsoft/microsoft-graph-types": "^2.40.0",
     "@testing-library/dom": "^10.4.0",
+    "@types/jest": "^29",
     "@types/node": "^24.7.0",
     "dotenv": "^16.5.0",
+    "jest": "^29",
+    "jest-environment-jsdom": "^29",
     "knip": "^5.64.2",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3"
@@ -74,9 +78,11 @@
     "prismjs": "^1.30.0",
     "tough-cookie": "5.1.2",
     "linkifyjs": "^4.3.2",
-    "jws": "^4.0.1",
     "qs": "^6.14.1",
-    "@remix-run/router": "^1.23.2"
+    "tar": "7.5.7",
+    "@isaacs/brace-expansion": "5.0.1",
+    "@backstage/plugin-techdocs-node": "1.14.1",
+    "fast-xml-parser": "5.3.4"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
