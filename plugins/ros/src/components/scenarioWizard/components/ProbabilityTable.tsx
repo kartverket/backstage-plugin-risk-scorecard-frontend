@@ -1,12 +1,11 @@
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { useController, UseFormReturn } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import { RiskRadioButton } from './RiskRadioButton';
-import RadioGroup from '@mui/material/RadioGroup';
 import { probabilityOptions } from '../../../utils/constants';
-import { Text, Box } from '@backstage/ui';
+import { Box } from '@backstage/ui';
 import styles from '../ScenarioWizardTable.module.css';
+import { createInfoWithHeadersComponent, RiskTableBase } from './RiskTableBase';
 
 function ProbabilityTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -21,11 +20,7 @@ function ProbabilityTableInfo() {
 
   return (
     <Box className={styles.riskRow}>
-      {getContentCell(0)}
-      {getContentCell(1)}
-      {getContentCell(2)}
-      {getContentCell(3)}
-      {getContentCell(4)}
+      {Array.from({ length: 5 }, (_, i) => getContentCell(i))}
     </Box>
   );
 }
@@ -37,62 +32,20 @@ export function ProbabilityTable({
   formMethods: UseFormReturn<FormScenario>;
   riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
 }) {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-
-  const { field } = useController({
-    name: `${riskType}.probability`,
-    control: formMethods.control,
-  });
-
-  function getRadioLabel(row: number) {
-    /* @ts-ignore Because ts can't typecheck strings agains our keys */
-    return `${row}: ${t(`probabilityTable.rows.${row}`)}`;
-  }
-
-  function getRadioCell(row: number) {
-    return (
-      <RiskRadioButton
-        value={probabilityOptions[row]}
-        ref={field.ref}
-        label={getRadioLabel(row + 1)}
-      />
-    );
-  }
-
   return (
-    <Box className={styles.riskTable}>
-      <RadioGroup {...field} className={styles.riskRow}>
-        {getRadioCell(0)}
-        {getRadioCell(1)}
-        {getRadioCell(2)}
-        {getRadioCell(3)}
-        {getRadioCell(4)}
-      </RadioGroup>
-      <ProbabilityTableInfo />
-    </Box>
+    <RiskTableBase
+      formMethods={formMethods}
+      riskType={riskType}
+      fieldName="probability"
+      options={probabilityOptions}
+      translationPrefix="probabilityTable"
+      InfoComponent={ProbabilityTableInfo}
+    />
   );
 }
 
-export function ProbabilityTableInfoWithHeaders() {
-  const { t } = useTranslationRef(pluginRiScTranslationRef);
-
-  function getRadioLabel(row: number) {
-    return (
-      /* @ts-ignore Because ts can't typecheck strings agains our keys */
-      <Text>{`${row}: ${t(`probabilityTable.rows.${row}`)}`}</Text>
-    );
-  }
-  return (
-    <Box className={styles.riskTable}>
-      <Box className={styles.consequenceGrid}>
-        <Box className={styles.riskLabelCell} />
-        {getRadioLabel(1)}
-        {getRadioLabel(2)}
-        {getRadioLabel(3)}
-        {getRadioLabel(4)}
-        {getRadioLabel(5)}
-      </Box>
-      <ProbabilityTableInfo />
-    </Box>
-  );
-}
+export const ProbabilityTableInfoWithHeaders = createInfoWithHeadersComponent(
+  'probabilityTable',
+  ProbabilityTableInfo,
+  false,
+);
