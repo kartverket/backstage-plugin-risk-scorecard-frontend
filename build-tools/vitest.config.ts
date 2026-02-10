@@ -4,12 +4,21 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['lib/**/*.test.ts', 'tests/**/*.test.ts'],
+    testTimeout: 30000,
+    include: [
+      'lib/**/*.test.ts',
+      'tests/**/*.test.ts',
+      'tests/**/*.e2e.test.ts',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
       include: ['lib/**/*.ts', 'release.ts'],
-      exclude: ['lib/**/*.test.ts', 'tests/**/*.test.ts'],
+      exclude: [
+        'lib/**/*.test.ts',
+        'tests/**/*.test.ts',
+        'tests/**/*.e2e.test.ts',
+      ],
     },
   },
 });

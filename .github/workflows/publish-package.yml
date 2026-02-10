@@ -15,6 +15,7 @@ on:
     branches:
       - main
   pull_request:
+    types: [opened, edited, synchronize, reopened]
     branches:
       - main
 
@@ -47,8 +48,17 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Run release tests
+      - name: Run tests for release and PR-validation
         run: yarn workspace build-tools test
+
+      # For pull_request events, we have access to the PR commits and can validate
+      # that the PR title matches what the commits expect
+      - name: Validate PR Title
+        if: github.event_name == 'pull_request'
+        run: |
+          ./build-tools/validate-pr.ts \
+            --pr-title "${{ github.event.pull_request.title }}" \
+            --base-branch "${{ github.base_ref }}"
 
       - name: Release (Dry Run)
         if: github.event_name == 'pull_request'
