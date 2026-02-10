@@ -62,6 +62,7 @@ export const pluginRiScMessages = {
     measures: 'Actions', // Measure, Action or Initiative
     measuresInitialRiSc: 'actions',
     measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
+    metadataUnencrypted: 'Unencrypted metadata',
     next: 'Next',
     planned: 'Planned',
     previous: 'Previous',
@@ -80,6 +81,8 @@ export const pluginRiScMessages = {
     scenario: 'Scenario',
     scope: 'Scope',
     status: 'Status',
+    theComponent: 'the component',
+    theSystem: 'the system',
     threatActors: 'Threat actors',
     title: 'Title',
     unknown: 'Unknown',
@@ -226,6 +229,15 @@ export const pluginRiScMessages = {
       title: 'Valuations removed',
       oldValue: 'Existing valuations removed',
     },
+    migration53: {
+      changeExplanation:
+        'This migration adds a field that specifies which Backstage entity (system or component) a RiSc belongs to. The field is automatically set to the entity from which the migration is executed.',
+      initializedTo:
+        'In this case, this means that the RiSc will belong to the {{kind}} named "{{name}}" {{title}}. This corresponds to the entity reference "{{entityRef}}".',
+      title: 'Added link between RiSc and Backstage entity',
+      warning:
+        '⚠️WARNING: Multiple entities are defined in this repository. Want to associate this RiSc with a different entity? Select an entity below to navigate to its RiSc, then approve the migration.',
+    },
     removed: 'Removed',
   },
   comparisonDialog: {
@@ -236,6 +248,13 @@ export const pluginRiScMessages = {
     risk: {
       probabilityUnit: 'occurrences/year',
       consequenceUnit: 'NOK/incident',
+    },
+    metadata: {
+      backstage: {
+        entityRef:
+          'The reference to the backstage entity associated with this RiSc has been changed',
+        changes: 'Changes to backstage configuration',
+      },
     },
     valuation: {
       integrity: {
@@ -736,6 +755,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.measure': 'Tiltak',
           'dictionary.measures': 'Tiltak',
           'dictionary.measureOwner': 'Tiltakseier',
+          'dictionary.metadataUnencrypted': 'Ukryptert metadata',
           'dictionary.next': 'Neste',
           'dictionary.planned': 'Planlagt',
           'dictionary.previous': 'Forrige',
@@ -754,6 +774,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.scenario': 'Scenario',
           'dictionary.scope': 'Omfang',
           'dictionary.status': 'Status',
+          'dictionary.theComponent': 'komponentet',
+          'dictionary.theSystem': 'systemet',
           'dictionary.threatActors': 'Trusselaktører',
           'dictionary.title': 'Tittel',
           'dictionary.unknown': 'Ukjent',
@@ -907,6 +929,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration52.title': 'Verdivurderinger fjernet',
           'migrationDialog.migration52.oldValue':
             'Fjernet eksisterende verdivurderinger',
+          'migrationDialog.migration53.title':
+            'Lagt til kobling mellom RoS og Backstage-entitet',
+          'migrationDialog.migration53.changeExplanation':
+            'Denne migrasjonen legger til et felt som angir hvilken Backstage-entitet (system eller komponent) en RoS tilhører. Feltet settes automatisk til den entiteten migreringen utføres fra.',
+          'migrationDialog.migration53.initializedTo':
+            'I dette tilfellet betyr det at denne RoS-en vil tilhøre {{kind}} med navn "{{name}}" {{title}}. Dette tilsvarer entitetsreferansen "{{entityRef}}".',
+          'migrationDialog.migration53.warning':
+            '⚠️ ADVARSEL: Det er definert flere entiteter i dette repositoriet. Vil du knytte denne RiSc-en til en annen entitet? Velg en entitet nedenfor for å gå til RoSen, og godkjenn deretter migreringen.',
           'migrationDialog.removed': 'Fjernet',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
@@ -914,6 +944,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'comparisonDialog.noURL': 'Ingen URL spesifisert',
           'comparisonDialog.risk.consequenceUnit': 'NOK/hendelse',
           'comparisonDialog.risk.probabilityUnit': 'hendelser/år',
+          'comparisonDialog.metadata.backstage.changes':
+            'Endringer av backstage konfigurasjonen',
+          'comparisonDialog.metadata.backstage.entityRef':
+            'Referansen til entiteten denne RoSen tilhører er endret',
           'comparisonDialog.valuation.integrity.Insignificant': 'Insignifikant',
           'comparisonDialog.valuation.integrity.Expected': 'Forventet',
           'comparisonDialog.valuation.integrity.Dependent': 'Avhengig',

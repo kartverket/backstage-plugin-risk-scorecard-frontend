@@ -7,6 +7,7 @@ import { dtoToScenario } from '../../../utils/DTOs.ts';
 import { ChangeSetSimpleBox } from './components/ChangeSetSimpleBox.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
+import { RiScBackstageMetadataChangeSet } from './RiScBackstageMetadataChangeSet.tsx';
 
 type RiScChangeSetProps = {
   changeset: DifferenceFetchState;
@@ -21,7 +22,8 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
     changes.scenarios.length > 0 ||
     changes.valuations.length > 0 ||
     changes.title ||
-    changes.scope;
+    changes.scope ||
+    changes.metadataUnencrypted;
 
   const hasAnyChanges = changes.migrationChanges.migrationChanges || hasChanges;
 
@@ -63,6 +65,11 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
               )}
             </>
           ))}
+          <RiScBackstageMetadataChangeSet
+            backstageMetadataChange={
+              changes?.metadataUnencrypted?.backstage ?? undefined
+            }
+          />
         </>
       )}
     </div>
