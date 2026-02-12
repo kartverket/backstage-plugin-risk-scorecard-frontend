@@ -82,7 +82,8 @@
     "tar": "7.5.7",
     "@isaacs/brace-expansion": "5.0.1",
     "@backstage/plugin-techdocs-node": "1.14.1",
-    "fast-xml-parser": "5.3.4"
+    "fast-xml-parser": "5.3.4",
+    "axios": "^1.13.5"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
