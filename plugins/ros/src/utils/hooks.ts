@@ -340,7 +340,7 @@ export function useAuthenticatedFetch() {
   function fetchDefaultRiScTypeDescriptors(
     onSuccess: (response: DefaultRiScTypeDescriptor[]) => void,
   ) {
-    googleAuthenticatedFetch<DefaultRiScTypeDescriptor[], void>(
+    fullyAuthenticatedFetch<DefaultRiScTypeDescriptor[], void>(
       uriToFetchDefaultRiScDescriptors,
       'GET',
       res => onSuccess(res),
