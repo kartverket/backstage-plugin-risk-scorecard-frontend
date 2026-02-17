@@ -58,6 +58,8 @@ export function RiScPlugin() {
     response,
     updateStatus,
     riScs,
+    failedToFetchGcpCryptoKeys,
+    allRiScsFailedDecryption,
   } = useRiScs();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -91,7 +93,8 @@ export function RiScPlugin() {
           {!isFetching &&
             riScs !== null &&
             riScs.length === 0 &&
-            !selectedRiSc && (
+            !selectedRiSc &&
+            !allRiScsFailedDecryption && (
               <Flex
                 justify="center"
                 align="center"
@@ -100,15 +103,16 @@ export function RiScPlugin() {
                 <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
               </Flex>
             )}
-          {!isFetching && riScs === null && (
-            <Flex
-              align="center"
-              justify="center"
-              className={riscStyles.componentLayout}
-            >
-              <ErrorState />
-            </Flex>
-          )}
+          {!isFetching &&
+            (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
+              <Flex
+                align="center"
+                justify="center"
+                className={riscStyles.componentLayout}
+              >
+                <ErrorState />
+              </Flex>
+            )}
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>
