@@ -23,6 +23,7 @@ import styles from '../common/alertBar.module.css';
 import { RiScDescriptionCard } from '../riScInfo/RiScDescriptionCard.tsx';
 import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
 import { ErrorState } from '../riScInfo/ErrorState.tsx';
+import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -149,6 +150,9 @@ export function RiScPlugin() {
                         />
                         <RiScRelationComponent />
                         <RiskMatrix riScWithMetadata={selectedRiSc} />
+                        <ThreatActorsAndVulnerabilitiesCard
+                          scenarios={selectedRiSc.content.scenarios}
+                        />
                       </Flex>
                     </Grid>
                   </Grid>

@@ -1,0 +1,9 @@
+.boxStyle {
+    background-color: #fcebcd;
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+
+[data-theme-mode='dark'] .boxStyle {
+    background-color: var(--bui-gray-5);
+}
