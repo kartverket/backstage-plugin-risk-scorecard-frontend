@@ -28,6 +28,16 @@ Resolve `{owner}` and `{repo}` from the git remote:
 gh repo view --json nameWithOwner -q '.nameWithOwner'
 ```
 
+## Pre-fix steps
+
+Before fixing any alerts, run:
+
+```bash
+yarn backstage:upgrade
+```
+
+This upgrades all `@backstage/*` packages to their latest compatible versions, which may resolve Dependabot alerts for Backstage dependencies before any manual fixes are needed.
+
 ## Triage and prioritisation
 
 Work through alerts in this order:
