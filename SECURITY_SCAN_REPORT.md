@@ -15,15 +15,18 @@ The repository currently has **no moderate or higher severity vulnerabilities** 
 ## Scan Methods Attempted
 
 ### 1. GitHub API Access (Dependabot & CodeQL Alerts)
+
 **Status:** ❌ Blocked
 
 Attempted to fetch open security alerts via GitHub CLI:
+
 - Dependabot alerts: `gh api repos/kartverket/backstage-plugin-risk-scorecard-frontend/dependabot/alerts`
 - CodeQL alerts: `gh api repos/kartverket/backstage-plugin-risk-scorecard-frontend/code-scanning/alerts`
 
 **Error:** Network access to GitHub API and external domains was restricted.
 
 ### 2. Backstage Package Upgrade
+
 **Status:** ❌ Blocked
 
 Attempted to run `yarn backstage:upgrade` as per agent instructions to upgrade all `@backstage/*` packages to latest compatible versions.
@@ -31,6 +34,7 @@ Attempted to run `yarn backstage:upgrade` as per agent instructions to upgrade a
 **Error:** Unable to access `https://versions.backstage.io/v1/releases/1.48.0/yarn-plugin` due to network restrictions.
 
 ### 3. Yarn Audit
+
 **Status:** ❌ Blocked
 
 Attempted to run `yarn npm audit` to check for known vulnerabilities.
@@ -38,6 +42,7 @@ Attempted to run `yarn npm audit` to check for known vulnerabilities.
 **Error:** Unable to access npm registry audit endpoint (`https://registry.yarnpkg.com/-/npm/v1/security/advisories/bulk`).
 
 ### 4. Local Audit Tool (audit-ci)
+
 **Status:** ✅ SUCCESS
 
 Successfully ran local audit using `audit-ci`:
@@ -47,6 +52,7 @@ npx audit-ci --moderate --report
 ```
 
 **Result:**
+
 ```
 Yarn Berry audit report results:
 Passed yarn security audit.
@@ -82,6 +88,7 @@ These resolutions indicate that previous security issues have been proactively a
 ## Limitations
 
 Due to network restrictions in the CI environment:
+
 1. Cannot access GitHub Security API to fetch real-time Dependabot or CodeQL alerts
 2. Cannot run `yarn backstage:upgrade` to automatically update Backstage packages
 3. Cannot access npm registry audit endpoints for comprehensive vulnerability scanning
@@ -110,11 +117,13 @@ In addition to dependency scanning, a manual code review was performed for commo
 ### Findings
 
 #### 1. Use of `dangerouslySetInnerHTML` (Low Risk)
+
 **Location:** `plugins/ros/src/components/riskMatrix/CurrentRisk.tsx:128`
 
 **Context:** Used to render translated text containing HTML formatting (`<strong>` tags).
 
-**Analysis:** 
+**Analysis:**
+
 - The HTML content comes from static translation strings
 - Interpolated values (`actionsOk`, `reduction`) are numbers/formatted numbers, not user input
 - Risk is minimal as translations are hardcoded in the application
@@ -122,11 +131,13 @@ In addition to dependency scanning, a manual code review was performed for commo
 **Recommendation:** ✅ Safe in current context. If translations become externalized or user-configurable in the future, consider using a markdown renderer or sanitization library.
 
 #### 2. Use of `Math.random()` (No Risk)
+
 **Location:** `plugins/ros/src/utils/utilityfunctions.ts:24-25`
 
 **Context:** Used in `generateRandomId()` to generate IDs for UI components (scenarios and actions).
 
 **Analysis:**
+
 - Not used for security-sensitive operations
 - No cryptographic or authentication purposes
 - Just generates temporary IDs for UI component keys
@@ -136,17 +147,18 @@ In addition to dependency scanning, a manual code review was performed for commo
 ## Conclusion
 
 Based on the available scanning methods, the repository is in **good security standing** with:
+
 - ✅ No detectable dependency vulnerabilities at moderate or higher severity levels
 - ✅ Existing security resolutions demonstrate proactive security management
 - ✅ Code-level review found no high-risk security issues
 
 ### Security Summary
 
-| Finding | Severity | Status | Action Required |
-|---------|----------|--------|-----------------|
-| Dependency vulnerabilities | None found | ✅ Pass | None |
-| dangerouslySetInnerHTML usage | Low | ✅ Acceptable | None (monitor if translations become dynamic) |
-| Math.random() usage | None | ✅ Safe | None (appropriate for use case) |
+| Finding                       | Severity   | Status        | Action Required                               |
+| ----------------------------- | ---------- | ------------- | --------------------------------------------- |
+| Dependency vulnerabilities    | None found | ✅ Pass       | None                                          |
+| dangerouslySetInnerHTML usage | Low        | ✅ Acceptable | None (monitor if translations become dynamic) |
+| Math.random() usage           | None       | ✅ Safe       | None (appropriate for use case)               |
 
 If actual GitHub Security alerts exist that require fixing, please run this agent in an environment with GitHub API access, or manually provide the alert details.
 
