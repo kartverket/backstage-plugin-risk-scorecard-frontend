@@ -39,11 +39,22 @@ Work through alerts in this order:
 
 Within each severity, fix Dependabot alerts before CodeQL alerts.
 
+## Project conventions
+
+This project uses **Yarn** as the package manager and follows **Conventional Commits** for all commit messages. See [`build-tools/README.md`](../../build-tools/README.md) for full details.
+
+**Commit message format:**
+
+- `fix: <description>` – bug/security fix (triggers PATCH version bump)
+- `fix!: <description>` or footer `BREAKING CHANGE: <description>` – breaking fix (triggers MAJOR version bump)
+
+Always write commit messages in this format. Do not use free-form commit messages.
+
 ## Fixing Dependabot alerts
 
 1. Identify the vulnerable package, ecosystem, and the minimum safe version from the alert data.
 2. Update the version constraint in the relevant manifest file (`package.json`, `yarn.lock`, `pom.xml`, `requirements.txt`, `go.mod`, etc.) to the patched version or the lowest non-vulnerable version.
-3. For JavaScript/TypeScript projects, prefer updating `package.json` then regenerating the lockfile with the project's package manager (`yarn`, `npm`, or `pnpm`).
+3. For JavaScript/TypeScript projects, update `package.json` then regenerate the lockfile with **Yarn** (`yarn`).
 4. After updating, confirm the alert would be resolved by checking that the installed version satisfies the patched version requirement.
 5. Never downgrade a dependency or introduce a breaking major-version bump without flagging it explicitly.
 
@@ -64,7 +75,7 @@ Within each severity, fix Dependabot alerts before CodeQL alerts.
 After all fixes are applied:
 
 1. Create a new branch named `security-fix/<short-description>` (e.g. `security-fix/dependabot-lodash-cve-2021-23337`). If fixing multiple alerts use `security-fix/mixed-alerts-<date>`.
-2. Commit the changes with a descriptive message that lists the CVEs or rule IDs addressed.
+2. Commit the changes using Conventional Commits format, e.g. `fix(security): resolve CVE-YYYY-XXXXX in <package>`. Use `fix!:` if the fix introduces a breaking change.
 3. Open a pull request using `gh pr create` with:
    - **Title:** `fix(security): resolve <N> security alert(s) – <highest severity>`
    - **Body:** the summary table (see below) plus a "Closes" reference for each Dependabot alert number (GitHub automatically links `Closes #<alert>` for Dependabot).
