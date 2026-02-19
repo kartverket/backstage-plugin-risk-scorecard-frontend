@@ -26,6 +26,7 @@ import {
   dtoToRiSc,
   GcpCryptoKeyObject,
   ProcessRiScResultDTO,
+  RiScContentResultDTO,
   RiScDTO,
 } from '../utils/DTOs';
 import {
@@ -135,6 +136,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   const [localState, dispatch] = useReducer(reducer, initialLocalState);
 
   const [gcpCryptoKeys, setGcpCryptoKeys] = useState<GcpCryptoKeyObject[]>([]);
+
   const [allRiScsFailedDecryption, setAllRiScsFailedDecryption] =
     useState(false);
 
@@ -231,7 +233,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         const fetchedRiScs: RiScWithMetadata[] = successfulRiScs.map(
           riScDTO => {
             const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
-
             const content = dtoToRiSc(json);
             return {
               id: riScDTO.riScId,
@@ -252,16 +253,90 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           setIsFetching(isFetchingRef.current);
         }
 
-        const errorRiScs: string[] = failedRiScs.map(risk => risk.riScId);
+        const errorRiScs: RiScContentResultDTO[] = res.filter(
+          risk => risk.status !== ContentStatus.Success,
+        );
 
         if (errorRiScs.length > 0) {
-          const errorRiScIds = errorRiScs.join(', ');
+          const errorsByStatus = errorRiScs.reduce(
+            (acc, risk) => {
+              if (!acc[risk.status]) {
+                acc[risk.status] = [];
+              }
+              acc[risk.status].push(risk.riScId);
+              return acc;
+            },
+            {} as Record<ContentStatus, string[]>,
+          );
+
+          const errorMessages = Object.entries(errorsByStatus)
+            .map(([status, riScIds]) => {
+              // Fallback to Failure for unknown status values
+              const validStatuses = Object.values(ContentStatus);
+              const statusKey = validStatuses.includes(status as ContentStatus)
+                ? status
+                : ContentStatus.Failure;
+
+              if (statusKey === ContentStatus.DecryptionFailed) {
+                const decryptionRisks = errorRiScs.filter(
+                  risk =>
+                    risk.status === ContentStatus.DecryptionFailed &&
+                    riScIds.includes(risk.riScId),
+                );
+
+                const withErrorCode = decryptionRisks.filter(
+                  risk => risk.errorCode,
+                );
+                const withoutErrorCode = decryptionRisks.filter(
+                  risk => !risk.errorCode,
+                );
+
+                const messages: string[] = [];
+
+                if (withErrorCode.length > 0) {
+                  const decryptionErrorsByMessage = withErrorCode.reduce(
+                    (acc, risk) => {
+                      const message = risk.errorCode!;
+                      if (!acc[message]) acc[message] = [];
+                      acc[message].push(risk.riScId);
+                      return acc;
+                    },
+                    {} as Record<string, string[]>,
+                  );
+
+                  Object.entries(decryptionErrorsByMessage).forEach(
+                    ([message, ids]) => {
+                      const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${message}`;
+                      messages.push(
+                        t(errorKey as any, { riScId: ids.join(', '), status }),
+                      );
+                    },
+                  );
+                }
+                if (withoutErrorCode.length > 0) {
+                  const errorKey = `errorMessages.ContentStatus${statusKey}`;
+                  messages.push(
+                    t(errorKey as any, {
+                      riScId: withoutErrorCode.map(r => r.riScId).join(', '),
+                      status,
+                    }),
+                  );
+                }
+                return messages.join('\n');
+              }
+
+              const errorKey = `errorMessages.ContentStatus${statusKey}`;
+              return t(errorKey as any, {
+                riScId: (riScIds as string[]).join(', '),
+                status,
+              });
+            })
+            .join('\n');
+
           dispatch({
             type: 'SET_RESPONSE',
             response: {
-              statusMessage: t('errorMessages.ErrorWhenFetchingRiScs').concat(
-                errorRiScIds,
-              ),
+              statusMessage: errorMessages,
               status: ProcessingStatus.ErrorWhenFetchingRiScs,
             },
           });
@@ -288,15 +363,13 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           return;
         }
       },
-      loginRejected => {
+      (_, loginRejected) => {
         dispatch({
           type: 'SET_RESPONSE',
           response: {
             status: ProcessingStatus.ErrorWhenFetchingRiScs,
             statusMessage: loginRejected
-              ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t(
-                  'dictionary.rejectedLogin',
-                )}`
+              ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t('dictionary.rejectedLogin')}`
               : t('errorMessages.ErrorWhenFetchingRiScs'),
           },
         });
@@ -593,7 +666,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           prev ? (fetchedRiScs.find(r => r.id === prev.id) ?? prev) : prev,
         );
       },
-      loginRejected => {
+      (_, loginRejected) => {
         dispatch({
           type: 'SET_RESPONSE',
           response: {
