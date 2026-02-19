@@ -620,6 +620,34 @@ export const pluginRiScMessages = {
     FailedToCreateSops: 'Failed to create SOPS configuration',
     FailedToUpdateSops: 'SOPS configuration could not be updated',
     ErrorWhenFetchingGcpCryptoKeys: 'Failed to fetch GCP crypto keys',
+    ContentStatusDeleted: 'Risk scorecard "{{riScId}}" has been deleted',
+    ContentStatusFailure: 'Failed to load risk scorecard "{{riScId}}"',
+    ContentStatusFileNotFound:
+      'Risk scorecard "{{riScId}}" was not found in the repository',
+    ContentStatusDecryptionFailed:
+      'Failed to decrypt risk scorecard "{{riScId}}".',
+    ContentStatusNoReadAccess:
+      'You do not have read access to risk scorecard "{{riScId}}"',
+    ContentStatusUnsupportedMigration:
+      'Risk scorecard "{{riScId}}" cannot be automatically migrated to the latest version.',
+    ContentStatusUnknown:
+      'Failed to fetch risk scorecard "{{riScId}}" with unknown status: {{status}}',
+    ContentStatusDecryptionFailedMessage: {
+      INTERNAL_SERVER_ERROR:
+        'Failed to decrypt risk scorecard "{{riScId}}", 500 - Internal server error from the crypto service.',
+      MISSING_DATA_KEY:
+        'Failed to decrypt risk scorecard "{{riScId}}", unable to access encryption key required for decryption.',
+      NO_MATCHING_KEY:
+        'Failed to decrypt risk scorecard "{{riScId}}", no available key could encrypt the file.',
+      AUTHENTICATION_FAILED:
+        'Failed to decrypt risk scorecard "{{riScId}}", Authentication failed, please check your credentials and permissions.',
+      INVALID_GCP_TOKEN:
+        'Failed to decrypt risk scorecard "{{riScId}}", your Google Cloud token is invalid or expired.',
+      INVALID_AGE_KEY:
+        'Failed to decrypt risk scorecard "{{riScId}}", the provided Age key is invalid.',
+      CONNECTION_REFUSED:
+        'Failed to decrypt risk scorecard "{{riScId}}", unable to connect to the encryption service.',
+    },
   },
   infoMessages: {
     OpenedPullRequest: 'Successfully opened pull request',
@@ -1271,6 +1299,36 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'SOPS-konfigurasjon kunne ikke oppdateres',
           'errorMessages.ErrorWhenFetchingGcpCryptoKeys':
             'Kunne ikke hente GCP-krypteringsnøkler',
+          'errorMessages.ContentStatusDeleted':
+            'Risiko- og sårbarhetsanalyse "{{riScId}}" har blitt slettet',
+          'errorMessages.ContentStatusFailure':
+            'Kunne ikke laste risiko- og sårbarhetsanalyse "{{riScId}}" grunnet en uventet feil',
+          'errorMessages.ContentStatusFileNotFound':
+            'Risiko- og sårbarhetsanalyse "{{riScId}}" ble ikke funnet i repositoryet',
+          'errorMessages.ContentStatusDecryptionFailed':
+            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}". Du har muligens ikke de nødvendige dekrypteringsnøklene',
+          'errorMessages.ContentStatusNoReadAccess':
+            'Du har ikke lesetilgang til risiko- og sårbarhetsanalyse "{{riScId}}". ',
+          'errorMessages.ContentStatusUnsupportedMigration':
+            'Risiko- og sårbarhetsanalyse "{{riScId}}" kan ikke automatisk migreres til den nyeste versjonen.',
+
+          'errorMessages.ContentStatusDecryptionFailedMessage.INTERNAL_SERVER_ERROR':
+            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", 500 - Intern serverfeil fra kryptotjenesten.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.MISSING_DATA_KEY':
+            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", kunne ikke få tilgang til krypteringsnøkkelen som kreves for dekryptering.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.NO_MATCHING_KEY':
+            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", ingen tilgjengelig nøkkel kunne dekryptere innholdet.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.AUTHENTICATION_FAILED':
+            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", autentisering mislyktes. Vennligst kontroller tilgangene dine.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.INVALID_GCP_TOKEN':
+            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", Google Cloud-tokenet ditt er ugyldig eller utløpt.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.INVALID_AGE_KEY':
+            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", den oppgitte AGE-nøkkelen er ugyldig.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.CONNECTION_REFUSED':
+            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", kunne ikke koble til krypteringstjenesten.',
+
+          'errorMessages.ContentStatusUnknown':
+            'Kunne ikke hente risiko- og sårbarhetsanalyse "{{riScId}}" med ukjent status: {{status}}',
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',

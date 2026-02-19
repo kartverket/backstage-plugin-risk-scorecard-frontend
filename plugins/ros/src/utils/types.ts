@@ -248,6 +248,7 @@ export enum ContentStatus {
   FileNotFound = 'FileNotFound',
   DecryptionFailed = 'DecryptionFailed',
   NoReadAccess = 'NoReadAccess',
+  UnsupportedMigration = 'UnsupportedMigration',
 }
 
 export enum DifferenceStatus {
