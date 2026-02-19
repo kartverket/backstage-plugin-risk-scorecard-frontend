@@ -222,9 +222,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         const successfulRiScs = res.filter(
           risk => risk.status === ContentStatus.Success,
         );
-        const failedRiScs = res.filter(
-          risk => risk.status !== ContentStatus.Success,
-        );
 
         // Check if all RiScs failed decryption (there are RiScs but all failed)
         const allFailed = res.length > 0 && successfulRiScs.length === 0;
