@@ -5,7 +5,12 @@ import { CoverageTable } from './CoverageTable.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { CoverageRatio } from './CoverageRatio.tsx';
-import { CoverageType } from '../../utils/threatActorsAndVulnerabilities.ts';
+import {
+  CoverageType,
+  countScenarioCoverage,
+  countScenarioCoverageSummary,
+  getNotCovered,
+} from '../../utils/threatActorsAndVulnerabilities.ts';
 import { Scenario } from '../../utils/types.ts';
 import { CoverageStatusBox } from './CoverageStatusBox.tsx';
 
@@ -18,6 +23,13 @@ export function ThreatActorsAndVulnerabilitiesCard(
 ) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const coverage = countScenarioCoverage(props.scenarios);
+  const summary = countScenarioCoverageSummary(props.scenarios);
+
+  const notCoveredThreatActors = getNotCovered(coverage.threatActors);
+  const notCoveredVulnerabilities = getNotCovered(coverage.vulnerabilities);
+
   return (
     <Card>
       <CardHeader>
@@ -28,46 +40,49 @@ export function ThreatActorsAndVulnerabilitiesCard(
       <CardBody>
         <Flex direction="column">
           <CoverageStatusBox
-            notCovered={[]}
+            notCovered={notCoveredThreatActors}
             coverageType={CoverageType.ThreatActor}
           />
           <CoverageStatusBox
-            notCovered={['Misconfiguration']}
+            notCovered={notCoveredVulnerabilities}
             coverageType={CoverageType.Vulnerability}
           />
-          <CoverageStatusBox
-            notCovered={['Script kiddie', 'Insider']}
-            coverageType={CoverageType.ThreatActor}
-          />
-          <CoverageStatusBox
-            notCovered={[
-              'Excessive use',
-              'Information leak',
-              'Misconfiguration',
-            ]}
-            coverageType={CoverageType.Vulnerability}
-          />
-          <CoverageRatio ratio={'11 av 11'} coverageText="Sårbarheter dekket" />
           <CoverageRatio
-            ratio={'17 av 20'}
-            coverageText="Trusselaktører dekket"
+            covered={summary.vulnerabilities.covered}
+            total={summary.vulnerabilities.total}
+            coverageType={CoverageType.Vulnerability}
+          />
+          <CoverageRatio
+            covered={summary.threatActors.covered}
+            total={summary.threatActors.total}
+            coverageType={CoverageType.ThreatActor}
           />
           <Button
             style={{ width: 'fit-content' }}
             onClick={() => setIsDialogOpen(true)}
           >
-            Vis mer informasjon
+            {t('threatActorsAndVulnerabilities.showMoreInfo')}
           </Button>
           <DialogComponent
-            header={'Scenarier som dekker sårbarheter og trusselaktører'}
+            header={t('threatActorsAndVulnerabilities.dialogHeader')}
             isOpen={isDialogOpen}
             onClick={() => setIsDialogOpen(false)}
           >
             <Flex direction="column">
-              <Text variant="title-x-small">Dekning av sårbarheter</Text>
-              <CoverageTable coverageType={CoverageType.Vulnerability} />
-              <Text variant="title-x-small">Dekning av trusselaktører</Text>
-              <CoverageTable coverageType={CoverageType.ThreatActor} />
+              <Text variant="title-x-small">
+                {t('threatActorsAndVulnerabilities.vulnerabilityCoverage')}
+              </Text>
+              <CoverageTable
+                coverageType={CoverageType.Vulnerability}
+                coverageMap={coverage.vulnerabilities}
+              />
+              <Text variant="title-x-small">
+                {t('threatActorsAndVulnerabilities.threatActorCoverage')}
+              </Text>
+              <CoverageTable
+                coverageType={CoverageType.ThreatActor}
+                coverageMap={coverage.threatActors}
+              />
             </Flex>
           </DialogComponent>
         </Flex>

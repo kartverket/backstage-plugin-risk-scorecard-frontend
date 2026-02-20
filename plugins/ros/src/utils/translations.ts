@@ -611,6 +611,14 @@ export const pluginRiScMessages = {
       '{{kind}} <b>{{notCovered1}}</b> and <b>{{notCovered2}}</b> is not covered in any scenario.',
     multipleNotCovered:
       'Multiple {{kind}} are not covered. This includes <b>{{notCovered1}}</b>, <b>{{notCovered2}}</b> and <b>{{notCovered3}}</b>.',
+    showMoreInfo: 'Show more information',
+    dialogHeader: 'Scenarios covering vulnerabilities and threat actors',
+    vulnerabilityCoverage: 'Vulnerabilities covered',
+    threatActorCoverage: 'Threat actors covered',
+    coverageRatio: '{{covered}} of {{total}}',
+    tableColumnThreatActor: 'Threat actor',
+    tableColumnVulnerability: 'Vulnerability',
+    tableColumnScenarios: 'Number of scenarios',
   },
   actionStatus: {
     OK: 'OK',
@@ -1264,6 +1272,18 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             '{{kind}} <b>{{notCovered1}}</b> og <b>{{notCovered2}}</b> er ikke dekket i noen scenarioer.',
           'threatActorsAndVulnerabilities.multipleNotCovered':
             'Flere {{kind}} er ikke dekket. Dette inkluderer <b>{{notCovered1}}</b>, <b>{{notCovered2}}</b> og <b>{{notCovered3}}</b>',
+          'threatActorsAndVulnerabilities.showMoreInfo': 'Vis mer informasjon',
+          'threatActorsAndVulnerabilities.dialogHeader':
+            'Scenarier som dekker sårbarheter og trusselaktører',
+          'threatActorsAndVulnerabilities.vulnerabilityCoverage':
+            'Sårbarheter dekket',
+          'threatActorsAndVulnerabilities.threatActorCoverage':
+            'Trusselaktører dekket',
+          'threatActorsAndVulnerabilities.coverageRatio': '{{covered}} av {{total}}',
+          'threatActorsAndVulnerabilities.tableColumnThreatActor': 'Trusselaktør',
+          'threatActorsAndVulnerabilities.tableColumnVulnerability': 'Sårbarhet',
+          'threatActorsAndVulnerabilities.tableColumnScenarios':
+            'Antall scenarioer',
           'actionStatus.Not started': 'Ikke startet',
           'actionStatus.In progress': 'Startet',
           'actionStatus.On hold': 'På vent',

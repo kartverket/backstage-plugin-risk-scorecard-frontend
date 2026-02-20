@@ -48,6 +48,14 @@ export function countScenarioCoverage(scenarios: Scenario[]) {
   return coverageMap;
 }
 
+export function getNotCovered(
+  coverageMap: Map<string, number>,
+): string[] {
+  return Array.from(coverageMap.entries())
+    .filter(([, count]) => count === 0)
+    .map(([key]) => key);
+}
+
 type ScenarioCoverage = {
   covered: number;
   total: number;
