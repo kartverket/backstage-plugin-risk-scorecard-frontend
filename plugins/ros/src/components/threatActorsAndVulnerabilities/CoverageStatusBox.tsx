@@ -10,9 +10,16 @@ type CoverageStatusBoxProps = {
   coverageType: CoverageType;
 };
 export function CoverageStatusBox(props: CoverageStatusBoxProps) {
+  const iconType =
+    props.notCovered.length === 0
+      ? StatusIconTypes.Green
+      : props.notCovered.length <= 2
+        ? StatusIconTypes.Yellow
+        : StatusIconTypes.Red;
+
   return (
     <div className={styles.boxStyle}>
-      <StatusIcon type={StatusIconTypes.Green} />
+      <StatusIcon type={iconType} size="small" />
       <Text
         dangerouslySetInnerHTML={{
           __html: useCoverageStatusText(props.notCovered, props.coverageType),

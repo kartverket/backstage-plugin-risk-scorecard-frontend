@@ -1,4 +1,7 @@
 .boxStyle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     background-color: #fcebcd;
     padding: 8px 16px;
     border-radius: 4px;
