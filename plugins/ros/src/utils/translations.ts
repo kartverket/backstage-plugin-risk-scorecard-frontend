@@ -619,7 +619,8 @@ export const pluginRiScMessages = {
     ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration',
     FailedToCreateSops: 'Failed to create SOPS configuration',
     FailedToUpdateSops: 'SOPS configuration could not be updated',
-    ErrorWhenFetchingGcpCryptoKeys: 'Failed to fetch GCP crypto keys',
+    ErrorWhenFetchingGcpCryptoKeys:
+      'Could not load risk scorecards — the encryption service is unavailable. Try refreshing the page.',
   },
   infoMessages: {
     OpenedPullRequest: 'Successfully opened pull request',
@@ -1270,7 +1271,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'errorMessages.FailedToUpdateSops':
             'SOPS-konfigurasjon kunne ikke oppdateres',
           'errorMessages.ErrorWhenFetchingGcpCryptoKeys':
-            'Kunne ikke hente GCP-krypteringsnøkler',
+            'Kunne ikke laste inn risiko- og sårbarhetsanalysene — krypteringstjenesten er ikke tilgjengelig. Prøv å oppdatere siden.',
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',

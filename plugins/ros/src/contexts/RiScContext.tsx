@@ -99,6 +99,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   const isFetchingRiScsRef = useRef(isFetchingRiScs);
   const [isFetchingGcpCryptoKeys, setIsFetchingGcpCryptoKeys] = useState(true);
   const isFetchingGcpCryptoKeysRef = useRef(isFetchingGcpCryptoKeys);
+  const gcpCryptoKeysFailed = useRef(false);
+  const [failedToFetchGcpCryptoKeys, setFailedToFetchGcpCryptoKeys] =
+    useState(false);
 
   type LocalState = {
     updateStatus: UpdateStatus;
@@ -191,6 +194,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         }
       },
       (_error, loginRejected) => {
+        gcpCryptoKeysFailed.current = true;
+        setFailedToFetchGcpCryptoKeys(true);
         dispatch({
           type: 'SET_RESPONSE',
           response: {
@@ -289,17 +294,19 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         }
       },
       loginRejected => {
-        dispatch({
-          type: 'SET_RESPONSE',
-          response: {
-            status: ProcessingStatus.ErrorWhenFetchingRiScs,
-            statusMessage: loginRejected
-              ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t(
-                  'dictionary.rejectedLogin',
-                )}`
-              : t('errorMessages.ErrorWhenFetchingRiScs'),
-          },
-        });
+        if (!gcpCryptoKeysFailed.current) {
+          dispatch({
+            type: 'SET_RESPONSE',
+            response: {
+              status: ProcessingStatus.ErrorWhenFetchingRiScs,
+              statusMessage: loginRejected
+                ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t(
+                    'dictionary.rejectedLogin',
+                  )}`
+                : t('errorMessages.ErrorWhenFetchingRiScs'),
+            },
+          });
+        }
         isFetchingRiScsRef.current = false;
         setIsFetchingRiScs(isFetchingRiScsRef.current);
         if (!isFetchingGcpCryptoKeysRef.current) {
@@ -701,7 +708,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       value={{
         ...value,
         isFetchingGcpCryptoKeys: false,
-        failedToFetchGcpCryptoKeys: false,
+        failedToFetchGcpCryptoKeys,
         allRiScsFailedDecryption,
       }}
     >
