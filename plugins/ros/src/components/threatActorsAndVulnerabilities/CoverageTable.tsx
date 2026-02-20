@@ -1,9 +1,5 @@
 import { Table, useTable, CellText, type ColumnConfig } from '@backstage/ui';
-
-export enum CoverageType {
-  THREAT_ACTORS,
-  VULNERABILITIES,
-}
+import { CoverageType } from '../../utils/threatActorsAndVulnerabilities.ts';
 
 type CoverageTableRow = {
   id: string;
@@ -16,7 +12,7 @@ type CoverageTableProps = {
 };
 export function CoverageTable(props: CoverageTableProps) {
   const firstColumnLabel =
-    props.coverageType === CoverageType.THREAT_ACTORS
+    props.coverageType === CoverageType.ThreatActor
       ? 'Trusselaktør'
       : 'Sårbarhet';
 

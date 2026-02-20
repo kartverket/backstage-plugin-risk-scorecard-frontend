@@ -81,6 +81,8 @@ export const pluginRiScMessages = {
     scope: 'Scope',
     status: 'Status',
     threatActors: 'Threat actors',
+    theThreatActor: 'The threat actor',
+    theThreatActors: 'The threat actors',
     title: 'Title',
     unknown: 'Unknown',
     url: 'URL',
@@ -88,6 +90,8 @@ export const pluginRiScMessages = {
     valuation: 'Valuation',
     version: 'Version',
     vulnerabilities: 'Vulnerabilities',
+    theVulnerability: 'The vulnerability',
+    theVulnerabilities: 'The vulnerabilities',
     showOnlyRelevant: 'Show only relevant',
     noRelevantMeasures: 'No relevant actions',
     scenarios: 'scenarios',
@@ -598,6 +602,16 @@ export const pluginRiScMessages = {
     'Information leak': 'Information leak',
     'Excessive use': 'Excessive use',
   },
+  threatActorsAndVulnerabilities: {
+    title: 'Threat Actors and Vulnerabilities',
+    allCovered: 'All {{kind}} are covered in at least one scenario.',
+    oneNotCovered:
+      '{{kind}} <b>{{notCovered}}</b> is not covered in any scenario.',
+    twoNotCovered:
+      '{{kind}} <b>{{notCovered1}}</b> and <b>{{notCovered2}}</b> is not covered in any scenario.',
+    multipleNotCovered:
+      'Multiple {{kind}} are not covered. This includes <b>{{notCovered1}}</b>, <b>{{notCovered2}}</b> and <b>{{notCovered3}}</b>.',
+  },
   actionStatus: {
     OK: 'OK',
     'Not OK': 'Not OK',
@@ -755,6 +769,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.scope': 'Omfang',
           'dictionary.status': 'Status',
           'dictionary.threatActors': 'Trusselaktører',
+          'dictionary.theThreatActor': 'Trusselaktøren',
+          'dictionary.theThreatActors': 'Trusselaktørene',
           'dictionary.title': 'Tittel',
           'dictionary.unknown': 'Ukjent',
           'dictionary.url': 'URL',
@@ -762,6 +778,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.valuation': 'Verdi',
           'dictionary.version': 'Versjon',
           'dictionary.vulnerabilities': 'Sårbarheter',
+          'dictionary.theVulnerability': 'Sårbarheten',
+          'dictionary.theVulnerabilities': 'Sårbarhetene',
           'dictionary.showOnlyRelevant': 'Vis kun relevante',
           'dictionary.noRelevantMeasures': 'Ingen relevante tiltak',
           'dictionary.scenarios': 'scenarioer',
@@ -1236,6 +1254,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'vulnerabilities.Information leak': 'Informasjonslekkasje',
           'vulnerabilities.Excessive use': 'Overdreven bruk',
 
+          'threatActorsAndVulnerabilities.title':
+            'Trusselaktører og sårbarheter',
+          'threatActorsAndVulnerabilities.allCovered':
+            'Alle {{kind}} er dekket i minst ett scenario.',
+          'threatActorsAndVulnerabilities.oneNotCovered':
+            '{{kind}} <b>{{notCovered}}</b> er ikke dekket i noen scenarioer',
+          'threatActorsAndVulnerabilities.twoNotCovered':
+            '{{kind}} <b>{{notCovered1}}</b> og <b>{{notCovered2}}</b> er ikke dekket i noen scenarioer.',
+          'threatActorsAndVulnerabilities.multipleNotCovered':
+            'Flere {{kind}} er ikke dekket. Dette inkluderer <b>{{notCovered1}}</b>, <b>{{notCovered2}}</b> og <b>{{notCovered3}}</b>',
           'actionStatus.Not started': 'Ikke startet',
           'actionStatus.In progress': 'Startet',
           'actionStatus.On hold': 'På vent',

@@ -1,33 +1,52 @@
 import { Button, Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
 import { useState } from 'react';
 import DialogComponent from '../dialog/DialogComponent.tsx';
-import { CoverageTable, CoverageType } from './CoverageTable.tsx';
-import styles from './ThreatActorsAndVulnerabilitiesCard.module.css';
+import { CoverageTable } from './CoverageTable.tsx';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { CoverageRatio } from './CoverageRatio.tsx';
+import { CoverageType } from '../../utils/threatActorsAndVulnerabilities.ts';
+import { Scenario } from '../../utils/types.ts';
+import { CoverageStatusBox } from './CoverageStatusBox.tsx';
 
-/*
 type ThreatActorsAndVulnerabilitiesCardProps = {
   scenarios: Scenario[];
 };
 
- */
-export function ThreatActorsAndVulnerabilitiesCard() {
+export function ThreatActorsAndVulnerabilitiesCard(
+  props: ThreatActorsAndVulnerabilitiesCardProps,
+) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <Card>
       <CardHeader>
         <Text variant="title-small" weight="bold">
-          Trusselaktører og sårbarheter
+          {t('threatActorsAndVulnerabilities.title')}
         </Text>
       </CardHeader>
       <CardBody>
         <Flex direction="column">
-          <div className={styles.boxStyle}>
-            ✅ Alle sårbarheter er dekket i minst ett scenario
-          </div>
-          <div className={styles.boxStyle}>
-            ⚠️ 3 trusselaktører er ikke dekket. Disse inkluderer{' '}
-            <b>Hacktivist</b>, <b>terroristorganisasjon</b>, og <b>stat</b>.
-          </div>
+          <CoverageStatusBox
+            notCovered={[]}
+            coverageType={CoverageType.ThreatActor}
+          />
+          <CoverageStatusBox
+            notCovered={['Misconfiguration']}
+            coverageType={CoverageType.Vulnerability}
+          />
+          <CoverageStatusBox
+            notCovered={['Script kiddie', 'Insider']}
+            coverageType={CoverageType.ThreatActor}
+          />
+          <CoverageStatusBox
+            notCovered={[
+              'Excessive use',
+              'Information leak',
+              'Misconfiguration',
+            ]}
+            coverageType={CoverageType.Vulnerability}
+          />
           <CoverageRatio ratio={'11 av 11'} coverageText="Sårbarheter dekket" />
           <CoverageRatio
             ratio={'17 av 20'}
@@ -46,26 +65,13 @@ export function ThreatActorsAndVulnerabilitiesCard() {
           >
             <Flex direction="column">
               <Text variant="title-x-small">Dekning av sårbarheter</Text>
-              <CoverageTable coverageType={CoverageType.VULNERABILITIES} />
+              <CoverageTable coverageType={CoverageType.Vulnerability} />
               <Text variant="title-x-small">Dekning av trusselaktører</Text>
-              <CoverageTable coverageType={CoverageType.THREAT_ACTORS} />
+              <CoverageTable coverageType={CoverageType.ThreatActor} />
             </Flex>
           </DialogComponent>
         </Flex>
       </CardBody>
     </Card>
-  );
-}
-
-function CoverageRatio(props: { ratio: string; coverageText: string }) {
-  return (
-    <Flex align="center">
-      <Text variant="body-large" style={{ width: '162px' }}>
-        {props.coverageText}:
-      </Text>
-      <Text variant="title-x-small" weight="bold">
-        {props.ratio}
-      </Text>
-    </Flex>
   );
 }
