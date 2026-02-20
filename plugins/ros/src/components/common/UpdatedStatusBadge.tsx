@@ -1,9 +1,7 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Tooltip } from '@material-ui/core';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions';
-import styles from './UpdatedStatusBadge.module.css';
-import CircularProgress from '@mui/material/CircularProgress';
+import { StatusIcon, StatusIconTypes } from './StatusIcon.tsx';
 
 type UpdatedStatusBadgeProps = {
   status?: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
@@ -14,47 +12,45 @@ export function UpdatedStatusBadge(props: UpdatedStatusBadgeProps) {
 
   if (props.status === 'UPDATED') {
     return (
-      <Tooltip title={t('rosStatus.updated')}>
-        <i
-          className={`ri-checkbox-circle-fill ${styles.updatedIcon} ${styles.iconBase}`}
-          aria-label={t('rosStatus.updated')}
-        />
-      </Tooltip>
+      <StatusIcon
+        type={StatusIconTypes.Green}
+        tooltipText={t('rosStatus.updated')}
+        ariaLabel={t('rosStatus.updated')}
+        size="large"
+      />
     );
   }
 
   if (props.status === 'UPDATING') {
     return (
-      <Tooltip title={t('rosStatus.updating')}>
-        <CircularProgress size="32px" />
-      </Tooltip>
+      <StatusIcon
+        type={StatusIconTypes.Loading}
+        tooltipText={t('rosStatus.updating')}
+        size="large"
+      />
     );
   }
 
   if (props.status === 'VERY_OUTDATED') {
     return (
-      <Tooltip title={t('rosStatus.updatedStatus.tooltip.VERY_OUTDATED')}>
-        <i
-          className={`ri-error-warning-fill ${styles.veryOutdatedIcon} ${styles.iconBase}`}
-          aria-label={t('rosStatus.veryOutdated')}
-        />
-      </Tooltip>
+      <StatusIcon
+        type={StatusIconTypes.Red}
+        tooltipText={t('rosStatus.updatedStatus.tooltip.VERY_OUTDATED')}
+        ariaLabel={t('rosStatus.veryOutdated')}
+        size="large"
+      />
     );
   }
 
   if (props.status === 'OUTDATED') {
     return (
-      <Tooltip title={t('rosStatus.updatedStatus.tooltip.OUTDATED')}>
-        <i
-          className={`ri-error-warning-fill ${styles.outdatedIcon} ${styles.iconBase}`}
-          aria-label={t('rosStatus.outdated')}
-        />
-      </Tooltip>
+      <StatusIcon
+        type={StatusIconTypes.Yellow}
+        tooltipText={t('rosStatus.updatedStatus.tooltip.OUTDATED')}
+        ariaLabel={t('rosStatus.outdated')}
+        size="large"
+      />
     );
   }
-  return (
-    <i
-      className={`ri-error-warning-fill ${styles.emptyIcon} ${styles.iconBase}`}
-    />
-  );
+  return <StatusIcon type={StatusIconTypes.Error} size="large" />;
 }

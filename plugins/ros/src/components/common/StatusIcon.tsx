@@ -17,10 +17,11 @@ type StatusIconProps = {
 };
 export function StatusIcon(props: StatusIconProps) {
   const sizeToPx = {
-    small: '8px',
-    medium: '16px', //
-    xl: '32px',
+    small: '16px',
+    medium: '24px',
+    large: '32px',
   };
+  const fontSize = sizeToPx[props.size];
   let iconElement;
   switch (props.type) {
     case StatusIconTypes.Green:
@@ -28,6 +29,7 @@ export function StatusIcon(props: StatusIconProps) {
         <i
           className={`ri-checkbox-circle-fill ${styles.updatedIcon} ${styles.iconBase}`}
           aria-label={props.ariaLabel}
+          style={{ fontSize }}
         />
       );
       break;
@@ -36,6 +38,7 @@ export function StatusIcon(props: StatusIconProps) {
         <i
           className={`ri-error-warning-fill ${styles.outdatedIcon} ${styles.iconBase}`}
           aria-label={props.ariaLabel}
+          style={{ fontSize }}
         />
       );
       break;
@@ -44,20 +47,23 @@ export function StatusIcon(props: StatusIconProps) {
         <i
           className={`ri-error-warning-fill ${styles.veryOutdatedIcon} ${styles.iconBase}`}
           aria-label={props.ariaLabel}
+          style={{ fontSize }}
         />
       );
       break;
     case StatusIconTypes.Loading:
-      iconElement = <CircularProgress size="32px" />;
+      iconElement = <CircularProgress size={fontSize} />;
       break;
 
     case StatusIconTypes.Error:
       iconElement = (
         <i
           className={`ri-error-warning-fill ${styles.emptyIcon} ${styles.iconBase}`}
+          style={{ fontSize }}
         />
       );
   }
-  if (props.tooltipText) return <Tooltip title={''}>{iconElement}</Tooltip>;
+  if (props.tooltipText)
+    return <Tooltip title={props.tooltipText}>{iconElement}</Tooltip>;
   return iconElement;
 }
