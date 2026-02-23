@@ -1279,9 +1279,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Sårbarheter dekket',
           'threatActorsAndVulnerabilities.threatActorCoverage':
             'Trusselaktører dekket',
-          'threatActorsAndVulnerabilities.coverageRatio': '{{covered}} av {{total}}',
-          'threatActorsAndVulnerabilities.tableColumnThreatActor': 'Trusselaktør',
-          'threatActorsAndVulnerabilities.tableColumnVulnerability': 'Sårbarhet',
+          'threatActorsAndVulnerabilities.coverageRatio':
+            '{{covered}} av {{total}}',
+          'threatActorsAndVulnerabilities.tableColumnThreatActor':
+            'Trusselaktør',
+          'threatActorsAndVulnerabilities.tableColumnVulnerability':
+            'Sårbarhet',
           'threatActorsAndVulnerabilities.tableColumnScenarios':
             'Antall scenarioer',
           'actionStatus.Not started': 'Ikke startet',
