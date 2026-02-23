@@ -57,12 +57,11 @@ export function ThreatActorsAndVulnerabilitiesCard(
             total={summary.threatActors.total}
             coverageType={CoverageType.ThreatActor}
           />
-          <Button
-            style={{ width: 'fit-content' }}
-            onClick={() => setIsDialogOpen(true)}
-          >
-            {t('threatActorsAndVulnerabilities.showMoreInfo')}
-          </Button>
+          <div>
+            <Button onClick={() => setIsDialogOpen(true)}>
+              {t('threatActorsAndVulnerabilities.showMoreInfo')}
+            </Button>
+          </div>
           <DialogComponent
             header={t('threatActorsAndVulnerabilities.dialogHeader')}
             isOpen={isDialogOpen}
