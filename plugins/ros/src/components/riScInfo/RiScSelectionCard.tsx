@@ -10,25 +10,21 @@ export function RiScSelectionCard() {
 
   return (
     <Flex direction="column" gap="24px">
-      <Flex direction="column">
-        {riScs !== null && riScs.length !== 0 && (
-          <>
-            <Select
-              value={selectedRiSc?.id}
-              className={styles.selectTrigger}
-              aria-label={t('contentHeader.multipleRiScs')}
-              options={riScs.map(riSc => ({
-                value: riSc.id,
-                label: riSc.content.title,
-              }))}
-              onSelectionChange={key => {
-                if (key) selectRiSc(key.toString());
-              }}
-              size="medium"
-            />
-          </>
-        )}
-      </Flex>
+      {riScs !== null && riScs.length !== 0 && (
+        <Select
+          value={selectedRiSc?.id}
+          className={styles.selectTrigger}
+          aria-label={t('contentHeader.multipleRiScs')}
+          options={riScs.map(riSc => ({
+            value: riSc.id,
+            label: riSc.content.title,
+          }))}
+          onSelectionChange={key => {
+            if (key) selectRiSc(key.toString());
+          }}
+          size="medium"
+        />
+      )}
     </Flex>
   );
 }

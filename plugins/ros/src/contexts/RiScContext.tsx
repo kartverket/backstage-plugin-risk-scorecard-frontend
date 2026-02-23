@@ -64,6 +64,7 @@ type RiScDrawerProps = {
   isFetching: boolean;
   isFetchingGcpCryptoKeys: boolean;
   failedToFetchGcpCryptoKeys: boolean;
+  allRiScsFailedDecryption: boolean;
   gcpCryptoKeys: GcpCryptoKeyObject[];
   response: SubmitResponseObject | null;
 };
@@ -134,6 +135,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   const [localState, dispatch] = useReducer(reducer, initialLocalState);
 
   const [gcpCryptoKeys, setGcpCryptoKeys] = useState<GcpCryptoKeyObject[]>([]);
+  const [allRiScsFailedDecryption, setAllRiScsFailedDecryption] =
+    useState(false);
 
   // Auto-clear response after a short duration to avoid the Alert sticking around
   const responseTimerRef = useRef<number | null>(null);
@@ -214,9 +217,19 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     fetchRiScs(
       res => {
-        const fetchedRiScs: RiScWithMetadata[] = res
-          .filter(risk => risk.status === ContentStatus.Success)
-          .map(riScDTO => {
+        const successfulRiScs = res.filter(
+          risk => risk.status === ContentStatus.Success,
+        );
+        const failedRiScs = res.filter(
+          risk => risk.status !== ContentStatus.Success,
+        );
+
+        // Check if all RiScs failed decryption (there are RiScs but all failed)
+        const allFailed = res.length > 0 && successfulRiScs.length === 0;
+        setAllRiScsFailedDecryption(allFailed);
+
+        const fetchedRiScs: RiScWithMetadata[] = successfulRiScs.map(
+          riScDTO => {
             const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
 
             const content = dtoToRiSc(json);
@@ -229,7 +242,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
               migrationStatus: riScDTO.migrationStatus,
               lastPublished: riScDTO.lastPublished,
             };
-          });
+          },
+        );
         setRiScs(fetchedRiScs);
         isFetchingRiScsRef.current = false;
         setIsFetchingRiScs(isFetchingRiScsRef.current);
@@ -238,9 +252,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           setIsFetching(isFetchingRef.current);
         }
 
-        const errorRiScs: string[] = res
-          .filter(risk => risk.status !== ContentStatus.Success)
-          .map(risk => risk.riScId);
+        const errorRiScs: string[] = failedRiScs.map(risk => risk.riScId);
 
         if (errorRiScs.length > 0) {
           const errorRiScIds = errorRiScs.join(', ');
@@ -690,6 +702,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         ...value,
         isFetchingGcpCryptoKeys: false,
         failedToFetchGcpCryptoKeys: false,
+        allRiScsFailedDecryption,
       }}
     >
       {children}
