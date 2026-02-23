@@ -40,12 +40,12 @@ export function ThreatActorsAndVulnerabilitiesCard(
       <CardBody>
         <Flex direction="column">
           <CoverageStatusBox
-            notCovered={notCoveredThreatActors}
-            coverageType={CoverageType.ThreatActor}
-          />
-          <CoverageStatusBox
             notCovered={notCoveredVulnerabilities}
             coverageType={CoverageType.Vulnerability}
+          />
+          <CoverageStatusBox
+            notCovered={notCoveredThreatActors}
+            coverageType={CoverageType.ThreatActor}
           />
           <CoverageRatio
             covered={summary.vulnerabilities.covered}

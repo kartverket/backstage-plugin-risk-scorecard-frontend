@@ -19,7 +19,7 @@ export function CoverageRatio(props: CoverageRatioProps) {
 
   return (
     <Flex align="center">
-      <Text variant="body-large" style={{ width: '162px' }}>
+      <Text variant="body-large" style={{ width: '170px' }}>
         {label}:
       </Text>
       <Text variant="title-x-small" weight="bold">
