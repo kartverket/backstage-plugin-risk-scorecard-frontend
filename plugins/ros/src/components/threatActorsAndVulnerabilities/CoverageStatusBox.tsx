@@ -9,13 +9,14 @@ type CoverageStatusBoxProps = {
   notCovered: string[];
   coverageType: CoverageType;
 };
+function getIconType(count: number): StatusIconTypes {
+  if (count === 0) return StatusIconTypes.Green;
+  if (count <= 2) return StatusIconTypes.Yellow;
+  return StatusIconTypes.Red;
+}
+
 export function CoverageStatusBox(props: CoverageStatusBoxProps) {
-  const iconType =
-    props.notCovered.length === 0
-      ? StatusIconTypes.Green
-      : props.notCovered.length <= 2
-        ? StatusIconTypes.Yellow
-        : StatusIconTypes.Red;
+  const iconType = getIconType(props.notCovered.length);
 
   return (
     <div className={styles.boxStyle}>
@@ -24,7 +25,7 @@ export function CoverageStatusBox(props: CoverageStatusBoxProps) {
         dangerouslySetInnerHTML={{
           __html: useCoverageStatusText(props.notCovered, props.coverageType),
         }}
-      ></Text>
+      />
     </div>
   );
 }

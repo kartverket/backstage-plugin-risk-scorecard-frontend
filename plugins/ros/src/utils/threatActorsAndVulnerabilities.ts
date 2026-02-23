@@ -12,7 +12,7 @@ type ScenarioCoverageCounts = {
 };
 
 export function countScenarioCoverage(scenarios: Scenario[]) {
-  let coverageMap: ScenarioCoverageCounts = {
+  const coverageMap: ScenarioCoverageCounts = {
     threatActors: new Map(),
     vulnerabilities: new Map(),
   };

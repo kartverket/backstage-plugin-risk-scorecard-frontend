@@ -55,13 +55,14 @@ export function StatusIcon(props: StatusIconProps) {
       iconElement = <CircularProgress size={fontSize} />;
       break;
 
-    case StatusIconTypes.Error:
+    default:
       iconElement = (
         <i
           className={`ri-error-warning-fill ${styles.emptyIcon} ${styles.iconBase}`}
           style={{ fontSize }}
         />
       );
+      break;
   }
   if (props.tooltipText)
     return <Tooltip title={props.tooltipText}>{iconElement}</Tooltip>;
