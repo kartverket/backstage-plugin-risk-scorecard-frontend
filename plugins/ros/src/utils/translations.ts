@@ -638,7 +638,7 @@ export const pluginRiScMessages = {
       MISSING_DATA_KEY:
         'Failed to decrypt risk scorecard "{{riScId}}", unable to access encryption key required for decryption.',
       NO_MATCHING_KEY:
-        'Failed to decrypt risk scorecard "{{riScId}}", no available key could encrypt the file.',
+        'Failed to decrypt risk scorecard "{{riScId}}", no available key could decrypt the file.',
       AUTHENTICATION_FAILED:
         'Failed to decrypt risk scorecard "{{riScId}}", Authentication failed, please check your credentials and permissions.',
       INVALID_GCP_TOKEN:
