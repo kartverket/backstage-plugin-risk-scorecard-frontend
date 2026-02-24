@@ -30,6 +30,11 @@ import {
   RiScDTO,
 } from '../utils/DTOs';
 import {
+  buildFetchRiScErrorMessages,
+  mapRiScDtoToRiScWithMetadata,
+  withLoginRejected,
+} from '../utils/fetchRiScHelpers';
+import {
   useAuthenticatedFetch,
   useGithubRepositoryInformation,
 } from '../utils/hooks';
@@ -197,11 +202,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           type: 'SET_RESPONSE',
           response: {
             status: ProcessingStatus.ErrorWhenFetchingGcpCryptoKeys,
-            statusMessage: loginRejected
-              ? `${t('errorMessages.ErrorWhenFetchingGcpCryptoKeys')}. ${t(
-                  'dictionary.rejectedLogin',
-                )}`
-              : t('errorMessages.ErrorWhenFetchingGcpCryptoKeys'),
+            statusMessage: withLoginRejected(
+              t('errorMessages.ErrorWhenFetchingGcpCryptoKeys'),
+              loginRejected,
+              t,
+            ),
           },
         });
         isFetchingGcpCryptoKeysRef.current = false;
@@ -228,19 +233,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         setAllRiScsFailedDecryption(allFailed);
 
         const fetchedRiScs: RiScWithMetadata[] = successfulRiScs.map(
-          riScDTO => {
-            const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
-            const content = dtoToRiSc(json);
-            return {
-              id: riScDTO.riScId,
-              content: content,
-              sopsConfig: riScDTO.sopsConfig,
-              status: riScDTO.riScStatus,
-              pullRequestUrl: riScDTO.pullRequestUrl,
-              migrationStatus: riScDTO.migrationStatus,
-              lastPublished: riScDTO.lastPublished,
-            };
-          },
+          mapRiScDtoToRiScWithMetadata,
         );
         setRiScs(fetchedRiScs);
         isFetchingRiScsRef.current = false;
@@ -255,85 +248,10 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         );
 
         if (errorRiScs.length > 0) {
-          const errorsByStatus = errorRiScs.reduce(
-            (acc, risk) => {
-              if (!acc[risk.status]) {
-                acc[risk.status] = [];
-              }
-              acc[risk.status].push(risk.riScId);
-              return acc;
-            },
-            {} as Record<ContentStatus, string[]>,
-          );
-
-          const errorMessages = Object.entries(errorsByStatus)
-            .map(([status, riScIds]) => {
-              // Fallback to Failure for unknown status values
-              const validStatuses = Object.values(ContentStatus);
-              const statusKey = validStatuses.includes(status as ContentStatus)
-                ? status
-                : ContentStatus.Failure;
-
-              if (statusKey === ContentStatus.DecryptionFailed) {
-                const decryptionRisks = errorRiScs.filter(
-                  risk =>
-                    risk.status === ContentStatus.DecryptionFailed &&
-                    riScIds.includes(risk.riScId),
-                );
-
-                const withErrorCode = decryptionRisks.filter(
-                  risk => risk.errorCode,
-                );
-                const withoutErrorCode = decryptionRisks.filter(
-                  risk => !risk.errorCode,
-                );
-
-                const messages: string[] = [];
-
-                if (withErrorCode.length > 0) {
-                  const decryptionErrorsByMessage = withErrorCode.reduce(
-                    (acc, risk) => {
-                      const message = risk.errorCode!;
-                      if (!acc[message]) acc[message] = [];
-                      acc[message].push(risk.riScId);
-                      return acc;
-                    },
-                    {} as Record<string, string[]>,
-                  );
-
-                  Object.entries(decryptionErrorsByMessage).forEach(
-                    ([message, ids]) => {
-                      const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${message}`;
-                      messages.push(
-                        t(errorKey as any, { riScId: ids.join(', '), status }),
-                      );
-                    },
-                  );
-                }
-                if (withoutErrorCode.length > 0) {
-                  const errorKey = `errorMessages.ContentStatus${statusKey}`;
-                  messages.push(
-                    t(errorKey as any, {
-                      riScId: withoutErrorCode.map(r => r.riScId).join(', '),
-                      status,
-                    }),
-                  );
-                }
-                return messages.join('\n');
-              }
-
-              const errorKey = `errorMessages.ContentStatus${statusKey}`;
-              return t(errorKey as any, {
-                riScId: (riScIds as string[]).join(', '),
-                status,
-              });
-            })
-            .join('\n');
-
           dispatch({
             type: 'SET_RESPONSE',
             response: {
-              statusMessage: errorMessages,
+              statusMessage: buildFetchRiScErrorMessages(errorRiScs, t),
               status: ProcessingStatus.ErrorWhenFetchingRiScs,
             },
           });
@@ -365,9 +283,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           type: 'SET_RESPONSE',
           response: {
             status: ProcessingStatus.ErrorWhenFetchingRiScs,
-            statusMessage: loginRejected
-              ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t('dictionary.rejectedLogin')}`
-              : t('errorMessages.ErrorWhenFetchingRiScs'),
+            statusMessage: withLoginRejected(
+              t('errorMessages.ErrorWhenFetchingRiScs'),
+              loginRejected,
+              t,
+            ),
           },
         });
         isFetchingRiScsRef.current = false;
@@ -476,11 +396,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           updateStatus: { isLoading: false, isError: true, isSuccess: false },
           response: {
             ...error,
-            statusMessage: loginRejected
-              ? `${getTranslationKey('error', error.status, t, translationContext)}. ${t(
-                  'dictionary.rejectedLogin',
-                )}`
-              : getTranslationKey('error', error.status, t, translationContext),
+            statusMessage: withLoginRejected(
+              getTranslationKey('error', error.status, t, translationContext),
+              loginRejected,
+              t,
+            ),
           },
         });
       },
@@ -537,16 +457,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
             updateStatus: { isLoading: false, isError: true, isSuccess: false },
             response: {
               ...error,
-              statusMessage: loginRejected
-                ? `${getTranslationKey('error', error.status, t, translationContext)}. ${t(
-                    'dictionary.rejectedLogin',
-                  )}`
-                : getTranslationKey(
-                    'error',
-                    error.status,
-                    t,
-                    translationContext,
-                  ),
+              statusMessage: withLoginRejected(
+                getTranslationKey('error', error.status, t, translationContext),
+                loginRejected,
+                t,
+              ),
             },
           });
           setIsRequesting(false);
@@ -618,16 +533,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
             updateStatus: { isLoading: false, isError: true, isSuccess: false },
             response: {
               ...error,
-              statusMessage: loginRejected
-                ? `${getTranslationKey('error', error.status, t, translationContext)}. ${t(
-                    'dictionary.rejectedLogin',
-                  )}`
-                : getTranslationKey(
-                    'error',
-                    error.status,
-                    t,
-                    translationContext,
-                  ),
+              statusMessage: withLoginRejected(
+                getTranslationKey('error', error.status, t, translationContext),
+                loginRejected,
+                t,
+              ),
             },
           });
           setIsRequesting(false);
@@ -643,19 +553,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       res => {
         const fetchedRiScs: RiScWithMetadata[] = res
           .filter(risk => risk.status === ContentStatus.Success)
-          .map(riScDTO => {
-            const json = JSON.parse(riScDTO.riScContent) as RiScDTO;
-            const content = dtoToRiSc(json);
-            return {
-              id: riScDTO.riScId,
-              content,
-              sopsConfig: riScDTO.sopsConfig,
-              status: riScDTO.riScStatus,
-              pullRequestUrl: riScDTO.pullRequestUrl,
-              migrationStatus: riScDTO.migrationStatus,
-              lastPublished: riScDTO.lastPublished,
-            };
-          });
+          .map(mapRiScDtoToRiScWithMetadata);
 
         setRiScs(fetchedRiScs);
 
@@ -668,9 +566,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           type: 'SET_RESPONSE',
           response: {
             status: ProcessingStatus.ErrorWhenFetchingRiScs,
-            statusMessage: loginRejected
-              ? `${t('errorMessages.ErrorWhenFetchingRiScs')}. ${t('dictionary.rejectedLogin')}`
-              : t('errorMessages.ErrorWhenFetchingRiScs'),
+            statusMessage: withLoginRejected(
+              t('errorMessages.ErrorWhenFetchingRiScs'),
+              loginRejected,
+              t,
+            ),
           },
         });
       },
@@ -716,14 +616,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
             updateStatus: { isLoading: false, isError: true, isSuccess: false },
             response: {
               ...error,
-              statusMessage: loginRejected
-                ? `${getTranslationKey('error', error.status, t, translationContext)}. ${t('dictionary.rejectedLogin')}`
-                : getTranslationKey(
-                    'error',
-                    error.status,
-                    t,
-                    translationContext,
-                  ),
+              statusMessage: withLoginRejected(
+                getTranslationKey('error', error.status, t, translationContext),
+                loginRejected,
+                t,
+              ),
             },
           });
         },
