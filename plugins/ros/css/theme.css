@@ -130,7 +130,7 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-input-disabledBackground: rgba(255, 255, 255, 0.12);
 
   .bui-Switch:not([data-selected]) .bui-SwitchIndicator {
-    background-color: var(--bui-gray-6);
+    background-color: var(--ros-gray-300);
   }
 
   .bui-Card {

@@ -12,6 +12,7 @@ import { AddScenarioButton } from './AddScenarioButton.tsx';
 import { ScenarioTable } from './ScenarioTable.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { ScenarioTableFilter } from './ScenarioTableFilter.tsx';
+import styles from './ScenarioTableCard.module.css';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
@@ -50,7 +51,7 @@ export function ScenarioTableCard({
   const [actionSearchQuery, setActionSearchQuery] = useState<string>('');
 
   return (
-    <Card>
+    <Card className={styles.card}>
       <CardHeader>
         <ScenarioTableCardHeader />
       </CardHeader>

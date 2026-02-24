@@ -61,7 +61,9 @@ export function DualButton({
             <MenuItem
               key={item.key}
               style={
-                item.selected ? { backgroundColor: 'var(--bui-gray-3)' } : {}
+                item.selected
+                  ? { backgroundColor: 'var(--bui-bg-neutral-2)' }
+                  : {}
               }
               onAction={() => item.onClick()}
             >
