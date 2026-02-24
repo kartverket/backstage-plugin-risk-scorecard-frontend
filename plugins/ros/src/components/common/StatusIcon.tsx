@@ -1,6 +1,8 @@
 import styles from './UpdatedStatusBadge.module.css';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip, TooltipTrigger } from '@backstage/ui';
+import { ReactNode } from 'react';
+import { Button as AriaButton } from 'react-aria-components';
 
 export enum StatusIconTypes {
   Green,
@@ -65,6 +67,33 @@ export function StatusIcon(props: StatusIconProps) {
       break;
   }
   if (props.tooltipText)
-    return <Tooltip title={props.tooltipText}>{iconElement}</Tooltip>;
+    return (
+      <TooltipTrigger>
+        <TooltipTargetIcon ariaLabel={props.ariaLabel}>
+          {iconElement}
+        </TooltipTargetIcon>
+        <Tooltip>{props.tooltipText}</Tooltip>
+      </TooltipTrigger>
+    );
   return iconElement;
+}
+
+type TooltipTargetIconProps = {
+  ariaLabel?: string;
+  children: ReactNode;
+};
+
+/** Unstyled focusable wrapper that works as a trigger for BUI TooltipTrigger. */
+export function TooltipTargetIcon({
+  ariaLabel,
+  children,
+}: TooltipTargetIconProps) {
+  return (
+    <AriaButton
+      aria-label={ariaLabel}
+      style={{ all: 'unset', display: 'inline-flex', cursor: 'default' }}
+    >
+      {children}
+    </AriaButton>
+  );
 }

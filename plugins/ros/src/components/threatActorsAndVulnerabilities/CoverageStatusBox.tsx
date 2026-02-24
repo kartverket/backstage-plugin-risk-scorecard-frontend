@@ -20,7 +20,7 @@ export function CoverageStatusBox(props: CoverageStatusBoxProps) {
 
   return (
     <div className={styles.boxStyle}>
-      <StatusIcon type={iconType} size="small" />
+      <StatusIcon type={iconType} size="medium" />
       <Text
         dangerouslySetInnerHTML={{
           __html: useCoverageStatusText(props.notCovered, props.coverageType),
