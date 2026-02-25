@@ -15,7 +15,6 @@ import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
 import { Flex, Text } from '@backstage/ui';
 import { CreateNewRiScButton } from '../riScInfo/CreateNewRiScButton.tsx';
 import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
-import { RiScRelationComponent } from '../riScInfo/RiScRelationComponent.tsx';
 import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -151,7 +150,6 @@ export function RiScPlugin() {
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
                         />
-                        <RiScRelationComponent />
                         <RiskMatrix riScWithMetadata={selectedRiSc} />
                       </Flex>
                     </Grid>
