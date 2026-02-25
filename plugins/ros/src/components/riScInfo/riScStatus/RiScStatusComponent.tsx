@@ -25,7 +25,6 @@ import {
 } from '@backstage/ui';
 import { StatusBanner } from './StatusBanner.tsx';
 import { StatusBadge } from './StatusBadge.tsx';
-import styles from './RiScStatusComponent.module.css';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -155,7 +154,7 @@ export function RiScStatusComponent({
     selectedRiSc.lastPublished?.numberOfCommits ?? null;
 
   return (
-    <Card style={{ height: 'fit-content' }} className={styles.card}>
+    <Card style={{ height: 'fit-content' }}>
       <CardHeader>
         <Text variant="title-small" weight="bold" as="h5">
           Status
