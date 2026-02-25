@@ -177,7 +177,7 @@ export const pluginRiScMessages = {
       'The changes have been made to adhere to the latest schema version.',
     migrationTitle: 'Migration from {{from}} to {{to}}',
     schemaVersion: 'Schema version',
-    schemaChangelog: 'Schema changelog',
+    schemaChangelog: 'Open schema changelog',
     title: 'Save changes', // Lagre ROS migrering
     checkboxLabel:
       'I confirm that I have reviewed and wish to save the changes made during the migration.',
@@ -862,7 +862,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Endringene er gjort for å følge den nyeste skjemaversjonen.',
           'migrationDialog.migrationTitle': 'Migrering fra {{from}} til {{to}}',
           'migrationDialog.schemaVersion': 'Skjemaversjon',
-          'migrationDialog.schemaChangelog': 'Endringslogg for skjema',
+          'migrationDialog.schemaChangelog': 'Åpne skjemaendringslogg',
           'migrationDialog.checkboxLabel':
             'Jeg bekrefter at jeg har gjennomgått og ønsker å lagre endringene som er gjort under migreringen.',
           'migrationDialog.migration40.changeExplanation':
