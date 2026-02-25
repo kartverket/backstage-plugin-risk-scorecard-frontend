@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Flex } from '@backstage/ui';
 
 export default function RiskOptionDisplay({
   isSelected,
@@ -10,15 +10,9 @@ export default function RiskOptionDisplay({
   label: string;
 }) {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-      }}
-    >
-      <Box
-        sx={{
+    <Flex align="center" gap="2">
+      <div
+        style={{
           display: 'inline-flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -26,17 +20,18 @@ export default function RiskOptionDisplay({
           height: '24px',
           minWidth: '24px',
           borderRadius: '50%',
-          backgroundColor: isSelected ? 'primary.main' : 'transparent',
-          border: '1px solid',
-          borderColor: isSelected ? 'primary.main' : 'primary.main',
-          color: isSelected ? 'white' : 'primary.main',
+          backgroundColor: isSelected
+            ? 'var(--bui-bg-solid)'
+            : 'transparent',
+          border: '1px solid var(--bui-bg-solid)',
+          color: isSelected ? 'var(--bui-fg-solid)' : 'var(--bui-bg-solid)',
           fontSize: '14px',
           fontWeight: 'bold',
         }}
       >
         {level}
-      </Box>
+      </div>
       <span>{label}</span>
-    </Box>
+    </Flex>
   );
 }
