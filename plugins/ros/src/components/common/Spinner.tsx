@@ -1,15 +1,14 @@
-import Box from '@mui/material/Box';
+import { Flex } from '@backstage/ui';
 import CircularProgress from '@mui/material/CircularProgress';
 
 export function Spinner({ size }: { size?: string | number }) {
   return (
-    <Box
-      sx={{
-        display: 'flex',
+    <Flex
+      align="start"
+      justify="center"
+      style={{
         minWidth: '100wh',
         height: '100vh',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
       }}
     >
       <CircularProgress
@@ -19,6 +18,6 @@ export function Spinner({ size }: { size?: string | number }) {
           marginTop: '200px',
         }}
       />
-    </Box>
+    </Flex>
   );
 }
