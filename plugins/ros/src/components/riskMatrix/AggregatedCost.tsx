@@ -62,7 +62,7 @@ export function AggregatedCost({ riSc, riskType }: AggregatedCostProps) {
           size="small"
           variant="tertiary"
           aria-label="Info"
-          icon={<i className="ri-information-fill" style={{ fontSize: '24px' }} />}
+          icon={<i className="ri-information-fill" style={{ fontSize: '24px', color: 'var(--bui-fg-secondary)' }} />}
           onPress={() => setShowDialog(true)}
         />
       </Flex>
