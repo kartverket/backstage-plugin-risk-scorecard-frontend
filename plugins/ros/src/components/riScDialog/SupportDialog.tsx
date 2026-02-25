@@ -1,8 +1,7 @@
 import { ReactElement, useState } from 'react';
-import { Button, Card, CardHeader, Flex, Text } from '@backstage/ui';
+import { Button, Card, CardHeader, Flex, Link, Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { Link } from '@mui/material';
 import { FeedbackDialog } from '../riScPlugin/FeedbackDialog.tsx';
 import styles from './RiScDialog.module.css';
 import DialogComponent from '../dialog/DialogComponent.tsx';
@@ -65,7 +64,7 @@ type SupportEntryProps = {
 
 function SupportEntry(props: SupportEntryProps) {
   return (
-    <Card>
+    <Card style={{ border: '1px solid var(--bui-border-1)' }}>
       <CardHeader>
         <Flex align="center">
           {props.icon}
