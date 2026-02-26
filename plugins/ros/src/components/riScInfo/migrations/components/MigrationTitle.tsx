@@ -1,7 +1,7 @@
 import { ChangeSetTitle } from '../../changeset/components/ChangeSetTitle.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../../utils/translations.ts';
-import { useMigrationStyles } from './migrationStyles.ts';
+import styles from './MigrationTitle.module.css';
 import { Link, TooltipTrigger, Tooltip } from '@backstage/ui';
 
 interface MigrationTitleProps {
@@ -17,7 +17,6 @@ export function MigrationTitle({
   migrationExplanation,
   changelogUrl,
 }: MigrationTitleProps) {
-  const styles = useMigrationStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <div className={styles.migrationTitle}>
