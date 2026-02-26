@@ -4,6 +4,7 @@
   border-radius: 4px;
 }
 
-[data-theme-mode='dark'] .boxStyle {
-  background-color: var(--bui-gray-5);
+.infoIcon {
+  font-size: 24px;
+  color: var(--bui-fg-secondary);
 }
