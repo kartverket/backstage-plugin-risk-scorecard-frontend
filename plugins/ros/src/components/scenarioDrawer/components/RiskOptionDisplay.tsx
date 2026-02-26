@@ -20,9 +20,7 @@ export default function RiskOptionDisplay({
           height: '24px',
           minWidth: '24px',
           borderRadius: '50%',
-          backgroundColor: isSelected
-            ? 'var(--bui-bg-solid)'
-            : 'transparent',
+          backgroundColor: isSelected ? 'var(--bui-bg-solid)' : 'transparent',
           border: '1px solid var(--bui-bg-solid)',
           color: isSelected ? 'var(--bui-fg-solid)' : 'var(--bui-bg-solid)',
           fontSize: '14px',
