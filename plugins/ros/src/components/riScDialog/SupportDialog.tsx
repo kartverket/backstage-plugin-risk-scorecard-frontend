@@ -3,7 +3,8 @@ import { Button, Card, CardHeader, Flex, Link, Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { FeedbackDialog } from '../riScPlugin/FeedbackDialog.tsx';
-import styles from './RiScDialog.module.css';
+import dialogStyles from './RiScDialog.module.css';
+import styles from './SupportDialog.module.css';
 import DialogComponent from '../dialog/DialogComponent.tsx';
 
 export function SupportDialog() {
@@ -23,14 +24,14 @@ export function SupportDialog() {
         isOpen={open}
         onClick={() => setOpen(false)}
         header={t('supportDialog.title')}
-        className={styles.createRiscDialog}
+        className={dialogStyles.createRiscDialog}
       >
         <Flex direction="column" gap="8px">
           <SupportEntry
             label={t('supportDialog.entries.riscFeedbackChannel.title')}
             url="https://kartverketgroup.slack.com/archives/C075KCPTURY"
             icon={
-              <i className="ri-slack-fill" style={{ fontSize: 'x-large' }} />
+              <i className={`ri-slack-fill ${styles.supportIcon}`} />
             }
             description={t(
               'supportDialog.entries.riscFeedbackChannel.description',
@@ -40,14 +41,14 @@ export function SupportDialog() {
             label={t('supportDialog.entries.riscDocumentation.title')}
             url="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1645608980/Koden+r+RoS"
             icon={
-              <i className="ri-article-line" style={{ fontSize: 'x-large' }} />
+              <i className={`ri-article-line ${styles.supportIcon}`} />
             }
             description={t(
               'supportDialog.entries.riscDocumentation.description',
             )}
           />
         </Flex>
-        <div style={{ marginTop: '24px' }}>
+        <div className={styles.feedbackWrapper}>
           <FeedbackDialog open={open} setOpen={setOpen} />
         </div>
       </DialogComponent>
@@ -64,7 +65,7 @@ type SupportEntryProps = {
 
 function SupportEntry(props: SupportEntryProps) {
   return (
-    <Card style={{ border: '1px solid var(--bui-border-1)' }}>
+    <Card className={styles.supportCard}>
       <CardHeader>
         <Flex align="center">
           {props.icon}
