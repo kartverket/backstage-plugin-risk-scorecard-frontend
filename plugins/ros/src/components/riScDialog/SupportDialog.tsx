@@ -30,9 +30,7 @@ export function SupportDialog() {
           <SupportEntry
             label={t('supportDialog.entries.riscFeedbackChannel.title')}
             url="https://kartverketgroup.slack.com/archives/C075KCPTURY"
-            icon={
-              <i className={`ri-slack-fill ${styles.supportIcon}`} />
-            }
+            icon={<i className={`ri-slack-fill ${styles.supportIcon}`} />}
             description={t(
               'supportDialog.entries.riscFeedbackChannel.description',
             )}
@@ -40,9 +38,7 @@ export function SupportDialog() {
           <SupportEntry
             label={t('supportDialog.entries.riscDocumentation.title')}
             url="https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1645608980/Koden+r+RoS"
-            icon={
-              <i className={`ri-article-line ${styles.supportIcon}`} />
-            }
+            icon={<i className={`ri-article-line ${styles.supportIcon}`} />}
             description={t(
               'supportDialog.entries.riscDocumentation.description',
             )}
