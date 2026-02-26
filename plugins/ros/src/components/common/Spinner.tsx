@@ -7,7 +7,7 @@ export function Spinner({ size }: { size?: string | number }) {
       align="start"
       justify="center"
       style={{
-        minWidth: '100wh',
+        minWidth: '100vw',
         height: '100vh',
       }}
     >
