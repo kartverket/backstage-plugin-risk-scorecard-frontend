@@ -1,12 +1,10 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { IconButton } from '@material-ui/core';
-import InfoIcon from '@mui/icons-material/Info';
 import { useState } from 'react';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiSc } from '../../utils/types';
 import { formatNumber } from '../../utils/utilityfunctions';
 import { EstimatedRiskInfoDialog } from './EstimatedRiskInfoDialog';
-import { Box, Flex, Text } from '@backstage/ui';
+import { Box, ButtonIcon, Flex, Text } from '@backstage/ui';
 import styles from './AggregatedCost.module.css';
 import { calcRiskCostOfRiSc } from '../../utils/risk';
 import { RiskMatrixTabs } from './utils';
@@ -60,9 +58,13 @@ export function AggregatedCost({ riSc, riskType }: AggregatedCostProps) {
           {formatNumber(cost, t)}{' '}
           {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
         </Text>
-        <IconButton size="small" onClick={() => setShowDialog(true)}>
-          <InfoIcon />
-        </IconButton>
+        <ButtonIcon
+          size="small"
+          variant="tertiary"
+          aria-label="Info"
+          icon={<i className={`ri-information-fill ${styles.infoIcon}`} />}
+          onPress={() => setShowDialog(true)}
+        />
       </Flex>
       <EstimatedRiskInfoDialog
         isOpen={showDialog}

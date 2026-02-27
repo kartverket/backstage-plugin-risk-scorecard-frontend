@@ -11,7 +11,7 @@ interface Props {
 export function RiScDescriptionCard(props: Props) {
   return (
     <Flex>
-      <Card>
+      <Card className={styles.card}>
         <CardBody>
           <Flex
             justify="between"

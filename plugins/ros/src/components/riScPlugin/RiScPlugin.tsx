@@ -15,7 +15,6 @@ import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
 import { Flex, Text } from '@backstage/ui';
 import { CreateNewRiScButton } from '../riScInfo/CreateNewRiScButton.tsx';
 import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
-import { RiScRelationComponent } from '../riScInfo/RiScRelationComponent.tsx';
 import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -23,6 +22,7 @@ import styles from '../common/alertBar.module.css';
 import { RiScDescriptionCard } from '../riScInfo/RiScDescriptionCard.tsx';
 import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
 import { ErrorState } from '../riScInfo/ErrorState.tsx';
+import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -151,8 +151,10 @@ export function RiScPlugin() {
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
                         />
-                        <RiScRelationComponent />
                         <RiskMatrix riScWithMetadata={selectedRiSc} />
+                        <ThreatActorsAndVulnerabilitiesCard
+                          scenarios={selectedRiSc.content.scenarios}
+                        />
                       </Flex>
                     </Grid>
                   </Grid>

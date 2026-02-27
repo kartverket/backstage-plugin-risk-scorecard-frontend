@@ -105,6 +105,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   const isFetchingRiScsRef = useRef(isFetchingRiScs);
   const [isFetchingGcpCryptoKeys, setIsFetchingGcpCryptoKeys] = useState(true);
   const isFetchingGcpCryptoKeysRef = useRef(isFetchingGcpCryptoKeys);
+  const gcpCryptoKeysFailed = useRef(false);
+  const [failedToFetchGcpCryptoKeys, setFailedToFetchGcpCryptoKeys] =
+    useState(false);
 
   type LocalState = {
     updateStatus: UpdateStatus;
@@ -180,6 +183,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   // Initial fetch of GCP crypto keys
   useEffect(() => {
+    gcpCryptoKeysFailed.current = false;
+    setFailedToFetchGcpCryptoKeys(false);
+    dispatch({ type: 'SET_RESPONSE', response: null });
     fetchGcpCryptoKeys(
       res => {
         // Sorts the crypto keys by the number of permissions (descending)
@@ -198,6 +204,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         }
       },
       (_error, loginRejected) => {
+        gcpCryptoKeysFailed.current = true;
+        setFailedToFetchGcpCryptoKeys(true);
         dispatch({
           type: 'SET_RESPONSE',
           response: {
@@ -222,6 +230,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   // Initial fetch of RiScs
   useEffect(() => {
+    dispatch({ type: 'SET_RESPONSE', response: null });
     fetchRiScs(
       res => {
         const successfulRiScs = res.filter(
@@ -668,7 +677,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       value={{
         ...value,
         isFetchingGcpCryptoKeys: false,
-        failedToFetchGcpCryptoKeys: false,
+        failedToFetchGcpCryptoKeys,
         allRiScsFailedDecryption,
       }}
     >
