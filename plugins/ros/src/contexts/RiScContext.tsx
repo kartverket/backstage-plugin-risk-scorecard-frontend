@@ -287,18 +287,20 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           return;
         }
       },
-      (_, loginRejected) => {
-        dispatch({
-          type: 'SET_RESPONSE',
-          response: {
-            status: ProcessingStatus.ErrorWhenFetchingRiScs,
-            statusMessage: withLoginRejected(
-              t('errorMessages.ErrorWhenFetchingRiScs'),
-              loginRejected,
-              t,
-            ),
-          },
-        });
+      loginRejected => {
+        if (!gcpCryptoKeysFailed.current) {
+          dispatch({
+            type: 'SET_RESPONSE',
+            response: {
+              status: ProcessingStatus.ErrorWhenFetchingRiScs,
+              statusMessage: withLoginRejected(
+                t('errorMessages.ErrorWhenFetchingRiScs'),
+                loginRejected,
+                t,
+              ),
+            },
+          });
+        }
         isFetchingRiScsRef.current = false;
         setIsFetchingRiScs(isFetchingRiScsRef.current);
         if (!isFetchingGcpCryptoKeysRef.current) {
