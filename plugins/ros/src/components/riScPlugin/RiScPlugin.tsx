@@ -15,7 +15,6 @@ import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
 import { Flex, Text } from '@backstage/ui';
 import { CreateNewRiScButton } from '../riScInfo/CreateNewRiScButton.tsx';
 import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
-import { RiScRelationComponent } from '../riScInfo/RiScRelationComponent.tsx';
 import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -23,6 +22,7 @@ import styles from '../common/alertBar.module.css';
 import { RiScDescriptionCard } from '../riScInfo/RiScDescriptionCard.tsx';
 import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
 import { ErrorState } from '../riScInfo/ErrorState.tsx';
+import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -58,6 +58,8 @@ export function RiScPlugin() {
     response,
     updateStatus,
     riScs,
+    failedToFetchGcpCryptoKeys,
+    allRiScsFailedDecryption,
   } = useRiScs();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -91,7 +93,8 @@ export function RiScPlugin() {
           {!isFetching &&
             riScs !== null &&
             riScs.length === 0 &&
-            !selectedRiSc && (
+            !selectedRiSc &&
+            !allRiScsFailedDecryption && (
               <Flex
                 justify="center"
                 align="center"
@@ -100,15 +103,16 @@ export function RiScPlugin() {
                 <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
               </Flex>
             )}
-          {!isFetching && riScs === null && (
-            <Flex
-              align="center"
-              justify="center"
-              className={riscStyles.componentLayout}
-            >
-              <ErrorState />
-            </Flex>
-          )}
+          {!isFetching &&
+            (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
+              <Flex
+                align="center"
+                justify="center"
+                className={riscStyles.componentLayout}
+              >
+                <ErrorState />
+              </Flex>
+            )}
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>
@@ -147,8 +151,10 @@ export function RiScPlugin() {
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
                         />
-                        <RiScRelationComponent />
                         <RiskMatrix riScWithMetadata={selectedRiSc} />
+                        <ThreatActorsAndVulnerabilitiesCard
+                          scenarios={selectedRiSc.content.scenarios}
+                        />
                       </Flex>
                     </Grid>
                   </Grid>

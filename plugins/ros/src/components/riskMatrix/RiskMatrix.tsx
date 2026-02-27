@@ -20,7 +20,7 @@ export function RiskMatrix({
   const [tab, setTab] = useState<RiskMatrixTabs>(RiskMatrixTabs.initialRisk);
 
   return (
-    <Card>
+    <Card className={styles.card}>
       <CardHeader>
         <Text variant="title-small" weight="bold">
           {t('riskMatrix.title')}

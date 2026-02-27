@@ -2,6 +2,11 @@
   background-color: transparent;
 }
 
+[role='listbox'] {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .riScInfoDialog {
   padding: 24px;
   border-radius: 4px;
@@ -22,4 +27,8 @@
 }
 .componentLayout {
   height: 60%;
+}
+
+.riscDescriptionContainer {
+  margin-bottom: 16px;
 }
