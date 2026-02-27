@@ -30,7 +30,7 @@ const RadioOption = ({
   const theme = useTheme();
   const style = {
     fontSize: '12px',
-    border: `1px solid ${active ? 'var(--bui-gray-6)' : 'var(--bui-gray-8)'}`,
+    border: `1px solid ${active ? 'var(--bui-border-2)' : 'var(--bui-border-1)'}`,
     borderRadius: '24px',
     padding: '2px 8px',
   };
@@ -45,9 +45,10 @@ const RadioOption = ({
         style={{
           backgroundColor:
             theme.palette.mode === 'dark'
-              ? 'var(--bui-gray-5)'
-              : 'var(--bui-gray-2)',
+              ? 'var(--bui-bg-neutral-3)'
+              : 'var(--bui-bg-neutral-1)',
           borderRadius: '8px',
+          opacity: active ? 0.5 : 1,
         }}
       >
         <Radio value={value}>

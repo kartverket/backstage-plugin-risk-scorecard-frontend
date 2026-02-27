@@ -132,16 +132,13 @@ export const useTableStyles = makeStyles((theme: Theme) => ({
     border: 'none',
     marginBottom: '8px',
     padding: '28px 24px',
-    backgroundColor:
-      theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8', // dark mode color does not apply because of override in theme.css
+    backgroundColor: theme.palette.type === 'dark' ? '#424242' : '#F8F8F8',
     '&:hover': {
-      backgroundColor:
-        theme.palette.type === 'dark' ? 'var(--bui-gray-6)' : '#E0E0E0',
+      backgroundColor: theme.palette.type === 'dark' ? '#616161' : '#E0E0E0',
       cursor: 'pointer',
     },
     '&$tableCardNoHover:hover': {
-      backgroundColor:
-        theme.palette.type === 'dark' ? 'var(--bui-gray-5)' : '#F8F8F8',
+      backgroundColor: theme.palette.type === 'dark' ? '#424242' : '#F8F8F8',
       cursor: 'pointer',
     },
   },
