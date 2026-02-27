@@ -1,24 +1,11 @@
-import Box from '@mui/material/Box';
+import { Flex } from '@backstage/ui';
 import CircularProgress from '@mui/material/CircularProgress';
+import styles from './Spinner.module.css';
 
 export function Spinner({ size }: { size?: string | number }) {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        minWidth: '100wh',
-        height: '100vh',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-      }}
-    >
-      <CircularProgress
-        size={size}
-        sx={{
-          display: 'flex',
-          marginTop: '200px',
-        }}
-      />
-    </Box>
+    <Flex align="start" justify="center" className={styles.container}>
+      <CircularProgress size={size} className={styles.progress} />
+    </Flex>
   );
 }
