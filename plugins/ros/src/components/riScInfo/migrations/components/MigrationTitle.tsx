@@ -1,10 +1,8 @@
 import { ChangeSetTitle } from '../../changeset/components/ChangeSetTitle.tsx';
-import { IconButton, Tooltip } from '@material-ui/core';
-import Link from '@mui/material/Link';
-import { HelpIcon } from '@backstage/core-components';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../../utils/translations.ts';
-import { useMigrationStyles } from './migrationStyles.ts';
+import styles from './MigrationTitle.module.css';
+import { Link, TooltipTrigger, Tooltip } from '@backstage/ui';
 
 interface MigrationTitleProps {
   from: string;
@@ -19,7 +17,6 @@ export function MigrationTitle({
   migrationExplanation,
   changelogUrl,
 }: MigrationTitleProps) {
-  const styles = useMigrationStyles();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <div className={styles.migrationTitle}>
@@ -27,14 +24,13 @@ export function MigrationTitle({
         text={t('migrationDialog.migrationTitle', { to: to, from: from })}
       />
       <div className={styles.migrationChangelog}>
-        <Tooltip title={migrationExplanation}>
-          <Link target="_blank" href={changelogUrl} color="inherit">
-            {t('migrationDialog.schemaChangelog')}
-            <IconButton color="inherit" size="small">
-              <HelpIcon fontSize="small" />
-            </IconButton>
+        <TooltipTrigger>
+          <Link target="_blank" href={changelogUrl}>
+            {t('migrationDialog.schemaChangelog')}{' '}
+            <i className="ri-external-link-line" />
           </Link>
-        </Tooltip>
+          <Tooltip>{migrationExplanation}</Tooltip>
+        </TooltipTrigger>
       </div>
     </div>
   );

@@ -1,14 +1,12 @@
 .boxStyle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background-color: #fcebcd;
   padding: 8px 16px;
   border-radius: 4px;
 }
 
 [data-theme-mode='dark'] .boxStyle {
-  background-color: var(--ros-gray-500);
-}
-
-.infoIcon {
-  font-size: 24px;
-  color: var(--bui-fg-secondary);
+  background-color: var(--bui-gray-5);
 }
