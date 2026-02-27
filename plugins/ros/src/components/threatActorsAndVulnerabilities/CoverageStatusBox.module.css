@@ -1,10 +1,12 @@
 .boxStyle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background-color: #fcebcd;
   padding: 8px 16px;
-  margin-top: 8px;
   border-radius: 4px;
 }
 
 [data-theme-mode='dark'] .boxStyle {
-  background-color: var(--ros-gray-500);
+  background-color: var(--bui-gray-5);
 }

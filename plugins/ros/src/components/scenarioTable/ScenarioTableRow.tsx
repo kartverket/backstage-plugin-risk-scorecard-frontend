@@ -112,7 +112,7 @@ export function ScenarioTableRow({
 
   // Necessary because the darkmode card color in theme.css overwrites the color defined in ScenarioTableStyles.ts
   const cardBgColor =
-    theme.palette.mode === 'dark' ? 'var(--bui-bg-surface-3)' : undefined;
+    theme.palette.mode === 'dark' ? 'var(--ros-gray-500)' : undefined;
 
   const isTextColorBlack =
     theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;

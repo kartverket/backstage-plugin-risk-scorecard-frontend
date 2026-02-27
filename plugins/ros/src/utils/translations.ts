@@ -81,6 +81,8 @@ export const pluginRiScMessages = {
     scope: 'Scope',
     status: 'Status',
     threatActors: 'Threat actors',
+    theThreatActor: 'The threat actor',
+    theThreatActors: 'The threat actors',
     title: 'Title',
     unknown: 'Unknown',
     url: 'URL',
@@ -88,6 +90,8 @@ export const pluginRiScMessages = {
     valuation: 'Valuation',
     version: 'Version',
     vulnerabilities: 'Vulnerabilities',
+    theVulnerability: 'The vulnerability',
+    theVulnerabilities: 'The vulnerabilities',
     showOnlyRelevant: 'Show only relevant',
     noRelevantMeasures: 'No relevant actions',
     scenarios: 'scenarios',
@@ -95,7 +99,6 @@ export const pluginRiScMessages = {
     searchQuery: 'No result for ',
     actionsWithStatus: 'Actions that are OK',
     refresh: 'Refresh',
-    relatedComponents: 'Associated Components',
   },
   encryption: {
     title: 'Encryption',
@@ -598,6 +601,24 @@ export const pluginRiScMessages = {
     'Information leak': 'Information leak',
     'Excessive use': 'Excessive use',
   },
+  threatActorsAndVulnerabilities: {
+    title: 'Threat Actors and Vulnerabilities',
+    allCovered: 'All {{kind}} are covered in at least one scenario.',
+    oneNotCovered:
+      '{{kind}} <b>{{notCovered}}</b> is not covered in any scenario.',
+    twoNotCovered:
+      '{{kind}} <b>{{notCovered1}}</b> and <b>{{notCovered2}}</b> is not covered in any scenario.',
+    multipleNotCovered:
+      'Multiple {{kind}} are not covered. This includes <b>{{notCovered1}}</b>, <b>{{notCovered2}}</b> and <b>{{notCovered3}}</b>.',
+    showMoreInfo: 'Show more information',
+    dialogHeader: 'Scenarios covering vulnerabilities and threat actors',
+    vulnerabilityCoverage: 'Vulnerabilities covered',
+    threatActorCoverage: 'Threat actors covered',
+    coverageRatio: '{{covered}} of {{total}}',
+    tableColumnThreatActor: 'Threat actor',
+    tableColumnVulnerability: 'Vulnerability',
+    tableColumnScenarios: 'Number of scenarios',
+  },
   actionStatus: {
     OK: 'OK',
     'Not OK': 'Not OK',
@@ -619,7 +640,8 @@ export const pluginRiScMessages = {
     ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration',
     FailedToCreateSops: 'Failed to create SOPS configuration',
     FailedToUpdateSops: 'SOPS configuration could not be updated',
-    ErrorWhenFetchingGcpCryptoKeys: 'Failed to fetch GCP crypto keys',
+    ErrorWhenFetchingGcpCryptoKeys:
+      'Could not load risk scorecards — the encryption service is unavailable. Try refreshing the page.',
   },
   infoMessages: {
     OpenedPullRequest: 'Successfully opened pull request',
@@ -755,6 +777,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.scope': 'Omfang',
           'dictionary.status': 'Status',
           'dictionary.threatActors': 'Trusselaktører',
+          'dictionary.theThreatActor': 'Trusselaktøren',
+          'dictionary.theThreatActors': 'Trusselaktørene',
           'dictionary.title': 'Tittel',
           'dictionary.unknown': 'Ukjent',
           'dictionary.url': 'URL',
@@ -762,6 +786,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.valuation': 'Verdi',
           'dictionary.version': 'Versjon',
           'dictionary.vulnerabilities': 'Sårbarheter',
+          'dictionary.theVulnerability': 'Sårbarheten',
+          'dictionary.theVulnerabilities': 'Sårbarhetene',
           'dictionary.showOnlyRelevant': 'Vis kun relevante',
           'dictionary.noRelevantMeasures': 'Ingen relevante tiltak',
           'dictionary.scenarios': 'scenarioer',
@@ -770,7 +796,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.searchQuery': 'Ingen resultater for ',
           'dictionary.actionsWithStatus': 'Tiltak som er OK',
           'dictionary.refresh': 'Prøv igjen',
-          'dictionary.relatedComponents': 'Tilhørende komponenter',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
@@ -1236,6 +1261,31 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'vulnerabilities.Information leak': 'Informasjonslekkasje',
           'vulnerabilities.Excessive use': 'Overdreven bruk',
 
+          'threatActorsAndVulnerabilities.title':
+            'Trusselaktører og sårbarheter',
+          'threatActorsAndVulnerabilities.allCovered':
+            'Alle {{kind}} er dekket i minst ett scenario.',
+          'threatActorsAndVulnerabilities.oneNotCovered':
+            '{{kind}} <b>{{notCovered}}</b> er ikke dekket i noen scenarioer',
+          'threatActorsAndVulnerabilities.twoNotCovered':
+            '{{kind}} <b>{{notCovered1}}</b> og <b>{{notCovered2}}</b> er ikke dekket i noen scenarioer.',
+          'threatActorsAndVulnerabilities.multipleNotCovered':
+            'Flere {{kind}} er ikke dekket. Dette inkluderer <b>{{notCovered1}}</b>, <b>{{notCovered2}}</b> og <b>{{notCovered3}}</b>',
+          'threatActorsAndVulnerabilities.showMoreInfo': 'Vis mer informasjon',
+          'threatActorsAndVulnerabilities.dialogHeader':
+            'Scenarier som dekker sårbarheter og trusselaktører',
+          'threatActorsAndVulnerabilities.vulnerabilityCoverage':
+            'Sårbarheter dekket',
+          'threatActorsAndVulnerabilities.threatActorCoverage':
+            'Trusselaktører dekket',
+          'threatActorsAndVulnerabilities.coverageRatio':
+            '{{covered}} av {{total}}',
+          'threatActorsAndVulnerabilities.tableColumnThreatActor':
+            'Trusselaktør',
+          'threatActorsAndVulnerabilities.tableColumnVulnerability':
+            'Sårbarhet',
+          'threatActorsAndVulnerabilities.tableColumnScenarios':
+            'Antall scenarioer',
           'actionStatus.Not started': 'Ikke startet',
           'actionStatus.In progress': 'Startet',
           'actionStatus.On hold': 'På vent',
@@ -1270,7 +1320,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'errorMessages.FailedToUpdateSops':
             'SOPS-konfigurasjon kunne ikke oppdateres',
           'errorMessages.ErrorWhenFetchingGcpCryptoKeys':
-            'Kunne ikke hente GCP-krypteringsnøkler',
+            'Kunne ikke laste inn risiko- og sårbarhetsanalysene — krypteringstjenesten er ikke tilgjengelig. Prøv å oppdatere siden.',
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
