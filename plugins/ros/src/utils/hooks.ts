@@ -355,15 +355,21 @@ export function useAuthenticatedFetch() {
     method: string = 'GET',
     body?: any,
   ) => {
-    const token = await atlassianApi.getAccessToken([
-      'read:jira-user',
-      'read:jira-work',
-      'write:jira-work',
+    const [atlassianToken, credentials] = await Promise.all([
+      atlassianApi.getAccessToken([
+        'read:jira-user',
+        'read:jira-work',
+        'write:jira-work',
+      ]),
+      identityApi.getCredentials(),
     ]);
 
     const options: RequestInit = {
       method,
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${credentials.token}`,
+        'Atlassian-Access-Token': atlassianToken,
+      },
     };
     if (body) {
       options.body = JSON.stringify(body);
@@ -373,9 +379,13 @@ export function useAuthenticatedFetch() {
       };
     }
     const response = await fetch(
-      `http://localhost:8080/api/jira${endpoint}`,
+      `${backendUrl}/api/proxy/risc-proxy/api/jira${endpoint}`,
       options,
     );
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => response.statusText);
+      throw new Error(`Jira API error ${response.status}: ${errorText}`);
+    }
     return response.json();
   };
 

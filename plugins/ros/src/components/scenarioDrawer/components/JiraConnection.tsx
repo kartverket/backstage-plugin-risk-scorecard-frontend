@@ -25,11 +25,16 @@ export function JiraConnection({
   const [issueType, setIssueType] = useState('Task');
   const [issueTitle, setIssueTitle] = useState('');
   const [issueDescription, setIssueDescription] = useState('');
-  const jiraKeyField = formMethods.watch(
-    `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}jiraKey`,
+  const [error, setError] = useState<string | null>(null);
+
+  const urlField: string = formMethods.watch(
+    `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
   );
 
+  const jiraKeyFromUrl = urlField?.match(/\/browse\/([A-Z]+-\d+)/)?.[1] ?? null;
+
   const handleCreateIssue = async () => {
+    setError(null);
     try {
       const result = await createIssue({
         title: issueTitle,
@@ -42,56 +47,43 @@ export function JiraConnection({
         result.url,
         { shouldValidate: true, shouldDirty: true },
       );
-      formMethods.setValue(
-        `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}jiraKey`,
-        result.key,
-        { shouldValidate: true, shouldDirty: true },
-      );
 
       setIssueTitle('');
       setIssueDescription('');
       setOpenJiraDialog(false);
-    } catch (error) {
-      throw new Error(`Error creating issue: ${error}`);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Kunne ikke opprette Jira-sak.',
+      );
     }
   };
-  const urlField = formMethods.watch(
-    `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
-  );
 
   const handleDeleteIssue = async () => {
+    setError(null);
     try {
-      const issueKey = formMethods.getValues(
-        `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}jiraKey`,
-      );
       const url = formMethods.getValues(
         `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
       );
 
-      // Pass either the key or URL - the hook will handle extraction
-      const issueKeyOrUrl = issueKey || url;
-
-      if (!issueKeyOrUrl) {
-        throw new Error('No Jira issue key or URL found to delete.');
+      if (!url) {
+        throw new Error('No Jira URL found to delete.');
       }
 
-      await deleteIssue(issueKeyOrUrl);
+      await deleteIssue(url);
       formMethods.setValue(
         `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
         '',
         { shouldValidate: true, shouldDirty: true },
       );
-      formMethods.setValue(
-        `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}jiraKey`,
-        '',
-        { shouldValidate: true, shouldDirty: true },
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Kunne ikke slette Jira-sak.',
       );
-    } catch (error) {
-      throw new Error(`Error deleting issue: ${error}`);
     }
   };
 
   const handleOpenDialog = () => {
+    setError(null);
     setIssueTitle(
       formMethods.getValues(
         `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}title`,
@@ -108,6 +100,11 @@ export function JiraConnection({
   return (
     <Box>
       <Button onClick={handleOpenDialog}>Click to link Jira</Button>
+      {error && (
+        <Text variant="body-small" style={{ color: 'red' }}>
+          {error}
+        </Text>
+      )}
       {openJiraDialog && (
         <DialogComponent
           isOpen={openJiraDialog}
@@ -143,9 +140,9 @@ export function JiraConnection({
         !formMethods.formState.isSubmitting && (
           <Flex mt="2" align="center" gap="1">
             <Text>Created Issue: </Text>
-            {jiraKeyField && (
+            {jiraKeyFromUrl && (
               <>
-                <strong>{jiraKeyField}</strong> -{' '}
+                <strong>{jiraKeyFromUrl}</strong> -{' '}
               </>
             )}
             <a

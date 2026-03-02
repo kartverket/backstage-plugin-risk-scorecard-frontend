@@ -23,7 +23,7 @@ proxy:
     '/risc-proxy':
       target: https://risc-backend-457384642040.europe-north1.run.app
       allowedHeaders:
-        ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
+        ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token', 'Atlassian-Access-Token']
 
 integrations:
   github:
@@ -51,6 +51,11 @@ auth:
       production:
         clientId: ${GITHUB_CLIENT_ID}
         clientSecret: ${GITHUB_CLIENT_SECRET}
+    atlassian:
+      production:
+        clientId: ${ATLASSIAN_CLIENT_ID}
+        clientSecret: ${ATLASSIAN_CLIENT_SECRET}
+        callbackUrl: ${ATLASSIAN_CALLBACK_URL}
 
 catalog:
   providers:

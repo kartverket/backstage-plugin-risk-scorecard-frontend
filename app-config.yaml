@@ -97,7 +97,7 @@ proxy:
     '/risc-proxy':
       target: http://localhost:8080
       allowedHeaders:
-        ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token']
+        ['Authorization', 'GCP-Access-Token', 'GitHub-Access-Token', 'Atlassian-Access-Token']
     '/opencost-cacher':
       target: http://localhost:8080
       credentials: forward

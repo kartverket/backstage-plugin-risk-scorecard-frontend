@@ -3865,6 +3865,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/plugin-auth-backend-module-atlassian-provider@backstage:^::backstage=1.48.0&npm=0.4.12, @backstage/plugin-auth-backend-module-atlassian-provider@npm:^0.4.12":
+  version: 0.4.12
+  resolution: "@backstage/plugin-auth-backend-module-atlassian-provider@npm:0.4.12"
+  dependencies:
+    "@backstage/backend-plugin-api": "npm:^1.7.0"
+    "@backstage/plugin-auth-node": "npm:^0.6.13"
+    express: "npm:^4.22.0"
+    passport: "npm:^0.7.0"
+    passport-atlassian-oauth2: "npm:^2.1.0"
+    zod: "npm:^3.25.76"
+  checksum: 10c0/c2e9ba236c1d87fc2c66319daaebab3b28128c995a4d2250e000bd21bf0e6a5098d59b5afaf856d23d11e5f5f20e98eb700b3b9be3b9a75bf2fe51dcd6db2355
+  languageName: node
+  linkType: hard
+
 "@backstage/plugin-auth-backend-module-github-provider@backstage:^::backstage=1.48.0&npm=0.5.0, @backstage/plugin-auth-backend-module-github-provider@npm:^0.5.0":
   version: 0.5.0
   resolution: "@backstage/plugin-auth-backend-module-github-provider@npm:0.5.0"
