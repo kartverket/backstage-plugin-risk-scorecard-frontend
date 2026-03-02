@@ -39,7 +39,9 @@ function AlertBar({ updateStatus, response, statusText }: Props) {
         severity={severity}
         className={`${styles.alertBar} ${severityClass}`}
       >
-        <Text variant="body-large">{statusText}</Text>
+        <Text variant="body-large" style={{ whiteSpace: 'pre-line' }}>
+          {statusText}
+        </Text>
       </Alert>
     );
   }
