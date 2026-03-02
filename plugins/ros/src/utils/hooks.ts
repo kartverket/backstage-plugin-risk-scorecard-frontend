@@ -53,13 +53,18 @@ export function useAuthenticatedFetch() {
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
   const uriToFetchDefaultRiScDescriptors = `${backendUrl}${URLS.backend.fetchDefaultRiScTypeDescriptors}`;
 
+  function uriToFetchSingleRiSc(id: string) {
+    // URLS.backend.fetchSingleRiSc
+    return `${riScUri}/${latestSupportedVersion}/${id}`;
+  }
+
   function uriToFetchDifference(id: string) {
     // URLS.backend.fetchDifference
     return `${riScUri}/${id}/difference`;
   }
 
-  function uriToFetchRiSc(id: string) {
-    // URLS.backend.fetchRiSc
+  function uriToUpdateRiSc(id: string) {
+    // URLS.backend.updateRiSc
     return `${riScUri}/${id}`;
   }
 
@@ -198,6 +203,32 @@ export function useAuthenticatedFetch() {
     });
   }
 
+  function fetchSingleRiSc(
+    riScId: string,
+    onSuccess: (response: RiScContentResultDTO) => void,
+    onError?: (loginRejected: boolean) => void,
+  ) {
+    if (isDevelopment()) {
+      fullyAuthenticatedFetch<RiScContentResultDTO, RiScContentResultDTO>(
+        uriToFetchSingleRiSc(riScId),
+        'GET',
+        onSuccess,
+        (_, rejectedLogin) => {
+          if (onError) onError(rejectedLogin);
+        },
+      );
+    } else {
+      googleAuthenticatedFetch<RiScContentResultDTO, RiScContentResultDTO>(
+        uriToFetchSingleRiSc(riScId),
+        'GET',
+        onSuccess,
+        (_, rejectedLogin) => {
+          if (onError) onError(rejectedLogin);
+        },
+      );
+    }
+  }
+
   function fetchRiScs(
     onSuccess: (response: RiScContentResultDTO[]) => void,
     onError?: (loginRejected: boolean) => void,
@@ -302,7 +333,7 @@ export function useAuthenticatedFetch() {
         ProcessRiScResultDTO | PublishRiScResultDTO,
         ProcessRiScResultDTO
       >(
-        uriToFetchRiSc(riSc.id),
+        uriToUpdateRiSc(riSc.id),
         'PUT',
         res => {
           if (onSuccess) onSuccess(res);
@@ -349,6 +380,7 @@ export function useAuthenticatedFetch() {
   }
   return {
     fetchRiScs,
+    fetchSingleRiSc,
     fetchGcpCryptoKeys,
     postRiScs,
     putRiScs,
