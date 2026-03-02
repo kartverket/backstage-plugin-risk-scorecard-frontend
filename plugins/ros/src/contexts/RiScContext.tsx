@@ -559,35 +559,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const refetchRiScs = useCallback(() => {
-    fetchRiScs(
-      res => {
-        const fetchedRiScs: RiScWithMetadata[] = res
-          .filter(risk => risk.status === ContentStatus.Success)
-          .map(mapRiScDtoToRiScWithMetadata);
-
-        setRiScs(fetchedRiScs);
-
-        setSelectedRiSc(prev =>
-          prev ? (fetchedRiScs.find(r => r.id === prev.id) ?? prev) : prev,
-        );
-      },
-      (_, loginRejected) => {
-        dispatch({
-          type: 'SET_RESPONSE',
-          response: {
-            status: ProcessingStatus.ErrorWhenFetchingRiScs,
-            statusMessage: withLoginRejected(
-              t('errorMessages.ErrorWhenFetchingRiScs'),
-              loginRejected,
-              t,
-            ),
-          },
-        });
-      },
-    );
-  }, [fetchRiScs, dispatch, t]);
-
   function approveRiSc() {
     if (selectedRiSc && riScs) {
       dispatch({
@@ -638,24 +609,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       );
     }
   }
-
-  useEffect(() => {
-    const s = selectedRiSc?.status;
-
-    const shouldPoll =
-      s === RiScStatus.SentForApproval ||
-      s === RiScStatus.DeletionSentForApproval;
-
-    if (!shouldPoll) {
-      return undefined;
-    }
-
-    const id = window.setInterval(() => {
-      refetchRiScs();
-    }, 5000);
-
-    return () => window.clearInterval(id);
-  }, [selectedRiSc?.status, refetchRiScs]);
 
   const value = {
     riScs,
