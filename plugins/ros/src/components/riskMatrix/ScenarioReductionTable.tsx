@@ -1,4 +1,11 @@
-import { Table, useTable, CellText, type ColumnConfig } from '@backstage/ui';
+import {
+  Table,
+  useTable,
+  Cell,
+  CellText,
+  type ColumnConfig,
+  Text,
+} from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { Scenario } from '../../utils/types.ts';
@@ -27,7 +34,11 @@ export function ScenarioReductionTable({
       label: t('riskMatrix.currentRisk.scenarioColumn'),
       isRowHeader: true,
       defaultWidth: '2fr',
-      cell: item => <CellText title={item.title} />,
+      cell: item => (
+        <Cell>
+          <Text variant="body-medium">{item.title}</Text>
+        </Cell>
+      ),
     },
     {
       id: 'potentialReduction',
