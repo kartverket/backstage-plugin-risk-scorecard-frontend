@@ -47,6 +47,14 @@ function calcCompletedActionsRatio(scenario: Scenario) {
   return numOfCompletedActions / numOfRelevantActions;
 }
 
+export function calcRelevantActionsCount(scenario: Scenario): number {
+  return scenario.actions.filter(
+    action =>
+      (action.status as ActionStatusOptions) !==
+      ActionStatusOptions.NotRelevant,
+  ).length;
+}
+
 export function getRiskGradient(): string {
   return `linear-gradient(to right, 
     var(--ros-red-400) 0%, 

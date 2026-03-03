@@ -316,6 +316,10 @@ export const pluginRiScMessages = {
       dialogHeader: 'Potential risk reduction per scenario',
       scenarioColumn: 'Scenario',
       reductionColumn: 'Potential reduction',
+      metricLabel: 'Metric',
+      metricCurrentRisk: 'Current risk',
+      metricReductionPerAction: 'Risk reduction per action',
+      metricPotentialReduction: 'Potential reduction',
     },
   },
   infoDialog: {
@@ -1027,6 +1031,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Potensiell risikoreduksjon per scenario',
           'riskMatrix.currentRisk.scenarioColumn': 'Scenario',
           'riskMatrix.currentRisk.reductionColumn': 'Potensiell reduksjon',
+          'riskMatrix.currentRisk.metricLabel': 'Metrikk',
+          'riskMatrix.currentRisk.metricCurrentRisk': 'Nåværende risiko',
+          'riskMatrix.currentRisk.metricReductionPerAction':
+            'Risikoreduksjon per tiltak',
+          'riskMatrix.currentRisk.metricPotentialReduction':
+            'Potensiell reduksjon',
 
           'infoDialog.title': 'Estimert risiko',
           'infoDialog.description':

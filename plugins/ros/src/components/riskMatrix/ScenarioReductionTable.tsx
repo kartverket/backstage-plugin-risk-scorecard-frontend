@@ -3,20 +3,30 @@ import {
   useTable,
   Cell,
   CellText,
+  Flex,
+  Select,
   type ColumnConfig,
   Link,
 } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
-import { calcRiskCostOfScenario } from '../../utils/risk.ts';
+import {
+  calcRiskCostOfScenario,
+  calcRelevantActionsCount,
+} from '../../utils/risk.ts';
 import { RiskMatrixTabs } from './utils.tsx';
 import { formatNumber } from '../../utils/utilityfunctions.ts';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
+import { useState } from 'react';
+
+type MetricKey = 'currentRisk' | 'reductionPerAction' | 'potentialReduction';
 
 type ScenarioReductionRow = {
   id: string;
   title: string;
+  currentRisk: number;
+  reductionPerAction: number;
   potentialReduction: number;
 };
 
@@ -31,6 +41,8 @@ export function ScenarioReductionTable({
 }: ScenarioReductionTableProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { openScenarioDrawer } = useScenario();
+  const [selectedMetric, setSelectedMetric] =
+    useState<MetricKey>('potentialReduction');
 
   const canEdit =
     riScWithMetadata.status !== RiScStatus.DeletionDraft &&
@@ -40,6 +52,24 @@ export function ScenarioReductionTable({
     onNavigate();
     openScenarioDrawer(id, canEdit);
   }
+
+  const metricOptions: Array<{ value: MetricKey; label: string }> = [
+    {
+      value: 'potentialReduction',
+      label: t('riskMatrix.currentRisk.metricPotentialReduction'),
+    },
+    {
+      value: 'currentRisk',
+      label: t('riskMatrix.currentRisk.metricCurrentRisk'),
+    },
+    {
+      value: 'reductionPerAction',
+      label: t('riskMatrix.currentRisk.metricReductionPerAction'),
+    },
+  ];
+
+  const metricLabel =
+    metricOptions.find(o => o.value === selectedMetric)?.label ?? '';
 
   const columns: ColumnConfig<ScenarioReductionRow>[] = [
     {
@@ -59,13 +89,11 @@ export function ScenarioReductionTable({
       ),
     },
     {
-      id: 'potentialReduction',
-      label: `${t('riskMatrix.currentRisk.reductionColumn')} (${t('riskMatrix.estimatedRisk.unit.nokPerYear')})`,
+      id: 'metric',
+      label: `${metricLabel} (${t('riskMatrix.estimatedRisk.unit.nokPerYear')})`,
       defaultWidth: '1fr',
       minWidth: 230,
-      cell: item => (
-        <CellText title={formatNumber(item.potentialReduction, t)} />
-      ),
+      cell: item => <CellText title={formatNumber(item[selectedMetric], t)} />,
     },
   ];
 
@@ -81,14 +109,19 @@ export function ScenarioReductionTable({
         scenario,
         RiskMatrixTabs.remainingRisk,
       );
+      const potentialReduction = currentRiskCost - remainingRiskCost;
+      const relevantActions = calcRelevantActionsCount(scenario);
 
       return {
         id: scenario.ID,
         title: scenario.title,
-        potentialReduction: currentRiskCost - remainingRiskCost,
+        currentRisk: currentRiskCost,
+        reductionPerAction:
+          relevantActions > 0 ? potentialReduction / relevantActions : 0,
+        potentialReduction,
       };
     })
-    .sort((a, b) => b.potentialReduction - a.potentialReduction);
+    .sort((a, b) => b[selectedMetric] - a[selectedMetric]);
 
   const { tableProps } = useTable({
     mode: 'complete',
@@ -99,5 +132,17 @@ export function ScenarioReductionTable({
     },
   });
 
-  return <Table columnConfig={columns} {...tableProps} />;
+  return (
+    <Flex direction="column" gap="16px">
+      <Select
+        aria-label={t('riskMatrix.currentRisk.metricLabel')}
+        value={selectedMetric}
+        onSelectionChange={key => {
+          if (key) setSelectedMetric(key.toString() as MetricKey);
+        }}
+        options={metricOptions}
+      />
+      <Table columnConfig={columns} {...tableProps} />
+    </Flex>
+  );
 }
