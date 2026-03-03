@@ -5,6 +5,7 @@ import {
   CellText,
   Flex,
   Select,
+  Text,
   type ColumnConfig,
   Link,
 } from '@backstage/ui';
@@ -134,6 +135,40 @@ export function ScenarioReductionTable({
 
   return (
     <Flex direction="column" gap="16px">
+      <Flex direction="column" gap="4px">
+        <Text variant="body-medium">
+          {t('riskMatrix.currentRisk.dialogDescription')}
+        </Text>
+        <ul style={{ margin: 0, paddingLeft: '20px' }}>
+          <li>
+            <Text variant="body-medium">
+              <Text weight="bold">
+                {t('riskMatrix.currentRisk.metricCurrentRisk')}
+              </Text>
+              {' — '}
+              {t('riskMatrix.currentRisk.metricCurrentRiskDescription')}
+            </Text>
+          </li>
+          <li>
+            <Text variant="body-medium">
+              <Text weight="bold">
+                {t('riskMatrix.currentRisk.metricPotentialReduction')}
+              </Text>
+              {' — '}
+              {t('riskMatrix.currentRisk.metricPotentialReductionDescription')}
+            </Text>
+          </li>
+          <li>
+            <Text variant="body-medium">
+              <Text weight="bold">
+                {t('riskMatrix.currentRisk.metricReductionPerAction')}
+              </Text>
+              {' — '}
+              {t('riskMatrix.currentRisk.metricReductionPerActionDescription')}
+            </Text>
+          </li>
+        </ul>
+      </Flex>
       <Select
         aria-label={t('riskMatrix.currentRisk.metricLabel')}
         value={selectedMetric}

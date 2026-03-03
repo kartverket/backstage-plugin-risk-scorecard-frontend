@@ -313,7 +313,15 @@ export const pluginRiScMessages = {
       description:
         "The diagram illustrates the development from today's initial risk to the calculated final risk. <strong>{{actionsOk}}</strong> completed actions represent a reduction of <strong>{{reduction}} NOK/year.</strong>",
       showMoreInfo: 'Show more information',
-      dialogHeader: 'Potential risk reduction per scenario',
+      dialogHeader: 'Risk statistics per scenario',
+      dialogDescription:
+        'This table shows per-scenario risk statistics. Use the dropdown to choose which metric to display:',
+      metricCurrentRiskDescription:
+        'estimated risk cost based on how many actions have been completed.',
+      metricPotentialReductionDescription:
+        'how much the risk can still be reduced by completing remaining actions.',
+      metricReductionPerActionDescription:
+        'potential reduction divided equally across remaining relevant actions.',
       scenarioColumn: 'Scenario',
       reductionColumn: 'Potential reduction',
       metricLabel: 'Metric',
@@ -1028,7 +1036,15 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Diagrammet illustrerer utviklingen fra dagens startrisiko mot beregnet sluttrisiko. <strong>{{actionsOk}}</strong> fullførte tiltak utgjør en reduksjon på <strong>{{reduction}} kr/år.</strong>',
           'riskMatrix.currentRisk.showMoreInfo': 'Vis mer informasjon',
           'riskMatrix.currentRisk.dialogHeader':
-            'Potensiell risikoreduksjon per scenario',
+            'Risikostatistikk per scenario',
+          'riskMatrix.currentRisk.dialogDescription':
+            'Denne tabellen viser risikostatistikk per scenario. Bruk nedtrekksmenyen for å velge hvilken metrikk som vises:',
+          'riskMatrix.currentRisk.metricCurrentRiskDescription':
+            'estimert risikokostnad basert på hvor mange tiltak som er fullført.',
+          'riskMatrix.currentRisk.metricPotentialReductionDescription':
+            'hvor mye risikoen fortsatt kan reduseres ved å fullføre gjenstående tiltak.',
+          'riskMatrix.currentRisk.metricReductionPerActionDescription':
+            'potensiell reduksjon fordelt likt på gjenstående relevante tiltak.',
           'riskMatrix.currentRisk.scenarioColumn': 'Scenario',
           'riskMatrix.currentRisk.reductionColumn': 'Potensiell reduksjon',
           'riskMatrix.currentRisk.metricLabel': 'Metrikk',
