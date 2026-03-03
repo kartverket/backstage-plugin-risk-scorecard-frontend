@@ -8,7 +8,7 @@ export function calcRiskCostOfRiSc(riSc: RiSc, riskType?: RiskMatrixTabs) {
     .reduce((a, b) => a + b, 0);
 }
 
-function calcRiskCostOfScenario(
+export function calcRiskCostOfScenario(
   scenario: Scenario,
   riskType?: RiskMatrixTabs,
 ): number {
