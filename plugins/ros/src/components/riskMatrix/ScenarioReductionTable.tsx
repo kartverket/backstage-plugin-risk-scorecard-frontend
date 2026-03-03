@@ -4,14 +4,15 @@ import {
   Cell,
   CellText,
   type ColumnConfig,
-  Text,
+  Link,
 } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { Scenario } from '../../utils/types.ts';
+import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
 import { calcRiskCostOfScenario } from '../../utils/risk.ts';
 import { RiskMatrixTabs } from './utils.tsx';
 import { formatNumber } from '../../utils/utilityfunctions.ts';
+import { useScenario } from '../../contexts/ScenarioContext.tsx';
 
 type ScenarioReductionRow = {
   id: string;
@@ -20,13 +21,25 @@ type ScenarioReductionRow = {
 };
 
 type ScenarioReductionTableProps = {
-  scenarios: Scenario[];
+  riScWithMetadata: RiScWithMetadata;
+  onNavigate: () => void;
 };
 
 export function ScenarioReductionTable({
-  scenarios,
+  riScWithMetadata,
+  onNavigate,
 }: ScenarioReductionTableProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { openScenarioDrawer } = useScenario();
+
+  const canEdit =
+    riScWithMetadata.status !== RiScStatus.DeletionDraft &&
+    riScWithMetadata.status !== RiScStatus.DeletionSentForApproval;
+
+  function handleScenarioClick(id: string) {
+    onNavigate();
+    openScenarioDrawer(id, canEdit);
+  }
 
   const columns: ColumnConfig<ScenarioReductionRow>[] = [
     {
@@ -36,7 +49,12 @@ export function ScenarioReductionTable({
       defaultWidth: '2fr',
       cell: item => (
         <Cell>
-          <Text variant="body-medium">{item.title}</Text>
+          <Link
+            variant="body-medium"
+            onPress={() => handleScenarioClick(item.id)}
+          >
+            {item.title}
+          </Link>
         </Cell>
       ),
     },
@@ -50,6 +68,8 @@ export function ScenarioReductionTable({
       ),
     },
   ];
+
+  const scenarios = riScWithMetadata.content.scenarios;
 
   const data: ScenarioReductionRow[] = scenarios
     .map(scenario => {

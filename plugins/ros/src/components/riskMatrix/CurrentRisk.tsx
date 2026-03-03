@@ -144,7 +144,10 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
         onClick={() => setIsDialogOpen(false)}
         className={styles.reductionDialog}
       >
-        <ScenarioReductionTable scenarios={risc.content.scenarios} />
+        <ScenarioReductionTable
+          riScWithMetadata={risc}
+          onNavigate={() => setIsDialogOpen(false)}
+        />
       </DialogComponent>
     </Flex>
   );
