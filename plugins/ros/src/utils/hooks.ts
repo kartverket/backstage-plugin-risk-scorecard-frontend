@@ -200,15 +200,15 @@ export function useAuthenticatedFetch() {
 
   function fetchRiScs(
     onSuccess: (response: RiScContentResultDTO[]) => void,
-    onError?: (loginRejected: boolean) => void,
+    onError?: (error: any, loginRejected: boolean) => void,
   ) {
     if (isDevelopment()) {
       fullyAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
         uriToFetchAllRiScs,
         'GET',
         onSuccess,
-        (_, rejectedLogin) => {
-          if (onError) onError(rejectedLogin);
+        (error, rejectedLogin) => {
+          if (onError) onError(error, rejectedLogin);
         },
       );
     } else {
@@ -216,8 +216,8 @@ export function useAuthenticatedFetch() {
         uriToFetchAllRiScs,
         'GET',
         onSuccess,
-        (_, rejectedLogin) => {
-          if (onError) onError(rejectedLogin);
+        (error, rejectedLogin) => {
+          if (onError) onError(error, rejectedLogin);
         },
       );
     }

@@ -48,6 +48,8 @@ export type RiScContentResultDTO = {
   riScContent: string;
   sopsConfig: SopsConfigDTO;
   migrationStatus: MigrationStatus;
+  statusMessage?: string;
+  errorCode?: string;
   lastPublished: LastPublished;
 } & ContentRiScResultDTO;
 
