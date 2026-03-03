@@ -126,7 +126,7 @@ export function ScenarioReductionTable({
 
   const { tableProps } = useTable({
     mode: 'complete',
-    getData: () => data,
+    data,
     paginationOptions: {
       pageSize: 5,
       showPageSizeOptions: false,
