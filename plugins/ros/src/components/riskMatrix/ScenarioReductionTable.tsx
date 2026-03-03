@@ -44,6 +44,7 @@ export function ScenarioReductionTable({
       id: 'potentialReduction',
       label: `${t('riskMatrix.currentRisk.reductionColumn')} (${t('riskMatrix.estimatedRisk.unit.nokPerYear')})`,
       defaultWidth: '1fr',
+      minWidth: 230,
       cell: item => (
         <CellText title={formatNumber(item.potentialReduction, t)} />
       ),
