@@ -37,22 +37,24 @@ export function ScenarioReductionTable({
     },
   ];
 
-  const data: ScenarioReductionRow[] = scenarios.map(scenario => {
-    const currentRiskCost = calcRiskCostOfScenario(
-      scenario,
-      RiskMatrixTabs.currentRisk,
-    );
-    const remainingRiskCost = calcRiskCostOfScenario(
-      scenario,
-      RiskMatrixTabs.remainingRisk,
-    );
+  const data: ScenarioReductionRow[] = scenarios
+    .map(scenario => {
+      const currentRiskCost = calcRiskCostOfScenario(
+        scenario,
+        RiskMatrixTabs.currentRisk,
+      );
+      const remainingRiskCost = calcRiskCostOfScenario(
+        scenario,
+        RiskMatrixTabs.remainingRisk,
+      );
 
-    return {
-      id: scenario.ID,
-      title: scenario.title,
-      potentialReduction: currentRiskCost - remainingRiskCost,
-    };
-  });
+      return {
+        id: scenario.ID,
+        title: scenario.title,
+        potentialReduction: currentRiskCost - remainingRiskCost,
+      };
+    })
+    .sort((a, b) => b.potentialReduction - a.potentialReduction);
 
   const { tableProps } = useTable({
     mode: 'complete',
