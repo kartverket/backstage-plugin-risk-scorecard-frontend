@@ -315,9 +315,9 @@ export const pluginRiScMessages = {
       showMoreInfo: 'Show more information',
       dialogHeader: 'Risk statistics per scenario',
       dialogDescription:
-        'This table shows per-scenario risk statistics. Use the dropdown to choose which metric to display:',
+        'This table shows risk statistics per scenario. All actions within a scenario are weighted equally, so each completed action contributes the same amount of risk reduction. Use the dropdown to choose which metric to display:',
       metricCurrentRiskDescription:
-        'estimated risk cost based on how many actions have been completed.',
+        'estimated risk cost based on the share of completed actions.',
       metricPotentialReductionDescription:
         'how much the risk can still be reduced by completing remaining actions.',
       metricReductionPerActionDescription:
@@ -1038,11 +1038,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'riskMatrix.currentRisk.dialogHeader':
             'Risikostatistikk per scenario',
           'riskMatrix.currentRisk.dialogDescription':
-            'Denne tabellen viser risikostatistikk per scenario. Bruk nedtrekksmenyen for å velge hvilken metrikk som vises:',
+            'Denne tabellen viser risikostatistikk per scenario. Alle tiltak innenfor et scenario er vektet likt, slik at hvert fullført tiltak bidrar med like mye risikoreduksjon. Bruk nedtrekksmenyen for å velge hvilken metrikk som vises:',
           'riskMatrix.currentRisk.metricCurrentRiskDescription':
-            'estimert risikokostnad basert på hvor mange tiltak som er fullført.',
+            'estimert risikokostnad basert på andelen fullførte tiltak.',
           'riskMatrix.currentRisk.metricPotentialReductionDescription':
-            'hvor mye risikoen fortsatt kan reduseres ved å fullføre gjenstående tiltak.',
+            'hvor mye risikoen fortsatt kan reduseres ved å fullføre gjenstående relevante tiltak.',
           'riskMatrix.currentRisk.metricReductionPerActionDescription':
             'potensiell reduksjon fordelt likt på gjenstående relevante tiltak.',
           'riskMatrix.currentRisk.scenarioColumn': 'Scenario',
