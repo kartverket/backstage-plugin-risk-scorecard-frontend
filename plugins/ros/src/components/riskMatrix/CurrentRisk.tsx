@@ -142,6 +142,7 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
         header={t('riskMatrix.currentRisk.dialogHeader')}
         isOpen={isDialogOpen}
         onClick={() => setIsDialogOpen(false)}
+        className={styles.reductionDialog}
       >
         <ScenarioReductionTable scenarios={risc.content.scenarios} />
       </DialogComponent>
