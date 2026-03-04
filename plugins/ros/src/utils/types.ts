@@ -249,6 +249,7 @@ export enum ContentStatus {
   DecryptionFailed = 'DecryptionFailed',
   NoReadAccess = 'NoReadAccess',
   UnsupportedMigration = 'UnsupportedMigration',
+  SchemaValidationFailed = 'SchemaValidationFailed',
 }
 
 export enum DifferenceStatus {

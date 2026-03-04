@@ -654,6 +654,8 @@ export const pluginRiScMessages = {
       'Risk scorecard "{{riScId}}" cannot be automatically migrated to the latest version.',
     ContentStatusUnknown:
       'Failed to fetch risk scorecard "{{riScId}}" with unknown status: {{status}}',
+    ContentStatusSchemaValidationFailed:
+      'Failed to fetch risk scorecard "{{riScId}}". Its content does not match the expected format. It may have been manually edited or corrupted.',
     ContentStatusDecryptionFailedMessage: {
       INTERNAL_SERVER_ERROR:
         'Failed to decrypt risk scorecard "{{riScId}}", 500 - Internal server error from the crypto service.',
@@ -1361,6 +1363,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Du har ikke lesetilgang til risiko- og sårbarhetsanalyse "{{riScId}}". ',
           'errorMessages.ContentStatusUnsupportedMigration':
             'Risiko- og sårbarhetsanalyse "{{riScId}}" kan ikke automatisk migreres til den nyeste versjonen.',
+          'errorMessages.ContentStatusSchemaValidationFailed':
+            'Risiko- og sårbarhetsanalyse "{{riScId}}" kunne ikke lastes fordi innholdet ikke samsvarer med forventet format. Den kan ha blitt manuelt redigert eller ødelagt.',
 
           'errorMessages.ContentStatusDecryptionFailedMessage.INTERNAL_SERVER_ERROR':
             'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", 500 - Intern serverfeil fra kryptotjenesten.',
