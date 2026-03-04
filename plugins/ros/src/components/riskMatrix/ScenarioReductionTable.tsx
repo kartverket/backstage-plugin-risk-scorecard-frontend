@@ -20,6 +20,7 @@ import { RiskMatrixTabs } from './utils.tsx';
 import { formatNumber } from '../../utils/utilityfunctions.ts';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { useState } from 'react';
+import styles from './ScenarioReductionTable.module.css';
 
 type MetricKey = 'currentRisk' | 'reductionPerAction' | 'potentialReduction';
 
@@ -139,7 +140,7 @@ export function ScenarioReductionTable({
         <Text variant="body-medium">
           {t('riskMatrix.currentRisk.dialogDescription')}
         </Text>
-        <ul style={{ margin: 0, paddingLeft: '20px' }}>
+        <ul className={styles.metricList}>
           <li>
             <Text variant="body-medium">
               <Text weight="bold">
@@ -172,8 +173,8 @@ export function ScenarioReductionTable({
       <Select
         aria-label={t('riskMatrix.currentRisk.metricLabel')}
         value={selectedMetric}
-        onSelectionChange={key => {
-          if (key) setSelectedMetric(key.toString() as MetricKey);
+        onChange={key => {
+          if (key) setSelectedMetric(key as MetricKey);
         }}
         options={metricOptions}
       />
