@@ -47,11 +47,10 @@ function calcCompletedActionsRatio(scenario: Scenario) {
   return numOfCompletedActions / numOfRelevantActions;
 }
 
-export function calcRelevantActionsCount(scenario: Scenario): number {
+export function calcRemainingActionsCount(scenario: Scenario): number {
   return scenario.actions.filter(
     action =>
-      (action.status as ActionStatusOptions) !==
-      ActionStatusOptions.NotRelevant,
+      (action.status as ActionStatusOptions) === ActionStatusOptions.NotOK,
   ).length;
 }
 

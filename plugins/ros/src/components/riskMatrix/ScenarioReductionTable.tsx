@@ -14,7 +14,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
 import {
   calcRiskCostOfScenario,
-  calcRelevantActionsCount,
+  calcRemainingActionsCount,
 } from '../../utils/risk.ts';
 import { RiskMatrixTabs } from './utils.tsx';
 import { formatNumber } from '../../utils/utilityfunctions.ts';
@@ -112,14 +112,14 @@ export function ScenarioReductionTable({
         RiskMatrixTabs.remainingRisk,
       );
       const potentialReduction = currentRiskCost - remainingRiskCost;
-      const relevantActions = calcRelevantActionsCount(scenario);
+      const remainingActions = calcRemainingActionsCount(scenario);
 
       return {
         id: scenario.ID,
         title: scenario.title,
         currentRisk: currentRiskCost,
         reductionPerAction:
-          relevantActions > 0 ? potentialReduction / relevantActions : 0,
+          remainingActions > 0 ? potentialReduction / remainingActions : 0,
         potentialReduction,
       };
     })

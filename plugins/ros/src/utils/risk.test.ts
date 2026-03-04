@@ -3,7 +3,7 @@ import { Action, RiSc, Scenario } from './types';
 import {
   calcRiskCostOfRiSc,
   calcRiskCostOfScenario,
-  calcRelevantActionsCount,
+  calcRemainingActionsCount,
 } from './risk';
 import { RiskMatrixTabs } from '../components/riskMatrix/utils';
 
@@ -204,18 +204,19 @@ describe('calcRiskCostOfRiSc', () => {
   });
 });
 
-describe('calcRelevantActionsCount', () => {
-  test('counts all actions when none are "Not relevant"', () => {
+describe('calcRemainingActionsCount', () => {
+  test('counts only "Not OK" actions', () => {
     const scenario = createScenario({
       actions: [
         createAction(ActionStatusOptions.OK),
         createAction(ActionStatusOptions.NotOK),
+        createAction(ActionStatusOptions.NotOK),
       ],
     });
-    expect(calcRelevantActionsCount(scenario)).toBe(2);
+    expect(calcRemainingActionsCount(scenario)).toBe(2);
   });
 
-  test('excludes "Not relevant" actions', () => {
+  test('excludes "Not relevant" and "OK" actions', () => {
     const scenario = createScenario({
       actions: [
         createAction(ActionStatusOptions.OK),
@@ -224,7 +225,17 @@ describe('calcRelevantActionsCount', () => {
         createAction(ActionStatusOptions.NotRelevant),
       ],
     });
-    expect(calcRelevantActionsCount(scenario)).toBe(2);
+    expect(calcRemainingActionsCount(scenario)).toBe(1);
+  });
+
+  test('returns 0 when all actions are completed', () => {
+    const scenario = createScenario({
+      actions: [
+        createAction(ActionStatusOptions.OK),
+        createAction(ActionStatusOptions.OK),
+      ],
+    });
+    expect(calcRemainingActionsCount(scenario)).toBe(0);
   });
 
   test('returns 0 when all actions are "Not relevant"', () => {
@@ -234,11 +245,11 @@ describe('calcRelevantActionsCount', () => {
         createAction(ActionStatusOptions.NotRelevant),
       ],
     });
-    expect(calcRelevantActionsCount(scenario)).toBe(0);
+    expect(calcRemainingActionsCount(scenario)).toBe(0);
   });
 
   test('returns 0 for empty actions list', () => {
     const scenario = createScenario({ actions: [] });
-    expect(calcRelevantActionsCount(scenario)).toBe(0);
+    expect(calcRemainingActionsCount(scenario)).toBe(0);
   });
 });
