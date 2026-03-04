@@ -4,6 +4,10 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { CoverageType } from '../../utils/threatActorsAndVulnerabilities.ts';
 import { StatusIcon, StatusIconTypes } from '../common/StatusIcon.tsx';
+import {
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
+} from '../../utils/constants.ts';
 
 type CoverageStatusBoxProps = {
   notCovered: string[];
@@ -52,6 +56,19 @@ function useCoverageStatusText(
       ? t('dictionary.theVulnerability')
       : t('dictionary.theThreatActor');
 
+  const translationPrefix =
+    coverageType === CoverageType.Vulnerability
+      ? 'vulnerabilities'
+      : 'threatActors';
+
+  const translated = notCoveredList.map(item =>
+    t(
+      `${translationPrefix}.${item}` as
+        | `threatActors.${ThreatActorsOptions}`
+        | `vulnerabilities.${VulnerabilitiesOptions}`,
+    ),
+  );
+
   if (numOfNotCovered === 0) {
     return t('threatActorsAndVulnerabilities.allCovered', {
       kind: kindPlural.toLowerCase(),
@@ -61,21 +78,21 @@ function useCoverageStatusText(
   if (numOfNotCovered === 1) {
     return t('threatActorsAndVulnerabilities.oneNotCovered', {
       kind: kind,
-      notCovered: notCoveredList[0],
+      notCovered: translated[0],
     });
   }
 
   if (numOfNotCovered === 2) {
     return t('threatActorsAndVulnerabilities.twoNotCovered', {
       kind: kindsPlural,
-      notCovered1: notCoveredList[0],
-      notCovered2: notCoveredList[1],
+      notCovered1: translated[0],
+      notCovered2: translated[1],
     });
   }
   return t('threatActorsAndVulnerabilities.multipleNotCovered', {
     kind: kindPlural.toLowerCase(),
-    notCovered1: notCoveredList[0],
-    notCovered2: notCoveredList[1],
-    notCovered3: notCoveredList[2],
+    notCovered1: translated[0],
+    notCovered2: translated[1],
+    notCovered3: translated[2],
   });
 }
