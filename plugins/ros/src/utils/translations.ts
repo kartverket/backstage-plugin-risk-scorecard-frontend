@@ -323,7 +323,6 @@ export const pluginRiScMessages = {
       metricReductionPerActionDescription:
         'potential reduction divided equally across remaining relevant actions.',
       scenarioColumn: 'Scenario',
-      reductionColumn: 'Potential reduction',
       metricLabel: 'Metric',
       metricCurrentRisk: 'Current risk',
       metricReductionPerAction: 'Risk reduction per action',
@@ -1047,7 +1046,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'riskMatrix.currentRisk.metricReductionPerActionDescription':
             'potensiell reduksjon fordelt likt på gjenstående relevante tiltak.',
           'riskMatrix.currentRisk.scenarioColumn': 'Scenario',
-          'riskMatrix.currentRisk.reductionColumn': 'Potensiell reduksjon',
           'riskMatrix.currentRisk.metricLabel': 'Metrikk',
           'riskMatrix.currentRisk.metricCurrentRisk': 'Nåværende risiko',
           'riskMatrix.currentRisk.metricReductionPerAction':
