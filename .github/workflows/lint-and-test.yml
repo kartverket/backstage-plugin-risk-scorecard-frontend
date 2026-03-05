@@ -5,6 +5,10 @@ on:
     paths-ignore:
       - '.security/**'
 
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 

@@ -16,6 +16,10 @@ env:
   SERVICE_ACCOUNT: 'risc-plugin-github-actions@spire-ros-5lmr.iam.gserviceaccount.com'
   WORKLOAD_IDENTITY_PROVIDER: 'projects/457384642040/locations/global/workloadIdentityPools/github-actions-pool/providers/github'
 
+concurrency:
+  group: build-and-push-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 defaults:
   run:
     shell: bash

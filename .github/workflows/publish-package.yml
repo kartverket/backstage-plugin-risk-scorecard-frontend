@@ -18,6 +18,8 @@ on:
     types: [opened, edited, synchronize, reopened]
     branches:
       - main
+    paths-ignore:
+      - '.security/**'
 
 jobs:
   publish:
