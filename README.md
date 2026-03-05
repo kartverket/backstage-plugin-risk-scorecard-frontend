@@ -19,7 +19,7 @@ The correct `node` should now apply locally in this project. Check with:
 
 ```sh
 node -v
->>> v24.14.0
+>>> v24.x.x
 ```
 
 Continue by enabling `yarn` as package manager. `corepack` is used for this, it comes with `node`.
