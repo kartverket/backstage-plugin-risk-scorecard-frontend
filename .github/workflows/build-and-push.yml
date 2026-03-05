@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - id: auth
         name: 'Authenticate to Google Cloud'
@@ -45,7 +45,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.x # From mise.toml
-          cache: 'npm'
+          cache: 'yarn'
 
       - run: corepack enable
 
