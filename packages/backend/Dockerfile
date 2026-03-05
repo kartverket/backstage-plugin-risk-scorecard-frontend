@@ -40,7 +40,6 @@ COPY backstage.json ./
 ENV NODE_ENV=production
 
 # This disables node snapshot for Node 20 to work with the Scaffolder
-# Not sure if needed for Node 22.
 ENV NODE_OPTIONS="--no-node-snapshot"
 
 # Copy repo skeleton first, to avoid unnecessary docker cache invalidation.
