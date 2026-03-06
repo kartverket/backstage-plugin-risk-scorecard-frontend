@@ -16,6 +16,10 @@ env:
   SERVICE_ACCOUNT: 'risc-plugin-github-actions@spire-ros-5lmr.iam.gserviceaccount.com'
   WORKLOAD_IDENTITY_PROVIDER: 'projects/457384642040/locations/global/workloadIdentityPools/github-actions-pool/providers/github'
 
+concurrency:
+  group: build-and-push-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 defaults:
   run:
     shell: bash
@@ -29,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - id: auth
         name: 'Authenticate to Google Cloud'
@@ -41,13 +45,14 @@ jobs:
       - name: Configure Docker to use the gcloud command-line tool as a credential helper
         run: gcloud auth configure-docker ${{ env.AR_REPO_LOCATION }}-docker.pkg.dev --quiet
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.x # From mise.toml
-          cache: 'npm'
-
-      - run: corepack enable
+          cache: 'yarn'
 
       - run: yarn install --immutable
 
@@ -61,14 +66,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
 
-      - name: Build the Docker image
-        run: |
-          docker build -f packages/backend/Dockerfile -t "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" .
-
-      - name: Push the Docker image to Google Artifact Registry
-        if: github.ref == 'refs/heads/main'
-        run: |
-          docker push "${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+      - name: Build and push the Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: packages/backend/Dockerfile
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: ${{ env.AR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Deploy to Cloud Run
         if: github.ref == 'refs/heads/main'
