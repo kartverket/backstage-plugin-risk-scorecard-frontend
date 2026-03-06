@@ -1,12 +1,15 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScWithMetadata } from '../../utils/types';
-import { Box, Text, Flex } from '@backstage/ui';
+import { Box, Button, Text, Flex } from '@backstage/ui';
 import { ActionStatusOptions } from '../../utils/constants';
 import { calcRiskCostOfRiSc, getRiskGradient } from '../../utils/risk';
 import { RiskMatrixTabs } from './utils';
 import styles from './CurrentRisk.module.css';
 import { formatNumber } from '../../utils/utilityfunctions';
+import { useState } from 'react';
+import DialogComponent from '../dialog/DialogComponent.tsx';
+import { ScenarioReductionTable } from './ScenarioReductionTable.tsx';
 
 type CurrentRiskProps = {
   risc: RiScWithMetadata;
@@ -14,6 +17,7 @@ type CurrentRiskProps = {
 
 export function CurrentRisk({ risc }: CurrentRiskProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const actionsOk = risc.content.scenarios.reduce(
     (total, scenario) =>
@@ -128,6 +132,23 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
           dangerouslySetInnerHTML={{ __html: description }}
         />
       </Flex>
+
+      <div>
+        <Button onClick={() => setIsDialogOpen(true)}>
+          {t('riskMatrix.currentRisk.showMoreInfo')}
+        </Button>
+      </div>
+      <DialogComponent
+        header={t('riskMatrix.currentRisk.dialogHeader')}
+        isOpen={isDialogOpen}
+        onClick={() => setIsDialogOpen(false)}
+        className={styles.reductionDialog}
+      >
+        <ScenarioReductionTable
+          riScWithMetadata={risc}
+          onNavigate={() => setIsDialogOpen(false)}
+        />
+      </DialogComponent>
     </Flex>
   );
 }
