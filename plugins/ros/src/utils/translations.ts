@@ -921,7 +921,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.updatedStatus.tooltip.VERY_OUTDATED':
             'Dette tiltaket er veldig utdatert',
           'rosStatus.feedbackDescription':
-            '🎉 Takk for at du har fullført ROS-en! Hjelp oss med å forbedre verktøyet —',
+            '🎉 Takk for at du har fullført RoSen! Hjelp oss med å forbedre verktøyet —',
           'rosStatus.feedbackLink': 'gi oss tilbakemelding ✨',
           'rosStatus.githubLink': 'Gå til GitHub',
           'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
