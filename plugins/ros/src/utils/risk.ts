@@ -8,7 +8,7 @@ export function calcRiskCostOfRiSc(riSc: RiSc, riskType?: RiskMatrixTabs) {
     .reduce((a, b) => a + b, 0);
 }
 
-function calcRiskCostOfScenario(
+export function calcRiskCostOfScenario(
   scenario: Scenario,
   riskType?: RiskMatrixTabs,
 ): number {
@@ -45,6 +45,13 @@ function calcCompletedActionsRatio(scenario: Scenario) {
   }
 
   return numOfCompletedActions / numOfRelevantActions;
+}
+
+export function calcRemainingActionsCount(scenario: Scenario): number {
+  return scenario.actions.filter(
+    action =>
+      (action.status as ActionStatusOptions) === ActionStatusOptions.NotOK,
+  ).length;
 }
 
 export function getRiskGradient(): string {
