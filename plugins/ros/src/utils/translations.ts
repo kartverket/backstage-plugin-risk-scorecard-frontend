@@ -312,6 +312,21 @@ export const pluginRiScMessages = {
       title: 'Risc reduction',
       description:
         "The diagram illustrates the development from today's initial risk to the calculated final risk. <strong>{{actionsOk}}</strong> completed actions represent a reduction of <strong>{{reduction}} NOK/year.</strong>",
+      showMoreInfo: 'Risk statistics per scenario',
+      dialogHeader: 'Risk statistics per scenario',
+      dialogDescription:
+        'This table shows risk statistics per scenario. All actions within a scenario are weighted equally, so each completed action contributes the same amount of risk reduction. Use the dropdown to choose which metric to display:',
+      metricCurrentRiskDescription:
+        'estimated risk cost based on the share of completed actions.',
+      metricPotentialReductionDescription:
+        'how much the risk can still be reduced by completing remaining actions.',
+      metricReductionPerActionDescription:
+        'potential reduction divided equally across remaining relevant actions.',
+      scenarioColumn: 'Scenario',
+      metricLabel: 'Metric',
+      metricCurrentRisk: 'Current risk',
+      metricReductionPerAction: 'Risk reduction per action',
+      metricPotentialReduction: 'Potential reduction',
     },
   },
   infoDialog: {
@@ -1020,6 +1035,25 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'riskMatrix.currentRisk.title': 'Reduksjon i risiko',
           'riskMatrix.currentRisk.description':
             'Diagrammet illustrerer utviklingen fra dagens startrisiko mot beregnet sluttrisiko. <strong>{{actionsOk}}</strong> fullførte tiltak utgjør en reduksjon på <strong>{{reduction}} kr/år.</strong>',
+          'riskMatrix.currentRisk.showMoreInfo':
+            'Risikostatistikk per scenario',
+          'riskMatrix.currentRisk.dialogHeader':
+            'Risikostatistikk per scenario',
+          'riskMatrix.currentRisk.dialogDescription':
+            'Denne tabellen viser risikostatistikk per scenario. Alle tiltak innenfor et scenario er vektet likt, slik at hvert fullført tiltak bidrar med like mye risikoreduksjon. Bruk nedtrekksmenyen for å velge hvilken metrikk som vises:',
+          'riskMatrix.currentRisk.metricCurrentRiskDescription':
+            'estimert risikokostnad basert på andelen fullførte tiltak.',
+          'riskMatrix.currentRisk.metricPotentialReductionDescription':
+            'hvor mye risikoen fortsatt kan reduseres ved å fullføre gjenstående relevante tiltak.',
+          'riskMatrix.currentRisk.metricReductionPerActionDescription':
+            'potensiell reduksjon fordelt likt på gjenstående relevante tiltak.',
+          'riskMatrix.currentRisk.scenarioColumn': 'Scenario',
+          'riskMatrix.currentRisk.metricLabel': 'Metrikk',
+          'riskMatrix.currentRisk.metricCurrentRisk': 'Nåværende risiko',
+          'riskMatrix.currentRisk.metricReductionPerAction':
+            'Risikoreduksjon per tiltak',
+          'riskMatrix.currentRisk.metricPotentialReduction':
+            'Potensiell reduksjon',
 
           'infoDialog.title': 'Estimert risiko',
           'infoDialog.description':
