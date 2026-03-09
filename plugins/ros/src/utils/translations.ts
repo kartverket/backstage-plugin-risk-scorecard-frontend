@@ -166,6 +166,9 @@ export const pluginRiScMessages = {
     prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
     moreInformationButton: 'More information', // Lagre ROS migrering
     githubLink: 'Go to GitHub',
+    feedbackDescription:
+      '🎉 Thank you for completing your risk scorecard! Please help us improve the tool —',
+    feedbackLink: 'give us feedback ✨',
   },
   publishDialog: {
     titleUpdate: 'Accept risks', // Approve ROS
@@ -917,6 +920,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Dette tiltaket er utdatert',
           'rosStatus.updatedStatus.tooltip.VERY_OUTDATED':
             'Dette tiltaket er veldig utdatert',
+          'rosStatus.feedbackDescription':
+            '🎉 Takk for at du har fullført ROS-en! Hjelp oss med å forbedre verktøyet —',
+          'rosStatus.feedbackLink': 'gi oss tilbakemelding ✨',
           'rosStatus.githubLink': 'Gå til GitHub',
           'publishDialog.titleUpdate': 'Godkjenn ROS-analyse',
           'publishDialog.titleDelete': 'Godkjenn sletting',
