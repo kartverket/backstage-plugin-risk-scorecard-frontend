@@ -1,6 +1,7 @@
 import { Box, Link, Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import styles from './ActionURL.module.css';
 
 type ActionURLProps = {
   url: string;
@@ -24,7 +25,7 @@ export function ActionURL(props: ActionURLProps) {
           {props.url}
         </Link>
       ) : (
-        <Text as="p" variant="body-large" style={{ fontStyle: 'italic' }}>
+        <Text as="p" variant="body-large" className={styles.emptyText}>
           {t('dictionary.emptyField', {
             field: t('dictionary.url').toLowerCase(),
           })}
