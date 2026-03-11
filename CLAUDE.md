@@ -90,9 +90,10 @@ The codebase uses three UI libraries and is actively migrating toward `@backstag
 
 When writing new UI code, prefer `@backstage/ui` primitives (`Box`, `Flex`, `Text`, `Button`, `Card`, `Dialog`, etc.) over MUI v5. When touching existing MUI v5 components, consider migrating them to `@backstage/ui` as part of the change.
 
-- CSS-in-JS via **Emotion** (`@emotion/styled`, `sx` prop) for MUI components
+- **CSS Modules** (`.module.css` files co-located with the component) are the **preferred** styling approach for new components — use them instead of Emotion or inline styles
+- CSS-in-JS via **Emotion** (`@emotion/styled`, `sx` prop) is used by existing MUI components; do not add new Emotion usage
 - Emotion cache is configured in `PluginRoot.tsx` with a `<meta>` insertion point to prevent MUI v4/v5 style ordering conflicts
-- CSS custom properties for risk matrix colours are defined under `--ros-*` names
+- CSS custom properties for risk matrix colours are defined under `--ros-*` names; use these tokens in CSS Modules files
 - Common style helpers live in `utils/style.ts`
 
 ### Translations
