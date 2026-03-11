@@ -6,6 +6,7 @@ import {
 } from './utils.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
+import styles from './StatusBadge.module.css';
 
 interface StatusBadgeProps {
   riScStatus: RiScStatusEnumType;
@@ -43,10 +44,7 @@ export function StatusBadge(props: StatusBadgeProps) {
 
   return (
     <Flex direction="row" align="center" gap="2">
-      <i
-        className={statusMap[props.riScStatus].icon}
-        style={{ fontSize: '20px' }}
-      />
+      <i className={`${statusMap[props.riScStatus].icon} ${styles.icon}`} />
       <Text as="p" variant="body-large" weight="bold">
         {statusMap[props.riScStatus].text}
       </Text>
