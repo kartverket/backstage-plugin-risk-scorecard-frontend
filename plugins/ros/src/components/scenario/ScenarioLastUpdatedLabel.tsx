@@ -2,6 +2,7 @@ import { Flex, Text } from '@backstage/ui';
 import { formatDate, shortenName } from '../../utils/utilityfunctions.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import classnames from 'classnames';
 import styles from './ScenarioLastUpdatedLabel.module.css';
 
 type ScenarioLastUpdatedLabelProps = {
@@ -16,11 +17,15 @@ export function ScenarioLastUpdatedLabel(props: ScenarioLastUpdatedLabelProps) {
     ? formatDate(props.lastUpdated)
     : t('scenarioDrawer.action.notUpdated');
 
-  const totalLabelWidth =
-    t('currentLanguage') === 'en' ? `${144 + 8}px` : `${169 + 8}px`;
-
   return (
-    <Flex direction="column" gap="0" style={{ width: totalLabelWidth }}>
+    <Flex
+      direction="column"
+      gap="0"
+      className={classnames({
+        [styles.labelWidthEn]: t('currentLanguage') === 'en',
+        [styles.labelWidthNo]: t('currentLanguage') !== 'en',
+      })}
+    >
       <Text as="p" variant="body-medium">
         {t('scenarioDrawer.action.lastUpdated')} {parsedLastUpdated}
       </Text>
