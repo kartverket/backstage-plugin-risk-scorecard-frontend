@@ -1,0 +1,33 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+  position: relative;
+}
+
+.riscSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+  position: relative;
+  box-shadow: none !important;
+}
+
+.headerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.selectSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  row-gap: 16px;
+}
