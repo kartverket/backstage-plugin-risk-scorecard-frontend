@@ -112,7 +112,6 @@ Icons come from **Remixicon** (`remixicon` package), imported via `remixicon/fon
 ## Key conventions
 
 - **`@backstage/*` packages use `backstage:^` version range** — never change these manually; always use `yarn backstage:upgrade`.
-- **`generateRandomId()`** (from `utils/utilityfunctions.ts`) is used to create IDs for new scenarios and actions client-side.
 - **Enums for domain values** — `ThreatActorsOptions`, `VulnerabilitiesOptions`, `ActionStatusOptions` in `utils/constants.ts` are the canonical source for option lists.
 - **Risk scoring** uses a logarithmic scale: `Math.pow(20, i + offset)` for both probability and consequence axes; helpers in `utils/risk.ts`.
 - **Stores** (`src/stores/`) are thin localStorage wrappers exposed as custom hooks (e.g. `useActionFiltersStorage`).
