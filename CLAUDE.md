@@ -36,7 +36,7 @@ yarn tsc                               # Type check plugin only
 
 ```bash
 yarn backstage:upgrade       # Upgrade all @backstage/* packages (always use this, never edit manually)
-yarn upgrade-interactive     # Upgrade non-Backstage packages
+yarn iup                     # Upgrade non-Backstage packages (interactive)
 ```
 
 ## Architecture
@@ -46,6 +46,7 @@ yarn upgrade-interactive     # Upgrade non-Backstage packages
 - `plugins/ros/` — The RiSc plugin (all feature code lives here)
 - `packages/app/` — Backstage app shell
 - `packages/backend/` — Backstage backend
+- `build-tools/` — Release automation scripts (workspace member)
 
 ### Plugin entry points
 
@@ -63,7 +64,7 @@ BackstageContextProvider
                     └── RiScPlugin
 ```
 
-Consume contexts via the exported hooks: `useRiScs()` and `useScenario()`.
+Consume contexts via the exported hooks: `useBackstageContext()`, `useRiScs()`, and `useScenario()`.
 
 ### Data flow
 
@@ -74,7 +75,7 @@ Consume contexts via the exported hooks: `useRiScs()` and `useScenario()`.
 
 ### Schema versioning & migration
 
-- JSON schemas: `src/risc_schema_en_v*.json` (currently v3.3 through v5.2)
+- JSON schemas: `src/risc_schema_en_v*.json` (currently v3.3 through v5.2; filenames use underscores, e.g. `risc_schema_en_v5_2.json`)
 - `latestSupportedVersion` in `utils/constants.ts` controls which version new RiScs are created with
 - `MigrationStatus` type tracks per-version migration changes; the backend returns this alongside content so the UI can show migration diffs before approval
 
@@ -93,7 +94,7 @@ When writing new UI code, prefer `@backstage/ui` primitives (`Box`, `Flex`, `Tex
 - **CSS Modules** (`.module.css` files co-located with the component) are the **preferred** styling approach for new components — use them instead of Emotion or inline styles
 - CSS-in-JS via **Emotion** (`@emotion/styled`, `sx` prop) is used by existing MUI components; do not add new Emotion usage
 - Emotion cache is configured in `PluginRoot.tsx` with a `<meta>` insertion point to prevent MUI v4/v5 style ordering conflicts
-- CSS custom properties for risk matrix colours are defined under `--ros-*` names; use these tokens in CSS Modules files
+- CSS custom properties are defined in `css/theme.css` (outside `src/`, shipped via the `"files"` field in `package.json`) under `--ros-*` names with light/dark theme variants; use these tokens in CSS Modules files
 - Common style helpers live in `utils/style.ts`
 
 ### Translations
@@ -109,17 +110,28 @@ t('dictionary.cancel');
 
 Icons come from **Remixicon** (`remixicon` package), imported via `remixicon/fonts/remixicon.css`. Use `<i className="ri-icon-name" />` syntax.
 
+### Key dependencies
+
+Beyond Backstage and React, the plugin relies on several notable libraries:
+
+- **`react-hook-form`** — Form state management throughout the plugin
+- **`react-dnd`** / **`react-dnd-html5-backend`** — Drag-and-drop for scenario reordering
+- **`@uiw/react-md-editor`** / **`react-markdown`** — Markdown editing and rendering (with `remark-breaks` and `github-markdown-css`)
+### Routes
+
+Navigation routes are defined in `src/routes.ts`: `rootRouteRef`, `riScRouteRef`, and `scenarioRouteRef`. These are referenced from `plugin.ts` (routable extension) and `PluginRoot.tsx` (internal routing).
+
 ## Key conventions
 
 - **`@backstage/*` packages use `backstage:^` version range** — never change these manually; always use `yarn backstage:upgrade`.
 - **Enums for domain values** — `ThreatActorsOptions`, `VulnerabilitiesOptions`, `ActionStatusOptions` in `utils/constants.ts` are the canonical source for option lists.
-- **Risk scoring** uses a logarithmic scale: `Math.pow(20, i + offset)` for both probability and consequence axes; helpers in `utils/risk.ts`.
+- **Risk scoring** uses a logarithmic scale: `Math.pow(20, i + offset)` where offset is `-2` for probability and `3` for consequence (constants in `utils/constants.ts`); helpers in `utils/risk.ts`.
 - **Stores** (`src/stores/`) are thin localStorage wrappers exposed as custom hooks (e.g. `useActionFiltersStorage`).
 - **Test files** use `.test.ts` / `.test.tsx` extensions co-located with their source files.
 
 ## Versioning & releasing
 
-Releases are fully automated via `build-tools/release.ts` and triggered by pushing a tag through GitHub Actions. **All commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/)** — the release script uses them to determine the version bump and generate changelogs automatically.
+Releases are fully automated via `build-tools/release.ts` and triggered by pushing to `main` through GitHub Actions (the script creates tags and GitHub releases automatically). PRs against `main` get a dry-run comment showing what the release would produce. **All commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/)** — the release script uses them to determine the version bump and generate changelogs automatically.
 
 | Commit prefix                        | Version bump | Example                             |
 | ------------------------------------ | ------------ | ----------------------------------- |
@@ -142,7 +154,7 @@ The bump rules mirror the CONTRIBUTING.md versioning policy: **major** = breakin
 ## Commit and push guidelines
 
 Always branch off `origin/main` and open PRs against `main`.
-WHhen commiting, never commit directly to `main` or push without a PR. Always branch off `origin/main` and open a PR for review. This ensures that all changes are peer-reviewed and pass CI checks before merging.
+When committing, never commit directly to `main` or push without a PR. Always branch off `origin/main` and open a PR for review. This ensures that all changes are peer-reviewed and pass CI checks before merging.
 Branch names should be descriptive of the change and use hypens to separate words, e.g. `add-risk-heatmap-export`.
 PR titles should follow the Conventional Commits format, e.g. `feat: add risk heatmap export`.
 Before opening a PR, ensure that all tests pass and the code is properly formatted. The CI pipeline will run checks on all PRs, but it's good practice to catch issues early.
