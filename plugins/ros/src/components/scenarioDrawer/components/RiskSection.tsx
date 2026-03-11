@@ -11,7 +11,7 @@ import {
   getProbabilityLevel,
   getRiskMatrixColor,
 } from '../../../utils/utilityfunctions';
-import { section } from '../scenarioDrawerComponents';
+import styles from '../scenarioDrawer.module.css';
 import { Text } from '@backstage/ui';
 
 interface RiskProps {
@@ -25,7 +25,7 @@ function RiskBox({ risk, heading }: RiskProps) {
   const cost = risk.probability * risk.consequence;
 
   return (
-    <Paper sx={section}>
+    <Paper className={styles.section}>
       <Text variant="title-x-small" weight="bold">
         {heading}
       </Text>
