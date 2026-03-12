@@ -13,14 +13,20 @@ type Props = TextFieldProps & {
 export const Input = forwardRef<HTMLInputElement, Props>(
   ({ label, sublabel, error, helperText, required, ...props }, ref) => {
     return (
-      <FormControl className={formStyles.formControl} error={error} required={required}>
+      <FormControl
+        className={formStyles.formControl}
+        error={error}
+        required={required}
+      >
         {label && (
           <FormLabel required={required} className={formStyles.formLabel}>
             {label}
           </FormLabel>
         )}
         {sublabel && (
-          <FormHelperText className={formStyles.formHelperText}>{sublabel}</FormHelperText>
+          <FormHelperText className={formStyles.formHelperText}>
+            {sublabel}
+          </FormHelperText>
         )}
         <TextField
           id="filled-multiline-static"

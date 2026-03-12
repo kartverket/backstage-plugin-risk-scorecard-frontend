@@ -96,7 +96,9 @@ export function Select<T extends FieldValues>({
         </FormLabel>
       )}
       {sublabel && (
-        <FormHelperText className={formStyles.formHelperText}>{sublabel}</FormHelperText>
+        <FormHelperText className={formStyles.formHelperText}>
+          {sublabel}
+        </FormHelperText>
       )}
 
       <MUISelect
