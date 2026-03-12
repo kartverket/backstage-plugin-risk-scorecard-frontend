@@ -17,7 +17,8 @@ import {
   type UseControllerReturn,
 } from 'react-hook-form';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { formHelperText, formLabel } from './typography';
+import formStyles from './formStyles.module.css';
+import styles from './Select.module.css';
 
 type Props<T extends FieldValues> = SelectProps & {
   sublabel?: string;
@@ -63,14 +64,7 @@ export function Select<T extends FieldValues>({
       return options.find(option => option.value === values)?.renderedValue;
     }
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          marginBottom: 0,
-          paddingBottom: 0,
-        }}
-      >
+      <Box className={styles.chips}>
         {values.map((value: string) => (
           <Chip
             key={value}
@@ -95,14 +89,16 @@ export function Select<T extends FieldValues>({
   }
 
   return (
-    <FormControl error={error} sx={{ width: '100%', gap: '4px' }}>
+    <FormControl error={error} className={formStyles.formControl}>
       {label && (
-        <FormLabel sx={formLabel} required={required}>
+        <FormLabel className={formStyles.formLabel} required={required}>
           {label}
         </FormLabel>
       )}
       {sublabel && (
-        <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
+        <FormHelperText className={formStyles.formHelperText}>
+          {sublabel}
+        </FormHelperText>
       )}
 
       <MUISelect
@@ -114,15 +110,7 @@ export function Select<T extends FieldValues>({
         renderValue={renderValue}
         multiple={multiple}
         SelectDisplayProps={
-          multiple
-            ? {
-                style: {
-                  paddingBottom: 8,
-                  paddingTop: 16,
-                  minHeight: 40,
-                },
-              }
-            : {}
+          multiple ? { className: styles.selectDisplayMultiple } : {}
         }
         inputRef={field.ref}
         {...field}

@@ -1,0 +1,20 @@
+.formControl {
+  width: 100%;
+  gap: 4px;
+}
+
+/* Override MUI FormLabel color and transform */
+.formLabel {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: none;
+  color: inherit !important;
+}
+
+/* Override MUI FormHelperText color and margin */
+.formHelperText {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: inherit !important;
+  margin: 0 !important;
+}

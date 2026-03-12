@@ -3,10 +3,10 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import MDEditor from '@uiw/react-md-editor';
-import { formHelperText, formLabel } from '../typography';
 import { TextFieldProps } from '@material-ui/core';
 import classNames from 'classnames';
 import { getActiveTheme } from '../../../utils/utilityfunctions';
+import formStyles from '../formStyles.module.css';
 import styles from './MarkdownInput.module.css';
 
 type Props = TextFieldProps & {
@@ -95,9 +95,13 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
 
     return (
       <FormControl className={styles.MarkDownInputFormControl} error={error}>
-        {label && <FormLabel sx={formLabel}>{label}</FormLabel>}
+        {label && (
+          <FormLabel className={formStyles.formLabel}>{label}</FormLabel>
+        )}
         {sublabel && (
-          <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
+          <FormHelperText className={formStyles.formHelperText}>
+            {sublabel}
+          </FormHelperText>
         )}
         <div
           ref={wrapperRef}

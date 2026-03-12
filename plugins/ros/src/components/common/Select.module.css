@@ -1,0 +1,13 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Override MUI Select display padding for multiple mode */
+.selectDisplayMultiple {
+  padding-bottom: 8px !important;
+  padding-top: 16px !important;
+  min-height: 40px !important;
+}

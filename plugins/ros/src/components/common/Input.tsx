@@ -3,8 +3,8 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { forwardRef } from 'react';
-import { formHelperText, formLabel } from './typography';
-import { commonTextColor, formControlStyles } from '../../utils/style';
+import { commonTextColor } from '../../utils/style';
+import formStyles from './formStyles.module.css';
 
 type Props = TextFieldProps & {
   sublabel?: string;
@@ -13,14 +13,20 @@ type Props = TextFieldProps & {
 export const Input = forwardRef<HTMLInputElement, Props>(
   ({ label, sublabel, error, helperText, required, ...props }, ref) => {
     return (
-      <FormControl sx={formControlStyles} error={error} required={required}>
+      <FormControl
+        className={formStyles.formControl}
+        error={error}
+        required={required}
+      >
         {label && (
-          <FormLabel required={required} sx={formLabel}>
+          <FormLabel required={required} className={formStyles.formLabel}>
             {label}
           </FormLabel>
         )}
         {sublabel && (
-          <FormHelperText sx={formHelperText}>{sublabel}</FormHelperText>
+          <FormHelperText className={formStyles.formHelperText}>
+            {sublabel}
+          </FormHelperText>
         )}
         <TextField
           id="filled-multiline-static"
