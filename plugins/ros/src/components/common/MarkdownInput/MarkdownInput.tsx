@@ -95,9 +95,13 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
 
     return (
       <FormControl className={styles.MarkDownInputFormControl} error={error}>
-        {label && <FormLabel className={formStyles.formLabel}>{label}</FormLabel>}
+        {label && (
+          <FormLabel className={formStyles.formLabel}>{label}</FormLabel>
+        )}
         {sublabel && (
-          <FormHelperText className={formStyles.formHelperText}>{sublabel}</FormHelperText>
+          <FormHelperText className={formStyles.formHelperText}>
+            {sublabel}
+          </FormHelperText>
         )}
         <div
           ref={wrapperRef}

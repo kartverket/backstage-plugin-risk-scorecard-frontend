@@ -12,9 +12,7 @@ export const RiskRadioButton = forwardRef<HTMLSelectElement, Props>(
   ({ label, ...props }, ref) => (
     <FormControlLabel
       className={styles.container}
-      control={
-        <MUIRadio inputRef={ref} className={styles.radio} {...props} />
-      }
+      control={<MUIRadio inputRef={ref} className={styles.radio} {...props} />}
       label={label}
       componentsProps={{ typography: { className: formStyles.formLabel } }}
     />
