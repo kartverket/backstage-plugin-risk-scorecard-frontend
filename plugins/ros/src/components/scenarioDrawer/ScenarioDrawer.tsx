@@ -19,7 +19,8 @@ import RiskFormSection from './components/RiskFormSection';
 import ScopeFormSection from './components/ScopeFormSection';
 import { Flex } from '@backstage/ui';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
-import styles from '../common/alertBar.module.css';
+import alertBarStyles from '../common/alertBar.module.css';
+import drawerStyles from './ScenarioDrawer.module.css';
 import { ScopeSection } from './components/ScopeSection.tsx';
 import { RiskSection } from './components/RiskSection.tsx';
 import AlertBar from '../common/AlertBar/AlertBar.tsx';
@@ -130,13 +131,7 @@ export function ScenarioDrawer() {
       open={isDrawerOpen}
       onClose={onClose}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '16px',
-          marginLeft: 'auto',
-        }}
-      >
+      <Box className={drawerStyles.topButtons}>
         {!isEditing && isEditingAllowed && (
           <Button
             size="medium"
@@ -165,7 +160,7 @@ export function ScenarioDrawer() {
         </>
       ) : (
         <>
-          <Flex className={styles.alertBarBox}>
+          <Flex className={alertBarStyles.alertBarBox}>
             <AlertBar
               updateStatus={updateStatus}
               response={response}
@@ -177,12 +172,7 @@ export function ScenarioDrawer() {
         </>
       )}
       <ActionsSection formMethods={formMethods} isEditing={isEditing} />
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '16px',
-        }}
-      >
+      <Box className={drawerStyles.bottomButtons}>
         {isEditing && (
           <Button
             size="medium"
@@ -196,7 +186,7 @@ export function ScenarioDrawer() {
             {updateStatus.isLoading && (
               <CircularProgress
                 size={16}
-                sx={{ marginLeft: 1, color: 'inherit' }}
+                className={drawerStyles.spinner}
               />
             )}
           </Button>
