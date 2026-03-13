@@ -18,6 +18,7 @@ import { Select } from '../../common/Select';
 import HelpIcon from '@mui/icons-material/Help';
 import { Tooltip } from '@material-ui/core';
 import { Text } from '@backstage/ui';
+import styles from './ActionFormItem.module.css';
 
 function addPeriodToBaseObjectPath(s: string) {
   if (!s) return '';
@@ -54,20 +55,8 @@ export function ActionFormItem({
 
   return (
     <>
-      <Box
-        sx={{
-          display: 'grid',
-          gap: '24px',
-          padding: 0,
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
+      <Box className={styles.formGrid}>
+        <Box className={styles.formHeader}>
           {displayedIndex !== undefined && displayedIndex !== null ? (
             <Text variant="title-x-small" weight="bold">
               {t('dictionary.measure')} {displayedIndex + 1}
@@ -109,13 +98,7 @@ export function ActionFormItem({
             />
           )}
         />
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: '2fr 1fr',
-            gap: '24px',
-          }}
-        >
+        <Box className={styles.inputGrid}>
           <Input
             {...register(
               `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
@@ -146,17 +129,11 @@ export function ActionFormItem({
 export function UrlLabel(): JSX.Element {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        gap: 1,
-        alignItems: 'center',
-      }}
-    >
+    <Box className={styles.urlLabel}>
       {t('dictionary.url')}
       <Tooltip
         title={
-          <Text variant="body-large" style={{ color: 'white' }}>
+          <Text variant="body-large" className={styles.tooltipText}>
             {t('scenarioDrawer.measureTab.urlDescription')}
           </Text>
         }
