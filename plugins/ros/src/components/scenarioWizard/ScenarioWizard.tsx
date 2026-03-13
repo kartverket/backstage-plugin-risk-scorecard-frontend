@@ -29,6 +29,7 @@ import {
 } from '../../utils/utilityfunctions';
 import { Text, Button, Flex } from '@backstage/ui';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
+import styles from './ScenarioWizard.module.css';
 
 export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   const { profileInfo } = useBackstageContext();
@@ -130,11 +131,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   return (
     <Container
       maxWidth="md"
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '32px',
-      }}
+      className={styles.container}
     >
       <Flex justify="between">
         <Text variant="title-medium" weight="bold">
