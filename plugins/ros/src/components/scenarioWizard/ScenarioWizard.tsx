@@ -129,10 +129,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   };
 
   return (
-    <Container
-      maxWidth="md"
-      className={styles.container}
-    >
+    <Container maxWidth="md" className={styles.container}>
       <Flex justify="between">
         <Text variant="title-medium" weight="bold">
           {t('scenarioDrawer.newTitle')}

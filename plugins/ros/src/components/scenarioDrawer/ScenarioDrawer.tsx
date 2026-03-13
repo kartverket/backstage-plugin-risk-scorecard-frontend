@@ -184,10 +184,7 @@ export function ScenarioDrawer() {
           >
             {t('dictionary.save')}
             {updateStatus.isLoading && (
-              <CircularProgress
-                size={16}
-                className={drawerStyles.spinner}
-              />
+              <CircularProgress size={16} className={drawerStyles.spinner} />
             )}
           </Button>
         )}
