@@ -21,7 +21,8 @@ import {
   getProbabilityLevel,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
-import { useTableStyles } from './ScenarioTableStyles';
+import classnames from 'classnames';
+import styles from './ScenarioTable.module.css';
 import { Text, Flex, Card } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
@@ -100,7 +101,6 @@ export function ScenarioTableRow({
   }, [isExpanded]);
 
   const theme = useTheme();
-  const { tableCard, tableCardNoHover } = useTableStyles();
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
@@ -145,7 +145,9 @@ export function ScenarioTableRow({
         }
         viewRow(scenario.ID);
       }}
-      className={`${tableCard} ${isExpanded ? tableCardNoHover : ''}`}
+      className={classnames(styles.tableCard, {
+        [styles.tableCardNoHover]: isExpanded,
+      })}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
