@@ -6,7 +6,7 @@
 /* Override MUI FormLabel color and transform */
 .formLabel {
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 700 !important;
   text-transform: none;
   color: inherit !important;
 }
