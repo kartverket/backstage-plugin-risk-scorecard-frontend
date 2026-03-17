@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
-import { section } from '../scenarioDrawerComponents';
+import sharedStyles from '../scenarioDrawer.module.css';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Action, FormScenario } from '../../../utils/types';
 import { ActionFormItem } from './ActionFormItem';
@@ -99,7 +99,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   const isActionsEmpty = currentActions.length === 0;
 
   return (
-    <Paper sx={section}>
+    <Paper className={sharedStyles.section}>
       <Flex justify="between" mb="2">
         <Text variant="title-x-small" weight="bold">
           {t('dictionary.measures')}
@@ -172,7 +172,7 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
   });
 
   return (
-    <Paper sx={section}>
+    <Paper className={sharedStyles.section}>
       <Box>
         <Text variant="title-x-small" weight="bold">
           {t('dictionary.measures')}
