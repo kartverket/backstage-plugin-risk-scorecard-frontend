@@ -159,5 +159,6 @@ Branch names should be descriptive of the change and use hypens to separate word
 PR titles should follow the Conventional Commits format, e.g. `feat: add risk heatmap export`.
 Before opening a PR, ensure that all tests pass and the code is properly formatted. The CI pipeline will run checks on all PRs, but it's good practice to catch issues early.
 Before committing, always run `yarn prettier:format` to format the code.
+When making commits for changes that should trigger a patch release (e.g. dependency upgrades, minor adjustments, configuration changes), always use the `fix:` prefix so the release action is triggered.
 After making changes to the project, run `yarn pipeline` to verify that formatting, linting, and type checking all pass.
 Before opening a PR, run `yarn pipeline` to verify that formatting, linting, and type checking all pass.
