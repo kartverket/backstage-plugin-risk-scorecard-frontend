@@ -2,6 +2,7 @@ import { Flex, Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { CoverageType } from '../../utils/threatActorsAndVulnerabilities.ts';
+import styles from './CoverageRatio.module.css';
 
 type CoverageRatioProps = {
   covered: number;
@@ -19,7 +20,7 @@ export function CoverageRatio(props: CoverageRatioProps) {
 
   return (
     <Flex align="center">
-      <Text variant="body-large" style={{ width: '170px' }}>
+      <Text variant="body-large" className={styles.label}>
         {label}:
       </Text>
       <Text variant="title-x-small" weight="bold">

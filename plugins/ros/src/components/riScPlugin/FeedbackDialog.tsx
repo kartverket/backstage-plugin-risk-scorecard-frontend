@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material/';
+import { TextField } from '@mui/material';
 import { Button, Text, Flex } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';

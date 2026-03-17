@@ -18,6 +18,8 @@ on:
     types: [opened, edited, synchronize, reopened]
     branches:
       - main
+    paths-ignore:
+      - '.security/**'
 
 jobs:
   publish:
@@ -41,6 +43,7 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@kartverket'
+          cache: 'yarn'
 
       - name: Ensure latest npm (required for OIDC trusted publishing)
         run: npm install -g npm@latest
