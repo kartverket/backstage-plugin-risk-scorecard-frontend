@@ -14,7 +14,7 @@ import {
 import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
-import { section } from '../scenarioDrawerComponents';
+import styles from '../scenarioDrawer.module.css';
 import { Text } from '@backstage/ui';
 
 function ScopeFormSection({
@@ -46,7 +46,7 @@ function ScopeFormSection({
   );
 
   return (
-    <Paper sx={section}>
+    <Paper className={styles.section}>
       <Text as="h6" variant="title-x-small" weight="bold">
         {t('scenarioDrawer.title')}
       </Text>
