@@ -1,7 +1,7 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations';
 import type { SetState } from '../../../utils/types';
-import styles from '../components/ScenarioDrawer.module.css';
+import styles from '../scenarioDrawer.module.css';
 import { ConfirmationDialogWithoutCheckbox } from '../../common/ConfirmationDialog';
 
 type DeleteScenarioConfirmationProps = {
