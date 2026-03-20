@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { useScenario } from '../../../contexts/ScenarioContext';
-import { section } from '../scenarioDrawerComponents';
+import styles from '../scenarioDrawer.module.css';
 import { Markdown } from '../../common/Markdown';
 import { Text } from '@backstage/ui';
 
@@ -13,7 +13,7 @@ export function ScopeSection() {
   const { scenario } = useScenario();
 
   return (
-    <Paper sx={section}>
+    <Paper className={styles.section}>
       <Text variant="title-x-small" weight="bold">
         {t('scenarioDrawer.title')}
       </Text>

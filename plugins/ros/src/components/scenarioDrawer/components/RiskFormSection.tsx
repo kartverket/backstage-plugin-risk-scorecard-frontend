@@ -17,12 +17,7 @@ import {
   probabilityIndexToTranslationKeys,
 } from '../../../utils/utilityfunctions';
 import { Select } from '../../common/Select';
-import {
-  headerSection,
-  riscSection,
-  section,
-  selectSection,
-} from '../scenarioDrawerComponents';
+import styles from '../scenarioDrawer.module.css';
 import RiskOptionDisplay from './RiskOptionDisplay';
 import { Text } from '@backstage/ui';
 
@@ -93,17 +88,17 @@ function ScenarioForm({
   };
 
   return (
-    <Paper sx={section}>
+    <Paper className={styles.section}>
       <Box
         sx={{
           display: 'flex',
           gap: '24px',
         }}
       >
-        <Paper sx={riscSection}>
-          <Box sx={selectSection}>
+        <Paper className={styles.riscSection}>
+          <Box className={styles.selectSection}>
             {/* Row 1 */}
-            <Box sx={headerSection}>
+            <Box className={styles.headerSection}>
               <Text variant="title-x-small" weight="bold">
                 {t('dictionary.initialRisk')}
               </Text>
@@ -111,7 +106,7 @@ function ScenarioForm({
                 {t('scenarioDrawer.riskMatrixModal.startRisk')}
               </Text>
             </Box>
-            <Box sx={headerSection}>
+            <Box className={styles.headerSection}>
               <Text variant="title-x-small" weight="bold">
                 {t('dictionary.restRisk')}
               </Text>

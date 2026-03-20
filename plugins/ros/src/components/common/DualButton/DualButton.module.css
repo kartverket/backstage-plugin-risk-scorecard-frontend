@@ -16,3 +16,7 @@
     text-transform: none;
   }
 }
+
+.selected {
+  background-color: var(--bui-bg-neutral-2);
+}

@@ -6,6 +6,7 @@ import {
   Menu,
   MenuItem,
 } from '@backstage/ui';
+import classnames from 'classnames';
 import styles from './DualButton.module.css';
 
 type MenuItemDef = {
@@ -60,11 +61,7 @@ export function DualButton({
           {menuItems.map(item => (
             <MenuItem
               key={item.key}
-              style={
-                item.selected
-                  ? { backgroundColor: 'var(--bui-bg-neutral-2)' }
-                  : {}
-              }
+              className={classnames({ [styles.selected]: item.selected })}
               onAction={() => item.onClick()}
             >
               {item.label}
