@@ -69,7 +69,9 @@
     "typescript": "^5.9.3"
   },
   "resolutions": {
-    "@mui/material": "5.16.4",
+    "@backstage/module-federation-common": "^0.1.2",
+    "@kartverket/backstage-plugin-risk-scorecard/@mui/material": "^7.3.9",
+    "@kartverket/backstage-plugin-risk-scorecard/@mui/icons-material": "^7.3.9",
     "jsonpath-plus": "^10.2.0",
     "form-data": "4.0.4",
     "@octokit/request": "^8.4.1",

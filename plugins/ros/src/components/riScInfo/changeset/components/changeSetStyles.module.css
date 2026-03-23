@@ -1,0 +1,203 @@
+/* Retrieved from Kartverket's colour profile */
+
+/* ChangeSetBox */
+.box {
+  padding: 14px 18px;
+  height: 100%;
+  border-radius: 24px;
+  color: #212121;
+  font-size: 14px;
+}
+
+.boxPrimary {
+  background-color: #fcebcd;
+  margin-bottom: 24px;
+}
+
+.boxSecondary {
+  background-color: #ffffff;
+  margin-bottom: 12px;
+}
+
+/* ChangeSetBoxTitle */
+.boxTitle {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 26px;
+  margin-bottom: 12px;
+}
+
+/* ChangeSetPropertyBase */
+.property {
+  margin-bottom: 12px;
+}
+
+.propertyTitle {
+  font-weight: 700;
+  color: #212121;
+}
+
+/* ChangeSetChangedValue */
+.changedProperty {
+  font-weight: 700;
+}
+
+.oldValue {
+  font-weight: 700;
+  color: #a32f00;
+  text-decoration: line-through;
+}
+
+.newValue {
+  font-weight: 700;
+  color: #156630;
+}
+
+/* ChangeSetRemovedProperty */
+.removedPropertyContainer {
+  margin-bottom: 8px;
+}
+
+.removedProperty {
+  font-weight: 700;
+  color: #a32f00;
+  text-decoration: line-through;
+  font-size: 18px;
+  line-height: 26px;
+}
+
+/* ChangeSetRemovedValue */
+.removedValue {
+  font-weight: 500;
+  color: #a32f00;
+  text-decoration: line-through;
+  font-size: 14px;
+}
+
+/* ChangeSetAddedValue */
+.addedValue {
+  font-weight: 500;
+  color: #156630;
+  font-size: 14px;
+}
+
+/* ChangeSetTag */
+.tag {
+  border-radius: 24px;
+  width: fit-content;
+  padding: 1px 8px;
+  border: 1px solid;
+  color: #212121;
+}
+
+.tagPrimary {
+  background-color: #ffdd9d;
+  border-color: #cf914a;
+}
+
+.tagDelete {
+  background-color: #ebb095;
+  border-color: #d04a14;
+}
+
+.tagAdded {
+  background-color: #d0ecd6;
+  border-color: #66b077;
+}
+
+/* ChangeSetTags */
+.tags {
+  margin-bottom: 4px;
+  display: flex;
+  gap: 4px;
+}
+
+/* ChangeSetText */
+.text {
+  font-weight: 500;
+  color: #212121;
+}
+
+.bodyText {
+  color: #212121;
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+/* ChangeSetTitle */
+.title {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #212121;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* ChangeSetTwoColumnSplit */
+.twoColumnSplit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+/* ChangeSetColumn */
+.firstColumn {
+  grid-column: 1;
+}
+
+.secondColumn {
+  grid-column: 2;
+}
+
+/* Dark mode overrides */
+[data-theme-mode='dark'] {
+  .box {
+    color: #f5f2f2;
+  }
+
+  .boxPrimary {
+    background-color: #706f6e;
+  }
+
+  .boxSecondary {
+    background-color: #4a4848;
+  }
+
+  .propertyTitle {
+    color: #f5f2f2;
+  }
+
+  .oldValue {
+    color: #ffe2d4;
+  }
+
+  .newValue {
+    color: #d0ecd6;
+  }
+
+  .removedProperty {
+    color: #ffe2d4;
+  }
+
+  .removedValue {
+    color: #ffe2d4;
+  }
+
+  .addedValue {
+    color: #d0ecd6;
+  }
+
+  .text {
+    color: #f5f2f2;
+  }
+
+  .bodyText {
+    color: #f5f2f2;
+  }
+
+  .title {
+    color: #f5f2f2;
+  }
+}

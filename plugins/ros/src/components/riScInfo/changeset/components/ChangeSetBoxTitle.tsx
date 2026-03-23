@@ -1,10 +1,9 @@
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSetStyles.module.css';
 
 interface ChangeSetBoxTitleProps {
   title: string;
 }
 
 export function ChangeSetBoxTitle({ title }: ChangeSetBoxTitleProps) {
-  const styles = useChangeSetStyles();
   return <div className={styles.boxTitle}>{title}</div>;
 }

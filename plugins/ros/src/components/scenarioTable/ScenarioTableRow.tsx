@@ -1,5 +1,6 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Collapse, IconButton } from '@material-ui/core';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {
@@ -21,7 +22,7 @@ import {
   getProbabilityLevel,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
-import { useTableStyles } from './ScenarioTableStyles';
+import tableStyles from './ScenarioTableStyles.module.css';
 import { Text, Flex, Card } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
@@ -100,7 +101,6 @@ export function ScenarioTableRow({
   }, [isExpanded]);
 
   const theme = useTheme();
-  const { tableCard, tableCardNoHover } = useTableStyles();
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
@@ -110,7 +110,7 @@ export function ScenarioTableRow({
       ? 'var(--ros-gray-300)'
       : 'var(--ros-gray-100)';
 
-  // Necessary because the darkmode card color in theme.css overwrites the color defined in ScenarioTableStyles.ts
+  // Necessary because the darkmode card color in theme.css overwrites the color defined in ScenarioTableStyles.module.css
   const cardBgColor =
     theme.palette.mode === 'dark' ? 'var(--ros-gray-500)' : undefined;
 
@@ -145,7 +145,7 @@ export function ScenarioTableRow({
         }
         viewRow(scenario.ID);
       }}
-      className={`${tableCard} ${isExpanded ? tableCardNoHover : ''}`}
+      className={`${tableStyles.tableCard} ${isExpanded ? tableStyles.tableCardNoHover : ''}`}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
