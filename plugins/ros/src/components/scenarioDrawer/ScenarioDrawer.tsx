@@ -20,7 +20,7 @@ import ScopeFormSection from './components/ScopeFormSection';
 import { Flex } from '@backstage/ui';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import alertBarStyles from '../common/alertBar.module.css';
-import drawerStyles from './ScenarioDrawer.module.css';
+import drawerStyles from './scenarioDrawer.module.css';
 import { ScopeSection } from './components/ScopeSection.tsx';
 import { RiskSection } from './components/RiskSection.tsx';
 import AlertBar from '../common/AlertBar/AlertBar.tsx';
