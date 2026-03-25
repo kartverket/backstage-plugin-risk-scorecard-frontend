@@ -1,4 +1,4 @@
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 
 interface ChangeSetTagProps {
   text: string;
@@ -6,7 +6,6 @@ interface ChangeSetTagProps {
 }
 
 export function ChangeSetTag({ text, type }: ChangeSetTagProps) {
-  const styles = useChangeSetStyles();
   const typeStyle = {
     primary: styles.tagPrimary,
     delete: styles.tagDelete,

@@ -31,3 +31,29 @@
   gap: 24px;
   row-gap: 16px;
 }
+
+.deleteConfirmationDialog {
+  width: 500px;
+  padding: 16px;
+}
+
+.deleteConfirmationDialogBody {
+  display: flex;
+  justify-content: space-between;
+}
+
+.topButtons {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.bottomButtons {
+  display: flex;
+  gap: 16px;
+}
+
+.spinner {
+  margin-left: 8px;
+  color: inherit;
+}

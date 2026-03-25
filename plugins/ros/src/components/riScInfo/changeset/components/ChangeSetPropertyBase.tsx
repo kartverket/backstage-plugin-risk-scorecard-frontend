@@ -1,4 +1,4 @@
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 import { ReactNode } from 'react';
 
 interface ChangeSetBoxSubTitleProps {
@@ -12,7 +12,6 @@ export function ChangeSetPropertyBase({
   propertyName,
   compact = false,
 }: ChangeSetBoxSubTitleProps) {
-  const styles = useChangeSetStyles();
   if (compact) {
     return (
       <div>

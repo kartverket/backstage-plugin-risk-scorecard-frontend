@@ -1,0 +1,38 @@
+.tableCellDragIcon {
+  min-width: 10px;
+  width: 4%;
+}
+
+.tableCard {
+  cursor: pointer;
+  border: none;
+  margin-bottom: 8px;
+  padding: 28px 24px;
+  background-color: #f8f8f8;
+}
+
+.tableCard:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+.tableCard.tableCardNoHover:hover {
+  background-color: #f8f8f8;
+  cursor: pointer;
+}
+
+[data-theme-mode='dark'] .tableCard {
+  background-color: #424242;
+}
+
+[data-theme-mode='dark'] .tableCard:hover {
+  background-color: #616161;
+}
+
+[data-theme-mode='dark'] .tableCard.tableCardNoHover:hover {
+  background-color: #424242;
+}
+
+.tableCardNoHover {
+  cursor: default;
+}

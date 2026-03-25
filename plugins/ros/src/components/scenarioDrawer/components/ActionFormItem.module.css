@@ -1,0 +1,27 @@
+.formGrid {
+  display: grid;
+  gap: 24px;
+  padding: 0;
+}
+
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inputGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+.urlLabel {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tooltipText {
+  color: white;
+}

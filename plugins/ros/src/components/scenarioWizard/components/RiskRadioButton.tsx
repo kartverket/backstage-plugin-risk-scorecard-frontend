@@ -1,7 +1,8 @@
 import { forwardRef } from 'react';
 import MUIRadio, { RadioProps } from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { formLabel } from '../../common/typography';
+import formStyles from '../../common/formStyles.module.css';
+import styles from './RiskRadioButton.module.css';
 
 type Props = RadioProps & {
   label?: string;
@@ -10,15 +11,10 @@ type Props = RadioProps & {
 export const RiskRadioButton = forwardRef<HTMLSelectElement, Props>(
   ({ label, ...props }, ref) => (
     <FormControlLabel
-      sx={{
-        width: '100%',
-        whiteSpace: 'nowrap',
-      }}
-      control={
-        <MUIRadio inputRef={ref} sx={{ marginRight: -0.5 }} {...props} />
-      }
+      className={styles.container}
+      control={<MUIRadio inputRef={ref} className={styles.radio} {...props} />}
       label={label}
-      componentsProps={{ typography: { sx: formLabel } }}
+      componentsProps={{ typography: { className: formStyles.formLabel } }}
     />
   ),
 );

@@ -1,4 +1,4 @@
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 import { ReactNode } from 'react';
 
 interface ChangeSetChangedValueProps {
@@ -14,7 +14,6 @@ export function ChangeSetChangedValue({
   unit = undefined,
   multiline = false,
 }: ChangeSetChangedValueProps) {
-  const styles = useChangeSetStyles();
   return (
     <>
       <span className={styles.oldValue}>{oldValue}</span>

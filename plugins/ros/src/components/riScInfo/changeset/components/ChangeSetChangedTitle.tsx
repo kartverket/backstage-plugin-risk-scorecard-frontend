@@ -1,4 +1,4 @@
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 import { SimpleTrackedProperty } from '../../../../utils/types.ts';
 import { ChangeSetBoxTitle } from './ChangeSetBoxTitle.tsx';
 import { ChangeSetChangedValue } from './ChangeSetChangedValue.tsx';
@@ -8,7 +8,6 @@ interface ChangeSetChangedTitleProps {
 }
 
 export function ChangeSetChangedTitle({ title }: ChangeSetChangedTitleProps) {
-  const styles = useChangeSetStyles();
   if (title.type === 'UNCHANGED')
     return <ChangeSetBoxTitle title={title.value} />;
 
