@@ -9,14 +9,26 @@
   font-size: 14px;
 }
 
+[data-theme-mode='dark'] .box {
+  color: #f5f2f2;
+}
+
 .boxPrimary {
   background-color: #fcebcd;
   margin-bottom: 24px;
 }
 
+[data-theme-mode='dark'] .boxPrimary {
+  background-color: #706f6e;
+}
+
 .boxSecondary {
   background-color: #ffffff;
   margin-bottom: 12px;
+}
+
+[data-theme-mode='dark'] .boxSecondary {
+  background-color: #4a4848;
 }
 
 /* ChangeSetBoxTitle */
@@ -37,20 +49,28 @@
   color: #212121;
 }
 
-/* ChangeSetChangedValue */
-.changedProperty {
-  font-weight: 700;
+[data-theme-mode='dark'] .propertyTitle {
+  color: #f5f2f2;
 }
 
+/* ChangeSetChangedValue */
 .oldValue {
   font-weight: 700;
   color: #a32f00;
   text-decoration: line-through;
 }
 
+[data-theme-mode='dark'] .oldValue {
+  color: #ffe2d4;
+}
+
 .newValue {
   font-weight: 700;
   color: #156630;
+}
+
+[data-theme-mode='dark'] .newValue {
+  color: #d0ecd6;
 }
 
 /* ChangeSetRemovedProperty */
@@ -66,6 +86,10 @@
   line-height: 26px;
 }
 
+[data-theme-mode='dark'] .removedProperty {
+  color: #ffe2d4;
+}
+
 /* ChangeSetRemovedValue */
 .removedValue {
   font-weight: 500;
@@ -74,11 +98,19 @@
   font-size: 14px;
 }
 
+[data-theme-mode='dark'] .removedValue {
+  color: #ffe2d4;
+}
+
 /* ChangeSetAddedValue */
 .addedValue {
   font-weight: 500;
   color: #156630;
   font-size: 14px;
+}
+
+[data-theme-mode='dark'] .addedValue {
+  color: #d0ecd6;
 }
 
 /* ChangeSetTag */
@@ -118,10 +150,19 @@
   color: #212121;
 }
 
+[data-theme-mode='dark'] .text {
+  color: #f5f2f2;
+}
+
+/* ChangeSetBodyText */
 .bodyText {
   color: #212121;
   margin-top: 0;
   margin-bottom: 4px;
+}
+
+[data-theme-mode='dark'] .bodyText {
+  color: #f5f2f2;
 }
 
 /* ChangeSetTitle */
@@ -132,6 +173,10 @@
   font-weight: 700;
   font-size: 14px;
   margin-bottom: 12px;
+}
+
+[data-theme-mode='dark'] .title {
+  color: #f5f2f2;
 }
 
 /* ChangeSetTwoColumnSplit */
@@ -149,55 +194,4 @@
 
 .secondColumn {
   grid-column: 2;
-}
-
-/* Dark mode overrides */
-[data-theme-mode='dark'] {
-  .box {
-    color: #f5f2f2;
-  }
-
-  .boxPrimary {
-    background-color: #706f6e;
-  }
-
-  .boxSecondary {
-    background-color: #4a4848;
-  }
-
-  .propertyTitle {
-    color: #f5f2f2;
-  }
-
-  .oldValue {
-    color: #ffe2d4;
-  }
-
-  .newValue {
-    color: #d0ecd6;
-  }
-
-  .removedProperty {
-    color: #ffe2d4;
-  }
-
-  .removedValue {
-    color: #ffe2d4;
-  }
-
-  .addedValue {
-    color: #d0ecd6;
-  }
-
-  .text {
-    color: #f5f2f2;
-  }
-
-  .bodyText {
-    color: #f5f2f2;
-  }
-
-  .title {
-    color: #f5f2f2;
-  }
 }

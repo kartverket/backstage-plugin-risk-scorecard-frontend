@@ -1,4 +1,4 @@
-import styles from './changeSetStyles.module.css';
+import styles from './changeSet.module.css';
 import { SimpleTrackedProperty } from '../../../../utils/types.ts';
 import { ChangeSetBoxTitle } from './ChangeSetBoxTitle.tsx';
 import { ChangeSetChangedValue } from './ChangeSetChangedValue.tsx';

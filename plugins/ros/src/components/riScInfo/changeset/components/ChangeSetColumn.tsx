@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import styles from './changeSetStyles.module.css';
+import styles from './changeSet.module.css';
 
 interface ChangeSetColumnProps {
   children: ReactNode | ReactNode[];

@@ -1,4 +1,4 @@
-import tableStyles from './ScenarioTableStyles.module.css';
+import styles from './ScenarioTable.module.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
@@ -84,7 +84,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
     <>
       <Flex p="24px 24px 18px 24px">
         {props.isEditing && isDndAllowed && (
-          <div className={tableStyles.tableCellDragIcon} />
+          <div className={styles.tableCellDragIcon} />
         )}
         <Box
           style={{
@@ -133,7 +133,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
         />
       ))}
       {debouncedSearchQuery && filteredActionsForScenarios.size === 0 && (
-        <Card className={tableStyles.tableCard}>
+        <Card className={styles.tableCard}>
           <Flex align="center" justify="center">
             {t('dictionary.searchQuery')} "{debouncedSearchQuery}"
           </Flex>

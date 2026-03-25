@@ -22,7 +22,8 @@ import {
   getProbabilityLevel,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
-import tableStyles from './ScenarioTableStyles.module.css';
+import classnames from 'classnames';
+import styles from './ScenarioTable.module.css';
 import { Text, Flex, Card } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
@@ -110,7 +111,7 @@ export function ScenarioTableRow({
       ? 'var(--ros-gray-300)'
       : 'var(--ros-gray-100)';
 
-  // Necessary because the darkmode card color in theme.css overwrites the color defined in ScenarioTableStyles.module.css
+  // Necessary because the darkmode card color in theme.css overwrites the color defined in ScenarioTableStyles.ts
   const cardBgColor =
     theme.palette.mode === 'dark' ? 'var(--ros-gray-500)' : undefined;
 
@@ -145,7 +146,9 @@ export function ScenarioTableRow({
         }
         viewRow(scenario.ID);
       }}
-      className={`${tableStyles.tableCard} ${isExpanded ? tableStyles.tableCardNoHover : ''}`}
+      className={classnames(styles.tableCard, {
+        [styles.tableCardNoHover]: isExpanded,
+      })}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,
