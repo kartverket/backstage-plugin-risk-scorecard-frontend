@@ -1,4 +1,6 @@
-import { ClickAwayListener, Paper, Tooltip } from '@material-ui/core';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Paper from '@mui/material/Paper';
+import Tooltip from '@mui/material/Tooltip';
 import { useState, useEffect } from 'react';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
@@ -99,10 +101,9 @@ export function RiskMatrixScenarioCount({
   return (
     <ClickAwayListener onClickAway={() => setTooltipOpen(false)}>
       <Tooltip
-        interactive
-        classes={{
-          tooltip: styles.tooltip,
-          arrow: styles.tooltipArrow,
+        slotProps={{
+          tooltip: { className: styles.tooltip },
+          arrow: { className: styles.tooltipArrow },
         }}
         title={tooltipList}
         placement="right"

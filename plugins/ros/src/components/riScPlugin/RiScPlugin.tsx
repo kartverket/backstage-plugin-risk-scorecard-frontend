@@ -118,9 +118,9 @@ export function RiScPlugin() {
           <Grid container spacing={4}>
             {selectedRiSc && (
               <>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Grid container rowSpacing={3} columnSpacing={4}>
-                    <Grid item xs={8}>
+                    <Grid size={8}>
                       <Flex align="center" justify="between">
                         <Text as="h3" variant="body-large" weight="bold">
                           {t('contentHeader.multipleRiScs')}
@@ -130,12 +130,12 @@ export function RiScPlugin() {
                         />
                       </Flex>
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid size={8}>
                       <RiScSelectionCard />
                     </Grid>
-                    <Grid item xs={4} />
+                    <Grid size={4} />
 
-                    <Grid item xs={8}>
+                    <Grid size={8}>
                       <Flex gap="24px" direction="column">
                         <RiScDescriptionCard
                           riScWithMetadata={selectedRiSc}
@@ -145,7 +145,7 @@ export function RiScPlugin() {
                       </Flex>
                     </Grid>
 
-                    <Grid item xs={4}>
+                    <Grid size={4}>
                       <Flex direction="column" gap="24px">
                         <RiScStatusComponent
                           selectedRiSc={selectedRiSc}

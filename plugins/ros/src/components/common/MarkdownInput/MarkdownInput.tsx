@@ -3,7 +3,7 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import MDEditor from '@uiw/react-md-editor';
-import { TextFieldProps } from '@material-ui/core';
+import { TextFieldProps } from '@mui/material/TextField';
 import classNames from 'classnames';
 import { getActiveTheme } from '../../../utils/utilityfunctions';
 import formStyles from '../formStyles.module.css';

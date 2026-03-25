@@ -16,7 +16,7 @@ import { Input } from '../../common/Input';
 import { MarkdownInput } from '../../common/MarkdownInput';
 import { Select } from '../../common/Select';
 import HelpIcon from '@mui/icons-material/Help';
-import { Tooltip } from '@material-ui/core';
+import Tooltip from '@mui/material/Tooltip';
 import { Text } from '@backstage/ui';
 import styles from './ActionFormItem.module.css';
 

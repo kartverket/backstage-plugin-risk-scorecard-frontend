@@ -1,5 +1,6 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Collapse, IconButton } from '@material-ui/core';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {
@@ -96,7 +97,7 @@ export function ScenarioTableRow({
     if (isExpanded) {
       setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
     }
-    // only run when visibleType or expansion changes for this scenario
+    // Only run when visibleType or expansion changes for this scenario
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded]);
 
