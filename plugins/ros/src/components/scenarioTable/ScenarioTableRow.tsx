@@ -97,7 +97,7 @@ export function ScenarioTableRow({
     if (isExpanded) {
       setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
     }
-    // only run when visibleType or expansion changes for this scenario
+    // Only run when visibleType or expansion changes for this scenario
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded]);
 
