@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 
 interface ChangeSetColumnProps {
   children: ReactNode | ReactNode[];
@@ -10,7 +10,6 @@ export function ChangeSetColumn({
   children,
   column = '*',
 }: ChangeSetColumnProps) {
-  const styles = useChangeSetStyles();
   let columnClass = '';
   if (column === '1') {
     columnClass = styles.firstColumn;

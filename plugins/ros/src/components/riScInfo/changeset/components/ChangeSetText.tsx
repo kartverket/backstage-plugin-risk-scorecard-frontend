@@ -1,10 +1,9 @@
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 
 interface ChangeSetTextProps {
   text: string;
 }
 
 export function ChangeSetText({ text }: ChangeSetTextProps) {
-  const styles = useChangeSetStyles();
   return <p className={styles.text}>{text}</p>;
 }

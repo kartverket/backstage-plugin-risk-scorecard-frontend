@@ -1,10 +1,9 @@
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 
 interface ChangeSetTitleProps {
   text: string;
 }
 
 export function ChangeSetTitle({ text }: ChangeSetTitleProps) {
-  const styles = useChangeSetStyles();
   return <div className={styles.title}>{text}</div>;
 }
