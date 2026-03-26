@@ -18,6 +18,11 @@
   box-shadow: none !important;
 }
 
+:global([data-theme-mode='dark']) .section,
+:global([data-theme-mode='dark']) .riscSection {
+  background-color: #424242;
+}
+
 .headerSection {
   display: flex;
   flex-direction: column;
