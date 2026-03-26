@@ -1,5 +1,6 @@
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Collapse, IconButton } from '@material-ui/core';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {
@@ -21,7 +22,8 @@ import {
   getProbabilityLevel,
 } from '../../utils/utilityfunctions';
 import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
-import { useTableStyles } from './ScenarioTableStyles';
+import classnames from 'classnames';
+import styles from './ScenarioTable.module.css';
 import { Text, Flex, Card } from '@backstage/ui';
 import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
 import { ActionStatusOptions } from '../../utils/constants';
@@ -95,12 +97,11 @@ export function ScenarioTableRow({
     if (isExpanded) {
       setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
     }
-    // only run when visibleType or expansion changes for this scenario
+    // Only run when visibleType or expansion changes for this scenario
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded]);
 
   const theme = useTheme();
-  const { tableCard, tableCardNoHover } = useTableStyles();
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
     s => s.ID === scenario.ID,
   );
@@ -145,7 +146,9 @@ export function ScenarioTableRow({
         }
         viewRow(scenario.ID);
       }}
-      className={`${tableCard} ${isExpanded ? tableCardNoHover : ''}`}
+      className={classnames(styles.tableCard, {
+        [styles.tableCardNoHover]: isExpanded,
+      })}
       style={{
         opacity: isDragging ? 0.3 : 1,
         transition: isDragging ? 'none' : undefined,

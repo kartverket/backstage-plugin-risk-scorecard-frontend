@@ -1,4 +1,4 @@
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 
 interface ChangeSetRemovedValueProps {
   oldValue: string;
@@ -7,6 +7,5 @@ interface ChangeSetRemovedValueProps {
 export function ChangeSetRemovedValue({
   oldValue,
 }: ChangeSetRemovedValueProps) {
-  const styles = useChangeSetStyles();
   return <span className={styles.removedValue}>{oldValue}</span>;
 }
