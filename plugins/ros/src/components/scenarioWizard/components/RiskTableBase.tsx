@@ -84,7 +84,7 @@ export function createInfoWithHeadersComponent(
     }
     return (
       <Box className={styles.riskTable}>
-        <Box className={styles.consequenceGrid}>
+        <Box className={includeLabel ? styles.consequenceGrid : styles.riskRow}>
           {includeLabel && <Box className={styles.riskLabelCell} />}
           {Array.from({ length: 5 }, (_, i) => getRadioLabel(i + 1))}
         </Box>
