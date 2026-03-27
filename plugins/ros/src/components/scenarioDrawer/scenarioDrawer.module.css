@@ -20,7 +20,7 @@
 
 :global([data-theme-mode='dark']) .section,
 :global([data-theme-mode='dark']) .riscSection {
-  background-color: #424242;
+  background-color: var(--ros-gray-700);
 }
 
 .headerSection {

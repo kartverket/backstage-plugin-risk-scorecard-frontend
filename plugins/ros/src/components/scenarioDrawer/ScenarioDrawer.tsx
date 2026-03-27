@@ -121,8 +121,7 @@ export function ScenarioDrawer() {
             width: '90%',
             padding: theme.spacing(2),
           },
-          backgroundColor:
-            theme.palette.mode === 'dark' ? '#333333' : '#f8f8f8',
+          backgroundColor: 'var(--bui-bg-app)',
         }),
       }}
       variant="temporary"
