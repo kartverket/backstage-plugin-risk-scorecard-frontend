@@ -728,7 +728,7 @@ export const pluginRiScMessages = {
   firstRiScCard: {
     noRiScYet: 'No RiSc analyses created yet',
     getStarted:
-      'Get started with risk and vulnerability analysis for your team',
+      'Get started with risk and vulnerability analysis for your team, or try reload the page if you have already created one.',
   },
   filter: {
     title: 'Title (a-z)',
