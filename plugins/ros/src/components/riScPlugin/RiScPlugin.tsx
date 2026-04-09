@@ -94,7 +94,7 @@ export function RiScPlugin() {
             riScs !== null &&
             riScs.length === 0 &&
             !selectedRiSc &&
-            !allRiScsFailedDecryption &&  (
+            !allRiScsFailedDecryption && (
               <Flex
                 justify="center"
                 align="center"
@@ -103,15 +103,17 @@ export function RiScPlugin() {
                 <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
               </Flex>
             )}
-        {!isFetching && !selectedRiSc && (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
-            <Flex
-              align="center"
-              justify="center"
-              className={riscStyles.componentLayout}
-            >
-              <ErrorState onCreateNew={openCreateRiScDialog} />
-            </Flex>
-          )}
+          {!isFetching &&
+            !selectedRiSc &&
+            (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
+              <Flex
+                align="center"
+                justify="center"
+                className={riscStyles.componentLayout}
+              >
+                <ErrorState onCreateNew={openCreateRiScDialog} />
+              </Flex>
+            )}
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>

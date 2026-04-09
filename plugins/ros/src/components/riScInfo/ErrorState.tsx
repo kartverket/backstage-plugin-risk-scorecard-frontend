@@ -25,7 +25,12 @@ export function ErrorState({ onCreateNew }: ErrorStateProps) {
         </Flex>
       </CardHeader>
       <CardBody>
-        <Flex direction="column" align="center" gap="8px" className={styles.content}>
+        <Flex
+          direction="column"
+          align="center"
+          gap="8px"
+          className={styles.content}
+        >
           <Text>{t('firstRiScCard.getStarted')}</Text>
           <Flex gap="12px" className={styles.actions}>
             <Button onClick={refreshPage} className={styles.reloadButton}>
