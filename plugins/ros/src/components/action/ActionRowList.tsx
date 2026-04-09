@@ -72,7 +72,8 @@ export function ActionRowList(props: ActionRowListProps) {
     actionId: string,
     newStatus: ActionStatusOptions,
   ) => {
-    if (isRiScMarkedForDeletion) { //if marked for deletion, stop the user!
+    if (isRiScMarkedForDeletion) {
+      //if marked for deletion, stop the user!
       onRiScMarkedForDeletion();
       return;
     }
