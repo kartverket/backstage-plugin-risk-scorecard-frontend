@@ -94,7 +94,7 @@ export function RiScPlugin() {
             riScs !== null &&
             riScs.length === 0 &&
             !selectedRiSc &&
-            !allRiScsFailedDecryption && (
+            !allRiScsFailedDecryption &&  (
               <Flex
                 justify="center"
                 align="center"
@@ -103,8 +103,7 @@ export function RiScPlugin() {
                 <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
               </Flex>
             )}
-        {!isFetching &&
-          (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
+        {!isFetching && !selectedRiSc && (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
             <Flex
               align="center"
               justify="center"
