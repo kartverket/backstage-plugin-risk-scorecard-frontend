@@ -644,6 +644,8 @@ export const pluginRiScMessages = {
     ErrorWhenNoWriteAccessToRepository:
       'Unable to update RiSc. You do not have write access to {{owner}}/{{name}}.',
     ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
+    ErrorWhenUpdatingDeletedRiSc:
+      'Failed to update risk scorecard. RiSc is marked for deletion.',
     ErrorWhenDeletingRiSc: 'Failed to delete risk scorecard',
     ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
     ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
@@ -1363,6 +1365,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til {{owner}}/{{name}}.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
+          'errorMessages.ErrorWhenUpdatingDeletedRiSc':
+            'Kunne ikke lagre risiko- og sårbarhetsanalyse. Den har blitt markert for sletting.',
           'errorMessages.ErrorWhenDeletingRiSc':
             'Kunne ikke slette risiko- og sårbarhetsanalyse',
           'errorMessages.ErrorWhenCreatingRiSc':

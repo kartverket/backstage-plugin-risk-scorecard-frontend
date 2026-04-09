@@ -1,4 +1,9 @@
-import { Action } from '../../utils/types.ts';
+import {
+  Action,
+  ProcessingStatus,
+  RiScStatus,
+  SubmitResponseObject,
+} from '../../utils/types.ts';
 import { ActionRow } from './ActionRow.tsx';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { isToday } from '../../utils/date.ts';
@@ -15,6 +20,7 @@ import styles from './ActionRowList.module.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { getUpdatedStatus } from '../../utils/actions.ts';
+import AlertBar from '../common/AlertBar/AlertBar.tsx';
 
 type ActionRowListProps = {
   scenarioId: string;
@@ -34,6 +40,20 @@ export function ActionRowList(props: ActionRowListProps) {
   const [pendingActionUpdatesHistory, setPendingActionUpdatesHistory] =
     useState<string[]>([]);
 
+  const [blockedUpdateResponse, setBlockedUpdateResponse] =
+    useState<SubmitResponseObject | null>(null);
+
+  const isRiScMarkedForDeletion =
+    selectedRiSc?.status === RiScStatus.DeletionDraft ||
+    selectedRiSc?.status === RiScStatus.DeletionSentForApproval;
+
+  const onRiScMarkedForDeletion = () => {
+    setBlockedUpdateResponse({
+      status: ProcessingStatus.ErrorWhenUpdatingDeletedRiSc,
+      statusMessage: t('errorMessages.ErrorWhenUpdatingDeletedRiSc'),
+    });
+  };
+
   const onRefreshActionStatus = (action: Action) => {
     if (isToday(action.lastUpdated ?? null)) return;
 
@@ -52,6 +72,10 @@ export function ActionRowList(props: ActionRowListProps) {
     actionId: string,
     newStatus: ActionStatusOptions,
   ) => {
+    if (isRiScMarkedForDeletion) {
+      onRiScMarkedForDeletion();
+      return;
+    }
     setPendingActionUpdatesHistory(prev => prev.filter(id => id !== actionId));
 
     setPendingActionStatusUpdates(prev => ({
@@ -188,36 +212,45 @@ export function ActionRowList(props: ActionRowListProps) {
   }
 
   return (
-    <Flex direction="column">
-      <Divider />
-      {actions.map((action, index) => {
-        const updatedStatus = getUpdatedStatusOfAction(
-          props.scenarioId,
-          action,
-          pendingActionStatusUpdates,
-          pendingActionUpdatesHistory,
-        );
-        return (
-          <Fragment key={`Action-${action.ID}-${index}`}>
-            <ActionRow
-              action={action}
-              index={index}
-              onRefreshActionStatus={onRefreshActionStatus}
-              onNewActionStatus={onNewActionStatus}
-              onDeleteAction={onDeleteAction}
-              onSaveAction={onSaveAction}
-              updatedStatus={updatedStatus}
-              optimisticStatus={
-                pendingActionStatusUpdates[props.scenarioId]?.[action.ID]
-              }
-              allowDeletion={props.allowDeletion}
-              allowEdit={props.allowEdit}
-            />
-            <Divider />
-          </Fragment>
-        );
-      })}
-    </Flex>
+    <>
+      {blockedUpdateResponse && (
+        <AlertBar
+          updateStatus={{ isLoading: false, isError: true, isSuccess: false }}
+          response={blockedUpdateResponse}
+          statusText={blockedUpdateResponse.statusMessage}
+        />
+      )}
+      <Flex direction="column">
+        <Divider />
+        {actions.map((action, index) => {
+          const updatedStatus = getUpdatedStatusOfAction(
+            props.scenarioId,
+            action,
+            pendingActionStatusUpdates,
+            pendingActionUpdatesHistory,
+          );
+          return (
+            <Fragment key={`Action-${action.ID}-${index}`}>
+              <ActionRow
+                action={action}
+                index={index}
+                onRefreshActionStatus={onRefreshActionStatus}
+                onNewActionStatus={onNewActionStatus}
+                onDeleteAction={onDeleteAction}
+                onSaveAction={onSaveAction}
+                updatedStatus={updatedStatus}
+                optimisticStatus={
+                  pendingActionStatusUpdates[props.scenarioId]?.[action.ID]
+                }
+                allowDeletion={props.allowDeletion}
+                allowEdit={props.allowEdit}
+              />
+              <Divider />
+            </Fragment>
+          );
+        })}
+      </Flex>
+    </>
   );
 }
 
