@@ -103,7 +103,8 @@ export function RiScPlugin() {
                 <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
               </Flex>
             )}
-          {!isFetching && //added isfetching condition to avoid showing error state when user e.g., adds new scorecard.
+          {/* Added isFetching condition to avoid showing error state when user e.g., adds new scorecard. */}
+          {!isFetching &&
             !selectedRiSc &&
             (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
               <Flex
