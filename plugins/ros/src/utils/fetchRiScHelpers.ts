@@ -97,11 +97,12 @@ export function buildFetchRiScErrorMessages(
                 riScId: risks.map(r => r.riScId).join(', '),
                 status,
               });
-              const kmsKeyResourceId = risks.find(
-                r => r.kmsKeyResourceId,
-              )?.kmsKeyResourceId;
-              const kmsNote = kmsKeyResourceId
-                ? `\n${t('errorMessages.KmsKeyNote' as any, { kmsKeyResourceId })}`
+              const kmsKeyName = risks
+                .find(r => r.kmsKeyResourceId)
+                ?.kmsKeyResourceId?.split('/')
+                .pop();
+              const kmsNote = kmsKeyName
+                ? `\n${t('errorMessages.KmsKeyNote' as any, { kmsKeyResourceId: kmsKeyName })}`
                 : '';
               messages.push(baseMessage + kmsNote);
             },
@@ -114,11 +115,12 @@ export function buildFetchRiScErrorMessages(
             riScId: withoutErrorCode.map(r => r.riScId).join(', '),
             status,
           });
-          const kmsKeyResourceId = withoutErrorCode.find(
-            r => r.kmsKeyResourceId,
-          )?.kmsKeyResourceId;
-          const kmsNote = kmsKeyResourceId
-            ? `\n${t('errorMessages.KmsKeyNote' as any, { kmsKeyResourceId })}`
+          const kmsKeyName = withoutErrorCode
+            .find(r => r.kmsKeyResourceId)
+            ?.kmsKeyResourceId?.split('/')
+            .pop();
+          const kmsNote = kmsKeyName
+            ? `\n${t('errorMessages.KmsKeyNote' as any, { kmsKeyResourceId: kmsKeyName })}`
             : '';
           messages.push(baseMessage + kmsNote);
         }
