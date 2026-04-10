@@ -50,6 +50,7 @@ export type RiScContentResultDTO = {
   migrationStatus: MigrationStatus;
   statusMessage?: string;
   errorCode?: string;
+  kmsKeyResourceId?: string;
   lastPublished: LastPublished;
 } & ContentRiScResultDTO;
 

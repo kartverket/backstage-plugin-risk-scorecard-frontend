@@ -84,30 +84,42 @@ export function buildFetchRiScErrorMessages(
             (acc, risk) => {
               const message = risk.errorCode!;
               if (!acc[message]) acc[message] = [];
-              acc[message].push(risk.riScId);
+              acc[message].push(risk);
               return acc;
             },
-            {} as Record<string, string[]>,
+            {} as Record<string, typeof withErrorCode>,
           );
 
           Object.entries(decryptionErrorsByMessage).forEach(
-            ([message, ids]) => {
+            ([message, risks]) => {
               const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${message}`;
-              messages.push(
-                t(errorKey as any, { riScId: ids.join(', '), status }),
-              );
+              const baseMessage = t(errorKey as any, {
+                riScId: risks.map(r => r.riScId).join(', '),
+                status,
+              });
+              const kmsKeyResourceId = risks.find(r => r.kmsKeyResourceId)
+                ?.kmsKeyResourceId;
+              const kmsNote = kmsKeyResourceId
+                ? `\n${t('errorMessages.KmsKeyNote' as any, { kmsKeyResourceId })}`
+                : '';
+              messages.push(baseMessage + kmsNote);
             },
           );
         }
 
         if (withoutErrorCode.length > 0) {
           const errorKey = `errorMessages.ContentStatus${statusKey}`;
-          messages.push(
-            t(errorKey as any, {
-              riScId: withoutErrorCode.map(r => r.riScId).join(', '),
-              status,
-            }),
-          );
+          const baseMessage = t(errorKey as any, {
+            riScId: withoutErrorCode.map(r => r.riScId).join(', '),
+            status,
+          });
+          const kmsKeyResourceId = withoutErrorCode.find(
+            r => r.kmsKeyResourceId,
+          )?.kmsKeyResourceId;
+          const kmsNote = kmsKeyResourceId
+            ? `\n${t('errorMessages.KmsKeyNote' as any, { kmsKeyResourceId })}`
+            : '';
+          messages.push(baseMessage + kmsNote);
         }
 
         return messages.join('\n');
