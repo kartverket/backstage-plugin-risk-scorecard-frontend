@@ -97,8 +97,9 @@ export function buildFetchRiScErrorMessages(
                 riScId: risks.map(r => r.riScId).join(', '),
                 status,
               });
-              const kmsKeyResourceId = risks.find(r => r.kmsKeyResourceId)
-                ?.kmsKeyResourceId;
+              const kmsKeyResourceId = risks.find(
+                r => r.kmsKeyResourceId,
+              )?.kmsKeyResourceId;
               const kmsNote = kmsKeyResourceId
                 ? `\n${t('errorMessages.KmsKeyNote' as any, { kmsKeyResourceId })}`
                 : '';
