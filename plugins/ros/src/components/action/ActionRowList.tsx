@@ -1,8 +1,6 @@
 import {
   Action,
-  ProcessingStatus,
   RiScStatus,
-  SubmitResponseObject,
 } from '../../utils/types.ts';
 import { ActionRow } from './ActionRow.tsx';
 import { Fragment, useCallback, useEffect, useState } from 'react';
@@ -20,7 +18,6 @@ import styles from './ActionRowList.module.css';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { getUpdatedStatus } from '../../utils/actions.ts';
-import AlertBar from '../common/AlertBar/AlertBar.tsx';
 
 type ActionRowListProps = {
   scenarioId: string;
@@ -31,7 +28,7 @@ type ActionRowListProps = {
 
 export function ActionRowList(props: ActionRowListProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { selectedRiSc } = useRiScs();
+  const { selectedRiSc, showBlockedUpdateError } = useRiScs();
   const { submitEditedScenarioToRiSc } = useScenario();
   const { profileInfo } = useBackstageContext();
   const [pendingActionStatusUpdates, setPendingActionStatusUpdates] = useState<
@@ -40,19 +37,9 @@ export function ActionRowList(props: ActionRowListProps) {
   const [pendingActionUpdatesHistory, setPendingActionUpdatesHistory] =
     useState<string[]>([]);
 
-  const [blockedUpdateResponse, setBlockedUpdateResponse] =
-    useState<SubmitResponseObject | null>(null);
-
   const isRiScMarkedForDeletion =
     selectedRiSc?.status === RiScStatus.DeletionDraft ||
     selectedRiSc?.status === RiScStatus.DeletionSentForApproval;
-
-  const onRiScMarkedForDeletion = () => {
-    setBlockedUpdateResponse({
-      status: ProcessingStatus.ErrorWhenUpdatingDeletedRiSc,
-      statusMessage: t('errorMessages.ErrorWhenUpdatingDeletedRiSc'),
-    });
-  };
 
   const onRefreshActionStatus = (action: Action) => {
     if (isToday(action.lastUpdated ?? null)) return;
@@ -73,8 +60,7 @@ export function ActionRowList(props: ActionRowListProps) {
     newStatus: ActionStatusOptions,
   ) => {
     if (isRiScMarkedForDeletion) {
-      // If marked for deletion, stop the user!
-      onRiScMarkedForDeletion();
+      showBlockedUpdateError();
       return;
     }
     setPendingActionUpdatesHistory(prev => prev.filter(id => id !== actionId));
@@ -112,7 +98,7 @@ export function ActionRowList(props: ActionRowListProps) {
         ),
       },
       {
-        profileInfo: profileInfo,
+        profileInfo,
         onSuccess: () => {
           if (setIsEditing) {
             setIsEditing(false);
@@ -147,7 +133,7 @@ export function ActionRowList(props: ActionRowListProps) {
           idsOfActionsToForceUpdateLastUpdatedValue: Object.keys(
             updates[scenarioId],
           ),
-          profileInfo: profileInfo,
+          profileInfo,
           onSuccess: () => {
             const savedActionIds = Object.keys(updates[scenarioId]);
 
@@ -213,45 +199,36 @@ export function ActionRowList(props: ActionRowListProps) {
   }
 
   return (
-    <>
-      {blockedUpdateResponse && (
-        <AlertBar
-          updateStatus={{ isLoading: false, isError: true, isSuccess: false }}
-          response={blockedUpdateResponse}
-          statusText={blockedUpdateResponse.statusMessage}
-        />
-      )}
-      <Flex direction="column">
-        <Divider />
-        {actions.map((action, index) => {
-          const updatedStatus = getUpdatedStatusOfAction(
-            props.scenarioId,
-            action,
-            pendingActionStatusUpdates,
-            pendingActionUpdatesHistory,
-          );
-          return (
-            <Fragment key={`Action-${action.ID}-${index}`}>
-              <ActionRow
-                action={action}
-                index={index}
-                onRefreshActionStatus={onRefreshActionStatus}
-                onNewActionStatus={onNewActionStatus}
-                onDeleteAction={onDeleteAction}
-                onSaveAction={onSaveAction}
-                updatedStatus={updatedStatus}
-                optimisticStatus={
-                  pendingActionStatusUpdates[props.scenarioId]?.[action.ID]
-                }
-                allowDeletion={props.allowDeletion}
-                allowEdit={props.allowEdit}
-              />
-              <Divider />
-            </Fragment>
-          );
-        })}
-      </Flex>
-    </>
+    <Flex direction="column">
+      <Divider />
+      {actions.map((action, index) => {
+        const updatedStatus = getUpdatedStatusOfAction(
+          props.scenarioId,
+          action,
+          pendingActionStatusUpdates,
+          pendingActionUpdatesHistory,
+        );
+        return (
+          <Fragment key={`Action-${action.ID}-${index}`}>
+            <ActionRow
+              action={action}
+              index={index}
+              onRefreshActionStatus={onRefreshActionStatus}
+              onNewActionStatus={onNewActionStatus}
+              onDeleteAction={onDeleteAction}
+              onSaveAction={onSaveAction}
+              updatedStatus={updatedStatus}
+              optimisticStatus={
+                pendingActionStatusUpdates[props.scenarioId]?.[action.ID]
+              }
+              allowDeletion={props.allowDeletion}
+              allowEdit={props.allowEdit}
+            />
+            <Divider />
+          </Fragment>
+        );
+      })}
+    </Flex>
   );
 }
 
