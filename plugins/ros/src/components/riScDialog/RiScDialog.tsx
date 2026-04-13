@@ -109,8 +109,9 @@ export function RiScDialog({
     },
     // Continue to step 1 even if there are errors, as long as there are no errors in step 0 (the content)
     validationErrors => {
-      if (activeStep === 0 && validationErrors.content === undefined) {
-        setActiveStep(1);
+      if (validationErrors.content === undefined) {
+        if (activeStep === 0) setActiveStep(1);
+        if (activeStep === 1) setActiveStep(2);
       }
     },
   );
