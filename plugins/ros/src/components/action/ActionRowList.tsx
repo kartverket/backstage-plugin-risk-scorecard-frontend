@@ -1,7 +1,4 @@
-import {
-  Action,
-  RiScStatus,
-} from '../../utils/types.ts';
+import { Action, RiScStatus } from '../../utils/types.ts';
 import { ActionRow } from './ActionRow.tsx';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { isToday } from '../../utils/date.ts';
