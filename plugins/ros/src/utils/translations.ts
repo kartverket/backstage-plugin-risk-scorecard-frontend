@@ -726,7 +726,7 @@ export const pluginRiScMessages = {
     listUpdatedActions: 'Recently updated actions',
   },
   firstRiScCard: {
-    noRiScYet: 'No RiSc analyses created yet',
+    noRiScYet: 'Could not load any RoS-analyses',
     getStarted:
       'Get started with risk and vulnerability analysis for your team, or try reload the page if you have already created one.',
   },
@@ -1451,7 +1451,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'filterButton.veryOutdated': 'Veldig utdaterte tiltak',
           'filterButton.outdated': 'Utdaterte tiltak',
           'filterButton.listUpdatedActions': 'Nylig oppdaterte tiltak',
-          'firstRiScCard.noRiScYet': 'Ingen RoS-analyser opprettet enda',
+          'firstRiScCard.noRiScYet': 'Kunne ikke laste inn RoS-analyser',
           'firstRiScCard.getStarted':
             'Kom igang med risiko- og sårbarhetsanalyse for ditt team',
           'filter.title': 'Tittel (a-å)',
