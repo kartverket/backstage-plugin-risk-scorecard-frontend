@@ -117,12 +117,8 @@ export function RiScDialog({
   );
 
   function handleBack() {
-    if (activeStep === 1) {
-      setActiveStep(0);
-    }
-    if (activeStep === 2) {
-      setActiveStep(1);
-    }
+    if (activeStep === 1) setActiveStep(0);
+    if (activeStep === 2) setActiveStep(1);
   }
 
   const handleFinish = handleSubmit((data: RiScWithMetadata) => {
