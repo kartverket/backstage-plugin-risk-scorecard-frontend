@@ -644,6 +644,8 @@ export const pluginRiScMessages = {
     ErrorWhenNoWriteAccessToRepository:
       'Unable to update RiSc. You do not have write access to {{owner}}/{{name}}.',
     ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
+    ErrorWhenUpdatingDeletedRiSc:
+      'Failed to update risk scorecard. RiSc is marked for deletion.',
     ErrorWhenDeletingRiSc: 'Failed to delete risk scorecard',
     ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
     ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
@@ -727,9 +729,9 @@ export const pluginRiScMessages = {
     listUpdatedActions: 'Recently updated actions',
   },
   firstRiScCard: {
-    noRiScYet: 'No RiSc analyses created yet',
+    noRiScYet: 'Could not load any RoS-analyses',
     getStarted:
-      'Get started with risk and vulnerability analysis for your team',
+      'Get started with risk and vulnerability analysis for your team, or try reload the page if you have already created one.',
   },
   filter: {
     title: 'Title (a-z)',
@@ -1364,6 +1366,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til {{owner}}/{{name}}.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
+          'errorMessages.ErrorWhenUpdatingDeletedRiSc':
+            'Kunne ikke lagre risiko- og sårbarhetsanalyse. Den har blitt markert for sletting.',
           'errorMessages.ErrorWhenDeletingRiSc':
             'Kunne ikke slette risiko- og sårbarhetsanalyse',
           'errorMessages.ErrorWhenCreatingRiSc':
@@ -1454,7 +1458,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'filterButton.veryOutdated': 'Veldig utdaterte tiltak',
           'filterButton.outdated': 'Utdaterte tiltak',
           'filterButton.listUpdatedActions': 'Nylig oppdaterte tiltak',
-          'firstRiScCard.noRiScYet': 'Ingen RoS-analyser opprettet enda',
+          'firstRiScCard.noRiScYet': 'Kunne ikke laste inn RoS-analyser',
           'firstRiScCard.getStarted':
             'Kom igang med risiko- og sårbarhetsanalyse for ditt team',
           'filter.title': 'Tittel (a-å)',

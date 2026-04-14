@@ -232,6 +232,7 @@ export enum ProcessingStatus {
   CreatedPullRequest = 'CreatedPullRequest',
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
   ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
+  ErrorWhenUpdatingDeletedRiSc = 'ErrorWhenUpdatingDeletedRiSc',
   ErrorWhenDeletingRiSc = 'ErrorWhenDeletingRiSc',
   ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
   ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',

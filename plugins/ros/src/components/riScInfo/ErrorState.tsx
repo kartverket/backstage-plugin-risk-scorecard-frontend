@@ -1,22 +1,44 @@
-import { Card, CardBody, Flex, Text, Button } from '@backstage/ui';
+import { Card, CardBody, CardHeader, Flex, Text, Button } from '@backstage/ui';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import styles from './ErrorState.module.css';
+import { CreateNewRiScButton } from './CreateNewRiScButton';
 
-export function ErrorState() {
+type ErrorStateProps = {
+  onCreateNew: () => void;
+};
+
+export function ErrorState({ onCreateNew }: ErrorStateProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const refreshPage = () => {
     window.location.reload();
   };
+
   return (
     <Card className={styles.card}>
-      <CardBody>
-        <Flex direction="column" align="center">
-          <Text variant="body-large">
-            {t('errorMessages.FailedToFetchRiScs')}
+      <CardHeader>
+        <Flex justify="center">
+          <Text variant="title-small" weight="bold">
+            {t('firstRiScCard.noRiScYet')}
           </Text>
-          <Button onClick={refreshPage}>{t('dictionary.refresh')}</Button>
+        </Flex>
+      </CardHeader>
+      <CardBody>
+        <Flex
+          direction="column"
+          align="center"
+          gap="8px"
+          className={styles.content}
+        >
+          <Text>{t('firstRiScCard.getStarted')}</Text>
+          <Flex gap="12px" className={styles.actions}>
+            <Button onClick={refreshPage} className={styles.reloadButton}>
+              <i className="ri-refresh-line" />
+              {t('dictionary.refresh')}
+            </Button>
+            <CreateNewRiScButton onCreateNew={onCreateNew} />
+          </Flex>
         </Flex>
       </CardBody>
     </Card>
