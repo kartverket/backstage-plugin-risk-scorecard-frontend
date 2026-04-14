@@ -687,6 +687,7 @@ export const pluginRiScMessages = {
       CONNECTION_REFUSED:
         'Failed to decrypt risk scorecard "{{riScId}}", unable to connect to the encryption service.',
     },
+    EncryptedWithKey: 'This analysis is encrypted with key {{keyId}}',
   },
   infoMessages: {
     OpenedPullRequest: 'Successfully opened pull request',
@@ -1414,6 +1415,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", den oppgitte AGE-nøkkelen er ugyldig.',
           'errorMessages.ContentStatusDecryptionFailedMessage.CONNECTION_REFUSED':
             'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", kunne ikke koble til krypteringstjenesten.',
+          'errorMessages.EncryptedWithKey':
+            'Denne analysen er kryptert med nøkkel {{keyId}}',
 
           'errorMessages.ContentStatusUnknown':
             'Kunne ikke hente risiko- og sårbarhetsanalyse "{{riScId}}" med ukjent status: {{status}}',

@@ -80,24 +80,14 @@ export function buildFetchRiScErrorMessages(
         const messages: string[] = [];
 
         if (withErrorCode.length > 0) {
-          const decryptionErrorsByMessage = withErrorCode.reduce(
-            (acc, risk) => {
-              const message = risk.errorCode!;
-              if (!acc[message]) acc[message] = [];
-              acc[message].push(risk.riScId);
-              return acc;
-            },
-            {} as Record<string, string[]>,
-          );
-
-          Object.entries(decryptionErrorsByMessage).forEach(
-            ([message, ids]) => {
-              const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${message}`;
-              messages.push(
-                t(errorKey as any, { riScId: ids.join(', '), status }),
-              );
-            },
-          );
+          withErrorCode.forEach(risk => {
+            const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${risk.errorCode}`;
+            let msg = t(errorKey as any, { riScId: risk.riScId, status });
+            if (risk.encryptionKeyId) {
+              msg += `\n${t('errorMessages.EncryptedWithKey' as any, { keyId: risk.encryptionKeyId })}`;
+            }
+            messages.push(msg);
+          });
         }
 
         if (withoutErrorCode.length > 0) {
