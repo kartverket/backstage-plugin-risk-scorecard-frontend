@@ -84,7 +84,9 @@ export function buildFetchRiScErrorMessages(
             const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${risk.errorCode}`;
             let msg = t(errorKey as any, { riScId: risk.riScId, status });
             if (risk.encryptionKeyId) {
-              msg += `\n${t('errorMessages.EncryptedWithKey' as any, { keyId: risk.encryptionKeyId })}`;
+              const keyId =
+                risk.encryptionKeyId.split('/').pop() ?? risk.encryptionKeyId;
+              msg += `\n${t('errorMessages.EncryptedWithKey' as any, { keyId })}`;
             }
             messages.push(msg);
           });
