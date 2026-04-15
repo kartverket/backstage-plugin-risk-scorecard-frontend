@@ -92,6 +92,15 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-scenario-highlight: var(--ros-gray-100);
   --ros-scenario-card-bg: var(--ros-gray-50);
 
+  --ros-alert-success-bg: var(--ros-green-50);
+  --ros-alert-success-border: var(--ros-green-300);
+  --ros-alert-warning-bg: var(--ros-orange-warm-50);
+  --ros-alert-warning-border: var(--ros-orange-300);
+  --ros-alert-error-bg: var(--ros-red-50);
+  --ros-alert-error-border: var(--ros-red-500);
+  --ros-alert-info-bg: var(--ros-blue-info-50);
+  --ros-alert-info-border: var(--ros-blue-info-400);
+
   /* -------Button styles------- */
   .ros-button-red {
     background-color: var(--ros-red-bright);
@@ -144,6 +153,15 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-initial-risc-bg: var(--bui-bg-neutral-3);
   --ros-scenario-highlight: var(--ros-gray-300);
   --ros-scenario-card-bg: var(--ros-gray-500);
+
+  --ros-alert-success-bg: #1a3a2a;
+  --ros-alert-success-border: var(--ros-green-300);
+  --ros-alert-warning-bg: #3a2e1a;
+  --ros-alert-warning-border: var(--ros-orange-300);
+  --ros-alert-error-bg: #3a1a1a;
+  --ros-alert-error-border: var(--ros-red-400);
+  --ros-alert-info-bg: #1a2a3a;
+  --ros-alert-info-border: var(--ros-blue-info-400);
 
   .bui-Switch:not([data-selected]) .bui-SwitchIndicator {
     background-color: var(--ros-gray-300);

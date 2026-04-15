@@ -10,25 +10,25 @@
   margin-bottom: 8px;
 }
 
-/* severity variants */
+/* severity variants — !important needed to override MUI Alert inline styles */
 .success {
-  background-color: var(--ros-green-50);
-  border: 1px solid var(--ros-green-300);
+  background-color: var(--ros-alert-success-bg) !important;
+  border: 1px solid var(--ros-alert-success-border);
 }
 
 .warning {
-  background-color: var(--ros-orange-warm-50);
-  border: 1px solid var(--ros-orange-300);
+  background-color: var(--ros-alert-warning-bg) !important;
+  border: 1px solid var(--ros-alert-warning-border);
 }
 
 .error {
-  background-color: var(--ros-red-50);
-  border: 1px solid var(--ros-red-500);
+  background-color: var(--ros-alert-error-bg) !important;
+  border: 1px solid var(--ros-alert-error-border);
 }
 
 .info {
-  background-color: var(--ros-blue-info-50);
-  border: 1px solid var(--ros-blue-info-400);
+  background-color: var(--ros-alert-info-bg) !important;
+  border: 1px solid var(--ros-alert-info-border);
 }
 
 .preLineText {
