@@ -88,6 +88,10 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-input-text-color: #757575;
   --ros-input-disabledBackground: rgba(0, 0, 0, 0.12);
 
+  --ros-initial-risc-bg: var(--bui-bg-neutral-1);
+  --ros-scenario-highlight: var(--ros-gray-100);
+  --ros-scenario-card-bg: var(--ros-gray-50);
+
   /* -------Button styles------- */
   .ros-button-red {
     background-color: var(--ros-red-bright);
@@ -136,6 +140,10 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
 
   --ros-input-text-color: #ffffff80;
   --ros-input-disabledBackground: rgba(255, 255, 255, 0.12);
+
+  --ros-initial-risc-bg: var(--bui-bg-neutral-3);
+  --ros-scenario-highlight: var(--ros-gray-300);
+  --ros-scenario-card-bg: var(--ros-gray-500);
 
   .bui-Switch:not([data-selected]) .bui-SwitchIndicator {
     background-color: var(--ros-gray-300);
