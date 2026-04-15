@@ -12,23 +12,23 @@
 
 /* severity variants */
 .success {
-  background-color: #e9f8eb;
-  border: 1px solid #66b077;
+  background-color: var(--ros-green-50);
+  border: 1px solid var(--ros-green-300);
 }
 
 .warning {
-  background-color: #fff7ed;
-  border: 1px solid #cf914a;
+  background-color: var(--ros-orange-warm-50);
+  border: 1px solid var(--ros-orange-300);
 }
 
 .error {
-  background-color: #fcf1e8;
-  border: 1px solid #a32f00;
+  background-color: var(--ros-red-50);
+  border: 1px solid var(--ros-red-500);
 }
 
 .info {
-  background-color: #eaf6ff;
-  border: 1px solid #439ccd;
+  background-color: var(--ros-blue-info-50);
+  border: 1px solid var(--ros-blue-info-400);
 }
 
 .preLineText {

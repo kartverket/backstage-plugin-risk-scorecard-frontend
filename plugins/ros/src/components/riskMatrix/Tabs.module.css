@@ -20,7 +20,7 @@
 }
 
 .tabButtonTextBase[data-selected='true'] {
-  color: #ffffff;
+  color: var(--bui-white);
 }
 
 [data-theme-mode='dark'] {

@@ -48,6 +48,14 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-gray-800: #2e2e2e;
   --ros-gray-900: #212121;
   --ros-gray-medium: #808080;
+  --ros-gray-light-hover: #e0e0e0;
+  --ros-gray-dark-card: #424242;
+  --ros-gray-dark-hover: #616161;
+
+  --ros-orange-warm-50: #fff7ed;
+
+  --ros-blue-info-50: #eaf6ff;
+  --ros-blue-info-400: #439ccd;
 
   --ros-risc-status-updated: var(--ros-green-500);
   --ros-risc-status-little-outdated: var(--ros-orange-400);
@@ -134,6 +142,6 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   }
 
   .bui-Card {
-    background-color: #424242;
+    background-color: var(--ros-gray-dark-card);
   }
 }
