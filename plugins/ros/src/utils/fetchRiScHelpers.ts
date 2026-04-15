@@ -94,8 +94,7 @@ export function buildFetchRiScErrorMessages(
             const { errorCode, encryptionKeyId } = group[0];
             const riScIds = group.map(r => r.riScId).join(', ');
             if (encryptionKeyId) {
-              const keyId =
-                encryptionKeyId.split('/').pop() ?? encryptionKeyId;
+              const keyId = encryptionKeyId.split('/').pop() ?? encryptionKeyId;
               const errorKey =
                 group.length === 1
                   ? 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE'
