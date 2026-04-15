@@ -15,7 +15,7 @@
 }
 
 [data-theme-mode='dark'] .boxPrimary {
-  background-color: var(--ros-gray-400);
+  background-color: var(--bui-bg-neutral-3);
 }
 
 .boxSecondary {
@@ -24,7 +24,7 @@
 }
 
 [data-theme-mode='dark'] .boxSecondary {
-  background-color: var(--ros-gray-600);
+  background-color: var(--bui-bg-neutral-4);
 }
 
 /* ChangeSetBoxTitle */
@@ -118,15 +118,28 @@
   background-color: var(--ros-orange-100);
   border-color: var(--ros-orange-300);
 }
+[data-theme-mode='dark'] .tagPrimary {
+  background-color: var(--ros-orange-300);
+  border-color: var(--ros-orange-500);
+}
 
 .tagDelete {
   background-color: var(--ros-red-200);
   border-color: var(--ros-red-400);
 }
 
+[data-theme-mode='dark'] .tagDelete {
+  background-color: var(--ros-red-400);
+  border-color: var(--ros-red-600);
+}
+
 .tagAdded {
   background-color: var(--ros-green-100);
   border-color: var(--ros-green-300);
+}
+[data-theme-mode='dark'] .tagAdded {
+  background-color: var(--ros-green-300);
+  border-color: var(--ros-green-500);
 }
 
 /* ChangeSetTags */
