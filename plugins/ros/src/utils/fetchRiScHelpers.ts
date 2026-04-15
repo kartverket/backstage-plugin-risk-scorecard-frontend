@@ -92,17 +92,19 @@ export function buildFetchRiScErrorMessages(
 
           Object.values(groups).forEach(group => {
             const { errorCode, encryptionKeyId } = group[0];
-            const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${errorCode}`;
-            let msg = t(errorKey as any, {
-              riScId: group.map(r => r.riScId).join(', '),
-              status,
-            });
+            const riScIds = group.map(r => r.riScId).join(', ');
             if (encryptionKeyId) {
               const keyId =
                 encryptionKeyId.split('/').pop() ?? encryptionKeyId;
-              msg += `\n${t('errorMessages.EncryptedWithKey' as any, { keyId })}`;
+              const errorKey =
+                group.length === 1
+                  ? 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE'
+                  : 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL';
+              messages.push(t(errorKey as any, { riScId: riScIds, keyId }));
+            } else {
+              const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${errorCode}`;
+              messages.push(t(errorKey as any, { riScId: riScIds, status }));
             }
-            messages.push(msg);
           });
         }
 

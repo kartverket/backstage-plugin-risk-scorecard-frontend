@@ -688,6 +688,10 @@ export const pluginRiScMessages = {
         'Failed to decrypt risk scorecard "{{riScId}}", the provided Age key is invalid.',
       CONNECTION_REFUSED:
         'Failed to decrypt risk scorecard "{{riScId}}", unable to connect to the encryption service.',
+      WITH_KEY_SINGLE:
+        'Failed to decrypt RoS-analysis "{{riScId}}" – no access to key: {{keyId}}',
+      WITH_KEY_PLURAL:
+        'Failed to decrypt RoS-analyses "{{riScId}}" – no access to key: {{keyId}}',
     },
     EncryptedWithKey: 'This analysis is encrypted with key {{keyId}}',
   },
@@ -1419,6 +1423,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", den oppgitte AGE-nøkkelen er ugyldig.',
           'errorMessages.ContentStatusDecryptionFailedMessage.CONNECTION_REFUSED':
             'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", kunne ikke koble til krypteringstjenesten.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE':
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
+          'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL':
+            'Kunne ikke dekryptere ROS-analyser "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
           'errorMessages.EncryptedWithKey':
             'Denne analysen er kryptert med nøkkel {{keyId}}',
 
