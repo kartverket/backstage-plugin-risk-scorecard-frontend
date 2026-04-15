@@ -99,10 +99,14 @@ export function buildFetchRiScErrorMessages(
                 group.length === 1
                   ? 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE'
                   : 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL';
-              messages.push(t(errorKey as any, { riScId: groupRiScIds, keyId }));
+              messages.push(
+                t(errorKey as any, { riScId: groupRiScIds, keyId }),
+              );
             } else {
               const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${errorCode}`;
-              messages.push(t(errorKey as any, { riScId: groupRiScIds, status }));
+              messages.push(
+                t(errorKey as any, { riScId: groupRiScIds, status }),
+              );
             }
           });
         }
