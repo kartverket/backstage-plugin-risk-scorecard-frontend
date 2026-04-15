@@ -688,6 +688,8 @@ export const pluginRiScMessages = {
         'Failed to decrypt risk scorecard "{{riScId}}", the provided Age key is invalid.',
       CONNECTION_REFUSED:
         'Failed to decrypt risk scorecard "{{riScId}}", unable to connect to the encryption service.',
+      UNKNOWN:
+        'Failed to decrypt risk scorecard "{{riScId}}" due to an unknown error.',
     },
   },
   infoMessages: {
@@ -1418,6 +1420,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", den oppgitte AGE-nøkkelen er ugyldig.',
           'errorMessages.ContentStatusDecryptionFailedMessage.CONNECTION_REFUSED':
             'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", kunne ikke koble til krypteringstjenesten.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.UNKNOWN':
+            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}" grunnet en ukjent feil.',
 
           'errorMessages.ContentStatusUnknown':
             'Kunne ikke hente risiko- og sårbarhetsanalyse "{{riScId}}" med ukjent status: {{status}}',
