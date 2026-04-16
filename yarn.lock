@@ -18599,12 +18599,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.0.0":
-  version: 22.0.0
-  resolution: "@types/node@npm:22.0.0"
+"@types/node@npm:22.19.17":
+  version: 22.19.17
+  resolution: "@types/node@npm:22.19.17"
   dependencies:
-    undici-types: "npm:~6.11.1"
-  checksum: 10c0/af26a8ec7266c857b0ced75dc3a93c6b65280d1fa40d1b4488c814d30831c5c752489c99ecb5698daec1376145b1a9ddd08350882dc2e07769917a5f22a460bc
+    undici-types: "npm:~6.21.0"
+  checksum: 10c0/b66c484c0a9f6d88b1ef360b0f487717234ee1a482cb2551ff73d9f3c43a42a777daf4c8a5eee970960728f8fe1f3877d3d8c6ffabcbca74cb401a59db700fa4
   languageName: node
   linkType: hard
 
@@ -18642,12 +18642,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.7.0":
-  version: 24.10.9
-  resolution: "@types/node@npm:24.10.9"
+"@types/node@npm:^24.12.2":
+  version: 24.12.2
+  resolution: "@types/node@npm:24.12.2"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10c0/e9e436fcd2136bddb1bbe3271a89f4653910bcf6ee8047c4117f544c7905a106c039e2720ee48f28505ef2560e22fb9ead719f28bf5e075fdde0c1120e38e3b2
+  checksum: 10c0/710050c42f89075c4479e4e1e4c2532486b0c41b1e2a8a13ad88641c88b88cdaea87414e19224f30028719737bd70e327edcaa184d50e86b9418941edd7eb02b
   languageName: node
   linkType: hard
 
@@ -21250,7 +21250,7 @@ __metadata:
     "@octokit/rest": "npm:22.0.1"
     "@types/conventional-changelog": "npm:6.0.1"
     "@types/conventional-recommended-bump": "npm:10.0.3"
-    "@types/node": "npm:22.0.0"
+    "@types/node": "npm:22.19.17"
     "@types/semver": "npm:7.7.1"
     "@types/yargs": "npm:17.0.35"
     "@vitest/coverage-v8": "npm:^4.1.4"
@@ -37136,7 +37136,7 @@ __metadata:
     "@microsoft/microsoft-graph-types": "npm:^2.43.1"
     "@testing-library/dom": "npm:^10.4.1"
     "@types/jest": "npm:^30.0.0"
-    "@types/node": "npm:^24.7.0"
+    "@types/node": "npm:^24.12.2"
     jest: "npm:^30.3.0"
     jest-environment-jsdom: "npm:^30.3.0"
     knip: "npm:^6.4.1"
@@ -39744,13 +39744,6 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: 10c0/bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.11.1":
-  version: 6.11.1
-  resolution: "undici-types@npm:6.11.1"
-  checksum: 10c0/d8f5739a8e6c779d72336c82deb49c56d5ac9f9f6e0eb2e8dd4d3f6929ae9db7cde370d2e46516fe6cad04ea53e790c5e16c4c75eed7cd0f9bd31b0763bb2fa3
   languageName: node
   linkType: hard
 
