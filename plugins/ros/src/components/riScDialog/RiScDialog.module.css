@@ -4,7 +4,7 @@
 }
 
 .deleteButton {
-  color: #d32f2f;
+  color: var(--ros-red-bright);
   padding-left: 0;
 }
 
