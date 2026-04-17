@@ -882,8 +882,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.deletionApproval':
             'Risikoeier kan gå igjennom og godkjenne slettingen.',
           'rosStatus.lastModified': 'Sist publisert: ',
-          'rosStatus.daysSinceLastModified':
-            '{{days}} dager siden',
+          'rosStatus.daysSinceLastModified': '{{days}} dager siden',
           'rosStatus.notPublishedYet': 'RoS er ikke publisert enda',
           'rosStatus.errorMessage': 'Kunne ikke hente status',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
