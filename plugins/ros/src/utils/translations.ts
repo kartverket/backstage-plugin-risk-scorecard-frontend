@@ -135,7 +135,7 @@ export const pluginRiScMessages = {
       },
     },
     lastModified: 'Last published: ',
-    daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
+    daysSinceLastModified: '{{days}} days ago',
     notPublishedYet: 'RiSc is not published yet',
     errorMessage: 'Failed to retrieve status',
     outdated: 'Outdated',
@@ -883,7 +883,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Risikoeier kan gå igjennom og godkjenne slettingen.',
           'rosStatus.lastModified': 'Sist publisert: ',
           'rosStatus.daysSinceLastModified':
-            '{{days}} dager og {{numCommits}} commits siden',
+            '{{days}} dager siden',
           'rosStatus.notPublishedYet': 'RoS er ikke publisert enda',
           'rosStatus.errorMessage': 'Kunne ikke hente status',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
