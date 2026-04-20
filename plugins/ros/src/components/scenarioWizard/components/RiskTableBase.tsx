@@ -57,7 +57,7 @@ export function RiskTableBase({
     <Box className={styles.riskTable}>
       <RadioGroup {...field} className={radioGroupClassName}>
         {fieldName === 'consequence' && (
-          <Box className={styles.riskLabelCell} />
+          <Box className={styles.riskLabelCell}>{null}</Box>
         )}
         {Array.from({ length: 5 }, (_, i) => getRadioCell(i))}
       </RadioGroup>
@@ -85,7 +85,7 @@ export function createInfoWithHeadersComponent(
     return (
       <Box className={styles.riskTable}>
         <Box className={includeLabel ? styles.consequenceGrid : styles.riskRow}>
-          {includeLabel && <Box className={styles.riskLabelCell} />}
+          {includeLabel && <Box className={styles.riskLabelCell}>{null}</Box>}
           {Array.from({ length: 5 }, (_, i) => getRadioLabel(i + 1))}
         </Box>
         <InfoComponent />

@@ -117,18 +117,7 @@ export function ScenarioTableRow({
     : 'var(--bui-white)';
 
   return (
-    <Card
-      onMouseEnter={() => {
-        if (isExpanded) return;
-        setHoveredScenarios(prev =>
-          prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
-        );
-      }}
-      onMouseLeave={() => {
-        if (isExpanded) return;
-        setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
-      }}
-      ref={ref}
+    <div
       onClick={(e: MouseEvent<HTMLDivElement>) => {
         const target = e.target as HTMLElement | null;
         if (
@@ -141,6 +130,19 @@ export function ScenarioTableRow({
         }
         viewRow(scenario.ID);
       }}
+    >
+    <Card
+      onMouseEnter={() => {
+        if (isExpanded) return;
+        setHoveredScenarios(prev =>
+          prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
+        );
+      }}
+      onMouseLeave={() => {
+        if (isExpanded) return;
+        setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
+      }}
+      ref={ref}
       className={classnames(styles.tableCard, {
         [styles.tableCardNoHover]: isExpanded,
       })}
@@ -279,5 +281,6 @@ export function ScenarioTableRow({
         </Collapse>
       )}
     </Card>
+    </div>
   );
 }

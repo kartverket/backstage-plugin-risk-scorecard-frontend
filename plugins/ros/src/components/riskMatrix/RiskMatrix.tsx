@@ -75,8 +75,8 @@ export function RiskMatrix({
                   ))}
                 </Fragment>
               ))}
-              <Box className={styles.centered} />
-              <Box className={styles.centered} />
+              <Box className={styles.centered}>{null}</Box>
+              <Box className={styles.centered}>{null}</Box>
               {riskMatrix.map((_, col) => (
                 <Box className={styles.centered} key={col}>
                   <Text variant="title-x-small" weight="bold">
