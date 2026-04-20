@@ -118,7 +118,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
                   allowActionDeletion ? (
                     <i className="ri-checkbox-circle-line" />
                   ) : (
-                    <i className="ri-pencil-line" />
+                    <i className="ri-edit-line" />
                   )
                 }
                 variant="secondary"
