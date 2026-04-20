@@ -26,14 +26,14 @@ const __dirname = dirname(__filename);
 const ROOT_DIR = resolve(__dirname, '..');
 const DEFAULT_PLUGIN_PATH = resolve(ROOT_DIR, 'plugins', 'ros');
 
-export interface ReleaseOptions {
+interface ReleaseOptions {
   dryRun: boolean;
   prerelease?: string;
   pluginPath?: string;
   prNumber?: number;
 }
 
-export interface ReleaseResult {
+interface ReleaseResult {
   success: boolean;
   skipped: boolean;
   skipReason?: 'no-commits' | 'no-conventional-commits';

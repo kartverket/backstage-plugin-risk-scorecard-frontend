@@ -16,7 +16,7 @@ export function filterActionsByRelevance(
   );
 }
 
-export function isActionsEqual(a: Action, b: Action) {
+function isActionsEqual(a: Action, b: Action) {
   if (
     a.ID !== b.ID ||
     a.title !== b.title ||
