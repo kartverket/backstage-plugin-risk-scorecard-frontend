@@ -692,6 +692,8 @@ export const pluginRiScMessages = {
         'Failed to decrypt RoS-analysis "{{riScId}}" – no access to key: {{keyId}}',
       WITH_KEY_PLURAL:
         'Failed to decrypt RoS-analyses "{{riScId}}" – no access to key: {{keyId}}',
+      UNKNOWN:
+        'Failed to decrypt risk scorecard "{{riScId}}" due to an unknown error.',
     },
     EncryptedWithKey: 'This analysis is encrypted with key {{keyId}}',
   },
@@ -1427,6 +1429,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke dekryptere ROS-analyse "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
           'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL':
             'Kunne ikke dekryptere ROS-analyser "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
+          'errorMessages.ContentStatusDecryptionFailedMessage.UNKNOWN':
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}" grunnet en ukjent feil.',
           'errorMessages.EncryptedWithKey':
             'Denne analysen er kryptert med nøkkel {{keyId}}',
 

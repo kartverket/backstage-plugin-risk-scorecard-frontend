@@ -36,11 +36,11 @@ export const Input = forwardRef<HTMLInputElement, Props>(
           variant="outlined"
           inputRef={ref}
           InputProps={{
-            sx: theme => ({
+            sx: {
               '&.Mui-disabled': {
-                color: commonTextColor(theme, true),
+                color: commonTextColor(true),
               },
-            }),
+            },
           }}
           {...props}
         />

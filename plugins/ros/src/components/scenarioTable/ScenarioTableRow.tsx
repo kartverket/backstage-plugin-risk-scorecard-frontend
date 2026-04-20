@@ -106,14 +106,9 @@ export function ScenarioTableRow({
     s => s.ID === scenario.ID,
   );
 
-  const highlightColor =
-    theme.palette.mode === 'dark'
-      ? 'var(--ros-gray-300)'
-      : 'var(--ros-gray-100)';
+  const highlightColor = 'var(--ros-scenario-highlight)';
 
-  // Necessary because the darkmode card color in theme.css overwrites the color defined in ScenarioTableStyles.ts
-  const cardBgColor =
-    theme.palette.mode === 'dark' ? 'var(--ros-gray-500)' : undefined;
+  const cardBgColor = 'var(--ros-scenario-card-bg)';
 
   const isTextColorBlack =
     theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;

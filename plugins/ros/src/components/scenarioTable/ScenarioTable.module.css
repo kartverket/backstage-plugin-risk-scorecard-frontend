@@ -8,29 +8,29 @@
   border: none;
   margin-bottom: 8px;
   padding: 28px 24px;
-  background-color: #f8f8f8;
+  background-color: var(--ros-gray-50);
 }
 
 .tableCard:hover {
-  background-color: #e0e0e0;
+  background-color: var(--ros-gray-light-hover);
   cursor: pointer;
 }
 
 .tableCard.tableCardNoHover:hover {
-  background-color: #f8f8f8;
+  background-color: var(--ros-gray-50);
   cursor: pointer;
 }
 
 [data-theme-mode='dark'] .tableCard {
-  background-color: #424242;
+  background-color: var(--ros-gray-dark-card);
 }
 
 [data-theme-mode='dark'] .tableCard:hover {
-  background-color: #616161;
+  background-color: var(--ros-gray-dark-hover);
 }
 
 [data-theme-mode='dark'] .tableCard.tableCardNoHover:hover {
-  background-color: #424242;
+  background-color: var(--ros-gray-dark-card);
 }
 
 .tableCardNoHover {
