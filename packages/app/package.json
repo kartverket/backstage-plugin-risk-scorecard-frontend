@@ -51,18 +51,18 @@
     "@kartverket/backstage-plugin-risk-scorecard": "workspace:plugins/ros",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
-    "backstage-plugin-xkcd": "^1.0.11",
-    "posthog-js": "^1.235.4",
+    "backstage-plugin-xkcd": "^1.1.7",
+    "posthog-js": "^1.369.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router": "^6.30.0",
-    "react-router-dom": "^6.30.0"
+    "react-router": "^6.30.3",
+    "react-router-dom": "^6.30.3"
   },
   "devDependencies": {
     "@backstage/test-utils": "backstage:^",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/react": "^18.3.20",
-    "@types/react-dom": "^18.3.6"
+    "@types/react-dom": "^18.3.7"
   },
   "browserslist": {
     "production": [
