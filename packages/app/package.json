@@ -60,6 +60,7 @@
   },
   "devDependencies": {
     "@backstage/test-utils": "backstage:^",
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.7"
   },
