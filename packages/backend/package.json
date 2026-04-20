@@ -53,7 +53,7 @@
     "@backstage/plugin-search-backend-node": "backstage:^",
     "@backstage/plugin-techdocs-backend": "backstage:^",
     "app": "link:../app",
-    "better-sqlite3": "12.6.2",
+    "better-sqlite3": "12.9.0",
     "jwt-decode": "^4.0.0"
   },
   "devDependencies": {

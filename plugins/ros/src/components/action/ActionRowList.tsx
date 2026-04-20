@@ -1,4 +1,4 @@
-import { Action } from '../../utils/types.ts';
+import { Action, RiScStatus } from '../../utils/types.ts';
 import { ActionRow } from './ActionRow.tsx';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { isToday } from '../../utils/date.ts';
@@ -25,7 +25,7 @@ type ActionRowListProps = {
 
 export function ActionRowList(props: ActionRowListProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { selectedRiSc } = useRiScs();
+  const { selectedRiSc, showBlockedUpdateError } = useRiScs();
   const { submitEditedScenarioToRiSc } = useScenario();
   const { profileInfo } = useBackstageContext();
   const [pendingActionStatusUpdates, setPendingActionStatusUpdates] = useState<
@@ -33,6 +33,10 @@ export function ActionRowList(props: ActionRowListProps) {
   >({});
   const [pendingActionUpdatesHistory, setPendingActionUpdatesHistory] =
     useState<string[]>([]);
+
+  const isRiScMarkedForDeletion =
+    selectedRiSc?.status === RiScStatus.DeletionDraft ||
+    selectedRiSc?.status === RiScStatus.DeletionSentForApproval;
 
   const onRefreshActionStatus = (action: Action) => {
     if (isToday(action.lastUpdated ?? null)) return;
@@ -52,6 +56,10 @@ export function ActionRowList(props: ActionRowListProps) {
     actionId: string,
     newStatus: ActionStatusOptions,
   ) => {
+    if (isRiScMarkedForDeletion) {
+      showBlockedUpdateError();
+      return;
+    }
     setPendingActionUpdatesHistory(prev => prev.filter(id => id !== actionId));
 
     setPendingActionStatusUpdates(prev => ({
@@ -87,7 +95,7 @@ export function ActionRowList(props: ActionRowListProps) {
         ),
       },
       {
-        profileInfo: profileInfo,
+        profileInfo,
         onSuccess: () => {
           if (setIsEditing) {
             setIsEditing(false);
@@ -122,7 +130,7 @@ export function ActionRowList(props: ActionRowListProps) {
           idsOfActionsToForceUpdateLastUpdatedValue: Object.keys(
             updates[scenarioId],
           ),
-          profileInfo: profileInfo,
+          profileInfo,
           onSuccess: () => {
             const savedActionIds = Object.keys(updates[scenarioId]);
 

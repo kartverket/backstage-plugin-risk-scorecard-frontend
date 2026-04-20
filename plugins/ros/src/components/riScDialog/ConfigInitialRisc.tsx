@@ -4,7 +4,6 @@ import { Box, Flex, Radio, RadioGroup, Switch, Text } from '@backstage/ui';
 import { RiScWithMetadata } from '../../utils/types.ts';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 import { UseFormSetValue } from 'react-hook-form';
-import { useTheme } from '@mui/material/styles';
 import styles from './ConfigInitialRisc.module.css';
 
 type RadioOptionProps = {
@@ -27,7 +26,6 @@ const RadioOption = ({
   recommendedBackstageComponentType,
 }: RadioOptionProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const theme = useTheme();
   const style = {
     fontSize: '12px',
     border: `1px solid ${active ? 'var(--bui-border-2)' : 'var(--bui-border-1)'}`,
@@ -43,10 +41,7 @@ const RadioOption = ({
         p="12px 16px"
         gap="2"
         style={{
-          backgroundColor:
-            theme.palette.mode === 'dark'
-              ? 'var(--bui-bg-neutral-3)'
-              : 'var(--bui-bg-neutral-1)',
+          backgroundColor: 'var(--ros-initial-risc-bg)',
           borderRadius: '8px',
           opacity: active ? 0.5 : 1,
         }}

@@ -63,6 +63,7 @@ type RiScDrawerProps = {
     onSuccess?: () => void,
     onError?: () => void,
   ) => void;
+  showBlockedUpdateError: () => void;
   approveRiSc: () => void;
   updateStatus: UpdateStatus;
   resetRiScStatus: () => void;
@@ -482,11 +483,32 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const isRiScMarkedForDeletion =
+    selectedRiSc?.status === RiScStatus.DeletionDraft ||
+    selectedRiSc?.status === RiScStatus.DeletionSentForApproval;
+
+  const showBlockedUpdateError = useCallback(() => {
+    dispatch({
+      type: 'SET_BOTH',
+      updateStatus: { isLoading: false, isError: true, isSuccess: false },
+      response: {
+        status: ProcessingStatus.ErrorWhenUpdatingDeletedRiSc,
+        statusMessage: t('errorMessages.ErrorWhenUpdatingDeletedRiSc'),
+      },
+    });
+  }, [dispatch, t]);
+
   function updateRiSc(
     riSc: RiScWithMetadata,
     onSuccess?: () => void,
     onError?: () => void,
   ) {
+    if (isRiScMarkedForDeletion) {
+      showBlockedUpdateError();
+      onError?.();
+      return;
+    }
+
     if (selectedRiSc && riScs) {
       const isRequiresNewApproval =
         selectedRiSc.migrationStatus?.migrationRequiresNewApproval ||
@@ -617,6 +639,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     createNewRiSc,
     deleteRiSc,
     updateRiSc,
+    showBlockedUpdateError,
     approveRiSc,
     updateStatus: localState.updateStatus,
     resetRiScStatus,

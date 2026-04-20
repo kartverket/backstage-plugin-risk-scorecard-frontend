@@ -8,10 +8,8 @@ spec:
   type: website
   lifecycle: production
   owner: skvis
-  system: ros-as-code
+  system: system:default/ros-as-code
   consumesApis:
-    - backstage-plugin-risk-scorecard-backend-api
+    - api:default/backstage-plugin-risk-scorecard-backend-api
   dependsOn:
-    - component:backstage-plugin-risk-scorecard-backend
-    - component:backstage-plugin-risk-crypto-service
-    - component:initialize-risc-api
+    - component:default/backstage-plugin-risk-scorecard-backend
