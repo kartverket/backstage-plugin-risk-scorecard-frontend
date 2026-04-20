@@ -13,7 +13,7 @@ interface VersionInfo {
   reason: string;
 }
 
- interface BumpResult {
+interface BumpResult {
   releaseType: semver.ReleaseType | null;
   reason: string;
 }
