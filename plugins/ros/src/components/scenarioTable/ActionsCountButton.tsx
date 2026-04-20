@@ -11,6 +11,7 @@ import styles from './ActionsCountButton.module.css';
 type ActionsCountButtonProps = {
   type: UpdatedStatusEnumType;
   count: number;
+  totalCount: number;
   onActionCountClick: (type: UpdatedStatusEnumType) => void;
   isSelected: boolean;
 };
@@ -52,7 +53,7 @@ export function ActionsCountButton(props: ActionsCountButtonProps) {
       onClick={() => props.onActionCountClick(props.type)}
       iconEnd={closeIndicator}
     >
-      {t(translationKey)} ({props.count})
+      {t(translationKey)} ({props.count}/{props.totalCount})
     </Button>
   );
 }

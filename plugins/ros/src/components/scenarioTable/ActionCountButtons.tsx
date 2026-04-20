@@ -6,6 +6,7 @@ import {
 import { ActionsCountButton } from './ActionsCountButton.tsx';
 
 type ActionCountButtonsProps = {
+  totalCount: number;
   veryOutdatedCount: number;
   outdatedCount: number;
   updatedCount: number;
@@ -19,6 +20,7 @@ export function ActionCountButtons(props: ActionCountButtonsProps) {
         <ActionsCountButton
           type={UpdatedStatusEnum.VERY_OUTDATED}
           count={props.veryOutdatedCount}
+          totalCount={props.totalCount}
           onActionCountClick={props.onActionCountClick}
           isSelected={
             props.updatedStatusToDisplay === UpdatedStatusEnum.VERY_OUTDATED
@@ -29,6 +31,7 @@ export function ActionCountButtons(props: ActionCountButtonsProps) {
         <ActionsCountButton
           type={UpdatedStatusEnum.OUTDATED}
           count={props.outdatedCount}
+          totalCount={props.totalCount}
           onActionCountClick={props.onActionCountClick}
           isSelected={
             props.updatedStatusToDisplay === UpdatedStatusEnum.OUTDATED
@@ -39,6 +42,7 @@ export function ActionCountButtons(props: ActionCountButtonsProps) {
         <ActionsCountButton
           type={UpdatedStatusEnum.UPDATED}
           count={props.updatedCount}
+          totalCount={props.totalCount}
           onActionCountClick={props.onActionCountClick}
           isSelected={
             props.updatedStatusToDisplay === UpdatedStatusEnum.UPDATED
