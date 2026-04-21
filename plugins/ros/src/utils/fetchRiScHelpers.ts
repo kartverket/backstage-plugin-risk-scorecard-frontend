@@ -80,24 +80,35 @@ export function buildFetchRiScErrorMessages(
         const messages: string[] = [];
 
         if (withErrorCode.length > 0) {
-          const decryptionErrorsByMessage = withErrorCode.reduce(
+          const groups = withErrorCode.reduce(
             (acc, risk) => {
-              const message = risk.errorCode!;
-              if (!acc[message]) acc[message] = [];
-              acc[message].push(risk.riScId);
+              const groupKey = `${risk.errorCode}__${risk.encryptionKeyId ?? ''}`;
+              if (!acc[groupKey]) acc[groupKey] = [];
+              acc[groupKey].push(risk);
               return acc;
             },
-            {} as Record<string, string[]>,
+            {} as Record<string, RiScContentResultDTO[]>,
           );
 
-          Object.entries(decryptionErrorsByMessage).forEach(
-            ([message, ids]) => {
-              const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${message}`;
+          Object.values(groups).forEach(group => {
+            const { errorCode, encryptionKeyId } = group[0];
+            const groupRiScIds = group.map(r => r.riScId).join(', ');
+            if (encryptionKeyId) {
+              const keyId = encryptionKeyId.split('/').pop() ?? encryptionKeyId;
+              const errorKey =
+                group.length === 1
+                  ? 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE'
+                  : 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL';
               messages.push(
-                t(errorKey as any, { riScId: ids.join(', '), status }),
+                t(errorKey as any, { riScId: groupRiScIds, keyId }),
               );
-            },
-          );
+            } else {
+              const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${errorCode}`;
+              messages.push(
+                t(errorKey as any, { riScId: groupRiScIds, status }),
+              );
+            }
+          });
         }
 
         if (withoutErrorCode.length > 0) {

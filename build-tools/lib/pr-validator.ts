@@ -5,7 +5,7 @@ import {
   getRecommendedBumpFromText,
 } from './version.ts';
 
-export interface PRValidationResult {
+interface PRValidationResult {
   valid: boolean;
   prTitle: string;
   expectedBumpType: semver.ReleaseType | null;

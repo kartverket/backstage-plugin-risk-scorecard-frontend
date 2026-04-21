@@ -7,7 +7,7 @@ import {
 } from './utilityfunctions.ts';
 import { ActionStatusOptions } from './constants.ts';
 
-export type ScenarioSortingOptions =
+type ScenarioSortingOptions =
   | 'NoSorting'
   | 'TitleAlphabetical'
   | 'HighestInitialRisk'

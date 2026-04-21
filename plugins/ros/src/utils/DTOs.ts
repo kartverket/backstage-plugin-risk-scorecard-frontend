@@ -50,6 +50,7 @@ export type RiScContentResultDTO = {
   migrationStatus: MigrationStatus;
   statusMessage?: string;
   errorCode?: string;
+  encryptionKeyId?: string;
   lastPublished: LastPublished;
 } & ContentRiScResultDTO;
 
