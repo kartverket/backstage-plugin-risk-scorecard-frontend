@@ -59,7 +59,7 @@ type ScenarioCoverage = {
   total: number;
 };
 
-export type ScenarioCoverageSummary = {
+type ScenarioCoverageSummary = {
   threatActors: ScenarioCoverage;
   vulnerabilities: ScenarioCoverage;
 };

@@ -135,7 +135,7 @@ export const pluginRiScMessages = {
       },
     },
     lastModified: 'Last published: ',
-    daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
+    daysSinceLastModified: '{{days}} days ago',
     notPublishedYet: 'RiSc is not published yet',
     errorMessage: 'Failed to retrieve status',
     outdated: 'Outdated',
@@ -688,9 +688,14 @@ export const pluginRiScMessages = {
         'Failed to decrypt risk scorecard "{{riScId}}", the provided Age key is invalid.',
       CONNECTION_REFUSED:
         'Failed to decrypt risk scorecard "{{riScId}}", unable to connect to the encryption service.',
+      WITH_KEY_SINGLE:
+        'Failed to decrypt RoS-analysis "{{riScId}}" – no access to key: {{keyId}}',
+      WITH_KEY_PLURAL:
+        'Failed to decrypt RoS-analyses "{{riScId}}" – no access to key: {{keyId}}',
       UNKNOWN:
         'Failed to decrypt risk scorecard "{{riScId}}" due to an unknown error.',
     },
+    EncryptedWithKey: 'This analysis is encrypted with key {{keyId}}',
   },
   infoMessages: {
     OpenedPullRequest: 'Successfully opened pull request',
@@ -882,8 +887,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.deletionApproval':
             'Risikoeier kan gå igjennom og godkjenne slettingen.',
           'rosStatus.lastModified': 'Sist publisert: ',
-          'rosStatus.daysSinceLastModified':
-            '{{days}} dager og {{numCommits}} commits siden',
+          'rosStatus.daysSinceLastModified': '{{days}} dager siden',
           'rosStatus.notPublishedYet': 'RoS er ikke publisert enda',
           'rosStatus.errorMessage': 'Kunne ikke hente status',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
@@ -1392,39 +1396,45 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'errorMessages.ErrorWhenFetchingGcpCryptoKeys':
             'Kunne ikke laste inn risiko- og sårbarhetsanalysene — krypteringstjenesten er ikke tilgjengelig. Prøv å oppdatere siden.',
           'errorMessages.ContentStatusDeleted':
-            'Risiko- og sårbarhetsanalyse "{{riScId}}" har blitt slettet',
+            'ROS-analyse "{{riScId}}" har blitt slettet',
           'errorMessages.ContentStatusFailure':
-            'Kunne ikke laste risiko- og sårbarhetsanalyse "{{riScId}}" grunnet en uventet feil',
+            'Kunne ikke laste ROS-analyse "{{riScId}}" grunnet en uventet feil',
           'errorMessages.ContentStatusFileNotFound':
-            'Risiko- og sårbarhetsanalyse "{{riScId}}" ble ikke funnet i repositoryet',
+            'ROS-analyse "{{riScId}}" ble ikke funnet i repositoryet',
           'errorMessages.ContentStatusDecryptionFailed':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}". Du har muligens ikke de nødvendige dekrypteringsnøklene',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}". Du har muligens ikke de nødvendige dekrypteringsnøklene',
           'errorMessages.ContentStatusNoReadAccess':
-            'Du har ikke lesetilgang til risiko- og sårbarhetsanalyse "{{riScId}}". ',
+            'Du har ikke lesetilgang til ROS-analyse "{{riScId}}".',
           'errorMessages.ContentStatusUnsupportedMigration':
-            'Risiko- og sårbarhetsanalyse "{{riScId}}" kan ikke automatisk migreres til den nyeste versjonen.',
+            'ROS-analyse "{{riScId}}" kan ikke automatisk migreres til den nyeste versjonen.',
           'errorMessages.ContentStatusSchemaValidationFailed':
-            'Risiko- og sårbarhetsanalyse "{{riScId}}" kunne ikke lastes fordi innholdet ikke samsvarer med forventet format. Den kan ha blitt manuelt redigert eller ødelagt.',
+            'ROS-analyse "{{riScId}}" kunne ikke lastes fordi innholdet ikke samsvarer med forventet format. Den kan ha blitt manuelt redigert eller ødelagt.',
 
           'errorMessages.ContentStatusDecryptionFailedMessage.INTERNAL_SERVER_ERROR':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", 500 - Intern serverfeil fra kryptotjenesten.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", 500 - Intern serverfeil fra kryptotjenesten.',
           'errorMessages.ContentStatusDecryptionFailedMessage.MISSING_DATA_KEY':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", kunne ikke få tilgang til krypteringsnøkkelen som kreves for dekryptering.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", kunne ikke få tilgang til krypteringsnøkkelen som kreves for dekryptering.',
           'errorMessages.ContentStatusDecryptionFailedMessage.NO_MATCHING_KEY':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", ingen tilgjengelig nøkkel kunne dekryptere innholdet.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", ingen tilgjengelig nøkkel kunne dekryptere innholdet.',
           'errorMessages.ContentStatusDecryptionFailedMessage.AUTHENTICATION_FAILED':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", autentisering mislyktes. Vennligst kontroller tilgangene dine.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", autentisering mislyktes. Vennligst kontroller tilgangene dine.',
           'errorMessages.ContentStatusDecryptionFailedMessage.INVALID_GCP_TOKEN':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", Google Cloud-tokenet ditt er ugyldig eller utløpt.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", Google Cloud-tokenet ditt er ugyldig eller utløpt.',
           'errorMessages.ContentStatusDecryptionFailedMessage.INVALID_AGE_KEY':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", den oppgitte AGE-nøkkelen er ugyldig.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", den oppgitte AGE-nøkkelen er ugyldig.',
           'errorMessages.ContentStatusDecryptionFailedMessage.CONNECTION_REFUSED':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", kunne ikke koble til krypteringstjenesten.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", kunne ikke koble til krypteringstjenesten.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE':
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
+          'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL':
+            'Kunne ikke dekryptere ROS-analyser "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
           'errorMessages.ContentStatusDecryptionFailedMessage.UNKNOWN':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}" grunnet en ukjent feil.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}" grunnet en ukjent feil.',
+          'errorMessages.EncryptedWithKey':
+            'Denne analysen er kryptert med nøkkel {{keyId}}',
 
           'errorMessages.ContentStatusUnknown':
-            'Kunne ikke hente risiko- og sårbarhetsanalyse "{{riScId}}" med ukjent status: {{status}}',
+            'Kunne ikke hente ROS-analyse "{{riScId}}" med ukjent status: {{status}}',
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',

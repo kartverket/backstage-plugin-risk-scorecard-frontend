@@ -84,10 +84,7 @@ type TooltipTargetIconProps = {
 };
 
 /** Unstyled focusable wrapper that works as a trigger for BUI TooltipTrigger. */
-export function TooltipTargetIcon({
-  ariaLabel,
-  children,
-}: TooltipTargetIconProps) {
+function TooltipTargetIcon({ ariaLabel, children }: TooltipTargetIconProps) {
   return (
     <AriaButton
       aria-label={ariaLabel}
