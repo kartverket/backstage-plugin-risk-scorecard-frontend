@@ -11,7 +11,6 @@ import { ScenarioLastUpdatedLabel } from '../scenario/ScenarioLastUpdatedLabel.t
 import DeleteIcon from '@mui/icons-material/Delete';
 import Collapse from '@mui/material/Collapse';
 import Box from '@mui/material/Box';
-import { Edit } from '@mui/icons-material';
 import { Markdown } from '../common/Markdown.tsx';
 import { ActionURL } from './ActionURL.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
@@ -169,7 +168,7 @@ export function ActionView(props: ActionViewProps) {
                   props.toggleEditMode();
                 }}
               >
-                <Edit />
+                <i className="ri-edit-line" />
               </IconButton>
             )}
           </Flex>
