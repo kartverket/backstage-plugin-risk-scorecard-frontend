@@ -30,10 +30,7 @@ export function LockedRiScView({ lockedRiSc }: LockedRiScViewProps) {
           gap="8px"
           className={styles.content}
         >
-          <Text>{t('lockedRiScCard.description')}</Text>
-          {keyId && (
-            <Text>{t('errorMessages.EncryptedWithKey', { keyId })}</Text>
-          )}
+          <Text>{t('lockedRiScCard.description', { keyId: keyId ?? '' })}</Text>
         </Flex>
       </CardBody>
     </Card>
