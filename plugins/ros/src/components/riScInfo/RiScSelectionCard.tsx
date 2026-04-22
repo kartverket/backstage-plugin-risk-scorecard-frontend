@@ -26,7 +26,7 @@ export function RiScSelectionCard() {
             })),
             ...lockedRiScs.map(riSc => ({
               value: riSc.id,
-              label: riSc.id,
+              label: `🔒 ${riSc.id}`,
             })),
           ]}
           onSelectionChange={key => {
