@@ -8,6 +8,7 @@ import {
   useRef,
   useEffect,
   MouseEvent,
+  KeyboardEvent,
   SetStateAction,
   Dispatch,
 } from 'react';
@@ -118,6 +119,8 @@ export function ScenarioTableRow({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={(e: MouseEvent<HTMLDivElement>) => {
         const target = e.target as HTMLElement | null;
         if (
@@ -129,6 +132,11 @@ export function ScenarioTableRow({
           return;
         }
         viewRow(scenario.ID);
+      }}
+      onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          viewRow(scenario.ID);
+        }
       }}
     >
       <Card
