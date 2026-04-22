@@ -18,6 +18,11 @@ export type LastPublished = {
   numberOfCommits: number;
 };
 
+export type LockedRiSc = {
+  id: string;
+  encryptionKeyId: string | null;
+};
+
 export type RiScWithMetadata = {
   id: string;
   status: RiScStatus;

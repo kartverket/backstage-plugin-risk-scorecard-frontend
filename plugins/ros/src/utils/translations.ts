@@ -734,6 +734,10 @@ export const pluginRiScMessages = {
     outdated: 'Outdated actions',
     listUpdatedActions: 'Recently updated actions',
   },
+  lockedRiScCard: {
+    title: 'No access',
+    description: 'You do not have access to this RoS-analysis.',
+  },
   firstRiScCard: {
     noRiScYet: 'Could not load any RoS-analyses',
     getStarted:
@@ -1469,6 +1473,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'filterButton.veryOutdated': 'Veldig utdaterte tiltak',
           'filterButton.outdated': 'Utdaterte tiltak',
           'filterButton.listUpdatedActions': 'Nylig oppdaterte tiltak',
+          'lockedRiScCard.title': 'Ingen tilgang',
+          'lockedRiScCard.description':
+            'Du har ikke tilgang til denne ROS-analysen.',
           'firstRiScCard.noRiScYet': 'Kunne ikke laste inn RoS-analyser',
           'firstRiScCard.getStarted':
             'Kom igang med risiko- og sårbarhetsanalyse for ditt team',

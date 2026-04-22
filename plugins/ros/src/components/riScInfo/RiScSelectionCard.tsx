@@ -5,20 +5,30 @@ import { Select, Flex } from '@backstage/ui';
 import styles from './RiScSelectionCard.module.css';
 
 export function RiScSelectionCard() {
-  const { riScs, selectedRiSc, selectRiSc } = useRiScs();
+  const { riScs, lockedRiScs, selectedRiSc, selectedLockedRiSc, selectRiSc } =
+    useRiScs();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const hasOptions =
+    (riScs !== null && riScs.length !== 0) || lockedRiScs.length !== 0;
 
   return (
     <Flex direction="column" gap="24px">
-      {riScs !== null && riScs.length !== 0 && (
+      {hasOptions && (
         <Select
-          value={selectedRiSc?.id}
+          value={selectedRiSc?.id ?? selectedLockedRiSc?.id}
           className={styles.selectTrigger}
           aria-label={t('contentHeader.multipleRiScs')}
-          options={riScs.map(riSc => ({
-            value: riSc.id,
-            label: riSc.content.title,
-          }))}
+          options={[
+            ...(riScs ?? []).map(riSc => ({
+              value: riSc.id,
+              label: riSc.content.title,
+            })),
+            ...lockedRiScs.map(riSc => ({
+              value: riSc.id,
+              label: riSc.id,
+            })),
+          ]}
           onSelectionChange={key => {
             if (key) selectRiSc(key.toString());
           }}

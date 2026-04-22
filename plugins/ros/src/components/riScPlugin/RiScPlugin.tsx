@@ -22,6 +22,7 @@ import styles from '../common/alertBar.module.css';
 import { RiScDescriptionCard } from '../riScInfo/RiScDescriptionCard.tsx';
 import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
 import { ErrorState } from '../riScInfo/ErrorState.tsx';
+import { LockedRiScView } from '../riScInfo/LockedRiScView.tsx';
 import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
 
 export function RiScPlugin() {
@@ -52,6 +53,7 @@ export function RiScPlugin() {
   const {
     approveRiSc,
     selectedRiSc,
+    selectedLockedRiSc,
     isFetching,
     resetResponse,
     resetRiScStatus,
@@ -94,6 +96,7 @@ export function RiScPlugin() {
             riScs !== null &&
             riScs.length === 0 &&
             !selectedRiSc &&
+            !selectedLockedRiSc &&
             !allRiScsFailedDecryption && (
               <Flex
                 justify="center"
@@ -106,6 +109,7 @@ export function RiScPlugin() {
           {/* Added isFetching condition to avoid showing error state when user e.g., adds new scorecard. */}
           {!isFetching &&
             !selectedRiSc &&
+            !selectedLockedRiSc &&
             (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
               <Flex
                 align="center"
@@ -118,7 +122,7 @@ export function RiScPlugin() {
           {isFetching && <Spinner size={80} />}
 
           <Grid container spacing={4}>
-            {selectedRiSc && (
+            {(selectedRiSc || selectedLockedRiSc) && (
               <>
                 <Grid size={12}>
                   <Grid container rowSpacing={3} columnSpacing={4}>
@@ -137,28 +141,38 @@ export function RiScPlugin() {
                     </Grid>
                     <Grid size={4} />
 
-                    <Grid size={8}>
-                      <Flex gap="24px" direction="column">
-                        <RiScDescriptionCard
-                          riScWithMetadata={selectedRiSc}
-                          edit={openEditRiScDialog}
-                        />
-                        <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
-                      </Flex>
-                    </Grid>
+                    {selectedRiSc ? (
+                      <>
+                        <Grid size={8}>
+                          <Flex gap="24px" direction="column">
+                            <RiScDescriptionCard
+                              riScWithMetadata={selectedRiSc}
+                              edit={openEditRiScDialog}
+                            />
+                            <ScenarioTableWrapper
+                              riScWithMetadata={selectedRiSc}
+                            />
+                          </Flex>
+                        </Grid>
 
-                    <Grid size={4}>
-                      <Flex direction="column" gap="24px">
-                        <RiScStatusComponent
-                          selectedRiSc={selectedRiSc}
-                          publishRiScFn={approveRiSc}
-                        />
-                        <RiskMatrix riScWithMetadata={selectedRiSc} />
-                        <ThreatActorsAndVulnerabilitiesCard
-                          scenarios={selectedRiSc.content.scenarios}
-                        />
-                      </Flex>
-                    </Grid>
+                        <Grid size={4}>
+                          <Flex direction="column" gap="24px">
+                            <RiScStatusComponent
+                              selectedRiSc={selectedRiSc}
+                              publishRiScFn={approveRiSc}
+                            />
+                            <RiskMatrix riScWithMetadata={selectedRiSc} />
+                            <ThreatActorsAndVulnerabilitiesCard
+                              scenarios={selectedRiSc.content.scenarios}
+                            />
+                          </Flex>
+                        </Grid>
+                      </>
+                    ) : (
+                      <Grid size={8}>
+                        <LockedRiScView lockedRiSc={selectedLockedRiSc!} />
+                      </Grid>
+                    )}
                   </Grid>
                 </Grid>
               </>
