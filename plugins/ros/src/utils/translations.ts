@@ -11,6 +11,8 @@ export const pluginRiScMessages = {
     editEncryption: 'Edit encryption',
     deleteButton: 'Delete scoreboard',
     multipleRiScs: 'RiSc scorecards',
+    lockedRiScsSection:
+      'RiScs you do not have access to — click to show encryption key',
   },
   dictionary: {
     by: 'By',
@@ -769,6 +771,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.editEncryption': 'Rediger kryptering',
           'contentHeader.deleteButton': 'Slett analyse',
           'contentHeader.multipleRiScs': 'RoS-analyser',
+          'contentHeader.lockedRiScsSection':
+            'RoSer du ikke har tilgang til — klikk for å vise krypteringsnøkkel',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.by': 'Av',
           'dictionary.click': 'Klikk',
