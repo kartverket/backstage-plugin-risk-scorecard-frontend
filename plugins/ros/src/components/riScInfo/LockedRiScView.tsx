@@ -48,29 +48,33 @@ export function LockedRiScView({
           style={{ padding: '8px 0' }}
         >
           <Text>{t('lockedRiScCard.description')}</Text>
-          {keyId && (
-            <Flex direction="column" align="center" gap="4px">
-              <Text>{t('lockedRiScCard.encryptedWithKey')}</Text>
-              <Flex align="center" gap="8px">
-                <Text weight="bold">{keyId}</Text>
-                <Button
-                  variant="tertiary"
-                  size="small"
-                  iconStart={
-                    <i
-                      className={copied ? 'ri-check-line' : 'ri-file-copy-line'}
-                    />
-                  }
-                  onClick={handleCopy}
-                >
-                  {copied ? t('dictionary.copied') : t('dictionary.copy')}
-                </Button>
-              </Flex>
-            </Flex>
-          )}
-          <div className={styles.actions}>
-            <CreateNewRiScButton onCreateNew={onCreateNew} />
-          </div>
+          <Flex direction="column" align="center" gap="4px">
+            {keyId && (
+              <>
+                <Text>{t('lockedRiScCard.encryptedWithKey')}</Text>
+                <Flex align="center" gap="8px">
+                  <Text weight="bold">{keyId}</Text>
+                  <Button
+                    variant="tertiary"
+                    size="small"
+                    iconStart={
+                      <i
+                        className={
+                          copied ? 'ri-check-line' : 'ri-file-copy-line'
+                        }
+                      />
+                    }
+                    onClick={handleCopy}
+                  >
+                    {copied ? t('dictionary.copied') : t('dictionary.copy')}
+                  </Button>
+                </Flex>
+              </>
+            )}
+            <div className={styles.actions}>
+              <CreateNewRiScButton onCreateNew={onCreateNew} />
+            </div>
+          </Flex>
         </Flex>
       </CardBody>
     </Card>
