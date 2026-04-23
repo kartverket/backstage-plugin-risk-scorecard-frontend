@@ -19,7 +19,8 @@
     "role": "frontend-plugin",
     "pluginId": "risk-scorecard",
     "pluginPackages": [
-      "@kartverket/backstage-plugin-risk-scorecard"
+      "@kartverket/backstage-plugin-risk-scorecard",
+      "@kartverket/backstage-plugin-risk-scorecard-backend"
     ]
   },
   "sideEffects": [

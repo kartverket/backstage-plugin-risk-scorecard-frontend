@@ -38,7 +38,7 @@ Before running your Backstage app, you want to configure it, which is done with 
 
 ### App-config files
 
-Backstage can be heavily configurated, and depends on configuration files when being built.
+Backstage can be heavily configured, and depends on configuration files when being built.
 These are named `app-config.<env>.yaml`, and in this project two are provided by default. One named `app-config.yaml` and `app-config.production.yaml`.
 For local development, you also have to create the file `app-config.local.yaml`. This file contains the configuration needed to run the app locally, and it is added to the .gitignore-file to avoid leaking secrets in case you set them directly.
 
