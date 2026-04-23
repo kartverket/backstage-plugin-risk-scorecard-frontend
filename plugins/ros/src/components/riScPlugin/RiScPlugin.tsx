@@ -121,8 +121,39 @@ export function RiScPlugin() {
             )}
           {isFetching && <Spinner size={80} />}
 
+          {selectedLockedRiSc && (
+            <>
+              <Grid container spacing={4}>
+                <Grid size={12}>
+                  <Grid container rowSpacing={3} columnSpacing={4}>
+                    <Grid size={8}>
+                      <Flex align="center" justify="between">
+                        <Text as="h3" variant="body-large" weight="bold">
+                          {t('contentHeader.multipleRiScs')}
+                        </Text>
+                      </Flex>
+                    </Grid>
+                    <Grid size={8}>
+                      <RiScSelectionCard />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Flex
+                justify="center"
+                align="center"
+                className={riscStyles.componentLayout}
+              >
+                <LockedRiScView
+                  lockedRiSc={selectedLockedRiSc}
+                  onCreateNew={openCreateRiScDialog}
+                />
+              </Flex>
+            </>
+          )}
+
           <Grid container spacing={4}>
-            {(selectedRiSc || selectedLockedRiSc) && (
+            {selectedRiSc && (
               <>
                 <Grid size={12}>
                   <Grid container rowSpacing={3} columnSpacing={4}>
@@ -141,38 +172,30 @@ export function RiScPlugin() {
                     </Grid>
                     <Grid size={4} />
 
-                    {selectedRiSc ? (
-                      <>
-                        <Grid size={8}>
-                          <Flex gap="24px" direction="column">
-                            <RiScDescriptionCard
-                              riScWithMetadata={selectedRiSc}
-                              edit={openEditRiScDialog}
-                            />
-                            <ScenarioTableWrapper
-                              riScWithMetadata={selectedRiSc}
-                            />
-                          </Flex>
-                        </Grid>
+                    <Grid size={8}>
+                      <Flex gap="24px" direction="column">
+                        <RiScDescriptionCard
+                          riScWithMetadata={selectedRiSc}
+                          edit={openEditRiScDialog}
+                        />
+                        <ScenarioTableWrapper
+                          riScWithMetadata={selectedRiSc}
+                        />
+                      </Flex>
+                    </Grid>
 
-                        <Grid size={4}>
-                          <Flex direction="column" gap="24px">
-                            <RiScStatusComponent
-                              selectedRiSc={selectedRiSc}
-                              publishRiScFn={approveRiSc}
-                            />
-                            <RiskMatrix riScWithMetadata={selectedRiSc} />
-                            <ThreatActorsAndVulnerabilitiesCard
-                              scenarios={selectedRiSc.content.scenarios}
-                            />
-                          </Flex>
-                        </Grid>
-                      </>
-                    ) : (
-                      <Grid size={8}>
-                        <LockedRiScView lockedRiSc={selectedLockedRiSc!} />
-                      </Grid>
-                    )}
+                    <Grid size={4}>
+                      <Flex direction="column" gap="24px">
+                        <RiScStatusComponent
+                          selectedRiSc={selectedRiSc}
+                          publishRiScFn={approveRiSc}
+                        />
+                        <RiskMatrix riScWithMetadata={selectedRiSc} />
+                        <ThreatActorsAndVulnerabilitiesCard
+                          scenarios={selectedRiSc.content.scenarios}
+                        />
+                      </Flex>
+                    </Grid>
                   </Grid>
                 </Grid>
               </>
