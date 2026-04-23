@@ -178,9 +178,7 @@ export function RiScPlugin() {
                           riScWithMetadata={selectedRiSc}
                           edit={openEditRiScDialog}
                         />
-                        <ScenarioTableWrapper
-                          riScWithMetadata={selectedRiSc}
-                        />
+                        <ScenarioTableWrapper riScWithMetadata={selectedRiSc} />
                       </Flex>
                     </Grid>
 

@@ -255,7 +255,10 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           mapRiScDtoToRiScWithMetadata,
         );
         const fetchedLockedRiScs: LockedRiSc[] = decryptionFailedRiScs.map(
-          risk => ({ id: risk.riScId, encryptionKeyId: risk.encryptionKeyId ?? null }),
+          risk => ({
+            id: risk.riScId,
+            encryptionKeyId: risk.encryptionKeyId ?? null,
+          }),
         );
         setRiScs(fetchedRiScs);
         setLockedRiScs(fetchedLockedRiScs);
