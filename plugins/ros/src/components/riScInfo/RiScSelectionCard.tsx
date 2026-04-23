@@ -25,7 +25,6 @@ export function RiScSelectionCard() {
             onChange={e => selectRiSc(e.target.value)}
             inputProps={{ 'aria-label': t('contentHeader.multipleRiScs') }}
             MenuProps={{ disablePortal: true }}
-            className={styles.selectTrigger}
           >
             {(riScs ?? []).map(riSc => (
               <MenuItem key={riSc.id} value={riSc.id}>

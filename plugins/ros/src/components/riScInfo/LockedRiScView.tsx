@@ -4,7 +4,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { LockedRiSc } from '../../utils/types';
 import { CreateNewRiScButton } from './CreateNewRiScButton';
-import styles from './ErrorState.module.css';
+import styles from './LockedRiScView.module.css';
 
 type LockedRiScViewProps = {
   lockedRiSc: LockedRiSc;

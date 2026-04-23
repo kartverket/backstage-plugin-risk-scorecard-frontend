@@ -248,7 +248,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         );
 
         // Check if all RiScs failed decryption (there are RiScs but all failed)
-        const allFailed = res.length > 0 && successfulRiScs.length === 0;
+        const allFailed =
+          res.length > 0 &&
+          res.every(r => r.status === ContentStatus.DecryptionFailed);
         setAllRiScsFailedDecryption(allFailed);
 
         const fetchedRiScs: RiScWithMetadata[] = successfulRiScs.map(
@@ -335,27 +337,19 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Set selected RiSc based on URL
+  // Set selected RiSc or locked RiSc based on URL
   useEffect(() => {
-    if (riScIdFromParams) {
-      const riSc = riScs?.find(r => r.id === riScIdFromParams);
-      if (riSc) {
-        setSelectedRiSc(riSc);
-        setSelectedLockedRiSc(null);
-      }
+    if (!riScIdFromParams) return;
+    const riSc = riScs?.find(r => r.id === riScIdFromParams);
+    const lockedRiSc = lockedRiScs.find(r => r.id === riScIdFromParams);
+    if (riSc) {
+      setSelectedRiSc(riSc);
+      setSelectedLockedRiSc(null);
+    } else if (lockedRiSc) {
+      setSelectedLockedRiSc(lockedRiSc);
+      setSelectedRiSc(null);
     }
-  }, [riScs, riScIdFromParams]);
-
-  // Set selected locked RiSc based on URL
-  useEffect(() => {
-    if (riScIdFromParams) {
-      const lockedRiSc = lockedRiScs.find(r => r.id === riScIdFromParams);
-      if (lockedRiSc) {
-        setSelectedLockedRiSc(lockedRiSc);
-        setSelectedRiSc(null);
-      }
-    }
-  }, [lockedRiScs, riScIdFromParams]);
+  }, [riScs, lockedRiScs, riScIdFromParams]);
 
   const resetRiScStatus = useCallback(() => {
     dispatch({
@@ -379,12 +373,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   );
 
   function selectRiSc(id: string) {
-    const selectedRiScId =
-      riScs?.find(riSc => riSc.id === id)?.id ??
-      lockedRiScs.find(r => r.id === id)?.id;
-    if (selectedRiScId) {
-      navigate(getRiScPath({ riScId: selectedRiScId }));
-    }
+    navigate(getRiScPath({ riScId: id }));
   }
 
   function createNewRiSc(
