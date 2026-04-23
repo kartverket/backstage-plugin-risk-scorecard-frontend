@@ -3,18 +3,13 @@ import { Button, Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { LockedRiSc } from '../../utils/types';
-import { CreateNewRiScButton } from './CreateNewRiScButton';
 import styles from './LockedRiScView.module.css';
 
 type LockedRiScViewProps = {
   lockedRiSc: LockedRiSc;
-  onCreateNew: () => void;
 };
 
-export function LockedRiScView({
-  lockedRiSc,
-  onCreateNew,
-}: LockedRiScViewProps) {
+export function LockedRiScView({ lockedRiSc }: LockedRiScViewProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [copied, setCopied] = useState(false);
 
@@ -48,33 +43,26 @@ export function LockedRiScView({
           style={{ padding: '8px 0' }}
         >
           <Text>{t('lockedRiScCard.description')}</Text>
-          <Flex direction="column" align="center" gap="4px">
-            {keyId && (
-              <>
-                <Text>{t('lockedRiScCard.encryptedWithKey')}</Text>
-                <Flex align="center" gap="8px">
-                  <Text weight="bold">{keyId}</Text>
-                  <Button
-                    variant="tertiary"
-                    size="small"
-                    iconStart={
-                      <i
-                        className={
-                          copied ? 'ri-check-line' : 'ri-file-copy-line'
-                        }
-                      />
-                    }
-                    onClick={handleCopy}
-                  >
-                    {copied ? t('dictionary.copied') : t('dictionary.copy')}
-                  </Button>
-                </Flex>
-              </>
-            )}
-            <div className={styles.actions}>
-              <CreateNewRiScButton onCreateNew={onCreateNew} />
-            </div>
-          </Flex>
+          {keyId && (
+            <Flex direction="column" align="center" gap="4px">
+              <Text>{t('lockedRiScCard.encryptedWithKey')}</Text>
+              <Flex align="center" gap="8px">
+                <Text weight="bold">{keyId}</Text>
+                <Button
+                  variant="tertiary"
+                  size="small"
+                  iconStart={
+                    <i
+                      className={copied ? 'ri-check-line' : 'ri-file-copy-line'}
+                    />
+                  }
+                  onClick={handleCopy}
+                >
+                  {copied ? t('dictionary.copied') : t('dictionary.copy')}
+                </Button>
+              </Flex>
+            </Flex>
+          )}
         </Flex>
       </CardBody>
     </Card>

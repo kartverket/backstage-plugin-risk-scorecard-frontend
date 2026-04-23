@@ -131,6 +131,9 @@ export function RiScPlugin() {
                         <Text as="h3" variant="body-large" weight="bold">
                           {t('contentHeader.multipleRiScs')}
                         </Text>
+                        <CreateNewRiScButton
+                          onCreateNew={openCreateRiScDialog}
+                        />
                       </Flex>
                     </Grid>
                     <Grid size={8}>
@@ -144,10 +147,7 @@ export function RiScPlugin() {
                 align="center"
                 className={riscStyles.componentLayout}
               >
-                <LockedRiScView
-                  lockedRiSc={selectedLockedRiSc}
-                  onCreateNew={openCreateRiScDialog}
-                />
+                <LockedRiScView lockedRiSc={selectedLockedRiSc} />
               </Flex>
             </>
           )}
