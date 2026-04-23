@@ -33,7 +33,18 @@ export function RiScSelectionCard() {
               </MenuItem>
             ))}
             {lockedRiScs.length > 0 && (
-              <ListSubheader>
+              <ListSubheader
+                sx={{
+                  fontWeight: 700,
+                  fontSize: '0.7rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  borderTop: riScs && riScs.length > 0 ? '1px solid' : 'none',
+                  borderColor: 'divider',
+                  mt: riScs && riScs.length > 0 ? 0.5 : 0,
+                  pt: 1,
+                }}
+              >
                 {t('contentHeader.lockedRiScsSection')}
               </ListSubheader>
             )}
