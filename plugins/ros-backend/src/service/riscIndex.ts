@@ -15,17 +15,13 @@ import {
   type GithubIntegration,
 } from '@backstage/integration';
 import * as yaml from 'yaml';
+import { type RiScIndexEntry } from './riscIndexStore';
 
 type RepoToIndex = {
   repoRootUrl: string;
   owner: string;
   repo: string;
   defaultComponentRefs: string[];
-};
-
-type IndexableRiScFile = {
-  sourceUrl: string;
-  coversComponentRefs: string[];
 };
 
 type GitHubContentsEntry = {
@@ -49,7 +45,7 @@ export async function buildRiskScorecardRiScIndex({
   discovery: DiscoveryService;
   auth: AuthService;
   config: { getOptionalString?(key: string): string | undefined };
-}): Promise<IndexableRiScFile[]> {
+}): Promise<RiScIndexEntry[]> {
   const catalogToken = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
     targetPluginId: 'catalog',
@@ -59,14 +55,12 @@ export async function buildRiskScorecardRiScIndex({
     discoveryApi: discovery,
   });
 
-  const filesToIndex = await getRiskScorecardRiScFilesToIndex({
+  return await getRiskScorecardRiScFilesToIndex({
     logger,
     catalogClient,
     catalogToken: catalogToken.token,
     config,
   });
-
-  return filesToIndex;
 }
 
 async function getRiskScorecardRiScFilesToIndex({
@@ -79,7 +73,7 @@ async function getRiskScorecardRiScFilesToIndex({
   catalogClient: CatalogApi;
   catalogToken: string;
   config: { getOptionalString?(key: string): string | undefined };
-}): Promise<IndexableRiScFile[]> {
+}): Promise<RiScIndexEntry[]> {
   const repos = await fetchReposToIndexFromCatalog(
     catalogClient,
     catalogToken,
@@ -93,7 +87,7 @@ async function getRiskScorecardRiScFilesToIndex({
     repoCount: repos.length,
   });
 
-  const riScFiles: IndexableRiScFile[] = [];
+  const riScFiles: RiScIndexEntry[] = [];
   const fetchStartedAt = Date.now();
 
   for (const repo of repos) {
@@ -227,7 +221,7 @@ async function getRiScFiles({
   integration: GithubIntegration;
   githubCredentialsProvider: GithubCredentialsProvider;
   logger: LoggerService;
-}): Promise<IndexableRiScFile[]> {
+}): Promise<RiScIndexEntry[]> {
   const credentials = await githubCredentialsProvider.getCredentials({
     url: repo.repoRootUrl,
   });
@@ -285,7 +279,7 @@ async function getRiScFiles({
       }),
   );
 
-  return files.filter((file): file is IndexableRiScFile => file !== undefined);
+  return files.filter((file): file is RiScIndexEntry => file !== undefined);
 }
 
 async function fetchGitHubJsonOrUndefined<T>(
@@ -310,7 +304,7 @@ async function fetchGitHubJsonOrUndefined<T>(
   return (await response.json()) as T;
 }
 
-function parseCoversComponentRefs(
+export function parseCoversComponentRefs(
   rawText: string,
   sourceUrl: string,
   logger: LoggerService,
