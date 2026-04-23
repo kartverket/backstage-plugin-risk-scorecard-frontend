@@ -1,21 +1,20 @@
-import { LoggerService } from '@backstage/backend-plugin-api';
 import express from 'express';
+import { riScIndexStore } from './riscIndexStore';
 
-type RouterOptions = {
-  logger: LoggerService;
-};
-
-export const createRouter = async ({
-  logger,
-}: RouterOptions): Promise<express.Router> => {
+export const createRouter = async (): Promise<express.Router> => {
   const router = express.Router();
 
-  router.get('/health', (_, res) => {
-    logger.info('Risk scorecard backend healthcheck requested');
-    res.json({
-      pluginId: 'risk-scorecard',
-      status: 'ok',
-    });
+  router.get('/risc-index', (req, res) => {
+    const componentRef = req.query.componentRef;
+
+    if (typeof componentRef !== 'string' || componentRef.trim() === '') {
+      res.status(400).json({
+        error: 'Query parameter "componentRef" is required',
+      });
+      return;
+    }
+
+    res.json(riScIndexStore.getAnalysesUrlsForComponentRef(componentRef.trim()));
   });
 
   return router;

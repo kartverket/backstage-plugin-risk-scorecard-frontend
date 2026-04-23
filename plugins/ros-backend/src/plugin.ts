@@ -10,14 +10,9 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         httpRouter: coreServices.httpRouter,
-        logger: coreServices.logger,
       },
-      async init({ httpRouter, logger }) {
-        httpRouter.use((await createRouter({ logger })) as any);
-        httpRouter.addAuthPolicy({
-          path: '/health',
-          allow: 'unauthenticated',
-        });
+      async init({ httpRouter }) {
+        httpRouter.use((await createRouter()) as any);
       },
     });
   },
