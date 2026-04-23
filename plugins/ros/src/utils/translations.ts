@@ -736,8 +736,8 @@ export const pluginRiScMessages = {
   },
   lockedRiScCard: {
     title: 'No access',
-    description:
-      'You do not have access to this RoS-analysis. It is encrypted with key {{keyId}}.',
+    description: 'You do not have access to this RoS-analysis.',
+    encryptedWithKey: 'Encrypted with key:',
   },
   firstRiScCard: {
     noRiScYet: 'Could not load any RoS-analyses',
@@ -1476,7 +1476,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'filterButton.listUpdatedActions': 'Nylig oppdaterte tiltak',
           'lockedRiScCard.title': 'Ingen tilgang',
           'lockedRiScCard.description':
-            'Du har ikke tilgang til denne ROS-analysen. Den er kryptert med nøkkel {{keyId}}.',
+            'Du har ikke tilgang til denne ROS-analysen.',
+          'lockedRiScCard.encryptedWithKey': 'Kryptert med nøkkel:',
           'firstRiScCard.noRiScYet': 'Kunne ikke laste inn RoS-analyser',
           'firstRiScCard.getStarted':
             'Kom igang med risiko- og sårbarhetsanalyse for ditt team',
