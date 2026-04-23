@@ -18,7 +18,11 @@ function DialogComponent({
   className,
 }: DialogComponentProps) {
   return (
-    <Dialog isOpen={isOpen} onOpenChange={onClick} className={className}>
+    <Dialog
+      isOpen={isOpen}
+      onOpenChange={onClick}
+      className={`${styles.dialog} ${className ?? ''}`}
+    >
       <DialogHeader className={styles.DialogHeader}>
         <Text variant="title-small" weight="bold">
           {header}

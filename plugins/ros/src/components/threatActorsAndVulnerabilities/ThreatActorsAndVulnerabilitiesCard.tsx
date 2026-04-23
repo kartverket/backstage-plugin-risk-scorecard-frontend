@@ -13,7 +13,6 @@ import {
 } from '../../utils/threatActorsAndVulnerabilities.ts';
 import { Scenario } from '../../utils/types.ts';
 import { CoverageStatusBox } from './CoverageStatusBox.tsx';
-import styles from './ThreatActorsAndVulnerabilitiesCard.module.css';
 
 type ThreatActorsAndVulnerabilitiesCardProps = {
   scenarios: Scenario[];
@@ -67,7 +66,6 @@ export function ThreatActorsAndVulnerabilitiesCard(
             header={t('threatActorsAndVulnerabilities.dialogHeader')}
             isOpen={isDialogOpen}
             onClick={() => setIsDialogOpen(false)}
-            className={styles.dialog}
           >
             <Flex direction="column">
               <Text variant="title-x-small">
