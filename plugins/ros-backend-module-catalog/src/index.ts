@@ -4,16 +4,22 @@ import {
   createBackendModule,
   type DiscoveryService,
   type LoggerService,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
+  type RootConfigService,
+  type SchedulerService,
+  type SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
-import { Entity } from '@backstage/catalog-model';
-import {
-  catalogProcessingExtensionPoint,
-  type CatalogProcessor,
-} from '@backstage/plugin-catalog-node';
 import {
   buildRiskScorecardRiScIndex,
   riScIndexStore,
 } from '@kartverket/backstage-plugin-risk-scorecard-backend';
+
+const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
+  frequency: { minutes: 30 },
+  timeout: { minutes: 3 },
+};
+const githubProvidersConfigPath = 'catalog.providers.github';
+const taskId = 'risk-scorecard-risc-index-refresh';
 
 const riskScorecardCatalogModule = createBackendModule({
   pluginId: 'catalog',
@@ -21,40 +27,41 @@ const riskScorecardCatalogModule = createBackendModule({
   register(env) {
     env.registerInit({
       deps: {
-        catalog: catalogProcessingExtensionPoint,
         logger: coreServices.logger,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
         config: coreServices.rootConfig,
+        scheduler: coreServices.scheduler,
       },
-      async init({ catalog, logger, discovery, auth, config }) {
-        catalog.addProcessor(
-          new RiScIndexRefreshProcessor({
-            logger,
-            discovery,
-            auth,
-            config,
-          }),
-        );
+      async init({ logger, discovery, auth, config, scheduler }) {
+        const refresher = new RiScIndexScheduledRefresh({
+          logger,
+          discovery,
+          auth,
+          config,
+          scheduler,
+        });
+
+        await refresher.start();
       },
     });
   },
 });
 
-class RiScIndexRefreshProcessor implements CatalogProcessor {
-  private refreshTimer: ReturnType<typeof setTimeout> | undefined;
-  private refreshInFlight: Promise<void> | undefined;
-  private refreshQueued = false;
+export class RiScIndexScheduledRefresh {
   private readonly logger: LoggerService;
   private readonly discovery: DiscoveryService;
   private readonly auth: AuthService;
-  private readonly config: { getOptionalString?(key: string): string | undefined };
+  private readonly config: RootConfigService;
+  private readonly scheduler: SchedulerService;
+  private readonly schedule: SchedulerServiceTaskScheduleDefinition;
 
   constructor(options: {
     logger: LoggerService;
     discovery: DiscoveryService;
     auth: AuthService;
-    config: { getOptionalString?(key: string): string | undefined };
+    config: RootConfigService;
+    scheduler: SchedulerService;
   }) {
     this.logger = options.logger.child({
       module: 'risk-scorecard-risc-index',
@@ -62,50 +69,36 @@ class RiScIndexRefreshProcessor implements CatalogProcessor {
     this.discovery = options.discovery;
     this.auth = options.auth;
     this.config = options.config;
-  }
+    this.scheduler = options.scheduler;
 
-  getProcessorName(): string {
-    return 'RiScIndexRefreshProcessor';
-  }
-
-  async postProcessEntity(entity: Entity): Promise<Entity> {
-    if (entity.kind.toLocaleLowerCase('en-US') === 'component') {
-      this.scheduleRefresh();
+    const githubSchedule = findGitHubProviderScheduleConfig(this.config)
+    if (!githubSchedule) {
+      this.logger.warn(
+        'RiSc index refresh schedule is using the default because no GitHub provider schedule was found',
+      );
+      this.schedule = defaultSchedule;
+    } else {
+      this.schedule = readSchedulerServiceTaskScheduleDefinitionFromConfig(githubSchedule);
     }
-
-    return entity;
   }
 
-  private scheduleRefresh(): void {
-    if (this.refreshTimer) {
-      clearTimeout(this.refreshTimer);
-    }
-
-    this.refreshTimer = setTimeout(() => {
-      this.refreshTimer = undefined;
-      void this.runRefresh();
-    }, 1000);
-  }
-
-  private async runRefresh(): Promise<void> {
-    if (this.refreshInFlight) {
-      this.refreshQueued = true;
-      return;
-    }
-
-    this.refreshInFlight = this.refreshIndex().finally(() => {
-      this.refreshInFlight = undefined;
-
-      if (this.refreshQueued) {
-        this.refreshQueued = false;
-        this.scheduleRefresh();
-      }
+  async start(): Promise<void> {
+    this.logger.info('Scheduling RiSc index refresh', {
+      taskId,
     });
 
-    await this.refreshInFlight;
+    await this.scheduler.scheduleTask({
+      ...this.schedule,
+      id: taskId,
+      fn: async () => {
+        await this.refreshIndex();
+      },
+    });
   }
 
   private async refreshIndex(): Promise<void> {
+    this.logger.info('Starting scheduled RiSc index refresh');
+
     try {
       const riScIndex = await buildRiskScorecardRiScIndex({
         logger: this.logger,
@@ -115,7 +108,9 @@ class RiScIndexRefreshProcessor implements CatalogProcessor {
       });
       riScIndexStore.replaceSnapshot(riScIndex);
 
-      this.logger.info('Stored RiSc index snapshot');
+      this.logger.info('Stored RiSc index snapshot', {
+        analysisCount: riScIndex.length
+      });
     } catch (error) {
       if (error instanceof Error) {
         this.logger.error('Failed to build RiSc index', error);
@@ -124,6 +119,25 @@ class RiScIndexRefreshProcessor implements CatalogProcessor {
       }
     }
   }
+}
+
+function findGitHubProviderScheduleConfig(config: RootConfigService): RootConfigService | undefined {
+  const githubProvidersConfig = config.getOptionalConfig(githubProvidersConfigPath);
+
+  if (!githubProvidersConfig) {
+    return undefined;
+  }
+
+  for (const providerId of githubProvidersConfig.keys()) {
+    const schedulePath = `${providerId}.schedule`;
+    const scheduleConfig = githubProvidersConfig.getOptionalConfig(schedulePath);
+
+    if (scheduleConfig) {
+      return scheduleConfig as RootConfigService
+    }
+  }
+
+  return undefined;
 }
 
 export default riskScorecardCatalogModule;
