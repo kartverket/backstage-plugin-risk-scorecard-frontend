@@ -465,6 +465,7 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
   });
 
   const allActions = scenariosWithData.flatMap(scenario => scenario.actions);
+  const totalCount = allActions.length;
   const veryOutdatedCount = allActions.filter(
     action => action.status === UpdatedStatusEnum.VERY_OUTDATED,
   ).length;
@@ -475,7 +476,7 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
     action => action.status === UpdatedStatusEnum.UPDATED,
   ).length;
 
-  return { veryOutdatedCount, outdatedCount, updatedCount };
+  return { totalCount, veryOutdatedCount, outdatedCount, updatedCount };
 }
 
 export function getActiveTheme() {
