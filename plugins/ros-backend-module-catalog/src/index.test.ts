@@ -15,6 +15,7 @@ import {
   riScIndexStore,
 } from '@kartverket/backstage-plugin-risk-scorecard-backend';
 import { RiScIndexScheduledRefresh } from './index';
+import type { RiScIndexSnapshotStore } from './riscIndexSnapshotStore';
 
 jest.mock('@kartverket/backstage-plugin-risk-scorecard-backend', () => ({
   buildRiskScorecardRiScIndex: jest.fn(),
@@ -47,6 +48,7 @@ describe('RiScIndexScheduledRefresh', () => {
 
   it('refreshes and stores the index when the scheduled task runs', async () => {
     const scheduler = createScheduler();
+    const snapshotStore = createSnapshotStore();
     const index = [
       {
         sourceUrl: 'https://example.org/risc-1.risc.yaml',
@@ -55,13 +57,41 @@ describe('RiScIndexScheduledRefresh', () => {
     ];
     buildIndexMock.mockResolvedValue(index);
 
-    await createRefresh({ scheduler }).start();
+    await createRefresh({ scheduler, snapshotStore }).start();
 
     const scheduledTask = jest.mocked(scheduler.scheduleTask).mock.calls[0][0];
     await scheduledTask.fn();
 
     expect(buildIndexMock).toHaveBeenCalledTimes(1);
     expect(replaceSnapshotMock).toHaveBeenCalledWith(index);
+    expect(snapshotStore.replaceSnapshot).toHaveBeenCalledWith(index);
+  });
+
+  it('loads a persisted snapshot on startup', async () => {
+    const scheduler = createScheduler();
+    const snapshotStore = createSnapshotStore();
+    const persistedSnapshot = [
+      {
+        sourceUrl: 'https://example.org/risc-1.risc.yaml',
+        coversComponentRefs: ['component:default/kv-ros-test-1'],
+      },
+    ];
+    jest.mocked(snapshotStore.readSnapshot).mockResolvedValue(persistedSnapshot);
+
+    await createRefresh({ scheduler, snapshotStore }).start();
+
+    expect(replaceSnapshotMock).toHaveBeenCalledWith(persistedSnapshot);
+    expect(scheduler.triggerTask).not.toHaveBeenCalled();
+  });
+
+  it('triggers the scheduled task when no persisted snapshot exists', async () => {
+    const scheduler = createScheduler();
+
+    await createRefresh({ scheduler }).start();
+
+    expect(scheduler.triggerTask).toHaveBeenCalledWith(
+      'risk-scorecard-risc-index-refresh',
+    );
   });
 
   it('falls back to the default schedule when no GitHub provider schedule exists', async () => {
@@ -104,10 +134,12 @@ function createRefresh({
       },
     },
   }),
+  snapshotStore = createSnapshotStore(),
 }: {
   logger?: LoggerService;
   scheduler?: SchedulerService;
   config?: RootConfigService;
+  snapshotStore?: RiScIndexSnapshotStore;
 } = {}): RiScIndexScheduledRefresh {
   return new RiScIndexScheduledRefresh({
     logger,
@@ -115,16 +147,24 @@ function createRefresh({
     auth: {} as AuthService,
     config,
     scheduler,
+    snapshotStore,
   });
 }
 
 function createScheduler(): SchedulerService {
   return {
     scheduleTask: jest.fn().mockResolvedValue(undefined),
-    triggerTask: jest.fn(),
+    triggerTask: jest.fn().mockResolvedValue(undefined),
     createScheduledTaskRunner: jest.fn(),
     getScheduledTasks: jest.fn(),
   } as unknown as SchedulerService;
+}
+
+function createSnapshotStore(): RiScIndexSnapshotStore {
+  return {
+    readSnapshot: jest.fn().mockResolvedValue(undefined),
+    replaceSnapshot: jest.fn().mockResolvedValue(undefined),
+  };
 }
 
 function createLogger(): LoggerService {
