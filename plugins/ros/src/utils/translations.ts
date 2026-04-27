@@ -269,7 +269,7 @@ export const pluginRiScMessages = {
     entries: {
       riscFeedbackChannel: {
         title: 'RISC Feedback Channel',
-        description: '#kodenær-ros-tilbakemelding',
+        description: '#operasjonell-ros-tilbakemelding',
       },
       riscDocumentation: {
         title: 'RISC Documentation',
@@ -1021,7 +1021,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'supportDialog.entries.riscFeedbackChannel.title':
             'RoS tilbakemeldingskanal',
           'supportDialog.entries.riscFeedbackChannel.description':
-            '#kodenær-ros-tilbakemelding',
+            '#operasjonell-ros-tilbakemelding',
           'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
           'supportDialog.entries.riscDocumentation.description':
             'Confluence - RISC',
@@ -1128,7 +1128,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
           'rosDialog.generateInitialDescription':
-            'Kodenær RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
+            'Operasjonell RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
           'rosDialog.generateInitialToggleDescription':
             'Vil du generere initiell RoS?',
           'rosDialog.generateObsRiScDescription':
@@ -1148,9 +1148,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Anbefalt for komponenter av typen',
           'sopsConfigDialog.title': 'Kryptering',
           'sopsConfigDialog.writeLocalRiscSuffix':
-            'for å lære mer om å skrive kodenær RoS lokalt.',
+            'for å lære mer om å skrive Operasjonell RoS lokalt.',
           'sopsConfigDialog.description.new':
-            'For å bruke kodenær RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
+            'For å bruke Operasjonell RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
           'sopsConfigDialog.description.edit':
             'Risiko og sårbarhetsanalysen vil bli kryptert for å sørge for konfidiensialitet. Du kan endre hvilken krypteringsnøkkel fra Google Cloud Platform (GCP) som skal bli brukt her:',
           'sopsConfigDialog.selectKeysTitle': 'Velg krypteringsnøkkel',
@@ -1172,7 +1172,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.publicAgeKeyQuestion':
             'Trenger noen å skrive RoS lokalt i sin editor?',
           'sopsConfigDialog.publicAgeKeyDescription':
-            'Legg ved offentlige age-nøkkel til personer som ønsker å skrive kodenær RoS lokalt',
+            'Legg ved offentlige age-nøkkel til personer som ønsker å skrive Operasjonell RoS lokalt',
           'sopsConfigDialog.addPublicAgeKey': 'Legg til nøkkel',
           'sopsConfigDialog.publicAgeKey': 'Offentlig age-nøkkel',
           'sopsConfigDialog.update': 'Oppdater',
