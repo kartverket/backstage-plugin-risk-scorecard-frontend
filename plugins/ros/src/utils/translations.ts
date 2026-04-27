@@ -267,7 +267,7 @@ export const pluginRiScMessages = {
     entries: {
       riscFeedbackChannel: {
         title: 'RISC Feedback Channel',
-        description: '#Operasjonell-ros-tilbakemelding',
+        description: '#operasjonell-ros-tilbakemelding',
       },
       riscDocumentation: {
         title: 'RISC Documentation',
@@ -1012,7 +1012,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'supportDialog.entries.riscFeedbackChannel.title':
             'RoS tilbakemeldingskanal',
           'supportDialog.entries.riscFeedbackChannel.description':
-            '#Operasjonell-ros-tilbakemelding',
+            '#operasjonell-ros-tilbakemelding',
           'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
           'supportDialog.entries.riscDocumentation.description':
             'Confluence - RISC',
