@@ -22,6 +22,7 @@ import styles from '../common/alertBar.module.css';
 import { RiScDescriptionCard } from '../riScInfo/RiScDescriptionCard.tsx';
 import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
 import { ErrorState } from '../riScInfo/ErrorState.tsx';
+import { LockedRiScView } from '../riScInfo/LockedRiScView.tsx';
 import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
 
 export function RiScPlugin() {
@@ -52,6 +53,7 @@ export function RiScPlugin() {
   const {
     approveRiSc,
     selectedRiSc,
+    selectedLockedRiSc,
     isFetching,
     resetResponse,
     resetRiScStatus,
@@ -94,6 +96,7 @@ export function RiScPlugin() {
             riScs !== null &&
             riScs.length === 0 &&
             !selectedRiSc &&
+            !selectedLockedRiSc &&
             !allRiScsFailedDecryption && (
               <Flex
                 justify="center"
@@ -106,6 +109,7 @@ export function RiScPlugin() {
           {/* Added isFetching condition to avoid showing error state when user e.g., adds new scorecard. */}
           {!isFetching &&
             !selectedRiSc &&
+            !selectedLockedRiSc &&
             (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
               <Flex
                 align="center"
@@ -116,6 +120,37 @@ export function RiScPlugin() {
               </Flex>
             )}
           {isFetching && <Spinner size={80} />}
+
+          {selectedLockedRiSc && (
+            <>
+              <Grid container spacing={4}>
+                <Grid size={12}>
+                  <Grid container rowSpacing={3} columnSpacing={4}>
+                    <Grid size={8}>
+                      <Flex align="center" justify="between">
+                        <Text as="h3" variant="body-large" weight="bold">
+                          {t('contentHeader.multipleRiScs')}
+                        </Text>
+                        <CreateNewRiScButton
+                          onCreateNew={openCreateRiScDialog}
+                        />
+                      </Flex>
+                    </Grid>
+                    <Grid size={8}>
+                      <RiScSelectionCard />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Flex
+                justify="center"
+                align="center"
+                className={riscStyles.componentLayout}
+              >
+                <LockedRiScView lockedRiSc={selectedLockedRiSc} />
+              </Flex>
+            </>
+          )}
 
           <Grid container spacing={4}>
             {selectedRiSc && (

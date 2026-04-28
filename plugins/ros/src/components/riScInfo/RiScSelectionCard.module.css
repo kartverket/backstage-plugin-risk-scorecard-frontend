@@ -1,6 +1,15 @@
-.selectTrigger button {
-  background-color: transparent;
-  border: 1px solid var(--bui-border-2);
+.lockedSectionHeader {
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background-color: inherit !important;
+}
+
+.lockedSectionHeaderWithDivider {
+  border-top: 1px solid var(--ros-gray-200);
+  margin-top: 4px;
+  padding-top: 8px;
 }
 
 [role='listbox'] {

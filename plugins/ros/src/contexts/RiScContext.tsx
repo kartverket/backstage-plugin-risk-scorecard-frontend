@@ -10,6 +10,7 @@ import {
 } from 'react';
 import {
   ContentStatus,
+  LockedRiSc,
   ProcessingStatus,
   RiScStatus,
   RiScWithMetadata,
@@ -50,8 +51,10 @@ export type UpdateStatus = {
 
 type RiScDrawerProps = {
   riScs: RiScWithMetadata[] | null;
+  lockedRiScs: LockedRiSc[];
   selectRiSc: (title: string) => void;
   selectedRiSc: RiScWithMetadata | null;
+  selectedLockedRiSc: LockedRiSc | null;
   createNewRiSc: (
     riSc: RiScWithMetadata,
     generateInitialRisc: boolean,
@@ -97,9 +100,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
+  const [lockedRiScs, setLockedRiScs] = useState<LockedRiSc[]>([]);
   const [selectedRiSc, setSelectedRiSc] = useState<RiScWithMetadata | null>(
     null,
   );
+  const [selectedLockedRiSc, setSelectedLockedRiSc] =
+    useState<LockedRiSc | null>(null);
   const [isFetching, setIsFetching] = useState(true);
   const isFetchingRef = useRef(isFetching);
   const [isFetchingRiScs, setIsFetchingRiScs] = useState(true);
@@ -237,15 +243,27 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         const successfulRiScs = res.filter(
           risk => risk.status === ContentStatus.Success,
         );
+        const decryptionFailedRiScs = res.filter(
+          risk => risk.status === ContentStatus.DecryptionFailed,
+        );
 
         // Check if all RiScs failed decryption (there are RiScs but all failed)
-        const allFailed = res.length > 0 && successfulRiScs.length === 0;
+        const allFailed =
+          res.length > 0 &&
+          res.every(r => r.status === ContentStatus.DecryptionFailed);
         setAllRiScsFailedDecryption(allFailed);
 
         const fetchedRiScs: RiScWithMetadata[] = successfulRiScs.map(
           mapRiScDtoToRiScWithMetadata,
         );
+        const fetchedLockedRiScs: LockedRiSc[] = decryptionFailedRiScs.map(
+          risk => ({
+            id: risk.riScId,
+            encryptionKeyId: risk.encryptionKeyId ?? null,
+          }),
+        );
         setRiScs(fetchedRiScs);
+        setLockedRiScs(fetchedLockedRiScs);
         isFetchingRiScsRef.current = false;
         setIsFetchingRiScs(isFetchingRiScsRef.current);
         if (!isFetchingGcpCryptoKeysRef.current) {
@@ -267,8 +285,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           });
         }
 
-        // If there are no RiScs, don't set a selected RiSc
+        // If there are no accessible RiScs, try to navigate to the first locked one
         if (fetchedRiScs.length === 0) {
+          if (fetchedLockedRiScs.length > 0 && !riScIdFromParams) {
+            navigate(getRiScPath({ riScId: fetchedLockedRiScs[0].id }));
+          }
           return;
         }
 
@@ -279,9 +300,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         }
 
         const riSc = fetchedRiScs.find(r => r.id === riScIdFromParams);
+        const isLockedRiSc = fetchedLockedRiScs.some(
+          r => r.id === riScIdFromParams,
+        );
 
-        // If there is an invalid RiSc ID in the URL, navigate to the first RiSc with error state
-        if (!riSc) {
+        // If there is an invalid RiSc ID in the URL (not accessible and not locked), navigate to the first RiSc
+        if (!riSc && !isLockedRiSc) {
           navigate(getRiScPath({ riScId: fetchedRiScs[0].id }), {
             state: t('errorMessages.RiScDoesNotExist'),
           });
@@ -313,15 +337,19 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Set selected RiSc based on URL
+  // Set selected RiSc or locked RiSc based on URL
   useEffect(() => {
-    if (riScIdFromParams) {
-      const riSc = riScs?.find(r => r.id === riScIdFromParams);
-      if (riSc) {
-        setSelectedRiSc(riSc);
-      }
+    if (!riScIdFromParams) return;
+    const riSc = riScs?.find(r => r.id === riScIdFromParams);
+    const lockedRiSc = lockedRiScs.find(r => r.id === riScIdFromParams);
+    if (riSc) {
+      setSelectedRiSc(riSc);
+      setSelectedLockedRiSc(null);
+    } else if (lockedRiSc) {
+      setSelectedLockedRiSc(lockedRiSc);
+      setSelectedRiSc(null);
     }
-  }, [riScs, riScIdFromParams]);
+  }, [riScs, lockedRiScs, riScIdFromParams]);
 
   const resetRiScStatus = useCallback(() => {
     dispatch({
@@ -345,10 +373,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   );
 
   function selectRiSc(id: string) {
-    const selectedRiScId = riScs?.find(riSc => riSc.id === id)?.id;
-    if (selectedRiScId) {
-      navigate(getRiScPath({ riScId: selectedRiScId }));
-    }
+    navigate(getRiScPath({ riScId: id }));
   }
 
   function createNewRiSc(
@@ -634,8 +659,10 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   const value = {
     riScs,
+    lockedRiScs,
     selectRiSc,
     selectedRiSc,
+    selectedLockedRiSc,
     createNewRiSc,
     deleteRiSc,
     updateRiSc,
