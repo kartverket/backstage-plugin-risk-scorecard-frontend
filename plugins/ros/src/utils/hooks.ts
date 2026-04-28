@@ -106,6 +106,10 @@ export function useAuthenticatedFetch() {
           },
           body: body,
         }).then(res => {
+          if (res.status === 401) {
+            gitHubApi.getAccessToken(['repo'], { instantPopup: true });
+            return;
+          }
           if (!res.ok) {
             return res
               .json()
