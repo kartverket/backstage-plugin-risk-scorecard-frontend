@@ -52,7 +52,7 @@ app-config*.yaml
 
 # Sensitive credentials
 *-credentials.yaml
-
+kartverket.dev/
 # vscode database functionality support files
 *.session.sql
 
@@ -65,3 +65,6 @@ e2e-test-report/
 /db
 
 playwright/.auth
+
+# ROS submodule symlink
+.kartverket.dev/plugins/ros
