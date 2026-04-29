@@ -101,6 +101,9 @@ async function getRiskScorecardRiScFilesToIndex({
       continue;
     }
 
+    if (repo.repoRootUrl.startsWith('https://github.com/kartverket/')) {
+      continue;
+    }
     try {
       const repoFiles = await getRiScFiles({
         repo,
@@ -122,6 +125,7 @@ async function getRiskScorecardRiScFilesToIndex({
     repoCount: repos.length,
     analysisCount: riScFiles.length,
     fetchDurationMs: Date.now() - fetchStartedAt,
+    riScFiles,
   });
 
   return riScFiles;
@@ -232,7 +236,9 @@ async function getRiScFiles({
     );
   }
 
-  const directoryEntries = await fetchGitHubJsonOrUndefined<GitHubContentsEntry[]>(
+  const directoryEntries = await fetchGitHubJsonOrUndefined<
+    GitHubContentsEntry[]
+  >(
     `${apiBaseUrl}/repos/${repo.owner}/${repo.repo}/contents/.security/risc`,
     credentials.headers,
   );
@@ -247,39 +253,48 @@ async function getRiScFiles({
         return entry.type === 'file' && entry.name.endsWith('.risc.yaml');
       })
       .map(async entry => {
-        const fileResponse = await fetchGitHubJsonOrUndefined<GitHubFileResponse>(
-          entry.url,
-          credentials.headers,
-        );
+        const fileResponse =
+          await fetchGitHubJsonOrUndefined<GitHubFileResponse>(
+            entry.url,
+            credentials.headers,
+          );
 
         if (!fileResponse?.content || fileResponse.encoding !== 'base64') {
           return undefined;
         }
 
         const sourceUrl = entry.url;
+        const riScId = getRiScIdFromFileName(entry.name);
+        const sourceComponentRef = repo.defaultComponentRefs[0];
+
+        if (!riScId || !sourceComponentRef) {
+          return undefined;
+        }
+
         const rawText = Buffer.from(fileResponse.content, 'base64').toString(
           'utf8',
         );
-        const coversComponentRefs = sourceUrl.endsWith('/risc-7ssVK.risc.yaml')
-          ? // TODO: Override for initial testing. Remove once proper testdata is available.
-            [
-              'component:default/kv-ros-test-1',
-              'component:default/kv-ros-test-2',
-              'component:default/kv-ros-test-3',
-              'component:default/kv-ros-test-4',
-              'component:default/kv-ros-test-5',
-              'component:default/kv-ros-test-6',
-            ]
-          : parseCoversComponentRefs(rawText, sourceUrl, logger);
+        const coversComponentRefs = parseCoversComponentRefs(rawText, sourceUrl, logger);
 
         return {
-          sourceUrl,
+          riScId,
+          sourceComponentRef,
           coversComponentRefs: coversComponentRefs ?? repo.defaultComponentRefs,
         };
       }),
   );
 
   return files.filter((file): file is RiScIndexEntry => file !== undefined);
+}
+
+function getRiScIdFromFileName(fileName: string): string | undefined {
+  const suffix = '.risc.yaml';
+
+  if (!fileName.endsWith(suffix)) {
+    return undefined;
+  }
+
+  return fileName.slice(0, -suffix.length);
 }
 
 async function fetchGitHubJsonOrUndefined<T>(

@@ -11,11 +11,15 @@ describe('createRouter', () => {
   it('returns the analyses for a component ref', async () => {
     riScIndexStore.replaceSnapshot([
       {
+        riScId: 'risc-1',
         sourceUrl: 'https://example.org/risc-1.risc.yaml',
+        sourceComponentRef: 'component:default/source-1',
         coversComponentRefs: ['component:default/kv-ros-test-6'],
       },
       {
+        riScId: 'risc-7ssVK',
         sourceUrl: 'https://example.org/risc-7ssVK.risc.yaml',
+        sourceComponentRef: 'component:default/source-2',
         coversComponentRefs: [
           'component:default/kv-ros-test-1',
           'component:default/kv-ros-test-6',
@@ -29,8 +33,16 @@ describe('createRouter', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual([
-      'https://example.org/risc-1.risc.yaml',
-      'https://example.org/risc-7ssVK.risc.yaml',
+      {
+        id: 'risc-1',
+        componentRef: 'component:default/source-1',
+        sourceUrl: 'https://example.org/risc-1.risc.yaml',
+      },
+      {
+        id: 'risc-7ssVK',
+        componentRef: 'component:default/source-2',
+        sourceUrl: 'https://example.org/risc-7ssVK.risc.yaml',
+      },
     ]);
   });
 
@@ -50,7 +62,9 @@ afterEach(() => {
   riScIndexStore.replaceSnapshot([]);
 });
 
-async function makeRequest(path: string): Promise<{ status: number; body: unknown }> {
+async function makeRequest(
+  path: string,
+): Promise<{ status: number; body: unknown }> {
   const app = express();
   app.use(await createRouter());
 

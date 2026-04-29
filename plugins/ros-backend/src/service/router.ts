@@ -14,7 +14,7 @@ export const createRouter = async (): Promise<express.Router> => {
       return;
     }
 
-    res.json(riScIndexStore.getAnalysesUrlsForComponentRef(componentRef.trim()));
+    res.json(riScIndexStore.getAnalysesForComponentRef(componentRef.trim()));
   });
 
   return router;

@@ -7,10 +7,14 @@ import {
 } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { act } from 'react';
 import { SopsConfigDTO } from './DTOs';
-import { useAuthenticatedFetch, useGithubRepositoryInformation } from './hooks';
+import {
+  useAuthenticatedFetch,
+  useGithubRepositoryInformation,
+  useRiScIndexForCurrentComponent,
+} from './hooks';
 import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
@@ -924,6 +928,86 @@ describe('useAuthenticatedFetch', () => {
 
       expect(onError).toHaveBeenCalled();
       expect(onSuccess).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('useRiScIndexForCurrentComponent', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockConfigApi.getString.mockImplementation(key => {
+        if (key === 'backend.baseUrl') return 'http://localhost:7000';
+        if (key === 'auth.environment') return 'development';
+        return '';
+      });
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
+      (useEntity as jest.Mock).mockReturnValue({
+        entity: {
+          kind: 'Component',
+          metadata: {
+            name: 'kv-ros-test-6',
+            namespace: 'default',
+          },
+        },
+      });
+    });
+
+    it('fetches RiSc index source URLs for the current component ref', async () => {
+      mockFetchApi.fetch.mockResolvedValue({
+        ok: true,
+        json: async () => [
+          {
+            id: 'risc-7ssVK',
+            componentRef: 'component:default/kv-ros-test-4',
+            sourceUrl: 'https://example.org/risc-7ssVK.risc.yaml',
+          },
+        ],
+      });
+
+      const { result } = renderHook(() => useRiScIndexForCurrentComponent(), {
+        wrapper,
+      });
+
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
+
+      expect(mockFetchApi.fetch).toHaveBeenCalledWith(
+        'http://localhost:7000/api/risk-scorecard/risc-index?componentRef=component%3Adefault%2Fkv-ros-test-6',
+        expect.objectContaining({
+          method: 'GET',
+          headers: expect.objectContaining({
+            Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+          }),
+        }),
+      );
+      expect(result.current.riScs).toEqual([
+        {
+          id: 'risc-7ssVK',
+          componentRef: 'component:default/kv-ros-test-4',
+          sourceUrl: 'https://example.org/risc-7ssVK.risc.yaml',
+        },
+      ]);
+      expect(result.current.error).toBeUndefined();
+    });
+
+    it('does not call the RiSc index API for non-component entities', async () => {
+      (useEntity as jest.Mock).mockReturnValue({
+        entity: {
+          kind: 'System',
+          metadata: {
+            name: 'kv-ros-tests',
+            namespace: 'default',
+          },
+        },
+      });
+
+      const { result } = renderHook(() => useRiScIndexForCurrentComponent(), {
+        wrapper,
+      });
+
+      expect(result.current.componentRef).toBeUndefined();
+      expect(result.current.isFetching).toBe(false);
+      expect(mockFetchApi.fetch).not.toHaveBeenCalled();
     });
   });
 });

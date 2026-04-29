@@ -53,6 +53,7 @@
     "@backstage/plugin-search-backend-node": "backstage:^",
     "@backstage/plugin-techdocs-backend": "backstage:^",
     "@kartverket/backstage-plugin-risk-scorecard-backend": "workspace:plugins/ros-backend",
+    "@kartverket/backstage-plugin-risk-scorecard-backend-module-catalog": "workspace:plugins/ros-backend-module-catalog",
     "app": "link:../app",
     "better-sqlite3": "12.9.0",
     "jwt-decode": "^4.0.0"

@@ -23,6 +23,11 @@ export type LockedRiSc = {
   encryptionKeyId: string | null;
 };
 
+export type SystemRiSc = {
+  id: string;
+  componentRef: string;
+};
+
 export type RiScWithMetadata = {
   id: string;
   status: RiScStatus;

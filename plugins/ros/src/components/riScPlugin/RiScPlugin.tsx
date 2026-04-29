@@ -54,6 +54,7 @@ export function RiScPlugin() {
     approveRiSc,
     selectedRiSc,
     selectedLockedRiSc,
+    selectedSystemRiSc,
     isFetching,
     resetResponse,
     resetRiScStatus,
@@ -96,19 +97,24 @@ export function RiScPlugin() {
             riScs !== null &&
             riScs.length === 0 &&
             !selectedRiSc &&
+            !selectedSystemRiSc &&
             !selectedLockedRiSc &&
             !allRiScsFailedDecryption && (
               <Flex
+                direction="column"
+                gap="24px"
                 justify="center"
                 align="center"
                 className={riscStyles.componentLayout}
               >
+                <RiScSelectionCard />
                 <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
               </Flex>
             )}
           {/* Added isFetching condition to avoid showing error state when user e.g., adds new scorecard. */}
           {!isFetching &&
             !selectedRiSc &&
+            !selectedSystemRiSc &&
             !selectedLockedRiSc &&
             (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
               <Flex
@@ -120,6 +126,17 @@ export function RiScPlugin() {
               </Flex>
             )}
           {isFetching && <Spinner size={80} />}
+
+          {selectedSystemRiSc && (
+            <Flex
+              justify="center"
+              align="center"
+              className={riscStyles.componentLayout}
+            >
+              {/* System RiScs should redirect to their owning component and render there as a regular or locked RiSc. */}
+              <Spinner size={80} />
+            </Flex>
+          )}
 
           {selectedLockedRiSc && (
             <>

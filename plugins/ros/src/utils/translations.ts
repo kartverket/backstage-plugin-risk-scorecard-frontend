@@ -11,6 +11,8 @@ export const pluginRiScMessages = {
     editEncryption: 'Edit encryption',
     deleteButton: 'Delete scoreboard',
     multipleRiScs: 'RiSc scorecards',
+    chooseRiSc: 'Choose RiSc scorecard',
+    systemRiScsSection: 'System RiScs',
     lockedRiScsSection:
       'RiScs you do not have access to — click for encryption key information',
   },
@@ -171,6 +173,11 @@ export const pluginRiScMessages = {
     feedbackDescription:
       '🎉 Thank you for completing your risk scorecard! Please help us improve the tool —',
     feedbackLink: 'give us feedback ✨',
+  },
+  riscIndex: {
+    title: 'Analyses referencing this component',
+    loading: 'Fetching referencing analyses',
+    error: 'Failed to fetch referencing analyses',
   },
   publishDialog: {
     titleUpdate: 'Accept risks', // Approve ROS
@@ -774,8 +781,13 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.editEncryption': 'Rediger kryptering',
           'contentHeader.deleteButton': 'Slett analyse',
           'contentHeader.multipleRiScs': 'RoS-analyser',
+          'contentHeader.chooseRiSc': 'Velg RoS-analyse',
+          'contentHeader.systemRiScsSection': 'System-RoSer',
           'contentHeader.lockedRiScsSection':
             'RoSer du ikke har tilgang til — klikk for informasjon om krypteringsnøkkel',
+          'riscIndex.title': 'Analyser som refererer til denne komponenten',
+          'riscIndex.loading': 'Henter refererende analyser',
+          'riscIndex.error': 'Kunne ikke hente refererende analyser',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.by': 'Av',
           'dictionary.click': 'Klikk',

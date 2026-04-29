@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
   useReducer,
@@ -15,8 +16,13 @@ import {
   RiScStatus,
   RiScWithMetadata,
   SubmitResponseObject,
+  SystemRiSc,
 } from '../utils/types';
 import { useRouteRef } from '@backstage/core-plugin-api';
+import {
+  entityRouteParams,
+  entityRouteRef,
+} from '@backstage/plugin-catalog-react';
 import {
   getTranslationKey,
   requiresNewApproval,
@@ -38,10 +44,12 @@ import {
 import {
   useAuthenticatedFetch,
   useGithubRepositoryInformation,
+  useRiScIndexForCurrentComponent,
 } from '../utils/hooks';
 import { latestSupportedVersion } from '../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
+import { getSystemRiScsNotInSelector } from '../utils/riscIndex';
 
 export type UpdateStatus = {
   isLoading: boolean;
@@ -52,9 +60,11 @@ export type UpdateStatus = {
 type RiScDrawerProps = {
   riScs: RiScWithMetadata[] | null;
   lockedRiScs: LockedRiSc[];
-  selectRiSc: (title: string) => void;
+  systemRiScs: SystemRiSc[];
+  selectRiSc: (id: string) => void;
   selectedRiSc: RiScWithMetadata | null;
   selectedLockedRiSc: LockedRiSc | null;
+  selectedSystemRiSc: SystemRiSc | null;
   createNewRiSc: (
     riSc: RiScWithMetadata,
     generateInitialRisc: boolean,
@@ -86,9 +96,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const getRiScPath = useRouteRef(riScRouteRef);
+  const getEntityPath = useRouteRef(entityRouteRef);
   const [isRequesting, setIsRequesting] = useState<boolean>(false);
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const repoInfo = useGithubRepositoryInformation();
+  const { riScs: indexedRiScs } = useRiScIndexForCurrentComponent();
 
   const {
     fetchRiScs,
@@ -101,11 +113,17 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
   const [lockedRiScs, setLockedRiScs] = useState<LockedRiSc[]>([]);
+  const systemRiScs = useMemo(
+    () => getSystemRiScsNotInSelector(indexedRiScs, riScs, lockedRiScs),
+    [indexedRiScs, lockedRiScs, riScs],
+  );
   const [selectedRiSc, setSelectedRiSc] = useState<RiScWithMetadata | null>(
     null,
   );
   const [selectedLockedRiSc, setSelectedLockedRiSc] =
     useState<LockedRiSc | null>(null);
+  const [selectedSystemRiSc, setSelectedSystemRiSc] =
+    useState<SystemRiSc | null>(null);
   const [isFetching, setIsFetching] = useState(true);
   const isFetchingRef = useRef(isFetching);
   const [isFetchingRiScs, setIsFetchingRiScs] = useState(true);
@@ -337,19 +355,26 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Set selected RiSc or locked RiSc based on URL
+  // Set selected RiSc, system RiSc or locked RiSc based on URL
   useEffect(() => {
     if (!riScIdFromParams) return;
     const riSc = riScs?.find(r => r.id === riScIdFromParams);
     const lockedRiSc = lockedRiScs.find(r => r.id === riScIdFromParams);
+    const systemRiSc = systemRiScs.find(r => r.id === riScIdFromParams);
     if (riSc) {
       setSelectedRiSc(riSc);
       setSelectedLockedRiSc(null);
+      setSelectedSystemRiSc(null);
     } else if (lockedRiSc) {
       setSelectedLockedRiSc(lockedRiSc);
       setSelectedRiSc(null);
+      setSelectedSystemRiSc(null);
+    } else if (systemRiSc) {
+      setSelectedSystemRiSc(systemRiSc);
+      setSelectedRiSc(null);
+      setSelectedLockedRiSc(null);
     }
-  }, [riScs, lockedRiScs, riScIdFromParams]);
+  }, [riScs, systemRiScs, lockedRiScs, riScIdFromParams]);
 
   const resetRiScStatus = useCallback(() => {
     dispatch({
@@ -372,7 +397,21 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     [repoInfo.owner, repoInfo.name],
   );
 
+  function getSystemRiScPath(systemRiSc: SystemRiSc) {
+    const entityPath = getEntityPath(
+      entityRouteParams(systemRiSc.componentRef),
+    );
+    return `${entityPath}/risc/${encodeURIComponent(systemRiSc.id)}`;
+  }
+
   function selectRiSc(id: string) {
+    const systemRiSc = systemRiScs.find(riSc => riSc.id === id);
+
+    if (systemRiSc) {
+      navigate(getSystemRiScPath(systemRiSc));
+      return;
+    }
+
     navigate(getRiScPath({ riScId: id }));
   }
 
@@ -383,6 +422,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   ) {
     setIsFetching(true);
     setSelectedRiSc(null);
+    setSelectedSystemRiSc(null);
     dispatch({
       type: 'SET_BOTH',
       updateStatus: { isLoading: true, isError: false, isSuccess: false },
@@ -660,9 +700,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   const value = {
     riScs,
     lockedRiScs,
+    systemRiScs,
     selectRiSc,
     selectedRiSc,
     selectedLockedRiSc,
+    selectedSystemRiSc,
     createNewRiSc,
     deleteRiSc,
     updateRiSc,
