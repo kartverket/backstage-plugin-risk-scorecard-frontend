@@ -21,7 +21,6 @@ fi
 mkdir -p kartverket.dev/plugins
 ln -s ../../plugins/ros kartverket.dev/plugins/ros
 ln -s ../app-config.local.yaml kartverket.dev/app-config.local.yaml
-rm -f kartverket.dev/app-config.yaml
 ln -s ../app-config.yaml kartverket.dev/app-config.yaml
 
 # 4. Install host deps
