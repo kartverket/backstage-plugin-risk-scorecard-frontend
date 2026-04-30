@@ -17,27 +17,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '24.x' # From mise.toml
+          node-version: '24.x'
           cache: 'yarn'
+          cache-dependency-path: kartverket.dev/yarn.lock
+
+      - name: Symlink plugin into host workspace
+        run: |
+          mkdir -p kartverket.dev/plugins
+          ln -s ../../plugins/ros kartverket.dev/plugins/ros
 
       - name: Install dependencies
         run: yarn install --immutable
+        working-directory: kartverket.dev
 
       - name: Run Prettier
         run: yarn run prettier:check
+        working-directory: kartverket.dev
 
       - name: Run lint
         run: yarn run lint:all
+        working-directory: kartverket.dev
 
       - name: Run tests
-        run: yarn test:all --ci
+        run: yarn workspace @kartverket/backstage-plugin-risk-scorecard test --ci
+        working-directory: kartverket.dev
 
       - name: Run tsc
         run: yarn run tsc
+        working-directory: kartverket.dev
