@@ -3,41 +3,31 @@
  */
 
 import type { LoggerService } from '@backstage/backend-plugin-api';
-import { parseCoversComponentRefs } from './riscIndex';
+import { parseAppliesToBackstageEntityRefs } from './riscIndex';
 
-describe('parseCoversComponentRefs', () => {
+describe('parseAppliesToBackstageEntityRefs', () => {
   const logger = createLogger();
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('accepts a single string component ref', () => {
+  it('accepts an array of entity refs', () => {
     expect(
-      parseCoversComponentRefs(
-        'coversComponentRefs: component:default/kv-ros-test-2\n',
-        'https://example.org/risc.risc.yaml',
-        logger,
-      ),
-    ).toEqual(['component:default/kv-ros-test-2']);
-  });
-
-  it('accepts an array of component refs', () => {
-    expect(
-      parseCoversComponentRefs(
-        'coversComponentRefs:\n  - component:default/kv-ros-test-2\n  - component:default/kv-ros-test-3\n',
+      parseAppliesToBackstageEntityRefs(
+        'appliesToBackstageEntityRefs:\n  - component:default/kv-ros-test-2\n  - system:default/kv-ros-test-system\n',
         'https://example.org/risc.risc.yaml',
         logger,
       ),
     ).toEqual([
       'component:default/kv-ros-test-2',
-      'component:default/kv-ros-test-3',
+      'system:default/kv-ros-test-system',
     ]);
   });
 
-  it('returns undefined when coversComponentRefs is missing', () => {
+  it('returns undefined when appliesToBackstageEntityRefs is missing', () => {
     expect(
-      parseCoversComponentRefs(
+      parseAppliesToBackstageEntityRefs(
         'title: test\nversion: 1\n',
         'https://example.org/risc.risc.yaml',
         logger,
@@ -45,16 +35,16 @@ describe('parseCoversComponentRefs', () => {
     ).toBeUndefined();
   });
 
-  it('returns an empty array and warns when coversComponentRefs has an invalid type', () => {
+  it('returns an empty array and warns when appliesToBackstageEntityRefs has an invalid type', () => {
     expect(
-      parseCoversComponentRefs(
-        'coversComponentRefs:\n  invalid: true\n',
+      parseAppliesToBackstageEntityRefs(
+        'appliesToBackstageEntityRefs:\n  invalid: true\n',
         'https://example.org/risc.risc.yaml',
         logger,
       ),
     ).toEqual([]);
     expect(logger.warn).toHaveBeenCalledWith(
-      'RiSc file has invalid coversComponentRefs',
+      'RiSc file has invalid appliesToBackstageEntityRefs',
       expect.objectContaining({
         sourceUrl: 'https://example.org/risc.risc.yaml',
       }),

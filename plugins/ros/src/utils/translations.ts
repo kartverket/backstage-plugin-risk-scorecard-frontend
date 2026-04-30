@@ -394,6 +394,14 @@ export const pluginRiScMessages = {
     scopeDescription:
       'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
     scopeError: 'The scorecard has to have a description of the scope',
+    appliesToBackstageEntityRefs: 'Applies to entities',
+    appliesToBackstageEntityRefsDescription:
+      'The RiSc always applies to the current component. Add any other entities this RiSc applies to.',
+    appliesToBackstageEntityRefsPlaceholder: 'Add entity',
+    appliesToBackstageEntityRefsLoading: 'Loading entities...',
+    appliesToBackstageEntityRefsNoOptions: 'No entities found',
+    appliesToBackstageEntityRefsSystemRosHint:
+      'Covers multiple entities and will also appear as a RiSc for the other added entities.',
     generateInitialDescription:
       'RiSc Scorecard lets you generate a default RiSc based on information about the codebase in kartverket.dev, security metrics and security controls.',
     generateInitialToggleDescription: 'Do you want to generate a default RiSc?',
@@ -1145,6 +1153,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeDescription':
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
+          'rosDialog.appliesToBackstageEntityRefs': 'Gjelder for entitetene',
+          'rosDialog.appliesToBackstageEntityRefsDescription':
+            'RoS gjelder alltid for valgt komponent. Legg til andre entiteter denne RoS-en gjelder for.',
+          'rosDialog.appliesToBackstageEntityRefsPlaceholder': 'Legg til entitet',
+          'rosDialog.appliesToBackstageEntityRefsLoading': 'Laster entiteter...',
+          'rosDialog.appliesToBackstageEntityRefsNoOptions': 'Fant ingen entiteter',
+          'rosDialog.appliesToBackstageEntityRefsSystemRosHint':
+            'Dekker flere entiteter og vises som RoS også for de andre entitetene som er lagt til.',
           'rosDialog.generateInitialDescription':
             'Operasjonell RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
           'rosDialog.generateInitialToggleDescription':

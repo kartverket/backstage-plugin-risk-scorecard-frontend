@@ -58,6 +58,7 @@ export type RiScDTO = {
   schemaVersion: string;
   title: string;
   scope: string;
+  appliesToBackstageEntityRefs?: string[];
   scenarios: ScenarioDTO[];
 };
 

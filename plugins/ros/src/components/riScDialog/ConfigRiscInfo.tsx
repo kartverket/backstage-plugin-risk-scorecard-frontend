@@ -1,6 +1,7 @@
 import { MarkdownInput } from '../common/MarkdownInput';
 import { Input } from '../common/Input';
 import {
+  Control,
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
@@ -10,17 +11,24 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FieldErrors } from 'react-hook-form';
 import { Flex } from '@backstage/ui';
+import { AppliesToBackstageEntityRefsField } from './AppliesToBackstageEntityRefsField';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { stringifyEntityRef } from '@backstage/catalog-model';
 
 interface ConfigRiscInfoProps {
   register: UseFormRegister<RiScWithMetadata>;
   errors: FieldErrors<RiScWithMetadata>;
   setValue: UseFormSetValue<RiScWithMetadata>;
   watch: UseFormWatch<RiScWithMetadata>;
+  control: Control<RiScWithMetadata>;
 }
 
 function ConfigRiscInfo(props: ConfigRiscInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const currentScope = props.watch('content.scope');
+  const { entity } = useEntity();
+  const currentEntityRef = stringifyEntityRef(entity);
+
   return (
     <Flex gap="16px" direction="column" px="1px">
       <Input
@@ -29,6 +37,10 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
         error={props.errors?.content?.title !== undefined}
         label={t('dictionary.title')}
         helperText={props.errors?.content?.title && t('rosDialog.titleError')}
+      />
+      <AppliesToBackstageEntityRefsField
+        control={props.control}
+        currentEntityRef={currentEntityRef}
       />
       <MarkdownInput
         {...props.register('content.scope')}

@@ -25,7 +25,7 @@ export type LockedRiSc = {
 
 export type SystemRiSc = {
   id: string;
-  componentRef: string;
+  entityRef: string;
 };
 
 export type RiScWithMetadata = {
@@ -170,6 +170,7 @@ export type RiSc = {
   schemaVersion: string;
   title: string;
   scope: string;
+  appliesToBackstageEntityRefs?: string[];
   scenarios: Scenario[];
 };
 

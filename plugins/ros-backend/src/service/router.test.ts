@@ -8,19 +8,17 @@ import { riScIndexStore } from './riscIndexStore';
 import { createRouter } from './router';
 
 describe('createRouter', () => {
-  it('returns the analyses for a component ref', async () => {
+  it('returns system RiScs for an entity ref', async () => {
     riScIndexStore.replaceSnapshot([
       {
         riScId: 'risc-1',
-        sourceUrl: 'https://example.org/risc-1.risc.yaml',
-        sourceComponentRef: 'component:default/source-1',
-        coversComponentRefs: ['component:default/kv-ros-test-6'],
+        sourceEntityRef: 'component:default/source-1',
+        appliesToBackstageEntityRefs: ['component:default/kv-ros-test-6'],
       },
       {
         riScId: 'risc-7ssVK',
-        sourceUrl: 'https://example.org/risc-7ssVK.risc.yaml',
-        sourceComponentRef: 'component:default/source-2',
-        coversComponentRefs: [
+        sourceEntityRef: 'component:default/source-2',
+        appliesToBackstageEntityRefs: [
           'component:default/kv-ros-test-1',
           'component:default/kv-ros-test-6',
         ],
@@ -28,32 +26,26 @@ describe('createRouter', () => {
     ]);
 
     const response = await makeRequest(
-      '/risc-index?componentRef=component:default/kv-ros-test-6',
+      '/system-riscs?entityRef=component:default/kv-ros-test-6',
     );
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual([
       {
-        id: 'risc-1',
-        componentRef: 'component:default/source-1',
-        sourceUrl: 'https://example.org/risc-1.risc.yaml',
-      },
-      {
         id: 'risc-7ssVK',
-        componentRef: 'component:default/source-2',
-        sourceUrl: 'https://example.org/risc-7ssVK.risc.yaml',
+        entityRef: 'component:default/source-2',
       },
     ]);
   });
 
-  it('returns 400 when componentRef is missing', async () => {
+  it('returns 400 when entityRef is missing', async () => {
     riScIndexStore.replaceSnapshot([]);
 
-    const response = await makeRequest('/risc-index');
+    const response = await makeRequest('/system-riscs');
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
-      error: 'Query parameter "componentRef" is required',
+      error: 'Query parameter "entityRef" is required',
     });
   });
 });

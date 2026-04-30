@@ -4,17 +4,17 @@ import { riScIndexStore } from './riscIndexStore';
 export const createRouter = async (): Promise<express.Router> => {
   const router = express.Router();
 
-  router.get('/risc-index', (req, res) => {
-    const componentRef = req.query.componentRef;
+  router.get('/system-riscs', (req, res) => {
+    const entityRef = req.query.entityRef;
 
-    if (typeof componentRef !== 'string' || componentRef.trim() === '') {
+    if (typeof entityRef !== 'string' || entityRef.trim() === '') {
       res.status(400).json({
-        error: 'Query parameter "componentRef" is required',
+        error: 'Query parameter "entityRef" is required',
       });
       return;
     }
 
-    res.json(riScIndexStore.getAnalysesForComponentRef(componentRef.trim()));
+    res.json(riScIndexStore.getSystemRiScsForEntityRef(entityRef.trim()));
   });
 
   return router;

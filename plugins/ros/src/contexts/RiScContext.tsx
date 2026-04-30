@@ -4,7 +4,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
   useReducer,
@@ -44,12 +43,11 @@ import {
 import {
   useAuthenticatedFetch,
   useGithubRepositoryInformation,
-  useRiScIndexForCurrentComponent,
+  useSystemRiScsForCurrentEntity,
 } from '../utils/hooks';
 import { latestSupportedVersion } from '../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../utils/translations';
-import { getSystemRiScsNotInSelector } from '../utils/riscIndex';
 
 export type UpdateStatus = {
   isLoading: boolean;
@@ -100,7 +98,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   const [isRequesting, setIsRequesting] = useState<boolean>(false);
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const repoInfo = useGithubRepositoryInformation();
-  const { riScs: indexedRiScs } = useRiScIndexForCurrentComponent();
+  const { riScs: systemRiScs } =
+    useSystemRiScsForCurrentEntity();
 
   const {
     fetchRiScs,
@@ -113,10 +112,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
   const [lockedRiScs, setLockedRiScs] = useState<LockedRiSc[]>([]);
-  const systemRiScs = useMemo(
-    () => getSystemRiScsNotInSelector(indexedRiScs, riScs, lockedRiScs),
-    [indexedRiScs, lockedRiScs, riScs],
-  );
   const [selectedRiSc, setSelectedRiSc] = useState<RiScWithMetadata | null>(
     null,
   );
@@ -399,7 +394,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   function getSystemRiScPath(systemRiSc: SystemRiSc) {
     const entityPath = getEntityPath(
-      entityRouteParams(systemRiSc.componentRef),
+      entityRouteParams(systemRiSc.entityRef),
     );
     return `${entityPath}/risc/${encodeURIComponent(systemRiSc.id)}`;
   }

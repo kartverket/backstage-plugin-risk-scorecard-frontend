@@ -6,9 +6,8 @@ const snapshotId = 'default';
 type DatabaseClient = Awaited<ReturnType<DatabaseService['getClient']>>;
 type RiScIndexEntry = {
   riScId: string;
-  sourceUrl: string;
-  sourceComponentRef: string;
-  coversComponentRefs: string[];
+  sourceEntityRef: string;
+  appliesToBackstageEntityRefs: string[];
 };
 
 export interface RiScIndexSnapshotStore {

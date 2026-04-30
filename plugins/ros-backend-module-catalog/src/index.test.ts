@@ -51,9 +51,8 @@ describe('RiScIndexScheduledRefresh', () => {
     const index = [
       {
         riScId: 'risc-1',
-        sourceUrl: 'https://example.org/risc-1.risc.yaml',
-        sourceComponentRef: 'component:default/source-1',
-        coversComponentRefs: ['component:default/kv-ros-test-1'],
+        sourceEntityRef: 'component:default/source-1',
+        appliesToBackstageEntityRefs: ['component:default/kv-ros-test-1'],
       },
     ];
     buildIndexMock.mockResolvedValue(index);
@@ -74,9 +73,8 @@ describe('RiScIndexScheduledRefresh', () => {
     const persistedSnapshot = [
       {
         riScId: 'risc-1',
-        sourceUrl: 'https://example.org/risc-1.risc.yaml',
-        sourceComponentRef: 'component:default/source-1',
-        coversComponentRefs: ['component:default/kv-ros-test-1'],
+        sourceEntityRef: 'component:default/source-1',
+        appliesToBackstageEntityRefs: ['component:default/kv-ros-test-1'],
       },
     ];
     jest

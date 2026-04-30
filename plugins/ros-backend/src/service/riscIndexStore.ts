@@ -1,69 +1,53 @@
 export type RiScIndexEntry = {
   riScId: string;
-  sourceComponentRef: string;
-  coversComponentRefs: string[];
+  sourceEntityRef: string;
+  appliesToBackstageEntityRefs: string[];
 };
 
 export type RiScIndexReference = {
   id: string;
-  componentRef: string;
+  entityRef: string;
 };
 
 export type RiScIndexStore = {
   replaceSnapshot(analyses: RiScIndexEntry[]): void;
-  getAnalysesForComponentRef(
-    componentRef: string,
-  ): readonly RiScIndexReference[];
+  getSystemRiScsForEntityRef(entityRef: string): readonly RiScIndexReference[];
 };
 
 export const riScIndexStore = createInMemoryRiScIndexStore();
 
 export function createInMemoryRiScIndexStore(): RiScIndexStore {
-  let analysesByComponentRef = new Map<string, readonly RiScIndexEntry[]>();
-  const mockAnalysesByComponentRef = buildAnalysesByComponentRef([
-    {
-      riScId: 'risc-7ssVK',
-      sourceComponentRef: 'component:default/kv-ros-test-2',
-      coversComponentRefs: [
-        'component:default/kv-ros-test-1',
-        'component:default/kv-ros-test-2',
-        'component:default/kv-ros-test-3',
-        'component:default/kv-ros-test-4',
-        'component:default/kv-ros-test-5',
-        'component:default/kv-ros-test-6',
-      ],
-    },
-  ]);
+  let analysesByEntityRef = new Map<string, readonly RiScIndexEntry[]>();
 
   return {
     replaceSnapshot(analyses) {
-      analysesByComponentRef = buildAnalysesByComponentRef(analyses);
+      analysesByEntityRef = buildAnalysesByEntityRef(analyses);
     },
-    getAnalysesForComponentRef(componentRef) {
-      const matchingAnalyses = (analysesByComponentRef.get(componentRef) ?? [])
-        .concat(mockAnalysesByComponentRef.get(componentRef) ?? [])
+    getSystemRiScsForEntityRef(entityRef) {
+      const matchingAnalyses = (analysesByEntityRef.get(entityRef) ?? [])
+        .filter(x => x.appliesToBackstageEntityRefs.length > 1)
         .map(analysis => ({
           id: analysis.riScId,
-          componentRef: analysis.sourceComponentRef,
+          entityRef: analysis.sourceEntityRef,
         }));
       return Object.freeze(matchingAnalyses);
     },
   };
 }
 
-function buildAnalysesByComponentRef(
+function buildAnalysesByEntityRef(
   analyses: RiScIndexEntry[],
 ): Map<string, readonly RiScIndexEntry[]> {
   const groupedAnalyses = new Map<string, RiScIndexEntry[]>();
 
   for (const analysis of analyses) {
-    for (const componentRef of new Set(analysis.coversComponentRefs)) {
-      const existingEntries = groupedAnalyses.get(componentRef);
+    for (const entityRef of new Set(analysis.appliesToBackstageEntityRefs)) {
+      const existingEntries = groupedAnalyses.get(entityRef);
 
       if (existingEntries) {
         existingEntries.push(analysis);
       } else {
-        groupedAnalyses.set(componentRef, [analysis]);
+        groupedAnalyses.set(entityRef, [analysis]);
       }
     }
   }

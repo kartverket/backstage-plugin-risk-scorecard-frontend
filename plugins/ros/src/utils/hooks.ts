@@ -29,6 +29,7 @@ import {
   RiScWithMetadata,
   SystemRiSc,
 } from './types';
+import { stringifyEntityRef } from '@backstage/catalog-model';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -381,39 +382,20 @@ type RiScIndexState = {
   error: Error | undefined;
 };
 
-// TODO: We need some way of making this also return RiScs for the system eventually
-export function useRiScIndexForCurrentComponent(): RiScIndexState & {
-  // TODO: Why is this, isFetching and error returned when they are not used? Just for testing feels unnecessary.
-  componentRef: string | undefined;
-} {
+export function useSystemRiScsForCurrentEntity(): RiScIndexState {
   const { entity } = useEntity();
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
-  const componentRef =
-    // TODO: Is this really necessary within backstage? Is this known to vary? Feels unnecessarily defensive
-    entity.kind.toLocaleLowerCase('en-US') === 'component'
-      ? `component:${entity.metadata.namespace ?? 'default'}/${
-          entity.metadata.name
-        }`
-      : undefined;
+  const entityRef = stringifyEntityRef(entity);
 
   const [state, setState] = useState<RiScIndexState>({
     riScs: [],
-    isFetching: Boolean(componentRef),
+    isFetching: true,
     error: undefined,
   });
 
   useEffect(() => {
-    if (!componentRef) {
-      setState({
-        riScs: [],
-        isFetching: false,
-        error: undefined,
-      });
-      return undefined;
-    }
-
     let cancelled = false;
 
     setState(previous => ({
@@ -434,8 +416,8 @@ export function useRiScIndexForCurrentComponent(): RiScIndexState & {
         }
 
         return fetch(
-          `${backendUrl}/api/risk-scorecard/risc-index?componentRef=${encodeURIComponent(
-            componentRef,
+          `${backendUrl}/api/risk-scorecard/system-riscs?entityRef=${encodeURIComponent(
+            entityRef,
           )}`,
           {
             method: 'GET',
@@ -448,15 +430,7 @@ export function useRiScIndexForCurrentComponent(): RiScIndexState & {
           throw new Error(`Failed to fetch RiSc index: ${response.status}`);
         }
 
-        const responseBody = await response.json();
-
-        if (
-          !Array.isArray(responseBody) ||
-          responseBody.some(entry => !isSystemRiSc(entry))
-        ) {
-          // TODO: This feels unnecessarily defensive. Is this done for the other APIs?
-          throw new Error('RiSc index response had an unexpected shape');
-        }
+        const responseBody = (await response.json()) as SystemRiSc[];
 
         if (!cancelled) {
           setState({
@@ -479,25 +453,9 @@ export function useRiScIndexForCurrentComponent(): RiScIndexState & {
     return () => {
       cancelled = true;
     };
-  }, [backendUrl, componentRef, fetch, identityApi]);
+  }, [backendUrl, entityRef, fetch, identityApi]);
 
-  return {
-    ...state,
-    componentRef,
-  };
-}
-
-function isSystemRiSc(value: unknown): value is SystemRiSc {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-
-  const candidate = value as Partial<SystemRiSc>;
-
-  return (
-    typeof candidate.id === 'string' &&
-    typeof candidate.componentRef === 'string'
-  );
+  return state;
 }
 
 export function useDebounce<T>(

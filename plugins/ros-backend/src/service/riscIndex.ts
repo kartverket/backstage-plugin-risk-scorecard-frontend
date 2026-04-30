@@ -21,7 +21,7 @@ type RepoToIndex = {
   repoRootUrl: string;
   owner: string;
   repo: string;
-  defaultComponentRefs: string[];
+  defaultEntityRefs: string[];
 };
 
 type GitHubContentsEntry = {
@@ -125,7 +125,6 @@ async function getRiskScorecardRiScFilesToIndex({
     repoCount: repos.length,
     analysisCount: riScFiles.length,
     fetchDurationMs: Date.now() - fetchStartedAt,
-    riScFiles,
   });
 
   return riScFiles;
@@ -173,19 +172,19 @@ async function fetchReposToIndexFromCatalog(
       continue;
     }
 
-    const componentRef = stringifyEntityRef(entity);
+    const entityRef = stringifyEntityRef(entity);
     const existing = repos.get(repoInfo.repoRootUrl);
 
     if (!existing) {
       repos.set(repoInfo.repoRootUrl, {
         ...repoInfo,
-        defaultComponentRefs: [componentRef],
+        defaultEntityRefs: [entityRef],
       });
       continue;
     }
 
-    if (!existing.defaultComponentRefs.includes(componentRef)) {
-      existing.defaultComponentRefs.push(componentRef);
+    if (!existing.defaultEntityRefs.includes(entityRef)) {
+      existing.defaultEntityRefs.push(entityRef);
     }
   }
 
@@ -194,7 +193,7 @@ async function fetchReposToIndexFromCatalog(
 
 function parseRepoFromCatalogInfoUrl(
   catalogInfoUrl: string,
-): Omit<RepoToIndex, 'defaultComponentRefs'> | undefined {
+): Omit<RepoToIndex, 'defaultEntityRefs'> | undefined {
   try {
     const parsedUrl = new URL(catalogInfoUrl);
     const [owner, rawRepo] = parsedUrl.pathname.split('/').filter(Boolean);
@@ -265,21 +264,26 @@ async function getRiScFiles({
 
         const sourceUrl = entry.url;
         const riScId = getRiScIdFromFileName(entry.name);
-        const sourceComponentRef = repo.defaultComponentRefs[0];
+        const sourceEntityRef = repo.defaultEntityRefs[0];
 
-        if (!riScId || !sourceComponentRef) {
+        if (!riScId || !sourceEntityRef) {
           return undefined;
         }
 
         const rawText = Buffer.from(fileResponse.content, 'base64').toString(
           'utf8',
         );
-        const coversComponentRefs = parseCoversComponentRefs(rawText, sourceUrl, logger);
+        const appliesToBackstageEntityRefs = parseAppliesToBackstageEntityRefs(
+          rawText,
+          sourceUrl,
+          logger,
+        );
 
         return {
           riScId,
-          sourceComponentRef,
-          coversComponentRefs: coversComponentRefs ?? repo.defaultComponentRefs,
+          sourceEntityRef,
+          appliesToBackstageEntityRefs:
+            appliesToBackstageEntityRefs ?? repo.defaultEntityRefs,
         };
       }),
   );
@@ -319,7 +323,7 @@ async function fetchGitHubJsonOrUndefined<T>(
   return (await response.json()) as T;
 }
 
-export function parseCoversComponentRefs(
+export function parseAppliesToBackstageEntityRefs(
   rawText: string,
   sourceUrl: string,
   logger: LoggerService,
@@ -340,25 +344,21 @@ export function parseCoversComponentRefs(
       return undefined;
     }
 
-    const coversComponentRefs = root.coversComponentRefs;
+    const appliesToBackstageEntityRefs = root.appliesToBackstageEntityRefs;
 
-    if (typeof coversComponentRefs === 'string') {
-      return [coversComponentRefs];
-    }
-
-    if (coversComponentRefs === undefined) {
+    if (appliesToBackstageEntityRefs === undefined) {
       return undefined;
     }
 
     if (
-      Array.isArray(coversComponentRefs) &&
-      coversComponentRefs.every(entry => typeof entry === 'string')
+      Array.isArray(appliesToBackstageEntityRefs) &&
+      appliesToBackstageEntityRefs.every(entry => typeof entry === 'string')
     ) {
-      return coversComponentRefs;
+      return appliesToBackstageEntityRefs;
     }
 
-    logger.warn('RiSc file has invalid coversComponentRefs', {
-      value: coversComponentRefs,
+    logger.warn('RiSc file has invalid appliesToBackstageEntityRefs', {
+      value: appliesToBackstageEntityRefs,
       sourceUrl,
     });
     return [];
