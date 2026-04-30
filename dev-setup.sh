@@ -23,14 +23,15 @@ else
 fi
 
 # 2. Symlink the live plugin source into the host's workspaces, as well as the app config files
-mkdir -p kartverket.dev/plugins
-ln -s ../../plugins/ros kartverket.dev/plugins/ros
+ln -s $(pwd)/plugins/ros kartverket.dev/plugins/ros
+
 if [ -f "app-config.local.yaml" ]; then
   echo "Found app-config.local.yaml, linking it to the dev host..."
   ln -s ../app-config.local.yaml kartverket.dev/app-config.local.yaml
 else
   echo "No app-config.local.yaml found. You can create one based on app-config.yaml for local overrides."
 fi
+
 ln -s ../app-config.local.yaml kartverket.dev/app-config.local.yaml
 rm kartverket.dev/app-config.yaml
 ln -s ../app-config.yaml kartverket.dev/app-config.yaml
