@@ -18,7 +18,7 @@ if [ ! -e "kartverket.dev/.git" ]; then
 fi
 
 # 2. Symlink the live plugin source into the host's workspaces, as well as the app config files
-mkdir -p kartverket.dev/plugins/ros
+mkdir -p kartverket.dev/plugins
 ln -s ../../plugins/ros kartverket.dev/plugins/ros
 ln -s ../app-config.local.yaml kartverket.dev/app-config.local.yaml
 rm -f kartverket.dev/app-config.yaml
