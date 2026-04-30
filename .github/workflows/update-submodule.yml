@@ -3,7 +3,12 @@ name: Update kartverket.dev submodule
 on:
   schedule:
     - cron: '0 6 * * *' # Daily at 06:00 UTC
-  workflow_dispatch:     # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Skip opening a PR (just check for changes)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -30,7 +35,7 @@ jobs:
           fi
 
       - name: Open PR if submodule changed
-        if: steps.update.outputs.changed == 'true'
+        if: steps.update.outputs.changed == 'true' && inputs.dry_run != true
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

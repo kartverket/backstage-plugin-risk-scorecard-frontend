@@ -8,21 +8,24 @@ if [ "$CI" = "true" ]; then
 fi
 
 # 1. Initialize / update the submodule
-# Fall back to a direct clone if the pinned commit no longer exists upstream
-git submodule update --init --recursive || {
-  echo "Submodule update failed (pinned commit may no longer exist). Cloning directly..."
+git submodule update --init --recursive 2>/dev/null || true
+
+# If the submodule directory wasn't populated, fall back to a direct clone
+if [ ! -e "kartverket.dev/.git" ]; then
+  echo "Submodule not populated (pinned commit may no longer exist). Cloning directly..."
   rm -rf kartverket.dev
   git clone https://github.com/kartverket/kartverket.dev.git kartverket.dev
-}
+fi
 
-# 2. Symlink the live plugin source into the host's workspaces
+# 2. Symlink the live plugin source into the host's workspaces, as well as the app config files
+mkdir -p kartverket.dev/plugins/ros
 ln -s ../../plugins/ros kartverket.dev/plugins/ros
 ln -s ../app-config.local.yaml kartverket.dev/app-config.local.yaml
+rm -f kartverket.dev/app-config.yaml
+ln -s ../app-config.yaml kartverket.dev/app-config.yaml
 
 # 4. Install host deps
 (cd ./kartverket.dev && yarn install)
 
 echo ""
 echo "✅ Dev host ready. Run (in kartverket.dev):  yarn dev"
-
-# test
