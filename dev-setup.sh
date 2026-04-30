@@ -8,7 +8,12 @@ if [ "$CI" = "true" ]; then
 fi
 
 # 1. Initialize / update the submodule
-git submodule update --init --recursive
+# Fall back to a direct clone if the pinned commit no longer exists upstream
+git submodule update --init --recursive || {
+  echo "Submodule update failed (pinned commit may no longer exist). Cloning directly..."
+  rm -rf kartverket.dev
+  git clone https://github.com/kartverket/kartverket.dev.git kartverket.dev
+}
 
 # 2. Symlink the live plugin source into the host's workspaces
 ln -s ../../plugins/ros kartverket.dev/plugins/ros

@@ -1,0 +1,42 @@
+name: Update kartverket.dev submodule
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # Daily at 06:00 UTC
+  workflow_dispatch:     # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-submodule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update submodule to latest upstream HEAD
+        id: update
+        run: |
+          git submodule update --remote kartverket.dev
+          if git diff --quiet kartverket.dev; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open PR if submodule changed
+        if: steps.update.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/update-kartverket-dev-submodule
+          commit-message: 'fix: update kartverket.dev submodule to latest HEAD'
+          title: 'fix: update kartverket.dev submodule to latest HEAD'
+          body: |
+            Automated daily update of the `kartverket.dev` submodule to track the latest commit on its default branch.
+          labels: dependencies
