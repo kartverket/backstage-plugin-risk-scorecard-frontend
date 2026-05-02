@@ -52,7 +52,7 @@ describe('RiSc DTO mapping', () => {
     ]);
   });
 
-  it('omits appliesToBackstageEntityRefs from serialized save payloads when only one entity is selected', () => {
+  it('keeps appliesToBackstageEntityRefs in serialized save payloads when only one entity is selected', () => {
     const riSc: RiSc = {
       schemaVersion: '5.2',
       title: 'Component RoS',
@@ -74,6 +74,8 @@ describe('RiSc DTO mapping', () => {
     );
     const serializedRiSc = JSON.parse(payload.riSc);
 
-    expect(serializedRiSc.appliesToBackstageEntityRefs).toBeUndefined();
+    expect(serializedRiSc.appliesToBackstageEntityRefs).toEqual([
+      'component:default/component-a',
+    ]);
   });
 });

@@ -402,6 +402,10 @@ export const pluginRiScMessages = {
     appliesToBackstageEntityRefsNoOptions: 'No entities found',
     appliesToBackstageEntityRefsSystemRosHint:
       'Covers multiple entities and will also appear as a RiSc for the other added entities.',
+    appliesToBackstageEntityRefsMissingCurrentEntity:
+      'The current component ({{entityRef}}) is not included. Change the selection to add it before saving.',
+    appliesToBackstageEntityRefsMissingEntities:
+      'These entities do not exist in the catalog: {{entityRefs}}.',
     generateInitialDescription:
       'RiSc Scorecard lets you generate a default RiSc based on information about the codebase in kartverket.dev, security metrics and security controls.',
     generateInitialToggleDescription: 'Do you want to generate a default RiSc?',
@@ -1156,11 +1160,18 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.appliesToBackstageEntityRefs': 'Gjelder for entitetene',
           'rosDialog.appliesToBackstageEntityRefsDescription':
             'RoS gjelder alltid for valgt komponent. Legg til andre entiteter denne RoS-en gjelder for.',
-          'rosDialog.appliesToBackstageEntityRefsPlaceholder': 'Legg til entitet',
-          'rosDialog.appliesToBackstageEntityRefsLoading': 'Laster entiteter...',
-          'rosDialog.appliesToBackstageEntityRefsNoOptions': 'Fant ingen entiteter',
+          'rosDialog.appliesToBackstageEntityRefsPlaceholder':
+            'Legg til entitet',
+          'rosDialog.appliesToBackstageEntityRefsLoading':
+            'Laster entiteter...',
+          'rosDialog.appliesToBackstageEntityRefsNoOptions':
+            'Fant ingen entiteter',
           'rosDialog.appliesToBackstageEntityRefsSystemRosHint':
             'Dekker flere entiteter og vises som RoS også for de andre entitetene som er lagt til.',
+          'rosDialog.appliesToBackstageEntityRefsMissingCurrentEntity':
+            'Gjeldende komponent ({{entityRef}}) er ikke inkludert. Endre valget for å legge den til før du lagrer.',
+          'rosDialog.appliesToBackstageEntityRefsMissingEntities':
+            'Disse entitetene finnes ikke i katalogen: {{entityRefs}}.',
           'rosDialog.generateInitialDescription':
             'Operasjonell RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
           'rosDialog.generateInitialToggleDescription':
