@@ -14,6 +14,7 @@ describe('createRouter', () => {
         riScId: 'risc-1',
         sourceEntityRef: 'component:default/source-1',
         appliesToBackstageEntityRefs: ['component:default/kv-ros-test-6'],
+        lastSavedAt: '2026-05-02T08:30:00Z',
       },
       {
         riScId: 'risc-7ssVK',
@@ -22,6 +23,7 @@ describe('createRouter', () => {
           'component:default/kv-ros-test-1',
           'component:default/kv-ros-test-6',
         ],
+        lastSavedAt: '2026-05-01T08:30:00Z',
       },
     ]);
 
@@ -34,6 +36,7 @@ describe('createRouter', () => {
       {
         id: 'risc-7ssVK',
         entityRef: 'component:default/source-2',
+        lastSavedAt: '2026-05-01T08:30:00Z',
       },
     ]);
   });

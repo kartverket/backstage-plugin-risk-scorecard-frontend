@@ -3,7 +3,10 @@
  */
 
 import type { LoggerService } from '@backstage/backend-plugin-api';
-import { parseAppliesToBackstageEntityRefs } from './riscIndex';
+import {
+  getLastSavedAtFromGitHubCommits,
+  parseAppliesToBackstageEntityRefs,
+} from './riscIndex';
 
 describe('parseAppliesToBackstageEntityRefs', () => {
   const logger = createLogger();
@@ -49,6 +52,20 @@ describe('parseAppliesToBackstageEntityRefs', () => {
         sourceUrl: 'https://example.org/risc.risc.yaml',
       }),
     );
+  });
+});
+
+describe('getLastSavedAtFromGitHubCommits', () => {
+  it('uses the latest commit committer date', () => {
+    expect(
+      getLastSavedAtFromGitHubCommits([
+        {
+          commit: {
+            committer: { date: '2026-05-01T08:30:00Z' },
+          },
+        },
+      ]),
+    ).toBe('2026-05-01T08:30:00Z');
   });
 });
 

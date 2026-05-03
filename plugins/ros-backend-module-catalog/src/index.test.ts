@@ -53,6 +53,7 @@ describe('RiScIndexScheduledRefresh', () => {
         riScId: 'risc-1',
         sourceEntityRef: 'component:default/source-1',
         appliesToBackstageEntityRefs: ['component:default/kv-ros-test-1'],
+        lastSavedAt: '2026-05-01T08:30:00Z',
       },
     ];
     buildIndexMock.mockResolvedValue(index);
@@ -75,6 +76,7 @@ describe('RiScIndexScheduledRefresh', () => {
         riScId: 'risc-1',
         sourceEntityRef: 'component:default/source-1',
         appliesToBackstageEntityRefs: ['component:default/kv-ros-test-1'],
+        lastSavedAt: '2026-05-01T08:30:00Z',
       },
     ];
     jest

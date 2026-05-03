@@ -26,6 +26,7 @@ export type LockedRiSc = {
 export type SystemRiSc = {
   id: string;
   entityRef: string;
+  lastSavedAt: string;
 };
 
 export type RiScWithMetadata = {

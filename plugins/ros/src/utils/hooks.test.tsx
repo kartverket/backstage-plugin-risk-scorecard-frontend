@@ -960,6 +960,7 @@ describe('useAuthenticatedFetch', () => {
           {
             id: 'risc-7ssVK',
             entityRef: 'component:default/kv-ros-test-4',
+            lastSavedAt: '2026-05-01T08:30:00Z',
           },
         ],
       });
@@ -983,6 +984,7 @@ describe('useAuthenticatedFetch', () => {
         {
           id: 'risc-7ssVK',
           entityRef: 'component:default/kv-ros-test-4',
+          lastSavedAt: '2026-05-01T08:30:00Z',
         },
       ]);
       expect(result.current.error).toBeUndefined();

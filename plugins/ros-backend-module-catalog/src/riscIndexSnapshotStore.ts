@@ -8,6 +8,7 @@ type RiScIndexEntry = {
   riScId: string;
   sourceEntityRef: string;
   appliesToBackstageEntityRefs: string[];
+  lastSavedAt: string;
 };
 
 export interface RiScIndexSnapshotStore {

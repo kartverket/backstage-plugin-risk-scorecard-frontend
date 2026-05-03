@@ -27,12 +27,23 @@ type RepoToIndex = {
 type GitHubContentsEntry = {
   type: 'file' | 'dir';
   name: string;
+  path: string;
   url: string;
 };
 
 type GitHubFileResponse = {
   content?: string;
   encoding?: string;
+};
+
+export const unknownRiScLastSavedAt = '1970-01-01T00:00:00Z';
+
+export type GitHubCommitResponse = {
+  commit?: {
+    committer?: {
+      date?: string;
+    };
+  };
 };
 
 export async function buildRiskScorecardRiScIndex({
@@ -252,6 +263,20 @@ async function getRiScFiles({
         return entry.type === 'file' && entry.name.endsWith('.risc.yaml');
       })
       .map(async entry => {
+        const lastSavedAtPromise = fetchRiScLastSavedAt({
+          apiBaseUrl,
+          repo,
+          filePath: entry.path,
+          headers: credentials.headers,
+        }).catch(error => {
+          logger.warn('Failed to fetch RiSc last saved timestamp', {
+            sourceUrl: entry.url,
+            filePath: entry.path,
+            error: error instanceof Error ? error.message : String(error),
+          });
+          return unknownRiScLastSavedAt;
+        });
+
         const fileResponse =
           await fetchGitHubJsonOrUndefined<GitHubFileResponse>(
             entry.url,
@@ -262,6 +287,7 @@ async function getRiScFiles({
           return undefined;
         }
 
+        const lastSavedAt = await lastSavedAtPromise;
         const sourceUrl = entry.url;
         const riScId = getRiScIdFromFileName(entry.name);
         const sourceEntityRef = repo.defaultEntityRefs[0];
@@ -284,6 +310,7 @@ async function getRiScFiles({
           sourceEntityRef,
           appliesToBackstageEntityRefs:
             appliesToBackstageEntityRefs ?? repo.defaultEntityRefs,
+          lastSavedAt,
         };
       }),
   );
@@ -301,9 +328,48 @@ function getRiScIdFromFileName(fileName: string): string | undefined {
   return fileName.slice(0, -suffix.length);
 }
 
+async function fetchRiScLastSavedAt({
+  apiBaseUrl,
+  repo,
+  filePath,
+  headers,
+}: {
+  apiBaseUrl: string;
+  repo: RepoToIndex;
+  filePath: string;
+  headers?: Record<string, string>;
+}): Promise<string> {
+  const query = new URLSearchParams({
+    path: filePath,
+    per_page: '1',
+  });
+  const commits = await fetchGitHubJsonOrUndefined<GitHubCommitResponse[]>(
+    `${apiBaseUrl}/repos/${repo.owner}/${repo.repo}/commits?${query}`,
+    headers,
+  );
+
+  const lastSavedAt = getLastSavedAtFromGitHubCommits(commits);
+
+  if (!lastSavedAt) {
+    throw new Error('GitHub commits response did not include a committer date');
+  }
+
+  return lastSavedAt;
+}
+
+export function getLastSavedAtFromGitHubCommits(
+  commits: GitHubCommitResponse[] | undefined,
+): string | undefined {
+  const latestCommit = commits?.[0]?.commit;
+  return latestCommit?.committer?.date;
+}
+
+const defaultRetries = 2;
+
 async function fetchGitHubJsonOrUndefined<T>(
   url: string,
   headers?: Record<string, string>,
+  retriesOnTransients: number = defaultRetries,
 ): Promise<T | undefined> {
   const response = await fetch(url, {
     headers: {
@@ -317,6 +383,26 @@ async function fetchGitHubJsonOrUndefined<T>(
   }
 
   if (!response.ok) {
+    const isTransient =
+      response.status === 408 ||
+      response.status === 429 ||
+      response.status >= 500;
+
+    if (retriesOnTransients > 0 && isTransient) {
+      await new Promise<void>(resolve =>
+        setTimeout(
+          resolve,
+          2 ** (defaultRetries - retriesOnTransients) * 1000,
+        ),
+      );
+
+      return await fetchGitHubJsonOrUndefined<T>(
+        url,
+        headers,
+        retriesOnTransients - 1,
+      );
+    }
+
     throw new Error(`GitHub request failed for ${url}: ${response.status}`);
   }
 

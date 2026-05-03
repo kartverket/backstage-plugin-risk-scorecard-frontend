@@ -2,11 +2,13 @@ export type RiScIndexEntry = {
   riScId: string;
   sourceEntityRef: string;
   appliesToBackstageEntityRefs: string[];
+  lastSavedAt: string;
 };
 
 export type RiScIndexReference = {
   id: string;
   entityRef: string;
+  lastSavedAt: string;
 };
 
 export type RiScIndexStore = {
@@ -29,6 +31,7 @@ export function createInMemoryRiScIndexStore(): RiScIndexStore {
         .map(analysis => ({
           id: analysis.riScId,
           entityRef: analysis.sourceEntityRef,
+          lastSavedAt: analysis.lastSavedAt,
         }));
       return Object.freeze(matchingAnalyses);
     },
