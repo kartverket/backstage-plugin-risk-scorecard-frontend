@@ -58,6 +58,10 @@ vi.mock('node:child_process', async importOriginal => {
         if (command.includes('npm publish')) {
           return '';
         }
+        if (command.includes('npm pack')) {
+          // Return a mock tarball filename as npm pack would
+          return 'test-package-1.0.0.tgz';
+        }
         if (command.includes('yarn tsc') || command.includes('yarn build')) {
           return '';
         }
