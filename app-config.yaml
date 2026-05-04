@@ -2,35 +2,6 @@ app:
   title: Kartverket.dev
   baseUrl: http://localhost:3000
 
-  support:
-    url: https://skip.kartverket.no # Used by common ErrorPage
-    items: # Used by common SupportButton component
-      - title: Documentation
-        icon: article
-        links:
-          - url: https://skip.kartverket.no/docs
-            title: SKIPDOK
-      - title: Slack Channel
-        icon: chat
-        links:
-          - url: https://kartverketgroup.slack.com/archives/C028ZEED280
-            title: '#gen-skip'
-      - title: RISC Feedback Channel
-        icon: chat
-        links:
-          - url: https://kartverketgroup.slack.com/archives/C075KCPTURY
-            title: '#operasjonell-ros-tilbakemelding'
-      - title: RISC Documentation
-        icon: article
-        links:
-          - url: https://kartverket.atlassian.net/wiki/spaces/SIK/pages/1176142023/Koden+r+RoS
-            title: Confluence - RISC
-      - title: Sikkerhetsmetrikker Feedback Channel
-        icon: chat
-        links:
-          - url: https://kartverketgroup.slack.com/archives/C07RNB2LPUZ
-            title: '#sikkerhetsmetrikker-tilbakemelding'
-
 organization:
   name: Kartverket
 
@@ -42,18 +13,29 @@ backend:
   #   keys:
   #     - secret: ${BACKEND_SECRET}
   baseUrl: http://localhost:7007
+
+  reading:
+    allow:
+      - host: matrikkel.no
+      - host: www.grunnbok.no
+      - host: api.swaggerhub.com
+      - host: data.brreg.no
+      - host: docs.altinn.studio
+      - host: docs.digdir.no
+      - host: '*.landbruksdirektoratet.no'
+      - host: '*.kartverket-intern.cloud'
+      - host: raw.githubusercontent.com
+
   listen:
     port: 7007
-    # Uncomment the following host directive to bind to specific interfaces
-    # host: 127.0.0.1
+    host: 0.0.0.0
   csp:
     connect-src: ["'self'", 'http:', 'https:']
-    img-src: ["'self'", 'data:', 'imgs.xkcd.com']
+    img-src: ["'self'", 'data:']
     frame-src:
       [
-        'sandbox.kartverket.dev',
+        'backstage.atgcp1-dev.kartverket-intern.cloud',
         'kartverket.dev',
-        'fedifeed.com',
         'monitoring.kartverket.cloud',
       ]
     # unsafe-eval is required by backstage
@@ -61,7 +43,7 @@ backend:
     script-src:
       [
         "'self'",
-        'sandbox.kartverket.dev',
+        'backstage.atgcp1-dev.kartverket-intern.cloud',
         'skip.instatus.com',
         "'unsafe-eval'",
         "'unsafe-inline'",
@@ -74,6 +56,16 @@ backend:
     credentials: true
   # This is for local development only, it is not recommended to use this in production
   # The production database configuration is stored in app-config.production.yaml
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+  # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
+integrations:
+  github:
+    - host: github.com
+      # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
+      # about setting up the GitHub integration here: https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration
+      token: ${GITHUB_TOKEN}
 
 permission:
   enabled: false
@@ -82,8 +74,6 @@ permission:
 ### A typical reason to do this is to handle HTTPS and CORS for internal services.
 proxy:
   endpoints:
-    '/xkcd-proxy':
-      target: https://xkcd.com/
     '/opencost':
       # Uses cluster-local service in a kubernetes environment
       target: https://opencost.dev.skip.statkart.no
@@ -102,31 +92,11 @@ proxy:
       target: http://localhost:8080
       credentials: forward
       changeOrigin: true
-
+    '/security-champion-proxy':
+      target: http://localhost:8080
+      changeOrigin: true
 lighthouse:
   baseUrl: http://localhost:7007/api/proxy/lighthouse
-
-kubernetes:
-  serviceLocatorMethod:
-    type: 'multiTenant'
-  clusterLocatorMethods:
-    - type: 'config'
-      clusters:
-        - url: https://10.13.2.133
-          name: atkv1-sandbox
-          authProvider: 'serviceAccount'
-          #dashboardUrl: http://127.0.0.1:64713 # url copied from running the command: minikube service kubernetes-dashboard -n kubernetes-dashboard
-          #dashboardApp: standard
-          #customResources:
-          #  - group: 'argoproj.io'
-          #    apiVersion: 'v1alpha1'
-          #    plural: 'rollouts'
-        - url: https://34.88.245.88
-          name: atgcp1-sandbox
-          authProvider: 'serviceAccount'
-          skipTLSVerify: true # TODO Fix me
-          serviceAccountToken: ${ATGCP1_SANDBOX_SERVICE_ACCOUNT_TOKEN}
-          caData: ${ATGCP1_SANDBOX_CA_DATA}
 
 scaffolder:
   defaultAuthor:
@@ -137,12 +107,23 @@ scaffolder:
 catalog:
   orphanStrategy: delete
   rules:
-    - allow: [Component, Group, User, Resource, Location, System, API, Domain]
+    - allow:
+        [
+          Component,
+          Group,
+          User,
+          Resource,
+          Location,
+          System,
+          API,
+          Domain,
+          Function,
+        ]
   providers:
     github:
       providerId:
-        organization: 'spire-test'
-        catalogPath: '.security/catalog-info.yaml' # string
+        organization: 'Kartverket'
+        catalogPath: '/catalog-info.yaml' # string
         validateLocationsExist: true
         filters:
           repository: '.*' # Regex
@@ -187,9 +168,6 @@ home:
         value: /docs
       - field: pathname
         operator: '!='
-        value: /tech-radar
-      - field: pathname
-        operator: '!='
         value: /search
       - field: pathname
         operator: '!='
@@ -214,9 +192,6 @@ home:
       - field: pathname
         operator: '!='
         value: /docs
-      - field: pathname
-        operator: '!='
-        value: /tech-radar
       - field: pathname
         operator: '!='
         value: /search

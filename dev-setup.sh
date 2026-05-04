@@ -29,10 +29,9 @@ if [ -f "app-config.local.yaml" ]; then
   echo "Found app-config.local.yaml, linking it to the dev host..."
   ln -s ../app-config.local.yaml kartverket.dev/app-config.local.yaml
 else
-  echo "No app-config.local.yaml found. You can create one based on app-config.yaml for local overrides."
+  echo "No app-config.local.yaml found."
 fi
 
-ln -s ../app-config.local.yaml kartverket.dev/app-config.local.yaml
 rm kartverket.dev/app-config.yaml
 ln -s ../app-config.yaml kartverket.dev/app-config.yaml
 
