@@ -1,6 +1,6 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { stringifyEntityRef } from '@backstage/catalog-model';
+import { RELATION_PART_OF, stringifyEntityRef } from '@backstage/catalog-model';
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import Alert from '@mui/material/Alert';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -14,6 +14,7 @@ import { Control, useController } from 'react-hook-form';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiScWithMetadata } from '../../utils/types';
 import formStyles from '../common/formStyles.module.css';
+import { entityRefOptionFields, getCurrentSystemRef } from './entityRefOptions';
 
 type AppliesToBackstageEntityRefsFieldProps = {
   control: Control<RiScWithMetadata>;
@@ -47,19 +48,42 @@ export function AppliesToBackstageEntityRefsField({
 
   useEffect(() => {
     let cancelled = false;
+    const currentSystemRef = getCurrentSystemRef(entity);
     setIsLoadingOptions(true);
     setCatalogEntityRefs([]);
 
-    catalogApi
-      .getEntities({
-        fields: ['kind', 'metadata.name', 'metadata.namespace'],
-      })
-      .then(response => {
+    const sameSystemEntitiesPromise = currentSystemRef
+      ? catalogApi
+          .getEntities({
+            fields: entityRefOptionFields,
+            filter: {
+              [`relations.${RELATION_PART_OF}`]: currentSystemRef,
+            },
+          })
+          .catch(() => ({ items: [] }))
+      : Promise.resolve({ items: [] });
+
+    Promise.all([
+      sameSystemEntitiesPromise,
+      catalogApi.getEntities({
+        fields: entityRefOptionFields,
+      }),
+    ])
+      .then(([sameSystemEntitiesResponse, allEntitiesResponse]) => {
         if (cancelled) {
           return;
         }
 
-        setCatalogEntityRefs(response.items.map(stringifyEntityRef));
+        setCatalogEntityRefs(
+          Array.from(
+            new Set(
+              [
+                ...sameSystemEntitiesResponse.items,
+                ...allEntitiesResponse.items,
+              ].map(stringifyEntityRef),
+            ),
+          ),
+        );
       })
       .catch(() => {
         if (!cancelled) {
@@ -75,7 +99,7 @@ export function AppliesToBackstageEntityRefsField({
     return () => {
       cancelled = true;
     };
-  }, [catalogApi]);
+  }, [catalogApi, entity]);
 
   function handleChange(_: unknown, value: string[]) {
     field.onChange(
