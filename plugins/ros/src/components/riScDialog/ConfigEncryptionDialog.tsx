@@ -161,7 +161,7 @@ function ConfigEncryptionDialog({
         />
       </Flex>
       {errors.sopsConfig !== undefined && (
-        <FormHelperText error={true}>
+        <FormHelperText error>
           {t('sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage')}
         </FormHelperText>
       )}
