@@ -32,7 +32,8 @@ export function AppliesToBackstageEntityRefsField({
   });
   const { entity } = useEntity();
   const currentEntityRef = stringifyEntityRef(entity);
-  const selectedEntityRefs = field.value ?? [];
+  // Ensure that it always looks as if currentRef is saved, but we only save it if at least two refs are selected
+  const selectedEntityRefs = field.value ?? [currentEntityRef];
   const isMissingCurrentEntityRef = getIsMissingCurrentEntityRef(
     selectedEntityRefs,
     currentEntityRef,
