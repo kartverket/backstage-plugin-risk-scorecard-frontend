@@ -11,6 +11,7 @@ import { RiskMatrixSquare } from './RiskMatrixSquare.tsx';
 import { CurrentRisk } from './CurrentRisk.tsx';
 
 import styles from './RiskMatrix.module.css';
+
 export function RiskMatrix({
   riScWithMetadata,
 }: {

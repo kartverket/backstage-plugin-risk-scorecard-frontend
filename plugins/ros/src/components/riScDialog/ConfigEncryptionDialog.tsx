@@ -1,15 +1,3 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  FormLabel,
-  IconButton,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-  TextField,
-} from '@mui/material';
 import { GcpCryptoKeyRadioGroup } from '../sopsConfigDialog/GcpCryptoKeyRadioGroup';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';

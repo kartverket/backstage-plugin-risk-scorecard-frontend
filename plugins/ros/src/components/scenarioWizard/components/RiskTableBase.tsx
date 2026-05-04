@@ -6,7 +6,6 @@ import { RiskRadioButton } from './RiskRadioButton';
 import RadioGroup from '@mui/material/RadioGroup';
 import { Text, Box } from '@backstage/ui';
 import styles from '../ScenarioWizardTable.module.css';
-import React from 'react';
 
 type RiskTableBaseProps = {
   formMethods: UseFormReturn<FormScenario>;

@@ -15,5 +15,9 @@ module.exports = {
   rules: {
     'react/jsx-boolean-value': 'off',
     'react/react-in-jsx-scope': 'off',
+    'jest/expect-expect': [
+      'warn',
+      { assertFunctionNames: ['expect', 'expectArrayMatches'] },
+    ],
   },
 };
