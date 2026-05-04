@@ -2,10 +2,15 @@
   "name": "build-tools",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "build-tools",
+    "plugins/*"
+  ],
   "type": "module",
   "engines": {
     "node": "24"
   },
+  
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
