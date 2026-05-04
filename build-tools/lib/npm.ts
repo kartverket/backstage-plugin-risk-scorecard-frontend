@@ -1,4 +1,5 @@
 import { execSync, type ExecSyncOptions } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 interface PublishOptions {
@@ -64,18 +65,24 @@ export function publishToNpm(options: PublishOptions): PublishResult {
  * Build the package before publishing
  */
 export function buildPackage(pluginPath: string): PublishResult {
+  // Resolve the repo root (two levels up from build-tools/lib/)
+  const rootDir = resolve(pluginPath, '..', '..');
+
+  // Read the workspace name from the plugin's package.json
+  const pkgJson = JSON.parse(
+    readFileSync(resolve(pluginPath, 'package.json'), 'utf-8'),
+  );
+  const workspaceName = pkgJson.name as string;
+
   const execOptions: ExecSyncOptions = {
-    cwd: pluginPath,
+    cwd: rootDir,          
     encoding: 'utf-8',
-    stdio: 'inherit', // Show build output directly
+    stdio: 'inherit',
   };
 
   try {
-    // Run TypeScript compilation
-    execSync('yarn tsc', execOptions);
-
-    // Run the build script (backstage-cli package build)
-    execSync('yarn build', execOptions);
+    execSync(`yarn workspace ${workspaceName} tsc`, execOptions);
+    execSync(`yarn workspace ${workspaceName} build`, execOptions);
 
     return {
       success: true,
