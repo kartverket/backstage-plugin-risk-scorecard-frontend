@@ -12,6 +12,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FieldErrors } from 'react-hook-form';
 import { Flex } from '@backstage/ui';
 import { AppliesToBackstageEntityRefsField } from './AppliesToBackstageEntityRefsField';
+import { useSystemRiScsFeatureFlag } from '../../utils/featureFlags';
 
 interface ConfigRiscInfoProps {
   register: UseFormRegister<RiScWithMetadata>;
@@ -23,6 +24,7 @@ interface ConfigRiscInfoProps {
 
 function ConfigRiscInfo(props: ConfigRiscInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const isSystemRiScsEnabled = useSystemRiScsFeatureFlag();
   const currentScope = props.watch('content.scope');
 
   return (
@@ -34,7 +36,9 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
         label={t('dictionary.title')}
         helperText={props.errors?.content?.title && t('rosDialog.titleError')}
       />
-      <AppliesToBackstageEntityRefsField control={props.control} />
+      {isSystemRiScsEnabled && (
+        <AppliesToBackstageEntityRefsField control={props.control} />
+      )}
       <MarkdownInput
         {...props.register('content.scope')}
         value={currentScope}

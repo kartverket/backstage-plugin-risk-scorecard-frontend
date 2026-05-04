@@ -1,5 +1,6 @@
 import {
   configApiRef,
+  featureFlagsApiRef,
   fetchApiRef,
   githubAuthApiRef,
   googleAuthApiRef,
@@ -56,6 +57,9 @@ describe('useAuthenticatedFetch', () => {
   const mockFetchApi = {
     fetch: jest.fn(),
   };
+  const mockFeatureFlagsApi = {
+    isActive: jest.fn(),
+  };
 
   const mockConfigApi = {
     getString: jest.fn().mockImplementation(key => {
@@ -73,6 +77,7 @@ describe('useAuthenticatedFetch', () => {
         [identityApiRef, mockIdentityApi],
         [fetchApiRef, mockFetchApi],
         [configApiRef, mockConfigApi],
+        [featureFlagsApiRef, mockFeatureFlagsApi],
       ]}
     >
       {children}
@@ -942,6 +947,7 @@ describe('useAuthenticatedFetch', () => {
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
+      mockFeatureFlagsApi.isActive.mockReturnValue(true);
       (useEntity as jest.Mock).mockReturnValue({
         entity: {
           kind: 'Component',
@@ -988,6 +994,23 @@ describe('useAuthenticatedFetch', () => {
         },
       ]);
       expect(result.current.error).toBeUndefined();
+    });
+
+    it('does not fetch system RiScs when the feature flag is disabled', () => {
+      mockFeatureFlagsApi.isActive.mockReturnValue(false);
+
+      const { result } = renderHook(() => useSystemRiScsForCurrentEntity(), {
+        wrapper,
+      });
+
+      expect(mockFeatureFlagsApi.isActive).toHaveBeenCalledWith('system-riscs');
+      expect(result.current).toEqual({
+        riScs: [],
+        isFetching: false,
+        error: undefined,
+      });
+      expect(mockIdentityApi.getCredentials).not.toHaveBeenCalled();
+      expect(mockFetchApi.fetch).not.toHaveBeenCalled();
     });
 
     it('fetches system RiScs for non-component entities', async () => {

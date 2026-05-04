@@ -30,6 +30,7 @@ import {
   SystemRiSc,
 } from './types';
 import { stringifyEntityRef } from '@backstage/catalog-model';
+import { useSystemRiScsFeatureFlag } from './featureFlags';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -383,6 +384,7 @@ type RiScIndexState = {
 };
 
 export function useSystemRiScsForCurrentEntity(): RiScIndexState {
+  const isSystemRiScsEnabled = useSystemRiScsFeatureFlag();
   const { entity } = useEntity();
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
@@ -391,11 +393,20 @@ export function useSystemRiScsForCurrentEntity(): RiScIndexState {
 
   const [state, setState] = useState<RiScIndexState>({
     riScs: [],
-    isFetching: true,
+    isFetching: isSystemRiScsEnabled,
     error: undefined,
   });
 
   useEffect(() => {
+    if (!isSystemRiScsEnabled) {
+      setState({
+        riScs: [],
+        isFetching: false,
+        error: undefined,
+      });
+      return undefined;
+    }
+
     let cancelled = false;
 
     setState(previous => ({
@@ -453,7 +464,7 @@ export function useSystemRiScsForCurrentEntity(): RiScIndexState {
     return () => {
       cancelled = true;
     };
-  }, [backendUrl, entityRef, fetch, identityApi]);
+  }, [backendUrl, entityRef, fetch, identityApi, isSystemRiScsEnabled]);
 
   return state;
 }
