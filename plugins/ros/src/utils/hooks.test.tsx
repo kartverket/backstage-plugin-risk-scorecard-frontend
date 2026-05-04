@@ -8,7 +8,7 @@ import {
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
 import { renderHook } from '@testing-library/react';
-import { act } from 'react';
+import { act } from '@testing-library/react';
 import { SopsConfigDTO } from './DTOs';
 import { useAuthenticatedFetch, useGithubRepositoryInformation } from './hooks';
 import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
