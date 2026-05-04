@@ -53,6 +53,7 @@ jobs:
 
       - name: Run tests for release and PR-validation
         run: yarn workspace build-tools test
+        working-directory: kartverket.dev
 
       # For pull_request events, we have access to the PR commits and can validate
       # that the PR title matches what the commits expect
