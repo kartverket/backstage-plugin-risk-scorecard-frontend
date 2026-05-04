@@ -71,8 +71,8 @@ export function buildPackage(pluginPath: string): PublishResult {
   };
 
   try {
-    execSync('yarn tsc', execOptions);
-    execSync('yarn build', execOptions);
+    execSync(`yarn tsc`, execOptions);
+    execSync(`yarn build`, execOptions);
 
     return {
       success: true,
