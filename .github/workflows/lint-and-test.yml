@@ -35,7 +35,7 @@ jobs:
           ln -s ../../plugins/ros kartverket.dev/plugins/ros
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install
         working-directory: kartverket.dev
 
       - name: Run Prettier
