@@ -32,7 +32,7 @@ jobs:
       - name: Symlink plugin into host workspace
         run: |
           mkdir -p kartverket.dev/plugins
-          ln -s ../../plugins/ros kartverket.dev/plugins/ros
+          cp -r plugins/ros kartverket.dev/plugins/ros
 
       - name: Install dependencies
         run: yarn install --no-immutable
