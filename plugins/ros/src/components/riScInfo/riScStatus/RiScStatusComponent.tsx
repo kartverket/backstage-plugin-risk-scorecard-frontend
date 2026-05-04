@@ -144,7 +144,10 @@ export function RiScStatusComponent({
     }
   }, [selectedRiSc.status, selectedRiSc.content.scenarios]);
 
-  const migration = selectedRiSc.migrationStatus?.migrationChanges;
+  const migration =
+    selectedRiSc.migrationStatus?.migrationChanges &&
+    selectedRiSc.status !== RiScStatus.DeletionDraft &&
+    selectedRiSc.status !== RiScStatus.DeletionSentForApproval;
 
   const lastPublishedDateTime = selectedRiSc.lastPublished?.dateTime;
   const daysSinceLastModified = lastPublishedDateTime

@@ -165,54 +165,13 @@ export const UpdatedStatusEnum = {
 export type UpdatedStatusEnumType =
   (typeof UpdatedStatusEnum)[keyof typeof UpdatedStatusEnum];
 
-function calculateUpdatedStatusFromDaysOnly(daysSinceLastModified: number) {
-  if (daysSinceLastModified < 1 * 7) return UpdatedStatusEnum.UPDATED;
-  if (daysSinceLastModified < 4 * 7) return UpdatedStatusEnum.LITTLE_OUTDATED;
-  if (daysSinceLastModified < 8 * 7) return UpdatedStatusEnum.OUTDATED;
-  return UpdatedStatusEnum.VERY_OUTDATED;
-}
-
-function calculateUpdatedStatusFromDaysAndCommits(
-  daysSinceLastModified: number,
-  numOfCommitsBehind: number,
-) {
-  const days = daysSinceLastModified;
-  const commits = numOfCommitsBehind;
-
-  if (commits > 50) {
-    return UpdatedStatusEnum.VERY_OUTDATED;
-  }
-
-  if (commits > 25) {
-    if (days <= 30) return UpdatedStatusEnum.LITTLE_OUTDATED;
-    if (days <= 90) return UpdatedStatusEnum.OUTDATED;
-    return UpdatedStatusEnum.VERY_OUTDATED;
-  }
-
-  if (commits > 10) {
-    if (days <= 30) return UpdatedStatusEnum.UPDATED;
-    if (days <= 90) return UpdatedStatusEnum.LITTLE_OUTDATED;
-    if (days <= 180) return UpdatedStatusEnum.OUTDATED;
-    return UpdatedStatusEnum.VERY_OUTDATED;
-  }
-
-  if (days <= 60) return UpdatedStatusEnum.UPDATED;
-  if (days <= 180) return UpdatedStatusEnum.LITTLE_OUTDATED;
-  if (days <= 360) return UpdatedStatusEnum.OUTDATED;
-  return UpdatedStatusEnum.VERY_OUTDATED;
-}
-
 export function calculateUpdatedStatus(
   daysSinceLastModified: number,
-  numOfCommitsBehind?: number,
 ): UpdatedStatusEnumType {
-  if (numOfCommitsBehind === undefined) {
-    return calculateUpdatedStatusFromDaysOnly(daysSinceLastModified);
-  }
-  return calculateUpdatedStatusFromDaysAndCommits(
-    daysSinceLastModified,
-    numOfCommitsBehind,
-  );
+  if (daysSinceLastModified <= 90) return UpdatedStatusEnum.UPDATED;
+  if (daysSinceLastModified <= 180) return UpdatedStatusEnum.LITTLE_OUTDATED;
+  if (daysSinceLastModified <= 270) return UpdatedStatusEnum.OUTDATED;
+  return UpdatedStatusEnum.VERY_OUTDATED;
 }
 
 export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
@@ -320,15 +279,6 @@ export function deleteScenario(
       content: { ...riSc.content, scenarios: updatedScenarios },
     });
   }
-}
-
-export function deleteAction(
-  remove: (index?: number | number[]) => void,
-  index: number,
-  onSubmit: () => void,
-) {
-  remove(index);
-  onSubmit();
 }
 
 /**
@@ -515,6 +465,7 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
   });
 
   const allActions = scenariosWithData.flatMap(scenario => scenario.actions);
+  const totalCount = allActions.length;
   const veryOutdatedCount = allActions.filter(
     action => action.status === UpdatedStatusEnum.VERY_OUTDATED,
   ).length;
@@ -525,7 +476,7 @@ export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
     action => action.status === UpdatedStatusEnum.UPDATED,
   ).length;
 
-  return { veryOutdatedCount, outdatedCount, updatedCount };
+  return { totalCount, veryOutdatedCount, outdatedCount, updatedCount };
 }
 
 export function getActiveTheme() {

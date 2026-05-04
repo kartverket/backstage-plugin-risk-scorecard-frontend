@@ -101,13 +101,17 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
                     style={{
                       background: getRiskGradient(),
                     }}
-                  />
+                  >
+                    {null}
+                  </Flex>
                   <Box
                     className={styles.currentRiskMarker}
                     style={{
                       left: `${clampedPercentage}%`,
                     }}
-                  />
+                  >
+                    {null}
+                  </Box>
                 </>
               )}
             </Box>

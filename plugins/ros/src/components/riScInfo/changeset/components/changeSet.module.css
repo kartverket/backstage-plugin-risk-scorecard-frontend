@@ -1,0 +1,190 @@
+/* Retrieved from Kartverket's colour profile */
+
+/* ChangeSetBox */
+.box {
+  padding: 14px 18px;
+  height: 100%;
+  border-radius: 24px;
+  color: var(--bui-fg-primary);
+  font-size: 14px;
+}
+
+.boxPrimary {
+  background-color: var(--ros-orange-50);
+  margin-bottom: 24px;
+}
+
+[data-theme-mode='dark'] .boxPrimary {
+  background-color: var(--bui-bg-neutral-3);
+}
+
+.boxSecondary {
+  background-color: var(--bui-white);
+  margin-bottom: 12px;
+}
+
+[data-theme-mode='dark'] .boxSecondary {
+  background-color: var(--bui-bg-neutral-4);
+}
+
+/* ChangeSetBoxTitle */
+.boxTitle {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 26px;
+  margin-bottom: 12px;
+}
+
+/* ChangeSetPropertyBase */
+.property {
+  margin-bottom: 12px;
+}
+
+.propertyTitle {
+  font-weight: 700;
+  color: var(--bui-fg-primary);
+}
+
+/* ChangeSetChangedValue */
+.oldValue {
+  font-weight: 700;
+  color: var(--ros-red-500);
+  text-decoration: line-through;
+}
+
+[data-theme-mode='dark'] .oldValue {
+  color: var(--ros-red-100);
+}
+
+.newValue {
+  font-weight: 700;
+  color: var(--ros-green-500);
+}
+
+[data-theme-mode='dark'] .newValue {
+  color: var(--ros-green-100);
+}
+
+/* ChangeSetRemovedProperty */
+.removedPropertyContainer {
+  margin-bottom: 8px;
+}
+
+.removedProperty {
+  font-weight: 700;
+  color: var(--ros-red-500);
+  text-decoration: line-through;
+  font-size: 18px;
+  line-height: 26px;
+}
+
+[data-theme-mode='dark'] .removedProperty {
+  color: var(--ros-red-100);
+}
+
+/* ChangeSetRemovedValue */
+.removedValue {
+  font-weight: 500;
+  color: var(--ros-red-500);
+  text-decoration: line-through;
+  font-size: 14px;
+}
+
+[data-theme-mode='dark'] .removedValue {
+  color: var(--ros-red-100);
+}
+
+/* ChangeSetAddedValue */
+.addedValue {
+  font-weight: 500;
+  color: var(--ros-green-500);
+  font-size: 14px;
+}
+
+[data-theme-mode='dark'] .addedValue {
+  color: var(--ros-green-100);
+}
+
+/* ChangeSetTag */
+.tag {
+  border-radius: 24px;
+  width: fit-content;
+  padding: 1px 8px;
+  border: 1px solid;
+  color: var(--bui-fg-primary);
+}
+
+.tagPrimary {
+  background-color: var(--ros-orange-100);
+  border-color: var(--ros-orange-300);
+}
+[data-theme-mode='dark'] .tagPrimary {
+  background-color: var(--ros-orange-300);
+  border-color: var(--ros-orange-500);
+}
+
+.tagDelete {
+  background-color: var(--ros-red-200);
+  border-color: var(--ros-red-400);
+}
+
+[data-theme-mode='dark'] .tagDelete {
+  background-color: var(--ros-red-400);
+  border-color: var(--ros-red-600);
+}
+
+.tagAdded {
+  background-color: var(--ros-green-100);
+  border-color: var(--ros-green-300);
+}
+[data-theme-mode='dark'] .tagAdded {
+  background-color: var(--ros-green-300);
+  border-color: var(--ros-green-500);
+}
+
+/* ChangeSetTags */
+.tags {
+  margin-bottom: 4px;
+  display: flex;
+  gap: 4px;
+}
+
+/* ChangeSetText */
+.text {
+  font-weight: 500;
+  color: var(--bui-fg-primary);
+}
+
+/* ChangeSetBodyText */
+.bodyText {
+  color: var(--bui-fg-primary);
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+/* ChangeSetTitle */
+.title {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--bui-fg-primary);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* ChangeSetTwoColumnSplit */
+.twoColumnSplit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+/* ChangeSetColumn */
+.firstColumn {
+  grid-column: 1;
+}
+
+.secondColumn {
+  grid-column: 2;
+}

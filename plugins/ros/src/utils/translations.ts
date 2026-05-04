@@ -11,6 +11,8 @@ export const pluginRiScMessages = {
     editEncryption: 'Edit encryption',
     deleteButton: 'Delete scoreboard',
     multipleRiScs: 'RiSc scorecards',
+    lockedRiScsSection:
+      'RiScs you do not have access to — click for encryption key information',
   },
   dictionary: {
     by: 'By',
@@ -135,7 +137,7 @@ export const pluginRiScMessages = {
       },
     },
     lastModified: 'Last published: ',
-    daysSinceLastModified: '{{days}} days and {{numCommits}} commits ago',
+    daysSinceLastModified: '{{days}} days ago',
     notPublishedYet: 'RiSc is not published yet',
     errorMessage: 'Failed to retrieve status',
     outdated: 'Outdated',
@@ -270,7 +272,7 @@ export const pluginRiScMessages = {
     entries: {
       riscFeedbackChannel: {
         title: 'RISC Feedback Channel',
-        description: '#kodenær-ros-tilbakemelding',
+        description: '#operasjonell-ros-tilbakemelding',
       },
       riscDocumentation: {
         title: 'RISC Documentation',
@@ -320,7 +322,7 @@ export const pluginRiScMessages = {
       dialogDescription:
         'This table shows risk statistics per scenario. All actions within a scenario are weighted equally, so each completed action contributes the same amount of risk reduction. Use the dropdown to choose which metric to display:',
       metricCurrentRiskDescription:
-        'estimated risk cost based on the share of completed actions.',
+        'estimated risk based on the share of completed actions.',
       metricPotentialReductionDescription:
         'how much the risk can still be reduced by completing remaining actions.',
       metricReductionPerActionDescription:
@@ -367,12 +369,12 @@ export const pluginRiScMessages = {
     currentRisk: {
       title: 'Current risk calculations',
       description:
-        'Current risk blends the starting risk, the planned end risk, and how far the mitigation actions have progressed. For each scenario, we first compute the initial risk cost',
-      remainingRiskCost: 'and the remaining risk cost',
+        'Current risk blends the starting risk, the planned end risk, and how far the mitigation actions have progressed. For each scenario, we first compute the initial risk',
+      remainingRiskCost: 'and the remaining risk',
       actionRatio:
         'Then we measure how many relevant actions are completed (ratio) = (number of completed actions) / (number of actions not marked “Not relevant”). If no relevant actions, ratio = 0.',
       currentRiskCost:
-        'The current risk cost interpolates between start and remaining risk based on that ratio',
+        'The current risk interpolates between start and remaining risk based on that ratio',
       aggregated: 'The aggregated current risk is the sum of ',
       aggregatedSums: 'across all scenarios, reported in NOK per year.',
     },
@@ -647,6 +649,8 @@ export const pluginRiScMessages = {
     ErrorWhenNoWriteAccessToRepository:
       'Unable to update RiSc. You do not have write access to {{owner}}/{{name}}.',
     ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
+    ErrorWhenUpdatingDeletedRiSc:
+      'Failed to update risk scorecard. RiSc is marked for deletion.',
     ErrorWhenDeletingRiSc: 'Failed to delete risk scorecard',
     ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
     ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
@@ -672,6 +676,8 @@ export const pluginRiScMessages = {
       'Risk scorecard "{{riScId}}" cannot be automatically migrated to the latest version.',
     ContentStatusUnknown:
       'Failed to fetch risk scorecard "{{riScId}}" with unknown status: {{status}}',
+    ContentStatusSchemaValidationFailed:
+      'Failed to fetch risk scorecard "{{riScId}}". Its content does not match the expected format. It may have been manually edited or corrupted.',
     ContentStatusDecryptionFailedMessage: {
       INTERNAL_SERVER_ERROR:
         'Failed to decrypt risk scorecard "{{riScId}}", 500 - Internal server error from the crypto service.',
@@ -687,7 +693,14 @@ export const pluginRiScMessages = {
         'Failed to decrypt risk scorecard "{{riScId}}", the provided Age key is invalid.',
       CONNECTION_REFUSED:
         'Failed to decrypt risk scorecard "{{riScId}}", unable to connect to the encryption service.',
+      WITH_KEY_SINGLE:
+        'Failed to decrypt RoS-analysis "{{riScId}}" – no access to key: {{keyId}}',
+      WITH_KEY_PLURAL:
+        'Failed to decrypt RoS-analyses "{{riScId}}" – no access to key: {{keyId}}',
+      UNKNOWN:
+        'Failed to decrypt risk scorecard "{{riScId}}" due to an unknown error.',
     },
+    EncryptedWithKey: 'This analysis is encrypted with key {{keyId}}',
   },
   infoMessages: {
     OpenedPullRequest: 'Successfully opened pull request',
@@ -726,10 +739,15 @@ export const pluginRiScMessages = {
     outdated: 'Outdated actions',
     listUpdatedActions: 'Recently updated actions',
   },
+  lockedRiScCard: {
+    title: 'No access',
+    description: 'You do not have access to this RoS-analysis.',
+    encryptedWithKey: 'Encrypted with key:',
+  },
   firstRiScCard: {
-    noRiScYet: 'No RiSc analyses created yet',
+    noRiScYet: 'Could not load any RoS-analyses',
     getStarted:
-      'Get started with risk and vulnerability analysis for your team',
+      'Get started with risk and vulnerability analysis for your team, or try reload the page if you have already created one.',
   },
   filter: {
     title: 'Title (a-z)',
@@ -756,6 +774,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.editEncryption': 'Rediger kryptering',
           'contentHeader.deleteButton': 'Slett analyse',
           'contentHeader.multipleRiScs': 'RoS-analyser',
+          'contentHeader.lockedRiScsSection':
+            'RoSer du ikke har tilgang til — klikk for informasjon om krypteringsnøkkel',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.by': 'Av',
           'dictionary.click': 'Klikk',
@@ -879,8 +899,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.statusBadge.deletionApproval':
             'Risikoeier kan gå igjennom og godkjenne slettingen.',
           'rosStatus.lastModified': 'Sist publisert: ',
-          'rosStatus.daysSinceLastModified':
-            '{{days}} dager og {{numCommits}} commits siden',
+          'rosStatus.daysSinceLastModified': '{{days}} dager siden',
           'rosStatus.notPublishedYet': 'RoS er ikke publisert enda',
           'rosStatus.errorMessage': 'Kunne ikke hente status',
           'rosStatus.editing': 'Du kan nå gjøre endringer',
@@ -1008,7 +1027,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'supportDialog.entries.riscFeedbackChannel.title':
             'RoS tilbakemeldingskanal',
           'supportDialog.entries.riscFeedbackChannel.description':
-            '#kodenær-ros-tilbakemelding',
+            '#operasjonell-ros-tilbakemelding',
           'supportDialog.entries.riscDocumentation.title': 'RoS dokumentasjon',
           'supportDialog.entries.riscDocumentation.description':
             'Confluence - RISC',
@@ -1046,7 +1065,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'riskMatrix.currentRisk.dialogDescription':
             'Denne tabellen viser risikostatistikk per scenario. Alle tiltak innenfor et scenario er vektet likt, slik at hvert fullført tiltak bidrar med like mye risikoreduksjon. Bruk nedtrekksmenyen for å velge hvilken metrikk som vises:',
           'riskMatrix.currentRisk.metricCurrentRiskDescription':
-            'estimert risikokostnad basert på andelen fullførte tiltak.',
+            'estimert risiko basert på andelen fullførte tiltak.',
           'riskMatrix.currentRisk.metricPotentialReductionDescription':
             'hvor mye risikoen fortsatt kan reduseres ved å fullføre gjenstående relevante tiltak.',
           'riskMatrix.currentRisk.metricReductionPerActionDescription':
@@ -1097,7 +1116,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.currentRisk.aggregated':
             'Den aggregerte nåværende risikoen er summen ',
           'infoDialog.currentRisk.currentRiskCost':
-            'Den Aggregert nårisiko kostnaden interpolerer mellom start- og restrisiko basert på forholdet',
+            'Den aggregerte nårisikoen interpolerer mellom start- og restrisiko basert på forholdet',
           'infoDialog.currentRisk.aggregatedSums':
             'på tvers av alle scenarier, rapportert i NOK per år.',
           'infoDialog.currentRisk.remainingRiskCost': 'og sluttrisiko',
@@ -1115,7 +1134,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
           'rosDialog.generateInitialDescription':
-            'Kodenær RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
+            'Operasjonell RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
           'rosDialog.generateInitialToggleDescription':
             'Vil du generere initiell RoS?',
           'rosDialog.generateObsRiScDescription':
@@ -1135,9 +1154,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Anbefalt for komponenter av typen',
           'sopsConfigDialog.title': 'Kryptering',
           'sopsConfigDialog.writeLocalRiscSuffix':
-            'for å lære mer om å skrive kodenær RoS lokalt.',
+            'for å lære mer om å skrive Operasjonell RoS lokalt.',
           'sopsConfigDialog.description.new':
-            'For å bruke kodenær RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
+            'For å bruke Operasjonell RoS må du først aktivere en krypteringsløsning ved å velge en nøkkel fra Google Cloud Platform (GCP) for kryptering og dekryptering. Følg trinnene under for å fullføre oppsettet:',
           'sopsConfigDialog.description.edit':
             'Risiko og sårbarhetsanalysen vil bli kryptert for å sørge for konfidiensialitet. Du kan endre hvilken krypteringsnøkkel fra Google Cloud Platform (GCP) som skal bli brukt her:',
           'sopsConfigDialog.selectKeysTitle': 'Velg krypteringsnøkkel',
@@ -1159,7 +1178,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'sopsConfigDialog.publicAgeKeyQuestion':
             'Trenger noen å skrive RoS lokalt i sin editor?',
           'sopsConfigDialog.publicAgeKeyDescription':
-            'Legg ved offentlige age-nøkkel til personer som ønsker å skrive kodenær RoS lokalt',
+            'Legg ved offentlige age-nøkkel til personer som ønsker å skrive Operasjonell RoS lokalt',
           'sopsConfigDialog.addPublicAgeKey': 'Legg til nøkkel',
           'sopsConfigDialog.publicAgeKey': 'Offentlig age-nøkkel',
           'sopsConfigDialog.update': 'Oppdater',
@@ -1367,6 +1386,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til {{owner}}/{{name}}.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
+          'errorMessages.ErrorWhenUpdatingDeletedRiSc':
+            'Kunne ikke lagre risiko- og sårbarhetsanalyse. Den har blitt markert for sletting.',
           'errorMessages.ErrorWhenDeletingRiSc':
             'Kunne ikke slette risiko- og sårbarhetsanalyse',
           'errorMessages.ErrorWhenCreatingRiSc':
@@ -1390,35 +1411,45 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'errorMessages.ErrorWhenFetchingGcpCryptoKeys':
             'Kunne ikke laste inn risiko- og sårbarhetsanalysene — krypteringstjenesten er ikke tilgjengelig. Prøv å oppdatere siden.',
           'errorMessages.ContentStatusDeleted':
-            'Risiko- og sårbarhetsanalyse "{{riScId}}" har blitt slettet',
+            'ROS-analyse "{{riScId}}" har blitt slettet',
           'errorMessages.ContentStatusFailure':
-            'Kunne ikke laste risiko- og sårbarhetsanalyse "{{riScId}}" grunnet en uventet feil',
+            'Kunne ikke laste ROS-analyse "{{riScId}}" grunnet en uventet feil',
           'errorMessages.ContentStatusFileNotFound':
-            'Risiko- og sårbarhetsanalyse "{{riScId}}" ble ikke funnet i repositoryet',
+            'ROS-analyse "{{riScId}}" ble ikke funnet i repositoryet',
           'errorMessages.ContentStatusDecryptionFailed':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}". Du har muligens ikke de nødvendige dekrypteringsnøklene',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}". Du har muligens ikke de nødvendige dekrypteringsnøklene',
           'errorMessages.ContentStatusNoReadAccess':
-            'Du har ikke lesetilgang til risiko- og sårbarhetsanalyse "{{riScId}}". ',
+            'Du har ikke lesetilgang til ROS-analyse "{{riScId}}".',
           'errorMessages.ContentStatusUnsupportedMigration':
-            'Risiko- og sårbarhetsanalyse "{{riScId}}" kan ikke automatisk migreres til den nyeste versjonen.',
+            'ROS-analyse "{{riScId}}" kan ikke automatisk migreres til den nyeste versjonen.',
+          'errorMessages.ContentStatusSchemaValidationFailed':
+            'ROS-analyse "{{riScId}}" kunne ikke lastes fordi innholdet ikke samsvarer med forventet format. Den kan ha blitt manuelt redigert eller ødelagt.',
 
           'errorMessages.ContentStatusDecryptionFailedMessage.INTERNAL_SERVER_ERROR':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", 500 - Intern serverfeil fra kryptotjenesten.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", 500 - Intern serverfeil fra kryptotjenesten.',
           'errorMessages.ContentStatusDecryptionFailedMessage.MISSING_DATA_KEY':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", kunne ikke få tilgang til krypteringsnøkkelen som kreves for dekryptering.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", kunne ikke få tilgang til krypteringsnøkkelen som kreves for dekryptering.',
           'errorMessages.ContentStatusDecryptionFailedMessage.NO_MATCHING_KEY':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", ingen tilgjengelig nøkkel kunne dekryptere innholdet.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", ingen tilgjengelig nøkkel kunne dekryptere innholdet.',
           'errorMessages.ContentStatusDecryptionFailedMessage.AUTHENTICATION_FAILED':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", autentisering mislyktes. Vennligst kontroller tilgangene dine.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", autentisering mislyktes. Vennligst kontroller tilgangene dine.',
           'errorMessages.ContentStatusDecryptionFailedMessage.INVALID_GCP_TOKEN':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", Google Cloud-tokenet ditt er ugyldig eller utløpt.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", Google Cloud-tokenet ditt er ugyldig eller utløpt.',
           'errorMessages.ContentStatusDecryptionFailedMessage.INVALID_AGE_KEY':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", den oppgitte AGE-nøkkelen er ugyldig.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", den oppgitte AGE-nøkkelen er ugyldig.',
           'errorMessages.ContentStatusDecryptionFailedMessage.CONNECTION_REFUSED':
-            'Kunne ikke dekryptere risiko- og sårbarhetsanalyse "{{riScId}}", kunne ikke koble til krypteringstjenesten.',
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", kunne ikke koble til krypteringstjenesten.',
+          'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE':
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
+          'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL':
+            'Kunne ikke dekryptere ROS-analyser "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
+          'errorMessages.ContentStatusDecryptionFailedMessage.UNKNOWN':
+            'Kunne ikke dekryptere ROS-analyse "{{riScId}}" grunnet en ukjent feil.',
+          'errorMessages.EncryptedWithKey':
+            'Denne analysen er kryptert med nøkkel {{keyId}}',
 
           'errorMessages.ContentStatusUnknown':
-            'Kunne ikke hente risiko- og sårbarhetsanalyse "{{riScId}}" med ukjent status: {{status}}',
+            'Kunne ikke hente ROS-analyse "{{riScId}}" med ukjent status: {{status}}',
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
@@ -1453,7 +1484,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'filterButton.veryOutdated': 'Veldig utdaterte tiltak',
           'filterButton.outdated': 'Utdaterte tiltak',
           'filterButton.listUpdatedActions': 'Nylig oppdaterte tiltak',
-          'firstRiScCard.noRiScYet': 'Ingen RoS-analyser opprettet enda',
+          'lockedRiScCard.title': 'Ingen tilgang',
+          'lockedRiScCard.description':
+            'Du har ikke tilgang til denne ROS-analysen.',
+          'lockedRiScCard.encryptedWithKey': 'Kryptert med nøkkel:',
+          'firstRiScCard.noRiScYet': 'Kunne ikke laste inn RoS-analyser',
           'firstRiScCard.getStarted':
             'Kom igang med risiko- og sårbarhetsanalyse for ditt team',
           'filter.title': 'Tittel (a-å)',

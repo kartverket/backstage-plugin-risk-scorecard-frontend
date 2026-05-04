@@ -18,6 +18,11 @@ export type LastPublished = {
   numberOfCommits: number;
 };
 
+export type LockedRiSc = {
+  id: string;
+  encryptionKeyId: string | null;
+};
+
 export type RiScWithMetadata = {
   id: string;
   status: RiScStatus;
@@ -232,6 +237,7 @@ export enum ProcessingStatus {
   CreatedPullRequest = 'CreatedPullRequest',
   ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
   ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
+  ErrorWhenUpdatingDeletedRiSc = 'ErrorWhenUpdatingDeletedRiSc',
   ErrorWhenDeletingRiSc = 'ErrorWhenDeletingRiSc',
   ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
   ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
@@ -249,6 +255,7 @@ export enum ContentStatus {
   DecryptionFailed = 'DecryptionFailed',
   NoReadAccess = 'NoReadAccess',
   UnsupportedMigration = 'UnsupportedMigration',
+  SchemaValidationFailed = 'SchemaValidationFailed',
 }
 
 export enum DifferenceStatus {

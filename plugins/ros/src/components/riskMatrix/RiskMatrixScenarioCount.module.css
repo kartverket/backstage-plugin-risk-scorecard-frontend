@@ -16,14 +16,14 @@
   max-width: 500px;
 }
 [data-theme-mode='dark'] .tooltip.tooltip {
-  background-color: var(--bui-bg-popover);
+  background-color: var(--bui-bg-app);
 }
 
 .tooltipArrow.tooltipArrow {
   color: var(--bui-white);
 }
 [data-theme-mode='dark'] .tooltipArrow.tooltipArrow {
-  color: var(--bui-bg-popover);
+  color: var(--bui-bg-app);
 }
 
 .tooltipList {

@@ -48,6 +48,14 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-gray-800: #2e2e2e;
   --ros-gray-900: #212121;
   --ros-gray-medium: #808080;
+  --ros-gray-light-hover: #e0e0e0;
+  --ros-gray-dark-card: #424242;
+  --ros-gray-dark-hover: #616161;
+
+  --ros-orange-warm-50: #fff7ed;
+
+  --ros-blue-info-50: #eaf6ff;
+  --ros-blue-info-400: #439ccd;
 
   --ros-risc-status-updated: var(--ros-green-500);
   --ros-risc-status-little-outdated: var(--ros-orange-400);
@@ -79,6 +87,19 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
 
   --ros-input-text-color: #757575;
   --ros-input-disabledBackground: rgba(0, 0, 0, 0.12);
+
+  --ros-initial-risc-bg: var(--bui-bg-neutral-1);
+  --ros-scenario-highlight: var(--ros-gray-100);
+  --ros-scenario-card-bg: var(--ros-gray-50);
+
+  --ros-alert-success-bg: var(--ros-green-50);
+  --ros-alert-success-border: var(--ros-green-300);
+  --ros-alert-warning-bg: var(--ros-orange-warm-50);
+  --ros-alert-warning-border: var(--ros-orange-300);
+  --ros-alert-error-bg: var(--ros-red-50);
+  --ros-alert-error-border: var(--ros-red-500);
+  --ros-alert-info-bg: var(--ros-blue-info-50);
+  --ros-alert-info-border: var(--ros-blue-info-400);
 
   /* -------Button styles------- */
   .ros-button-red {
@@ -129,11 +150,24 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
   --ros-input-text-color: #ffffff80;
   --ros-input-disabledBackground: rgba(255, 255, 255, 0.12);
 
+  --ros-initial-risc-bg: var(--bui-bg-neutral-3);
+  --ros-scenario-highlight: var(--ros-gray-300);
+  --ros-scenario-card-bg: var(--ros-gray-500);
+
+  --ros-alert-success-bg: #1a3a2a;
+  --ros-alert-success-border: var(--ros-green-300);
+  --ros-alert-warning-bg: #3a2e1a;
+  --ros-alert-warning-border: var(--ros-orange-300);
+  --ros-alert-error-bg: #3a1a1a;
+  --ros-alert-error-border: var(--ros-red-400);
+  --ros-alert-info-bg: #1a2a3a;
+  --ros-alert-info-border: var(--ros-blue-info-400);
+
   .bui-Switch:not([data-selected]) .bui-SwitchIndicator {
     background-color: var(--ros-gray-300);
   }
 
   .bui-Card {
-    background-color: #424242;
+    background-color: var(--ros-gray-dark-card);
   }
 }

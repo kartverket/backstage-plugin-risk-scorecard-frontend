@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 
 interface ChangeSetValueProps {
   value: string | ReactNode;
@@ -12,7 +12,6 @@ export function ChangeSetValue({
   unit,
   emphasised,
 }: ChangeSetValueProps) {
-  const styles = useChangeSetStyles();
   return (
     <span className={emphasised ? styles.text : ''}>
       {value} {unit ? unit : ''}

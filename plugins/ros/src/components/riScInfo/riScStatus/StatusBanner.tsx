@@ -60,10 +60,7 @@ function StatusIconWithText(props: StatusIconWithTextProps) {
     [UpdatedStatusEnum.VERY_OUTDATED]: 'var(--ros-risc-status-very-outdated)',
   };
 
-  if (
-    props.numOfCommitsBehind !== null &&
-    props.daysSinceLastModified !== null
-  ) {
+  if (props.daysSinceLastModified !== null) {
     return (
       <IconWithText
         remixIconClassString={
@@ -74,7 +71,6 @@ function StatusIconWithText(props: StatusIconWithTextProps) {
           t('rosStatus.lastModified') +
           t('rosStatus.daysSinceLastModified', {
             days: props.daysSinceLastModified.toString(),
-            numCommits: props.numOfCommitsBehind.toString(),
           })
         }
         color={updatedStatusToColor[props.updatedStatus]}

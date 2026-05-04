@@ -26,7 +26,7 @@ export function ScenarioTableCard({
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const { veryOutdatedCount, outdatedCount, updatedCount } =
+  const { totalCount, veryOutdatedCount, outdatedCount, updatedCount } =
     computeStatusCount(riScWithMetadata);
   const [selectedUpdatedStatus, setSelectedUpdatedStatus] =
     useState<UpdatedStatusEnumType | null>(null);
@@ -57,6 +57,7 @@ export function ScenarioTableCard({
       <CardBody style={{ paddingTop: '12px' }}>
         {(veryOutdatedCount > 0 || outdatedCount > 0) && (
           <ActionCountButtons
+            totalCount={totalCount}
             veryOutdatedCount={veryOutdatedCount}
             outdatedCount={outdatedCount}
             updatedCount={updatedCount}

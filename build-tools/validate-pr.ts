@@ -10,11 +10,11 @@ import { validatePRTitle } from './lib/pr-validator.ts';
 import { getChangelogFormattedForRelease } from './lib/changelog.ts';
 import { log } from './lib/logging.ts';
 
-export interface ValidateOptions {
+interface ValidateOptions {
   prTitle: string;
 }
 
-export interface ValidationResult {
+interface ValidationResult {
   valid: boolean;
   prTitle: string;
   expectedBumpType: string | null;

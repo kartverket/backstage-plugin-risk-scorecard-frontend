@@ -1,3 +1,7 @@
+.dialog {
+  --bui-bg-neutral-1: var(--bui-bg-app);
+}
+
 .DialogHeader {
   padding-bottom: 12px;
 }

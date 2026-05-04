@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { useChangeSetStyles } from './changeSetStyles.ts';
+import styles from './changeSet.module.css';
 
 interface ChangeSetTwoColumnSplitProps {
   children: ReactNode | ReactNode[];
@@ -8,6 +8,5 @@ interface ChangeSetTwoColumnSplitProps {
 export function ChangeSetTwoColumnSplit({
   children,
 }: ChangeSetTwoColumnSplitProps) {
-  const styles = useChangeSetStyles();
   return <div className={styles.twoColumnSplit}>{children}</div>;
 }
