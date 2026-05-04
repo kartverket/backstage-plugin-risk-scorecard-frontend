@@ -13,20 +13,27 @@ import {
 import { GcpCryptoKeyRadioGroup } from '../sopsConfigDialog/GcpCryptoKeyRadioGroup';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
-import { AddCircle, ExpandMore } from '@mui/icons-material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   CryptoKeyPermission,
   GcpCryptoKeyObject,
   SopsConfigDTO,
 } from '../../utils/DTOs';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import FormLabel from '@mui/material/FormLabel';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
+import ListItemText from '@mui/material/ListItemText';
+import TextField from '@mui/material/TextField';
 import { useEffect, useState } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { RiScDialogStates } from './RiScDialog';
 import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
 import { FieldErrors } from 'react-hook-form';
-import FormHelperText from '@mui/material/FormHelperText';
 import { URLS } from '../../urls';
 import { Text, Link, Button, Flex, Box } from '@backstage/ui';
 import styles from '../riScDialog/RiScDialog.module.css';
