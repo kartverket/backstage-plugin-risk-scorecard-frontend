@@ -9,6 +9,7 @@ import {
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
+import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -16,6 +17,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
 import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
+import AddCircle from '@mui/icons-material/AddCircle';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useEffect, useState } from 'react';
 import { RiScWithMetadata } from '../../utils/types';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
