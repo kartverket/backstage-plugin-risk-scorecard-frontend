@@ -180,13 +180,13 @@ export function AppliesToBackstageEntityRefsField({
 function ensureUndefinedOrCurrentEntityRefAsHead(
   entityRefs: string[],
   currentEntityRef: string,
-): string[] | undefined {
+): string[] | null {
   const currentValue = [
     currentEntityRef,
     ...new Set(entityRefs.filter(it => it !== currentEntityRef)),
   ];
   if (currentValue.length === 1) {
-    return undefined;
+    return null;
   }
 
   return currentValue;
