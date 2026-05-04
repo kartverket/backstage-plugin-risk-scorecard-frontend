@@ -1,5 +1,6 @@
 import { execSync, type ExecSyncOptions } from 'node:child_process';
-import { resolve } from 'node:path';
+import { resolve, join } from 'node:path';
+import { readFileSync } from 'node:fs';
 
 interface PublishOptions {
   pluginPath: string;
@@ -64,15 +65,24 @@ export function publishToNpm(options: PublishOptions): PublishResult {
  * Build the package before publishing
  */
 export function buildPackage(pluginPath: string): PublishResult {
+  // Read the package name so we can invoke via workspace from the repo root
+  const packageJson = JSON.parse(
+    readFileSync(join(pluginPath, 'package.json'), 'utf-8'),
+  );
+  const packageName: string = packageJson.name;
+
+  // Run from the repo root so Yarn uses the correct lockfile and Corepack version.
+  const repoRoot = resolve(pluginPath, '..', '..');
+
   const execOptions: ExecSyncOptions = {
-    cwd: pluginPath,
+    cwd: repoRoot,
     encoding: 'utf-8',
     stdio: 'inherit',
   };
 
   try {
-    execSync(`yarn tsc`, execOptions);
-    execSync(`yarn build`, execOptions);
+    execSync(`yarn workspace ${packageName} tsc`, execOptions);
+    execSync(`yarn workspace ${packageName} build`, execOptions);
 
     return {
       success: true,
