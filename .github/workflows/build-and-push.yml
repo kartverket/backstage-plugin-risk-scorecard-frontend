@@ -63,7 +63,7 @@ jobs:
           cp -r plugins/ros kartverket.dev/plugins/ros
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --no-immutable
         working-directory: kartverket.dev
 
       # tsc outputs type definitions to dist-types/ in the repo root, which are then consumed by the build
