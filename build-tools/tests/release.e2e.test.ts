@@ -59,8 +59,10 @@ vi.mock('node:child_process', async importOriginal => {
           return '';
         }
         if (command.includes('npm pack')) {
-          // Return a mock tarball filename as npm pack would
-          return 'test-package-1.0.0.tgz';
+          const tgzName = 'test-package-1.0.0.tgz';
+          const dir = (options?.cwd as string) || process.cwd();
+          writeFileSync(join(dir, tgzName), 'mock tarball content');
+          return tgzName;
         }
         if (command.includes('yarn tsc') || command.includes('yarn build')) {
           return '';
