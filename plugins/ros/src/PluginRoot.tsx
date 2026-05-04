@@ -2,6 +2,8 @@ import { Route, Routes } from 'react-router-dom';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import { useMemo } from 'react';
+import { stringifyEntityRef } from '@backstage/catalog-model';
+import { useEntity } from '@backstage/plugin-catalog-react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { RiScPlugin } from './components/riScPlugin/RiScPlugin';
 import { ScenarioProvider } from './contexts/ScenarioContext';
@@ -28,11 +30,14 @@ function MuiThemeBridge({ children }: { children: React.ReactNode }) {
 }
 
 function ProvidedPlugin() {
+  const { entity } = useEntity();
+  const entityKey = stringifyEntityRef(entity);
+
   return (
     <CacheProvider value={cache}>
       <MuiThemeBridge>
         <BackstageContextProvider>
-          <RiScProvider>
+          <RiScProvider key={entityKey}>
             <DefaultRiScTypesProvider>
               <ScenarioProvider>
                 <RiScPlugin />
