@@ -1,0 +1,31 @@
+{
+  "name": "build-tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@octokit/rest": "22.0.1",
+    "conventional-changelog": "7.2.0",
+    "conventional-changelog-conventionalcommits": "9.3.1",
+    "conventional-recommended-bump": "11.2.0",
+    "semver": "7.7.4",
+    "yargs": "18.0.0"
+  },
+  "devDependencies": {
+    "@types/conventional-changelog": "6.0.1",
+    "@types/conventional-recommended-bump": "10.0.3",
+    "@types/node": "22.19.17",
+    "@types/semver": "7.7.1",
+    "@types/yargs": "17.0.35",
+    "@vitest/coverage-v8": "^4.1.4",
+    "vitest": "^4.1.4"
+  }
+}
