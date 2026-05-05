@@ -3,6 +3,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import {
   ReactNode,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -27,6 +28,8 @@ import {
 } from '../utils/constants';
 import { getActionsWithLastUpdated } from '../utils/actions.ts';
 import { getScenarioOfIdFromRiSc } from '../utils/scenario.ts';
+import { useBackstageContext } from './BackstageContext.tsx';
+import { isToday } from '../utils/date.ts';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
@@ -89,6 +92,22 @@ type ScenarioDrawerProps = {
   closeScenarioForm: () => void;
   mapFormScenarioToScenario: (formScenario: FormScenario) => Scenario;
   mapScenarioToFormScenario: (scenario: Scenario) => FormScenario;
+
+  // Pending action status state (shared between table and drawer)
+  pendingActionStatusUpdates: Record<
+    string,
+    Record<string, ActionStatusOptions>
+  >;
+  pendingActionUpdatesHistory: string[];
+  hasPendingActionStatusChanges: boolean;
+  isSavingActionStatuses: boolean;
+  onNewActionStatus: (
+    scenarioId: string,
+    actionId: string,
+    newStatus: ActionStatusOptions,
+  ) => void;
+  onRefreshActionStatus: (scenarioId: string, action: Action) => void;
+  saveAllPendingActionStatuses: () => void;
 };
 
 export type ScenarioWizardSteps = (typeof scenarioWizardSteps)[number];
@@ -112,6 +131,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
   const { selectedRiSc, updateRiSc } = useRiScs();
   const riSc = selectedRiSc ?? null;
+  const { profileInfo } = useBackstageContext();
 
   const [scenario, setScenario] = useState(emptyScenario());
 
@@ -121,6 +141,62 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
   const [isEditingAllowed, setIsEditingAllowed] = useState(true);
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  // Pending action status state (shared between table and drawer)
+  const [pendingActionStatusUpdates, setPendingActionStatusUpdates] = useState<
+    Record<string, Record<string, ActionStatusOptions>>
+  >({});
+  const [pendingActionUpdatesHistory, setPendingActionUpdatesHistory] =
+    useState<string[]>([]);
+  const [isSavingActionStatuses, setIsSavingActionStatuses] = useState(false);
+
+  const hasPendingActionStatusChanges =
+    Object.keys(pendingActionStatusUpdates).length > 0;
+
+  // Warn on browser tab close / refresh with unsaved changes
+  useEffect(() => {
+    if (!hasPendingActionStatusChanges) return undefined;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasPendingActionStatusChanges]);
+
+  const onNewActionStatus = useCallback(
+    (scenarioId: string, actionId: string, newStatus: ActionStatusOptions) => {
+      setPendingActionUpdatesHistory(prev =>
+        prev.filter(id => id !== actionId),
+      );
+      setPendingActionStatusUpdates(prev => ({
+        ...prev,
+        [scenarioId]: {
+          ...prev[scenarioId],
+          [actionId]: newStatus,
+        },
+      }));
+    },
+    [],
+  );
+
+  const onRefreshActionStatus = useCallback(
+    (scenarioId: string, action: Action) => {
+      if (isToday(action.lastUpdated ?? null)) return;
+      setPendingActionUpdatesHistory(prev =>
+        prev.filter(id => id !== action.ID),
+      );
+      setPendingActionStatusUpdates(prev => ({
+        ...prev,
+        [scenarioId]: {
+          ...prev[scenarioId],
+          [action.ID]: action.status as ActionStatusOptions,
+        },
+      }));
+    },
+    [],
+  );
 
   const [expandedActions, setExpandedActions] = useState<{
     [key: string]: boolean;
@@ -218,7 +294,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 
   function submitNewScenario(
     newScenario: Scenario,
-    profileInfo?: ProfileInfo,
+    callerProfileInfo?: ProfileInfo,
     onSuccess?: () => void,
     onError?: () => void,
   ) {
@@ -226,7 +302,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       [],
       newScenario.actions,
       [],
-      profileInfo,
+      callerProfileInfo,
     );
 
     if (riSc) {
@@ -296,6 +372,60 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const saveAllPendingActionStatuses = useCallback(() => {
+    if (!hasPendingActionStatusChanges || !riSc) return;
+    setIsSavingActionStatuses(true);
+
+    // Build a single combined RiSc with all pending status changes applied
+    const allAffectedActionIds: string[] = [];
+    const updatedScenarios = riSc.content.scenarios.map(s => {
+      const updates = pendingActionStatusUpdates[s.ID];
+      if (!updates) return s;
+
+      const updatedActions = s.actions.map(a =>
+        a.ID in updates ? { ...a, status: updates[a.ID] ?? a.status } : a,
+      );
+
+      const actionIdsToForce = Object.keys(updates);
+      allAffectedActionIds.push(...actionIdsToForce);
+
+      return {
+        ...s,
+        actions: getActionsWithLastUpdated(
+          s.actions,
+          updatedActions,
+          actionIdsToForce,
+          profileInfo,
+        ),
+      };
+    });
+
+    updateRiSc(
+      {
+        ...riSc,
+        content: { ...riSc.content, scenarios: updatedScenarios },
+      },
+      () => {
+        setPendingActionStatusUpdates({});
+        setPendingActionUpdatesHistory(prev => [
+          ...prev,
+          ...allAffectedActionIds,
+        ]);
+        setIsSavingActionStatuses(false);
+      },
+      () => {
+        // On error: keep pending state so user can retry
+        setIsSavingActionStatuses(false);
+      },
+    );
+  }, [
+    hasPendingActionStatusChanges,
+    pendingActionStatusUpdates,
+    riSc,
+    updateRiSc,
+    profileInfo,
+  ]);
+
   function mapFormScenarioToScenario(formScenario: FormScenario): Scenario {
     const returnScenario: Scenario = {
       ...formScenario,
@@ -351,6 +481,15 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
     closeScenarioForm,
     mapFormScenarioToScenario,
     mapScenarioToFormScenario,
+
+    // Pending action status state
+    pendingActionStatusUpdates,
+    pendingActionUpdatesHistory,
+    hasPendingActionStatusChanges,
+    isSavingActionStatuses,
+    onNewActionStatus,
+    onRefreshActionStatus,
+    saveAllPendingActionStatuses,
   };
 
   return (

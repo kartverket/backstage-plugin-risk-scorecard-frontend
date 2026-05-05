@@ -12,9 +12,15 @@ type Props = {
   updateStatus: UpdateStatus;
   response: SubmitResponseObject | null;
   statusText?: string;
+  warningMessage?: string;
 };
 
-function AlertBar({ updateStatus, response, statusText }: Props) {
+function AlertBar({
+  updateStatus,
+  response,
+  statusText,
+  warningMessage,
+}: Props) {
   const severity = getAlertSeverity(updateStatus, response ?? undefined);
   const severityClass = (styles as any)[severity] || '';
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -42,6 +48,16 @@ function AlertBar({ updateStatus, response, statusText }: Props) {
         <Text variant="body-large" className={styles.preLineText}>
           {statusText}
         </Text>
+      </Alert>
+    );
+  }
+  if (warningMessage) {
+    return (
+      <Alert
+        severity="warning"
+        className={`${styles.alertBar} ${styles.warning}`}
+      >
+        <Text variant="body-large">{warningMessage}</Text>
       </Alert>
     );
   }

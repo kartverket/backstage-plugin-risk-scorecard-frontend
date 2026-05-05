@@ -5,13 +5,15 @@ import {
   UpdatedStatusEnumType,
   UpdatedStatusEnum,
 } from '../../utils/utilityfunctions';
-import { Card, CardBody, CardHeader, Flex } from '@backstage/ui';
+import { Button, Card, CardBody, CardHeader, Flex } from '@backstage/ui';
 import { ScenarioTableCardHeader } from './ScenarioTableCardHeader.tsx';
 import { ActionCountButtons } from './ActionCountButtons.tsx';
 import { AddScenarioButton } from './AddScenarioButton.tsx';
 import { ScenarioTable } from './ScenarioTable.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { ScenarioTableFilter } from './ScenarioTableFilter.tsx';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
@@ -22,7 +24,13 @@ export function ScenarioTableCard({
   riScWithMetadata,
   editingAllowed,
 }: ScenarioTableProps) {
-  const { openNewScenarioWizard } = useScenario();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const {
+    openNewScenarioWizard,
+    hasPendingActionStatusChanges,
+    isSavingActionStatuses,
+    saveAllPendingActionStatuses,
+  } = useScenario();
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -94,6 +102,19 @@ export function ScenarioTableCard({
               actionSearchQuery={actionSearchQuery}
               scenarioSortOrder={scenarioSortOrder}
             />
+
+            <Flex justify="end" p="16px 0 0 0">
+              <Button
+                isDisabled={
+                  !hasPendingActionStatusChanges || isSavingActionStatuses
+                }
+                onClick={saveAllPendingActionStatuses}
+              >
+                {isSavingActionStatuses
+                  ? t('dictionary.saving')
+                  : t('dictionary.saveActionStatuses')}
+              </Button>
+            </Flex>
           </>
         )}
       </CardBody>

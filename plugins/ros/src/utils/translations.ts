@@ -52,6 +52,10 @@ export const pluginRiScMessages = {
     delete: 'Delete',
     description: 'Description',
     discardChanges: 'Discard changes',
+    unsavedChangesTitle: 'Unsaved changes',
+    unsavedChangesMessage:
+      'You have unsaved action status changes. Do you want to discard them and continue?',
+    continueWithoutSaving: 'Continue without saving',
     edit: 'Edit',
     estimatedRisk: 'Estimated risk',
     estimatedInitialRisk: 'Estimated initial risk',
@@ -79,6 +83,8 @@ export const pluginRiScMessages = {
     },
     save: 'Save',
     saveAndClose: 'Save and close',
+    saving: 'Saving...',
+    saveActionStatuses: 'Save status changes',
     scenario: 'Scenario',
     scope: 'Scope',
     status: 'Status',
@@ -718,6 +724,8 @@ export const pluginRiScMessages = {
     UpdateAction: 'Updating action ...',
     UpdateInfoMessage:
       'Please wait a few seconds while the changes are being saved.',
+    unsavedActionStatusChanges:
+      'You have unsaved action status changes. Press Save to persist them.',
   },
   deleteDialog: {
     title: 'Delete Risk Scorecard',
@@ -810,6 +818,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.delete': 'Slett',
           'dictionary.description': 'Beskrivelse',
           'dictionary.discardChanges': 'Forkast endringer',
+          'dictionary.unsavedChangesTitle': 'Ulagrede endringer',
+          'dictionary.unsavedChangesMessage':
+            'Du har ulagrede statusendringer. Vil du forkaste dem og fortsette?',
+          'dictionary.continueWithoutSaving': 'Fortsett uten å lagre',
           'dictionary.edit': 'Rediger',
           'dictionary.estimatedRisk': 'Estimert risiko',
           'dictionary.estimatedInitialRisk': 'Estimert startrisiko',
@@ -836,6 +848,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Risiko etter at alle tiltak er fullført',
           'dictionary.save': 'Lagre',
           'dictionary.saveAndClose': 'Lagre og lukk',
+          'dictionary.saving': 'Lagrer...',
+          'dictionary.saveActionStatuses': 'Lagre statusendringer',
           'dictionary.scenario': 'Scenario',
           'dictionary.scope': 'Omfang',
           'dictionary.status': 'Status',
@@ -1466,6 +1480,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoMessages.UpdateAction': 'Oppdaterer tiltak ...',
           'infoMessages.UpdateInfoMessage':
             'Vennligst vent et par sekunder mens endringene lagres.',
+          'infoMessages.unsavedActionStatusChanges':
+            'Du har ulagrede endringer i tiltaksstatus. Trykk Lagre for å lagre dem.',
           'deleteDialog.title': 'Slett risiko- og sårbarhetsanalyse',
           'deleteDialog.confirmationMessage':
             'Er du sikker på at du vil slette denne risiko- og sårbarhetsanalysen?',

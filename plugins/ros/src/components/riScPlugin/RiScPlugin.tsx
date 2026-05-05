@@ -8,11 +8,14 @@ import Grid from '@mui/material/Grid';
 import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
 import { Spinner } from '../common/Spinner';
 import { useRiScs } from '../../contexts/RiScContext';
-import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
+import {
+  ScenarioWizardSteps,
+  useScenario,
+} from '../../contexts/ScenarioContext';
 import { RiScHeader } from '../riScHeader/RiScHeader.tsx';
 import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper.tsx';
 import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
-import { Flex, Text } from '@backstage/ui';
+import { Button, Flex, Text } from '@backstage/ui';
 import { CreateNewRiScButton } from '../riScInfo/CreateNewRiScButton.tsx';
 import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
 import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
@@ -64,6 +67,12 @@ export function RiScPlugin() {
     allRiScsFailedDecryption,
   } = useRiScs();
 
+  const {
+    hasPendingActionStatusChanges,
+    isSavingActionStatuses,
+    saveAllPendingActionStatuses,
+  } = useScenario();
+
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const [searchParams] = useSearchParams();
@@ -85,6 +94,11 @@ export function RiScPlugin() {
           updateStatus={updateStatus}
           response={response}
           statusText={response?.statusMessage}
+          warningMessage={
+            hasPendingActionStatusChanges
+              ? t('infoMessages.unsavedActionStatusChanges')
+              : undefined
+          }
         />
       </Flex>
       {scenarioWizardStep !== null ? (
@@ -162,9 +176,22 @@ export function RiScPlugin() {
                         <Text as="h3" variant="body-large" weight="bold">
                           {t('contentHeader.multipleRiScs')}
                         </Text>
-                        <CreateNewRiScButton
-                          onCreateNew={openCreateRiScDialog}
-                        />
+                        <Flex gap="8px">
+                          <CreateNewRiScButton
+                            onCreateNew={openCreateRiScDialog}
+                          />
+                          <Button
+                            isDisabled={
+                              !hasPendingActionStatusChanges ||
+                              isSavingActionStatuses
+                            }
+                            onClick={saveAllPendingActionStatuses}
+                          >
+                            {isSavingActionStatuses
+                              ? t('dictionary.saving')
+                              : t('dictionary.saveActionStatuses')}
+                          </Button>
+                        </Flex>
                       </Flex>
                     </Grid>
                     <Grid size={8}>

@@ -1,12 +1,11 @@
 import { Action, RiScStatus } from '../../utils/types.ts';
 import { ActionRow } from './ActionRow.tsx';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { isToday } from '../../utils/date.ts';
 import { ActionStatusOptions } from '../../utils/constants.ts';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
 import { Flex, Text } from '@backstage/ui';
 import Divider from '@mui/material/Divider';
-import { useDebounce } from '../../utils/hooks.ts';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
@@ -18,7 +17,7 @@ import { getUpdatedStatus } from '../../utils/actions.ts';
 
 type ActionRowListProps = {
   scenarioId: string;
-  displayedActions?: Action[]; // Specify if not every action of scenario is to be displayed
+  displayedActions?: Action[];
   allowDeletion?: boolean;
   allowEdit?: boolean;
 };
@@ -26,33 +25,25 @@ type ActionRowListProps = {
 export function ActionRowList(props: ActionRowListProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { selectedRiSc, showBlockedUpdateError } = useRiScs();
-  const { submitEditedScenarioToRiSc } = useScenario();
+  const {
+    submitEditedScenarioToRiSc,
+    pendingActionStatusUpdates,
+    pendingActionUpdatesHistory,
+    onNewActionStatus,
+    onRefreshActionStatus,
+  } = useScenario();
   const { profileInfo } = useBackstageContext();
-  const [pendingActionStatusUpdates, setPendingActionStatusUpdates] = useState<
-    Record<string, Record<string, ActionStatusOptions>>
-  >({});
-  const [pendingActionUpdatesHistory, setPendingActionUpdatesHistory] =
-    useState<string[]>([]);
 
   const isRiScMarkedForDeletion =
     selectedRiSc?.status === RiScStatus.DeletionDraft ||
     selectedRiSc?.status === RiScStatus.DeletionSentForApproval;
 
-  const onRefreshActionStatus = (action: Action) => {
+  const handleRefreshActionStatus = (action: Action) => {
     if (isToday(action.lastUpdated ?? null)) return;
-
-    setPendingActionUpdatesHistory(prev => prev.filter(id => id !== action.ID));
-
-    setPendingActionStatusUpdates(prev => ({
-      ...prev,
-      [props.scenarioId]: {
-        ...prev[props.scenarioId],
-        [action.ID]: action.status as ActionStatusOptions,
-      },
-    }));
+    onRefreshActionStatus(props.scenarioId, action);
   };
 
-  const onNewActionStatus = (
+  const handleNewActionStatus = (
     actionId: string,
     newStatus: ActionStatusOptions,
   ) => {
@@ -60,15 +51,7 @@ export function ActionRowList(props: ActionRowListProps) {
       showBlockedUpdateError();
       return;
     }
-    setPendingActionUpdatesHistory(prev => prev.filter(id => id !== actionId));
-
-    setPendingActionStatusUpdates(prev => ({
-      ...prev,
-      [props.scenarioId]: {
-        ...prev[props.scenarioId],
-        [actionId]: newStatus,
-      },
-    }));
+    onNewActionStatus(props.scenarioId, actionId, newStatus);
   };
 
   const onDeleteAction = (actionId: string) => {
@@ -105,84 +88,10 @@ export function ActionRowList(props: ActionRowListProps) {
     );
   };
 
-  const debounceCallback = useCallback(
-    (updates: Record<string, Record<string, ActionStatusOptions>>) => {
-      if (Object.keys(updates).length === 0) return;
-
-      Object.keys(updates).forEach(scenarioId => {
-        const oldScenario = getScenarioOfIdFromRiSc(scenarioId, selectedRiSc);
-        if (!oldScenario) return;
-        const newActionArray = oldScenario.actions.map(a =>
-          a.ID in updates[scenarioId]
-            ? {
-                ...a,
-                status: updates[scenarioId][a.ID] ?? a.status,
-              }
-            : a,
-        );
-
-        const updatedScenario = {
-          ...oldScenario,
-          actions: newActionArray,
-        };
-
-        submitEditedScenarioToRiSc(updatedScenario, {
-          idsOfActionsToForceUpdateLastUpdatedValue: Object.keys(
-            updates[scenarioId],
-          ),
-          profileInfo,
-          onSuccess: () => {
-            const savedActionIds = Object.keys(updates[scenarioId]);
-
-            setPendingActionStatusUpdates(prevStatusUpdates => {
-              const remainingUpdates = { ...prevStatusUpdates };
-              if (remainingUpdates[scenarioId]) {
-                const remainingActionUpdates = {
-                  ...remainingUpdates[scenarioId],
-                };
-
-                savedActionIds.forEach(actionId => {
-                  delete remainingActionUpdates[actionId];
-                });
-                if (Object.keys(remainingActionUpdates).length === 0) {
-                  delete remainingUpdates[scenarioId];
-                } else {
-                  remainingUpdates[scenarioId] = remainingActionUpdates;
-                }
-              }
-              setPendingActionUpdatesHistory(prevHistory => [
-                ...prevHistory,
-                ...savedActionIds,
-              ]);
-
-              return remainingUpdates;
-            });
-          },
-          onError: () => {
-            // TODO: Should probably retry once before canceling updates
-            setPendingActionStatusUpdates({});
-          },
-        });
-      });
-    },
-    [submitEditedScenarioToRiSc, profileInfo, selectedRiSc],
-  );
-
-  const { flush } = useDebounce<
-    Record<string, Record<string, ActionStatusOptions>>
-  >(pendingActionStatusUpdates, 6000, debounceCallback);
-
   const actions =
     props.displayedActions ??
     getScenarioOfIdFromRiSc(props.scenarioId, selectedRiSc)?.actions ??
     [];
-
-  useEffect(() => {
-    return () => {
-      // flush on unmount. makes sure changes are saved
-      flush();
-    };
-  }, [flush]);
 
   if (actions.length === 0) {
     return (
@@ -210,8 +119,8 @@ export function ActionRowList(props: ActionRowListProps) {
             <ActionRow
               action={action}
               index={index}
-              onRefreshActionStatus={onRefreshActionStatus}
-              onNewActionStatus={onNewActionStatus}
+              onRefreshActionStatus={handleRefreshActionStatus}
+              onNewActionStatus={handleNewActionStatus}
               onDeleteAction={onDeleteAction}
               onSaveAction={onSaveAction}
               updatedStatus={updatedStatus}
