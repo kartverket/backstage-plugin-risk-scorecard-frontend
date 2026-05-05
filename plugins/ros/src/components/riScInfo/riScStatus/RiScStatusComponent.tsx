@@ -25,6 +25,7 @@ import {
 } from '@backstage/ui';
 import { StatusBanner } from './StatusBanner.tsx';
 import { StatusBadge } from './StatusBadge.tsx';
+import { FeedbackLink } from './FeedbackLink.tsx';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -155,6 +156,12 @@ export function RiScStatusComponent({
 
   const numOfCommitsBehind =
     selectedRiSc.lastPublished?.numberOfCommits ?? null;
+
+  const showFeedbackLink =
+    status === RiScStatusEnum.WAITING ||
+    (status === RiScStatusEnum.PUBLISHED &&
+      daysSinceLastModified !== null &&
+      daysSinceLastModified <= 5);
 
   return (
     <Card style={{ height: 'fit-content' }}>
@@ -290,6 +297,7 @@ export function RiScStatusComponent({
         {!selectedRiSc && (
           <Text as="span">{t('rosStatus.statusBadge.error')}</Text>
         )}
+        {showFeedbackLink && <FeedbackLink />}
       </CardBody>
     </Card>
   );
