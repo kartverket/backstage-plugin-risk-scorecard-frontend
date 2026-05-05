@@ -19,5 +19,5 @@ export const EXTERNAL_URLS = {
 	www_googleapis_com__cloud_platform: 'https://www.googleapis.com/auth/cloud-platform',
 	www_googleapis_com__cloudplatformprojects_readonly: 'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
 
-	feedback_form: 'https://placeholder.example.com/feedback',
+	feedback_form: 'https://forms.office.com/e/aJfwyueNWc',
 };
