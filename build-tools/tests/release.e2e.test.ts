@@ -64,7 +64,12 @@ vi.mock('node:child_process', async importOriginal => {
           writeFileSync(join(dir, tgzName), 'mock tarball content');
           return tgzName;
         }
-        if (command.includes('yarn tsc') || command.includes('yarn build')) {
+        if (
+          command.includes('yarn tsc') ||
+          command.includes('yarn build') ||
+          (command.startsWith('yarn workspace') &&
+            (command.endsWith(' tsc') || command.endsWith(' build')))
+        ) {
           return '';
         }
         if (command.includes('git push')) {
@@ -692,8 +697,8 @@ describe('Release E2E Tests', () => {
       await runRelease({ dryRun: true, pluginPath: repo.path });
 
       // Build commands should be called even in dry-run mode
-      expect(hasCommand('yarn tsc')).toBe(true);
-      expect(hasCommand('yarn build')).toBe(true);
+      expect(hasCommand(/yarn.*\btsc\b/)).toBe(true);
+      expect(hasCommand(/yarn.*\bbuild\b/)).toBe(true);
     });
 
     it('should build package with yarn tsc and yarn build in non-dry-run mode', async () => {
@@ -707,8 +712,8 @@ describe('Release E2E Tests', () => {
       await runRelease({ dryRun: false, pluginPath: repo.path });
 
       // Build commands should be called in non-dry-run mode
-      expect(hasCommand('yarn tsc')).toBe(true);
-      expect(hasCommand('yarn build')).toBe(true);
+      expect(hasCommand(/yarn.*\btsc\b/)).toBe(true);
+      expect(hasCommand(/yarn.*\bbuild\b/)).toBe(true);
     });
   });
 
