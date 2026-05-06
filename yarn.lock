@@ -3899,7 +3899,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/plugin-catalog-node@backstage:^::backstage=1.50.2&npm=2.2.0, @backstage/plugin-catalog-node@npm:^2.1.0, @backstage/plugin-catalog-node@npm:^2.2.0":
+"@backstage/plugin-catalog-node@npm:^2.1.0, @backstage/plugin-catalog-node@npm:^2.2.0":
   version: 2.2.0
   resolution: "@backstage/plugin-catalog-node@npm:2.2.0"
   dependencies:
@@ -7140,19 +7140,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kartverket/backstage-plugin-risk-scorecard-backend-module-catalog@workspace:plugins/ros-backend-module-catalog":
-  version: 0.0.0-use.local
-  resolution: "@kartverket/backstage-plugin-risk-scorecard-backend-module-catalog@workspace:plugins/ros-backend-module-catalog"
-  dependencies:
-    "@backstage/backend-plugin-api": "backstage:^"
-    "@backstage/catalog-model": "backstage:^"
-    "@backstage/cli": "backstage:^"
-    "@backstage/plugin-catalog-node": "backstage:^"
-    "@kartverket/backstage-plugin-risk-scorecard-backend": "workspace:^"
-  languageName: unknown
-  linkType: soft
-
-"@kartverket/backstage-plugin-risk-scorecard-backend@workspace:^, @kartverket/backstage-plugin-risk-scorecard-backend@workspace:plugins/ros-backend":
+"@kartverket/backstage-plugin-risk-scorecard-backend@workspace:plugins/ros-backend":
   version: 0.0.0-use.local
   resolution: "@kartverket/backstage-plugin-risk-scorecard-backend@workspace:plugins/ros-backend"
   dependencies:
@@ -16665,7 +16653,6 @@ __metadata:
     "@backstage/plugin-search-backend-node": "backstage:^"
     "@backstage/plugin-techdocs-backend": "backstage:^"
     "@kartverket/backstage-plugin-risk-scorecard-backend": "workspace:plugins/ros-backend"
-    "@kartverket/backstage-plugin-risk-scorecard-backend-module-catalog": "workspace:plugins/ros-backend-module-catalog"
     app: "link:../app"
     better-sqlite3: "npm:12.9.0"
     jwt-decode: "npm:^4.0.0"

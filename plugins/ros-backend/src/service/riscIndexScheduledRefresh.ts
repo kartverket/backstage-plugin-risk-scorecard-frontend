@@ -1,7 +1,5 @@
 import {
   type AuthService,
-  coreServices,
-  createBackendModule,
   type DiscoveryService,
   type LoggerService,
   readSchedulerServiceTaskScheduleDefinitionFromConfig,
@@ -9,14 +7,9 @@ import {
   type SchedulerService,
   type SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
-import {
-  buildRiskScorecardRiScIndex,
-  riScIndexStore,
-} from '@kartverket/backstage-plugin-risk-scorecard-backend';
-import {
-  DatabaseRiScIndexSnapshotStore,
-  type RiScIndexSnapshotStore,
-} from './riscIndexSnapshotStore';
+import { buildRiskScorecardRiScIndex } from './riscIndex';
+import { riScIndexStore } from './riscIndexStore';
+import type { RiScIndexSnapshotStore } from './riscIndexSnapshotStore';
 
 const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
   frequency: { cron: '0 0 * * *' },
@@ -141,34 +134,3 @@ export class RiScIndexScheduledRefresh {
     }
   }
 }
-
-const riskScorecardCatalogModule = createBackendModule({
-  pluginId: 'catalog',
-  moduleId: 'risk-scorecard-risc-index',
-  register(env) {
-    env.registerInit({
-      deps: {
-        logger: coreServices.logger,
-        discovery: coreServices.discovery,
-        auth: coreServices.auth,
-        config: coreServices.rootConfig,
-        scheduler: coreServices.scheduler,
-        database: coreServices.database,
-      },
-      async init({ logger, discovery, auth, config, scheduler, database }) {
-        const refresher = new RiScIndexScheduledRefresh({
-          logger,
-          discovery,
-          auth,
-          config,
-          scheduler,
-          snapshotStore: new DatabaseRiScIndexSnapshotStore(database),
-        });
-
-        await refresher.start();
-      },
-    });
-  },
-});
-
-export default riskScorecardCatalogModule;

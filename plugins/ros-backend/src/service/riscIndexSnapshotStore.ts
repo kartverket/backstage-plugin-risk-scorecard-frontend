@@ -1,15 +1,10 @@
 import type { DatabaseService } from '@backstage/backend-plugin-api';
+import type { RiScIndexEntry } from './riscIndexStore';
 
 const tableName = 'risk_scorecard_risc_index_snapshot';
 const snapshotId = 'default';
 
 type DatabaseClient = Awaited<ReturnType<DatabaseService['getClient']>>;
-type RiScIndexEntry = {
-  riScId: string;
-  sourceEntityRef: string;
-  appliesToBackstageEntityRefs: string[];
-  lastSavedAt: string;
-};
 
 export interface RiScIndexSnapshotStore {
   readSnapshot(): Promise<RiScIndexEntry[] | undefined>;

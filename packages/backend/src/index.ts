@@ -23,9 +23,6 @@ backend.add(
   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
 );
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
-backend.add(
-  import('@kartverket/backstage-plugin-risk-scorecard-backend-module-catalog'),
-);
 
 // Explore
 backend.add(import('@backstage-community/plugin-explore-backend'));

@@ -9,15 +9,16 @@ import type {
   RootConfigService,
   SchedulerService,
 } from '@backstage/backend-plugin-api';
-import {
-  buildRiskScorecardRiScIndex,
-  riScIndexStore,
-} from '@kartverket/backstage-plugin-risk-scorecard-backend';
-import { RiScIndexScheduledRefresh } from './index';
+import { buildRiskScorecardRiScIndex } from './riscIndex';
+import { RiScIndexScheduledRefresh } from './riscIndexScheduledRefresh';
+import { riScIndexStore } from './riscIndexStore';
 import type { RiScIndexSnapshotStore } from './riscIndexSnapshotStore';
 
-jest.mock('@kartverket/backstage-plugin-risk-scorecard-backend', () => ({
+jest.mock('./riscIndex', () => ({
   buildRiskScorecardRiScIndex: jest.fn(),
+}));
+
+jest.mock('./riscIndexStore', () => ({
   riScIndexStore: {
     replaceSnapshot: jest.fn(),
   },
@@ -126,10 +127,10 @@ describe('RiScIndexScheduledRefresh', () => {
       expect.objectContaining({
         id: 'risk-scorecard-risc-index-refresh',
         frequency: { cron: '0 0 * * *' },
-        timeout: { minutes: 3 },
+        timeout: { minutes: 30 },
       }),
     );
-    expect(logger.warn).toHaveBeenCalledWith(
+    expect(logger.info).toHaveBeenCalledWith(
       'RiSc index refresh schedule is using the default because no riskScorecard.riscIndex.schedule config was found',
     );
   });
