@@ -964,8 +964,18 @@ describe('useAuthenticatedFetch', () => {
         ok: true,
         json: async () => [
           {
-            id: 'risc-7ssVK',
-            entityRef: 'component:default/kv-ros-test-4',
+            riScId: 'risc-1',
+            sourceEntityRef: 'component:default/kv-ros-test-6',
+            appliesToBackstageEntityRefs: ['component:default/kv-ros-test-6'],
+            lastSavedAt: '2026-05-02T08:30:00Z',
+          },
+          {
+            riScId: 'risc-7ssVK',
+            sourceEntityRef: 'component:default/kv-ros-test-4',
+            appliesToBackstageEntityRefs: [
+              'component:default/kv-ros-test-4',
+              'component:default/kv-ros-test-6',
+            ],
             lastSavedAt: '2026-05-01T08:30:00Z',
           },
         ],
@@ -978,7 +988,7 @@ describe('useAuthenticatedFetch', () => {
       await waitFor(() => expect(result.current.isFetching).toBe(false));
 
       expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        'http://localhost:7000/api/risk-scorecard/system-riscs?entityRef=component%3Adefault%2Fkv-ros-test-6',
+        'http://localhost:7000/api/risk-scorecard/riscs?entityRef=component%3Adefault%2Fkv-ros-test-6',
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
@@ -988,8 +998,12 @@ describe('useAuthenticatedFetch', () => {
       );
       expect(result.current.riScs).toEqual([
         {
-          id: 'risc-7ssVK',
-          entityRef: 'component:default/kv-ros-test-4',
+          riScId: 'risc-7ssVK',
+          sourceEntityRef: 'component:default/kv-ros-test-4',
+          appliesToBackstageEntityRefs: [
+            'component:default/kv-ros-test-4',
+            'component:default/kv-ros-test-6',
+          ],
           lastSavedAt: '2026-05-01T08:30:00Z',
         },
       ]);
@@ -1035,7 +1049,7 @@ describe('useAuthenticatedFetch', () => {
       await waitFor(() => expect(result.current.isFetching).toBe(false));
 
       expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        'http://localhost:7000/api/risk-scorecard/system-riscs?entityRef=system%3Adefault%2Fkv-ros-tests',
+        'http://localhost:7000/api/risk-scorecard/riscs?entityRef=system%3Adefault%2Fkv-ros-tests',
         expect.anything(),
       );
     });

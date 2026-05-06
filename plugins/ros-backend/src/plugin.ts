@@ -2,6 +2,7 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import { CatalogClient } from '@backstage/catalog-client';
 import { createRouter } from './service/router';
 
 export const riskScorecardBackendPlugin = createBackendPlugin({
@@ -10,9 +11,15 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         httpRouter: coreServices.httpRouter,
+        discovery: coreServices.discovery,
+        auth: coreServices.auth,
       },
-      async init({ httpRouter }) {
-        httpRouter.use((await createRouter()) as any);
+      async init({ httpRouter, discovery, auth }) {
+        const catalogClient = new CatalogClient({
+          discoveryApi: discovery,
+        });
+
+        httpRouter.use((await createRouter({ catalogClient, auth })) as any);
       },
     });
   },

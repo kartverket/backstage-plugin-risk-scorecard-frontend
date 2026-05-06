@@ -5,15 +5,9 @@ export type RiScIndexEntry = {
   lastSavedAt: string;
 };
 
-export type RiScIndexReference = {
-  id: string;
-  entityRef: string;
-  lastSavedAt: string;
-};
-
 export type RiScIndexStore = {
   replaceSnapshot(analyses: RiScIndexEntry[]): void;
-  getSystemRiScsForEntityRef(entityRef: string): readonly RiScIndexReference[];
+  getRiScsForEntityRef(entityRef: string): readonly RiScIndexEntry[];
 };
 
 export const riScIndexStore = createInMemoryRiScIndexStore();
@@ -25,14 +19,8 @@ export function createInMemoryRiScIndexStore(): RiScIndexStore {
     replaceSnapshot(analyses) {
       analysesByEntityRef = buildAnalysesByEntityRef(analyses);
     },
-    getSystemRiScsForEntityRef(entityRef) {
-      const matchingAnalyses = (analysesByEntityRef.get(entityRef) ?? [])
-        .filter(x => x.appliesToBackstageEntityRefs.length > 1)
-        .map(analysis => ({
-          id: analysis.riScId,
-          entityRef: analysis.sourceEntityRef,
-          lastSavedAt: analysis.lastSavedAt,
-        }));
+    getRiScsForEntityRef(entityRef) {
+      const matchingAnalyses = analysesByEntityRef.get(entityRef) ?? [];
       return Object.freeze(matchingAnalyses);
     },
   };

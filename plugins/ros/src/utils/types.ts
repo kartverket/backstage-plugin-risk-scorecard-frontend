@@ -24,8 +24,9 @@ export type LockedRiSc = {
 };
 
 export type SystemRiSc = {
-  id: string;
-  entityRef: string;
+  riScId: string;
+  sourceEntityRef: string;
+  appliesToBackstageEntityRefs: string[];
   lastSavedAt: string;
 };
 

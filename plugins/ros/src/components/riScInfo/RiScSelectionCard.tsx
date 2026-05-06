@@ -32,7 +32,7 @@ export function RiScSelectionCard() {
           <MUISelect
             value={
               selectedRiSc?.id ??
-              selectedSystemRiSc?.id ??
+              selectedSystemRiSc?.riScId ??
               selectedLockedRiSc?.id ??
               ''
             }
@@ -53,8 +53,8 @@ export function RiScSelectionCard() {
               </ListSubheader>
             )}
             {systemRiScs.map(riSc => (
-              <MenuItem key={riSc.id} value={riSc.id}>
-                {riSc.id}
+              <MenuItem key={riSc.riScId} value={riSc.riScId}>
+                {riSc.riScId}
               </MenuItem>
             ))}
             {lockedRiScs.length > 0 && (

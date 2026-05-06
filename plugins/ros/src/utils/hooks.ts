@@ -427,7 +427,7 @@ export function useSystemRiScsForCurrentEntity(): RiScIndexState {
         }
 
         return fetch(
-          `${backendUrl}/api/risk-scorecard/system-riscs?entityRef=${encodeURIComponent(
+          `${backendUrl}/api/risk-scorecard/riscs?entityRef=${encodeURIComponent(
             entityRef,
           )}`,
           {
@@ -442,10 +442,13 @@ export function useSystemRiScsForCurrentEntity(): RiScIndexState {
         }
 
         const responseBody = (await response.json()) as SystemRiSc[];
+        const systemRiScs = responseBody.filter(
+          x => x.appliesToBackstageEntityRefs.length > 1,
+        );
 
         if (!cancelled) {
           setState({
-            riScs: responseBody,
+            riScs: systemRiScs,
             isFetching: false,
             error: undefined,
           });

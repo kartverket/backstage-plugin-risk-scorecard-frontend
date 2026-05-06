@@ -355,7 +355,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     if (!riScIdFromParams) return;
     const riSc = riScs?.find(r => r.id === riScIdFromParams);
     const lockedRiSc = lockedRiScs.find(r => r.id === riScIdFromParams);
-    const systemRiSc = systemRiScs.find(r => r.id === riScIdFromParams);
+    const systemRiSc = systemRiScs.find(r => r.riScId === riScIdFromParams);
     if (riSc) {
       setSelectedRiSc(riSc);
       setSelectedLockedRiSc(null);
@@ -394,13 +394,13 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   function getSystemRiScPath(systemRiSc: SystemRiSc) {
     const entityPath = getEntityPath(
-      entityRouteParams(systemRiSc.entityRef),
+      entityRouteParams(systemRiSc.sourceEntityRef),
     );
-    return `${entityPath}/risc/${encodeURIComponent(systemRiSc.id)}`;
+    return `${entityPath}/risc/${encodeURIComponent(systemRiSc.riScId)}`;
   }
 
   function selectRiSc(id: string) {
-    const systemRiSc = systemRiScs.find(riSc => riSc.id === id);
+    const systemRiSc = systemRiScs.find(riSc => riSc.riScId === id);
 
     if (systemRiSc) {
       navigate(getSystemRiScPath(systemRiSc));
