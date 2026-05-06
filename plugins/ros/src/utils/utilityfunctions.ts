@@ -47,6 +47,7 @@ export function generateRandomId(): string {
  * @param path Path to value
  */
 export function getValue(obj: any, path: string) {
+  if (path === '') return obj;
   return path.split('.').reduce((prev, curr) => {
     return prev?.[curr];
   }, obj);
