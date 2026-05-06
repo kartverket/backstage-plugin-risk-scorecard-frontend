@@ -19,10 +19,10 @@ import {
 } from './riscIndexSnapshotStore';
 
 const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
-  frequency: { minutes: 30 },
-  timeout: { minutes: 3 },
+  frequency: { cron: '0 0 * * *' },
+  timeout: { minutes: 30 },
 };
-const githubProvidersConfigPath = 'catalog.providers.github';
+const riscIndexScheduleConfigPath = 'riskScorecard.riscIndex.schedule';
 const taskId = 'risk-scorecard-risc-index-refresh';
 
 export class RiScIndexScheduledRefresh {
@@ -51,15 +51,17 @@ export class RiScIndexScheduledRefresh {
     this.scheduler = options.scheduler;
     this.snapshotStore = options.snapshotStore;
 
-    const githubSchedule = findGitHubProviderScheduleConfig(this.config);
-    if (!githubSchedule) {
-      this.logger.warn(
-        'RiSc index refresh schedule is using the default because no GitHub provider schedule was found',
+    const scheduleConfig = this.config.getOptionalConfig(
+      riscIndexScheduleConfigPath,
+    );
+    if (!scheduleConfig) {
+      this.logger.info(
+        `RiSc index refresh schedule is using the default because no ${riscIndexScheduleConfigPath} config was found`,
       );
       this.schedule = defaultSchedule;
     } else {
       this.schedule =
-        readSchedulerServiceTaskScheduleDefinitionFromConfig(githubSchedule);
+        readSchedulerServiceTaskScheduleDefinitionFromConfig(scheduleConfig);
     }
   }
 
@@ -138,29 +140,6 @@ export class RiScIndexScheduledRefresh {
       return false;
     }
   }
-}
-
-function findGitHubProviderScheduleConfig(
-  config: RootConfigService,
-): RootConfigService | undefined {
-  const githubProvidersConfig = config.getOptionalConfig(
-    githubProvidersConfigPath,
-  );
-
-  if (!githubProvidersConfig) {
-    return undefined;
-  }
-
-  for (const providerId of githubProvidersConfig.keys()) {
-    const schedulePath = `${providerId}.schedule`;
-    const scheduleConfig = githubProvidersConfig.getOptionalConfig(schedulePath);
-
-    if (scheduleConfig) {
-      return scheduleConfig as RootConfigService;
-    }
-  }
-
-  return undefined;
 }
 
 const riskScorecardCatalogModule = createBackendModule({

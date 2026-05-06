@@ -31,7 +31,7 @@ describe('RiScIndexScheduledRefresh', () => {
     jest.clearAllMocks();
   });
 
-  it('schedules the refresh with the first GitHub provider schedule', async () => {
+  it('schedules the refresh with the RiSc index schedule config', async () => {
     const scheduler = createScheduler();
 
     await createRefresh({ scheduler }).start();
@@ -39,8 +39,8 @@ describe('RiScIndexScheduledRefresh', () => {
     expect(scheduler.scheduleTask).toHaveBeenCalledWith(
       expect.objectContaining({
         id: 'risk-scorecard-risc-index-refresh',
-        frequency: expect.objectContaining({ minutes: 5 }),
-        timeout: expect.objectContaining({ minutes: 1 }),
+        frequency: { cron: '0 0 * * *' },
+        timeout: { minutes: 1 },
       }),
     );
   });
@@ -99,25 +99,38 @@ describe('RiScIndexScheduledRefresh', () => {
     );
   });
 
-  it('falls back to the default schedule when no GitHub provider schedule exists', async () => {
+  it('falls back to the default schedule when no RiSc index schedule exists', async () => {
     const scheduler = createScheduler();
     const logger = createLogger();
 
     await createRefresh({
       scheduler,
       logger,
-      config: createConfig({ catalog: { providers: {} } }),
+      config: createConfig({
+        catalog: {
+          providers: {
+            github: {
+              first: {
+                schedule: {
+                  frequency: { minutes: 5 },
+                  timeout: { minutes: 1 },
+                },
+              },
+            },
+          },
+        },
+      }),
     }).start();
 
     expect(scheduler.scheduleTask).toHaveBeenCalledWith(
       expect.objectContaining({
         id: 'risk-scorecard-risc-index-refresh',
-        frequency: { minutes: 30 },
+        frequency: { cron: '0 0 * * *' },
         timeout: { minutes: 3 },
       }),
     );
     expect(logger.warn).toHaveBeenCalledWith(
-      'RiSc index refresh schedule is using the default because no GitHub provider schedule was found',
+      'RiSc index refresh schedule is using the default because no riskScorecard.riscIndex.schedule config was found',
     );
   });
 });
@@ -126,15 +139,11 @@ function createRefresh({
   logger = createLogger(),
   scheduler = createScheduler(),
   config = createConfig({
-    catalog: {
-      providers: {
-        github: {
-          first: {
-            schedule: {
-              frequency: { minutes: 5 },
-              timeout: { minutes: 1 },
-            },
-          },
+    riskScorecard: {
+      riscIndex: {
+        schedule: {
+          frequency: { cron: '0 0 * * *' },
+          timeout: { minutes: 1 },
         },
       },
     },
