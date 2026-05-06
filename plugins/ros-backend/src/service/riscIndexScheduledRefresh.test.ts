@@ -11,22 +11,15 @@ import type {
 } from '@backstage/backend-plugin-api';
 import { buildRiskScorecardRiScIndex } from './riscIndex';
 import { RiScIndexScheduledRefresh } from './riscIndexScheduledRefresh';
-import { riScIndexStore } from './riscIndexStore';
+import type { RiScIndexStore } from './riscIndexStore';
 import type { RiScIndexSnapshotStore } from './riscIndexSnapshotStore';
 
 jest.mock('./riscIndex', () => ({
   buildRiskScorecardRiScIndex: jest.fn(),
 }));
 
-jest.mock('./riscIndexStore', () => ({
-  riScIndexStore: {
-    replaceSnapshot: jest.fn(),
-  },
-}));
-
 describe('RiScIndexScheduledRefresh', () => {
   const buildIndexMock = jest.mocked(buildRiskScorecardRiScIndex);
-  const replaceSnapshotMock = jest.mocked(riScIndexStore.replaceSnapshot);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -48,6 +41,7 @@ describe('RiScIndexScheduledRefresh', () => {
 
   it('refreshes and stores the index when the scheduled task runs', async () => {
     const scheduler = createScheduler();
+    const riScIndexStore = createRiScIndexStore();
     const snapshotStore = createSnapshotStore();
     const index = [
       {
@@ -59,18 +53,19 @@ describe('RiScIndexScheduledRefresh', () => {
     ];
     buildIndexMock.mockResolvedValue(index);
 
-    await createRefresh({ scheduler, snapshotStore }).start();
+    await createRefresh({ scheduler, riScIndexStore, snapshotStore }).start();
 
     const scheduledTask = jest.mocked(scheduler.scheduleTask).mock.calls[0][0];
     await scheduledTask.fn(new AbortController().signal);
 
     expect(buildIndexMock).toHaveBeenCalledTimes(1);
-    expect(replaceSnapshotMock).toHaveBeenCalledWith(index);
+    expect(riScIndexStore.replaceSnapshot).toHaveBeenCalledWith(index);
     expect(snapshotStore.replaceSnapshot).toHaveBeenCalledWith(index);
   });
 
   it('loads a persisted snapshot on startup', async () => {
     const scheduler = createScheduler();
+    const riScIndexStore = createRiScIndexStore();
     const snapshotStore = createSnapshotStore();
     const persistedSnapshot = [
       {
@@ -84,9 +79,11 @@ describe('RiScIndexScheduledRefresh', () => {
       .mocked(snapshotStore.readSnapshot)
       .mockResolvedValue(persistedSnapshot);
 
-    await createRefresh({ scheduler, snapshotStore }).start();
+    await createRefresh({ scheduler, riScIndexStore, snapshotStore }).start();
 
-    expect(replaceSnapshotMock).toHaveBeenCalledWith(persistedSnapshot);
+    expect(riScIndexStore.replaceSnapshot).toHaveBeenCalledWith(
+      persistedSnapshot,
+    );
     expect(scheduler.triggerTask).not.toHaveBeenCalled();
   });
 
@@ -149,11 +146,13 @@ function createRefresh({
       },
     },
   }),
+  riScIndexStore = createRiScIndexStore(),
   snapshotStore = createSnapshotStore(),
 }: {
   logger?: LoggerService;
   scheduler?: SchedulerService;
   config?: RootConfigService;
+  riScIndexStore?: RiScIndexStore;
   snapshotStore?: RiScIndexSnapshotStore;
 } = {}): RiScIndexScheduledRefresh {
   return new RiScIndexScheduledRefresh({
@@ -162,6 +161,7 @@ function createRefresh({
     auth: {} as AuthService,
     config,
     scheduler,
+    riScIndexStore,
     snapshotStore,
   });
 }
@@ -179,6 +179,13 @@ function createSnapshotStore(): RiScIndexSnapshotStore {
   return {
     readSnapshot: jest.fn().mockResolvedValue(undefined),
     replaceSnapshot: jest.fn().mockResolvedValue(undefined),
+  };
+}
+
+function createRiScIndexStore(): RiScIndexStore {
+  return {
+    replaceSnapshot: jest.fn(),
+    getRiScsForEntityRef: jest.fn(),
   };
 }
 

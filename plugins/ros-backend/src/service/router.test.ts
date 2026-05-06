@@ -6,8 +6,10 @@ import type { AuthService } from '@backstage/backend-plugin-api';
 import type { CatalogApi } from '@backstage/catalog-client';
 import express from 'express';
 import { AddressInfo } from 'net';
-import { riScIndexStore } from './riscIndexStore';
+import { createInMemoryRiScIndexStore } from './riscIndexStore';
 import { createRouter } from './router';
+
+const riScIndexStore = createInMemoryRiScIndexStore();
 
 describe('createRouter', () => {
   it('returns RiScs for an entity ref', async () => {
@@ -79,6 +81,7 @@ describe('createRouter', () => {
       {
         catalogClient,
         auth: createAuthService(),
+        riScIndexStore,
       },
     );
 
@@ -162,5 +165,6 @@ function createRouterOptions(): Parameters<typeof createRouter>[0] {
       getEntities: jest.fn().mockResolvedValue({ items: [] }),
     } as unknown as CatalogApi,
     auth: createAuthService(),
+    riScIndexStore,
   };
 }

@@ -5,6 +5,7 @@ import {
 import { CatalogClient } from '@backstage/catalog-client';
 import { DatabaseRiScIndexSnapshotStore } from './service/riscIndexSnapshotStore';
 import { RiScIndexScheduledRefresh } from './service/riscIndexScheduledRefresh';
+import { createInMemoryRiScIndexStore } from './service/riscIndexStore';
 import { createRouter } from './service/router';
 
 export const riskScorecardBackendPlugin = createBackendPlugin({
@@ -34,16 +35,20 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
         const catalogClient = new CatalogClient({
           discoveryApi: discovery,
         });
+        const riScIndexStore = createInMemoryRiScIndexStore();
         const refresher = new RiScIndexScheduledRefresh({
           logger,
           discovery,
           auth,
           config,
           scheduler,
+          riScIndexStore,
           snapshotStore: new DatabaseRiScIndexSnapshotStore(database),
         });
 
-        httpRouter.use((await createRouter({ catalogClient, auth })) as any);
+        httpRouter.use(
+          (await createRouter({ catalogClient, auth, riScIndexStore })) as any,
+        );
         rootLifecycle.addStartupHook(() => refresher.start(), { logger });
       },
     });

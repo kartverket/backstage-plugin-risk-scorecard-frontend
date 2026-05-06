@@ -6,4 +6,5 @@ export {
   DatabaseRiScIndexSnapshotStore,
   type RiScIndexSnapshotStore,
 } from './service/riscIndexSnapshotStore';
-export { riScIndexStore } from './service/riscIndexStore';
+export { createInMemoryRiScIndexStore } from './service/riscIndexStore';
+export type { RiScIndexStore } from './service/riscIndexStore';

@@ -10,8 +10,6 @@ export type RiScIndexStore = {
   getRiScsForEntityRef(entityRef: string): readonly RiScIndexEntry[];
 };
 
-export const riScIndexStore = createInMemoryRiScIndexStore();
-
 export function createInMemoryRiScIndexStore(): RiScIndexStore {
   let analysesByEntityRef = new Map<string, readonly RiScIndexEntry[]>();
 

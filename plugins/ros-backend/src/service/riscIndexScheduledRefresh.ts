@@ -8,7 +8,7 @@ import {
   type SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
 import { buildRiskScorecardRiScIndex } from './riscIndex';
-import { riScIndexStore } from './riscIndexStore';
+import type { RiScIndexStore } from './riscIndexStore';
 import type { RiScIndexSnapshotStore } from './riscIndexSnapshotStore';
 
 const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
@@ -24,6 +24,7 @@ export class RiScIndexScheduledRefresh {
   private readonly auth: AuthService;
   private readonly config: RootConfigService;
   private readonly scheduler: SchedulerService;
+  private readonly riScIndexStore: RiScIndexStore;
   private readonly snapshotStore: RiScIndexSnapshotStore;
   private readonly schedule: SchedulerServiceTaskScheduleDefinition;
 
@@ -33,6 +34,7 @@ export class RiScIndexScheduledRefresh {
     auth: AuthService;
     config: RootConfigService;
     scheduler: SchedulerService;
+    riScIndexStore: RiScIndexStore;
     snapshotStore: RiScIndexSnapshotStore;
   }) {
     this.logger = options.logger.child({
@@ -42,6 +44,7 @@ export class RiScIndexScheduledRefresh {
     this.auth = options.auth;
     this.config = options.config;
     this.scheduler = options.scheduler;
+    this.riScIndexStore = options.riScIndexStore;
     this.snapshotStore = options.snapshotStore;
 
     const scheduleConfig = this.config.getOptionalConfig(
@@ -92,7 +95,7 @@ export class RiScIndexScheduledRefresh {
         auth: this.auth,
         config: this.config,
       });
-      riScIndexStore.replaceSnapshot(riScIndex);
+      this.riScIndexStore.replaceSnapshot(riScIndex);
       await this.snapshotStore.replaceSnapshot(riScIndex);
 
       this.logger.info('Stored RiSc index snapshot', {
@@ -116,7 +119,7 @@ export class RiScIndexScheduledRefresh {
         return false;
       }
 
-      riScIndexStore.replaceSnapshot(persistedSnapshot);
+      this.riScIndexStore.replaceSnapshot(persistedSnapshot);
 
       this.logger.info('Loaded persisted RiSc index snapshot', {
         analysisCount: persistedSnapshot.length,

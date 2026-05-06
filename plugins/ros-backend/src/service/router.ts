@@ -6,11 +6,12 @@ import {
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import express from 'express';
-import { riScIndexStore, type RiScIndexEntry } from './riscIndexStore';
+import type { RiScIndexEntry, RiScIndexStore } from './riscIndexStore';
 
 type RouterOptions = {
   catalogClient: CatalogApi;
   auth: AuthService;
+  riScIndexStore: RiScIndexStore;
 };
 
 export const createRouter = async (
@@ -42,7 +43,7 @@ async function getRiScsForEntityRef(
   entityRef: string,
   options: RouterOptions,
 ): Promise<readonly RiScIndexEntry[]> {
-  const directMatches = riScIndexStore.getRiScsForEntityRef(entityRef);
+  const directMatches = options.riScIndexStore.getRiScsForEntityRef(entityRef);
 
   if (!isSystemEntityRef(entityRef)) {
     return directMatches;
@@ -57,7 +58,7 @@ async function getRiScsForEntityRef(
   return deduplicateRiScIndexReferences([
     ...directMatches,
     ...componentRefs.flatMap(componentRef =>
-      riScIndexStore.getRiScsForEntityRef(componentRef),
+      options.riScIndexStore.getRiScsForEntityRef(componentRef),
     ),
   ]);
 }
