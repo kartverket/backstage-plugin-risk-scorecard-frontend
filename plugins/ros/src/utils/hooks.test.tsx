@@ -1,5 +1,6 @@
 import {
   configApiRef,
+  discoveryApiRef,
   featureFlagsApiRef,
   fetchApiRef,
   githubAuthApiRef,
@@ -78,6 +79,11 @@ describe('useAuthenticatedFetch', () => {
       if (key === 'auth.environment') return 'development';
       return '';
     }),
+    getOptionalString: jest.fn().mockReturnValue(undefined),
+  };
+
+  const mockDiscoveryApi = {
+    getBaseUrl: jest.fn().mockResolvedValue('http://localhost:7007/api/ros'),
   };
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -89,6 +95,7 @@ describe('useAuthenticatedFetch', () => {
         [fetchApiRef, mockFetchApi],
         [configApiRef, mockConfigApi],
         [featureFlagsApiRef, mockFeatureFlagsApi],
+        [discoveryApiRef, mockDiscoveryApi],
       ]}
     >
       {children}
