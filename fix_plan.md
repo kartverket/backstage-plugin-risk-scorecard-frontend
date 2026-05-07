@@ -6,20 +6,19 @@ T5 (Schema Validation & Migration) is complete. All 7 migration steps ported fro
 
 ## Next Task
 
-**T6: Comparison Service**
+**T7: RiSc CRUD Service / Core Orchestrator**
 
 The next agent should:
 
-1. Read `BACKEND_REWRITE_FILE_SPEC.md` section for `src/services/ComparisonService.ts`
-2. Read the Kotlin source files:
-   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/risc/RiScService.kt` (comparison-related methods)
-   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/risc/models/InternDifference.kt`
-3. Port comparison logic: compute diff between two RiSc versions and produce `DifferenceDTO`
-4. Use types from `ros-common` (RiScChange, DifferenceStatus, TrackedProperty)
-5. Write tests with representative fixtures
-6. Run `yarn pipeline` to verify
-7. Commit with conventional commit format + Co-authored-by trailer
-8. Update this file: move T6 to Completed, set Next Task to T7 (RiSc Service / main orchestrator)
+1. Read `BACKEND_REWRITE_FILE_SPEC.md` section for `src/services/RiScService.ts`
+2. Read the Kotlin source: `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/risc/RiScService.kt`
+3. This is the main orchestrator that ties together GitHubService, SopsCryptoService, SchemaService, and ComparisonService
+4. Port CRUD operations: fetchAll, fetchOne, create, update, delete, publish
+5. Handle PR lifecycle, encryption/decryption, schema validation, diff computation
+6. Write tests with mocked dependencies
+7. Run `yarn pipeline` to verify
+8. Commit with conventional commit format + Co-authored-by trailer
+9. Update this file: move T7 to Completed, set Next Task to T8
 
 ## Completed
 
@@ -59,6 +58,12 @@ The next agent should:
   - Uses plain `fetch` with dependency injection (constructor accepts custom fetch fn)
   - All checks green (tsc, prettier, lint, tests — 100 total across backend)
 
+- [x] T6: Comparison Service (commit 2c51fb0)
+  - `plugins/ros-backend/src/services/ComparisonService.ts` — Full RiSc diff engine: recursive comparison across v3.x/v4.x/v5.x, property-level change tracking (Added, Deleted, Changed, ContentChanged, Unchanged), scenarios/actions matched by ID not position, integration with SchemaService.migrate() for cross-version comparison
+  - `plugins/ros-backend/src/__tests__/ComparisonService.test.ts` — 29 tests: helper functions, v5.x comparison (identical, title/scope changes, scenario add/delete/reorder, action changes, risk changes, valuations, threat actors, URLs), entry point with migration
+  - Exports: `compare`, `comparison5X`, `comparison4X`, `comparison3X`, helper functions, `ComparisonError`
+  - All checks green (tsc, prettier, lint, tests — 129 total across backend)
+
 ## In Progress
 
 Nothing — awaiting next agent.
@@ -78,6 +83,10 @@ Nothing — awaiting next agent.
 - Backstage CLI uses SWC (via `@backstage/cli-module-test-jest`) to transform TypeScript in tests — don't use `npx jest` directly, use `backstage-cli package test`
 - jest.mock factories run in a hoisted scope — avoid TypeScript type annotations inside the factory function; instead mock the module and cast after import
 - Bech32 validation: the separator is the LAST `1` in the string; HRP = everything before it (including trailing dash for age keys)
+- The SchemaService uses standalone exported functions (not a class) — `migrate(doc, lastPublished?, toVersion?)` returns `[RiScJson, MigrationStatus]`
+- `RiScJson = Record<string, unknown>` is the untyped JSON shape; cast to/from typed interfaces (RiSc5X etc.) at comparison boundaries
+- Deep equality is needed for comparing JSON objects in lists (valuations have no ID, so use structural equality)
+- Jest `--testPathPattern` was replaced by `--testPathPatterns` in newer versions
 - The `ProcessingStatus` enum doesn't have a generic "error" value — use the closest match (e.g. `FailedToCreateSops` for SOPS errors, `ErrorWhenUpdatingRiSc` for general failures)
 - JSON schemas use draft 2020-12 (`$schema: "https://json-schema.org/draft/2020-12/schema"`) — must use `ajv/dist/2020` (Ajv2020), not the default Ajv constructor which only supports draft-07
 - ESLint `no-constant-condition` disallows `while (true)` — use a boolean flag pattern (`let hasMore = true; while (hasMore)`) instead
