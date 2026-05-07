@@ -2,23 +2,22 @@
 
 ## Current Status
 
-T5 (Schema Validation & Migration) is complete. All 7 migration steps ported from Kotlin to TypeScript in `plugins/ros-backend/src/services/SchemaService.ts`.
+T7 (RiSc CRUD Service / Core Orchestrator) is complete. All CRUD operations ported from Kotlin to TypeScript in `plugins/ros-backend/src/services/RiScService.ts`.
 
 ## Next Task
 
-**T7: RiSc CRUD Service / Core Orchestrator**
+**T8: Supporting Integrations**
 
 The next agent should:
 
-1. Read `BACKEND_REWRITE_FILE_SPEC.md` section for `src/services/RiScService.ts`
-2. Read the Kotlin source: `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/risc/RiScService.kt`
-3. This is the main orchestrator that ties together GitHubService, SopsCryptoService, SchemaService, and ComparisonService
-4. Port CRUD operations: fetchAll, fetchOne, create, update, delete, publish
-5. Handle PR lifecycle, encryption/decryption, schema validation, diff computation
-6. Write tests with mocked dependencies
-7. Run `yarn pipeline` to verify
-8. Commit with conventional commit format + Co-authored-by trailer
-9. Update this file: move T7 to Completed, set Next Task to T8
+1. Read `BACKEND_REWRITE_FILE_SPEC.md` for T8 (Supporting Integrations)
+2. Implement `src/services/InitRiScService.ts` — template fetching from a configured GitHub repo
+3. Implement GCP integration (token validation, project IDs, crypto keys) if in scope
+4. Wire up the router (`src/router.ts`) to call RiScService methods with proper request/response handling
+5. Write tests for new services
+6. Run `yarn pipeline` to verify
+7. Commit with conventional commit format + Co-authored-by trailer
+8. Update this file: move T8 to Completed, set Next Task to T9
 
 ## Completed
 
@@ -64,6 +63,13 @@ The next agent should:
   - Exports: `compare`, `comparison5X`, `comparison4X`, `comparison3X`, helper functions, `ComparisonError`
   - All checks green (tsc, prettier, lint, tests — 129 total across backend)
 
+- [x] T7: RiSc CRUD Service / Core Orchestrator (commit 18ef214)
+  - `plugins/ros-backend/src/services/RiScService.ts` — Full orchestrator: fetchAllRiScs (parallel with Promise.allSettled, decrypt, validate, migrate), createRiSc (validate, encrypt, create branch, write), updateRiSc (validate, encrypt, ensure branch, SHA conflict detection), deleteRiSc (status-aware: branch delete or staged deletion), publishRiSc (create PR), fetchDifference (decrypt published, compare)
+  - `plugins/ros-backend/src/__tests__/RiScService.test.ts` — 24 tests: all methods covered with happy paths, error cases, partial failures, validation/migration failures
+  - Helper functions: `generateRiScId()`, `getRiScStatus()` (full state machine from GithubRiscMetadata.kt), `chooseContentFromStatus()`
+  - Exports: `RiScService` class, `generateRiScId`, `SchemaServiceAPI` and `ComparisonServiceAPI` interfaces
+  - All checks green (tsc, prettier, lint, tests — 153 total across backend)
+
 ## In Progress
 
 Nothing — awaiting next agent.
@@ -88,6 +94,13 @@ Nothing — awaiting next agent.
 - Deep equality is needed for comparing JSON objects in lists (valuations have no ID, so use structural equality)
 - Jest `--testPathPattern` was replaced by `--testPathPatterns` in newer versions
 - The `ProcessingStatus` enum doesn't have a generic "error" value — use the closest match (e.g. `FailedToCreateSops` for SOPS errors, `ErrorWhenUpdatingRiSc` for general failures)
+- The Kotlin `generateRiScId` uses `filenamePrefix + "-" + 5 alphanumeric chars` — in our case prefix is `ros_` (matching `RISC_FILE_PREFIX` without the dot) so IDs look like `ros_xY3aB`
+- The `getRiScStatus` state machine from `GithubRiscMetadata.kt` has 3 axes: main branch state, draft branch state, PR state — avoid switch statements without defaults (ESLint `default-case` rule) by using if/else chains instead
+- ESLint `consistent-return` requires functions to always explicitly return — avoid switch-only logic that relies on exhaustiveness without a final return
+- `Promise.allSettled` is the right pattern for `fetchAllRiScs` — one bad RiSc shouldn't block the rest
+- The Kotlin `deleteRiSc` lives in GithubConnector (not RiScService) — in our architecture it's split between GitHubService (low-level ops) and RiScService (orchestration logic)
+- The `decryptWithSopsConfig` method returns `{ content, sopsConfig }` — the content is the plaintext JSON string, sopsConfig is extracted from the YAML ciphertext
+- For unused parameters in TypeScript, prefix with underscore (`_gcpToken`) to satisfy `noUnusedLocals`
 - JSON schemas use draft 2020-12 (`$schema: "https://json-schema.org/draft/2020-12/schema"`) — must use `ajv/dist/2020` (Ajv2020), not the default Ajv constructor which only supports draft-07
 - ESLint `no-constant-condition` disallows `while (true)` — use a boolean flag pattern (`let hasMore = true; while (hasMore)`) instead
 - ESLint `dot-notation` requires property access via dot syntax when key is a valid identifier — use `headers.Authorization` not `headers['Authorization']`
