@@ -49,4 +49,7 @@ backend.add(import('@backstage/plugin-search-backend-module-pg'));
 // TechDocs
 backend.add(import('@backstage/plugin-techdocs-backend'));
 
+// RiSc (Risk Scorecard)
+backend.add(import('@internal/backstage-plugin-ros-backend'));
+
 backend.start();
