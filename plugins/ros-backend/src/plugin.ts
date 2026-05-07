@@ -13,6 +13,7 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         logger: coreServices.logger,
+        config: coreServices.rootConfig,
         httpRouter: coreServices.httpRouter,
         discovery: coreServices.discovery,
         auth: coreServices.auth,

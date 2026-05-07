@@ -17,6 +17,7 @@ This project consolidates the backend into a TypeScript Backstage backend plugin
 Create the `plugins/ros-backend/` and `plugins/ros-common/` packages with correct workspace wiring.
 
 **Acceptance Criteria:**
+
 - [ ] `plugins/ros-common/` exists with `package.json`, `tsconfig.json`, `src/index.ts`
 - [ ] `plugins/ros-backend/` exists with `package.json`, `tsconfig.json`, `src/plugin.ts`, `src/router.ts` stubs
 - [ ] Both packages are listed in root `package.json` workspaces
@@ -32,6 +33,7 @@ Create the `plugins/ros-backend/` and `plugins/ros-common/` packages with correc
 Extract domain types, DTOs, and constants into `plugins/ros-common/`.
 
 **Acceptance Criteria:**
+
 - [ ] All RiSc domain types are defined: `RiSc`, `RiScVersion`, `Scenario`, `Action`, `RiScValuation`, `ThreatActor`, `Vulnerability`, status enums
 - [ ] All wire-format DTOs are defined: API responses, GitHub DTOs, GCP DTOs, Slack DTO, migration change DTOs
 - [ ] Constants exported: schema version list, branch prefix (`risc-draft/`), file naming pattern (`.ros_<id>.yaml`), supported versions
@@ -45,6 +47,7 @@ Extract domain types, DTOs, and constants into `plugins/ros-common/`.
 Port SOPS encryption/decryption via subprocess.
 
 **Acceptance Criteria:**
+
 - [ ] `encrypt(plaintext, sopsConfig)` spawns `sops encrypt`, returns encrypted YAML
 - [ ] `decrypt(encryptedYaml)` spawns `sops decrypt`, returns plaintext JSON
 - [ ] `extractSopsConfig(encryptedYaml)` parses key groups from YAML header
@@ -63,6 +66,7 @@ Port SOPS encryption/decryption via subprocess.
 Port all GitHub operations using Octokit via Backstage credentials.
 
 **Acceptance Criteria:**
+
 - [ ] Dual-token pattern implemented: App installation token for reads, user token for writes
 - [ ] Lists published RiSc files on default branch (pattern: `.ros_*.yaml`)
 - [ ] Lists draft branches matching `risc-draft/<id>` prefix
@@ -84,6 +88,7 @@ Port all GitHub operations using Octokit via Backstage credentials.
 Port JSON schema validation and the multi-version migration pipeline.
 
 **Acceptance Criteria:**
+
 - [ ] All 8 JSON schemas bundled (v3.2, v3.3, v4.0, v4.1, v4.2, v5.0, v5.1, v5.2)
 - [ ] `validate(content)` validates against the correct schema version using `ajv`
 - [ ] Supports both JSON and YAML input (YAML parsed before validation)
@@ -102,6 +107,7 @@ Port JSON schema validation and the multi-version migration pipeline.
 Port the structured diff engine for RiSc content comparison.
 
 **Acceptance Criteria:**
+
 - [ ] Compares two RiSc objects and produces property-level change tracking
 - [ ] Change types supported: `Added`, `Deleted`, `Changed`, `ContentChanged`, `Unchanged`
 - [ ] Version-aware: correctly diffs 3.x, 4.x, and 5.x structures
@@ -117,6 +123,7 @@ Port the structured diff engine for RiSc content comparison.
 Port the main business logic that coordinates all sub-services.
 
 **Acceptance Criteria:**
+
 - [ ] `fetchAllRiScs(owner, repo, version)`: parallel fetch of published + drafts + approvals → decrypt → migrate → validate → return unified list with statuses
 - [ ] `createRiSc(owner, repo, content?, templateId?, sopsConfig)`: generate ID, optionally apply template, encrypt, create draft branch with file
 - [ ] `updateRiSc(owner, repo, id, content, sopsConfig)`: validate schema, encrypt, push to draft branch, detect conflicts via SHA
@@ -138,6 +145,7 @@ Port GCP KMS, Init RiSc, and Slack services.
 **Acceptance Criteria:**
 
 **GCP KMS:**
+
 - [ ] Validates GCP access token via Google tokeninfo endpoint
 - [ ] Fetches project IDs from Cloud Resource Manager
 - [ ] Filters projects by `-prod-` suffix (plus configurable allowed list)
@@ -146,6 +154,7 @@ Port GCP KMS, Init RiSc, and Slack services.
 - [ ] Returns `GcpCryptoKeyObject[]` with project/keyring/key metadata
 
 **Init RiSc:**
+
 - [ ] Fetches descriptor config from configured template GitHub repo
 - [ ] Returns list of available templates with names/descriptions
 - [ ] Fetches individual template content
@@ -153,11 +162,13 @@ Port GCP KMS, Init RiSc, and Slack services.
 - [ ] Validates template against current schema version
 
 **Slack:**
+
 - [ ] POSTs feedback message to configured webhook URL
 - [ ] Returns success/failure status
 - [ ] Webhook URL read from `app-config.yaml`
 
 **Tests:**
+
 - [ ] Unit tests for each service (≥12 tests total ported from Kotlin)
 
 ---
@@ -167,6 +178,7 @@ Port GCP KMS, Init RiSc, and Slack services.
 Wire all services into an Express router with auth middleware.
 
 **Acceptance Criteria:**
+
 - [ ] All endpoints exposed matching the Kotlin API surface:
   - `GET /:owner/:repo/:version/all`
   - `GET /:owner/:repo/:id`
@@ -192,6 +204,7 @@ Wire all services into an Express router with auth middleware.
 Enable config-driven switching between new and legacy backends.
 
 **Acceptance Criteria:**
+
 - [ ] `app-config.yaml` supports `ros.backend: 'native' | 'legacy'` (default: `'legacy'`)
 - [ ] Frontend reads config via `configApi.getOptionalString('ros.backend')`
 - [ ] When `'native'`: API calls route to `/api/ros/...` via Backstage service discovery
@@ -208,6 +221,7 @@ Enable config-driven switching between new and legacy backends.
 Validate the new backend produces identical behavior to the Kotlin backend.
 
 **Acceptance Criteria:**
+
 - [ ] Deploy both backends to staging GKE cluster
 - [ ] Toggle to new backend and verify all user flows:
   - Create RiSc (blank and from template)
@@ -232,6 +246,7 @@ Validate the new backend produces identical behavior to the Kotlin backend.
 Remove toggle, finalize deployment, archive legacy.
 
 **Acceptance Criteria:**
+
 - [ ] Feature toggle removed (hardcoded to native backend)
 - [ ] Proxy configuration for Kotlin backend removed from `app-config.yaml`
 - [ ] Frontend URL construction simplified (legacy paths removed)
