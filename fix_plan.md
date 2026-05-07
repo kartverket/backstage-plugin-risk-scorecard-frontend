@@ -2,22 +2,23 @@
 
 ## Current Status
 
-T7 (RiSc CRUD Service / Core Orchestrator) is complete. All CRUD operations ported from Kotlin to TypeScript in `plugins/ros-backend/src/services/RiScService.ts`.
+T8 (Supporting Integrations) is complete. GCP KMS, Init RiSc, and Slack services implemented with 24 tests.
 
 ## Next Task
 
-**T8: Supporting Integrations**
+**T9: Router & Auth**
 
 The next agent should:
 
-1. Read `BACKEND_REWRITE_FILE_SPEC.md` for T8 (Supporting Integrations)
-2. Implement `src/services/InitRiScService.ts` — template fetching from a configured GitHub repo
-3. Implement GCP integration (token validation, project IDs, crypto keys) if in scope
-4. Wire up the router (`src/router.ts`) to call RiScService methods with proper request/response handling
-5. Write tests for new services
-6. Run `yarn pipeline` to verify
-7. Commit with conventional commit format + Co-authored-by trailer
-8. Update this file: move T8 to Completed, set Next Task to T9
+1. Read `BACKEND_REWRITE_FILE_SPEC.md` for T9 (Router & Auth)
+2. Implement the full Express router (`src/router.ts`) wiring all service methods to HTTP endpoints
+3. Implement auth middleware (GCP token validation, GitHub token extraction from headers)
+4. Wire services together in the plugin registration (`src/plugin.ts`)
+5. Handle request/response mapping, error responses with ProcessingStatus
+6. Write integration tests for router endpoints
+7. Run `yarn pipeline` to verify
+8. Commit with conventional commit format + Co-authored-by trailer
+9. Update this file: move T9 to Completed, set Next Task to T10
 
 ## Completed
 
@@ -70,6 +71,15 @@ The next agent should:
   - Exports: `RiScService` class, `generateRiScId`, `SchemaServiceAPI` and `ComparisonServiceAPI` interfaces
   - All checks green (tsc, prettier, lint, tests — 153 total across backend)
 
+- [x] T8: Supporting Integrations (commit b10400e)
+  - `plugins/ros-backend/src/services/GcpKmsService.ts` — Token validation (Google tokeninfo), project ID listing (Cloud Resource Manager), crypto key retrieval with parallel IAM permission checks, -prod- filtering + configurable additional allowed list
+  - `plugins/ros-backend/src/services/InitRiScService.ts` — Template descriptor listing from configured GitHub repo (`init-risc-def.json`), cleaned template fetching with timestamp stripping and action status normalization to "Not OK"
+  - `plugins/ros-backend/src/services/SlackService.ts` — Webhook-based feedback messaging (POST with `{ text }` body)
+  - `plugins/ros-backend/src/__tests__/GcpKmsService.test.ts` — 14 tests: helpers, token validation, project filtering, IAM permissions, crypto key retrieval
+  - `plugins/ros-backend/src/__tests__/InitRiScService.test.ts` — 5 tests: descriptor fetching, template normalization, error handling
+  - `plugins/ros-backend/src/__tests__/SlackService.test.ts` — 3 tests: successful POST, error handling
+  - All checks green (tsc, prettier, lint, tests — 177 total across backend)
+
 ## In Progress
 
 Nothing — awaiting next agent.
@@ -98,6 +108,10 @@ Nothing — awaiting next agent.
 - The `getRiScStatus` state machine from `GithubRiscMetadata.kt` has 3 axes: main branch state, draft branch state, PR state — avoid switch statements without defaults (ESLint `default-case` rule) by using if/else chains instead
 - ESLint `consistent-return` requires functions to always explicitly return — avoid switch-only logic that relies on exhaustiveness without a final return
 - `Promise.allSettled` is the right pattern for `fetchAllRiScs` — one bad RiSc shouldn't block the rest
+- LoggerService from `@backstage/backend-plugin-api` has a strict `JsonValue` type for error metadata — don't pass raw `unknown` errors; just log the message string
+- GCP project IDs containing "-prod-" anywhere in the string match the filter — use careful test data (e.g. "test-project" not "non-prod-project" which contains "-prod-")
+- InitRiScService doesn't need a logger if it just throws errors — keep services minimal
+- The Kotlin KMS location is `europe-north1` (not `eur4` as mentioned in some docs) — check the actual source
 - The Kotlin `deleteRiSc` lives in GithubConnector (not RiScService) — in our architecture it's split between GitHubService (low-level ops) and RiScService (orchestration logic)
 - The `decryptWithSopsConfig` method returns `{ content, sopsConfig }` — the content is the plaintext JSON string, sopsConfig is extracted from the YAML ciphertext
 - For unused parameters in TypeScript, prefix with underscore (`_gcpToken`) to satisfy `noUnusedLocals`
