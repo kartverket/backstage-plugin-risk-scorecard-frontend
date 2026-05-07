@@ -6247,6 +6247,7 @@ __metadata:
     "@internal/backstage-plugin-ros-common": "npm:0.0.0"
     "@types/express": "npm:^4.17.21"
     express: "npm:^4.21.2"
+    yaml: "npm:^2.8.4"
   languageName: unknown
   linkType: soft
 
@@ -37012,7 +37013,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.2.2":
+"yaml@npm:^2.2.2, yaml@npm:^2.8.4":
   version: 2.8.4
   resolution: "yaml@npm:2.8.4"
   bin:
