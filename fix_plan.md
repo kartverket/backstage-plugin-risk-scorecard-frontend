@@ -2,23 +2,21 @@
 
 ## Current Status
 
-T8 (Supporting Integrations) is complete. GCP KMS, Init RiSc, and Slack services implemented with 24 tests.
+T9 (Router & Auth) is complete. All services wired into Express routes with auth middleware, error handling, and 20 router tests (197 total).
 
 ## Next Task
 
-**T9: Router & Auth**
+**T10: Feature Toggle**
 
 The next agent should:
 
-1. Read `BACKEND_REWRITE_FILE_SPEC.md` for T9 (Router & Auth)
-2. Implement the full Express router (`src/router.ts`) wiring all service methods to HTTP endpoints
-3. Implement auth middleware (GCP token validation, GitHub token extraction from headers)
-4. Wire services together in the plugin registration (`src/plugin.ts`)
-5. Handle request/response mapping, error responses with ProcessingStatus
-6. Write integration tests for router endpoints
-7. Run `yarn pipeline` to verify
-8. Commit with conventional commit format + Co-authored-by trailer
-9. Update this file: move T9 to Completed, set Next Task to T10
+1. Read `BACKEND_REWRITE_FILE_SPEC.md` for T10 (Feature Toggle / Progressive Rollout)
+2. Add a feature toggle mechanism so the frontend can switch between old Kotlin backend and new Node backend
+3. This may involve config flags, route prefixing, or conditional proxy logic
+4. Write tests for the toggle behavior
+5. Run `yarn pipeline` to verify
+6. Commit with conventional commit format + Co-authored-by trailer
+7. Update this file: move T10 to Completed, set Next Task to T11
 
 ## Completed
 
@@ -80,6 +78,13 @@ The next agent should:
   - `plugins/ros-backend/src/__tests__/SlackService.test.ts` — 3 tests: successful POST, error handling
   - All checks green (tsc, prettier, lint, tests — 177 total across backend)
 
+- [x] T9: Router & Auth (commit 1f479e2)
+  - `plugins/ros-backend/src/router.ts` — Full Express router with all endpoints: RiSc CRUD (GET all, GET single, POST create, PUT update, DELETE, POST publish, POST difference), GCP crypto keys, Init RiSc descriptors, Slack feedback; token extraction helpers; error handler middleware mapping DomainError→HTTP
+  - `plugins/ros-backend/src/plugin.ts` — Service instantiation from config (SOPS keys, Slack webhook, Init RiSc repo, GCP project filter), router creation with all dependencies
+  - `plugins/ros-backend/src/__tests__/router.test.ts` — 20 tests: health check, header extraction, auth validation, all route handlers, error mapping, Slack edge cases
+  - Added `supertest` + `@types/supertest` dev dependencies
+  - All checks green (tsc, prettier, lint, tests — 197 total across backend)
+
 ## In Progress
 
 Nothing — awaiting next agent.
@@ -125,6 +130,13 @@ Nothing — awaiting next agent.
 - Backstage lint rule `@backstage/no-relative-monorepo-imports` forbids `../../../ros/src/...` imports — copy shared resources locally or use package imports
 - Migration operates on raw JSON objects (not typed models) because the structure changes across versions — use `Record<string, unknown>` with casts
 - Use `CI=true` and `--forceExit` when running backstage-cli tests to avoid hanging in watch mode
+- Express error handler middleware needs 4 parameters (`err, req, res, next`) — even if `next` is unused, include it or Express won't recognize it as an error handler
+- The `SopsCryptoService` constructor takes a full `SopsCryptoConfig` object (not just an age key) — includes backend public key, security team key, and platform key
+- Router should be thin: extract params/headers → call service → send JSON response. Error handling via `next(err)` + error handler middleware
+- For routes where no dedicated single-fetch method exists, use the list method and filter — keeps the API surface simple
+- The Kotlin controller's `getDifferenceBetweenTwoRiScs` is POST (sends draft content in body) not GET — the difference endpoint needs request body
+- `supertest` works seamlessly with Express routers wrapped in `express()` app — no real HTTP server needed for tests
+- Express `satisfies ErrorResponse` on inline response literals helps catch shape mistakes at compile time
 
 ## Discovered Issues
 
