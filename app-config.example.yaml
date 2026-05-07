@@ -70,3 +70,13 @@ catalog:
         tenantId: <ENTRA TENANT ID>
         clientId: <ENTRA CLIENT ID>
         clientSecret: <ENTRA CLIENT SECRET>
+
+### RiSc plugin backend configuration ###
+# Controls which backend the RiSc frontend plugin communicates with.
+# Options:
+#   'legacy'  — (default) Routes through the Backstage proxy to the external Kotlin backend.
+#               Requires the '/risc-proxy' proxy endpoint to be configured.
+#   'native'  — Routes directly to the new Backstage ros backend plugin via service discovery.
+#               Requires the @kartverket/backstage-plugin-risk-scorecard-backend package to be installed.
+ros:
+  backend: 'legacy'
