@@ -2,21 +2,11 @@
 
 ## Current Status
 
-T9 (Router & Auth) is complete. All services wired into Express routes with auth middleware, error handling, and 20 router tests (197 total).
+Implementation phase complete (T1–T10). All backend services, router, and frontend feature toggle are implemented and tested. Remaining tasks (T11: E2E Testing, T12: Cleanup/Migration) require production deployment and are manual tasks.
 
 ## Next Task
 
-**T10: Feature Toggle**
-
-The next agent should:
-
-1. Read `BACKEND_REWRITE_FILE_SPEC.md` for T10 (Feature Toggle / Progressive Rollout)
-2. Add a feature toggle mechanism so the frontend can switch between old Kotlin backend and new Node backend
-3. This may involve config flags, route prefixing, or conditional proxy logic
-4. Write tests for the toggle behavior
-5. Run `yarn pipeline` to verify
-6. Commit with conventional commit format + Co-authored-by trailer
-7. Update this file: move T10 to Completed, set Next Task to T11
+**T11: E2E Testing** and **T12: Cleanup** are manual deployment tasks — they require toggling `ros.backend: 'native'` in a deployed environment and verifying end-to-end behavior against real GitHub/GCP/SOPS infrastructure. These cannot be automated in this repository alone.
 
 ## Completed
 
@@ -85,9 +75,17 @@ The next agent should:
   - Added `supertest` + `@types/supertest` dev dependencies
   - All checks green (tsc, prettier, lint, tests — 197 total across backend)
 
+- [x] T10: Feature Toggle & Frontend Integration (commit 64f3fb9)
+  - `plugins/ros/src/urls/backend.ts` — Added `BackendMode` type, `LEGACY_BACKEND_URLS` alias, `buildNativeUrls()` function for native backend URL construction
+  - `plugins/ros/src/utils/hooks.ts` — Read `ros.backend` config via `getOptionalString`, use `discoveryApiRef` for native mode base URL resolution, conditional URL construction (native vs legacy)
+  - `app-config.yaml` / `app-config.example.yaml` — Added `ros.backend: 'legacy'` config with documentation
+  - `plugins/ros/src/utils/hooks.test.tsx` — Updated mocks to include `discoveryApiRef` and `getOptionalString`
+  - Default is 'legacy' (zero behavior change until toggled)
+  - All checks green (tsc, prettier, lint, tests)
+
 ## In Progress
 
-Nothing — awaiting next agent.
+Implementation phase complete. T11 (E2E) and T12 (Cleanup) are manual deployment tasks.
 
 ## Learnings
 
