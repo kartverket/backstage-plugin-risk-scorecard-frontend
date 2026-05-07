@@ -6,25 +6,20 @@ T5 (Schema Validation & Migration) is complete. All 7 migration steps ported fro
 
 ## Next Task
 
-**T4: GitHub Service (GitHub Connector)**
+**T6: Comparison Service**
 
 The next agent should:
 
-1. Read `BACKEND_REWRITE_FILE_SPEC.md` section for `src/services/GithubService.ts`
+1. Read `BACKEND_REWRITE_FILE_SPEC.md` section for `src/services/ComparisonService.ts`
 2. Read the Kotlin source files:
-   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/github/GithubConnector.kt`
-   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/github/GithubHelper.kt`
-3. Port GitHub API interactions:
-   - Read/write/delete files via GitHub Contents API
-   - Branch management (create, list, check existence)
-   - Pull request creation and management
-   - Commit listing and comparison
-   - All calls go through authenticated fetch with token
-4. Use types from `ros-common` (GitHub DTOs already defined in `dtos.ts`)
-5. Write tests with mocked fetch
+   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/risc/RiScService.kt` (comparison-related methods)
+   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/risc/models/InternDifference.kt`
+3. Port comparison logic: compute diff between two RiSc versions and produce `DifferenceDTO`
+4. Use types from `ros-common` (RiScChange, DifferenceStatus, TrackedProperty)
+5. Write tests with representative fixtures
 6. Run `yarn pipeline` to verify
 7. Commit with conventional commit format + Co-authored-by trailer
-8. Update this file: move T4 to Completed, set Next Task to T6 (RiSc Service)
+8. Update this file: move T6 to Completed, set Next Task to T7 (RiSc Service / main orchestrator)
 
 ## Completed
 
@@ -57,6 +52,13 @@ The next agent should:
   - Added `ajv`, `ajv-formats` dependencies
   - All checks green (tsc, prettier, lint, tests)
 
+- [x] T4: GitHub Service (commit 6a8b83e)
+  - `plugins/ros-backend/src/services/GitHubService.ts` — Full GitHub REST API client: file CRUD (Contents API with base64), branch management (create/delete/list drafts), PR lifecycle (create/close/list), repository info, commits with pagination
+  - `plugins/ros-backend/src/__tests__/GitHubService.test.ts` — 38 tests: happy paths and error handling for all operations
+  - Exports: `GitHubService` class, `GitHubApiError`, `GithubStatus` enum, `GithubContentResponse`, `RepositoryInfo`
+  - Uses plain `fetch` with dependency injection (constructor accepts custom fetch fn)
+  - All checks green (tsc, prettier, lint, tests — 100 total across backend)
+
 ## In Progress
 
 Nothing — awaiting next agent.
@@ -78,6 +80,11 @@ Nothing — awaiting next agent.
 - Bech32 validation: the separator is the LAST `1` in the string; HRP = everything before it (including trailing dash for age keys)
 - The `ProcessingStatus` enum doesn't have a generic "error" value — use the closest match (e.g. `FailedToCreateSops` for SOPS errors, `ErrorWhenUpdatingRiSc` for general failures)
 - JSON schemas use draft 2020-12 (`$schema: "https://json-schema.org/draft/2020-12/schema"`) — must use `ajv/dist/2020` (Ajv2020), not the default Ajv constructor which only supports draft-07
+- ESLint `no-constant-condition` disallows `while (true)` — use a boolean flag pattern (`let hasMore = true; while (hasMore)`) instead
+- ESLint `dot-notation` requires property access via dot syntax when key is a valid identifier — use `headers.Authorization` not `headers['Authorization']`
+- The Kotlin GithubConnector uses `WebClient` reactively with `awaitBody`/`awaitSingle` — in TypeScript just use async/await with native fetch
+- GitHub Contents API returns base64-encoded content with newlines — strip `\n` before decoding
+- The Kotlin code uses `token` prefix in Authorization header (not `Bearer`) for GitHub API calls
 - The v5_2 schema has a bug: its `$id` is the same as v5_1's — strip `$id`/`$schema` from schemas before compiling to avoid Ajv conflicts
 - Backstage lint rule `@backstage/no-relative-monorepo-imports` forbids `../../../ros/src/...` imports — copy shared resources locally or use package imports
 - Migration operates on raw JSON objects (not typed models) because the structure changes across versions — use `Record<string, unknown>` with casts
