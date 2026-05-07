@@ -2,29 +2,29 @@
 
 ## Current Status
 
-T3 (SOPS Crypto Service) is complete. All SOPS encryption/decryption logic ported from Kotlin to TypeScript in `plugins/ros-backend/src/`.
+T5 (Schema Validation & Migration) is complete. All 7 migration steps ported from Kotlin to TypeScript in `plugins/ros-backend/src/services/SchemaService.ts`.
 
 ## Next Task
 
-**T5: Schema Validation & Migration**
+**T4: GitHub Service (GitHub Connector)**
 
 The next agent should:
 
-1. Read `BACKEND_REWRITE_FILE_SPEC.md` section for `src/services/SchemaService.ts`
+1. Read `BACKEND_REWRITE_FILE_SPEC.md` section for `src/services/GithubService.ts`
 2. Read the Kotlin source files:
-   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/risc/validation/JSONValidator.kt`
-   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/risc/utils/Migrations.kt`
-3. Port JSON Schema validation (using `ajv` library):
-   - Load bundled schemas (v3.2 through v5.2)
-   - Detect version from content, validate against matching schema
-   - Try JSON parse first, fall back to YAML parse
-4. Port migration logic (7 migration steps: 3.2→3.3→4.0→4.1→4.2→5.0→5.1→5.2):
-   - Each step transforms JSON structure (rename fields, restructure arrays, add defaults)
-   - Track changes per migration step for UI display (MigrationStatus)
-5. Write comprehensive tests (each migration step, validation success/failure)
+   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/github/GithubConnector.kt`
+   - `../backstage-plugin-risk-scorecard-backend/src/main/kotlin/no/risc/github/GithubHelper.kt`
+3. Port GitHub API interactions:
+   - Read/write/delete files via GitHub Contents API
+   - Branch management (create, list, check existence)
+   - Pull request creation and management
+   - Commit listing and comparison
+   - All calls go through authenticated fetch with token
+4. Use types from `ros-common` (GitHub DTOs already defined in `dtos.ts`)
+5. Write tests with mocked fetch
 6. Run `yarn pipeline` to verify
 7. Commit with conventional commit format + Co-authored-by trailer
-8. Update this file: move T5 to Completed, set Next Task to T4 (GitHub Connector)
+8. Update this file: move T4 to Completed, set Next Task to T6 (RiSc Service)
 
 ## Completed
 
@@ -49,6 +49,14 @@ The next agent should:
   - Added `yaml` dependency for SOPS config parsing
   - All checks green (tsc, prettier, lint, tests)
 
+- [x] T5: Schema Validation & Migration (commit e28500b)
+  - `plugins/ros-backend/src/services/SchemaService.ts` — Full migration pipeline: validate, detectVersion, migrate, parseContent (JSON/YAML)
+  - `plugins/ros-backend/src/schemas/` — Bundled JSON schemas v3.2–v5.2 (copied from frontend + Kotlin backend for v3.2)
+  - `plugins/ros-backend/src/__tests__/SchemaService.test.ts` — 41 tests: validation, individual migrations, full chain, version detection, YAML
+  - `plugins/ros-backend/src/__tests__/fixtures/` — Test fixtures from Kotlin backend (3.2–5.0 JSON files)
+  - Added `ajv`, `ajv-formats` dependencies
+  - All checks green (tsc, prettier, lint, tests)
+
 ## In Progress
 
 Nothing — awaiting next agent.
@@ -69,6 +77,11 @@ Nothing — awaiting next agent.
 - jest.mock factories run in a hoisted scope — avoid TypeScript type annotations inside the factory function; instead mock the module and cast after import
 - Bech32 validation: the separator is the LAST `1` in the string; HRP = everything before it (including trailing dash for age keys)
 - The `ProcessingStatus` enum doesn't have a generic "error" value — use the closest match (e.g. `FailedToCreateSops` for SOPS errors, `ErrorWhenUpdatingRiSc` for general failures)
+- JSON schemas use draft 2020-12 (`$schema: "https://json-schema.org/draft/2020-12/schema"`) — must use `ajv/dist/2020` (Ajv2020), not the default Ajv constructor which only supports draft-07
+- The v5_2 schema has a bug: its `$id` is the same as v5_1's — strip `$id`/`$schema` from schemas before compiling to avoid Ajv conflicts
+- Backstage lint rule `@backstage/no-relative-monorepo-imports` forbids `../../../ros/src/...` imports — copy shared resources locally or use package imports
+- Migration operates on raw JSON objects (not typed models) because the structure changes across versions — use `Record<string, unknown>` with casts
+- Use `CI=true` and `--forceExit` when running backstage-cli tests to avoid hanging in watch mode
 
 ## Discovered Issues
 
