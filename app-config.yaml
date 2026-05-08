@@ -392,4 +392,4 @@ explore:
 ros:
   # 'legacy' routes through the Backstage proxy to the Kotlin backend.
   # 'native' routes directly to the new Backstage ros backend plugin.
-  backend: 'legacy'
+  backend: 'native'

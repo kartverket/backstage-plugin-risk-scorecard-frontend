@@ -71,6 +71,7 @@ export function useAuthenticatedFetch() {
           nativeBaseUrl,
           repoInformation.owner,
           repoInformation.name,
+          latestSupportedVersion,
         )
       : null;
 
@@ -381,7 +382,11 @@ export function useAuthenticatedFetch() {
       () => {},
     );
   }
+  // Ready when native URL has resolved (or we're in legacy mode)
+  const isReady = backendMode === 'legacy' || nativeUrls !== null;
+
   return {
+    isReady,
     fetchRiScs,
     fetchGcpCryptoKeys,
     postRiScs,

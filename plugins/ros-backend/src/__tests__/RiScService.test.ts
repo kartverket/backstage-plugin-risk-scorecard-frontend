@@ -17,9 +17,13 @@ import type {
 
 function mockGitHubService(): jest.Mocked<GitHubService> {
   return {
-    riScFilePath: jest.fn((id: string) => `.ros/${id}.yaml`),
-    riScIdFromFilename: jest.fn((name: string) => name.replace('.yaml', '')),
-    draftBranchName: jest.fn((id: string) => `risc-draft/${id}`),
+    riScFilePath: jest.fn(
+      (id: string) => `.security/risc/${id}.risc.yaml`,
+    ),
+    riScIdFromFilename: jest.fn((name: string) =>
+      name.replace('.risc.yaml', ''),
+    ),
+    draftBranchName: jest.fn((id: string) => id),
     riScIdFromBranchRef: jest.fn((ref: string) =>
       ref.substring(ref.lastIndexOf('/') + 1),
     ),
@@ -133,9 +137,9 @@ describe('RiScService', () => {
   // ─── generateRiScId ──────────────────────────────────────────────────────
 
   describe('generateRiScId', () => {
-    it('generates an ID with ros_ prefix and 5 alphanumeric chars', () => {
+    it('generates an ID with risc- prefix and 5 alphanumeric chars', () => {
       const id = generateRiScId();
-      expect(id).toMatch(/^ros_[a-zA-Z0-9]{5}$/);
+      expect(id).toMatch(/^risc-[a-zA-Z0-9]{5}$/);
     });
 
     it('generates unique IDs', () => {
@@ -150,7 +154,7 @@ describe('RiScService', () => {
     it('returns published RiScs', async () => {
       github.fetchPublishedRiScFiles.mockResolvedValue([
         {
-          name: 'ros_abc12.yaml',
+          name: 'risc-abc12.risc.yaml',
           sha: 'sha1',
           content: null,
         } as unknown as GithubFileDTO,
@@ -175,20 +179,20 @@ describe('RiScService', () => {
       );
 
       expect(results).toHaveLength(1);
-      expect(results[0].riScId).toBe('ros_abc12');
+      expect(results[0].riScId).toBe('risc-abc12');
       expect(results[0].riScStatus).toBe('Published');
     });
 
     it('returns draft RiScs', async () => {
       github.fetchPublishedRiScFiles.mockResolvedValue([]);
       github.fetchDraftBranches.mockResolvedValue([
-        { ref: 'refs/heads/risc-draft/ros_draft1', url: '' },
+        { ref: 'refs/heads/risc-drft1', url: '' },
       ]);
       github.fetchOpenPullRequests.mockResolvedValue([]);
       // Main returns NotFound, branch returns content
       github.fetchFileContent.mockImplementation(
         (_owner, _repo, _path, _token, ref?) => {
-          if (ref === 'risc-draft/ros_draft1') {
+          if (ref === 'risc-drft1') {
             return Promise.resolve({
               data: 'encrypted',
               status: GithubStatus.Success,
@@ -217,21 +221,21 @@ describe('RiScService', () => {
     it('returns SentForApproval RiScs', async () => {
       github.fetchPublishedRiScFiles.mockResolvedValue([
         {
-          name: 'ros_abc12.yaml',
+          name: 'risc-abc12.risc.yaml',
           sha: 'sha1',
           content: null,
         } as unknown as GithubFileDTO,
       ]);
       github.fetchDraftBranches.mockResolvedValue([
-        { ref: 'refs/heads/risc-draft/ros_abc12', url: '' },
+        { ref: 'refs/heads/risc-abc12', url: '' },
       ]);
       github.fetchOpenPullRequests.mockResolvedValue([
-        makePR('risc-draft/ros_abc12', 1),
+        makePR('risc-abc12', 1),
       ]);
       // Main and branch return different content
       github.fetchFileContent.mockImplementation(
         (_owner, _repo, _path, _token, ref?) => {
-          if (ref === 'risc-draft/ros_abc12') {
+          if (ref === 'risc-abc12') {
             return Promise.resolve({
               data: 'branch-encrypted',
               status: GithubStatus.Success,
@@ -263,12 +267,12 @@ describe('RiScService', () => {
     it('handles partial failures gracefully', async () => {
       github.fetchPublishedRiScFiles.mockResolvedValue([
         {
-          name: 'ros_good1.yaml',
+          name: 'risc-good1.risc.yaml',
           sha: 'sha1',
           content: null,
         } as unknown as GithubFileDTO,
         {
-          name: 'ros_bad01.yaml',
+          name: 'risc-bad01.risc.yaml',
           sha: 'sha2',
           content: null,
         } as unknown as GithubFileDTO,
@@ -277,7 +281,7 @@ describe('RiScService', () => {
       github.fetchOpenPullRequests.mockResolvedValue([]);
       github.fetchFileContent.mockImplementation(
         (_owner, _repo, path, _token, _ref?) => {
-          if (path.includes('ros_bad01')) {
+          if (path.includes('risc-bad01')) {
             return Promise.reject(new Error('Network error'));
           }
           return Promise.resolve({
@@ -301,8 +305,8 @@ describe('RiScService', () => {
 
       // Good one succeeds, bad one returns failure
       expect(results.length).toBeGreaterThanOrEqual(1);
-      const good = results.find(r => r.riScId === 'ros_good1');
-      const bad = results.find(r => r.riScId === 'ros_bad01');
+      const good = results.find(r => r.riScId === 'risc-good1');
+      const bad = results.find(r => r.riScId === 'risc-bad01');
       expect(good?.status).toBe('Success');
       expect(bad?.status).toBe('Failure');
     });
@@ -311,7 +315,7 @@ describe('RiScService', () => {
       // Branch exists but file does not (no main file either) = Deleted
       github.fetchPublishedRiScFiles.mockResolvedValue([]);
       github.fetchDraftBranches.mockResolvedValue([
-        { ref: 'refs/heads/risc-draft/ros_delet', url: '' },
+        { ref: 'refs/heads/risc-delet', url: '' },
       ]);
       github.fetchOpenPullRequests.mockResolvedValue([]);
       github.fetchFileContent.mockResolvedValue({
@@ -333,7 +337,7 @@ describe('RiScService', () => {
     it('marks validation failures', async () => {
       github.fetchPublishedRiScFiles.mockResolvedValue([
         {
-          name: 'ros_inval.yaml',
+          name: 'risc-inval.risc.yaml',
           sha: 'sha1',
           content: null,
         } as unknown as GithubFileDTO,
@@ -364,7 +368,7 @@ describe('RiScService', () => {
     it('marks migration failures', async () => {
       github.fetchPublishedRiScFiles.mockResolvedValue([
         {
-          name: 'ros_migfl.yaml',
+          name: 'risc-migfl.risc.yaml',
           sha: 'sha1',
           content: null,
         } as unknown as GithubFileDTO,
@@ -417,7 +421,7 @@ describe('RiScService', () => {
       );
 
       expect(result.status).toBe('CreatedRiSc');
-      expect(result.riScId).toMatch(/^ros_[a-zA-Z0-9]{5}$/);
+      expect(result.riScId).toMatch(/^risc-[a-zA-Z0-9]{5}$/);
       expect(result.riScContent).toBe(SAMPLE_RISC_CONTENT);
       expect(github.createBranch).toHaveBeenCalled();
       expect(github.writeFile).toHaveBeenCalled();
@@ -463,7 +467,7 @@ describe('RiScService', () => {
       const result = await service.updateRiSc(
         'owner',
         'repo',
-        'ros_abc12',
+        'risc-abc12',
         SAMPLE_RISC_CONTENT,
         '5.2',
         SAMPLE_SOPS_CONFIG,
@@ -479,7 +483,7 @@ describe('RiScService', () => {
         expect.any(String),
         'encrypted-updated',
         expect.any(String),
-        'risc-draft/ros_abc12',
+        'risc-abc12',
         'gh-token',
         'file-sha',
       );
@@ -498,7 +502,7 @@ describe('RiScService', () => {
       const result = await service.updateRiSc(
         'owner',
         'repo',
-        'ros_newid',
+        'risc-newid',
         SAMPLE_RISC_CONTENT,
         '5.2',
         SAMPLE_SOPS_CONFIG,
@@ -511,7 +515,7 @@ describe('RiScService', () => {
       expect(github.createBranch).toHaveBeenCalledWith(
         'owner',
         'repo',
-        'risc-draft/ros_newid',
+        'risc-newid',
         'default-sha',
         'gh-token',
       );
@@ -523,7 +527,7 @@ describe('RiScService', () => {
       const result = await service.updateRiSc(
         'owner',
         'repo',
-        'ros_abc12',
+        'risc-abc12',
         '{}',
         '5.2',
         SAMPLE_SOPS_CONFIG,
@@ -545,14 +549,14 @@ describe('RiScService', () => {
       } as unknown as GithubFileDTO);
       github.writeFile.mockResolvedValue(undefined);
       github.fetchOpenPullRequests.mockResolvedValue([
-        makePR('risc-draft/ros_abc12', 5),
+        makePR('risc-abc12', 5),
       ]);
       github.closePullRequest.mockResolvedValue(undefined);
 
       const result = await service.updateRiSc(
         'owner',
         'repo',
-        'ros_abc12',
+        'risc-abc12',
         SAMPLE_RISC_CONTENT,
         '5.2',
         SAMPLE_SOPS_CONFIG,
@@ -581,7 +585,7 @@ describe('RiScService', () => {
       const result = await service.deleteRiSc(
         'owner',
         'repo',
-        'ros_draft',
+        'risc-draft',
         'gcp-token',
         'gh-token',
       );
@@ -590,7 +594,7 @@ describe('RiScService', () => {
       expect(github.deleteBranch).toHaveBeenCalledWith(
         'owner',
         'repo',
-        'risc-draft/ros_draft',
+        'risc-draft',
         'gh-token',
       );
     });
@@ -614,7 +618,7 @@ describe('RiScService', () => {
       const result = await service.deleteRiSc(
         'owner',
         'repo',
-        'ros_publi',
+        'risc-publi',
         'gcp-token',
         'gh-token',
       );
@@ -628,7 +632,7 @@ describe('RiScService', () => {
         'pub-sha',
         expect.stringContaining('Deleted RiSc'),
         'gh-token',
-        'risc-draft/ros_publi',
+        'risc-publi',
       );
     });
 
@@ -653,7 +657,7 @@ describe('RiScService', () => {
       const result = await service.deleteRiSc(
         'owner',
         'repo',
-        'ros_pubex',
+        'risc-pubex',
         'gcp-token',
         'gh-token',
       );
@@ -667,7 +671,7 @@ describe('RiScService', () => {
         'branch-file-sha',
         expect.any(String),
         'gh-token',
-        'risc-draft/ros_pubex',
+        'risc-pubex',
       );
     });
   });
@@ -682,13 +686,13 @@ describe('RiScService', () => {
         hasWriteAccess: true,
       });
       github.createPullRequest.mockResolvedValue(
-        makePR('risc-draft/ros_pub01', 10),
+        makePR('risc-pub01', 10),
       );
 
       const result = await service.publishRiSc(
         'owner',
         'repo',
-        'ros_pub01',
+        'risc-pub01',
         'gh-token',
         { name: 'User', email: 'user@test.com' },
       );
@@ -698,7 +702,7 @@ describe('RiScService', () => {
         'https://github.com/owner/repo/pull/10',
       );
       expect(result.pendingApproval?.pullRequestName).toBe(
-        'risc-draft/ros_pub01',
+        'risc-pub01',
       );
     });
 
@@ -708,7 +712,7 @@ describe('RiScService', () => {
       const result = await service.publishRiSc(
         'owner',
         'repo',
-        'ros_nopub',
+        'risc-nopub',
         'gh-token',
         { name: 'User', email: 'user@test.com' },
       );
@@ -737,7 +741,7 @@ describe('RiScService', () => {
       const result = await service.fetchDifference(
         'owner',
         'repo',
-        'ros_diff1',
+        'risc-diff1',
         SAMPLE_RISC_CONTENT,
         'gcp-token',
         'gh-token',
@@ -757,7 +761,7 @@ describe('RiScService', () => {
       const result = await service.fetchDifference(
         'owner',
         'repo',
-        'ros_new01',
+        'risc-new01',
         SAMPLE_RISC_CONTENT,
         'gcp-token',
         'gh-token',
@@ -778,7 +782,7 @@ describe('RiScService', () => {
       const result = await service.fetchDifference(
         'owner',
         'repo',
-        'ros_decrf',
+        'risc-decrf',
         SAMPLE_RISC_CONTENT,
         'gcp-token',
         'gh-token',
@@ -803,7 +807,7 @@ describe('RiScService', () => {
       const result = await service.fetchDifference(
         'owner',
         'repo',
-        'ros_cmpfl',
+        'risc-cmpfl',
         SAMPLE_RISC_CONTENT,
         'gcp-token',
         'gh-token',
