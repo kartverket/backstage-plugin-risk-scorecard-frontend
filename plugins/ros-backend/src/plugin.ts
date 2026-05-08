@@ -47,7 +47,7 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
         });
 
         httpRouter.use(
-          (await createRouter({ catalogClient, auth, riScIndexStore })) as any,
+          await createRouter({ catalogClient, auth, riScIndexStore }),
         );
         rootLifecycle.addStartupHook(() => refresher.start(), { logger });
       },

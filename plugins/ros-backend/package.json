@@ -38,12 +38,12 @@
     "@backstage/catalog-client": "backstage:^",
     "@backstage/catalog-model": "backstage:^",
     "@backstage/integration": "backstage:^",
-    "express": "^5.2.1",
+    "express": "^4.22.0",
     "yaml": "^2.8.2"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
-    "@types/express": "^5.0.6"
+    "@types/express": "^4.17.6"
   },
   "files": [
     "dist"
