@@ -218,8 +218,8 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
           return;
         }
 
-        const { content, schemaVersion, sopsConfig } = req.body as {
-          content: string;
+        const { riSc, schemaVersion, sopsConfig } = req.body as {
+          riSc: string;
           schemaVersion: string;
           sopsConfig: unknown;
         };
@@ -227,7 +227,7 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
         const result = await riScService.createRiSc(
           owner,
           repo,
-          content,
+          riSc,
           schemaVersion,
           sopsConfig as Parameters<typeof riScService.createRiSc>[4],
           gcpToken,
@@ -256,9 +256,9 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
           return;
         }
 
-        const { content, schemaVersion, sopsConfig, isRequiresNewApproval } =
+        const { riSc, schemaVersion, sopsConfig, isRequiresNewApproval } =
           req.body as {
-            content: string;
+            riSc: string;
             schemaVersion: string;
             sopsConfig: unknown;
             isRequiresNewApproval: boolean;
@@ -268,7 +268,7 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
           owner,
           repo,
           id,
-          content,
+          riSc,
           schemaVersion,
           sopsConfig as Parameters<typeof riScService.updateRiSc>[5],
           isRequiresNewApproval ?? false,

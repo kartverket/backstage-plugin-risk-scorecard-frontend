@@ -73,10 +73,10 @@ export class GitHubService {
 
   /** Constructs the file path for a RiSc file within the repository. */
   riScFilePath(riScId: string): string {
-    return `${RISC_DIRECTORY}${riScId}${RISC_FILE_SUFFIX}`;
+    return `${RISC_DIRECTORY}/${riScId}${RISC_FILE_SUFFIX}`;
   }
 
-  /** Extracts the RiSc ID from a filename like `.ros_abc-123.yaml`. */
+  /** Extracts the RiSc ID from a filename like `risc-7ssVK.risc.yaml`. */
   riScIdFromFilename(filename: string): string {
     return filename.replace(RISC_FILE_SUFFIX, '');
   }
@@ -86,9 +86,8 @@ export class GitHubService {
     return `${DRAFT_BRANCH_PREFIX}${riScId}`;
   }
 
-  /** Extracts the RiSc ID from a draft branch ref like `refs/heads/risc-draft/ros_abc`. */
+  /** Extracts the RiSc ID from a draft branch ref like `refs/heads/risc-7ssVK`. */
   riScIdFromBranchRef(ref: string): string {
-    // ref format: refs/heads/risc-draft/<riScId>
     return ref.substring(ref.lastIndexOf('/') + 1);
   }
 
@@ -308,7 +307,7 @@ export class GitHubService {
     try {
       return await this.request<GithubReferenceObjectDTO[]>(
         'GET',
-        `${GITHUB_API_BASE}/repos/${owner}/${repo}/git/matching-refs/heads/${DRAFT_BRANCH_PREFIX}`,
+        `${GITHUB_API_BASE}/repos/${owner}/${repo}/git/matching-refs/heads/${RISC_FILE_PREFIX}`,
         token,
       );
     } catch (e) {

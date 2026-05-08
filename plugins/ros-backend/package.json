@@ -15,6 +15,7 @@
   "engines": {
     "node": "24"
   },
+  "configSchema": "config.d.ts",
   "backstage": {
     "role": "backend-plugin",
     "pluginId": "risk-scorecard",

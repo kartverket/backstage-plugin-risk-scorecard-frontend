@@ -107,6 +107,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     deleteRiScs,
     putRiScs,
     publishRiScs,
+    isReady,
   } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
@@ -202,6 +203,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   // Initial fetch of GCP crypto keys
   useEffect(() => {
+    if (!isReady) return;
     gcpCryptoKeysFailed.current = false;
     setFailedToFetchGcpCryptoKeys(false);
     dispatch({ type: 'SET_RESPONSE', response: null });
@@ -245,10 +247,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isReady]);
 
   // Initial fetch of RiScs
   useEffect(() => {
+    if (!isReady) return;
     dispatch({ type: 'SET_RESPONSE', response: null });
     fetchRiScs(
       res => {
@@ -345,8 +348,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  }, [isReady]);
   // Set selected RiSc, system RiSc or locked RiSc based on URL
   useEffect(() => {
     if (!riScIdFromParams) return;

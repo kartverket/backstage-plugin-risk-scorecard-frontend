@@ -30,11 +30,11 @@ export const BACKEND_URLS = LEGACY_BACKEND_URLS;
  * Build native backend URLs using the discovery API base URL.
  * Native mode routes directly to the ros backend plugin via Backstage service discovery.
  */
-export function buildNativeUrls(baseUrl: string, owner: string, repo: string) {
+export function buildNativeUrls(baseUrl: string, owner: string, repo: string, version: string) {
   const riScUri = `${baseUrl}/risc/${owner}/${repo}`;
   return {
     riScUri,
-    uriToFetchAllRiScs: `${riScUri}/all`,
+    uriToFetchAllRiScs: `${riScUri}/${version}/all`,
     uriToFetchDifference: (id: string) => `${riScUri}/${id}/difference`,
     uriToFetchRiSc: (id: string) => `${riScUri}/${id}`,
     uriToDeleteRiSc: (id: string) => `${riScUri}/${id}`,

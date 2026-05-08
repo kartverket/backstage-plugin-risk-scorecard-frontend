@@ -29,14 +29,14 @@ export const ALL_RISC_VERSIONS: RiScVersion[] = [
 export const latestSupportedVersion = RiScVersion.V5_2;
 
 /** Branch prefix for draft RiScs in GitHub. */
-export const DRAFT_BRANCH_PREFIX = 'risc-draft/';
+export const DRAFT_BRANCH_PREFIX = '';
 
 /** File naming pattern for RiSc YAML files. */
-export const RISC_FILE_PREFIX = '.ros_';
-export const RISC_FILE_SUFFIX = '.yaml';
+export const RISC_FILE_PREFIX = 'risc-';
+export const RISC_FILE_SUFFIX = '.risc.yaml';
 
 /** Directory within the repo where RiSc files are stored. */
-export const RISC_DIRECTORY = '.ros/';
+export const RISC_DIRECTORY = '.security/risc';
 
 /** Risk matrix scoring constants (logarithmic scale). */
 export const BASE_NUMBER = 20.0;

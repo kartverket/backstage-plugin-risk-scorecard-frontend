@@ -41,27 +41,25 @@ describe('GitHubService', () => {
 
   describe('path helpers', () => {
     it('constructs correct file path for a RiSc ID', () => {
-      expect(service.riScFilePath('.ros_abc-123')).toBe(
-        '.ros/.ros_abc-123.yaml',
+      expect(service.riScFilePath('risc-abc12')).toBe(
+        '.security/risc/risc-abc12.risc.yaml',
       );
     });
 
     it('extracts RiSc ID from filename', () => {
-      expect(service.riScIdFromFilename('.ros_abc-123.yaml')).toBe(
-        '.ros_abc-123',
+      expect(service.riScIdFromFilename('risc-abc12.risc.yaml')).toBe(
+        'risc-abc12',
       );
     });
 
     it('constructs draft branch name', () => {
-      expect(service.draftBranchName('.ros_abc-123')).toBe(
-        'risc-draft/.ros_abc-123',
-      );
+      expect(service.draftBranchName('risc-abc12')).toBe('risc-abc12');
     });
 
     it('extracts RiSc ID from branch ref', () => {
       expect(
-        service.riScIdFromBranchRef('refs/heads/risc-draft/.ros_abc-123'),
-      ).toBe('.ros_abc-123');
+        service.riScIdFromBranchRef('refs/heads/risc-abc12'),
+      ).toBe('risc-abc12');
     });
   });
 
@@ -70,16 +68,16 @@ describe('GitHubService', () => {
   describe('fetchPublishedRiScFiles', () => {
     it('returns files matching the RiSc naming pattern', async () => {
       const files = [
-        { name: '.ros_risk-001.yaml', sha: 'abc123', content: null },
-        { name: '.ros_risk-002.yaml', sha: 'def456', content: null },
+        { name: 'risc-risk001.risc.yaml', sha: 'abc123', content: null },
+        { name: 'risc-risk002.risc.yaml', sha: 'def456', content: null },
         { name: 'readme.md', sha: 'ghi789', content: null },
       ];
       mockFetch.mockResolvedValue(mockResponse(files));
 
       const result = await service.fetchPublishedRiScFiles(owner, repo, token);
       expect(result).toHaveLength(2);
-      expect(result[0].name).toBe('.ros_risk-001.yaml');
-      expect(result[1].name).toBe('.ros_risk-002.yaml');
+      expect(result[0].name).toBe('risc-risk001.risc.yaml');
+      expect(result[1].name).toBe('risc-risk002.risc.yaml');
     });
 
     it('returns empty array when directory does not exist (404)', async () => {
@@ -119,7 +117,7 @@ describe('GitHubService', () => {
       const result = await service.fetchFileContent(
         owner,
         repo,
-        '.ros/test.yaml',
+        '.security/risc/test.risc.yaml',
         token,
       );
       expect(result.status).toBe(GithubStatus.Success);
@@ -144,7 +142,7 @@ describe('GitHubService', () => {
       const result = await service.fetchFileContent(
         owner,
         repo,
-        '.ros/test.yaml',
+        '.security/risc/test.risc.yaml',
         token,
       );
       expect(result.status).toBe(GithubStatus.Success);
@@ -159,7 +157,7 @@ describe('GitHubService', () => {
       const result = await service.fetchFileContent(
         owner,
         repo,
-        '.ros/test.yaml',
+        '.security/risc/test.risc.yaml',
         token,
       );
       expect(result.status).toBe(GithubStatus.ContentIsEmpty);
@@ -172,7 +170,7 @@ describe('GitHubService', () => {
       const result = await service.fetchFileContent(
         owner,
         repo,
-        '.ros/nonexistent.yaml',
+        '.security/risc/nonexistent.risc.yaml',
         token,
       );
       expect(result.status).toBe(GithubStatus.NotFound);
@@ -185,7 +183,7 @@ describe('GitHubService', () => {
       const result = await service.fetchFileContent(
         owner,
         repo,
-        '.ros/test.yaml',
+        '.security/risc/test.risc.yaml',
         token,
       );
       expect(result.status).toBe(GithubStatus.Unauthorized);
@@ -200,7 +198,7 @@ describe('GitHubService', () => {
       await service.fetchFileContent(
         owner,
         repo,
-        '.ros/test.yaml',
+        '.security/risc/test.risc.yaml',
         token,
         'my-branch',
       );
@@ -222,7 +220,7 @@ describe('GitHubService', () => {
       const result = await service.fetchFileInfo(
         owner,
         repo,
-        '.ros/test.yaml',
+        '.security/risc/test.risc.yaml',
         token,
       );
       expect(result).toEqual(fileDto);
@@ -234,7 +232,7 @@ describe('GitHubService', () => {
       const result = await service.fetchFileInfo(
         owner,
         repo,
-        '.ros/nonexistent.yaml',
+        '.security/risc/nonexistent.risc.yaml',
         token,
       );
       expect(result).toBeNull();
@@ -250,7 +248,7 @@ describe('GitHubService', () => {
       await service.writeFile(
         owner,
         repo,
-        '.ros/test.yaml',
+        '.security/risc/test.risc.yaml',
         'file content here',
         'Create file',
         'main',
@@ -258,7 +256,7 @@ describe('GitHubService', () => {
       );
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/contents/.ros/test.yaml'),
+        expect.stringContaining('/contents/.security/risc/test.risc.yaml'),
         expect.objectContaining({ method: 'PUT' }),
       );
 
@@ -276,7 +274,7 @@ describe('GitHubService', () => {
       await service.writeFile(
         owner,
         repo,
-        '.ros/test.yaml',
+        '.security/risc/test.risc.yaml',
         'updated',
         'Update file',
         'my-branch',
@@ -295,7 +293,7 @@ describe('GitHubService', () => {
         service.writeFile(
           owner,
           repo,
-          '.ros/test.yaml',
+          '.security/risc/test.risc.yaml',
           'content',
           'msg',
           'branch',
@@ -315,7 +313,7 @@ describe('GitHubService', () => {
       await service.deleteFile(
         owner,
         repo,
-        '.ros/test.yaml',
+        '.security/risc/test.risc.yaml',
         'file-sha-456',
         'Delete RiSc',
         token,
@@ -323,7 +321,7 @@ describe('GitHubService', () => {
       );
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/contents/.ros/test.yaml'),
+        expect.stringContaining('/contents/.security/risc/test.risc.yaml'),
         expect.objectContaining({ method: 'DELETE' }),
       );
 
@@ -339,14 +337,14 @@ describe('GitHubService', () => {
   describe('fetchDraftBranches', () => {
     it('returns matching branch references', async () => {
       const refs = [
-        { ref: 'refs/heads/risc-draft/.ros_001', url: 'https://...' },
-        { ref: 'refs/heads/risc-draft/.ros_002', url: 'https://...' },
+        { ref: 'refs/heads/risc-001', url: 'https://...' },
+        { ref: 'refs/heads/risc-002', url: 'https://...' },
       ];
       mockFetch.mockResolvedValue(mockResponse(refs));
 
       const result = await service.fetchDraftBranches(owner, repo, token);
       expect(result).toHaveLength(2);
-      expect(result[0].ref).toContain('.ros_001');
+      expect(result[0].ref).toContain('risc-001');
     });
 
     it('returns empty array on 404', async () => {
@@ -368,13 +366,13 @@ describe('GitHubService', () => {
       await service.createBranch(
         owner,
         repo,
-        'risc-draft/.ros_new',
+        'risc-new01',
         'abc123sha',
         token,
       );
 
       const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
-      expect(callBody.ref).toBe('refs/heads/risc-draft/.ros_new');
+      expect(callBody.ref).toBe('refs/heads/risc-new01');
       expect(callBody.sha).toBe('abc123sha');
     });
   });
@@ -385,10 +383,10 @@ describe('GitHubService', () => {
     it('sends DELETE to the correct ref path', async () => {
       mockFetch.mockResolvedValue(mockResponse(undefined, 204));
 
-      await service.deleteBranch(owner, repo, 'risc-draft/.ros_old', token);
+      await service.deleteBranch(owner, repo, 'risc-old01', token);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/git/refs/heads/risc-draft/.ros_old'),
+        expect.stringContaining('/git/refs/heads/risc-old01'),
         expect.objectContaining({ method: 'DELETE' }),
       );
     });
@@ -403,7 +401,7 @@ describe('GitHubService', () => {
           html_url: 'https://github.com/pr/1',
           title: 'Update RiSc',
           created_at: '2024-01-01T00:00:00Z',
-          head: { ref: 'risc-draft/.ros_001' },
+          head: { ref: 'risc-001' },
           base: { ref: 'main' },
           number: 1,
         },
@@ -434,7 +432,7 @@ describe('GitHubService', () => {
         html_url: 'https://github.com/pr/42',
         title: 'Updated risk scorecard',
         created_at: '2024-01-01T00:00:00Z',
-        head: { ref: 'risc-draft/.ros_001' },
+        head: { ref: 'risc-001' },
         base: { ref: 'main' },
         number: 42,
       };
@@ -445,7 +443,7 @@ describe('GitHubService', () => {
         repo,
         'Updated risk scorecard',
         'PR body text',
-        'risc-draft/.ros_001',
+        'risc-001',
         'main',
         token,
       );
@@ -453,7 +451,7 @@ describe('GitHubService', () => {
       expect(result.number).toBe(42);
       const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(callBody.title).toBe('Updated risk scorecard');
-      expect(callBody.head).toBe('risc-draft/.ros_001');
+      expect(callBody.head).toBe('risc-001');
       expect(callBody.base).toBe('main');
     });
 
@@ -557,13 +555,13 @@ describe('GitHubService', () => {
       mockFetch.mockResolvedValue(mockResponse(commits));
 
       const result = await service.fetchCommits(owner, repo, token, {
-        path: '.ros/test.yaml',
+        path: '.security/risc/test.risc.yaml',
         perPage: 1,
       });
 
       expect(result).toHaveLength(1);
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('path=.ros%2Ftest.yaml'),
+        expect.stringContaining('path=.security%2Frisc%2Ftest.risc.yaml'),
         expect.any(Object),
       );
       expect(mockFetch).toHaveBeenCalledWith(

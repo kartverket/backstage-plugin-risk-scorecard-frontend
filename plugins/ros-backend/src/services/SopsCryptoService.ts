@@ -304,23 +304,26 @@ export class SopsCryptoService {
   private buildKeyGroups(config: SopsConfig): Array<Record<string, unknown>> {
     const keyGroups: Array<Record<string, unknown>> = [];
 
-    // Group 1: Security team age key + GCP KMS
-    keyGroups.push({
-      age: [this.config.securityTeamPublicKey],
-      gcp_kms: [
-        {
-          resource_id: config.gcp_kms?.[0]?.resource_id,
-        },
-      ],
-    });
+    // Group 1: GCP KMS key (required) + security team age key (if configured)
+    const group1: Record<string, unknown> = {};
+    if (config.gcp_kms?.[0]?.resource_id) {
+      group1.gcp_kms = [{ resource_id: config.gcp_kms[0].resource_id }];
+    }
+    if (this.config.securityTeamPublicKey) {
+      group1.age = [this.config.securityTeamPublicKey];
+    }
+    if (Object.keys(group1).length > 0) {
+      keyGroups.push(group1);
+    }
 
-    // Group 2: Backend + security platform age keys
-    keyGroups.push({
-      age: [
-        this.config.backendPublicKey,
-        this.config.securityPlatformPublicKey,
-      ],
-    });
+    // Group 2: Backend + security platform age keys (if configured)
+    const group2Age = [
+      this.config.backendPublicKey,
+      this.config.securityPlatformPublicKey,
+    ].filter(Boolean);
+    if (group2Age.length > 0) {
+      keyGroups.push({ age: group2Age });
+    }
 
     // Group 3: Developer age keys (if any remain after filtering managed keys)
     if (config.age && config.age.length > 0) {
@@ -331,7 +334,7 @@ export class SopsCryptoService {
       ]);
       const developerKeys = config.age
         .map(a => a.recipient)
-        .filter(k => !managedKeys.has(k));
+        .filter(k => k && !managedKeys.has(k));
 
       if (developerKeys.length > 0) {
         keyGroups.push({ age: developerKeys });
