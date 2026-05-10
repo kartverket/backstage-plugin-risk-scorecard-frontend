@@ -966,13 +966,13 @@ describe('useAuthenticatedFetch', () => {
           {
             riScId: 'risc-1',
             sourceEntityRef: 'component:default/kv-ros-test-6',
-            appliesToBackstageEntityRefs: ['component:default/kv-ros-test-6'],
+            appliesTo: ['component:default/kv-ros-test-6'],
             lastSavedAt: '2026-05-02T08:30:00Z',
           },
           {
             riScId: 'risc-7ssVK',
             sourceEntityRef: 'component:default/kv-ros-test-4',
-            appliesToBackstageEntityRefs: [
+            appliesTo: [
               'component:default/kv-ros-test-4',
               'component:default/kv-ros-test-6',
             ],
@@ -1000,7 +1000,7 @@ describe('useAuthenticatedFetch', () => {
         {
           riScId: 'risc-7ssVK',
           sourceEntityRef: 'component:default/kv-ros-test-4',
-          appliesToBackstageEntityRefs: [
+          appliesTo: [
             'component:default/kv-ros-test-4',
             'component:default/kv-ros-test-6',
           ],

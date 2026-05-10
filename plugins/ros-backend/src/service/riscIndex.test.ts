@@ -3,34 +3,28 @@
  */
 
 import type { LoggerService } from '@backstage/backend-plugin-api';
-import {
-  getLastSavedAtFromGitHubCommits,
-  parseAppliesToBackstageEntityRefs,
-} from './riscIndex';
+import { getLastSavedAtFromGitHubCommits, parseAppliesTo } from './riscIndex';
 
-describe('parseAppliesToBackstageEntityRefs', () => {
+describe('parseAppliesTo', () => {
   const logger = createLogger();
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('accepts an array of entity refs', () => {
+  it('returns decoded Backstage entity refs from appliesTo entries', () => {
     expect(
-      parseAppliesToBackstageEntityRefs(
-        'appliesToBackstageEntityRefs:\n  - component:default/kv-ros-test-2\n  - system:default/kv-ros-test-system\n',
+      parseAppliesTo(
+        'appliesTo:\n  - backstage:component:default/kv-ros-test-2\n  - service:example-ticket-1\n',
         'https://example.org/risc.risc.yaml',
         logger,
       ),
-    ).toEqual([
-      'component:default/kv-ros-test-2',
-      'system:default/kv-ros-test-system',
-    ]);
+    ).toEqual(['component:default/kv-ros-test-2']);
   });
 
-  it('returns undefined when appliesToBackstageEntityRefs is missing', () => {
+  it('returns undefined when appliesTo is missing', () => {
     expect(
-      parseAppliesToBackstageEntityRefs(
+      parseAppliesTo(
         'title: test\nversion: 1\n',
         'https://example.org/risc.risc.yaml',
         logger,
@@ -38,16 +32,16 @@ describe('parseAppliesToBackstageEntityRefs', () => {
     ).toBeUndefined();
   });
 
-  it('returns an empty array and warns when appliesToBackstageEntityRefs has an invalid type', () => {
+  it('returns an empty array and warns when appliesTo has an invalid type', () => {
     expect(
-      parseAppliesToBackstageEntityRefs(
-        'appliesToBackstageEntityRefs:\n  invalid: true\n',
+      parseAppliesTo(
+        'appliesTo:\n  invalid: true\n',
         'https://example.org/risc.risc.yaml',
         logger,
       ),
     ).toEqual([]);
     expect(logger.warn).toHaveBeenCalledWith(
-      'RiSc file has invalid appliesToBackstageEntityRefs',
+      'RiSc file has invalid appliesTo',
       expect.objectContaining({
         sourceUrl: 'https://example.org/risc.risc.yaml',
       }),

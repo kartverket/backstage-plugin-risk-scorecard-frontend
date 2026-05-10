@@ -90,7 +90,7 @@ async function getComponentRefsForSystemEntityRef(
 function isSystemEntityRef(entityRef: string): boolean {
   const parsedEntityRef = parseEntityRef(entityRef);
 
-  return parsedEntityRef.kind.toLowerCase() === 'system'
+  return parsedEntityRef.kind.toLowerCase() === 'system';
 }
 
 function deduplicateRiScIndexReferences(
@@ -99,7 +99,10 @@ function deduplicateRiScIndexReferences(
   const referencesByKey = new Map<string, RiScIndexEntry>();
 
   for (const reference of references) {
-    referencesByKey.set(`${reference.sourceEntityRef}:${reference.riScId}`, reference);
+    referencesByKey.set(
+      `${reference.sourceEntityRef}:${reference.riScId}`,
+      reference,
+    );
   }
 
   return Object.freeze([...referencesByKey.values()]);

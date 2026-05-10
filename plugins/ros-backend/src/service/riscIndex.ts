@@ -15,6 +15,7 @@ import {
   type GithubIntegration,
 } from '@backstage/integration';
 import * as yaml from 'yaml';
+import { getBackstageEntityRefFromAppliesTo } from './appliesTo';
 import { type RiScIndexEntry } from './riscIndexStore';
 
 type RepoToIndex = {
@@ -112,9 +113,6 @@ async function getRiskScorecardRiScFilesToIndex({
       continue;
     }
 
-    if (repo.repoRootUrl.startsWith('https://github.com/kartverket/')) {
-      continue;
-    }
     try {
       const repoFiles = await getRiScFiles({
         repo,
@@ -299,17 +297,12 @@ async function getRiScFiles({
         const rawText = Buffer.from(fileResponse.content, 'base64').toString(
           'utf8',
         );
-        const appliesToBackstageEntityRefs = parseAppliesToBackstageEntityRefs(
-          rawText,
-          sourceUrl,
-          logger,
-        );
+        const appliesTo = parseAppliesTo(rawText, sourceUrl, logger);
 
         return {
           riScId,
           sourceEntityRef,
-          appliesToBackstageEntityRefs:
-            appliesToBackstageEntityRefs ?? repo.defaultEntityRefs,
+          appliesTo: appliesTo ?? repo.defaultEntityRefs,
           lastSavedAt,
         };
       }),
@@ -390,10 +383,7 @@ async function fetchGitHubJsonOrUndefined<T>(
 
     if (retriesOnTransients > 0 && isTransient) {
       await new Promise<void>(resolve =>
-        setTimeout(
-          resolve,
-          2 ** (defaultRetries - retriesOnTransients) * 1000,
-        ),
+        setTimeout(resolve, 2 ** (defaultRetries - retriesOnTransients) * 1000),
       );
 
       return await fetchGitHubJsonOrUndefined<T>(
@@ -409,7 +399,7 @@ async function fetchGitHubJsonOrUndefined<T>(
   return (await response.json()) as T;
 }
 
-export function parseAppliesToBackstageEntityRefs(
+export function parseAppliesTo(
   rawText: string,
   sourceUrl: string,
   logger: LoggerService,
@@ -430,21 +420,23 @@ export function parseAppliesToBackstageEntityRefs(
       return undefined;
     }
 
-    const appliesToBackstageEntityRefs = root.appliesToBackstageEntityRefs;
+    const appliesTo = root.appliesTo;
 
-    if (appliesToBackstageEntityRefs === undefined) {
+    if (appliesTo === undefined) {
       return undefined;
     }
 
     if (
-      Array.isArray(appliesToBackstageEntityRefs) &&
-      appliesToBackstageEntityRefs.every(entry => typeof entry === 'string')
+      Array.isArray(appliesTo) &&
+      appliesTo.every(entry => typeof entry === 'string')
     ) {
-      return appliesToBackstageEntityRefs;
+      return appliesTo
+        .map(getBackstageEntityRefFromAppliesTo)
+        .filter((entityRef): entityRef is string => !!entityRef);
     }
 
-    logger.warn('RiSc file has invalid appliesToBackstageEntityRefs', {
-      value: appliesToBackstageEntityRefs,
+    logger.warn('RiSc file has invalid appliesTo', {
+      value: appliesTo,
       sourceUrl,
     });
     return [];

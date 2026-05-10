@@ -10,7 +10,7 @@ describe('createInMemoryRiScIndexStore', () => {
     const riSc1 = {
       riScId: 'risc-1',
       sourceEntityRef: 'component:default/source-1',
-      appliesToBackstageEntityRefs: [
+      appliesTo: [
         'component:default/kv-ros-test-1',
         'component:default/kv-ros-test-2',
       ],
@@ -19,7 +19,7 @@ describe('createInMemoryRiScIndexStore', () => {
     const riSc2 = {
       riScId: 'risc-2',
       sourceEntityRef: 'component:default/source-2',
-      appliesToBackstageEntityRefs: ['component:default/kv-ros-test-2'],
+      appliesTo: ['component:default/kv-ros-test-2'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     };
 
@@ -43,7 +43,7 @@ describe('createInMemoryRiScIndexStore', () => {
       {
         riScId: 'risc-1',
         sourceEntityRef: 'component:default/source-1',
-        appliesToBackstageEntityRefs: [
+        appliesTo: [
           'component:default/kv-ros-test-1',
           'component:default/kv-ros-test-3',
         ],
@@ -55,7 +55,7 @@ describe('createInMemoryRiScIndexStore', () => {
       {
         riScId: 'risc-2',
         sourceEntityRef: 'component:default/source-2',
-        appliesToBackstageEntityRefs: [
+        appliesTo: [
           'component:default/kv-ros-test-2',
           'component:default/kv-ros-test-4',
         ],
@@ -72,7 +72,7 @@ describe('createInMemoryRiScIndexStore', () => {
       {
         riScId: 'risc-2',
         sourceEntityRef: 'component:default/source-2',
-        appliesToBackstageEntityRefs: [
+        appliesTo: [
           'component:default/kv-ros-test-2',
           'component:default/kv-ros-test-4',
         ],

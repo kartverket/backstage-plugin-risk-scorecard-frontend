@@ -11,7 +11,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FieldErrors } from 'react-hook-form';
 import { Flex } from '@backstage/ui';
-import { AppliesToBackstageEntityRefsField } from './AppliesToBackstageEntityRefsField';
+import { AppliesToField } from './AppliesToField';
 import { useSystemRiScsFeatureFlag } from '../../utils/featureFlags';
 
 interface ConfigRiscInfoProps {
@@ -36,9 +36,7 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
         label={t('dictionary.title')}
         helperText={props.errors?.content?.title && t('rosDialog.titleError')}
       />
-      {isSystemRiScsEnabled && (
-        <AppliesToBackstageEntityRefsField control={props.control} />
-      )}
+      {isSystemRiScsEnabled && <AppliesToField control={props.control} />}
       <MarkdownInput
         {...props.register('content.scope')}
         value={currentScope}

@@ -16,28 +16,29 @@ import { RiScWithMetadata } from '../../utils/types';
 import formStyles from '../common/formStyles.module.css';
 import { entityRefOptionFields, getCurrentSystemRef } from './entityRefOptions';
 
-type AppliesToBackstageEntityRefsFieldProps = {
+const backstageAppliesToPrefix = 'backstage:';
+
+type AppliesToFieldProps = {
   control: Control<RiScWithMetadata>;
 };
 
-export function AppliesToBackstageEntityRefsField({
-  control,
-}: AppliesToBackstageEntityRefsFieldProps) {
+export function AppliesToField({ control }: AppliesToFieldProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const catalogApi = useApi(catalogApiRef);
   const [catalogEntityRefs, setCatalogEntityRefs] = useState<string[]>([]);
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
   const { field } = useController({
     control,
-    name: 'content.appliesToBackstageEntityRefs',
+    name: 'content.appliesTo',
   });
   const { entity } = useEntity();
   const currentEntityRef = stringifyEntityRef(entity);
+  const currentPrefixedEntityRef = backstageAppliesToPrefix + currentEntityRef;
   // Ensure that it always looks as if currentRef is saved, but we only save it if at least two refs are selected
-  const selectedEntityRefs = field.value ?? [currentEntityRef];
+  const selectedEntityRefs = field.value ?? [currentPrefixedEntityRef];
   const isMissingCurrentEntityRef = getIsMissingCurrentEntityRef(
     selectedEntityRefs,
-    currentEntityRef,
+    currentPrefixedEntityRef,
   );
   // Avoid missing-entity warnings until catalog refs have loaded. On an entity
   // page, a successful fetch should at least contain the current entity.
@@ -80,7 +81,9 @@ export function AppliesToBackstageEntityRefsField({
               [
                 ...sameSystemEntitiesResponse.items,
                 ...allEntitiesResponse.items,
-              ].map(stringifyEntityRef),
+              ].map(
+                entity => backstageAppliesToPrefix + stringifyEntityRef(entity),
+              ),
             ),
           ),
         );
@@ -103,7 +106,7 @@ export function AppliesToBackstageEntityRefsField({
 
   function handleChange(_: unknown, value: string[]) {
     field.onChange(
-      ensureUndefinedOrCurrentEntityRefAsHead(value, currentEntityRef),
+      ensureNullOrCurrentEntityRefAsHead(value, currentPrefixedEntityRef),
     );
   }
 
@@ -112,10 +115,10 @@ export function AppliesToBackstageEntityRefsField({
   return (
     <FormControl className={formStyles.formControl}>
       <FormLabel className={formStyles.formLabel}>
-        {t('rosDialog.appliesToBackstageEntityRefs')}
+        {t('rosDialog.appliesTo')}
       </FormLabel>
       <FormHelperText className={formStyles.formHelperText}>
-        {t('rosDialog.appliesToBackstageEntityRefsDescription')}
+        {t('rosDialog.appliesToDescription')}
       </FormHelperText>
       <Autocomplete<string, true, false, false>
         multiple
@@ -124,19 +127,20 @@ export function AppliesToBackstageEntityRefsField({
         loading={isLoadingOptions}
         options={catalogEntityRefs}
         value={selectedEntityRefs}
-        getOptionLabel={option => option}
+        getOptionLabel={formatBackstageAppliesTo}
         isOptionEqualToValue={(option, value) => option === value}
         onChange={handleChange}
         renderValue={(value, getItemProps) =>
-          value.map((entityRef, index) => {
+          value.map((prefixedEntityRef, index) => {
             const tagProps = getItemProps({ index });
             const { key, onDelete, ...restTagProps } = tagProps;
-            const isCurrentEntity = entityRef === currentEntityRef;
+            const isCurrentEntity =
+              prefixedEntityRef === currentPrefixedEntityRef;
 
             return (
               <Chip
                 key={key}
-                label={entityRef}
+                label={formatBackstageAppliesTo(prefixedEntityRef)}
                 color={isCurrentEntity ? 'primary' : 'default'}
                 variant={isCurrentEntity ? 'filled' : 'outlined'}
                 onDelete={isCurrentEntity ? undefined : onDelete}
@@ -148,28 +152,28 @@ export function AppliesToBackstageEntityRefsField({
         renderInput={params => (
           <TextField
             {...params}
-            placeholder={t('rosDialog.appliesToBackstageEntityRefsPlaceholder')}
+            placeholder={t('rosDialog.appliesToPlaceholder')}
           />
         )}
-        loadingText={t('rosDialog.appliesToBackstageEntityRefsLoading')}
-        noOptionsText={t('rosDialog.appliesToBackstageEntityRefsNoOptions')}
+        loadingText={t('rosDialog.appliesToLoading')}
+        noOptionsText={t('rosDialog.appliesToNoOptions')}
       />
       {hasSystemRiScScope && (
-        <FormHelperText>
-          {t('rosDialog.appliesToBackstageEntityRefsSystemRosHint')}
-        </FormHelperText>
+        <FormHelperText>{t('rosDialog.appliesToSystemRosHint')}</FormHelperText>
       )}
       {isMissingCurrentEntityRef && (
         <Alert severity="warning">
-          {t('rosDialog.appliesToBackstageEntityRefsMissingCurrentEntity', {
+          {t('rosDialog.appliesToMissingCurrentEntity', {
             entityRef: currentEntityRef,
           })}
         </Alert>
       )}
       {missingEntityRefs.length > 0 && (
         <Alert severity="warning">
-          {t('rosDialog.appliesToBackstageEntityRefsMissingEntities', {
-            entityRefs: missingEntityRefs.join(', '),
+          {t('rosDialog.appliesToMissingEntities', {
+            entityRefs: missingEntityRefs
+              .map(formatBackstageAppliesTo)
+              .join(', '),
           })}
         </Alert>
       )}
@@ -177,7 +181,7 @@ export function AppliesToBackstageEntityRefsField({
   );
 }
 
-function ensureUndefinedOrCurrentEntityRefAsHead(
+function ensureNullOrCurrentEntityRefAsHead(
   entityRefs: string[],
   currentEntityRef: string,
 ): string[] | null {
@@ -190,6 +194,12 @@ function ensureUndefinedOrCurrentEntityRefAsHead(
   }
 
   return currentValue;
+}
+
+function formatBackstageAppliesTo(appliesTo: string): string {
+  return appliesTo.startsWith(backstageAppliesToPrefix)
+    ? appliesTo.slice(backstageAppliesToPrefix.length)
+    : appliesTo;
 }
 
 function getIsMissingCurrentEntityRef(

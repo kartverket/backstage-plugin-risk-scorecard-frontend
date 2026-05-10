@@ -16,13 +16,13 @@ describe('createRouter', () => {
     const riSc1 = {
       riScId: 'risc-1',
       sourceEntityRef: 'component:default/source-1',
-      appliesToBackstageEntityRefs: ['component:default/kv-ros-test-6'],
+      appliesTo: ['component:default/kv-ros-test-6'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     };
     const riSc2 = {
       riScId: 'risc-7ssVK',
       sourceEntityRef: 'component:default/source-2',
-      appliesToBackstageEntityRefs: [
+      appliesTo: [
         'component:default/kv-ros-test-1',
         'component:default/kv-ros-test-6',
       ],
@@ -43,13 +43,13 @@ describe('createRouter', () => {
     const riSc1 = {
       riScId: 'risc-1',
       sourceEntityRef: 'component:default/source-1',
-      appliesToBackstageEntityRefs: ['component:default/kv-ros-test-6'],
+      appliesTo: ['component:default/kv-ros-test-6'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     };
     const riSc2 = {
       riScId: 'risc-7ssVK',
       sourceEntityRef: 'component:default/source-2',
-      appliesToBackstageEntityRefs: [
+      appliesTo: [
         'component:default/kv-ros-test-1',
         'component:default/kv-ros-test-6',
       ],

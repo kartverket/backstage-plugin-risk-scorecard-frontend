@@ -26,7 +26,7 @@ export type LockedRiSc = {
 export type SystemRiSc = {
   riScId: string;
   sourceEntityRef: string;
-  appliesToBackstageEntityRefs: string[];
+  appliesTo: string[];
   lastSavedAt: string;
 };
 
@@ -172,7 +172,7 @@ export type RiSc = {
   schemaVersion: string;
   title: string;
   scope: string;
-  appliesToBackstageEntityRefs?: string[];
+  appliesTo?: string[];
   scenarios: Scenario[];
 };
 

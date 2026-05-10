@@ -3,32 +3,32 @@ import { dtoToRiSc, riScToDTOString, RiScDTO, SopsConfigDTO } from './DTOs';
 import { RiSc } from './types';
 
 describe('RiSc DTO mapping', () => {
-  it('keeps appliesToBackstageEntityRefs from DTOs', () => {
+  it('keeps appliesTo from DTOs', () => {
     const riScDTO: RiScDTO = {
       schemaVersion: '5.2',
       title: 'System RoS',
       scope: 'Applies to multiple entities',
-      appliesToBackstageEntityRefs: [
-        'component:default/component-a',
-        'system:default/system-a',
+      appliesTo: [
+        'backstage:component:default/component-a',
+        'backstage:system:default/system-a',
       ],
       scenarios: [],
     };
 
-    expect(dtoToRiSc(riScDTO).appliesToBackstageEntityRefs).toEqual([
-      'component:default/component-a',
-      'system:default/system-a',
+    expect(dtoToRiSc(riScDTO).appliesTo).toEqual([
+      'backstage:component:default/component-a',
+      'backstage:system:default/system-a',
     ]);
   });
 
-  it('keeps appliesToBackstageEntityRefs in serialized save payloads when there is a system RiSc scope', () => {
+  it('keeps appliesTo in serialized save payloads when there is a system RiSc scope', () => {
     const riSc: RiSc = {
       schemaVersion: '5.2',
       title: 'System RoS',
       scope: 'Applies to multiple entities',
-      appliesToBackstageEntityRefs: [
-        'component:default/component-a',
-        'system:default/system-a',
+      appliesTo: [
+        'backstage:component:default/component-a',
+        'backstage:system:default/system-a',
       ],
       scenarios: [],
     };
@@ -46,18 +46,18 @@ describe('RiSc DTO mapping', () => {
     );
     const serializedRiSc = JSON.parse(payload.riSc);
 
-    expect(serializedRiSc.appliesToBackstageEntityRefs).toEqual([
-      'component:default/component-a',
-      'system:default/system-a',
+    expect(serializedRiSc.appliesTo).toEqual([
+      'backstage:component:default/component-a',
+      'backstage:system:default/system-a',
     ]);
   });
 
-  it('keeps appliesToBackstageEntityRefs in serialized save payloads when only one entity is selected', () => {
+  it('keeps appliesTo in serialized save payloads when only one entity is selected', () => {
     const riSc: RiSc = {
       schemaVersion: '5.2',
       title: 'Component RoS',
       scope: 'Applies to one entity',
-      appliesToBackstageEntityRefs: ['component:default/component-a'],
+      appliesTo: ['backstage:component:default/component-a'],
       scenarios: [],
     };
     const profile: ProfileInfo = {
@@ -74,8 +74,8 @@ describe('RiSc DTO mapping', () => {
     );
     const serializedRiSc = JSON.parse(payload.riSc);
 
-    expect(serializedRiSc.appliesToBackstageEntityRefs).toEqual([
-      'component:default/component-a',
+    expect(serializedRiSc.appliesTo).toEqual([
+      'backstage:component:default/component-a',
     ]);
   });
 });

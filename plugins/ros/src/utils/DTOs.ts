@@ -58,7 +58,7 @@ export type RiScDTO = {
   schemaVersion: string;
   title: string;
   scope: string;
-  appliesToBackstageEntityRefs?: string[];
+  appliesTo?: string[];
   scenarios: ScenarioDTO[];
 };
 
@@ -158,7 +158,11 @@ export function riScToDTOString(
 
 function riScToDTO(riSc: RiSc): RiScDTO {
   return {
-    ...riSc,
+    // Explicit mapping instead of ...riSc to ensure order (otherwise appliesTo sometimes ends up at the bottom)
+    schemaVersion: riSc.schemaVersion,
+    title: riSc.title,
+    scope: riSc.scope,
+    appliesTo: riSc.appliesTo ?? undefined, // To make sure that it is not returned as an explicit null, but instead entirely excluded
     scenarios: riSc.scenarios.map(scenarioToDTO),
   };
 }

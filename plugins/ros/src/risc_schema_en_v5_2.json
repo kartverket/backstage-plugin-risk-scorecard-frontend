@@ -18,11 +18,12 @@
       "description": "The scope of the score card",
       "type": "string"
     },
-    "appliesToBackstageEntityRefs": {
-      "description": "Backstage entity references that the risk scorecard applies to",
+    "appliesTo": {
+      "description": "Typed target references that the risk scorecard applies to. Backstage catalog entity refs use the backstage: prefix.",
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9+.-]*:.+"
       },
       "uniqueItems": true
     },

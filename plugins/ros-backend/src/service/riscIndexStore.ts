@@ -1,7 +1,7 @@
 export type RiScIndexEntry = {
   riScId: string;
   sourceEntityRef: string;
-  appliesToBackstageEntityRefs: string[];
+  appliesTo: string[];
   lastSavedAt: string;
 };
 
@@ -30,7 +30,7 @@ function buildAnalysesByEntityRef(
   const groupedAnalyses = new Map<string, RiScIndexEntry[]>();
 
   for (const analysis of analyses) {
-    for (const entityRef of new Set(analysis.appliesToBackstageEntityRefs)) {
+    for (const entityRef of new Set(analysis.appliesTo)) {
       const existingEntries = groupedAnalyses.get(entityRef);
 
       if (existingEntries) {

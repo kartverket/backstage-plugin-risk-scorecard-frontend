@@ -442,9 +442,7 @@ export function useSystemRiScsForCurrentEntity(): RiScIndexState {
         }
 
         const responseBody = (await response.json()) as SystemRiSc[];
-        const systemRiScs = responseBody.filter(
-          x => x.appliesToBackstageEntityRefs.length > 1,
-        );
+        const systemRiScs = responseBody.filter(x => x.appliesTo.length > 1);
 
         if (!cancelled) {
           setState({
