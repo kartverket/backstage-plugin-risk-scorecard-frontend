@@ -402,6 +402,8 @@ export const pluginRiScMessages = {
     appliesToNoOptions: 'No entities found',
     appliesToSystemRosHint:
       'Covers multiple entities and will also appear as a RiSc for the other added entities.',
+    appliesToNightlyRefreshHint:
+      'Changes to which entities this RiSc applies to are refreshed at night, so visibility on added or removed entities will only change tomorrow.',
     appliesToMissingCurrentEntity:
       'The current component ({{entityRef}}) is not included. Change the selection to add it before saving.',
     appliesToMissingEntities:
@@ -1165,6 +1167,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.appliesToNoOptions': 'Fant ingen entiteter',
           'rosDialog.appliesToSystemRosHint':
             'Dekker flere entiteter og vises som RoS også for de andre entitetene som er lagt til.',
+          'rosDialog.appliesToNightlyRefreshHint':
+            'Endringer i hvilke entiteter denne RoS-en gjelder for oppdateres om natten, så synligheten på entiteter som legges til eller fjernes endres først i morgen.',
           'rosDialog.appliesToMissingCurrentEntity':
             'Gjeldende komponent ({{entityRef}}) er ikke inkludert. Endre valget for å legge den til før du lagrer.',
           'rosDialog.appliesToMissingEntities':

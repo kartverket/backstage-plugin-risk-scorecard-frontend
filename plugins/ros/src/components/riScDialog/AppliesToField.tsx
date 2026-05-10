@@ -27,7 +27,7 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
   const catalogApi = useApi(catalogApiRef);
   const [catalogEntityRefs, setCatalogEntityRefs] = useState<string[]>([]);
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
-  const { field } = useController({
+  const { field, fieldState } = useController({
     control,
     name: 'content.appliesTo',
   });
@@ -111,6 +111,7 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
   }
 
   const hasSystemRiScScope = selectedEntityRefs.length > 1;
+  const shouldShowNightlyRefreshHint = hasSystemRiScScope || fieldState.isDirty;
 
   return (
     <FormControl className={formStyles.formControl}>
@@ -160,6 +161,11 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
       />
       {hasSystemRiScScope && (
         <FormHelperText>{t('rosDialog.appliesToSystemRosHint')}</FormHelperText>
+      )}
+      {shouldShowNightlyRefreshHint && (
+        <Alert severity="info">
+          {t('rosDialog.appliesToNightlyRefreshHint')}
+        </Alert>
       )}
       {isMissingCurrentEntityRef && (
         <Alert severity="warning">
