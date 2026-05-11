@@ -98,8 +98,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   const [isRequesting, setIsRequesting] = useState<boolean>(false);
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const repoInfo = useGithubRepositoryInformation();
-  const { riScs: systemRiScs } =
-    useSystemRiScsForCurrentEntity();
+  const { riScs: systemRiScs } = useSystemRiScsForCurrentEntity();
 
   const {
     fetchRiScs,
@@ -298,17 +297,16 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           });
         }
 
-        // If there are no accessible RiScs, try to navigate to the first locked one
-        if (fetchedRiScs.length === 0) {
-          if (fetchedLockedRiScs.length > 0 && !riScIdFromParams) {
+        if (!riScIdFromParams) {
+          // If there is no RiSc ID in the URL
+
+          if (fetchedRiScs.length > 0) {
+            navigate(getRiScPath({ riScId: fetchedRiScs[0].id }));
+          } else if (fetchedLockedRiScs.length > 0) {
             navigate(getRiScPath({ riScId: fetchedLockedRiScs[0].id }));
           }
-          return;
-        }
 
-        // If there is no RiSc ID in the URL, navigate to the first RiSc
-        if (!riScIdFromParams) {
-          navigate(getRiScPath({ riScId: fetchedRiScs[0].id }));
+          // If there are system-RiScs the user will see a message that they need to choose since changing component automatically is not good UX.
           return;
         }
 
@@ -318,11 +316,10 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         );
 
         // If there is an invalid RiSc ID in the URL (not accessible and not locked), navigate to the first RiSc
-        if (!riSc && !isLockedRiSc) {
+        if (fetchedRiScs.length > 0 && !riSc && !isLockedRiSc) {
           navigate(getRiScPath({ riScId: fetchedRiScs[0].id }), {
             state: t('errorMessages.RiScDoesNotExist'),
           });
-          return;
         }
       },
       loginRejected => {
