@@ -173,7 +173,7 @@ Remember to prefix custom styles with 'ros-' to avoid conflicts with other plugi
 }
 
 /* 
-Remove this when backstage-ui hits v0.15 (which contains a fix).
+Remove this when backstage-ui hits v0.15, which contains a fix.
 Fix for Firefox: the @backstage/ui Card component uses a scroll-fade gradient
    (::before on CardBody) controlled by animation-timeline: scroll(). Firefox does
    not support scroll-driven animations, so the gradient becomes permanently visible
