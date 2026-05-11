@@ -12,7 +12,6 @@ import type {
 import { buildRiskScorecardRiScIndex } from './riscIndex';
 import { RiScIndexScheduledRefresh } from './riscIndexScheduledRefresh';
 import type { RiScIndexStore } from './riscIndexStore';
-import type { RiScIndexSnapshotStore } from './riscIndexSnapshotStore';
 
 jest.mock('./riscIndex', () => ({
   buildRiskScorecardRiScIndex: jest.fn(),
@@ -42,7 +41,6 @@ describe('RiScIndexScheduledRefresh', () => {
   it('refreshes and stores the index when the scheduled task runs', async () => {
     const scheduler = createScheduler();
     const riScIndexStore = createRiScIndexStore();
-    const snapshotStore = createSnapshotStore();
     const index = [
       {
         riScId: 'risc-1',
@@ -53,41 +51,26 @@ describe('RiScIndexScheduledRefresh', () => {
     ];
     buildIndexMock.mockResolvedValue(index);
 
-    await createRefresh({ scheduler, riScIndexStore, snapshotStore }).start();
+    await createRefresh({ scheduler, riScIndexStore }).start();
 
     const scheduledTask = jest.mocked(scheduler.scheduleTask).mock.calls[0][0];
     await scheduledTask.fn(new AbortController().signal);
 
     expect(buildIndexMock).toHaveBeenCalledTimes(1);
-    expect(riScIndexStore.replaceSnapshot).toHaveBeenCalledWith(index);
-    expect(snapshotStore.replaceSnapshot).toHaveBeenCalledWith(index);
+    expect(riScIndexStore.replaceIndex).toHaveBeenCalledWith(index);
   });
 
-  it('loads a persisted snapshot on startup', async () => {
+  it('does not trigger an immediate refresh when a persisted index exists', async () => {
     const scheduler = createScheduler();
-    const riScIndexStore = createRiScIndexStore();
-    const snapshotStore = createSnapshotStore();
-    const persistedSnapshot = [
-      {
-        riScId: 'risc-1',
-        sourceEntityRef: 'component:default/source-1',
-        appliesTo: ['component:default/kv-ros-test-1'],
-        lastSavedAt: '2026-05-01T08:30:00Z',
-      },
-    ];
-    jest
-      .mocked(snapshotStore.readSnapshot)
-      .mockResolvedValue(persistedSnapshot);
+    const riScIndexStore = createRiScIndexStore({ hasEntries: true });
 
-    await createRefresh({ scheduler, riScIndexStore, snapshotStore }).start();
+    await createRefresh({ scheduler, riScIndexStore }).start();
 
-    expect(riScIndexStore.replaceSnapshot).toHaveBeenCalledWith(
-      persistedSnapshot,
-    );
+    expect(riScIndexStore.hasEntries).toHaveBeenCalled();
     expect(scheduler.triggerTask).not.toHaveBeenCalled();
   });
 
-  it('triggers the scheduled task when no persisted snapshot exists', async () => {
+  it('triggers the scheduled task when no persisted index exists', async () => {
     const scheduler = createScheduler();
 
     await createRefresh({ scheduler }).start();
@@ -147,13 +130,11 @@ function createRefresh({
     },
   }),
   riScIndexStore = createRiScIndexStore(),
-  snapshotStore = createSnapshotStore(),
 }: {
   logger?: LoggerService;
   scheduler?: SchedulerService;
   config?: RootConfigService;
   riScIndexStore?: RiScIndexStore;
-  snapshotStore?: RiScIndexSnapshotStore;
 } = {}): RiScIndexScheduledRefresh {
   return new RiScIndexScheduledRefresh({
     logger,
@@ -162,7 +143,6 @@ function createRefresh({
     config,
     scheduler,
     riScIndexStore,
-    snapshotStore,
   });
 }
 
@@ -175,17 +155,15 @@ function createScheduler(): SchedulerService {
   } as unknown as SchedulerService;
 }
 
-function createSnapshotStore(): RiScIndexSnapshotStore {
+function createRiScIndexStore({
+  hasEntries = false,
+}: { hasEntries?: boolean } = {}): RiScIndexStore {
   return {
-    readSnapshot: jest.fn().mockResolvedValue(undefined),
-    replaceSnapshot: jest.fn().mockResolvedValue(undefined),
-  };
-}
-
-function createRiScIndexStore(): RiScIndexStore {
-  return {
-    replaceSnapshot: jest.fn(),
-    getRiScsForEntityRef: jest.fn(),
+    hasEntries: jest.fn().mockResolvedValue(hasEntries),
+    replaceIndex: jest.fn().mockResolvedValue(undefined),
+    upsertEntry: jest.fn().mockResolvedValue(undefined),
+    deleteEntry: jest.fn().mockResolvedValue(undefined),
+    getRiScsForEntityRef: jest.fn().mockResolvedValue([]),
   };
 }
 

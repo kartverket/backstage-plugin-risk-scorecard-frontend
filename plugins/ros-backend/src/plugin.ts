@@ -3,9 +3,8 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { CatalogClient } from '@backstage/catalog-client';
-import { DatabaseRiScIndexSnapshotStore } from './service/riscIndexSnapshotStore';
 import { RiScIndexScheduledRefresh } from './service/riscIndexScheduledRefresh';
-import { createInMemoryRiScIndexStore } from './service/riscIndexStore';
+import { DatabaseRiScIndexStore } from './service/riscIndexStore';
 import { createRouter } from './service/router';
 
 export const riskScorecardBackendPlugin = createBackendPlugin({
@@ -35,7 +34,7 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
         const catalogClient = new CatalogClient({
           discoveryApi: discovery,
         });
-        const riScIndexStore = createInMemoryRiScIndexStore();
+        const riScIndexStore = new DatabaseRiScIndexStore(database);
         const refresher = new RiScIndexScheduledRefresh({
           logger,
           discovery,
@@ -43,7 +42,6 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
           config,
           scheduler,
           riScIndexStore,
-          snapshotStore: new DatabaseRiScIndexSnapshotStore(database),
         });
 
         httpRouter.use(

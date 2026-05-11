@@ -6,13 +6,12 @@ import type { AuthService } from '@backstage/backend-plugin-api';
 import type { CatalogApi } from '@backstage/catalog-client';
 import express from 'express';
 import { AddressInfo } from 'net';
-import { createInMemoryRiScIndexStore } from './riscIndexStore';
+import type { RiScIndexStore } from './riscIndexStore';
 import { createRouter } from './router';
-
-const riScIndexStore = createInMemoryRiScIndexStore();
 
 describe('createRouter', () => {
   it('returns RiScs for an entity ref', async () => {
+    const riScIndexStore = createRiScIndexStore();
     const riSc1 = {
       riScId: 'risc-1',
       sourceEntityRef: 'component:default/source-1',
@@ -29,10 +28,13 @@ describe('createRouter', () => {
       lastSavedAt: '2026-05-01T08:30:00Z',
     };
 
-    riScIndexStore.replaceSnapshot([riSc1, riSc2]);
+    jest
+      .mocked(riScIndexStore.getRiScsForEntityRef)
+      .mockResolvedValue([riSc1, riSc2]);
 
     const response = await makeRequest(
       '/riscs?entityRef=component:default/kv-ros-test-6',
+      { riScIndexStore },
     );
 
     expect(response.status).toBe(200);
@@ -40,6 +42,7 @@ describe('createRouter', () => {
   });
 
   it('returns RiScs for components in a system entity ref', async () => {
+    const riScIndexStore = createRiScIndexStore();
     const riSc1 = {
       riScId: 'risc-1',
       sourceEntityRef: 'component:default/source-1',
@@ -55,7 +58,18 @@ describe('createRouter', () => {
       ],
       lastSavedAt: '2026-05-01T08:30:00Z',
     };
-    riScIndexStore.replaceSnapshot([riSc1, riSc2]);
+    jest
+      .mocked(riScIndexStore.getRiScsForEntityRef)
+      .mockImplementation(async entityRef => {
+        if (entityRef === 'component:default/kv-ros-test-1') {
+          return [riSc2];
+        }
+        if (entityRef === 'component:default/kv-ros-test-6') {
+          return [riSc1, riSc2];
+        }
+
+        return [];
+      });
     const getEntities = jest.fn().mockResolvedValue({
       items: [
         {
@@ -100,8 +114,6 @@ describe('createRouter', () => {
   });
 
   it('returns 400 when entityRef is missing', async () => {
-    riScIndexStore.replaceSnapshot([]);
-
     const response = await makeRequest('/riscs');
 
     expect(response.status).toBe(400);
@@ -111,16 +123,12 @@ describe('createRouter', () => {
   });
 });
 
-afterEach(() => {
-  riScIndexStore.replaceSnapshot([]);
-});
-
 async function makeRequest(
   path: string,
-  options?: Parameters<typeof createRouter>[0],
+  options?: Partial<Parameters<typeof createRouter>[0]>,
 ): Promise<{ status: number; body: unknown }> {
   const app = express();
-  app.use(await createRouter(options ?? createRouterOptions()));
+  app.use(await createRouter(createRouterOptions(options)));
 
   const server = await new Promise<ReturnType<typeof app.listen>>(resolve => {
     const startedServer = app.listen(0, () => resolve(startedServer));
@@ -159,12 +167,25 @@ function createAuthService(): AuthService {
   } as unknown as AuthService;
 }
 
-function createRouterOptions(): Parameters<typeof createRouter>[0] {
+function createRiScIndexStore(): RiScIndexStore {
+  return {
+    hasEntries: jest.fn().mockResolvedValue(false),
+    replaceIndex: jest.fn().mockResolvedValue(undefined),
+    upsertEntry: jest.fn().mockResolvedValue(undefined),
+    deleteEntry: jest.fn().mockResolvedValue(undefined),
+    getRiScsForEntityRef: jest.fn().mockResolvedValue([]),
+  };
+}
+
+function createRouterOptions(
+  options?: Partial<Parameters<typeof createRouter>[0]>,
+): Parameters<typeof createRouter>[0] {
   return {
     catalogClient: {
       getEntities: jest.fn().mockResolvedValue({ items: [] }),
     } as unknown as CatalogApi,
     auth: createAuthService(),
-    riScIndexStore,
+    riScIndexStore: createRiScIndexStore(),
+    ...options,
   };
 }

@@ -9,7 +9,6 @@ import {
 } from '@backstage/backend-plugin-api';
 import { buildRiskScorecardRiScIndex } from './riscIndex';
 import type { RiScIndexStore } from './riscIndexStore';
-import type { RiScIndexSnapshotStore } from './riscIndexSnapshotStore';
 
 const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
   frequency: { cron: '0 0 * * *' },
@@ -25,7 +24,6 @@ export class RiScIndexScheduledRefresh {
   private readonly config: RootConfigService;
   private readonly scheduler: SchedulerService;
   private readonly riScIndexStore: RiScIndexStore;
-  private readonly snapshotStore: RiScIndexSnapshotStore;
   private readonly schedule: SchedulerServiceTaskScheduleDefinition;
 
   constructor(options: {
@@ -35,7 +33,6 @@ export class RiScIndexScheduledRefresh {
     config: RootConfigService;
     scheduler: SchedulerService;
     riScIndexStore: RiScIndexStore;
-    snapshotStore: RiScIndexSnapshotStore;
   }) {
     this.logger = options.logger.child({
       module: 'risk-scorecard-risc-index',
@@ -45,7 +42,6 @@ export class RiScIndexScheduledRefresh {
     this.config = options.config;
     this.scheduler = options.scheduler;
     this.riScIndexStore = options.riScIndexStore;
-    this.snapshotStore = options.snapshotStore;
 
     const scheduleConfig = this.config.getOptionalConfig(
       riscIndexScheduleConfigPath,
@@ -62,7 +58,7 @@ export class RiScIndexScheduledRefresh {
   }
 
   async start(): Promise<void> {
-    const hasPersistedSnapshot = await this.loadPersistedSnapshot();
+    const hasPersistedIndex = await this.hasPersistedIndex();
 
     this.logger.info('Scheduling RiSc index refresh', {
       taskId,
@@ -76,9 +72,9 @@ export class RiScIndexScheduledRefresh {
       },
     });
 
-    if (!hasPersistedSnapshot) {
+    if (!hasPersistedIndex) {
       this.logger.info(
-        'Triggering RiSc index refresh because no persisted snapshot was found',
+        'Triggering RiSc index refresh because no persisted index was found',
         { taskId },
       );
       await this.scheduler.triggerTask(taskId);
@@ -95,10 +91,9 @@ export class RiScIndexScheduledRefresh {
         auth: this.auth,
         config: this.config,
       });
-      this.riScIndexStore.replaceSnapshot(riScIndex);
-      await this.snapshotStore.replaceSnapshot(riScIndex);
+      await this.riScIndexStore.replaceIndex(riScIndex);
 
-      this.logger.info('Stored RiSc index snapshot', {
+      this.logger.info('Stored RiSc index', {
         analysisCount: riScIndex.length,
       });
     } catch (error) {
@@ -110,27 +105,15 @@ export class RiScIndexScheduledRefresh {
     }
   }
 
-  private async loadPersistedSnapshot(): Promise<boolean> {
+  private async hasPersistedIndex(): Promise<boolean> {
     try {
-      const persistedSnapshot = await this.snapshotStore.readSnapshot();
-
-      if (!persistedSnapshot) {
-        this.logger.info('No persisted RiSc index snapshot found');
-        return false;
-      }
-
-      this.riScIndexStore.replaceSnapshot(persistedSnapshot);
-
-      this.logger.info('Loaded persisted RiSc index snapshot', {
-        analysisCount: persistedSnapshot.length,
-      });
-      return true;
+      return await this.riScIndexStore.hasEntries();
     } catch (error) {
       if (error instanceof Error) {
-        this.logger.error('Failed to load persisted RiSc index snapshot', error);
+        this.logger.error('Failed to inspect persisted RiSc index', error);
       } else {
         this.logger.error(
-          `Failed to load persisted RiSc index snapshot: ${String(error)}`,
+          `Failed to inspect persisted RiSc index: ${String(error)}`,
         );
       }
       return false;

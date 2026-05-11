@@ -43,7 +43,8 @@ async function getRiScsForEntityRef(
   entityRef: string,
   options: RouterOptions,
 ): Promise<readonly RiScIndexEntry[]> {
-  const directMatches = options.riScIndexStore.getRiScsForEntityRef(entityRef);
+  const directMatches =
+    await options.riScIndexStore.getRiScsForEntityRef(entityRef);
 
   if (!isSystemEntityRef(entityRef)) {
     return directMatches;
@@ -54,12 +55,15 @@ async function getRiScsForEntityRef(
     options.catalogClient,
     options.auth,
   );
+  const componentMatches = await Promise.all(
+    componentRefs.map(componentRef =>
+      options.riScIndexStore.getRiScsForEntityRef(componentRef),
+    ),
+  );
 
   return deduplicateRiScIndexReferences([
     ...directMatches,
-    ...componentRefs.flatMap(componentRef =>
-      options.riScIndexStore.getRiScsForEntityRef(componentRef),
-    ),
+    ...componentMatches.flat(),
   ]);
 }
 
@@ -94,7 +98,7 @@ function isSystemEntityRef(entityRef: string): boolean {
 }
 
 function deduplicateRiScIndexReferences(
-  references: RiScIndexEntry[],
+  references: readonly RiScIndexEntry[],
 ): readonly RiScIndexEntry[] {
   const referencesByKey = new Map<string, RiScIndexEntry>();
 
