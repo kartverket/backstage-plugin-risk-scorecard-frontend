@@ -218,7 +218,7 @@ const serviceEntityPage = (
       {techdocsContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route path={URLS.frontend.risc} title="ROS">
+    <EntityLayout.Route path={URLS.frontend.risc} title="Operasjonell RoS">
       <RiScPage />
     </EntityLayout.Route>
   </EntityLayout>
@@ -253,7 +253,7 @@ const websiteEntityPage = (
       <EntityLighthouseContent />
     </EntityLayout.Route>
 
-    <EntityLayout.Route path={URLS.frontend.risc} title="Risk Scorecard">
+    <EntityLayout.Route path={URLS.frontend.risc} title="Operasjonell RoS">
       <RiScPage />
     </EntityLayout.Route>
   </EntityLayout>
@@ -415,7 +415,7 @@ const systemPage = (
       />
     </EntityLayout.Route>
 
-    <EntityLayout.Route path={URLS.frontend.risc} title="ROS">
+    <EntityLayout.Route path={URLS.frontend.risc} title="Operasjonell RoS">
       <RiScPage />
     </EntityLayout.Route>
   </EntityLayout>
