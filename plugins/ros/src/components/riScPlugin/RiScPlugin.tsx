@@ -109,8 +109,10 @@ export function RiScPlugin() {
                 className={riscStyles.componentLayout}
               >
                 <RiScSelectionCard />
-                {/*TODO: Fjern hardkodet tekst og finn bedre oppførsel når det kun finnes system-RoS (Oppgave laget i notion)*/}
-                {systemRiScs.length > 0 && <span>System-RoS kan velges i dropdown</span>}
+                {/* TODO: Fjern hardkodet tekst og finn bedre oppførsel når det kun finnes system-RoS (Oppgave laget i notion) */}
+                {systemRiScs.length > 0 && (
+                  <span>System-RoS kan velges i dropdown</span>
+                )}
                 <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
               </Flex>
             )}

@@ -103,10 +103,7 @@ function deduplicateRiScIndexReferences(
   const referencesByKey = new Map<string, RiScIndexEntry>();
 
   for (const reference of references) {
-    referencesByKey.set(
-      `${reference.sourceEntityRef}:${reference.riScId}`,
-      reference,
-    );
+    referencesByKey.set(reference.sourceFilePath, reference);
   }
 
   return Object.freeze([...referencesByKey.values()]);

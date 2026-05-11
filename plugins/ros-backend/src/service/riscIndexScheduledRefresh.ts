@@ -8,7 +8,7 @@ import {
   type SchedulerServiceTaskScheduleDefinition,
 } from '@backstage/backend-plugin-api';
 import { buildRiskScorecardRiScIndex } from './riscIndex';
-import type { RiScIndexStore } from './riscIndexStore';
+import type { RiScIndexEntry, RiScIndexStore } from './riscIndexStore';
 
 const defaultSchedule: SchedulerServiceTaskScheduleDefinition = {
   frequency: { cron: '0 0 * * *' },
@@ -85,11 +85,13 @@ export class RiScIndexScheduledRefresh {
     this.logger.info('Starting scheduled RiSc index refresh');
 
     try {
+      const previousIndex = await this.getPreviousIndex();
       const riScIndex = await buildRiskScorecardRiScIndex({
         logger: this.logger,
         discovery: this.discovery,
         auth: this.auth,
         config: this.config,
+        previousIndex,
       });
       await this.riScIndexStore.replaceIndex(riScIndex);
 
@@ -117,6 +119,21 @@ export class RiScIndexScheduledRefresh {
         );
       }
       return false;
+    }
+  }
+
+  private async getPreviousIndex(): Promise<readonly RiScIndexEntry[]> {
+    try {
+      return await this.riScIndexStore.getAllRiScs();
+    } catch (error) {
+      if (error instanceof Error) {
+        this.logger.error('Failed to load previous RiSc index', error);
+      } else {
+        this.logger.error(
+          `Failed to load previous RiSc index: ${String(error)}`,
+        );
+      }
+      return [];
     }
   }
 }

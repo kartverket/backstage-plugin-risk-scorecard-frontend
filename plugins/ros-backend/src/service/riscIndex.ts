@@ -52,11 +52,13 @@ export async function buildRiskScorecardRiScIndex({
   discovery,
   auth,
   config,
+  previousIndex,
 }: {
   logger: LoggerService;
   discovery: DiscoveryService;
   auth: AuthService;
   config: { getOptionalString?(key: string): string | undefined };
+  previousIndex?: readonly RiScIndexEntry[];
 }): Promise<RiScIndexEntry[]> {
   const catalogToken = await auth.getPluginRequestToken({
     onBehalfOf: await auth.getOwnServiceCredentials(),
@@ -72,6 +74,7 @@ export async function buildRiskScorecardRiScIndex({
     catalogClient,
     catalogToken: catalogToken.token,
     config,
+    previousIndex,
   });
 }
 
@@ -80,11 +83,13 @@ async function getRiskScorecardRiScFilesToIndex({
   catalogClient,
   catalogToken,
   config,
+  previousIndex = [],
 }: {
   logger: LoggerService;
   catalogClient: CatalogApi;
   catalogToken: string;
   config: { getOptionalString?(key: string): string | undefined };
+  previousIndex?: readonly RiScIndexEntry[];
 }): Promise<RiScIndexEntry[]> {
   const repos = await fetchReposToIndexFromCatalog(
     catalogClient,
@@ -101,15 +106,22 @@ async function getRiskScorecardRiScFilesToIndex({
 
   const riScFiles: RiScIndexEntry[] = [];
   const fetchStartedAt = Date.now();
+  let failedRepoCount = 0;
+  let fallbackAnalysisCount = 0;
 
   for (const repo of repos) {
     const integration = integrations.github.byUrl(repo.repoRootUrl);
+    const previousRepoFiles = getPreviousRiScFilesForRepo(previousIndex, repo);
 
     if (!integration) {
+      failedRepoCount += 1;
+      fallbackAnalysisCount += previousRepoFiles.length;
       logger.warn('Skipping repo without GitHub integration', {
         repo: repo.repoRootUrl,
         repoRootUrl: repo.repoRootUrl,
+        fallbackAnalysisCount: previousRepoFiles.length,
       });
+      riScFiles.push(...previousRepoFiles);
       continue;
     }
 
@@ -123,20 +135,37 @@ async function getRiskScorecardRiScFilesToIndex({
 
       riScFiles.push(...repoFiles);
     } catch (error) {
+      failedRepoCount += 1;
+      fallbackAnalysisCount += previousRepoFiles.length;
       logger.error('Failed to index RiSc files for repo', {
         repo: repo.repoRootUrl,
         error: error instanceof Error ? error.message : String(error),
+        fallbackAnalysisCount: previousRepoFiles.length,
       });
+      riScFiles.push(...previousRepoFiles);
     }
   }
 
   logger.info('Finished building RiSc index', {
     repoCount: repos.length,
+    failedRepoCount,
+    fallbackAnalysisCount,
     analysisCount: riScFiles.length,
     fetchDurationMs: Date.now() - fetchStartedAt,
   });
 
   return riScFiles;
+}
+
+function getPreviousRiScFilesForRepo(
+  previousIndex: readonly RiScIndexEntry[],
+  repo: RepoToIndex,
+): RiScIndexEntry[] {
+  const repoSourcePathPrefix = `${repo.repoRootUrl}/`;
+
+  return previousIndex.filter(entry =>
+    entry.sourceFilePath.startsWith(repoSourcePathPrefix),
+  );
 }
 
 async function fetchReposToIndexFromCatalog(
@@ -300,6 +329,7 @@ async function getRiScFiles({
         const appliesTo = parseAppliesTo(rawText, sourceUrl, logger);
 
         return {
+          sourceFilePath: getSourceFilePath(repo, entry.path),
           riScId,
           sourceEntityRef,
           appliesTo: appliesTo ?? repo.defaultEntityRefs,
@@ -309,6 +339,12 @@ async function getRiScFiles({
   );
 
   return files.filter((file): file is RiScIndexEntry => file !== undefined);
+}
+
+function getSourceFilePath(repo: RepoToIndex, filePath: string): string {
+  // The identity intentionally excludes branch/ref so indexing multiple branches
+  // merges the same RiSc file path into one entry.
+  return `${repo.repoRootUrl}/${filePath}`;
 }
 
 function getRiScIdFromFileName(fileName: string): string | undefined {

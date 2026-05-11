@@ -11,7 +11,7 @@ import type {
 } from '@backstage/backend-plugin-api';
 import { buildRiskScorecardRiScIndex } from './riscIndex';
 import { RiScIndexScheduledRefresh } from './riscIndexScheduledRefresh';
-import type { RiScIndexStore } from './riscIndexStore';
+import type { RiScIndexEntry, RiScIndexStore } from './riscIndexStore';
 
 jest.mock('./riscIndex', () => ({
   buildRiskScorecardRiScIndex: jest.fn(),
@@ -43,6 +43,8 @@ describe('RiScIndexScheduledRefresh', () => {
     const riScIndexStore = createRiScIndexStore();
     const index = [
       {
+        sourceFilePath:
+          'https://github.com/org/repo/.security/risc/risc-1.risc.yaml',
         riScId: 'risc-1',
         sourceEntityRef: 'component:default/source-1',
         appliesTo: ['component:default/kv-ros-test-1'],
@@ -58,6 +60,83 @@ describe('RiScIndexScheduledRefresh', () => {
 
     expect(buildIndexMock).toHaveBeenCalledTimes(1);
     expect(riScIndexStore.replaceIndex).toHaveBeenCalledWith(index);
+  });
+
+  it('passes the previous index to the index refresh', async () => {
+    const scheduler = createScheduler();
+    const previousIndex = [
+      {
+        sourceFilePath:
+          'https://github.com/org/repo/.security/risc/risc-previous.risc.yaml',
+        riScId: 'risc-previous',
+        sourceEntityRef: 'component:default/previous-source',
+        appliesTo: ['component:default/kv-ros-test-1'],
+        lastSavedAt: '2026-05-01T08:30:00Z',
+      },
+    ];
+    const refreshedIndex = [
+      {
+        sourceFilePath:
+          'https://github.com/org/repo/.security/risc/risc-refreshed.risc.yaml',
+        riScId: 'risc-refreshed',
+        sourceEntityRef: 'component:default/source-1',
+        appliesTo: ['component:default/kv-ros-test-2'],
+        lastSavedAt: '2026-05-02T08:30:00Z',
+      },
+    ];
+    const riScIndexStore = createRiScIndexStore({
+      previousIndex,
+      hasEntries: true,
+    });
+    buildIndexMock.mockResolvedValue(refreshedIndex);
+
+    await createRefresh({ scheduler, riScIndexStore }).start();
+
+    const scheduledTask = jest.mocked(scheduler.scheduleTask).mock.calls[0][0];
+    await scheduledTask.fn(new AbortController().signal);
+
+    expect(riScIndexStore.getAllRiScs).toHaveBeenCalled();
+    expect(buildIndexMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        previousIndex,
+      }),
+    );
+    expect(riScIndexStore.replaceIndex).toHaveBeenCalledWith(refreshedIndex);
+  });
+
+  it('refreshes with an empty previous index when loading the previous index fails', async () => {
+    const scheduler = createScheduler();
+    const logger = createLogger();
+    const refreshedIndex = [
+      {
+        sourceFilePath:
+          'https://github.com/org/repo/.security/risc/risc-1.risc.yaml',
+        riScId: 'risc-1',
+        sourceEntityRef: 'component:default/source-1',
+        appliesTo: ['component:default/kv-ros-test-1'],
+        lastSavedAt: '2026-05-01T08:30:00Z',
+      },
+    ];
+    const riScIndexStore = createRiScIndexStore({
+      getAllRiScsError: new Error('database unavailable'),
+    });
+    buildIndexMock.mockResolvedValue(refreshedIndex);
+
+    await createRefresh({ scheduler, logger, riScIndexStore }).start();
+
+    const scheduledTask = jest.mocked(scheduler.scheduleTask).mock.calls[0][0];
+    await scheduledTask.fn(new AbortController().signal);
+
+    expect(buildIndexMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        previousIndex: [],
+      }),
+    );
+    expect(logger.error).toHaveBeenCalledWith(
+      'Failed to load previous RiSc index',
+      expect.any(Error),
+    );
+    expect(riScIndexStore.replaceIndex).toHaveBeenCalledWith(refreshedIndex);
   });
 
   it('does not trigger an immediate refresh when a persisted index exists', async () => {
@@ -157,9 +236,24 @@ function createScheduler(): SchedulerService {
 
 function createRiScIndexStore({
   hasEntries = false,
-}: { hasEntries?: boolean } = {}): RiScIndexStore {
+  previousIndex = [],
+  getAllRiScsError,
+}: {
+  hasEntries?: boolean;
+  previousIndex?: RiScIndexEntry[];
+  getAllRiScsError?: Error;
+} = {}): RiScIndexStore {
   return {
     hasEntries: jest.fn().mockResolvedValue(hasEntries),
+    getAllRiScs: jest
+      .fn()
+      .mockImplementation(async () => {
+        if (getAllRiScsError) {
+          throw getAllRiScsError;
+        }
+
+        return previousIndex;
+      }),
     replaceIndex: jest.fn().mockResolvedValue(undefined),
     upsertEntry: jest.fn().mockResolvedValue(undefined),
     deleteEntry: jest.fn().mockResolvedValue(undefined),

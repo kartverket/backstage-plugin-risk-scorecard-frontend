@@ -82,7 +82,8 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
                 ...sameSystemEntitiesResponse.items,
                 ...allEntitiesResponse.items,
               ].map(
-                entity => backstageAppliesToPrefix + stringifyEntityRef(entity),
+                optionEntity =>
+                  backstageAppliesToPrefix + stringifyEntityRef(optionEntity),
               ),
             ),
           ),

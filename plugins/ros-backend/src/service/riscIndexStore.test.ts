@@ -55,6 +55,25 @@ describe('DatabaseRiScIndexStore', () => {
     ).resolves.toEqual([]);
   });
 
+  it('returns the full persisted index', async () => {
+    const riSc1 = createRiScIndexEntry({
+      riScId: 'risc-1',
+      sourceEntityRef: 'component:default/source-1',
+      appliesTo: ['component:default/kv-ros-test-1'],
+      lastSavedAt: '2026-05-01T08:30:00Z',
+    });
+    const riSc2 = createRiScIndexEntry({
+      riScId: 'risc-2',
+      sourceEntityRef: 'component:default/source-2',
+      appliesTo: ['component:default/kv-ros-test-2'],
+      lastSavedAt: '2026-05-02T08:30:00Z',
+    });
+
+    await store.replaceIndex([riSc2, riSc1]);
+
+    await expect(store.getAllRiScs()).resolves.toEqual([riSc1, riSc2]);
+  });
+
   it('replaces the full index in one database transaction', async () => {
     const oldRiSc = createRiScIndexEntry({
       riScId: 'risc-1',
@@ -136,7 +155,7 @@ describe('DatabaseRiScIndexStore', () => {
     });
 
     await store.replaceIndex([riSc]);
-    await store.deleteEntry(riSc.sourceEntityRef, riSc.riScId);
+    await store.deleteEntry(riSc.sourceFilePath);
 
     await expect(
       store.getRiScsForEntityRef('component:default/kv-ros-test-1'),
@@ -164,8 +183,17 @@ describe('DatabaseRiScIndexStore', () => {
   });
 });
 
-function createRiScIndexEntry(entry: RiScIndexEntry): RiScIndexEntry {
-  return entry;
+function createRiScIndexEntry(
+  entry: Omit<RiScIndexEntry, 'sourceFilePath'> & {
+    sourceFilePath?: string;
+  },
+): RiScIndexEntry {
+  return {
+    sourceFilePath:
+      entry.sourceFilePath ??
+      `https://github.com/org/repo/.security/risc/${entry.riScId}.risc.yaml`,
+    ...entry,
+  };
 }
 
 function createDatabaseService(client: Knex): DatabaseService {

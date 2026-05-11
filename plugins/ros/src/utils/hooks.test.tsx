@@ -964,12 +964,16 @@ describe('useAuthenticatedFetch', () => {
         ok: true,
         json: async () => [
           {
+            sourceFilePath:
+              'https://github.com/org/repo-6/.security/risc/risc-1.risc.yaml',
             riScId: 'risc-1',
             sourceEntityRef: 'component:default/kv-ros-test-6',
             appliesTo: ['component:default/kv-ros-test-6'],
             lastSavedAt: '2026-05-02T08:30:00Z',
           },
           {
+            sourceFilePath:
+              'https://github.com/org/repo-4/.security/risc/risc-7ssVK.risc.yaml',
             riScId: 'risc-7ssVK',
             sourceEntityRef: 'component:default/kv-ros-test-4',
             appliesTo: [
@@ -998,6 +1002,8 @@ describe('useAuthenticatedFetch', () => {
       );
       expect(result.current.riScs).toEqual([
         {
+          sourceFilePath:
+            'https://github.com/org/repo-4/.security/risc/risc-7ssVK.risc.yaml',
           riScId: 'risc-7ssVK',
           sourceEntityRef: 'component:default/kv-ros-test-4',
           appliesTo: [

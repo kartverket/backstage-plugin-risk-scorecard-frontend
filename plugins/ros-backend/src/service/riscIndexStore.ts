@@ -1,11 +1,12 @@
 import type { DatabaseService } from '@backstage/backend-plugin-api';
 
 export type RiScIndexEntryRef = {
-  riScId: string;
-  sourceEntityRef: string;
+  sourceFilePath: string;
 };
 
 export type RiScIndexEntry = RiScIndexEntryRef & {
+  riScId: string;
+  sourceEntityRef: string;
   appliesTo: string[];
   lastSavedAt: string;
 };
@@ -21,13 +22,15 @@ type QueryableDatabase = DatabaseClient | DatabaseTransaction;
 
 export type RiScIndexStore = {
   hasEntries(): Promise<boolean>;
+  getAllRiScs(): Promise<readonly RiScIndexEntry[]>;
   replaceIndex(analyses: RiScIndexEntry[]): Promise<void>;
   upsertEntry(analysis: RiScIndexEntry): Promise<void>;
-  deleteEntry(sourceEntityRef: string, riScId: string): Promise<void>;
+  deleteEntry(sourceFilePath: string): Promise<void>;
   getRiScsForEntityRef(entityRef: string): Promise<readonly RiScIndexEntry[]>;
 };
 
 type RiScIndexRow = {
+  source_file_path: string;
   source_entity_ref: string;
   risc_id: string;
   applies_to_json: string;
@@ -40,8 +43,7 @@ type RiScIndexInsertRow = RiScIndexRow & {
 
 type RiScEntityIndexRow = {
   entity_ref: string;
-  source_entity_ref: string;
-  risc_id: string;
+  source_file_path: string;
 };
 
 export class DatabaseRiScIndexStore implements RiScIndexStore {
@@ -55,10 +57,27 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
   async hasEntries(): Promise<boolean> {
     const client = await this.getClient();
     const row = await client(indexTableName)
-      .select('source_entity_ref')
+      .select('source_file_path')
       .first();
 
     return Boolean(row);
+  }
+
+  async getAllRiScs(): Promise<readonly RiScIndexEntry[]> {
+    const client = await this.getClient();
+    const rows = await client(indexTableName)
+      .select<RiScIndexRow[]>([
+        'source_file_path',
+        'source_entity_ref',
+        'risc_id',
+        'applies_to_json',
+        'last_saved_at',
+      ])
+      .orderBy([
+        { column: 'source_file_path', order: 'asc' },
+      ]);
+
+    return Object.freeze(rows.map(rowToRiScIndexEntry));
   }
 
   async replaceIndex(analyses: RiScIndexEntry[]): Promise<void> {
@@ -89,15 +108,14 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
     });
   }
 
-  async deleteEntry(sourceEntityRef: string, riScId: string): Promise<void> {
+  async deleteEntry(sourceFilePath: string): Promise<void> {
     const client = await this.getClient();
 
     await client.transaction(async tx => {
-      await deleteEntityRefs(tx, { sourceEntityRef, riScId });
+      await deleteEntityRefs(tx, { sourceFilePath });
       await tx(indexTableName)
         .where({
-          source_entity_ref: sourceEntityRef,
-          risc_id: riScId,
+          source_file_path: sourceFilePath,
         })
         .delete();
     });
@@ -110,12 +128,13 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
     const rows = await client(`${entityIndexTableName} as entity_index`)
       .join(`${indexTableName} as risc_index`, function joinIndexEntry() {
         this.on(
-          'entity_index.source_entity_ref',
+          'entity_index.source_file_path',
           '=',
-          'risc_index.source_entity_ref',
-        ).andOn('entity_index.risc_id', '=', 'risc_index.risc_id');
+          'risc_index.source_file_path',
+        );
       })
       .select<RiScIndexRow[]>([
+        'risc_index.source_file_path',
         'risc_index.source_entity_ref',
         'risc_index.risc_id',
         'risc_index.applies_to_json',
@@ -123,8 +142,7 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
       ])
       .where('entity_index.entity_ref', entityRef)
       .orderBy([
-        { column: 'risc_index.source_entity_ref', order: 'asc' },
-        { column: 'risc_index.risc_id', order: 'asc' },
+        { column: 'risc_index.source_file_path', order: 'asc' },
       ]);
 
     return Object.freeze(rows.map(rowToRiScIndexEntry));
@@ -160,22 +178,22 @@ async function createTablesIfMissing(client: DatabaseClient): Promise<void> {
   //  create new ones, wait for them to be populated, and then fix the functionality in a new change.
 
   await createTableIfMissing(client, indexTableName, table => {
+    table.string('source_file_path', 1024).notNullable();
     table.string('source_entity_ref').notNullable();
     table.string('risc_id').notNullable();
     table.text('applies_to_json').notNullable();
     table.string('last_saved_at').notNullable();
     table.timestamp('updated_at').notNullable();
-    table.primary(['source_entity_ref', 'risc_id']);
+    table.primary(['source_file_path']);
   });
 
   await createTableIfMissing(client, entityIndexTableName, table => {
     table.string('entity_ref').notNullable();
-    table.string('source_entity_ref').notNullable();
-    table.string('risc_id').notNullable();
-    table.primary(['entity_ref', 'source_entity_ref', 'risc_id']);
+    table.string('source_file_path', 1024).notNullable();
+    table.primary(['entity_ref', 'source_file_path']);
     table.index(
-      ['source_entity_ref', 'risc_id'],
-      'risk_scorecard_risc_index_entity_source_idx',
+      ['source_file_path'],
+      'risk_scorecard_risc_index_entity_source_path_idx',
     );
   });
 }
@@ -233,8 +251,10 @@ async function upsertIndexEntry(
 
   await client(indexTableName)
     .insert(row)
-    .onConflict(['source_entity_ref', 'risc_id'])
+    .onConflict(['source_file_path'])
     .merge({
+      source_entity_ref: row.source_entity_ref,
+      risc_id: row.risc_id,
       applies_to_json: row.applies_to_json,
       last_saved_at: row.last_saved_at,
       updated_at: client.fn.now(),
@@ -254,7 +274,7 @@ async function insertEntityRefs(
   for (const chunk of chunkArray(rows, 100)) {
     await client(entityIndexTableName)
       .insert(chunk)
-      .onConflict(['entity_ref', 'source_entity_ref', 'risc_id'])
+      .onConflict(['entity_ref', 'source_file_path'])
       .ignore();
   }
 }
@@ -265,8 +285,7 @@ async function deleteEntityRefs(
 ): Promise<void> {
   await client(entityIndexTableName)
     .where({
-      source_entity_ref: entry.sourceEntityRef,
-      risc_id: entry.riScId,
+      source_file_path: entry.sourceFilePath,
     })
     .delete();
 }
@@ -276,6 +295,7 @@ function toRiScIndexRow(
   entry: RiScIndexEntry,
 ): RiScIndexInsertRow {
   return {
+    source_file_path: entry.sourceFilePath,
     source_entity_ref: entry.sourceEntityRef,
     risc_id: entry.riScId,
     applies_to_json: JSON.stringify(entry.appliesTo),
@@ -287,13 +307,13 @@ function toRiScIndexRow(
 function toRiScEntityIndexRows(entry: RiScIndexEntry): RiScEntityIndexRow[] {
   return [...new Set(entry.appliesTo)].map(entityRef => ({
     entity_ref: entityRef,
-    source_entity_ref: entry.sourceEntityRef,
-    risc_id: entry.riScId,
+    source_file_path: entry.sourceFilePath,
   }));
 }
 
 function rowToRiScIndexEntry(row: RiScIndexRow): RiScIndexEntry {
   return {
+    sourceFilePath: row.source_file_path,
     riScId: row.risc_id,
     sourceEntityRef: row.source_entity_ref,
     appliesTo: JSON.parse(row.applies_to_json) as string[],
@@ -302,7 +322,7 @@ function rowToRiScIndexEntry(row: RiScIndexRow): RiScIndexEntry {
 }
 
 function getEntryKey(entry: RiScIndexEntry): string {
-  return `${entry.sourceEntityRef}:${entry.riScId}`;
+  return entry.sourceFilePath;
 }
 
 function chunkArray<T>(items: T[], chunkSize: number): T[][] {
