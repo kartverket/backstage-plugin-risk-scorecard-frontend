@@ -226,7 +226,10 @@ async function fetchReposToIndexFromCatalog(
     }
   }
 
-  return [...repos.values()];
+  return [...repos.values()].map(repo => ({
+    ...repo,
+    defaultEntityRefs: [...repo.defaultEntityRefs].sort(),
+  }));
 }
 
 function parseRepoFromCatalogInfoUrl(
@@ -317,9 +320,8 @@ async function getRiScFiles({
         const lastSavedAt = await lastSavedAtPromise;
         const sourceUrl = entry.url;
         const riScId = getRiScIdFromFileName(entry.name);
-        const sourceEntityRef = repo.defaultEntityRefs[0];
 
-        if (!riScId || !sourceEntityRef) {
+        if (!riScId) {
           return undefined;
         }
 
@@ -331,7 +333,6 @@ async function getRiScFiles({
         return {
           sourceFilePath: getSourceFilePath(repo, entry.path),
           riScId,
-          sourceEntityRef,
           appliesTo: appliesTo ?? repo.defaultEntityRefs,
           lastSavedAt,
         };

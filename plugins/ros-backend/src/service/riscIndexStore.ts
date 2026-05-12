@@ -6,7 +6,6 @@ export type RiScIndexEntryRef = {
 
 export type RiScIndexEntry = RiScIndexEntryRef & {
   riScId: string;
-  sourceEntityRef: string;
   appliesTo: string[];
   lastSavedAt: string;
 };
@@ -31,7 +30,6 @@ export type RiScIndexStore = {
 
 type RiScIndexRow = {
   source_file_path: string;
-  source_entity_ref: string;
   risc_id: string;
   applies_to_json: string;
   last_saved_at: string;
@@ -68,7 +66,6 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
     const rows = await client(indexTableName)
       .select<RiScIndexRow[]>([
         'source_file_path',
-        'source_entity_ref',
         'risc_id',
         'applies_to_json',
         'last_saved_at',
@@ -135,7 +132,6 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
       })
       .select<RiScIndexRow[]>([
         'risc_index.source_file_path',
-        'risc_index.source_entity_ref',
         'risc_index.risc_id',
         'risc_index.applies_to_json',
         'risc_index.last_saved_at',
@@ -179,7 +175,6 @@ async function createTablesIfMissing(client: DatabaseClient): Promise<void> {
 
   await createTableIfMissing(client, indexTableName, table => {
     table.string('source_file_path', 1024).notNullable();
-    table.string('source_entity_ref').notNullable();
     table.string('risc_id').notNullable();
     table.text('applies_to_json').notNullable();
     table.string('last_saved_at').notNullable();
@@ -253,7 +248,6 @@ async function upsertIndexEntry(
     .insert(row)
     .onConflict(['source_file_path'])
     .merge({
-      source_entity_ref: row.source_entity_ref,
       risc_id: row.risc_id,
       applies_to_json: row.applies_to_json,
       last_saved_at: row.last_saved_at,
@@ -296,7 +290,6 @@ function toRiScIndexRow(
 ): RiScIndexInsertRow {
   return {
     source_file_path: entry.sourceFilePath,
-    source_entity_ref: entry.sourceEntityRef,
     risc_id: entry.riScId,
     applies_to_json: JSON.stringify(entry.appliesTo),
     last_saved_at: entry.lastSavedAt,
@@ -315,7 +308,6 @@ function rowToRiScIndexEntry(row: RiScIndexRow): RiScIndexEntry {
   return {
     sourceFilePath: row.source_file_path,
     riScId: row.risc_id,
-    sourceEntityRef: row.source_entity_ref,
     appliesTo: JSON.parse(row.applies_to_json) as string[],
     lastSavedAt: row.last_saved_at,
   };

@@ -389,10 +389,16 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     [repoInfo.owner, repoInfo.name],
   );
 
-  function getSystemRiScPath(systemRiSc: SystemRiSc) {
-    const entityPath = getEntityPath(
-      entityRouteParams(systemRiSc.sourceEntityRef),
-    );
+  function getSystemRiScPath(systemRiSc: SystemRiSc): string {
+    const routeEntityRef = systemRiSc.appliesTo[0];
+
+    if (!routeEntityRef) {
+      throw new Error(
+        `System RiSc "${systemRiSc.riScId}" has no appliesTo entries`,
+      );
+    }
+
+    const entityPath = getEntityPath(entityRouteParams(routeEntityRef));
     return `${entityPath}/risc/${encodeURIComponent(systemRiSc.riScId)}`;
   }
 

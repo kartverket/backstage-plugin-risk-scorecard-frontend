@@ -26,7 +26,6 @@ export type LockedRiSc = {
 export type SystemRiSc = {
   sourceFilePath: string;
   riScId: string;
-  sourceEntityRef: string;
   appliesTo: string[];
   lastSavedAt: string;
 };

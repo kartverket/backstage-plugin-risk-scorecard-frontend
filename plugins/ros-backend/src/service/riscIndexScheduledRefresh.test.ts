@@ -46,7 +46,6 @@ describe('RiScIndexScheduledRefresh', () => {
         sourceFilePath:
           'https://github.com/org/repo/.security/risc/risc-1.risc.yaml',
         riScId: 'risc-1',
-        sourceEntityRef: 'component:default/source-1',
         appliesTo: ['component:default/kv-ros-test-1'],
         lastSavedAt: '2026-05-01T08:30:00Z',
       },
@@ -69,7 +68,6 @@ describe('RiScIndexScheduledRefresh', () => {
         sourceFilePath:
           'https://github.com/org/repo/.security/risc/risc-previous.risc.yaml',
         riScId: 'risc-previous',
-        sourceEntityRef: 'component:default/previous-source',
         appliesTo: ['component:default/kv-ros-test-1'],
         lastSavedAt: '2026-05-01T08:30:00Z',
       },
@@ -79,7 +77,6 @@ describe('RiScIndexScheduledRefresh', () => {
         sourceFilePath:
           'https://github.com/org/repo/.security/risc/risc-refreshed.risc.yaml',
         riScId: 'risc-refreshed',
-        sourceEntityRef: 'component:default/source-1',
         appliesTo: ['component:default/kv-ros-test-2'],
         lastSavedAt: '2026-05-02T08:30:00Z',
       },
@@ -112,7 +109,6 @@ describe('RiScIndexScheduledRefresh', () => {
         sourceFilePath:
           'https://github.com/org/repo/.security/risc/risc-1.risc.yaml',
         riScId: 'risc-1',
-        sourceEntityRef: 'component:default/source-1',
         appliesTo: ['component:default/kv-ros-test-1'],
         lastSavedAt: '2026-05-01T08:30:00Z',
       },

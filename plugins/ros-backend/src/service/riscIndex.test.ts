@@ -121,7 +121,6 @@ describe('buildRiskScorecardRiScIndex', () => {
       sourceFilePath:
         'https://github.com/org/repo/.security/risc/risc-previous.risc.yaml',
       riScId: 'risc-previous',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: ['component:default/kv-ros-test-1'],
       lastSavedAt: '2026-05-01T08:30:00Z',
     };
@@ -129,7 +128,6 @@ describe('buildRiskScorecardRiScIndex', () => {
       sourceFilePath:
         'https://github.com/org/other-repo/.security/risc/risc-other.risc.yaml',
       riScId: 'risc-other',
-      sourceEntityRef: 'component:default/other-source',
       appliesTo: ['component:default/source-1'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     };
@@ -186,7 +184,18 @@ describe('buildRiskScorecardRiScIndex', () => {
         {
           kind: 'Component',
           metadata: {
-            name: 'source-1',
+            name: 'source-b',
+            namespace: 'default',
+            annotations: {
+              'backstage.io/source-location':
+                'url:https://github.com/org/repo/blob/main/catalog-info.yaml',
+            },
+          },
+        },
+        {
+          kind: 'Component',
+          metadata: {
+            name: 'source-a',
             namespace: 'default',
             annotations: {
               'backstage.io/source-location':
@@ -254,9 +263,7 @@ describe('buildRiskScorecardRiScIndex', () => {
 
       if (requestUrl === fileApiUrl) {
         return jsonResponse({
-          content: Buffer.from(
-            'appliesTo:\n  - backstage:component:default/kv-ros-test-1\n',
-          ).toString('base64'),
+          content: Buffer.from('title: test\nversion: 1\n').toString('base64'),
           encoding: 'base64',
         });
       }
@@ -276,8 +283,10 @@ describe('buildRiskScorecardRiScIndex', () => {
         sourceFilePath:
           'https://github.com/org/repo/.security/risc/risc-branch.risc.yaml',
         riScId: 'risc-branch',
-        sourceEntityRef: 'component:default/source-1',
-        appliesTo: ['component:default/kv-ros-test-1'],
+        appliesTo: [
+          'component:default/source-a',
+          'component:default/source-b',
+        ],
         lastSavedAt: '2026-05-01T08:30:00Z',
       },
     ]);

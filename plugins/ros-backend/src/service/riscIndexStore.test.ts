@@ -28,7 +28,6 @@ describe('DatabaseRiScIndexStore', () => {
   it('returns RiScs for analyses that cover an entity ref', async () => {
     const riSc1 = createRiScIndexEntry({
       riScId: 'risc-1',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: [
         'component:default/kv-ros-test-1',
         'component:default/kv-ros-test-2',
@@ -37,7 +36,6 @@ describe('DatabaseRiScIndexStore', () => {
     });
     const riSc2 = createRiScIndexEntry({
       riScId: 'risc-2',
-      sourceEntityRef: 'component:default/source-2',
       appliesTo: ['component:default/kv-ros-test-2'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     });
@@ -58,13 +56,11 @@ describe('DatabaseRiScIndexStore', () => {
   it('returns the full persisted index', async () => {
     const riSc1 = createRiScIndexEntry({
       riScId: 'risc-1',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: ['component:default/kv-ros-test-1'],
       lastSavedAt: '2026-05-01T08:30:00Z',
     });
     const riSc2 = createRiScIndexEntry({
       riScId: 'risc-2',
-      sourceEntityRef: 'component:default/source-2',
       appliesTo: ['component:default/kv-ros-test-2'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     });
@@ -77,13 +73,11 @@ describe('DatabaseRiScIndexStore', () => {
   it('replaces the full index in one database transaction', async () => {
     const oldRiSc = createRiScIndexEntry({
       riScId: 'risc-1',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: ['component:default/kv-ros-test-1'],
       lastSavedAt: '2026-05-01T08:30:00Z',
     });
     const newRiSc = createRiScIndexEntry({
       riScId: 'risc-2',
-      sourceEntityRef: 'component:default/source-2',
       appliesTo: ['component:default/kv-ros-test-2'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     });
@@ -102,13 +96,11 @@ describe('DatabaseRiScIndexStore', () => {
   it('rolls back the previous index when a full replacement fails', async () => {
     const oldRiSc = createRiScIndexEntry({
       riScId: 'risc-1',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: ['component:default/kv-ros-test-1'],
       lastSavedAt: '2026-05-01T08:30:00Z',
     });
     const invalidRiSc = createRiScIndexEntry({
       riScId: 'risc-2',
-      sourceEntityRef: 'component:default/source-2',
       appliesTo: [null as unknown as string],
       lastSavedAt: '2026-05-02T08:30:00Z',
     });
@@ -124,13 +116,11 @@ describe('DatabaseRiScIndexStore', () => {
   it('can update one RiSc entry without rebuilding the full index', async () => {
     const firstVersion = createRiScIndexEntry({
       riScId: 'risc-1',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: ['component:default/kv-ros-test-1'],
       lastSavedAt: '2026-05-01T08:30:00Z',
     });
     const secondVersion = createRiScIndexEntry({
       riScId: 'risc-1',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: ['component:default/kv-ros-test-2'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     });
@@ -149,7 +139,6 @@ describe('DatabaseRiScIndexStore', () => {
   it('can delete one RiSc entry without rebuilding the full index', async () => {
     const riSc = createRiScIndexEntry({
       riScId: 'risc-1',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: ['component:default/kv-ros-test-1'],
       lastSavedAt: '2026-05-01T08:30:00Z',
     });
@@ -169,7 +158,6 @@ describe('DatabaseRiScIndexStore', () => {
     await store.replaceIndex([
       createRiScIndexEntry({
         riScId: 'risc-1',
-        sourceEntityRef: 'component:default/source-1',
         appliesTo: ['component:default/kv-ros-test-1'],
         lastSavedAt: '2026-05-01T08:30:00Z',
       }),

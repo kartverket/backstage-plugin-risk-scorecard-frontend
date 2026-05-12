@@ -16,7 +16,6 @@ describe('createRouter', () => {
       sourceFilePath:
         'https://github.com/org/repo-1/.security/risc/risc-1.risc.yaml',
       riScId: 'risc-1',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: ['component:default/kv-ros-test-6'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     };
@@ -24,7 +23,6 @@ describe('createRouter', () => {
       sourceFilePath:
         'https://github.com/org/repo-2/.security/risc/risc-7ssVK.risc.yaml',
       riScId: 'risc-7ssVK',
-      sourceEntityRef: 'component:default/source-2',
       appliesTo: [
         'component:default/kv-ros-test-1',
         'component:default/kv-ros-test-6',
@@ -51,7 +49,6 @@ describe('createRouter', () => {
       sourceFilePath:
         'https://github.com/org/repo-1/.security/risc/risc-1.risc.yaml',
       riScId: 'risc-1',
-      sourceEntityRef: 'component:default/source-1',
       appliesTo: ['component:default/kv-ros-test-6'],
       lastSavedAt: '2026-05-02T08:30:00Z',
     };
@@ -59,7 +56,6 @@ describe('createRouter', () => {
       sourceFilePath:
         'https://github.com/org/repo-2/.security/risc/risc-7ssVK.risc.yaml',
       riScId: 'risc-7ssVK',
-      sourceEntityRef: 'component:default/source-2',
       appliesTo: [
         'component:default/kv-ros-test-1',
         'component:default/kv-ros-test-6',

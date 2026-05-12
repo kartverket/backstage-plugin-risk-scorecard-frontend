@@ -967,7 +967,6 @@ describe('useAuthenticatedFetch', () => {
             sourceFilePath:
               'https://github.com/org/repo-6/.security/risc/risc-1.risc.yaml',
             riScId: 'risc-1',
-            sourceEntityRef: 'component:default/kv-ros-test-6',
             appliesTo: ['component:default/kv-ros-test-6'],
             lastSavedAt: '2026-05-02T08:30:00Z',
           },
@@ -975,7 +974,6 @@ describe('useAuthenticatedFetch', () => {
             sourceFilePath:
               'https://github.com/org/repo-4/.security/risc/risc-7ssVK.risc.yaml',
             riScId: 'risc-7ssVK',
-            sourceEntityRef: 'component:default/kv-ros-test-4',
             appliesTo: [
               'component:default/kv-ros-test-4',
               'component:default/kv-ros-test-6',
@@ -1005,7 +1003,6 @@ describe('useAuthenticatedFetch', () => {
           sourceFilePath:
             'https://github.com/org/repo-4/.security/risc/risc-7ssVK.risc.yaml',
           riScId: 'risc-7ssVK',
-          sourceEntityRef: 'component:default/kv-ros-test-4',
           appliesTo: [
             'component:default/kv-ros-test-4',
             'component:default/kv-ros-test-6',

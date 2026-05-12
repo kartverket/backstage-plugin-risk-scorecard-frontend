@@ -138,7 +138,7 @@ export function RiScPlugin() {
               align="center"
               className={riscStyles.componentLayout}
             >
-              {/* System RiScs should redirect to their owning component and render there as a regular or locked RiSc. */}
+              {/* System RiScs redirect through their first appliesTo entity and render there as regular or locked RiScs. */}
               <Spinner size={80} />
             </Flex>
           )}
