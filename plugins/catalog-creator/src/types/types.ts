@@ -1,0 +1,135 @@
+import { FieldErrors } from 'react-hook-form';
+import z from 'zod/v4';
+import { entitySchema } from '../schemas/formSchema';
+
+export enum AllowedEntityKinds {
+  Component = 'Component',
+  API = 'API',
+  System = 'System',
+  Domain = 'Domain',
+  Resource = 'Resource',
+}
+
+export enum ComponentTypes {
+  website = 'website',
+  library = 'library',
+  service = 'service',
+  ops = 'ops',
+  documentation = 'documentation',
+  job = 'job',
+}
+
+export enum ApiTypes {
+  openapi = 'openapi',
+  asyncapi = 'asyncapi',
+  graphql = 'graphql',
+  grpc = 'grpc',
+  wsdl = 'wsdl',
+}
+
+export enum SystemTypes {
+  product = 'product',
+  service = 'service',
+  featureset = 'feature-set',
+}
+
+export enum ResourceTypes {
+  database = 'database',
+  s3bucket = 's3-bucket',
+  kubernetescluster = 'kubernetes-cluster',
+}
+
+export enum DomainTypes {
+  productarea = 'product-area',
+  productgroup = 'product-group',
+  bundle = 'bundle',
+}
+
+export enum FunctionCriticalityLevels {
+  low = 'Lav',
+  medium = 'Middels',
+  high = 'Høy',
+}
+
+export const Kinds = {
+  API: 'API',
+  Component: 'Component',
+  System: 'System',
+  Resource: 'Resource',
+  Domain: 'Domain',
+  Template: 'Template',
+  Group: 'Group',
+  User: 'User',
+  Location: 'Location',
+  Function: 'Function',
+} as const;
+
+export type Kind = (typeof Kinds)[keyof typeof Kinds];
+
+export enum AllowedLifecycleStages {
+  experimental = 'experimental',
+  production = 'production',
+  deprecated = 'deprecated',
+}
+
+export type Status = {
+  message: string;
+  severity: 'error' | 'success' | 'warning' | 'info';
+  prUrl?: string;
+};
+
+export type FormEntity = z.infer<typeof entitySchema>;
+
+export type RequiredYamlFields = {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    title?: string;
+    description?: string;
+    namespace?: string;
+    tags?: string[];
+    labels?: Record<string, string>;
+    annotations?: Record<string, string>;
+    links?: [
+      {
+        url: string;
+        title: string;
+        type?: string;
+      },
+    ];
+  };
+  spec: {
+    owner?: string;
+    lifecycle?: string;
+    type?: string;
+    system?: string;
+    domain?: string;
+    providesApis?: string[];
+    consumesApis?: string[];
+    dependsOn?: string[];
+    implementsApis?: string[];
+    definition?:
+      | {
+          $text?: string | undefined;
+          $openapi?: string | undefined;
+          $graphql?: string | undefined;
+          $asyncapi?: string | undefined;
+        }
+      | string;
+    targets?: string[];
+    dependencyOf?: string[];
+    [key: string]: any; // Allow additional spec fields
+  };
+};
+
+type entity = z.infer<typeof entitySchema>;
+
+type ExtractEntity<T extends z.infer<typeof entitySchema>['kind']> = Extract<
+  entity,
+  { kind: T }
+>;
+
+export type EntityErrors<T extends entity['kind']> = FieldErrors<
+  ExtractEntity<T>
+>;

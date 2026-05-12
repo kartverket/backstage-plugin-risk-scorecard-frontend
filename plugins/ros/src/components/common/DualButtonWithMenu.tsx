@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import { useCallback, MouseEvent, ReactNode, HTMLAttributes } from 'react';
 import { ButtonProps } from '@backstage/ui';
 import { DualButton } from './DualButton';
 
 type MenuItemDef = {
   key: string;
-  label: React.ReactNode;
+  label: ReactNode;
   onClick: () => void;
   selected?: boolean;
 };
@@ -15,7 +15,7 @@ type DualButtonWithMenuProps = {
   propsCommon?: ButtonProps;
   menuItems?: MenuItemDef[];
   openMenuOnLeftClick?: boolean;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & HTMLAttributes<HTMLDivElement>;
 
 export function DualButtonWithMenu({
   propsLeft,
@@ -26,7 +26,7 @@ export function DualButtonWithMenu({
   ...props
 }: DualButtonWithMenuProps) {
   const handleLeftClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
+    (event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       propsLeft?.onClick?.(event as any);
       const shouldOpen =
@@ -39,7 +39,7 @@ export function DualButtonWithMenu({
   );
 
   const handleRightClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
+    (event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       propsRight?.onClick?.(event as any);
     },

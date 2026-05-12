@@ -1,0 +1,142 @@
+import { Progress } from '@backstage/core-components';
+import { Box } from '@mui/system';
+import { useState } from 'react';
+import { getSecrets } from '../../mapping/getSecretsData';
+import { useShowTrendTotal } from '../../hooks/useShowTrendTotal';
+import { ComponentScannerStatus } from '../ScannerStatus/ComponentScannerStatus';
+import { SecretsAlert } from '../SecretsOverview/SecretsAlert';
+import { Trend } from '../Trend/Trend';
+import { VulnerabilityCountsOverview } from '../VulnerabilityCounts/VulnerabilityCountsOverview';
+import { VulnerabilityTable } from '../VulnerabilityTable/VulnerabilityTable';
+import Stack from '@mui/material/Stack';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { useComponentMetricsQuery } from '../../hooks/useComponentMetricsQuery';
+import { ErrorBanner } from '../ErrorBanner';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import { RuntimeVulnerabilityTable } from '../VulnerabilityTable/RuntimeVulnerabilityTable';
+import { getScannerStatusData } from '../../mapping/getScannerData';
+import { ViewSettingsDialog } from '../ViewSettingsDialog';
+import TuneIcon from '@mui/icons-material/Tune';
+import Button from '@mui/material/Button';
+import { ComponentRiscStatus } from '../RiscStatus/ComponentRiscStatus';
+import { MetricsStatus } from '../MetricsStatus';
+
+enum TabEnum {
+  ALL_VULNERABILITIES = 0,
+  RUNTIME_VULNERABILITIES = 1,
+}
+
+export const SingleComponentPage = () => {
+  const { entity } = useEntity();
+  const componentName = entity.metadata.name;
+
+  const { data, isPending, error } = useComponentMetricsQuery(componentName);
+
+  const { showTotal, toggleShowTotal } = useShowTrendTotal();
+  const [openViewSettings, setOpenViewSettings] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<TabEnum>(0);
+  const handleTabChange = (_: React.SyntheticEvent, newValue: TabEnum) => {
+    setSelectedTab(newValue);
+  };
+
+  if (error)
+    return (
+      <ErrorBanner
+        errorTitle={`Kunne ikke hente metrikker for ${entity.metadata.name}`}
+        errorMessage={error.message}
+      />
+    );
+
+  if (isPending) return <Progress />;
+
+  const secrets = getSecrets(data);
+  const [scannerStatus] = getScannerStatusData(data);
+
+  return (
+    <Stack gap={2}>
+      <Stack direction="row" alignItems="center" gap={2}>
+        <MetricsStatus entityName={componentName} />
+        <Stack
+          flexDirection="row"
+          gap={2}
+          flex={1}
+          flexWrap="wrap"
+          sx={{ '& > *': { flex: 1 } }}
+        >
+          {secrets.length > 0 && <SecretsAlert secretsOverviewData={secrets} />}
+        </Stack>
+        <Box display="flex" alignItems="center" ml="auto" gap={0.5}>
+          <Button
+            variant="text"
+            startIcon={<TuneIcon />}
+            color="primary"
+            onClick={() => setOpenViewSettings(true)}
+          >
+            Tilpass visning
+          </Button>
+          <ViewSettingsDialog
+            open={openViewSettings}
+            onClose={() => setOpenViewSettings(false)}
+            showTotal={showTotal}
+            onToggleShowTotal={toggleShowTotal}
+          />
+        </Box>
+      </Stack>
+      <Box
+        display="grid"
+        gridTemplateColumns={{
+          sm: '1fr',
+          md: '1fr 1fr',
+          xl: '1fr 1fr 2fr 2fr',
+        }}
+        gap={2}
+        gridAutoRows="minmax(320px, 1fr)"
+      >
+        <ComponentScannerStatus scannerStatus={scannerStatus} />
+        <ComponentRiscStatus riscStatus={data.riscStatus} />
+        <VulnerabilityCountsOverview
+          data={data}
+          averageDays={data.averageTimeToSolveVulnerabilityDays}
+        />
+        <Trend componentNames={componentName} showTotal={showTotal} />
+      </Box>
+
+      {data.vulnerabilities.length > 0 && (
+        <Box>
+          {!data.scannerConfig.sysdig ? (
+            <VulnerabilityTable
+              vulnerabilities={data.vulnerabilities}
+              componentName={componentName}
+              initialRowsPerPage={10}
+            />
+          ) : (
+            <>
+              <Tabs
+                value={selectedTab}
+                onChange={handleTabChange}
+                sx={{ mb: 1 }}
+              >
+                <Tab label="Sårbarheter" />
+                <Tab label="Sårbarheter i kjøretidsmiljø" />
+              </Tabs>
+              {selectedTab === TabEnum.ALL_VULNERABILITIES && (
+                <VulnerabilityTable
+                  vulnerabilities={data.vulnerabilities}
+                  componentName={componentName}
+                  initialRowsPerPage={10}
+                />
+              )}
+              {selectedTab === TabEnum.RUNTIME_VULNERABILITIES && (
+                <RuntimeVulnerabilityTable
+                  vulnerabilities={data.vulnerabilities}
+                  componentName={componentName}
+                />
+              )}
+            </>
+          )}
+        </Box>
+      )}
+    </Stack>
+  );
+};

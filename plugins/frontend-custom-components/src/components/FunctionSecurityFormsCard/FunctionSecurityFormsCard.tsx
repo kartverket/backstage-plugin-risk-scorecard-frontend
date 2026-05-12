@@ -1,0 +1,366 @@
+/*
+ * Copyright 2020 The Backstage Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { ColumnBreakpoints } from './types';
+import {
+  InfoCard,
+  InfoCardVariants,
+  Progress,
+  Link,
+} from '@backstage/core-components';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useRegelrettQuery } from '../../hooks/useRegelrettQuery';
+import { useRegelrettCreateContextMutation } from '../../hooks/useRegelrettCreateContextMutation';
+import { useIsGroupMember } from '../../hooks/useIsGroupMember';
+import Alert from '@mui/material/Alert';
+import { makeStyles } from 'tss-react/mui';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import WarningAmberOutlined from '@mui/icons-material/WarningAmberOutlined';
+import { useState, useEffect } from 'react';
+import { configApiRef, useApi } from '@backstage/frontend-plugin-api';
+import { catalogApiRef } from '@backstage/plugin-catalog-react';
+import { Button, Flex } from '@backstage/ui';
+import FormControl from '@mui/material/FormControl';
+import MuiSelect, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { functionLinkCardTranslationRef } from './translation';
+import { useFormTypesQuery } from '../../hooks/useFormTypesQuery';
+import { buildFormUrl } from '../../utils/formUrl';
+import Typography from '@mui/material/Typography';
+import { isUnauthorizedError } from '../../errors';
+
+const useStyles = makeStyles()(theme => ({
+  formList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5),
+  },
+  formRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    padding: `${theme.spacing(1)} ${theme.spacing(1.5)}`,
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor:
+      theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.04)'
+        : 'rgba(0, 0, 0, 0.03)',
+    transition: 'background-color 0.15s ease',
+    '&:hover': {
+      backgroundColor:
+        theme.palette.mode === 'dark'
+          ? 'rgba(255, 255, 255, 0.08)'
+          : 'rgba(0, 0, 0, 0.06)',
+    },
+  },
+  formIcon: {
+    color: theme.palette.text.secondary,
+    fontSize: '1.2rem',
+  },
+  metricsContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    marginLeft: 'auto',
+  },
+  metricsLabel: {
+    fontSize: 'var(--bui-font-size-2)',
+    color: theme.palette.text.secondary,
+    whiteSpace: 'nowrap' as const,
+  },
+  expiredWarning: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.5),
+    fontSize: 'var(--bui-font-size-2)',
+    color: theme.palette.error.main,
+    whiteSpace: 'nowrap' as const,
+  },
+  expiredIcon: {
+    fontSize: 'var(--bui-font-size-4)',
+    color: theme.palette.error.main,
+  },
+}));
+
+/** @public */
+export interface EntityLinksCardProps {
+  cols?: ColumnBreakpoints | number;
+  variant?: InfoCardVariants;
+}
+
+const queryClient = new QueryClient();
+
+export const FunctionSecurityFormsCard = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <FunctionSecurityFormsCardItem />
+    </QueryClientProvider>
+  );
+};
+
+function FunctionSecurityFormsCardItem(props: EntityLinksCardProps) {
+  const { variant } = props;
+  const { classes } = useStyles();
+  const { t } = useTranslationRef(functionLinkCardTranslationRef);
+  const config = useApi(configApiRef);
+  const catalogApi = useApi(catalogApiRef);
+  const { entity } = useEntity();
+  const functionName = entity.metadata.title || entity.metadata.name;
+  const regelrettBaseUrl = config.getString(`regelrett.url`);
+
+  const ownerRef = entity.relations?.find(
+    rel => rel.type === 'ownedBy',
+  )?.targetRef;
+  const { isMember, isLoading: isMembershipLoading } =
+    useIsGroupMember(ownerRef);
+
+  const isReady = !isMembershipLoading && isMember;
+
+  const [teamId, setTeamId] = useState('');
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const {
+    mutate,
+    isPending: isCreating,
+    error: createError,
+  } = useRegelrettCreateContextMutation();
+
+  useEffect(() => {
+    const fetchOwner = async () => {
+      const ownerRelation = entity.relations?.find(
+        rel => rel.type === 'ownedBy',
+      );
+      if (!ownerRelation) return;
+
+      const { items } = await catalogApi.getEntitiesByRefs({
+        entityRefs: [ownerRelation.targetRef],
+      });
+
+      if (items[0]) {
+        setTeamId(
+          items[0].metadata.annotations?.['graph.microsoft.com/group-id'] || '',
+        );
+      }
+    };
+    fetchOwner();
+  }, [entity, catalogApi]);
+
+  const { data, isLoading, error, refetch } = useRegelrettQuery(functionName, {
+    enabled: isReady,
+  });
+
+  const {
+    data: formTypes,
+    isLoading: isFormTypesLoading,
+    error: formTypesError,
+  } = useFormTypesQuery();
+
+  const formTypeMap: Record<string, string> = Object.fromEntries(
+    (formTypes ?? []).map(f => [f.id, f.name]),
+  );
+
+  const [selectedFormId, setSelectedFormId] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (submitted && !isCreating && !createError) {
+      refetch();
+      setSubmitted(false);
+      setSelectedFormId('');
+      setShowCreateForm(false);
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 2000);
+    }
+  }, [submitted, isCreating, createError, refetch]);
+
+  const getFormType = (formId: string): string => {
+    return formTypeMap[formId] || 'Unknown';
+  };
+
+  const handleSubmit = () => {
+    if (!selectedFormId || !teamId) return;
+    setSubmitted(true);
+    mutate({ functionName, formId: selectedFormId, teamId });
+  };
+
+  const availableFormsExist = Object.keys(formTypeMap).some(
+    formId => !data?.some(form => form.formId === formId),
+  );
+
+  const showData = () => {
+    if (data && data.length !== 0 && !error) {
+      return (
+        <div className={classes.formList}>
+          {data.map(
+            ({ id, formId, answeredCount, expiredCount, totalCount }) => (
+              <div key={id} className={classes.formRow}>
+                <DescriptionOutlinedIcon className={classes.formIcon} />
+                <Link
+                  to={buildFormUrl(regelrettBaseUrl, id)}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {getFormType(formId)}
+                </Link>
+                {answeredCount !== undefined && totalCount !== undefined && (
+                  <div className={classes.metricsContainer}>
+                    <span className={classes.metricsLabel}>
+                      {t('formMetrics.answered', {
+                        answered: String(answeredCount),
+                        total: String(totalCount),
+                      })}
+                    </span>
+                    {(expiredCount ?? 0) > 0 && (
+                      <span className={classes.expiredWarning}>
+                        <WarningAmberOutlined className={classes.expiredIcon} />
+                        {t('formMetrics.expired', {
+                          expired: String(expiredCount),
+                        })}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            ),
+          )}
+        </div>
+      );
+    } else if (error || formTypesError) {
+      const isUnauthorized = error ? isUnauthorizedError(error) : false;
+      return (
+        <Alert severity={isUnauthorized ? 'info' : 'error'}>
+          {isUnauthorized
+            ? t('functionLinkCard.fetchUnauthorized')
+            : t('functionLinkCard.fetchError')}
+        </Alert>
+      );
+    }
+    return <p>{t('functionLinkCard.noFormsYet')}</p>;
+  };
+
+  return (
+    <InfoCard
+      title={t('functionLinkCard.title')}
+      subheader={
+        <Typography variant="subtitle1">
+          {t('functionLinkCard.subtitle')}
+        </Typography>
+      }
+      variant={variant}
+    >
+      {(isMembershipLoading ||
+        (isMember && (isLoading || isFormTypesLoading))) && <Progress />}
+      {!isMembershipLoading && !isMember && (
+        <Alert severity="info">{t('functionLinkCard.fetchUnauthorized')}</Alert>
+      )}
+
+      {isMember && !isLoading && !isFormTypesLoading && showData()}
+
+      {showSuccessMessage && (
+        <Alert severity="success" style={{ margin: '1rem' }}>
+          {t('functionLinkCard.formCreatedSuccess')}
+        </Alert>
+      )}
+
+      {isMember &&
+        !isLoading &&
+        !isFormTypesLoading &&
+        !formTypesError &&
+        availableFormsExist &&
+        !isUnauthorizedError(error) && (
+          <div style={{ marginTop: '1rem' }}>
+            {!showCreateForm && (
+              <Button onClick={() => setShowCreateForm(true)}>
+                {t('functionLinkCard.createNewForm')}
+              </Button>
+            )}
+
+            {showCreateForm && (
+              <Flex style={{ marginTop: '5px', gap: '8px' }}>
+                <FormControl size="small" style={{ flex: 1, minWidth: 0 }}>
+                  <MuiSelect
+                    displayEmpty
+                    value={selectedFormId}
+                    disabled={isCreating}
+                    sx={{ fontSize: 'var(--bui-font-size-3)' }}
+                    onChange={(e: SelectChangeEvent<string>) =>
+                      setSelectedFormId(e.target.value)
+                    }
+                  >
+                    <MenuItem
+                      value=""
+                      disabled
+                      sx={{ fontSize: 'var(--bui-font-size-3)' }}
+                    >
+                      <span style={{ color: 'inherit', opacity: 0.5 }}>
+                        {t('functionLinkCard.selectForm')}
+                      </span>
+                    </MenuItem>
+                    {Object.entries(formTypeMap)
+                      .filter(
+                        ([formId]) =>
+                          !data?.some(form => form.formId === formId),
+                      )
+                      .map(([formId, formName]) => (
+                        <MenuItem
+                          key={formId}
+                          value={formId}
+                          sx={{ fontSize: 'var(--bui-font-size-3)' }}
+                        >
+                          {formName}
+                        </MenuItem>
+                      ))}
+                  </MuiSelect>
+                </FormControl>
+
+                <Button
+                  variant="primary"
+                  isDisabled={!selectedFormId || !teamId || isCreating}
+                  onClick={handleSubmit}
+                >
+                  {isCreating
+                    ? t('functionLinkCard.creating')
+                    : t('functionLinkCard.create')}
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  isDisabled={isCreating}
+                  onClick={() => {
+                    setShowCreateForm(false);
+                    setSelectedFormId('');
+                  }}
+                >
+                  {t('functionLinkCard.cancel')}
+                </Button>
+              </Flex>
+            )}
+
+            {isCreating && <Progress />}
+
+            {createError && (
+              <Alert severity="error" style={{ margin: '1rem 0 0' }}>
+                {t('functionLinkCard.createError')}
+              </Alert>
+            )}
+          </div>
+        )}
+    </InfoCard>
+  );
+}

@@ -1,0 +1,61 @@
+import { useRef, useState } from 'react';
+import { getFromDate } from '../utils';
+import { ErrorBanner } from '../ErrorBanner';
+import { useTrendsQuery } from '../../hooks/useTrendsQuery';
+import Typography from '@mui/material/Typography';
+import { CardTitle } from '../CardTitle';
+import { Graph } from './TrendGraph';
+import { GraphLabels } from './GraphLabels';
+import { Progress } from '@backstage/core-components';
+import { useEntity } from '@backstage/plugin-catalog-react';
+
+interface TrendProps {
+  componentNames: string[] | string;
+  showTotal: boolean;
+}
+
+export const Trend = ({ componentNames, showTotal }: TrendProps) => {
+  const { entity } = useEntity();
+  const toDate = useRef(new Date()).current;
+  const [fromDate, setFromDate] = useState<Date>(() =>
+    getFromDate('oneMonth', toDate),
+  );
+  const [graphTimeline, setGraphTimeline] = useState<string>('oneMonth');
+
+  const items = Array.isArray(componentNames)
+    ? componentNames
+    : [componentNames];
+
+  const { data, isPending, error } = useTrendsQuery(
+    entity.metadata.name,
+    items,
+    fromDate,
+    toDate,
+  );
+
+  return (
+    <CardTitle title="Trend">
+      {isPending && <Progress />}
+      {data?.length === 0 && (
+        <Typography sx={{ fontSize: '1rem', my: 2, ml: 2 }}>
+          <i>Vi fant dessverre ingen historiske data.</i>
+        </Typography>
+      )}
+      {data && (
+        <>
+          <Graph
+            trendData={data}
+            graphTimeline={graphTimeline}
+            showTotal={showTotal}
+          />
+          <GraphLabels
+            graphTimeline={graphTimeline}
+            setGraphTimeline={setGraphTimeline}
+            setFromDate={setFromDate}
+          />
+        </>
+      )}
+      {error && <ErrorBanner errorMessage={error?.message} />}
+    </CardTitle>
+  );
+};

@@ -1,0 +1,200 @@
+import { Progress, SupportButton } from '@backstage/core-components';
+import { Box } from '@mui/system';
+import { useState } from 'react';
+import { RepositoriesTable } from '../RepositoriesTable/RepositoriesTable';
+import { SystemScannerStatuses } from '../ScannerStatus/SystemScannerStatuses';
+import { Secrets, SecretsAlert } from '../SecretsOverview/SecretsAlert';
+import { Trend } from '../Trend/Trend';
+import { VulnerabilityCountsOverview } from '../VulnerabilityCounts/VulnerabilityCountsOverview';
+import Stack from '@mui/material/Stack';
+import { useEntity, useStarredEntities } from '@backstage/plugin-catalog-react';
+import { ErrorBanner } from '../ErrorBanner';
+import {
+  getAllNotPermittedComponents,
+  getAllPermittedMetrics,
+  getAllSecrets,
+} from '../../mapping/getGroupedData';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import { SystemsTable } from '../SystemsTable/SystemsTable';
+import NoAccessAlert from '../NoAccessAlert';
+import Button from '@mui/material/Button';
+import TuneIcon from '@mui/icons-material/Tune';
+import { SlackNotificationDialog } from '../SlackNotificationsDialog';
+import { useStarredRefFilter } from '../../hooks/useStarredRefFilter';
+import { RepositorySummary } from '../../typesFrontend';
+import { filterSystemsByComponents } from '../utils';
+import { useShowTrendTotal } from '../../hooks/useShowTrendTotal';
+import { ViewSettingsDialog } from '../ViewSettingsDialog';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { MetricsStatus } from '../MetricsStatus';
+import Alert from '@mui/material/Alert';
+import { useGroupMetrics } from '../../hooks/useGroupMetrics';
+import { VulnerabilityOverviewTable } from '../VulnerabilityOverviewTable/VulnerabilityOverviewTable';
+
+enum TabEnum {
+  COMPONENT = 0,
+  SYSTEM = 1,
+  VULNERABILITIES = 2,
+}
+
+export const GroupPage = () => {
+  const { entity } = useEntity();
+  const { starredEntities } = useStarredEntities();
+
+  const [openNotificationsDialog, setOpenNotificationsDialog] = useState(false);
+  const [openViewSettings, setOpenViewSettings] = useState(false);
+  const [channel, setChannel] = useState('');
+  const [selectedTab, setSelectedTab] = useState<TabEnum>(TabEnum.COMPONENT);
+
+  const { showTotal, toggleShowTotal } = useShowTrendTotal();
+
+  const { data, isLoading, isEmpty, error, errorTitle } =
+    useGroupMetrics(entity);
+
+  const permitted: RepositorySummary[] = data
+    ? getAllPermittedMetrics(data)
+    : [];
+  const notPermitted: string[] = data ? getAllNotPermittedComponents(data) : [];
+  const secrets: Secrets[] = data ? getAllSecrets(data) : [];
+  const aggregatedVulnerabilities =
+    data?.vulnerabilityOverview?.vulnerabilities ?? [];
+
+  const allComponentRefs = permitted.flatMap(p =>
+    p.componentNames.map(n => `component:default/${n}`),
+  );
+
+  const { hasStarred, effectiveFilter, visibleRefs, setFilterChoice } =
+    useStarredRefFilter({
+      allRefs: allComponentRefs,
+      starredEntities,
+    });
+
+  const filteredPermitted = permitted.filter(p =>
+    p.componentNames.some(n => visibleRefs.has(`component:default/${n}`)),
+  );
+
+  const filteredSystemsData = filterSystemsByComponents(
+    data?.systems ?? [],
+    new Set(filteredPermitted.map(c => c.repoName)),
+    effectiveFilter,
+  );
+
+  if (isLoading) return <Progress />;
+
+  if (error) {
+    return <ErrorBanner errorTitle={errorTitle} errorMessage={error.message} />;
+  }
+
+  if (isEmpty) {
+    return (
+      <Alert severity="info">
+        Finner ingen komponenter som har sikkerhetsmetrikker
+      </Alert>
+    );
+  }
+
+  return (
+    <Stack gap={2}>
+      <Stack flexDirection="row" alignItems="center" gap={2}>
+        <MetricsStatus entityName={entity.metadata.name} />
+        <Stack
+          flexDirection="row"
+          gap={2}
+          flex={1}
+          flexWrap="wrap"
+          sx={{ '& > *': { flex: 1 } }}
+        >
+          <SecretsAlert secretsOverviewData={secrets} />
+          {notPermitted.length > 0 && <NoAccessAlert repos={notPermitted} />}
+        </Stack>
+        <Box display="flex" alignItems="center" gap={0.5}>
+          <Button
+            variant="text"
+            startIcon={<TuneIcon />}
+            color="primary"
+            onClick={() => setOpenViewSettings(true)}
+          >
+            Tilpass visning
+          </Button>
+          <ViewSettingsDialog
+            open={openViewSettings}
+            onClose={() => setOpenViewSettings(false)}
+            starFilter={{
+              hasStarred,
+              effectiveFilter,
+              onToggleStarFilter: () =>
+                setFilterChoice(prev =>
+                  prev === 'starred' ? 'all' : 'starred',
+                ),
+            }}
+            showTotal={showTotal}
+            onToggleShowTotal={toggleShowTotal}
+          />
+          <Button
+            variant="text"
+            startIcon={<SettingsIcon />}
+            color="primary"
+            onClick={() => setOpenNotificationsDialog(true)}
+          >
+            Konfigurer varsling
+          </Button>
+          <SlackNotificationDialog
+            openNotificationsDialog={openNotificationsDialog}
+            handleCloseNotificationsDialog={() =>
+              setOpenNotificationsDialog(false)
+            }
+            channel={channel}
+            setChannel={setChannel}
+            permittedComponents={filteredPermitted.flatMap(
+              c => c.componentNames,
+            )}
+            notPermitted={notPermitted}
+          />
+          <SupportButton />
+        </Box>
+      </Stack>
+
+      <Box
+        display="grid"
+        gridTemplateColumns={{
+          xs: '1fr',
+          lg: '2fr 3fr 3fr',
+        }}
+        gap={2}
+        gridAutoRows="minmax(320px, 1fr)"
+      >
+        <SystemScannerStatuses data={filteredPermitted} />
+        <VulnerabilityCountsOverview data={filteredPermitted} />
+        <Trend
+          componentNames={filteredPermitted.map(c => c.componentNames[0])}
+          showTotal={showTotal}
+        />
+      </Box>
+
+      <Tabs
+        value={selectedTab}
+        onChange={(_, v) => setSelectedTab(v)}
+        sx={{ mb: 1 }}
+      >
+        <Tab label="Metrikker per komponent" value={TabEnum.COMPONENT} />
+        <Tab label="Metrikker per system" value={TabEnum.SYSTEM} />
+        <Tab label="Unike sårbarheter" value={TabEnum.VULNERABILITIES} />
+      </Tabs>
+
+      {selectedTab === TabEnum.VULNERABILITIES && (
+        <VulnerabilityOverviewTable data={aggregatedVulnerabilities} />
+      )}
+
+      {selectedTab === TabEnum.COMPONENT && (
+        <RepositoriesTable
+          data={filteredPermitted}
+          notPermittedComponents={notPermitted}
+        />
+      )}
+      {selectedTab === TabEnum.SYSTEM && filteredSystemsData && (
+        <SystemsTable data={filteredSystemsData} />
+      )}
+    </Stack>
+  );
+};

@@ -1,0 +1,232 @@
+export type MetricsUpdateStatus = {
+  dependabot: boolean;
+  sysdig: boolean;
+  codeScanning: boolean;
+  secretScanning: boolean;
+  riscMetrics: boolean;
+};
+
+export type FetchMetricsRequestBody = {
+  componentNames: string[];
+  entraIdToken: string;
+};
+
+export type FetchTrendsRequestBody = {
+  componentNames: string[];
+  fromDate: Date;
+  toDate: Date;
+  entraIdToken: string;
+};
+
+export type GithubBypassed = {
+  handle: string;
+  name: string;
+  email: string;
+  isRepositoryAdmin: boolean;
+};
+
+export type SecretAlert = {
+  createdAt: string;
+  summary: string;
+  secretValue: string;
+  htmlUrl?: string;
+  bypassed: boolean;
+  bypassedBy?: GithubBypassed;
+};
+
+export type ScannerAlertInfo = {
+  alertId: string;
+  htmlUrl: string;
+};
+
+export type DependabotSpecificInfo = {
+  alerts: ScannerAlertInfo[];
+  isFixable: boolean;
+  isDirect: boolean;
+};
+
+export type CodeQlSpecificInfo = {
+  alerts: ScannerAlertInfo[];
+  branch: string[];
+  locations: number;
+};
+
+export type PharosSpecificInfo = {
+  alerts: ScannerAlertInfo[];
+  branch: string;
+};
+
+export type SysdigSpecificInfo = {
+  htmlUrl: string;
+  findingCount: number;
+  containerNames: string[];
+  locations: { cluster: string; namespace: string }[];
+  isExploitable: boolean;
+  isRunning: boolean;
+  packages: string[];
+  isFixable: boolean;
+  isCisaKEV: boolean;
+};
+
+export type ScannerSpecificInfo = {
+  dependabotSpecificInfo?: DependabotSpecificInfo;
+  codeQlSpecificInfo?: CodeQlSpecificInfo;
+  pharosSpecificInfo?: PharosSpecificInfo;
+  sysdigSpecificInfo?: SysdigSpecificInfo;
+};
+
+export type Repository = {
+  componentName: string;
+  severityCount: SeverityCount;
+  secrets: { alerts: SecretAlert[] };
+  riscStatus: RiscStatusData;
+  scannerConfig: ScannerConfig;
+  vulnerabilities: Vulnerability[];
+  averageTimeToSolveVulnerabilityDays?: number;
+};
+
+export type VulnerabilityIdInfo = {
+  type: string;
+  id: string;
+  url?: string;
+};
+
+export type Status = 'IKKE_STARTET' | 'PABEGYNT' | 'AKSEPTERT';
+
+export type Vulnerability = {
+  vulnerabilityId: string;
+  vulnerabilityIdInfo: VulnerabilityIdInfo[];
+  severity: Severity;
+  scanners: Scanner[];
+  summary: string;
+  dateFirstSeen: string;
+  severityUpdatedAt?: string;
+  status: Status;
+  changedAt: Date;
+  comment: string;
+  changedBy: string;
+  scannerSpecificInfo: ScannerSpecificInfo;
+};
+
+export type RepositorySummary = {
+  repoName: string;
+  componentNames: string[];
+  severityCount: SeverityCount;
+  secrets: { alerts: SecretAlert[] };
+  scannerConfig: ScannerConfig;
+  riscStatus: RiscStatusData;
+  averageTimeToSolveVulnerabilityDays?: number;
+};
+
+export type SikkerhetsmetrikkerTotal = {
+  permittedMetrics: RepositorySummary[];
+  notPermittedComponents: string[];
+};
+
+export type SikkerhetsmetrikkerSystemTotal = {
+  systemName: string;
+  metrics: SikkerhetsmetrikkerTotal;
+};
+
+export type AggregatedSikkerhetsmetrikker = {
+  systems: SikkerhetsmetrikkerSystemTotal[];
+  vulnerabilityOverview: SystemVulnerabilityOverview;
+};
+
+export type SystemVulnerabilityOverview = {
+  totalCount: number;
+  severityCount: SeverityCount;
+  vulnerabilities: AggregatedVulnerability[];
+};
+
+export type AggregatedVulnerability = {
+  vulnerabilityId: string;
+  severity: Severity;
+  scanners: Scanner[];
+  summary: string;
+  dateFirstSeen: string;
+  affectedComponents: string[];
+};
+
+export type Severity =
+  | 'unknown'
+  | 'negligible'
+  | 'low'
+  | 'medium'
+  | 'high'
+  | 'critical';
+
+export type Scanner = 'Dependabot' | 'CodeQL' | 'Pharos' | 'Sysdig';
+
+export type ScannerConfig = {
+  dependabot: boolean;
+  codeQl: boolean;
+  pharos: boolean;
+  sysdig: boolean;
+};
+
+export interface RiscStatusData {
+  hasRisc: Boolean;
+  lastPublishedRisc?: string;
+  commitsSincePublishedRisc?: number;
+}
+
+export type VulnerabilitySeverityCounts = {
+  repoName: string;
+  severityCounts: SeverityCounts[];
+};
+
+export type SeverityCounts = {
+  timestamp: Date;
+  unknown: number;
+  negligible: number;
+  low: number;
+  medium: number;
+  high: number;
+  critical: number;
+};
+
+export type SeverityCount = {
+  unknown: number;
+  negligible: number;
+  low: number;
+  medium: number;
+  high: number;
+  critical: number;
+};
+
+export type ChangeStatusRequestBody = {
+  componentName: string;
+  vulnerabilityId: string;
+  status: Status;
+  comment?: string;
+  changedBy?: string;
+  entraIdToken: string;
+};
+
+export type ConfigureNotificationsRequestBody = {
+  teamName: string;
+  componentNames: string[];
+  channelId: string;
+  entraIdToken: string;
+  severity?: string[];
+};
+
+export type SlackNotificationConfig = {
+  teamName: string;
+  channelId: string;
+  severity: string[];
+  componentNames: string[];
+};
+
+export type ErrorResponse = {
+  status: number;
+  code: string;
+  message: string;
+};
+
+export type ErrorBody = {
+  status?: number;
+  code?: string;
+  message?: string;
+};

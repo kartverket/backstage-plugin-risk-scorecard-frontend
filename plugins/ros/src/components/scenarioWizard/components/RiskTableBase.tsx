@@ -6,7 +6,7 @@ import { RiskRadioButton } from './RiskRadioButton';
 import RadioGroup from '@mui/material/RadioGroup';
 import { Text, Box } from '@backstage/ui';
 import styles from '../ScenarioWizardTable.module.css';
-import React from 'react';
+import { ComponentType } from 'react';
 
 type RiskTableBaseProps = {
   formMethods: UseFormReturn<FormScenario>;
@@ -15,7 +15,7 @@ type RiskTableBaseProps = {
   translationPrefix: 'probabilityTable' | 'consequenceTable';
   options: readonly number[];
   additionalClassName?: string;
-  InfoComponent: React.ComponentType;
+  InfoComponent: ComponentType;
 };
 
 export function RiskTableBase({
