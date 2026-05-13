@@ -1,0 +1,76 @@
+name: Publish RiSc plugin to npmjs
+permissions:
+  contents: write # Needed to create releases and push tags
+  issues: write # Needed to comment on released issues
+  pull-requests: write # Needed to comment on released PRs
+  id-token: write # Required for OIDC trusted publishing to npm
+
+# Make sure that only one publish job runs on main at the same time to avoid version conflicts
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches:
+      - main
+    paths-ignore:
+      - '.security/**'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure git user
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history and tags for version detection
+          persist-credentials: true
+
+      - run: corepack enable
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@kartverket'
+          cache: 'yarn'
+
+      - name: Ensure latest npm (required for OIDC trusted publishing)
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run tests for release and PR-validation
+        run: yarn workspace build-tools test
+
+      # For pull_request events, we have access to the PR commits and can validate
+      # that the PR title matches what the commits expect
+      - name: Validate PR Title
+        if: github.event_name == 'pull_request'
+        run: |
+          ./build-tools/validate-pr.ts \
+            --pr-title "${{ github.event.pull_request.title }}" \
+            --base-branch "${{ github.base_ref }}"
+
+      - name: Release (Dry Run)
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./build-tools/release.ts --dry-run --pr-number=${{ github.event.pull_request.number }}
+
+      - name: Release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./build-tools/release.ts

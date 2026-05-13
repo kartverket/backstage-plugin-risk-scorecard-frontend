@@ -1,0 +1,43 @@
+name: Lint, test and compile plugin
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.security/**'
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  compile_and_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x' # From mise.toml
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run Prettier
+        run: yarn run prettier:check
+
+      - name: Run lint
+        run: yarn run lint:all
+
+      - name: Run tests
+        run: yarn test:all --ci
+
+      - name: Run tsc
+        run: yarn run tsc
