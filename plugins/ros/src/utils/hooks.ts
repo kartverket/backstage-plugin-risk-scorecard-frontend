@@ -11,20 +11,21 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { URLS } from '../urls';
 import {
   CreateRiScResultDTO,
+  DeleteRiScResultDTO,
   GcpCryptoKeyObject,
   ProcessRiScResultDTO,
+  profileInfoToDTOString,
   PublishRiScResultDTO,
   RiScContentResultDTO,
-  SopsConfigDTO,
-  profileInfoToDTOString,
   riScToDTOString,
-  DeleteRiScResultDTO,
+  SopsConfigDTO,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import {
   DefaultRiScTypeDescriptor,
   DifferenceDTO,
   GithubRepoInfo,
+  ProcessingStatus,
   RiSc,
   RiScWithMetadata,
 } from './types';
@@ -116,7 +117,8 @@ export function useAuthenticatedFetch() {
 
       if (
         res.status === 403 &&
-        (json as ProcessRiScResultDTO).status === 'InvalidGitHubAccessToken'
+        (json as ProcessRiScResultDTO).status ===
+          ProcessingStatus.InvalidGitHubAccessToken
       ) {
         invalidGitHubAccessToken = headers['GitHub-Access-Token'];
         headers['GitHub-Access-Token'] = await gitHubApi.getAccessToken([
