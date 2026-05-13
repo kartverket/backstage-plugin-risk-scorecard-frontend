@@ -83,8 +83,8 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
 
     await client.transaction(async tx => {
       await tx(entityIndexTableName).delete();
-
       await tx(indexTableName).delete();
+
       await insertEntries(tx, entries);
     });
   }

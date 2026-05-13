@@ -113,19 +113,11 @@ async function getRiskScorecardRiScFilesToIndex({
     const integration = integrations.github.byUrl(repo.repoRootUrl);
     const previousRepoFiles = getPreviousRiScFilesForRepo(previousIndex, repo);
 
-    if (!integration) {
-      failedRepoCount += 1;
-      fallbackAnalysisCount += previousRepoFiles.length;
-      logger.warn('Skipping repo without GitHub integration', {
-        repo: repo.repoRootUrl,
-        repoRootUrl: repo.repoRootUrl,
-        fallbackAnalysisCount: previousRepoFiles.length,
-      });
-      riScFiles.push(...previousRepoFiles);
-      continue;
-    }
-
     try {
+      if (!integration) {
+        throw new Error('Github-Integration was missing, this likely means that there has been added a different integration that is not yet supported')
+      }
+
       const repoFiles = await getRiScFiles({
         repo,
         integration,
@@ -176,6 +168,8 @@ async function fetchReposToIndexFromCatalog(
   const response = await catalogClient.getEntities(
     {
       filter: { kind: 'Component' },
+      // getEntitySourceLocation reads annotations, and stringifyEntityRef below
+      // needs kind, name, and namespace.
       fields: [
         'kind',
         'metadata.name',

@@ -11,7 +11,7 @@ export const riScPlugin = createPlugin({
   featureFlags: [
     {
       name: systemRiScsFeatureFlag,
-      description: 'Show system RiScs and entity scope controls',
+      description: 'Testing av system-RoS for Team SKVIS. Bruk på eget ansvar.',
     },
   ],
   routes: {

@@ -2,7 +2,7 @@ import { useApi } from '@backstage/core-plugin-api';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { RELATION_PART_OF, stringifyEntityRef } from '@backstage/catalog-model';
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
-import Alert from '@mui/material/Alert';
+import { Alert } from '@backstage/ui';
 import Autocomplete from '@mui/material/Autocomplete';
 import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
@@ -164,25 +164,31 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
         <FormHelperText>{t('rosDialog.appliesToSystemRosHint')}</FormHelperText>
       )}
       {shouldShowNightlyRefreshHint && (
-        <Alert severity="info">
-          {t('rosDialog.appliesToNightlyRefreshHint')}
-        </Alert>
+        <Alert
+          status="info"
+          icon
+          description={t('rosDialog.appliesToNightlyRefreshHint')}
+        />
       )}
       {isMissingCurrentEntityRef && (
-        <Alert severity="warning">
-          {t('rosDialog.appliesToMissingCurrentEntity', {
+        <Alert
+          status="warning"
+          icon
+          description={t('rosDialog.appliesToMissingCurrentEntity', {
             entityRef: currentEntityRef,
           })}
-        </Alert>
+        />
       )}
       {missingEntityRefs.length > 0 && (
-        <Alert severity="warning">
-          {t('rosDialog.appliesToMissingEntities', {
+        <Alert
+          status="warning"
+          icon
+          description={t('rosDialog.appliesToMissingEntities', {
             entityRefs: missingEntityRefs
               .map(formatBackstageAppliesTo)
               .join(', '),
           })}
-        </Alert>
+        />
       )}
     </FormControl>
   );
