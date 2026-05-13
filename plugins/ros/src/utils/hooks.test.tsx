@@ -44,7 +44,7 @@ describe('useGithubRepositoryInformation', () => {
 
 describe('useAuthenticatedFetch', () => {
   const mockGoogleApi = { getAccessToken: jest.fn() };
-  const mockGithubSessionShouldRefreshFunc = jest.fn(() => false);
+  const mockGithubSessionShouldRefreshFunc = jest.fn(_ => false);
   const mockGithubApi = {
     getAccessToken: jest.fn(),
     sessionManager: {
