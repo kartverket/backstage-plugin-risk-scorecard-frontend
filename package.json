@@ -85,7 +85,8 @@
     "axios": "^1.13.5",
     "undici": "^6.23.0",
     "jsonpath": "^1.2.0",
-    "koa": "^2.16.2"
+    "koa": "^2.16.2",
+    "@protobufjs/inquire": "1.1.0"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
