@@ -54,9 +54,7 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
 
   async hasEntries(): Promise<boolean> {
     const client = await this.getClient();
-    const row = await client(indexTableName)
-      .select('source_file_path')
-      .first();
+    const row = await client(indexTableName).select('source_file_path').first();
 
     return Boolean(row);
   }
@@ -70,9 +68,7 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
         'applies_to_json',
         'last_saved_at',
       ])
-      .orderBy([
-        { column: 'source_file_path', order: 'asc' },
-      ]);
+      .orderBy([{ column: 'source_file_path', order: 'asc' }]);
 
     return Object.freeze(rows.map(rowToRiScIndexEntry));
   }
@@ -137,9 +133,7 @@ export class DatabaseRiScIndexStore implements RiScIndexStore {
         'risc_index.last_saved_at',
       ])
       .where('entity_index.entity_ref', entityRef)
-      .orderBy([
-        { column: 'risc_index.source_file_path', order: 'asc' },
-      ]);
+      .orderBy([{ column: 'risc_index.source_file_path', order: 'asc' }]);
 
     return Object.freeze(rows.map(rowToRiScIndexEntry));
   }

@@ -283,10 +283,7 @@ describe('buildRiskScorecardRiScIndex', () => {
         sourceFilePath:
           'https://github.com/org/repo/.security/risc/risc-branch.risc.yaml',
         riScId: 'risc-branch',
-        appliesTo: [
-          'component:default/source-a',
-          'component:default/source-b',
-        ],
+        appliesTo: ['component:default/source-a', 'component:default/source-b'],
         lastSavedAt: '2026-05-01T08:30:00Z',
       },
     ]);

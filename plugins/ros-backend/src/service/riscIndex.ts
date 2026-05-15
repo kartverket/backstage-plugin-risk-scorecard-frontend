@@ -115,7 +115,9 @@ async function getRiskScorecardRiScFilesToIndex({
 
     try {
       if (!integration) {
-        throw new Error('Github-Integration was missing, this likely means that there has been added a different integration that is not yet supported')
+        throw new Error(
+          'Github-Integration was missing, this likely means that there has been added a different integration that is not yet supported',
+        );
       }
 
       const repoFiles = await getRiScFiles({

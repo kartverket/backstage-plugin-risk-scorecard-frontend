@@ -241,15 +241,13 @@ function createRiScIndexStore({
 } = {}): RiScIndexStore {
   return {
     hasEntries: jest.fn().mockResolvedValue(hasEntries),
-    getAllRiScs: jest
-      .fn()
-      .mockImplementation(async () => {
-        if (getAllRiScsError) {
-          throw getAllRiScsError;
-        }
+    getAllRiScs: jest.fn().mockImplementation(async () => {
+      if (getAllRiScsError) {
+        throw getAllRiScsError;
+      }
 
-        return previousIndex;
-      }),
+      return previousIndex;
+    }),
     replaceIndex: jest.fn().mockResolvedValue(undefined),
     upsertEntry: jest.fn().mockResolvedValue(undefined),
     deleteEntry: jest.fn().mockResolvedValue(undefined),
