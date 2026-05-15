@@ -182,7 +182,7 @@ describe('router', () => {
         .post('/risc/owner/repo')
         .set('GCP-Access-Token', 'gcp-tok')
         .set('GitHub-Access-Token', 'gh-tok')
-        .send({ content: '{}', schemaVersion: '5.2', sopsConfig: {} });
+        .send({ riSc: '{}', schemaVersion: '5.2', sopsConfig: {} });
 
       expect(res.status).toBe(201);
       expect(riScService.createRiSc).toHaveBeenCalled();
@@ -199,7 +199,7 @@ describe('router', () => {
         .set('GCP-Access-Token', 'gcp-tok')
         .set('GitHub-Access-Token', 'gh-tok')
         .send({
-          content: '{}',
+          riSc: '{}',
           schemaVersion: '5.2',
           sopsConfig: {},
           isRequiresNewApproval: false,

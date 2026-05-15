@@ -50,7 +50,8 @@ import {
   type ActionStatus3X4X,
 } from '@internal/backstage-plugin-ros-common';
 
-import { type RiScJson, migrate } from './SchemaService';
+import type { RiScJson } from './SchemaService';
+import { migrate, normalizeRiScDocument } from './SchemaService';
 
 // ─── Error ─────────────────────────────────────────────────────────────────────
 
@@ -530,30 +531,49 @@ export function compare(
     );
   }
 
+  // Normalize: flatten nested {title, scenario: {ID, ...}} → {title, id, ...}
+  // The JSON schema uses nested wrappers; comparison code expects flat structure.
+  const normalizedUpdated = normalizeRiScDocument(
+    updatedRiSc as unknown as RiScJson,
+  );
+  const normalizedMigrated = normalizeRiScDocument(migratedDoc);
+
+  let result: RiScChange;
   switch (majorVersion) {
     case 5:
-      return comparison5X(
-        updatedRiSc as RiSc5X,
-        migratedDoc as unknown as RiSc5X,
+      result = comparison5X(
+        normalizedUpdated as unknown as RiSc5X,
+        normalizedMigrated as unknown as RiSc5X,
         migrationStatus,
       );
+      break;
     case 4:
-      return comparison4X(
-        updatedRiSc as RiSc4X,
-        migratedDoc as unknown as RiSc4X,
+      result = comparison4X(
+        normalizedUpdated as unknown as RiSc4X,
+        normalizedMigrated as unknown as RiSc4X,
         migrationStatus,
       );
+      break;
     case 3:
-      return comparison3X(
-        updatedRiSc as RiSc3X,
-        migratedDoc as unknown as RiSc3X,
+      result = comparison3X(
+        normalizedUpdated as unknown as RiSc3X,
+        normalizedMigrated as unknown as RiSc3X,
         migrationStatus,
       );
+      break;
     default:
       throw new ComparisonError(
         `The version '${updatedVersion}' of the RiSc is unknown and not supported for comparison.`,
       );
   }
+
+  // Re-nest scenario/action values in Added/Deleted entries to match the
+  // wire format the frontend expects (Kotlin's FlattenSerializer did this).
+  result.scenarios = renestScenarioTrackedProperties(
+    result.scenarios as TrackedProperty<unknown, unknown>[],
+  ) as typeof result.scenarios;
+
+  return result;
 }
 
 // ─── Utilities ─────────────────────────────────────────────────────────────────
@@ -561,6 +581,37 @@ export function compare(
 function getMajorVersion(schemaVersion: string): number {
   const major = parseInt(schemaVersion.split('.')[0], 10);
   return isNaN(major) ? 0 : major;
+}
+
+/**
+ * Re-nest flat scenario/action objects back to the wire format the frontend expects.
+ * Flat: `{ title, id, actions: [{ title, id, ... }] }`
+ * Nested: `{ title, scenario: { ID, actions: [{ title, action: { ID, ... } }] } }`
+ */
+function renestScenario(flat: Record<string, unknown>): Record<string, unknown> {
+  const { title, id, actions, ...rest } = flat;
+  const nestedActions = Array.isArray(actions)
+    ? actions.map((a: Record<string, unknown>) => {
+        const { title: aTitle, id: aId, ...aRest } = a;
+        return { title: aTitle, action: { ID: aId, ...aRest } };
+      })
+    : actions;
+  return { title, scenario: { ID: id, ...rest, actions: nestedActions } };
+}
+
+/** Re-nest scenario values in Added/Deleted TrackedProperty entries. */
+function renestScenarioTrackedProperties<S>(
+  scenarios: TrackedProperty<S, unknown>[],
+): TrackedProperty<S, unknown>[] {
+  return scenarios.map(tp => {
+    if (tp.type === 'ADDED') {
+      return { ...tp, newValue: renestScenario(tp.newValue as Record<string, unknown>) };
+    }
+    if (tp.type === 'DELETED') {
+      return { ...tp, oldValue: renestScenario(tp.oldValue as Record<string, unknown>) };
+    }
+    return tp;
+  });
 }
 
 /** Deep equality check for comparing JSON-serializable values. */
