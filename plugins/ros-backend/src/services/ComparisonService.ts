@@ -50,8 +50,7 @@ import {
   type ActionStatus3X4X,
 } from '@internal/backstage-plugin-ros-common';
 
-import type { RiScJson } from './SchemaService';
-import { migrate, normalizeRiScDocument } from './SchemaService';
+import { type RiScJson, migrate } from './SchemaService';
 
 // ─── Error ─────────────────────────────────────────────────────────────────────
 
@@ -186,6 +185,88 @@ function compareValuations(
   return changeForListOfSimpleProperty(oldValuations, newValuations);
 }
 
+// ─── Common Field Helpers ───────────────────────────────────────────────────────
+
+function compareCommonActionFields(
+  oldAction: { title: string; id: string; description: string; url?: string | null },
+  newAction: { title: string; id: string; description: string; url?: string | null },
+) {
+  return {
+    title: changeForMandatorySimpleProperty(oldAction.title, newAction.title),
+    id: newAction.id,
+    description: changeForMandatorySimpleProperty(
+      oldAction.description,
+      newAction.description,
+    ),
+    url: changeForNonMandatorySimpleProperty(
+      oldAction.url ?? null,
+      newAction.url ?? null,
+    ),
+  };
+}
+
+function compareCommonScenarioFields(
+  oldScenario: {
+    title: string;
+    id: string;
+    description: string;
+    url?: string | null;
+    threatActors: ThreatActor[];
+    risk: RiScRisk;
+    remainingRisk: RiScRisk;
+  },
+  newScenario: {
+    title: string;
+    id: string;
+    description: string;
+    url?: string | null;
+    threatActors: ThreatActor[];
+    risk: RiScRisk;
+    remainingRisk: RiScRisk;
+  },
+) {
+  return {
+    title: changeForMandatorySimpleProperty(
+      oldScenario.title,
+      newScenario.title,
+    ),
+    id: newScenario.id,
+    description: changeForMandatorySimpleProperty(
+      oldScenario.description,
+      newScenario.description,
+    ),
+    url: changeForNonMandatorySimpleProperty(
+      oldScenario.url ?? null,
+      newScenario.url ?? null,
+    ),
+    threatActors: changeForListOfSimpleProperty(
+      oldScenario.threatActors,
+      newScenario.threatActors,
+    ) as SimpleTrackedProperty<ThreatActor>[],
+    risk: compareRisk(oldScenario.risk, newScenario.risk),
+    remainingRisk: compareRisk(
+      oldScenario.remainingRisk,
+      newScenario.remainingRisk,
+    ),
+  };
+}
+
+function compareCommonRiScFields(
+  oldRiSc: { title: string; scope: string; valuations?: RiScValuation[] | null },
+  newRiSc: { title: string; scope: string; valuations?: RiScValuation[] | null },
+  migrationStatus: MigrationStatus,
+) {
+  return {
+    title: changeForNonMandatorySimpleProperty(oldRiSc.title, newRiSc.title),
+    scope: changeForNonMandatorySimpleProperty(oldRiSc.scope, newRiSc.scope),
+    valuations: compareValuations(
+      oldRiSc.valuations ?? [],
+      newRiSc.valuations ?? [],
+    ),
+    migrationChanges: migrationStatus,
+  };
+}
+
 // ─── v5.x Comparison ───────────────────────────────────────────────────────────
 
 function compareActions5X(
@@ -197,16 +278,7 @@ function compareActions5X(
     newActions,
     action => action.id,
     (oldAction, newAction) => ({
-      title: changeForMandatorySimpleProperty(oldAction.title, newAction.title),
-      id: newAction.id,
-      description: changeForMandatorySimpleProperty(
-        oldAction.description,
-        newAction.description,
-      ),
-      url: changeForNonMandatorySimpleProperty(
-        oldAction.url ?? null,
-        newAction.url ?? null,
-      ),
+      ...compareCommonActionFields(oldAction, newAction),
       status: changeForNonMandatorySimpleProperty(
         oldAction.status,
         newAction.status,
@@ -232,32 +304,11 @@ function compareScenarios5X(
     newScenarios,
     scenario => scenario.id,
     (oldScenario, newScenario) => ({
-      title: changeForMandatorySimpleProperty(
-        oldScenario.title,
-        newScenario.title,
-      ),
-      id: newScenario.id,
-      description: changeForMandatorySimpleProperty(
-        oldScenario.description,
-        newScenario.description,
-      ),
-      url: changeForNonMandatorySimpleProperty(
-        oldScenario.url ?? null,
-        newScenario.url ?? null,
-      ),
-      threatActors: changeForListOfSimpleProperty(
-        oldScenario.threatActors,
-        newScenario.threatActors,
-      ) as SimpleTrackedProperty<ThreatActor>[],
+      ...compareCommonScenarioFields(oldScenario, newScenario),
       vulnerabilities: changeForListOfSimpleProperty(
         oldScenario.vulnerabilities,
         newScenario.vulnerabilities,
       ) as SimpleTrackedProperty<Vulnerability>[],
-      risk: compareRisk(oldScenario.risk, newScenario.risk),
-      remainingRisk: compareRisk(
-        oldScenario.remainingRisk,
-        newScenario.remainingRisk,
-      ),
       actions: compareActions5X(oldScenario.actions, newScenario.actions),
     }),
   );
@@ -270,23 +321,11 @@ export function comparison5X(
 ): RiSc5XChange {
   return {
     type: '5.*',
-    title: changeForNonMandatorySimpleProperty(
-      migratedOldRiSc.title,
-      updatedRiSc.title,
-    ),
-    scope: changeForNonMandatorySimpleProperty(
-      migratedOldRiSc.scope,
-      updatedRiSc.scope,
-    ),
-    valuations: compareValuations(
-      migratedOldRiSc.valuations ?? [],
-      updatedRiSc.valuations ?? [],
-    ),
+    ...compareCommonRiScFields(migratedOldRiSc, updatedRiSc, migrationStatus),
     scenarios: compareScenarios5X(
       migratedOldRiSc.scenarios,
       updatedRiSc.scenarios,
     ),
-    migrationChanges: migrationStatus,
   };
 }
 
@@ -301,16 +340,7 @@ function compareActions4X(
     newActions,
     action => action.id,
     (oldAction, newAction) => ({
-      title: changeForMandatorySimpleProperty(oldAction.title, newAction.title),
-      id: newAction.id,
-      description: changeForMandatorySimpleProperty(
-        oldAction.description,
-        newAction.description,
-      ),
-      url: changeForNonMandatorySimpleProperty(
-        oldAction.url ?? null,
-        newAction.url ?? null,
-      ),
+      ...compareCommonActionFields(oldAction, newAction),
       status: changeForNonMandatorySimpleProperty(
         oldAction.status,
         newAction.status,
@@ -332,32 +362,11 @@ function compareScenarios4X(
     newScenarios,
     scenario => scenario.id,
     (oldScenario, newScenario) => ({
-      title: changeForMandatorySimpleProperty(
-        oldScenario.title,
-        newScenario.title,
-      ),
-      id: newScenario.id,
-      description: changeForMandatorySimpleProperty(
-        oldScenario.description,
-        newScenario.description,
-      ),
-      url: changeForNonMandatorySimpleProperty(
-        oldScenario.url ?? null,
-        newScenario.url ?? null,
-      ),
-      threatActors: changeForListOfSimpleProperty(
-        oldScenario.threatActors,
-        newScenario.threatActors,
-      ) as SimpleTrackedProperty<ThreatActor>[],
+      ...compareCommonScenarioFields(oldScenario, newScenario),
       vulnerabilities: changeForListOfSimpleProperty(
         oldScenario.vulnerabilities,
         newScenario.vulnerabilities,
       ) as SimpleTrackedProperty<Vulnerability>[],
-      risk: compareRisk(oldScenario.risk, newScenario.risk),
-      remainingRisk: compareRisk(
-        oldScenario.remainingRisk,
-        newScenario.remainingRisk,
-      ),
       actions: compareActions4X(oldScenario.actions, newScenario.actions),
     }),
   );
@@ -370,23 +379,11 @@ export function comparison4X(
 ): RiSc4XChange {
   return {
     type: '4.*',
-    title: changeForNonMandatorySimpleProperty(
-      migratedOldRiSc.title,
-      updatedRiSc.title,
-    ),
-    scope: changeForNonMandatorySimpleProperty(
-      migratedOldRiSc.scope,
-      updatedRiSc.scope,
-    ),
-    valuations: compareValuations(
-      migratedOldRiSc.valuations ?? [],
-      updatedRiSc.valuations ?? [],
-    ),
+    ...compareCommonRiScFields(migratedOldRiSc, updatedRiSc, migrationStatus),
     scenarios: compareScenarios4X(
       migratedOldRiSc.scenarios,
       updatedRiSc.scenarios,
     ),
-    migrationChanges: migrationStatus,
   };
 }
 
@@ -401,16 +398,7 @@ function compareActions3X(
     newActions,
     action => action.id,
     (oldAction, newAction) => ({
-      title: changeForMandatorySimpleProperty(oldAction.title, newAction.title),
-      id: newAction.id,
-      description: changeForMandatorySimpleProperty(
-        oldAction.description,
-        newAction.description,
-      ),
-      url: changeForNonMandatorySimpleProperty(
-        oldAction.url ?? null,
-        newAction.url ?? null,
-      ),
+      ...compareCommonActionFields(oldAction, newAction),
       status: changeForNonMandatorySimpleProperty(
         oldAction.status,
         newAction.status,
@@ -436,32 +424,11 @@ function compareScenarios3X(
     newScenarios,
     scenario => scenario.id,
     (oldScenario, newScenario) => ({
-      title: changeForMandatorySimpleProperty(
-        oldScenario.title,
-        newScenario.title,
-      ),
-      id: newScenario.id,
-      description: changeForMandatorySimpleProperty(
-        oldScenario.description,
-        newScenario.description,
-      ),
-      url: changeForNonMandatorySimpleProperty(
-        oldScenario.url ?? null,
-        newScenario.url ?? null,
-      ),
-      threatActors: changeForListOfSimpleProperty(
-        oldScenario.threatActors,
-        newScenario.threatActors,
-      ) as SimpleTrackedProperty<ThreatActor>[],
+      ...compareCommonScenarioFields(oldScenario, newScenario),
       vulnerabilities: changeForListOfSimpleProperty(
         oldScenario.vulnerabilities,
         newScenario.vulnerabilities,
       ) as SimpleTrackedProperty<Vulnerability3X>[],
-      risk: compareRisk(oldScenario.risk, newScenario.risk),
-      remainingRisk: compareRisk(
-        oldScenario.remainingRisk,
-        newScenario.remainingRisk,
-      ),
       actions: compareActions3X(oldScenario.actions, newScenario.actions),
       existingActions: changeForNonMandatorySimpleProperty(
         oldScenario.existingActions ?? null,
@@ -478,23 +445,11 @@ export function comparison3X(
 ): RiSc3XChange {
   return {
     type: '3.*',
-    title: changeForNonMandatorySimpleProperty(
-      migratedOldRiSc.title,
-      updatedRiSc.title,
-    ),
-    scope: changeForNonMandatorySimpleProperty(
-      migratedOldRiSc.scope,
-      updatedRiSc.scope,
-    ),
-    valuations: compareValuations(
-      migratedOldRiSc.valuations ?? [],
-      updatedRiSc.valuations ?? [],
-    ),
+    ...compareCommonRiScFields(migratedOldRiSc, updatedRiSc, migrationStatus),
     scenarios: compareScenarios3X(
       migratedOldRiSc.scenarios,
       updatedRiSc.scenarios,
     ),
-    migrationChanges: migrationStatus,
   };
 }
 
@@ -531,49 +486,30 @@ export function compare(
     );
   }
 
-  // Normalize: flatten nested {title, scenario: {ID, ...}} → {title, id, ...}
-  // The JSON schema uses nested wrappers; comparison code expects flat structure.
-  const normalizedUpdated = normalizeRiScDocument(
-    updatedRiSc as unknown as RiScJson,
-  );
-  const normalizedMigrated = normalizeRiScDocument(migratedDoc);
-
-  let result: RiScChange;
   switch (majorVersion) {
     case 5:
-      result = comparison5X(
-        normalizedUpdated as unknown as RiSc5X,
-        normalizedMigrated as unknown as RiSc5X,
+      return comparison5X(
+        updatedRiSc as RiSc5X,
+        migratedDoc as unknown as RiSc5X,
         migrationStatus,
       );
-      break;
     case 4:
-      result = comparison4X(
-        normalizedUpdated as unknown as RiSc4X,
-        normalizedMigrated as unknown as RiSc4X,
+      return comparison4X(
+        updatedRiSc as RiSc4X,
+        migratedDoc as unknown as RiSc4X,
         migrationStatus,
       );
-      break;
     case 3:
-      result = comparison3X(
-        normalizedUpdated as unknown as RiSc3X,
-        normalizedMigrated as unknown as RiSc3X,
+      return comparison3X(
+        updatedRiSc as RiSc3X,
+        migratedDoc as unknown as RiSc3X,
         migrationStatus,
       );
-      break;
     default:
       throw new ComparisonError(
         `The version '${updatedVersion}' of the RiSc is unknown and not supported for comparison.`,
       );
   }
-
-  // Re-nest scenario/action values in Added/Deleted entries to match the
-  // wire format the frontend expects (Kotlin's FlattenSerializer did this).
-  result.scenarios = renestScenarioTrackedProperties(
-    result.scenarios as TrackedProperty<unknown, unknown>[],
-  ) as typeof result.scenarios;
-
-  return result;
 }
 
 // ─── Utilities ─────────────────────────────────────────────────────────────────
@@ -581,37 +517,6 @@ export function compare(
 function getMajorVersion(schemaVersion: string): number {
   const major = parseInt(schemaVersion.split('.')[0], 10);
   return isNaN(major) ? 0 : major;
-}
-
-/**
- * Re-nest flat scenario/action objects back to the wire format the frontend expects.
- * Flat: `{ title, id, actions: [{ title, id, ... }] }`
- * Nested: `{ title, scenario: { ID, actions: [{ title, action: { ID, ... } }] } }`
- */
-function renestScenario(flat: Record<string, unknown>): Record<string, unknown> {
-  const { title, id, actions, ...rest } = flat;
-  const nestedActions = Array.isArray(actions)
-    ? actions.map((a: Record<string, unknown>) => {
-        const { title: aTitle, id: aId, ...aRest } = a;
-        return { title: aTitle, action: { ID: aId, ...aRest } };
-      })
-    : actions;
-  return { title, scenario: { ID: id, ...rest, actions: nestedActions } };
-}
-
-/** Re-nest scenario values in Added/Deleted TrackedProperty entries. */
-function renestScenarioTrackedProperties<S>(
-  scenarios: TrackedProperty<S, unknown>[],
-): TrackedProperty<S, unknown>[] {
-  return scenarios.map(tp => {
-    if (tp.type === 'ADDED') {
-      return { ...tp, newValue: renestScenario(tp.newValue as Record<string, unknown>) };
-    }
-    if (tp.type === 'DELETED') {
-      return { ...tp, oldValue: renestScenario(tp.oldValue as Record<string, unknown>) };
-    }
-    return tp;
-  });
 }
 
 /** Deep equality check for comparing JSON-serializable values. */
