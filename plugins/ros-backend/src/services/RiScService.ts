@@ -688,11 +688,12 @@ export class RiScService {
         defaultLastModifiedDateString:
           decryptedPublished.sopsConfig.lastmodified ?? '',
       };
-    } catch {
+    } catch (e) {
+      this.logger?.error(`Comparison failed for ${riScId}: ${e instanceof Error ? e.message : e}`);
       return {
         status: 'JsonFailure' as DifferenceStatus,
         differenceState: null,
-        errorMessage: 'Comparison failed',
+        errorMessage: `Comparison failed: ${e instanceof Error ? e.message : 'Unknown error'}`,
         defaultLastModifiedDateString:
           decryptedPublished.sopsConfig.lastmodified ?? '',
       };

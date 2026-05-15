@@ -95,6 +95,59 @@ export interface ValidationResult {
 // ─── Public API ────────────────────────────────────────────────────────────────
 
 /**
+ * Flatten the nested JSON schema format into the flat format used by our types.
+ *
+ * The JSON schema wraps scenarios and actions:
+ *   `{ title, scenario: { ID, threatActors, actions: [{ title, action: { ID, ... } }] } }`
+ *
+ * The Kotlin backend uses `FlattenSerializer` to auto-flatten during deserialization.
+ * This function does the equivalent transformation:
+ *   `{ title, id, threatActors, actions: [{ title, id, ... }] }`
+ */
+export function normalizeRiScDocument(doc: RiScJson): RiScJson {
+  const scenarios = doc.scenarios as
+    | Array<Record<string, unknown>>
+    | undefined;
+  if (!scenarios) return doc;
+
+  const normalizedScenarios = scenarios.map(scenarioWrapper => {
+    const inner = scenarioWrapper.scenario as
+      | Record<string, unknown>
+      | undefined;
+    if (!inner) {
+      // Already flat (or malformed) — return as-is
+      return scenarioWrapper;
+    }
+
+    const { ID, actions: rawActions, ...rest } = inner;
+    const actions = rawActions as Array<Record<string, unknown>> | undefined;
+
+    const normalizedActions = actions?.map(actionWrapper => {
+      const actionInner = actionWrapper.action as
+        | Record<string, unknown>
+        | undefined;
+      if (!actionInner) return actionWrapper;
+
+      const { ID: actionID, ...actionRest } = actionInner;
+      return {
+        title: actionWrapper.title,
+        id: actionID,
+        ...actionRest,
+      };
+    });
+
+    return {
+      title: scenarioWrapper.title,
+      id: ID,
+      ...rest,
+      actions: normalizedActions ?? [],
+    };
+  });
+
+  return { ...doc, scenarios: normalizedScenarios };
+}
+
+/**
  * Parse content that may be JSON or YAML into a JavaScript object.
  */
 export function parseContent(content: string): RiScJson {
