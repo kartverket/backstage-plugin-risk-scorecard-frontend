@@ -14,18 +14,13 @@ import addFormats from 'ajv-formats';
 import * as yaml from 'yaml';
 import {
   type MigrationStatus,
-  type MigrationChange40,
   type MigrationChange40Scenario,
   type MigrationChange40Action,
-  type MigrationChange41,
   type MigrationChange41Scenario,
-  type MigrationChange42,
   type MigrationChange42Scenario,
   type MigrationChange42Action,
-  type MigrationChange50,
   type MigrationChange50Scenario,
   type MigrationChange50Action,
-  type MigrationChange51,
   type MigrationChange51Scenario,
   type MigrationChange51Action,
   type MigrationChange52,
@@ -93,59 +88,6 @@ export interface ValidationResult {
 }
 
 // ─── Public API ────────────────────────────────────────────────────────────────
-
-/**
- * Flatten the nested JSON schema format into the flat format used by our types.
- *
- * The JSON schema wraps scenarios and actions:
- *   `{ title, scenario: { ID, threatActors, actions: [{ title, action: { ID, ... } }] } }`
- *
- * The Kotlin backend uses `FlattenSerializer` to auto-flatten during deserialization.
- * This function does the equivalent transformation:
- *   `{ title, id, threatActors, actions: [{ title, id, ... }] }`
- */
-export function normalizeRiScDocument(doc: RiScJson): RiScJson {
-  const scenarios = doc.scenarios as
-    | Array<Record<string, unknown>>
-    | undefined;
-  if (!scenarios) return doc;
-
-  const normalizedScenarios = scenarios.map(scenarioWrapper => {
-    const inner = scenarioWrapper.scenario as
-      | Record<string, unknown>
-      | undefined;
-    if (!inner) {
-      // Already flat (or malformed) — return as-is
-      return scenarioWrapper;
-    }
-
-    const { ID, actions: rawActions, ...rest } = inner;
-    const actions = rawActions as Array<Record<string, unknown>> | undefined;
-
-    const normalizedActions = actions?.map(actionWrapper => {
-      const actionInner = actionWrapper.action as
-        | Record<string, unknown>
-        | undefined;
-      if (!actionInner) return actionWrapper;
-
-      const { ID: actionID, ...actionRest } = actionInner;
-      return {
-        title: actionWrapper.title,
-        id: actionID,
-        ...actionRest,
-      };
-    });
-
-    return {
-      title: scenarioWrapper.title,
-      id: ID,
-      ...rest,
-      actions: normalizedActions ?? [],
-    };
-  });
-
-  return { ...doc, scenarios: normalizedScenarios };
-}
 
 /**
  * Parse content that may be JSON or YAML into a JavaScript object.
@@ -280,6 +222,22 @@ export function migrate(
 
 // ─── Migration Engine ──────────────────────────────────────────────────────────
 
+type MigrateFn = (
+  doc: RiScJson,
+  lastPublished: LastPublished | null,
+  status: MigrationStatus,
+) => [RiScJson, MigrationStatus];
+
+const MIGRATION_CHAIN: Record<string, MigrateFn> = {
+  [RiScVersion.V3_2]: (doc, _lp, status) => migrateFrom32To33(doc, status),
+  [RiScVersion.V3_3]: (doc, _lp, status) => migrateFrom33To40(doc, status),
+  [RiScVersion.V4_0]: (doc, _lp, status) => migrateFrom40To41(doc, status),
+  [RiScVersion.V4_1]: (doc, lp, status) => migrateFrom41To42(doc, lp, status),
+  [RiScVersion.V4_2]: (doc, _lp, status) => migrateFrom42To50(doc, status),
+  [RiScVersion.V5_0]: (doc, _lp, status) => migrateFrom50To51(doc, status),
+  [RiScVersion.V5_1]: (doc, _lp, status) => migrateFrom51To52(doc, status),
+};
+
 function handleMigrate(
   doc: RiScJson,
   lastPublished: LastPublished | null,
@@ -291,38 +249,81 @@ function handleMigrate(
     return [doc, status];
   }
 
-  let migrated: RiScJson;
-  let newStatus: MigrationStatus;
-
-  switch (currentVersion) {
-    case RiScVersion.V3_2:
-      [migrated, newStatus] = migrateFrom32To33(doc, status);
-      break;
-    case RiScVersion.V3_3:
-      [migrated, newStatus] = migrateFrom33To40(doc, status);
-      break;
-    case RiScVersion.V4_0:
-      [migrated, newStatus] = migrateFrom40To41(doc, status);
-      break;
-    case RiScVersion.V4_1:
-      [migrated, newStatus] = migrateFrom41To42(doc, lastPublished, status);
-      break;
-    case RiScVersion.V4_2:
-      [migrated, newStatus] = migrateFrom42To50(doc, status);
-      break;
-    case RiScVersion.V5_0:
-      [migrated, newStatus] = migrateFrom50To51(doc, status);
-      break;
-    case RiScVersion.V5_1:
-      [migrated, newStatus] = migrateFrom51To52(doc, status);
-      break;
-    default:
-      throw new Error(
-        `Unsupported migration: Unable to migrate from version ${currentVersion}`,
-      );
+  const migrateFn = MIGRATION_CHAIN[currentVersion];
+  if (!migrateFn) {
+    throw new Error(
+      `Unsupported migration: Unable to migrate from version ${currentVersion}`,
+    );
   }
 
+  const [migrated, newStatus] = migrateFn(doc, lastPublished, status);
   return handleMigrate(migrated, lastPublished, newStatus, toVersion);
+}
+
+// ─── Mapping Constants ─────────────────────────────────────────────────────────
+
+const VULNERABILITY_3X_TO_4X_MAP: Record<string, string> = {
+  'User repudiation': 'Unmonitored use',
+  'Compromised admin user': 'Unauthorized access',
+  'Escalation of rights': 'Unauthorized access',
+  'Disclosed secret': 'Information leak',
+  'Denial of service': 'Excessive use',
+  'Dependency vulnerability': 'Dependency vulnerability',
+  'Information leak': 'Information leak',
+  'Input tampering': 'Input tampering',
+  Misconfiguration: 'Misconfiguration',
+};
+
+const CONSEQUENCE_40_TO_41_MAP: Record<number, number> = {
+  1000: 8000,
+  30000: 160000,
+  1000000: 3200000,
+  30000000: 64000000,
+  1000000000: 1280000000,
+};
+
+const PROBABILITY_40_TO_41_MAP: Record<number, number> = {
+  0.01: 0.0025,
+  0.1: 0.05,
+  1: 1,
+  50: 20,
+  300: 400,
+};
+
+const ACTION_STATUS_4X_TO_5X_MAP: Record<string, string> = {
+  'Not started': 'Not OK',
+  'In progress': 'Not OK',
+  'On hold': 'Not OK',
+  Completed: 'OK',
+  Aborted: 'Not relevant',
+};
+
+// ─── Migration Helpers ─────────────────────────────────────────────────────────
+
+function migrateScenarios<T>(
+  doc: RiScJson,
+  updateFn: (
+    title: string,
+    scenario: Record<string, unknown>,
+    changes: T[],
+  ) => Record<string, unknown>,
+): {
+  migratedScenarios: Array<Record<string, unknown>>;
+  changedScenarios: T[];
+} {
+  const scenarios = (doc.scenarios as Array<Record<string, unknown>>) || [];
+  const changedScenarios: T[] = [];
+
+  const migratedScenarios = scenarios.map(scenarioWrapper => {
+    const scenario = scenarioWrapper.scenario as Record<string, unknown>;
+    const title = scenarioWrapper.title as string;
+    return {
+      title,
+      scenario: updateFn(title, scenario, changedScenarios),
+    };
+  });
+
+  return { migratedScenarios, changedScenarios };
 }
 
 // ─── Migration Steps ───────────────────────────────────────────────────────────
@@ -340,20 +341,8 @@ export function migrateFrom33To40(
   doc: RiScJson,
   status: MigrationStatus,
 ): [RiScJson, MigrationStatus] {
-  const scenarios = (doc.scenarios as Array<Record<string, unknown>>) || [];
-  const changedScenarios: MigrationChange40Scenario[] = [];
-
-  const migratedScenarios = scenarios.map(scenarioWrapper => {
-    const scenario = scenarioWrapper.scenario as Record<string, unknown>;
-    const title = scenarioWrapper.title as string;
-    return {
-      title,
-      scenario: updateScenarioFrom33To40(title, scenario, changedScenarios),
-    };
-  });
-
-  const changes40: MigrationChange40 | undefined =
-    changedScenarios.length > 0 ? { scenarios: changedScenarios } : undefined;
+  const { migratedScenarios, changedScenarios } =
+    migrateScenarios<MigrationChange40Scenario>(doc, updateScenarioFrom33To40);
 
   return [
     { ...doc, schemaVersion: RiScVersion.V4_0, scenarios: migratedScenarios },
@@ -361,7 +350,10 @@ export function migrateFrom33To40(
       ...status,
       migrationChanges: true,
       migrationRequiresNewApproval: true,
-      migrationChanges40: changes40 ?? null,
+      migrationChanges40:
+        changedScenarios.length > 0
+          ? { scenarios: changedScenarios }
+          : null,
     },
   ];
 }
@@ -371,19 +363,6 @@ function updateScenarioFrom33To40(
   scenario: Record<string, unknown>,
   changedScenarios: MigrationChange40Scenario[],
 ): Record<string, unknown> {
-  const vulnerabilityMap: Record<string, string> = {
-    'User repudiation': 'Unmonitored use',
-    'Compromised admin user': 'Unauthorized access',
-    'Escalation of rights': 'Unauthorized access',
-    'Disclosed secret': 'Information leak',
-    'Denial of service': 'Excessive use',
-    // Unchanged
-    'Dependency vulnerability': 'Dependency vulnerability',
-    'Information leak': 'Information leak',
-    'Input tampering': 'Input tampering',
-    Misconfiguration: 'Misconfiguration',
-  };
-
   const oldVulnerabilities = (scenario.vulnerabilities as string[]) || [];
   const changedVulnerabilities: MigrationChangedTypedValue<
     Vulnerability3X,
@@ -391,7 +370,7 @@ function updateScenarioFrom33To40(
   >[] = [];
 
   const newVulnerabilities = oldVulnerabilities.map(v => {
-    const mapped = vulnerabilityMap[v] ?? v;
+    const mapped = VULNERABILITY_3X_TO_4X_MAP[v] ?? v;
     if (mapped !== v) {
       changedVulnerabilities.push({
         oldValue: v as unknown as Vulnerability3X,
@@ -458,20 +437,8 @@ export function migrateFrom40To41(
   doc: RiScJson,
   status: MigrationStatus,
 ): [RiScJson, MigrationStatus] {
-  const scenarios = (doc.scenarios as Array<Record<string, unknown>>) || [];
-  const changedScenarios: MigrationChange41Scenario[] = [];
-
-  const migratedScenarios = scenarios.map(scenarioWrapper => {
-    const scenario = scenarioWrapper.scenario as Record<string, unknown>;
-    const title = scenarioWrapper.title as string;
-    return {
-      title,
-      scenario: updateScenarioFrom40To41(title, scenario, changedScenarios),
-    };
-  });
-
-  const changes41: MigrationChange41 | undefined =
-    changedScenarios.length > 0 ? { scenarios: changedScenarios } : undefined;
+  const { migratedScenarios, changedScenarios } =
+    migrateScenarios<MigrationChange41Scenario>(doc, updateScenarioFrom40To41);
 
   return [
     { ...doc, schemaVersion: RiScVersion.V4_1, scenarios: migratedScenarios },
@@ -479,7 +446,10 @@ export function migrateFrom40To41(
       ...status,
       migrationChanges: true,
       migrationRequiresNewApproval: true,
-      migrationChanges41: changes41 ?? null,
+      migrationChanges41:
+        changedScenarios.length > 0
+          ? { scenarios: changedScenarios }
+          : null,
     },
   ];
 }
@@ -489,22 +459,6 @@ function updateScenarioFrom40To41(
   scenario: Record<string, unknown>,
   changedScenarios: MigrationChange41Scenario[],
 ): Record<string, unknown> {
-  const consequenceMap: Record<number, number> = {
-    1000: 8000,
-    30000: 160000,
-    1000000: 3200000,
-    30000000: 64000000,
-    1000000000: 1280000000,
-  };
-
-  const probabilityMap: Record<number, number> = {
-    0.01: 0.0025,
-    0.1: 0.05,
-    1: 1,
-    50: 20,
-    300: 400,
-  };
-
   const mapValue = (value: number, map: Record<number, number>): number =>
     map[value] ?? value;
 
@@ -516,10 +470,10 @@ function updateScenarioFrom40To41(
   const oldRemProb = remainingRisk.probability as number;
   const oldRemCons = remainingRisk.consequence as number;
 
-  const newRiskProb = mapValue(oldRiskProb, probabilityMap);
-  const newRiskCons = mapValue(oldRiskCons, consequenceMap);
-  const newRemProb = mapValue(oldRemProb, probabilityMap);
-  const newRemCons = mapValue(oldRemCons, consequenceMap);
+  const newRiskProb = mapValue(oldRiskProb, PROBABILITY_40_TO_41_MAP);
+  const newRiskCons = mapValue(oldRiskCons, CONSEQUENCE_40_TO_41_MAP);
+  const newRemProb = mapValue(oldRemProb, PROBABILITY_40_TO_41_MAP);
+  const newRemCons = mapValue(oldRemCons, CONSEQUENCE_40_TO_41_MAP);
 
   const migratedScenario = {
     ...scenario,
@@ -566,31 +520,21 @@ export function migrateFrom41To42(
   lastPublished: LastPublished | null,
   status: MigrationStatus,
 ): [RiScJson, MigrationStatus] {
-  const scenarios = (doc.scenarios as Array<Record<string, unknown>>) || [];
-  const changedScenarios: MigrationChange42Scenario[] = [];
-
-  const migratedScenarios = scenarios.map(scenarioWrapper => {
-    const scenario = scenarioWrapper.scenario as Record<string, unknown>;
-    const title = scenarioWrapper.title as string;
-    return {
-      title,
-      scenario: updateScenarioFrom41To42(
-        title,
-        scenario,
-        lastPublished,
-        changedScenarios,
-      ),
-    };
-  });
-
-  const changes42: MigrationChange42 | undefined =
-    changedScenarios.length > 0 ? { scenarios: changedScenarios } : undefined;
+  const { migratedScenarios, changedScenarios } =
+    migrateScenarios<MigrationChange42Scenario>(
+      doc,
+      (title, scenario, changes) =>
+        updateScenarioFrom41To42(title, scenario, lastPublished, changes),
+    );
 
   return [
     { ...doc, schemaVersion: RiScVersion.V4_2, scenarios: migratedScenarios },
     {
       ...status,
-      migrationChanges42: changes42 ?? null,
+      migrationChanges42:
+        changedScenarios.length > 0
+          ? { scenarios: changedScenarios }
+          : null,
     },
   ];
 }
@@ -639,20 +583,8 @@ export function migrateFrom42To50(
   doc: RiScJson,
   status: MigrationStatus,
 ): [RiScJson, MigrationStatus] {
-  const scenarios = (doc.scenarios as Array<Record<string, unknown>>) || [];
-  const changedScenarios: MigrationChange50Scenario[] = [];
-
-  const migratedScenarios = scenarios.map(scenarioWrapper => {
-    const scenario = scenarioWrapper.scenario as Record<string, unknown>;
-    const title = scenarioWrapper.title as string;
-    return {
-      title,
-      scenario: updateScenarioFrom42To50(title, scenario, changedScenarios),
-    };
-  });
-
-  const changes50: MigrationChange50 | undefined =
-    changedScenarios.length > 0 ? { scenarios: changedScenarios } : undefined;
+  const { migratedScenarios, changedScenarios } =
+    migrateScenarios<MigrationChange50Scenario>(doc, updateScenarioFrom42To50);
 
   return [
     { ...doc, schemaVersion: RiScVersion.V5_0, scenarios: migratedScenarios },
@@ -660,7 +592,10 @@ export function migrateFrom42To50(
       ...status,
       migrationChanges: true,
       migrationRequiresNewApproval: true,
-      migrationChanges50: changes50 ?? null,
+      migrationChanges50:
+        changedScenarios.length > 0
+          ? { scenarios: changedScenarios }
+          : null,
     },
   ];
 }
@@ -670,14 +605,6 @@ function updateScenarioFrom42To50(
   scenario: Record<string, unknown>,
   changedScenarios: MigrationChange50Scenario[],
 ): Record<string, unknown> {
-  const statusMap: Record<string, string> = {
-    'Not started': 'Not OK',
-    'In progress': 'Not OK',
-    'On hold': 'Not OK',
-    Completed: 'OK',
-    Aborted: 'Not relevant',
-  };
-
   const actions = (scenario.actions as Array<Record<string, unknown>>) || [];
   const changedActionStatuses: MigrationChangedTypedValue<
     ActionStatus3X4X,
@@ -688,7 +615,7 @@ function updateScenarioFrom42To50(
   const migratedActions = actions.map(actionWrapper => {
     const action = actionWrapper.action as Record<string, unknown>;
     const oldStatus = action.status as string;
-    const newStatus = statusMap[oldStatus] ?? oldStatus;
+    const newStatus = ACTION_STATUS_4X_TO_5X_MAP[oldStatus] ?? oldStatus;
 
     if (newStatus !== oldStatus) {
       changedActionStatuses.push({
@@ -728,20 +655,8 @@ export function migrateFrom50To51(
   doc: RiScJson,
   status: MigrationStatus,
 ): [RiScJson, MigrationStatus] {
-  const scenarios = (doc.scenarios as Array<Record<string, unknown>>) || [];
-  const changedScenarios: MigrationChange51Scenario[] = [];
-
-  const migratedScenarios = scenarios.map(scenarioWrapper => {
-    const scenario = scenarioWrapper.scenario as Record<string, unknown>;
-    const title = scenarioWrapper.title as string;
-    return {
-      title,
-      scenario: updateScenarioFrom50To51(title, scenario, changedScenarios),
-    };
-  });
-
-  const changes51: MigrationChange51 | undefined =
-    changedScenarios.length > 0 ? { scenarios: changedScenarios } : undefined;
+  const { migratedScenarios, changedScenarios } =
+    migrateScenarios<MigrationChange51Scenario>(doc, updateScenarioFrom50To51);
 
   return [
     { ...doc, schemaVersion: RiScVersion.V5_1, scenarios: migratedScenarios },
@@ -749,7 +664,10 @@ export function migrateFrom50To51(
       ...status,
       migrationChanges: true,
       migrationRequiresNewApproval: true,
-      migrationChanges51: changes51 ?? null,
+      migrationChanges51:
+        changedScenarios.length > 0
+          ? { scenarios: changedScenarios }
+          : null,
     },
   ];
 }
