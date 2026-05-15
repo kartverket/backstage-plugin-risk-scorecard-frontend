@@ -79,4 +79,15 @@ catalog:
 #   'native'  — Routes directly to the new Backstage ros backend plugin via service discovery.
 #               Requires the @kartverket/backstage-plugin-risk-scorecard-backend package to be installed.
 ros:
-  backend: 'legacy'
+  backend: 'native'
+  gcp:
+    additionalAllowedProjectIds:
+      - <GCP PROJECT ID>
+  sops:
+    ageKey: <BACKEND SECRET KEY FOR SOPS>
+    backendPublicKey: <BACKEND PUBLIC KEY FOR SOPS>
+    webhookUrl: <SLACK WEBHOOK URL>
+  initRiSc:
+    repoOwner: 'kartverket'
+    repoName: 'initial-riscs-collection'
+
