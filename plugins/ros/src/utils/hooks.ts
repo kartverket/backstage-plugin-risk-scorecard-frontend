@@ -42,6 +42,46 @@ export function useGithubRepositoryInformation(): GithubRepoInfo {
   };
 }
 
+/**
+ * Backstage has a bug where multiple tabs using the GitHub access token can each
+ * fetch a new token and invalidate tokens cached in older tabs. To mitigate this
+ * we patch an internal refresh predicate so a token verified as invalid can be
+ * refreshed before retrying the request.
+ */
+let invalidGitHubAccessToken = '';
+function patchGithubApiToEnableForcedRefresh<T>(
+  gitHubApi: T,
+  isDevelopment: boolean,
+): T {
+  const sessionManager = (gitHubApi as any)?.sessionManager;
+  if (!sessionManager?.originalSessionShouldRefreshFunc) {
+    if (typeof sessionManager?.sessionShouldRefreshFunc === 'function') {
+      sessionManager.originalSessionShouldRefreshFunc =
+        sessionManager.sessionShouldRefreshFunc;
+      sessionManager.sessionShouldRefreshFunc =
+        function sessionShouldRefreshFuncOverride(session: any) {
+          const accessToken = session?.providerInfo?.accessToken;
+          if (isDevelopment && invalidGitHubAccessToken && !accessToken) {
+            throw new Error(
+              'The expected location of the accessToken was empty. This workaround is no longer working',
+            );
+          }
+          if (accessToken === invalidGitHubAccessToken) {
+            invalidGitHubAccessToken = '';
+            return true;
+          }
+          return sessionManager.originalSessionShouldRefreshFunc(session);
+        };
+    } else if (isDevelopment) {
+      throw new Error(
+        'The expected function "sessionShouldRefreshFunc" does not exist. This workaround is no longer working',
+      );
+    }
+  }
+
+  return gitHubApi;
+}
+
 export function useAuthenticatedFetch() {
   const configApi = useApi(configApiRef);
   const repoInformation = useGithubRepositoryInformation();
@@ -143,6 +183,7 @@ export function useAuthenticatedFetch() {
       } else {
         onError(error, false);
       }
+      return Promise.resolve(null);
     }
   }
 
@@ -438,43 +479,4 @@ export function useDebounce<T>(
     }
   }, []);
   return { flush };
-}
-
-/**
- * Backstage has a bug where multiple tabs using the GitHub access token can each
- * fetch a new token and invalidate tokens cached in older tabs. To mitigate this
- * we patch an internal refresh predicate so a token verified as invalid can be
- * refreshed before retrying the request.
- */
-let invalidGitHubAccessToken = '';
-function patchGithubApiToEnableForcedRefresh<T>(
-  gitHubApi: T,
-  isDevelopment: boolean,
-): T {
-  const sessionManager = (gitHubApi as any)?.sessionManager;
-  if (!sessionManager?.originalSessionShouldRefreshFunc) {
-    if (typeof sessionManager?.sessionShouldRefreshFunc === 'function') {
-      sessionManager.originalSessionShouldRefreshFunc =
-        sessionManager.sessionShouldRefreshFunc;
-      sessionManager.sessionShouldRefreshFunc = function (session: any) {
-        const accessToken = session?.providerInfo?.accessToken;
-        if (isDevelopment && invalidGitHubAccessToken && !accessToken) {
-          throw new Error(
-            'The expected location of the accessToken was empty. This workaround is no longer working',
-          );
-        }
-        if (accessToken === invalidGitHubAccessToken) {
-          invalidGitHubAccessToken = '';
-          return true;
-        }
-        return sessionManager.originalSessionShouldRefreshFunc(session);
-      };
-    } else if (isDevelopment) {
-      throw new Error(
-        'The expected function "sessionShouldRefreshFunc" does not exist. This workaround is no longer working',
-      );
-    }
-  }
-
-  return gitHubApi;
 }
