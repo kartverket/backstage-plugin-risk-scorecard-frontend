@@ -111,9 +111,6 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
     );
   }
 
-  const hasSystemRiScScope = selectedEntityRefs.length > 1;
-  const shouldShowNightlyRefreshHint = hasSystemRiScScope || fieldState.isDirty;
-
   return (
     <FormControl className={formStyles.formControl}>
       <FormLabel className={formStyles.formLabel}>
@@ -160,10 +157,10 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
         loadingText={t('rosDialog.appliesToLoading')}
         noOptionsText={t('rosDialog.appliesToNoOptions')}
       />
-      {hasSystemRiScScope && (
+      {selectedEntityRefs.length > 1 && (
         <FormHelperText>{t('rosDialog.appliesToSystemRosHint')}</FormHelperText>
       )}
-      {shouldShowNightlyRefreshHint && (
+      {fieldState.isDirty && (
         <Alert
           status="info"
           icon
