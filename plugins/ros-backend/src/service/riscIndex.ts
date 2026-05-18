@@ -27,8 +27,6 @@ type RepoToIndex = {
 type GitHubContentsEntry = {
   type: 'file' | 'dir';
   name: string;
-  path: string;
-  url: string;
 };
 
 type GitHubFileResponse = {
@@ -36,7 +34,12 @@ type GitHubFileResponse = {
   encoding?: string;
 };
 
+type GitHubRefResponse = {
+  ref: string;
+};
+
 export const unknownRiScLastSavedAt = '1970-01-01T00:00:00Z';
+const riScBranchPrefix = 'risc-';
 
 export type GitHubCommitResponse = {
   commit?: {
@@ -114,6 +117,7 @@ async function getRiskScorecardRiScFilesToIndex({
 
     try {
       if (!integration) {
+        // noinspection ExceptionCaughtLocallyJS Used to reuse error-handling below without repeating it
         throw new Error(
           'Github-Integration was missing, this likely means that there has been added a different integration that is not yet supported',
         );
@@ -154,7 +158,7 @@ function getPreviousRiScFilesForRepo(
   previousIndex: readonly RiScIndexEntry[],
   repo: RepoToIndex,
 ): RiScIndexEntry[] {
-  const repoSourcePathPrefix = `${repo.repoRootUrl}/`;
+  const repoSourcePathPrefix = `${repo.owner}/${repo.repo}/`;
 
   return previousIndex.filter(entry =>
     entry.sourceFilePath.startsWith(repoSourcePathPrefix),
@@ -271,112 +275,184 @@ async function getRiScFiles({
     );
   }
 
-  const directoryEntries = await fetchGitHubJsonOrUndefined<
+  const directoryEntries = await fetchGitHubJsonOrDefault<
     GitHubContentsEntry[]
-  >(
-    `${apiBaseUrl}/repos/${repo.owner}/${repo.repo}/contents/.security/risc`,
-    credentials.headers,
-  );
+  >({
+    url: `${apiBaseUrl}/repos/${repo.owner}/${repo.repo}/contents/.security/risc`,
+    headers: credentials.headers,
+    defaultValue: [],
+  });
 
-  if (!directoryEntries) {
-    return [];
-  }
-
-  const files = await Promise.all(
+  const defaultBranchFiles = await Promise.all(
     directoryEntries
       .filter(entry => {
         return entry.type === 'file' && entry.name.endsWith('.risc.yaml');
       })
-      .map(async entry => {
-        const lastSavedAtPromise = fetchRiScLastSavedAt({
+      .map(entry =>
+        getRiScFile({
           apiBaseUrl,
           repo,
-          filePath: entry.path,
+          riScId: entry.name.replace('.risc.yaml', ''),
           headers: credentials.headers,
-        }).catch(error => {
-          logger.warn('Failed to fetch RiSc last saved timestamp', {
-            sourceUrl: entry.url,
-            filePath: entry.path,
-            error: error instanceof Error ? error.message : String(error),
-          });
-          return unknownRiScLastSavedAt;
-        });
-
-        const fileResponse =
-          await fetchGitHubJsonOrUndefined<GitHubFileResponse>(
-            entry.url,
-            credentials.headers,
-          );
-
-        if (!fileResponse?.content || fileResponse.encoding !== 'base64') {
-          return undefined;
-        }
-
-        const lastSavedAt = await lastSavedAtPromise;
-        const sourceUrl = entry.url;
-        const riScId = getRiScIdFromFileName(entry.name);
-
-        if (!riScId) {
-          return undefined;
-        }
-
-        const rawText = Buffer.from(fileResponse.content, 'base64').toString(
-          'utf8',
-        );
-        const appliesTo = parseAppliesTo(rawText, sourceUrl, logger);
-
-        return {
-          sourceFilePath: getSourceFilePath(repo, entry.path),
-          riScId,
-          appliesTo: appliesTo ?? repo.defaultEntityRefs,
-          lastSavedAt,
-        };
-      }),
+          logger,
+        }),
+      ),
   );
 
-  return files.filter((file): file is RiScIndexEntry => file !== undefined);
+  const branchNames = await getRiScBranchNames({
+    apiBaseUrl,
+    repo,
+    headers: credentials.headers,
+  });
+  const branchFiles = await Promise.all(
+    branchNames.map(branchName =>
+      getRiScFile({
+        apiBaseUrl,
+        repo,
+        riScId: branchName,
+        headers: credentials.headers,
+        logger,
+        ref: branchName,
+      }),
+    ),
+  );
+
+  return deduplicateRiScEntries(
+    [...defaultBranchFiles, ...branchFiles].filter(
+      (file): file is RiScIndexEntry => file !== undefined,
+    ),
+  );
 }
 
-function getSourceFilePath(repo: RepoToIndex, filePath: string): string {
-  // The identity intentionally excludes branch/ref so indexing multiple branches
-  // merges the same RiSc file path into one entry.
-  return `${repo.repoRootUrl}/${filePath}`;
+async function getRiScBranchNames({
+  apiBaseUrl,
+  repo,
+  headers,
+}: {
+  apiBaseUrl: string;
+  repo: RepoToIndex;
+  headers?: Record<string, string>;
+}): Promise<string[]> {
+  const refs = await fetchGitHubJsonOrDefault<GitHubRefResponse[]>({
+    url: `${apiBaseUrl}/repos/${repo.owner}/${repo.repo}/git/matching-refs/heads/${riScBranchPrefix}`,
+    headers,
+    defaultValue: [],
+  });
+
+  return refs
+    .map(({ ref }) => ref.slice('refs/heads/'.length))
+    .filter((branchName): branchName is string => !branchName.includes('/'));
 }
 
-function getRiScIdFromFileName(fileName: string): string | undefined {
-  const suffix = '.risc.yaml';
+function getGitHubContentsParams({
+  repo,
+  riScId,
+  ref,
+}: {
+  repo: RepoToIndex;
+  riScId: string;
+  ref?: string;
+}): { filePath: string; sourceFilePath: string; query: string } {
+  const filePath = `.security/risc/${riScId}.risc.yaml`;
+  return {
+    filePath,
+    // SourceFilePath is also the identity of a RiSc internally, and intentionally excludes branch/ref
+    // so a supported branch can replace the default-branch version of the same RiSc file in the index.
+    sourceFilePath: `${repo.owner}/${repo.repo}/contents/${filePath}`,
+    query: ref ? '?' + new URLSearchParams({ ref }) : '',
+  };
+}
 
-  if (!fileName.endsWith(suffix)) {
-    return undefined;
+async function getRiScFile(params: {
+  apiBaseUrl: string;
+  repo: RepoToIndex;
+  riScId: string;
+  ref?: string;
+  headers?: Record<string, string>;
+  logger: LoggerService;
+}): Promise<RiScIndexEntry | undefined> {
+  const { filePath, sourceFilePath, query } = getGitHubContentsParams(params);
+  const fileResponse = await fetchGitHubJsonOrDefault<
+    GitHubFileResponse | undefined
+  >({
+    url: `${params.apiBaseUrl}/repos/${sourceFilePath}${query}`,
+    headers: params.headers,
+    defaultValue: undefined,
+  });
+
+  if (!fileResponse?.content || fileResponse.encoding !== 'base64') {
+    throw new Error(
+      `Could not find content for ${sourceFilePath} in ref=${params.ref}`,
+    );
   }
 
-  return fileName.slice(0, -suffix.length);
+  const lastSavedAt = await fetchRiScLastSavedAt({
+    ...params,
+    filePath,
+  });
+
+  const rawText = Buffer.from(fileResponse.content, 'base64').toString('utf8');
+  const appliesTo = parseAppliesTo(rawText, sourceFilePath, params.logger);
+
+  return {
+    sourceFilePath,
+    riScId: params.riScId,
+    appliesTo: appliesTo ?? params.repo.defaultEntityRefs,
+    lastSavedAt,
+  };
+}
+
+function deduplicateRiScEntries(entries: RiScIndexEntry[]): RiScIndexEntry[] {
+  const entriesBySourcePath = new Map<string, RiScIndexEntry>();
+
+  for (const entry of entries) {
+    entriesBySourcePath.set(entry.sourceFilePath, entry);
+  }
+
+  return [...entriesBySourcePath.values()];
 }
 
 async function fetchRiScLastSavedAt({
   apiBaseUrl,
   repo,
   filePath,
+  ref,
   headers,
+  logger,
 }: {
   apiBaseUrl: string;
   repo: RepoToIndex;
   filePath: string;
+  ref?: string;
   headers?: Record<string, string>;
+  logger: LoggerService;
 }): Promise<string> {
   const query = new URLSearchParams({
     path: filePath,
     per_page: '1',
   });
-  const commits = await fetchGitHubJsonOrUndefined<GitHubCommitResponse[]>(
-    `${apiBaseUrl}/repos/${repo.owner}/${repo.repo}/commits?${query}`,
+
+  if (ref) {
+    query.set('sha', ref);
+  }
+
+  const commits = await fetchGitHubJsonOrDefault<GitHubCommitResponse[]>({
+    url: `${apiBaseUrl}/repos/${repo.owner}/${repo.repo}/commits?${query}`,
     headers,
-  );
+    defaultValue: [],
+  });
 
   const lastSavedAt = getLastSavedAtFromGitHubCommits(commits);
 
   if (!lastSavedAt) {
-    throw new Error('GitHub commits response did not include a committer date');
+    logger.warn(
+      `GitHub commits response did not include a committer date. Returning ${unknownRiScLastSavedAt}`,
+      {
+        filePath,
+        ref,
+      },
+    );
+    return unknownRiScLastSavedAt;
   }
 
   return lastSavedAt;
@@ -391,11 +467,17 @@ export function getLastSavedAtFromGitHubCommits(
 
 const defaultRetries = 2;
 
-async function fetchGitHubJsonOrUndefined<T>(
-  url: string,
-  headers?: Record<string, string>,
-  retriesOnTransients: number = defaultRetries,
-): Promise<T | undefined> {
+async function fetchGitHubJsonOrDefault<T>({
+  url,
+  headers,
+  defaultValue,
+  retriesOnTransients = defaultRetries,
+}: {
+  url: string;
+  headers?: Record<string, string>;
+  defaultValue: T;
+  retriesOnTransients?: number;
+}): Promise<T> {
   const response = await fetch(url, {
     headers: {
       Accept: 'application/vnd.github+json',
@@ -404,7 +486,7 @@ async function fetchGitHubJsonOrUndefined<T>(
   });
 
   if (response.status === 404) {
-    return undefined;
+    return defaultValue;
   }
 
   if (!response.ok) {
@@ -418,11 +500,12 @@ async function fetchGitHubJsonOrUndefined<T>(
         setTimeout(resolve, 2 ** (defaultRetries - retriesOnTransients) * 1000),
       );
 
-      return await fetchGitHubJsonOrUndefined<T>(
+      return await fetchGitHubJsonOrDefault<T>({
         url,
+        defaultValue,
         headers,
-        retriesOnTransients - 1,
-      );
+        retriesOnTransients: retriesOnTransients - 1,
+      });
     }
 
     throw new Error(`GitHub request failed for ${url}: ${response.status}`);

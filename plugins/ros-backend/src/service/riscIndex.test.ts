@@ -119,14 +119,14 @@ describe('buildRiskScorecardRiScIndex', () => {
     });
     const previousRepoRiSc = {
       sourceFilePath:
-        'https://github.com/org/repo/.security/risc/risc-previous.risc.yaml',
+        'org/repo/contents/.security/risc/risc-previous.risc.yaml',
       riScId: 'risc-previous',
       appliesTo: ['component:default/kv-ros-test-1'],
       lastSavedAt: '2026-05-01T08:30:00Z',
     };
     const otherRepoRiSc = {
       sourceFilePath:
-        'https://github.com/org/other-repo/.security/risc/risc-other.risc.yaml',
+        'org/other-repo/contents/.security/risc/risc-other.risc.yaml',
       riScId: 'risc-other',
       appliesTo: ['component:default/source-1'],
       lastSavedAt: '2026-05-02T08:30:00Z',
@@ -177,7 +177,7 @@ describe('buildRiskScorecardRiScIndex', () => {
     );
   });
 
-  it('uses the repo-relative file path as sourceFilePath so branch entries merge', async () => {
+  it('indexes supported RiSc branches by branch-name file and merges into the source path', async () => {
     const logger = createLogger();
     const getEntities = jest.fn().mockResolvedValue({
       items: [
@@ -205,10 +205,10 @@ describe('buildRiskScorecardRiScIndex', () => {
         },
       ],
     });
-    const fileApiUrl =
-      'https://api.github.com/repos/org/repo/contents/.security/risc/risc-branch.risc.yaml?ref=release%2F2026.05';
-    const branchFileUrl =
-      'https://github.com/org/repo/blob/release/2026.05/.security/risc/risc-branch.risc.yaml';
+    const defaultFileApiUrl =
+      'https://api.github.com/repos/org/repo/contents/.security/risc/risc-branch.risc.yaml';
+    const branchFileApiUrl =
+      'https://api.github.com/repos/org/repo/contents/.security/risc/risc-branch.risc.yaml?ref=risc-branch';
     const getCredentials = jest.fn().mockResolvedValue({
       headers: { Authorization: 'Bearer token' },
     });
@@ -243,29 +243,56 @@ describe('buildRiskScorecardRiScIndex', () => {
             type: 'file',
             name: 'risc-branch.risc.yaml',
             path: '.security/risc/risc-branch.risc.yaml',
-            url: fileApiUrl,
-            html_url: branchFileUrl,
+            url: defaultFileApiUrl,
           },
         ]);
       }
 
       if (
-        requestUrl.startsWith('https://api.github.com/repos/org/repo/commits?')
+        requestUrl ===
+        'https://api.github.com/repos/org/repo/git/matching-refs/heads/risc-'
       ) {
         return jsonResponse([
-          {
-            commit: {
-              committer: { date: '2026-05-01T08:30:00Z' },
-            },
-          },
+          { ref: 'refs/heads/risc-branch' },
+          { ref: 'refs/heads/risc-nested/path' },
         ]);
       }
 
-      if (requestUrl === fileApiUrl) {
+      if (requestUrl === defaultFileApiUrl) {
         return jsonResponse({
-          content: Buffer.from('title: test\nversion: 1\n').toString('base64'),
+          content: Buffer.from(
+            'appliesTo:\n  - backstage:component:default/default-entity\n',
+          ).toString('base64'),
           encoding: 'base64',
         });
+      }
+
+      if (requestUrl === branchFileApiUrl) {
+        return jsonResponse({
+          content: Buffer.from(
+            'appliesTo:\n  - backstage:component:default/branch-entity\n',
+          ).toString('base64'),
+          encoding: 'base64',
+        });
+      }
+
+      if (
+        requestUrl.startsWith('https://api.github.com/repos/org/repo/commits?')
+      ) {
+        const searchParams = new URL(requestUrl).searchParams;
+
+        return jsonResponse([
+          {
+            commit: {
+              committer: {
+                date:
+                  searchParams.get('sha') === 'risc-branch'
+                    ? '2026-05-02T08:30:00Z'
+                    : '2026-05-01T08:30:00Z',
+              },
+            },
+          },
+        ]);
       }
 
       return jsonResponse({}, 404);
@@ -281,12 +308,23 @@ describe('buildRiskScorecardRiScIndex', () => {
     ).resolves.toEqual([
       {
         sourceFilePath:
-          'https://github.com/org/repo/.security/risc/risc-branch.risc.yaml',
+          'org/repo/contents/.security/risc/risc-branch.risc.yaml',
         riScId: 'risc-branch',
-        appliesTo: ['component:default/source-a', 'component:default/source-b'],
-        lastSavedAt: '2026-05-01T08:30:00Z',
+        appliesTo: ['component:default/branch-entity'],
+        lastSavedAt: '2026-05-02T08:30:00Z',
       },
     ]);
+
+    const fetchedUrls = (global.fetch as jest.Mock).mock.calls.map(([url]) =>
+      String(url),
+    );
+    expect(fetchedUrls).toContain(
+      'https://api.github.com/repos/org/repo/git/matching-refs/heads/risc-',
+    );
+    expect(fetchedUrls).toContain(branchFileApiUrl);
+    expect(fetchedUrls).not.toContain(
+      'https://api.github.com/repos/org/repo/contents/.security/risc/risc-nested/path.risc.yaml?ref=risc-nested%2Fpath',
+    );
   });
 });
 
