@@ -15,7 +15,6 @@ import {
   type GithubIntegration,
 } from '@backstage/integration';
 import * as yaml from 'yaml';
-import { getBackstageEntityRefFromAppliesTo } from './appliesTo';
 import { type RiScIndexEntry } from './riscIndexStore';
 
 type RepoToIndex = {
@@ -480,4 +479,18 @@ export function parseAppliesTo(
     });
     return undefined;
   }
+}
+
+const backstageAppliesToPrefix = 'backstage:';
+
+function getBackstageEntityRefFromAppliesTo(
+  appliesTo: string,
+): string | undefined {
+  if (!appliesTo.startsWith(backstageAppliesToPrefix)) {
+    return undefined;
+  }
+
+  const entityRef = appliesTo.slice(backstageAppliesToPrefix.length);
+
+  return entityRef.length > 0 ? entityRef : undefined;
 }
