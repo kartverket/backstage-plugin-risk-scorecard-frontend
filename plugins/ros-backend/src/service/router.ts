@@ -1,4 +1,9 @@
-import type { AuthService } from '@backstage/backend-plugin-api';
+import type {
+  AuthService,
+  BackstageCredentials,
+  BackstageUserPrincipal,
+  HttpAuthService,
+} from '@backstage/backend-plugin-api';
 import type { CatalogApi } from '@backstage/catalog-client';
 import {
   parseEntityRef,
@@ -11,6 +16,7 @@ import type { RiScIndexEntry, RiScIndexStore } from './riscIndexStore';
 type RouterOptions = {
   catalogClient: CatalogApi;
   auth: AuthService;
+  httpAuth: HttpAuthService;
   riScIndexStore: RiScIndexStore;
 };
 
@@ -20,17 +26,22 @@ export const createRouter = async (
   const router = express.Router();
 
   router.get('/riscs', async (req, res, next) => {
-    const entityRef = req.query.entityRef;
-
-    if (typeof entityRef !== 'string' || entityRef.trim() === '') {
-      res.status(400).json({
-        error: 'Query parameter "entityRef" is required',
-      });
-      return;
-    }
-
     try {
-      res.json(await getRiScsForEntityRef(entityRef.trim(), options));
+      const credentials = await options.httpAuth.credentials(req, {
+        allow: ['user'],
+      });
+      const entityRef = req.query.entityRef;
+
+      if (typeof entityRef !== 'string' || entityRef.trim() === '') {
+        res.status(400).json({
+          error: 'Query parameter "entityRef" is required',
+        });
+        return;
+      }
+
+      res.json(
+        await getRiScsForEntityRef(entityRef.trim(), options, credentials),
+      );
     } catch (error) {
       next(error);
     }
@@ -42,6 +53,7 @@ export const createRouter = async (
 async function getRiScsForEntityRef(
   entityRef: string,
   options: RouterOptions,
+  credentials: BackstageCredentials<BackstageUserPrincipal>,
 ): Promise<readonly RiScIndexEntry[]> {
   const directMatches =
     await options.riScIndexStore.getRiScsForEntityRef(entityRef);
@@ -54,6 +66,7 @@ async function getRiScsForEntityRef(
     entityRef,
     options.catalogClient,
     options.auth,
+    credentials,
   );
   const componentMatches = await Promise.all(
     componentRefs.map(componentRef =>
@@ -71,9 +84,10 @@ async function getComponentRefsForSystemEntityRef(
   systemEntityRef: string,
   catalogClient: CatalogApi,
   auth: AuthService,
+  credentials: BackstageCredentials<BackstageUserPrincipal>,
 ): Promise<string[]> {
   const catalogToken = await auth.getPluginRequestToken({
-    onBehalfOf: await auth.getOwnServiceCredentials(),
+    onBehalfOf: credentials,
     targetPluginId: 'catalog',
   });
 

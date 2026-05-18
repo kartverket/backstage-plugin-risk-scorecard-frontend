@@ -16,6 +16,7 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         discovery: coreServices.discovery,
         auth: coreServices.auth,
+        httpAuth: coreServices.httpAuth,
         config: coreServices.rootConfig,
         scheduler: coreServices.scheduler,
         database: coreServices.database,
@@ -26,6 +27,7 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
         httpRouter,
         discovery,
         auth,
+        httpAuth,
         config,
         scheduler,
         database,
@@ -45,7 +47,7 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
         });
 
         httpRouter.use(
-          await createRouter({ catalogClient, auth, riScIndexStore }),
+          await createRouter({ catalogClient, auth, httpAuth, riScIndexStore }),
         );
         rootLifecycle.addStartupHook(() => refresher.start(), { logger });
       },

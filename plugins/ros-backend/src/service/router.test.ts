@@ -2,10 +2,14 @@
  * @jest-environment node
  */
 
-import type { AuthService } from '@backstage/backend-plugin-api';
+import type {
+  AuthService,
+  BackstageCredentials,
+  BackstageUserPrincipal,
+  HttpAuthService,
+} from '@backstage/backend-plugin-api';
 import type { CatalogApi } from '@backstage/catalog-client';
 import express from 'express';
-import { AddressInfo } from 'net';
 import type { RiScIndexStore } from './riscIndexStore';
 import { createRouter } from './router';
 
@@ -93,18 +97,27 @@ describe('createRouter', () => {
       ],
     });
     const catalogClient = { getEntities } as unknown as CatalogApi;
+    const auth = createAuthService();
+    const userCredentials = createUserCredentials();
+    const httpAuth = createHttpAuthService(userCredentials);
 
     const response = await makeRequest(
       '/riscs?entityRef=system:default/kv-ros-tests',
       {
         catalogClient,
-        auth: createAuthService(),
+        auth,
+        httpAuth,
         riScIndexStore,
       },
     );
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual([riSc2, riSc1]);
+    expect(auth.getPluginRequestToken).toHaveBeenCalledWith({
+      onBehalfOf: userCredentials,
+      targetPluginId: 'catalog',
+    });
+    expect(auth.getOwnServiceCredentials).not.toHaveBeenCalled();
     expect(getEntities).toHaveBeenCalledWith(
       {
         filter: {
@@ -125,39 +138,94 @@ describe('createRouter', () => {
       error: 'Query parameter "entityRef" is required',
     });
   });
+
+  it('requires user credentials', async () => {
+    const riScIndexStore = createRiScIndexStore();
+    const authenticationError = new Error('Missing credentials');
+    authenticationError.name = 'AuthenticationError';
+    const httpAuth = createHttpAuthService();
+    httpAuth.credentials.mockRejectedValue(authenticationError);
+
+    const response = await makeRequest(
+      '/riscs?entityRef=component:default/kv-ros-test-6',
+      {
+        httpAuth,
+        riScIndexStore,
+      },
+    );
+
+    expect(response.status).toBe(401);
+    expect(response.body).toEqual({
+      error: 'Missing credentials',
+    });
+    expect(httpAuth.credentials).toHaveBeenCalledWith(expect.anything(), {
+      allow: ['user'],
+    });
+    expect(riScIndexStore.getRiScsForEntityRef).not.toHaveBeenCalled();
+  });
 });
 
 async function makeRequest(
   path: string,
   options?: Partial<Parameters<typeof createRouter>[0]>,
 ): Promise<{ status: number; body: unknown }> {
-  const app = express();
-  app.use(await createRouter(createRouterOptions(options)));
+  const router = await createRouter(createRouterOptions(options));
+  const url = new URL(path, 'http://localhost');
 
-  const server = await new Promise<ReturnType<typeof app.listen>>(resolve => {
-    const startedServer = app.listen(0, () => resolve(startedServer));
-  });
+  return new Promise(resolve => {
+    const req = {
+      method: 'GET',
+      url: `${url.pathname}${url.search}`,
+      originalUrl: `${url.pathname}${url.search}`,
+      baseUrl: '',
+      path: url.pathname,
+      query: Object.fromEntries(url.searchParams.entries()),
+      headers: {},
+    } as express.Request;
+    let responseStatus = 200;
+    const res = {
+      status(status: number) {
+        responseStatus = status;
+        return res;
+      },
+      json(body: unknown) {
+        resolve({
+          status: responseStatus,
+          body,
+        });
+        return res;
+      },
+    } as express.Response;
 
-  try {
-    const { port } = server.address() as AddressInfo;
-    const response = await fetch(`http://127.0.0.1:${port}${path}`);
-
-    return {
-      status: response.status,
-      body: await response.json(),
+    const handleError = (error: unknown) => {
+      const err = error as Error;
+      const statusCode = err.name === 'AuthenticationError' ? 401 : 500;
+      resolve({
+        status: statusCode,
+        body: {
+          error: err.message,
+        },
+      });
     };
-  } finally {
-    await new Promise<void>((resolve, reject) => {
-      server.close(error => {
+
+    try {
+      router(req, res, error => {
         if (error) {
-          reject(error);
+          handleError(error);
           return;
         }
 
-        resolve();
+        resolve({
+          status: 404,
+          body: {
+            error: 'Not found',
+          },
+        });
       });
-    });
-  }
+    } catch (error) {
+      handleError(error);
+    }
+  });
 }
 
 function createAuthService(): AuthService {
@@ -169,6 +237,27 @@ function createAuthService(): AuthService {
       token: 'catalog-token',
     }),
   } as unknown as AuthService;
+}
+
+function createHttpAuthService(
+  credentials = createUserCredentials(),
+): jest.Mocked<HttpAuthService> {
+  return {
+    credentials: jest.fn().mockResolvedValue(credentials),
+    issueUserCookie: jest.fn().mockResolvedValue({
+      expiresAt: new Date('2026-05-18T00:00:00Z'),
+    }),
+  } as unknown as jest.Mocked<HttpAuthService>;
+}
+
+function createUserCredentials(): BackstageCredentials<BackstageUserPrincipal> {
+  return {
+    $$type: '@backstage/BackstageCredentials',
+    principal: {
+      type: 'user',
+      userEntityRef: 'user:default/alice',
+    },
+  };
 }
 
 function createRiScIndexStore(): RiScIndexStore {
@@ -190,6 +279,7 @@ function createRouterOptions(
       getEntities: jest.fn().mockResolvedValue({ items: [] }),
     } as unknown as CatalogApi,
     auth: createAuthService(),
+    httpAuth: createHttpAuthService(),
     riScIndexStore: createRiScIndexStore(),
     ...options,
   };
