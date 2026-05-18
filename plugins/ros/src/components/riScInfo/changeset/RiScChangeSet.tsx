@@ -7,6 +7,7 @@ import { dtoToScenario } from '../../../utils/DTOs.ts';
 import { ChangeSetSimpleBox } from './components/ChangeSetSimpleBox.tsx';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
+import { RiScAppliesToChange } from './RiScAppliesToChange.tsx';
 
 type RiScChangeSetProps = {
   changeset: DifferenceFetchState;
@@ -21,7 +22,8 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
     changes.scenarios.length > 0 ||
     changes.valuations.length > 0 ||
     changes.title ||
-    changes.scope;
+    changes.scope ||
+    (changes.appliesTo ?? []).length > 0;
 
   const hasAnyChanges = changes.migrationChanges.migrationChanges || hasChanges;
 
@@ -46,6 +48,9 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
             prop={changes.scope}
             title={t('dictionary.scope')}
           />
+          {changes.appliesTo && changes.appliesTo.length > 1 && (
+            <RiScAppliesToChange appliesToChanges={changes.appliesTo} />
+          )}
           {changes.scenarios.map(scenario => (
             <>
               {(scenario.type === 'ADDED' || scenario.type === 'DELETED') && (

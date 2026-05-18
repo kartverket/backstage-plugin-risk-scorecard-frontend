@@ -103,6 +103,7 @@ export const pluginRiScMessages = {
     searchQuery: 'No result for ',
     actionsWithStatus: 'Actions that are OK',
     refresh: 'Refresh',
+    appliesTo: 'Applies to',
   },
   encryption: {
     title: 'Encryption',
@@ -888,6 +889,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.searchQuery': 'Ingen resultater for ',
           'dictionary.actionsWithStatus': 'Tiltak som er OK',
           'dictionary.refresh': 'Prøv igjen',
+          'dictionary.appliesTo': 'Gjelder for',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
