@@ -359,7 +359,7 @@ function getGitHubContentsParams({
     // SourceFilePath is also the identity of a RiSc internally, and intentionally excludes branch/ref
     // so a supported branch can replace the default-branch version of the same RiSc file in the index.
     sourceFilePath: `${repo.owner}/${repo.repo}/contents/${filePath}`,
-    query: ref ? '?' + new URLSearchParams({ ref }) : '',
+    query: ref ? `?${new URLSearchParams({ ref })}` : '',
   };
 }
 
@@ -379,6 +379,11 @@ async function getRiScFile(params: {
     headers: params.headers,
     defaultValue: undefined,
   });
+
+  if (!fileResponse && params.ref) {
+    // The RiSc has been deleted in this branch. The entry in main will on purpose remain until this is merged.
+    return undefined;
+  }
 
   if (!fileResponse?.content || fileResponse.encoding !== 'base64') {
     throw new Error(

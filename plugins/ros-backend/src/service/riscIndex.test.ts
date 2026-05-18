@@ -326,6 +326,118 @@ describe('buildRiskScorecardRiScIndex', () => {
       'https://api.github.com/repos/org/repo/contents/.security/risc/risc-nested/path.risc.yaml?ref=risc-nested%2Fpath',
     );
   });
+
+  it('keeps the default branch entry when the RiSc is deleted in its branch', async () => {
+    const logger = createLogger();
+    const getEntities = jest.fn().mockResolvedValue({
+      items: [
+        {
+          kind: 'Component',
+          metadata: {
+            name: 'source',
+            namespace: 'default',
+            annotations: {
+              'backstage.io/source-location':
+                'url:https://github.com/org/repo/blob/main/catalog-info.yaml',
+            },
+          },
+        },
+      ],
+    });
+    const defaultFileApiUrl =
+      'https://api.github.com/repos/org/repo/contents/.security/risc/risc-deleted.risc.yaml';
+    const branchFileApiUrl =
+      'https://api.github.com/repos/org/repo/contents/.security/risc/risc-deleted.risc.yaml?ref=risc-deleted';
+    const getCredentials = jest.fn().mockResolvedValue({
+      headers: { Authorization: 'Bearer token' },
+    });
+
+    (CatalogClient as unknown as jest.Mock).mockImplementation(() => ({
+      getEntities,
+    }));
+    (ScmIntegrations.fromConfig as jest.Mock).mockReturnValue({
+      github: {
+        byUrl: jest.fn().mockReturnValue({
+          config: {
+            apiBaseUrl: 'https://api.github.com',
+            host: 'github.com',
+          },
+        }),
+      },
+    });
+    (
+      DefaultGithubCredentialsProvider.fromIntegrations as jest.Mock
+    ).mockReturnValue({
+      getCredentials,
+    });
+    global.fetch = jest.fn(async (url: Parameters<typeof fetch>[0]) => {
+      const requestUrl = String(url);
+
+      if (
+        requestUrl ===
+        'https://api.github.com/repos/org/repo/contents/.security/risc'
+      ) {
+        return jsonResponse([
+          {
+            type: 'file',
+            name: 'risc-deleted.risc.yaml',
+          },
+        ]);
+      }
+
+      if (
+        requestUrl ===
+        'https://api.github.com/repos/org/repo/git/matching-refs/heads/risc-'
+      ) {
+        return jsonResponse([{ ref: 'refs/heads/risc-deleted' }]);
+      }
+
+      if (requestUrl === defaultFileApiUrl) {
+        return jsonResponse({
+          content: Buffer.from(
+            'appliesTo:\n  - backstage:component:default/default-entity\n',
+          ).toString('base64'),
+          encoding: 'base64',
+        });
+      }
+
+      if (
+        requestUrl.startsWith('https://api.github.com/repos/org/repo/commits?')
+      ) {
+        return jsonResponse([
+          {
+            commit: {
+              committer: { date: '2026-05-01T08:30:00Z' },
+            },
+          },
+        ]);
+      }
+
+      return jsonResponse({}, 404);
+    }) as typeof fetch;
+
+    await expect(
+      buildRiskScorecardRiScIndex({
+        logger,
+        discovery: {} as DiscoveryService,
+        auth: createAuthService(),
+        config: {},
+      }),
+    ).resolves.toEqual([
+      {
+        sourceFilePath:
+          'org/repo/contents/.security/risc/risc-deleted.risc.yaml',
+        riScId: 'risc-deleted',
+        appliesTo: ['component:default/default-entity'],
+        lastSavedAt: '2026-05-01T08:30:00Z',
+      },
+    ]);
+
+    const fetchedUrls = (global.fetch as jest.Mock).mock.calls.map(([url]) =>
+      String(url),
+    );
+    expect(fetchedUrls).toContain(branchFileApiUrl);
+  });
 });
 
 function createLogger(): LoggerService {
