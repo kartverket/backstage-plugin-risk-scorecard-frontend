@@ -176,13 +176,15 @@ export function calculateUpdatedStatus(
 }
 
 export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
-  return !isDeeplyEqual(
-    oldRiSc.scenarios.sort(
-      (scenario1, scenario2) => Number(scenario1.ID) - Number(scenario2.ID),
-    ),
-    updatedRiSc.scenarios.sort(
-      (scenario1, scenario2) => Number(scenario1.ID) - Number(scenario2.ID),
-    ),
+  return (
+    !isDeeplyEqual(
+      oldRiSc.scenarios.sort(
+        (scenario1, scenario2) => Number(scenario1.ID) - Number(scenario2.ID),
+      ),
+      updatedRiSc.scenarios.sort(
+        (scenario1, scenario2) => Number(scenario1.ID) - Number(scenario2.ID),
+      ),
+    ) || !isDeeplyEqual(oldRiSc.appliesTo, updatedRiSc.appliesTo)
   );
 }
 
