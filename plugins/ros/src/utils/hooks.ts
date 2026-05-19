@@ -156,7 +156,7 @@ export function useAuthenticatedFetch() {
       let json = await res.json();
 
       if (
-        res.status === 403 &&
+        res.status === 401 &&
         (json as ProcessRiScResultDTO)?.status ===
           ProcessingStatus.InvalidGitHubAccessToken
       ) {
