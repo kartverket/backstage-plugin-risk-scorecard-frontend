@@ -1,0 +1,64 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+  position: relative;
+}
+
+.riscSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+  position: relative;
+  box-shadow: none !important;
+}
+
+:global([data-theme-mode="dark"]) .section,
+:global([data-theme-mode="dark"]) .riscSection {
+  background-color: var(--ros-gray-700);
+}
+
+.headerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.selectSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  row-gap: 16px;
+}
+
+.deleteConfirmationDialog {
+  width: 500px;
+  padding: 16px;
+}
+
+.deleteConfirmationDialogBody {
+  display: flex;
+  justify-content: space-between;
+}
+
+.topButtons {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.bottomButtons {
+  display: flex;
+  gap: 16px;
+}
+
+.spinner {
+  margin-left: 8px;
+  color: inherit;
+}

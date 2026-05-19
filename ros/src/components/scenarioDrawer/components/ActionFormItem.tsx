@@ -1,0 +1,154 @@
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import { Controller, UseFormReturn } from "react-hook-form";
+import {
+  ActionStatusOptions,
+  urlRegExpPattern,
+} from "../../../utils/constants";
+import { pluginRiScTranslationRef } from "../../../utils/translations";
+import {
+  actionStatusOptionsToTranslationKeys,
+  getValue,
+} from "../../../utils/utilityfunctions";
+import { Input } from "../../common/Input";
+import { MarkdownInput } from "../../common/MarkdownInput";
+import { Select } from "../../common/Select";
+import HelpIcon from "@mui/icons-material/Help";
+import Tooltip from "@mui/material/Tooltip";
+import { Text } from "@backstage/ui";
+import styles from "./ActionFormItem.module.css";
+
+function addPeriodToBaseObjectPath(s: string) {
+  if (!s) return "";
+  return `${s}.`;
+}
+
+type ActionFormItemProps = {
+  formMethods: UseFormReturn<any>;
+  handleDelete: () => void;
+  displayedIndex?: number;
+  // Specify baseObjectPathToActionOfForm where in the form of formMethods the action object is (use if nested)
+  // Example value: "actions.1"
+  baseObjectPathToActionOfForm?: string;
+};
+
+export function ActionFormItem({
+  formMethods,
+  handleDelete,
+  displayedIndex,
+  baseObjectPathToActionOfForm = "",
+}: ActionFormItemProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const { control, register, formState } = formMethods;
+  const errorObject = getValue(formState.errors, baseObjectPathToActionOfForm);
+
+  const actionStatusOptions = Object.values(ActionStatusOptions).map(
+    (actionStatus) => ({
+      value: actionStatus,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(actionStatusOptionsToTranslationKeys[actionStatus]),
+    }),
+  );
+
+  return (
+    <>
+      <Box className={styles.formGrid}>
+        <Box className={styles.formHeader}>
+          {displayedIndex !== undefined && displayedIndex !== null ? (
+            <Text variant="title-x-small" weight="bold">
+              {t("dictionary.measure")} {displayedIndex + 1}
+            </Text>
+          ) : (
+            <Text variant="title-x-small" weight="bold">
+              {t("dictionary.edit")}
+            </Text>
+          )}
+          <IconButton onClick={handleDelete} color="primary">
+            <DeleteIcon aria-label="Delete" />
+          </IconButton>
+        </Box>
+        <Input
+          required
+          {...register(
+            `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}title`,
+            {
+              required: true,
+            },
+          )}
+          error={errorObject?.title !== undefined}
+          label={t("dictionary.title")}
+          helperText={
+            errorObject?.title &&
+            t("scenarioDrawer.measureTab.addMeasureTitleError")
+          }
+        />
+        <Controller
+          control={control}
+          name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}description`}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <MarkdownInput
+              label={t("dictionary.description")}
+              value={value}
+              onMarkdownChange={onChange}
+              error={!!error}
+              minRows={8}
+            />
+          )}
+        />
+        <Box className={styles.inputGrid}>
+          <Input
+            {...register(
+              `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}url`,
+              {
+                pattern: {
+                  value: urlRegExpPattern,
+                  message: t("scenarioDrawer.action.urlError"),
+                },
+              },
+            )}
+            label={<UrlLabel />}
+            helperText={errorObject?.url?.message}
+            error={errorObject?.url?.message}
+          />
+          <Select
+            required
+            control={control}
+            name={`${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}status`}
+            label={t("dictionary.status")}
+            options={actionStatusOptions}
+          />
+        </Box>
+        <Input
+          {...register(
+            `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}comment`,
+          )}
+          label={t("dictionary.comment")}
+          helperText={errorObject?.comment?.message}
+          error={errorObject?.comment?.message !== undefined}
+        />
+      </Box>
+    </>
+  );
+}
+
+export function UrlLabel(): JSX.Element {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  return (
+    <Box className={styles.urlLabel}>
+      {t("dictionary.url")}
+      <Tooltip
+        title={
+          <Text variant="body-large" className={styles.tooltipText}>
+            {t("scenarioDrawer.measureTab.urlDescription")}
+          </Text>
+        }
+        arrow
+      >
+        <HelpIcon color="primary" />
+      </Tooltip>
+    </Box>
+  );
+}

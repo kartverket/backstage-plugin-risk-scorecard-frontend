@@ -1,0 +1,103 @@
+import {
+  ThreatActorsOptions,
+  VulnerabilitiesOptions,
+} from "../../../utils/constants";
+
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import { UseFormReturn } from "react-hook-form";
+import { pluginRiScTranslationRef } from "../../../utils/translations";
+import { FormScenario } from "../../../utils/types";
+import {
+  threatActorOptionsToTranslationKeys,
+  vulnerabiltiesOptionsToTranslationKeys,
+} from "../../../utils/utilityfunctions";
+import { Input } from "../../common/Input";
+import { MarkdownInput } from "../../common/MarkdownInput";
+import { Select } from "../../common/Select";
+import { Text } from "@backstage/ui";
+
+export function ScenarioStep({
+  formMethods,
+}: {
+  formMethods: UseFormReturn<FormScenario>;
+}) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+
+  const {
+    control,
+    register,
+    setValue,
+    watch,
+    formState: { errors },
+  } = formMethods;
+
+  const threatActorOptions = Object.values(ThreatActorsOptions).map(
+    (threatActor) => ({
+      value: threatActor,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(threatActorOptionsToTranslationKeys[threatActor]),
+    }),
+  );
+
+  const vulnerabilitiesOptions = Object.values(VulnerabilitiesOptions).map(
+    (vulnerability) => ({
+      value: vulnerability,
+      /* @ts-ignore Because ts can't typecheck strings against our keys */
+      renderedValue: t(vulnerabiltiesOptionsToTranslationKeys[vulnerability]),
+    }),
+  );
+
+  const currentDescription = watch("description");
+
+  return (
+    <Stack spacing={3}>
+      <Box>
+        <Text variant="title-small" weight="bold">
+          {t("scenarioDrawer.title")}
+        </Text>
+        <Text variant="body-large" as="p">
+          {t("scenarioDrawer.subtitle")}
+        </Text>
+      </Box>
+
+      <Input
+        required
+        {...register("title", { required: true })}
+        error={errors.title !== undefined}
+        label={t("dictionary.title")}
+      />
+
+      <Stack direction="row" spacing={2}>
+        <Select<FormScenario>
+          multiple
+          control={control}
+          name="threatActors"
+          label={t("dictionary.threatActors")}
+          sublabel={t("scenarioDrawer.threatActorSubtitle")}
+          labelTranslationKey="threatActors"
+          options={threatActorOptions}
+        />
+
+        <Select<FormScenario>
+          multiple
+          control={control}
+          name="vulnerabilities"
+          label={t("dictionary.vulnerabilities")}
+          sublabel={t("scenarioDrawer.vulnerabilitySubtitle")}
+          labelTranslationKey="vulnerabilities"
+          options={vulnerabilitiesOptions}
+        />
+      </Stack>
+
+      <MarkdownInput
+        {...register("description")}
+        label={t("dictionary.description")}
+        value={currentDescription}
+        onMarkdownChange={(value) => setValue("description", value)}
+        minRows={8}
+      />
+    </Stack>
+  );
+}

@@ -1,0 +1,700 @@
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useReducer,
+} from "react";
+import {
+  ContentStatus,
+  LockedRiSc,
+  ProcessingStatus,
+  RiScStatus,
+  RiScWithMetadata,
+  SubmitResponseObject,
+} from "../utils/types";
+import { useRouteRef } from "@backstage/core-plugin-api";
+import {
+  getTranslationKey,
+  requiresNewApproval,
+} from "../utils/utilityfunctions";
+import { riScRouteRef } from "../routes";
+import { useLocation, useNavigate, useParams } from "react-router";
+import {
+  dtoToRiSc,
+  GcpCryptoKeyObject,
+  ProcessRiScResultDTO,
+  RiScContentResultDTO,
+  RiScDTO,
+} from "../utils/DTOs";
+import {
+  buildFetchRiScErrorMessages,
+  mapRiScDtoToRiScWithMetadata,
+  withLoginRejected,
+} from "../utils/fetchRiScHelpers";
+import {
+  useAuthenticatedFetch,
+  useGithubRepositoryInformation,
+} from "../utils/hooks";
+import { latestSupportedVersion } from "../utils/constants";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../utils/translations";
+
+export type UpdateStatus = {
+  isLoading: boolean;
+  isError: boolean;
+  isSuccess: boolean;
+};
+
+type RiScDrawerProps = {
+  riScs: RiScWithMetadata[] | null;
+  lockedRiScs: LockedRiSc[];
+  selectRiSc: (title: string) => void;
+  selectedRiSc: RiScWithMetadata | null;
+  selectedLockedRiSc: LockedRiSc | null;
+  createNewRiSc: (
+    riSc: RiScWithMetadata,
+    generateInitialRisc: boolean,
+    defaultRiScId: string | undefined,
+  ) => void;
+  deleteRiSc: (onSuccess?: () => void, onError?: () => void) => void;
+  updateRiSc: (
+    riSc: RiScWithMetadata,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) => void;
+  showBlockedUpdateError: () => void;
+  approveRiSc: () => void;
+  updateStatus: UpdateStatus;
+  resetRiScStatus: () => void;
+  resetResponse: () => void;
+  isFetching: boolean;
+  isFetchingGcpCryptoKeys: boolean;
+  failedToFetchGcpCryptoKeys: boolean;
+  allRiScsFailedDecryption: boolean;
+  gcpCryptoKeys: GcpCryptoKeyObject[];
+  response: SubmitResponseObject | null;
+};
+
+const RiScContext = createContext<RiScDrawerProps | undefined>(undefined);
+
+export function RiScProvider({ children }: { children: ReactNode }) {
+  const { riScId: riScIdFromParams } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const getRiScPath = useRouteRef(riScRouteRef);
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const repoInfo = useGithubRepositoryInformation();
+
+  const {
+    fetchRiScs,
+    fetchGcpCryptoKeys,
+    postRiScs,
+    deleteRiScs,
+    putRiScs,
+    publishRiScs,
+  } = useAuthenticatedFetch();
+
+  const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
+  const [lockedRiScs, setLockedRiScs] = useState<LockedRiSc[]>([]);
+  const [selectedRiSc, setSelectedRiSc] = useState<RiScWithMetadata | null>(
+    null,
+  );
+  const [selectedLockedRiSc, setSelectedLockedRiSc] =
+    useState<LockedRiSc | null>(null);
+  const [isFetching, setIsFetching] = useState(true);
+  const isFetchingRef = useRef(isFetching);
+  const [isFetchingRiScs, setIsFetchingRiScs] = useState(true);
+  const isFetchingRiScsRef = useRef(isFetchingRiScs);
+  const [isFetchingGcpCryptoKeys, setIsFetchingGcpCryptoKeys] = useState(true);
+  const isFetchingGcpCryptoKeysRef = useRef(isFetchingGcpCryptoKeys);
+  const gcpCryptoKeysFailed = useRef(false);
+  const [failedToFetchGcpCryptoKeys, setFailedToFetchGcpCryptoKeys] =
+    useState(false);
+
+  type LocalState = {
+    updateStatus: UpdateStatus;
+    response: SubmitResponseObject | null;
+  };
+
+  type Action =
+    | { type: "SET_STATUS"; updateStatus: UpdateStatus }
+    | { type: "SET_RESPONSE"; response: SubmitResponseObject | null }
+    | {
+        type: "SET_BOTH";
+        updateStatus: UpdateStatus;
+        response: SubmitResponseObject | null;
+      };
+
+  const initialLocalState: LocalState = {
+    updateStatus: { isLoading: false, isError: false, isSuccess: false },
+    response: null,
+  };
+
+  function reducer(state: LocalState, action: Action): LocalState {
+    switch (action.type) {
+      case "SET_STATUS":
+        return { ...state, updateStatus: action.updateStatus };
+      case "SET_RESPONSE":
+        return { ...state, response: action.response };
+      case "SET_BOTH":
+        return { updateStatus: action.updateStatus, response: action.response };
+      default:
+        return state;
+    }
+  }
+
+  const [localState, dispatch] = useReducer(reducer, initialLocalState);
+
+  const [gcpCryptoKeys, setGcpCryptoKeys] = useState<GcpCryptoKeyObject[]>([]);
+
+  const [allRiScsFailedDecryption, setAllRiScsFailedDecryption] =
+    useState(false);
+
+  // Auto-clear response after a short duration to avoid the Alert sticking around
+  const responseTimerRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (localState.response) {
+      if (responseTimerRef.current) {
+        window.clearTimeout(responseTimerRef.current);
+      }
+      responseTimerRef.current = window.setTimeout(() => {
+        dispatch({ type: "SET_RESPONSE", response: null });
+        responseTimerRef.current = null;
+      }, 10000);
+    }
+
+    return () => {
+      if (responseTimerRef.current) {
+        window.clearTimeout(responseTimerRef.current);
+        responseTimerRef.current = null;
+      }
+    };
+  }, [localState.response]);
+
+  useEffect(() => {
+    if (location.state) {
+      dispatch({
+        type: "SET_RESPONSE",
+        response: {
+          statusMessage: location.state,
+          status: ProcessingStatus.ErrorWhenFetchingRiScs,
+        },
+      });
+    }
+  }, [location, dispatch]);
+
+  // Initial fetch of GCP crypto keys
+  useEffect(() => {
+    gcpCryptoKeysFailed.current = false;
+    setFailedToFetchGcpCryptoKeys(false);
+    dispatch({ type: "SET_RESPONSE", response: null });
+    fetchGcpCryptoKeys(
+      (res) => {
+        // Sorts the crypto keys by the number of permissions (descending)
+        setGcpCryptoKeys(
+          res.sort(
+            (a, b) =>
+              (b.userPermissions?.length ?? 0) -
+              (a.userPermissions?.length ?? 0),
+          ),
+        );
+        isFetchingGcpCryptoKeysRef.current = false;
+        setIsFetchingGcpCryptoKeys(isFetchingGcpCryptoKeysRef.current);
+        if (!isFetchingRiScsRef.current) {
+          isFetchingRef.current = false;
+          setIsFetching(isFetchingRef.current);
+        }
+      },
+      (_error, loginRejected) => {
+        gcpCryptoKeysFailed.current = true;
+        setFailedToFetchGcpCryptoKeys(true);
+        dispatch({
+          type: "SET_RESPONSE",
+          response: {
+            status: ProcessingStatus.ErrorWhenFetchingGcpCryptoKeys,
+            statusMessage: withLoginRejected(
+              t("errorMessages.ErrorWhenFetchingGcpCryptoKeys"),
+              loginRejected,
+              t,
+            ),
+          },
+        });
+        isFetchingGcpCryptoKeysRef.current = false;
+        setIsFetchingGcpCryptoKeys(isFetchingGcpCryptoKeysRef.current);
+        if (!isFetchingRiScsRef.current) {
+          isFetchingRef.current = false;
+          setIsFetching(isFetchingRef.current);
+        }
+      },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Initial fetch of RiScs
+  useEffect(() => {
+    dispatch({ type: "SET_RESPONSE", response: null });
+    fetchRiScs(
+      (res) => {
+        const successfulRiScs = res.filter(
+          (risk) => risk.status === ContentStatus.Success,
+        );
+        const decryptionFailedRiScs = res.filter(
+          (risk) => risk.status === ContentStatus.DecryptionFailed,
+        );
+
+        // Check if all RiScs failed decryption (there are RiScs but all failed)
+        const allFailed =
+          res.length > 0 &&
+          res.every((r) => r.status === ContentStatus.DecryptionFailed);
+        setAllRiScsFailedDecryption(allFailed);
+
+        const fetchedRiScs: RiScWithMetadata[] = successfulRiScs.map(
+          mapRiScDtoToRiScWithMetadata,
+        );
+        const fetchedLockedRiScs: LockedRiSc[] = decryptionFailedRiScs.map(
+          (risk) => ({
+            id: risk.riScId,
+            encryptionKeyId: risk.encryptionKeyId ?? null,
+          }),
+        );
+        setRiScs(fetchedRiScs);
+        setLockedRiScs(fetchedLockedRiScs);
+        isFetchingRiScsRef.current = false;
+        setIsFetchingRiScs(isFetchingRiScsRef.current);
+        if (!isFetchingGcpCryptoKeysRef.current) {
+          isFetchingRef.current = false;
+          setIsFetching(isFetchingRef.current);
+        }
+
+        const errorRiScs: RiScContentResultDTO[] = res.filter(
+          (risk) => risk.status !== ContentStatus.Success,
+        );
+
+        if (errorRiScs.length > 0) {
+          dispatch({
+            type: "SET_RESPONSE",
+            response: {
+              statusMessage: buildFetchRiScErrorMessages(errorRiScs, t),
+              status: ProcessingStatus.ErrorWhenFetchingRiScs,
+            },
+          });
+        }
+
+        // If there are no accessible RiScs, try to navigate to the first locked one
+        if (fetchedRiScs.length === 0) {
+          if (fetchedLockedRiScs.length > 0 && !riScIdFromParams) {
+            navigate(getRiScPath({ riScId: fetchedLockedRiScs[0].id }));
+          }
+          return;
+        }
+
+        // If there is no RiSc ID in the URL, navigate to the first RiSc
+        if (!riScIdFromParams) {
+          navigate(getRiScPath({ riScId: fetchedRiScs[0].id }));
+          return;
+        }
+
+        const riSc = fetchedRiScs.find((r) => r.id === riScIdFromParams);
+        const isLockedRiSc = fetchedLockedRiScs.some(
+          (r) => r.id === riScIdFromParams,
+        );
+
+        // If there is an invalid RiSc ID in the URL (not accessible and not locked), navigate to the first RiSc
+        if (!riSc && !isLockedRiSc) {
+          navigate(getRiScPath({ riScId: fetchedRiScs[0].id }), {
+            state: t("errorMessages.RiScDoesNotExist"),
+          });
+          return;
+        }
+      },
+      (loginRejected) => {
+        if (!gcpCryptoKeysFailed.current) {
+          dispatch({
+            type: "SET_RESPONSE",
+            response: {
+              status: ProcessingStatus.ErrorWhenFetchingRiScs,
+              statusMessage: withLoginRejected(
+                t("errorMessages.ErrorWhenFetchingRiScs"),
+                loginRejected,
+                t,
+              ),
+            },
+          });
+        }
+        isFetchingRiScsRef.current = false;
+        setIsFetchingRiScs(isFetchingRiScsRef.current);
+        if (!isFetchingGcpCryptoKeysRef.current) {
+          isFetchingRef.current = false;
+          setIsFetching(isFetchingRef.current);
+        }
+      },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Set selected RiSc or locked RiSc based on URL
+  useEffect(() => {
+    if (!riScIdFromParams) return;
+    const riSc = riScs?.find((r) => r.id === riScIdFromParams);
+    const lockedRiSc = lockedRiScs.find((r) => r.id === riScIdFromParams);
+    if (riSc) {
+      setSelectedRiSc(riSc);
+      setSelectedLockedRiSc(null);
+    } else if (lockedRiSc) {
+      setSelectedLockedRiSc(lockedRiSc);
+      setSelectedRiSc(null);
+    }
+  }, [riScs, lockedRiScs, riScIdFromParams]);
+
+  const resetRiScStatus = useCallback(() => {
+    dispatch({
+      type: "SET_STATUS",
+      updateStatus: { isLoading: false, isSuccess: false, isError: false },
+    });
+  }, [dispatch]);
+
+  // use callback to avoid infinite loop
+  const resetResponse = useCallback(() => {
+    dispatch({ type: "SET_RESPONSE", response: null });
+  }, [dispatch]);
+
+  const getTranslationContext = useCallback(
+    (status: ProcessingStatus) => {
+      return status === ProcessingStatus.ErrorWhenNoWriteAccessToRepository
+        ? { owner: repoInfo.owner, name: repoInfo.name }
+        : undefined;
+    },
+    [repoInfo.owner, repoInfo.name],
+  );
+
+  function selectRiSc(id: string) {
+    navigate(getRiScPath({ riScId: id }));
+  }
+
+  function createNewRiSc(
+    riSc: RiScWithMetadata,
+    generateInitialRisc: boolean,
+    defaultRiScId: string | undefined,
+  ) {
+    setIsFetching(true);
+    setSelectedRiSc(null);
+    dispatch({
+      type: "SET_BOTH",
+      updateStatus: { isLoading: true, isError: false, isSuccess: false },
+      response: null,
+    });
+    const newRiSc: RiScWithMetadata = {
+      ...riSc,
+      schemaVersion: latestSupportedVersion,
+    };
+    postRiScs(
+      newRiSc.content,
+      generateInitialRisc,
+      newRiSc.sopsConfig,
+      defaultRiScId,
+      (res) => {
+        if (!res.riScId) throw new Error("No RiSc ID returned");
+        if (!res.riScContent) throw new Error("No RiSc content returned");
+        const json = JSON.parse(res.riScContent) as RiScDTO;
+        const content = dtoToRiSc(json);
+        const riScWithMetaData: RiScWithMetadata = {
+          id: res.riScId,
+          status: RiScStatus.Draft,
+          content: content,
+          sopsConfig: riSc.sopsConfig,
+          schemaVersion: riSc.schemaVersion,
+          lastPublished: riSc.lastPublished,
+        };
+        setRiScs(riScs ? [...riScs, riScWithMetaData] : [riScWithMetaData]);
+        setIsFetching(false);
+        navigate(getRiScPath({ riScId: res.riScId }));
+        dispatch({
+          type: "SET_BOTH",
+          updateStatus: { isLoading: false, isError: false, isSuccess: true },
+          response: {
+            ...res,
+            statusMessage: getTranslationKey("info", res.status, t),
+          },
+        });
+      },
+      (error: ProcessRiScResultDTO, loginRejected: boolean) => {
+        setSelectedRiSc(selectedRiSc);
+        setIsFetching(false);
+
+        const translationContext = getTranslationContext(error.status);
+
+        dispatch({
+          type: "SET_BOTH",
+          updateStatus: { isLoading: false, isError: true, isSuccess: false },
+          response: {
+            ...error,
+            statusMessage: withLoginRejected(
+              getTranslationKey("error", error.status, t, translationContext),
+              loginRejected,
+              t,
+            ),
+          },
+        });
+      },
+    );
+  }
+
+  function deleteRiSc(onSuccess?: () => void, onError?: () => void) {
+    if (selectedRiSc && riScs) {
+      const updatedRiSc = {
+        ...selectedRiSc,
+        status: RiScStatus.DeletionDraft,
+      };
+      const originalRiSc = selectedRiSc;
+
+      dispatch({
+        type: "SET_BOTH",
+        updateStatus: { isLoading: true, isError: false, isSuccess: false },
+        response: null,
+      });
+      deleteRiScs(
+        selectedRiSc.id,
+        (res) => {
+          dispatch({
+            type: "SET_BOTH",
+            updateStatus: { isLoading: false, isError: false, isSuccess: true },
+            response: {
+              ...res,
+              statusMessage: getTranslationKey("info", res.status, t),
+            },
+          });
+          setIsRequesting(false);
+          if (res.status === ProcessingStatus.DeletedRiSc) {
+            setSelectedRiSc(
+              riScs.find((riSc) => riSc.id !== selectedRiSc.id) || null,
+            );
+            setRiScs(riScs.filter((riSc) => riSc.id !== updatedRiSc.id));
+            if (onSuccess) onSuccess();
+          } else {
+            setSelectedRiSc(updatedRiSc);
+            setRiScs(
+              riScs.map((riSc) =>
+                riSc.id === selectedRiSc.id ? updatedRiSc : riSc,
+              ),
+            );
+          }
+        },
+        (error, loginRejected) => {
+          setSelectedRiSc(originalRiSc);
+
+          const translationContext = getTranslationContext(error.status);
+
+          dispatch({
+            type: "SET_BOTH",
+            updateStatus: { isLoading: false, isError: true, isSuccess: false },
+            response: {
+              ...error,
+              statusMessage: withLoginRejected(
+                getTranslationKey("error", error.status, t, translationContext),
+                loginRejected,
+                t,
+              ),
+            },
+          });
+          setIsRequesting(false);
+          if (onError) onError();
+        },
+      );
+    }
+  }
+
+  const isRiScMarkedForDeletion =
+    selectedRiSc?.status === RiScStatus.DeletionDraft ||
+    selectedRiSc?.status === RiScStatus.DeletionSentForApproval;
+
+  const showBlockedUpdateError = useCallback(() => {
+    dispatch({
+      type: "SET_BOTH",
+      updateStatus: { isLoading: false, isError: true, isSuccess: false },
+      response: {
+        status: ProcessingStatus.ErrorWhenUpdatingDeletedRiSc,
+        statusMessage: t("errorMessages.ErrorWhenUpdatingDeletedRiSc"),
+      },
+    });
+  }, [dispatch, t]);
+
+  function updateRiSc(
+    riSc: RiScWithMetadata,
+    onSuccess?: () => void,
+    onError?: () => void,
+  ) {
+    if (isRiScMarkedForDeletion) {
+      showBlockedUpdateError();
+      onError?.();
+      return;
+    }
+
+    if (selectedRiSc && riScs) {
+      const isRequiresNewApproval =
+        selectedRiSc.migrationStatus?.migrationRequiresNewApproval ||
+        requiresNewApproval(selectedRiSc.content, riSc.content);
+
+      const updatedRiSc: RiScWithMetadata = {
+        ...selectedRiSc,
+        sopsConfig: riSc.sopsConfig,
+        content: riSc.content,
+        status:
+          selectedRiSc.status !== RiScStatus.Draft && isRequiresNewApproval
+            ? RiScStatus.Draft
+            : selectedRiSc.status,
+        isRequiresNewApproval: isRequiresNewApproval,
+        schemaVersion: riSc.schemaVersion,
+        migrationStatus: {
+          migrationChanges: false,
+          migrationRequiresNewApproval: false,
+        },
+      };
+      const originalRiSc = selectedRiSc;
+      setSelectedRiSc(updatedRiSc);
+      dispatch({
+        type: "SET_BOTH",
+        updateStatus: { isLoading: true, isError: false, isSuccess: false },
+        response: null,
+      });
+      putRiScs(
+        updatedRiSc,
+        (res) => {
+          dispatch({
+            type: "SET_BOTH",
+            updateStatus: { isLoading: false, isError: false, isSuccess: true },
+            response: {
+              ...res,
+              statusMessage: getTranslationKey("info", res.status, t),
+            },
+          });
+          if ("pendingApproval" in res && res.pendingApproval?.pullRequestUrl) {
+            updatedRiSc.pullRequestUrl = res.pendingApproval.pullRequestUrl;
+            updatedRiSc.status = RiScStatus.SentForApproval;
+          }
+          setSelectedRiSc(updatedRiSc);
+          setRiScs(
+            riScs.map((r) => (r.id === selectedRiSc.id ? updatedRiSc : r)),
+          );
+          setIsRequesting(false);
+          if (onSuccess) onSuccess();
+        },
+        (error, loginRejected) => {
+          const translationContext = getTranslationContext(error.status);
+
+          dispatch({
+            type: "SET_BOTH",
+            updateStatus: { isLoading: false, isError: true, isSuccess: false },
+            response: {
+              ...error,
+              statusMessage: withLoginRejected(
+                getTranslationKey("error", error.status, t, translationContext),
+                loginRejected,
+                t,
+              ),
+            },
+          });
+          setIsRequesting(false);
+          if (onError) onError();
+          setSelectedRiSc(originalRiSc);
+        },
+      );
+    }
+  }
+
+  function approveRiSc() {
+    if (selectedRiSc && riScs) {
+      dispatch({
+        type: "SET_STATUS",
+        updateStatus: { isLoading: true, isError: false, isSuccess: false },
+      });
+      publishRiScs(
+        selectedRiSc.id,
+        (res) => {
+          const prUrl = res.pendingApproval?.pullRequestUrl;
+          const updatedRiSc = {
+            ...selectedRiSc,
+            status:
+              selectedRiSc.status === RiScStatus.Draft
+                ? RiScStatus.SentForApproval
+                : RiScStatus.DeletionSentForApproval,
+            pullRequestUrl: prUrl,
+          };
+          setSelectedRiSc(updatedRiSc);
+          setRiScs(
+            riScs.map((r) => (r.id === selectedRiSc.id ? updatedRiSc : r)),
+          );
+          dispatch({
+            type: "SET_BOTH",
+            updateStatus: { isLoading: false, isError: false, isSuccess: true },
+            response: {
+              ...res,
+              statusMessage: getTranslationKey("info", res.status, t),
+            },
+          });
+        },
+        (error, loginRejected) => {
+          const translationContext = getTranslationContext(error.status);
+
+          dispatch({
+            type: "SET_BOTH",
+            updateStatus: { isLoading: false, isError: true, isSuccess: false },
+            response: {
+              ...error,
+              statusMessage: withLoginRejected(
+                getTranslationKey("error", error.status, t, translationContext),
+                loginRejected,
+                t,
+              ),
+            },
+          });
+        },
+      );
+    }
+  }
+
+  const value = {
+    riScs,
+    lockedRiScs,
+    selectRiSc,
+    selectedRiSc,
+    selectedLockedRiSc,
+    createNewRiSc,
+    deleteRiSc,
+    updateRiSc,
+    showBlockedUpdateError,
+    approveRiSc,
+    updateStatus: localState.updateStatus,
+    resetRiScStatus,
+    resetResponse,
+    isRequesting,
+    isFetching,
+    response: localState.response,
+    gcpCryptoKeys,
+  };
+
+  return (
+    <RiScContext.Provider
+      value={{
+        ...value,
+        isFetchingGcpCryptoKeys: false,
+        failedToFetchGcpCryptoKeys,
+        allRiScsFailedDecryption,
+      }}
+    >
+      {children}
+    </RiScContext.Provider>
+  );
+}
+
+export function useRiScs() {
+  const context = useContext(RiScContext);
+  if (context === undefined) {
+    throw new Error("useRiScs must be used within a RiScProvider");
+  }
+  return context;
+}
