@@ -157,7 +157,7 @@ export function useAuthenticatedFetch() {
 
       if (
         res.status === 403 &&
-        (json as ProcessRiScResultDTO).status ===
+        (json as ProcessRiScResultDTO)?.status ===
           ProcessingStatus.InvalidGitHubAccessToken
       ) {
         invalidGitHubAccessToken = headers['GitHub-Access-Token'];
