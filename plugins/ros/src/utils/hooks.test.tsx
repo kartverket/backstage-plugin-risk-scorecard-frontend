@@ -394,7 +394,7 @@ describe('useAuthenticatedFetch', () => {
       mockFetchApi.fetch
         .mockResolvedValueOnce({
           ok: false,
-          status: 403,
+          status: 401,
           json: async () => ({ status: 'InvalidGitHubAccessToken' }),
         })
         .mockResolvedValueOnce({
