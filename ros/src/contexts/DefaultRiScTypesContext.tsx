@@ -38,7 +38,6 @@ export function DefaultRiScTypesProvider({
       setDefaultRiScTypeDescriptors(response);
       setRiScSelectedByDefault(getRiScSelectedByDefault(response));
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function getRiScSelectedByDefault(

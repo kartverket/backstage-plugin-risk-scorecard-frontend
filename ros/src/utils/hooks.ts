@@ -312,7 +312,7 @@ export function useAuthenticatedFetch() {
         },
         riScToDTOString(
           riSc.content,
-          riSc.isRequiresNewApproval!!,
+          riSc.isRequiresNewApproval!,
           profile,
           riSc.sopsConfig,
         ),

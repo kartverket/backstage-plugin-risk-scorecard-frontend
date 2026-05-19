@@ -54,7 +54,6 @@ export function ScenarioTable(props: ScenarioTableProps) {
     );
 
     setTempScenarios([...updatedScenarios, ...scenariosNotInTemp]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [riSc.scenarios, updateStatus.isSuccess]);
 
   /*

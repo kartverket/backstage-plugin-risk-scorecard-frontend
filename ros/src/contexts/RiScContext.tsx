@@ -232,7 +232,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         }
       },
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Initial fetch of RiScs
@@ -334,7 +333,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         }
       },
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Set selected RiSc or locked RiSc based on URL

@@ -34,7 +34,7 @@ export type PublishRiScResultDTO = {
 } & ProcessRiScResultDTO;
 
 export type CreateRiScResultDTO = {
-  riScId: String;
+  riScId: string;
   status: ProcessingStatus;
   statusMessage: string;
   riScContent: string | null;

@@ -11,7 +11,7 @@ import { ActionStatusOptions } from "./constants";
 export type Modify<O, K extends keyof any, R> = Omit<O, K> & { [P in K]: R };
 
 /** Type of the setter from `useState` */
-export type SetState<T extends any> = Dispatch<React.SetStateAction<T>>;
+export type SetState<T> = Dispatch<React.SetStateAction<T>>;
 
 export type LastPublished = {
   dateTime: Date;
