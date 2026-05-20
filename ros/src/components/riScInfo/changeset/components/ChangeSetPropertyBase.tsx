@@ -1,5 +1,5 @@
-import styles from './changeSet.module.css';
-import { ReactNode } from 'react';
+import styles from "./changeSet.module.css";
+import { ReactNode } from "react";
 
 interface ChangeSetBoxSubTitleProps {
   propertyName: string;

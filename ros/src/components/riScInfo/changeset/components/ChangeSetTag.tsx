@@ -1,8 +1,8 @@
-import styles from './changeSet.module.css';
+import styles from "./changeSet.module.css";
 
 interface ChangeSetTagProps {
   text: string;
-  type: 'primary' | 'delete' | 'added';
+  type: "primary" | "delete" | "added";
 }
 
 export function ChangeSetTag({ text, type }: ChangeSetTagProps) {

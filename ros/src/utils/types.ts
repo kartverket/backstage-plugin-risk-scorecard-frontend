@@ -1,6 +1,6 @@
-import type { Dispatch } from 'react';
-import { ActionsDTO, ScenarioDTO, SopsConfigDTO } from './DTOs';
-import { ActionStatusOptions } from './constants';
+import type { Dispatch } from "react";
+import { ActionsDTO, ScenarioDTO, SopsConfigDTO } from "./DTOs";
+import { ActionStatusOptions } from "./constants";
 
 /**
  * Modify one key on an object type. Modify takes 3 type arguments. First one takes the original type you want to modify. Second is the specific key you want to modify. Third is the new type for that key.
@@ -11,7 +11,7 @@ import { ActionStatusOptions } from './constants';
 export type Modify<O, K extends keyof any, R> = Omit<O, K> & { [P in K]: R };
 
 /** Type of the setter from `useState` */
-export type SetState<T extends any> = Dispatch<React.SetStateAction<T>>;
+export type SetState<T> = Dispatch<React.SetStateAction<T>>;
 
 export type LastPublished = {
   dateTime: Date;
@@ -215,78 +215,78 @@ export type SubmitResponseObject = {
 };
 
 export enum RiScStatus {
-  Draft = 'Draft',
-  Published = 'Published',
-  SentForApproval = 'SentForApproval',
-  DeletionDraft = 'DeletionDraft',
-  DeletionSentForApproval = 'DeletionSentForApproval',
+  Draft = "Draft",
+  Published = "Published",
+  SentForApproval = "SentForApproval",
+  DeletionDraft = "DeletionDraft",
+  DeletionSentForApproval = "DeletionSentForApproval",
 }
 
 export enum ProcessingStatus {
-  RiScNotValid = 'RiScNotValid',
-  EncryptionFailed = 'EncryptionFailed',
-  CouldNotCreateBranch = 'CouldNotCreateBranch',
-  UpdatedRiSc = 'UpdatedRiSc',
-  DeletedRiSc = 'DeletedRiSc',
-  DeletedRiScRequiresApproval = 'DeletedRiScRequiresApproval',
-  UpdatedSops = 'UpdatedSops',
-  UpdatedRiScRequiresNewApproval = 'UpdatedRiScRequiresNewApproval',
-  UpdatedRiScAndCreatedPullRequest = 'UpdatedRiScAndCreatedPullRequest',
-  CreatedRiSc = 'CreatedRiSc',
-  OpenedPullRequest = 'OpenedPullRequest',
-  CreatedPullRequest = 'CreatedPullRequest',
-  ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
-  ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
-  ErrorWhenUpdatingDeletedRiSc = 'ErrorWhenUpdatingDeletedRiSc',
-  ErrorWhenDeletingRiSc = 'ErrorWhenDeletingRiSc',
-  ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
-  ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
-  ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
-  ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
-  ErrorWhenFetchingGcpCryptoKeys = 'ErrorWhenFetchingGcpCryptoKeys',
-  FailedToFetchGcpProjectIds = 'Failed to fetch GCP project IDs',
-  InvalidGitHubAccessToken = 'InvalidGitHubAccessToken',
+  RiScNotValid = "RiScNotValid",
+  EncryptionFailed = "EncryptionFailed",
+  CouldNotCreateBranch = "CouldNotCreateBranch",
+  UpdatedRiSc = "UpdatedRiSc",
+  DeletedRiSc = "DeletedRiSc",
+  DeletedRiScRequiresApproval = "DeletedRiScRequiresApproval",
+  UpdatedSops = "UpdatedSops",
+  UpdatedRiScRequiresNewApproval = "UpdatedRiScRequiresNewApproval",
+  UpdatedRiScAndCreatedPullRequest = "UpdatedRiScAndCreatedPullRequest",
+  CreatedRiSc = "CreatedRiSc",
+  OpenedPullRequest = "OpenedPullRequest",
+  CreatedPullRequest = "CreatedPullRequest",
+  ErrorWhenCreatingRiSc = "ErrorWhenCreatingRiSc",
+  ErrorWhenUpdatingRiSc = "ErrorWhenUpdatingRiSc",
+  ErrorWhenUpdatingDeletedRiSc = "ErrorWhenUpdatingDeletedRiSc",
+  ErrorWhenDeletingRiSc = "ErrorWhenDeletingRiSc",
+  ErrorWhenPublishingRiSc = "ErrorWhenPublishingRiSc",
+  ErrorWhenNoWriteAccessToRepository = "ErrorWhenNoWriteAccessToRepository",
+  ErrorWhenFetchingRiScs = "ErrorWhenFetchingRiScs",
+  ErrorWhenCreatingPullRequest = "ErrorWhenCreatingPullRequest",
+  ErrorWhenFetchingGcpCryptoKeys = "ErrorWhenFetchingGcpCryptoKeys",
+  FailedToFetchGcpProjectIds = "Failed to fetch GCP project IDs",
+  InvalidGitHubAccessToken = "InvalidGitHubAccessToken",
 }
 
 export enum ContentStatus {
-  Success = 'Success',
-  Deleted = 'Deleted',
-  Failure = 'Failure',
-  FileNotFound = 'FileNotFound',
-  DecryptionFailed = 'DecryptionFailed',
-  NoReadAccess = 'NoReadAccess',
-  UnsupportedMigration = 'UnsupportedMigration',
-  SchemaValidationFailed = 'SchemaValidationFailed',
+  Success = "Success",
+  Deleted = "Deleted",
+  Failure = "Failure",
+  FileNotFound = "FileNotFound",
+  DecryptionFailed = "DecryptionFailed",
+  NoReadAccess = "NoReadAccess",
+  UnsupportedMigration = "UnsupportedMigration",
+  SchemaValidationFailed = "SchemaValidationFailed",
 }
 
 export enum DifferenceStatus {
-  Success = 'Success',
-  GithubFileNotFound = 'GithubFileNotFound',
-  FrontendFallback = 'FrontendFallback',
+  Success = "Success",
+  GithubFileNotFound = "GithubFileNotFound",
+  FrontendFallback = "FrontendFallback",
 }
 
 export enum ActionStatusOptionsV4 {
-  NotStarted = 'Not started',
-  InProgress = 'In progress',
-  OnHold = 'On hold',
-  Completed = 'Completed',
-  Aborted = 'Aborted',
+  NotStarted = "Not started",
+  InProgress = "In progress",
+  OnHold = "On hold",
+  Completed = "Completed",
+  Aborted = "Aborted",
 }
 
 type FormRisk = Modify<
-  Modify<Risk, 'probability', string>,
-  'consequence',
+  Modify<Risk, "probability", string>,
+  "consequence",
   string
 >;
 
 export type FormScenario = Modify<
-  Modify<Scenario, 'risk', FormRisk>,
-  'remainingRisk',
+  Modify<Scenario, "risk", FormRisk>,
+  "remainingRisk",
   FormRisk
 >;
 
 export type Difference = {
-  type: '4.*';
+  type: "4.*";
   migrationChanges: MigrationStatus;
   title?: SimpleTrackedProperty<string>;
   scope?: SimpleTrackedProperty<string>;
@@ -333,28 +333,28 @@ export type TrackedProperty<S, T> =
   | UnchangedProperty<T>;
 
 export type AddedProperty<T> = {
-  type: 'ADDED';
+  type: "ADDED";
   newValue: T;
 };
 
 export type ChangedProperty<S> = {
-  type: 'CHANGED';
+  type: "CHANGED";
   oldValue: S;
   newValue: S;
 };
 
 export type ContentChangedProperty<S> = {
-  type: 'CONTENT_CHANGED';
+  type: "CONTENT_CHANGED";
   value: S;
 };
 
 export type DeletedProperty<T> = {
-  type: 'DELETED';
+  type: "DELETED";
   oldValue: T;
 };
 
 export type UnchangedProperty<T> = {
-  type: 'UNCHANGED';
+  type: "UNCHANGED";
   value: T;
 };
 
@@ -367,6 +367,6 @@ export type DifferenceDTO = {
 
 export type DifferenceFetchState = Modify<
   DifferenceDTO,
-  'status',
+  "status",
   DifferenceStatus | null
 > & { isLoading: boolean; currentDifferenceId: string };

@@ -1,2 +1,2 @@
-export { riScPlugin, RiScPage } from './plugin';
-export { pluginRiScNorwegianTranslation } from './utils/translations';
+export { riScPlugin, RiScPage } from "./plugin";
+export { pluginRiScNorwegianTranslation } from "./utils/translations";

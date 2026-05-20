@@ -4,30 +4,30 @@ import {
   githubAuthApiRef,
   googleAuthApiRef,
   identityApiRef,
-} from '@backstage/core-plugin-api';
-import { useEntity } from '@backstage/plugin-catalog-react';
-import { TestApiProvider } from '@backstage/test-utils';
-import { renderHook } from '@testing-library/react';
-import { act } from 'react';
-import { SopsConfigDTO } from './DTOs';
-import { useAuthenticatedFetch, useGithubRepositoryInformation } from './hooks';
-import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
+} from "@backstage/core-plugin-api";
+import { useEntity } from "@backstage/plugin-catalog-react";
+import { TestApiProvider } from "@backstage/test-utils";
+import { renderHook } from "@testing-library/react";
+import { act } from "react";
+import { SopsConfigDTO } from "./DTOs";
+import { useAuthenticatedFetch, useGithubRepositoryInformation } from "./hooks";
+import { Action, RiSc, RiScWithMetadata, Scenario } from "./types";
 
-jest.mock('@backstage/plugin-catalog-react', () => ({
+jest.mock("@backstage/plugin-catalog-react", () => ({
   useEntity: jest.fn(),
 }));
 
-const MOCK_ID_TOKEN = '<fake-id-token>';
-const MOCK_GCP_TOKEN = '<fake-google-token>';
-const MOCK_GITHUB_TOKEN = '<fake-github-token>';
+const MOCK_ID_TOKEN = "<fake-id-token>";
+const MOCK_GCP_TOKEN = "<fake-google-token>";
+const MOCK_GITHUB_TOKEN = "<fake-github-token>";
 
-describe('useGithubRepositoryInformation', () => {
-  it('extracts the org and repo from annotations', () => {
+describe("useGithubRepositoryInformation", () => {
+  it("extracts the org and repo from annotations", () => {
     (useEntity as jest.Mock).mockReturnValue({
       entity: {
         metadata: {
           annotations: {
-            'backstage.io/view-url': 'https://github.com/org/repo',
+            "backstage.io/view-url": "https://github.com/org/repo",
           },
         },
       },
@@ -36,15 +36,15 @@ describe('useGithubRepositoryInformation', () => {
     const { result } = renderHook(() => useGithubRepositoryInformation());
 
     expect(result.current).toEqual({
-      owner: 'org',
-      name: 'repo',
+      owner: "org",
+      name: "repo",
     });
   });
 });
 
-describe('useAuthenticatedFetch', () => {
+describe("useAuthenticatedFetch", () => {
   const mockGoogleApi = { getAccessToken: jest.fn() };
-  const mockGithubSessionShouldRefreshFunc = jest.fn(_ => false);
+  const mockGithubSessionShouldRefreshFunc = jest.fn((_) => false);
   const mockGithubApi = {
     getAccessToken: jest.fn(),
     sessionManager: {
@@ -65,10 +65,10 @@ describe('useAuthenticatedFetch', () => {
   };
 
   const mockConfigApi = {
-    getString: jest.fn().mockImplementation(key => {
-      if (key === 'backend.baseUrl') return 'http://localhost:7000';
-      if (key === 'auth.environment') return 'development';
-      return '';
+    getString: jest.fn().mockImplementation((key) => {
+      if (key === "backend.baseUrl") return "http://localhost:7000";
+      if (key === "auth.environment") return "development";
+      return "";
     }),
   };
 
@@ -86,8 +86,8 @@ describe('useAuthenticatedFetch', () => {
     </TestApiProvider>
   );
 
-  describe('uriToFetchRiSc', () => {
-    it('calls fetch with bearer token and GCP access token', async () => {
+  describe("uriToFetchRiSc", () => {
+    it("calls fetch with bearer token and GCP access token", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
@@ -95,7 +95,7 @@ describe('useAuthenticatedFetch', () => {
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => [{ ID: '1' }],
+        json: async () => [{ ID: "1" }],
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -109,20 +109,20 @@ describe('useAuthenticatedFetch', () => {
       });
 
       expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/all'),
+        expect.stringContaining("/all"),
         expect.objectContaining({
-          method: 'GET',
+          method: "GET",
           headers: expect.objectContaining({
             Authorization: `Bearer ${MOCK_ID_TOKEN}`,
-            'GCP-Access-Token': MOCK_GCP_TOKEN,
+            "GCP-Access-Token": MOCK_GCP_TOKEN,
           }),
         }),
       );
 
-      expect(onSuccess).toHaveBeenCalledWith([{ ID: '1' }]);
+      expect(onSuccess).toHaveBeenCalledWith([{ ID: "1" }]);
     });
 
-    it('onSuccess is not called and no error is thrown when fetch fails', async () => {
+    it("onSuccess is not called and no error is thrown when fetch fails", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
@@ -132,8 +132,8 @@ describe('useAuthenticatedFetch', () => {
       mockFetchApi.fetch.mockResolvedValue({
         ok: false,
         status: 403,
-        statusText: 'Forbidden',
-        json: async () => ({ message: 'Not allowed' }),
+        statusText: "Forbidden",
+        json: async () => ({ message: "Not allowed" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), { wrapper });
@@ -146,8 +146,8 @@ describe('useAuthenticatedFetch', () => {
       expect(onSuccess).not.toHaveBeenCalled();
     });
 
-    it('onSuccess is not called and no error is thrown when google API getAccessTokens fails', async () => {
-      mockGoogleApi.getAccessToken.mockRejectedValue(new Error('No token'));
+    it("onSuccess is not called and no error is thrown when google API getAccessTokens fails", async () => {
+      mockGoogleApi.getAccessToken.mockRejectedValue(new Error("No token"));
       const { result } = renderHook(() => useAuthenticatedFetch(), { wrapper });
 
       const onSuccess = jest.fn();
@@ -159,8 +159,8 @@ describe('useAuthenticatedFetch', () => {
       expect(onSuccess).not.toHaveBeenCalled();
     });
 
-    it('onSuccess is not called and no error is thrown when github API getAccessTokens fails', async () => {
-      mockGithubApi.getAccessToken.mockRejectedValue(new Error('No token'));
+    it("onSuccess is not called and no error is thrown when github API getAccessTokens fails", async () => {
+      mockGithubApi.getAccessToken.mockRejectedValue(new Error("No token"));
       const { result } = renderHook(() => useAuthenticatedFetch(), { wrapper });
 
       const onSuccess = jest.fn();
@@ -173,20 +173,20 @@ describe('useAuthenticatedFetch', () => {
     });
   });
 
-  describe('postRiScs', () => {
-    it('calls fetch with correct headers', async () => {
+  describe("postRiScs", () => {
+    it("calls fetch with correct headers", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ ID: '1' }),
+        json: async () => ({ ID: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -198,12 +198,12 @@ describe('useAuthenticatedFetch', () => {
 
       const sopsConfig = {} as unknown as SopsConfigDTO;
       const riSc = {
-        ID: '1',
+        ID: "1",
         scenarios: [
           {
-            ID: '1',
-            name: 'test',
-            actions: [{ ID: '1' } as Partial<Action>],
+            ID: "1",
+            name: "test",
+            actions: [{ ID: "1" } as Partial<Action>],
           } as Partial<Scenario>,
         ],
       } as Partial<RiSc> as RiSc;
@@ -220,43 +220,43 @@ describe('useAuthenticatedFetch', () => {
       });
 
       expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/all'),
+        expect.stringContaining("/all"),
         expect.objectContaining({
-          method: 'GET',
+          method: "GET",
           headers: expect.objectContaining({
             Authorization: `Bearer ${MOCK_ID_TOKEN}`,
-            'GCP-Access-Token': MOCK_GCP_TOKEN,
-            'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
+            "GCP-Access-Token": MOCK_GCP_TOKEN,
+            "GitHub-Access-Token": MOCK_GITHUB_TOKEN,
           }),
         }),
       );
 
       expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/risc/org/repo'),
+        expect.stringContaining("/risc/org/repo"),
         expect.objectContaining({
-          method: 'POST',
+          method: "POST",
           headers: expect.objectContaining({
             Authorization: `Bearer ${MOCK_ID_TOKEN}`,
-            'GCP-Access-Token': MOCK_GCP_TOKEN,
-            'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
+            "GCP-Access-Token": MOCK_GCP_TOKEN,
+            "GitHub-Access-Token": MOCK_GITHUB_TOKEN,
           }),
         }),
       );
     });
 
-    it('calls fetch with correct body', async () => {
+    it("calls fetch with correct body", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ ID: '1' }),
+        json: async () => ({ ID: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -268,12 +268,12 @@ describe('useAuthenticatedFetch', () => {
 
       const sopsConfig = {} as unknown as SopsConfigDTO;
       const riSc = {
-        ID: '1',
+        ID: "1",
         scenarios: [
           {
-            ID: '1',
-            name: 'test',
-            actions: [{ ID: '1' } as Partial<Action>],
+            ID: "1",
+            name: "test",
+            actions: [{ ID: "1" } as Partial<Action>],
           } as Partial<Scenario>,
         ],
       } as Partial<RiSc> as RiSc;
@@ -291,34 +291,34 @@ describe('useAuthenticatedFetch', () => {
 
       const postCall = mockFetchApi.fetch.mock.calls.find(
         ([url, options]) =>
-          typeof url === 'string' &&
-          url.includes('/risc/org/repo') &&
-          options?.method === 'POST',
+          typeof url === "string" &&
+          url.includes("/risc/org/repo") &&
+          options?.method === "POST",
       );
 
       const [, postOptions] = postCall!;
       const parsedBody = JSON.parse(postOptions.body);
 
       expect(parsedBody.riSc).toContain('"ID":"1"'); // or parse again if you want to deeply inspect
-      expect(parsedBody.userInfo).toEqual({ name: 'name', email: 'email' });
+      expect(parsedBody.userInfo).toEqual({ name: "name", email: "email" });
 
-      expect(onSuccess).toHaveBeenCalledWith({ ID: '1' });
+      expect(onSuccess).toHaveBeenCalledWith({ ID: "1" });
       expect(onError).not.toHaveBeenCalled();
     });
 
-    it('calls onError on fetch failure', async () => {
+    it("calls onError on fetch failure", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: false,
-        json: async () => ({ error: 'Error' }),
+        json: async () => ({ error: "Error" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -330,12 +330,12 @@ describe('useAuthenticatedFetch', () => {
 
       const sopsConfig = {} as unknown as SopsConfigDTO;
       const riSc = {
-        ID: '1',
+        ID: "1",
         scenarios: [
           {
-            ID: '1',
-            name: 'test',
-            actions: [{ ID: '1' } as Partial<Action>],
+            ID: "1",
+            name: "test",
+            actions: [{ ID: "1" } as Partial<Action>],
           } as Partial<Scenario>,
         ],
       } as Partial<RiSc> as RiSc;
@@ -353,14 +353,14 @@ describe('useAuthenticatedFetch', () => {
 
       expect(onError).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: 'Error',
+          error: "Error",
         }),
         false,
       );
       expect(onSuccess).not.toHaveBeenCalled();
     });
 
-    it('retries once with a forced GitHub auth refresh when a write returns an access-token validation failure', async () => {
+    it("retries once with a forced GitHub auth refresh when a write returns an access-token validation failure", async () => {
       const githubAccessTokenCallCount =
         mockGithubApi.getAccessToken.mock.calls.length;
       const fetchCallCount = mockFetchApi.fetch.mock.calls.length;
@@ -377,7 +377,7 @@ describe('useAuthenticatedFetch', () => {
         if (mockGithubApi.sessionManager.sessionShouldRefreshFunc(session)) {
           mockGithubApi.sessionManager.currentSession = {
             providerInfo: {
-              accessToken: '<fresh-github-token>',
+              accessToken: "<fresh-github-token>",
             },
           };
         }
@@ -388,18 +388,18 @@ describe('useAuthenticatedFetch', () => {
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch
         .mockResolvedValueOnce({
           ok: false,
           status: 401,
-          json: async () => ({ status: 'InvalidGitHubAccessToken' }),
+          json: async () => ({ status: "InvalidGitHubAccessToken" }),
         })
         .mockResolvedValueOnce({
           ok: true,
-          json: async () => ({ ID: '1' }),
+          json: async () => ({ ID: "1" }),
         });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -410,14 +410,14 @@ describe('useAuthenticatedFetch', () => {
       const onError = jest.fn();
 
       const riScWithMetaData = {
-        id: '1',
+        id: "1",
         content: {
-          ID: '1',
+          ID: "1",
           scenarios: [
             {
-              ID: '1',
-              name: 'test',
-              actions: [{ ID: '1' } as Partial<Action>],
+              ID: "1",
+              name: "test",
+              actions: [{ ID: "1" } as Partial<Action>],
             } as Partial<Scenario>,
           ],
         } as Partial<RiSc> as RiSc,
@@ -431,7 +431,7 @@ describe('useAuthenticatedFetch', () => {
         mockGithubApi.getAccessToken.mock.calls.slice(
           githubAccessTokenCallCount,
         );
-      expect(githubAccessTokenCalls).toEqual([[['repo']], [['repo']]]);
+      expect(githubAccessTokenCalls).toEqual([[["repo"]], [["repo"]]]);
       expect(mockGithubSessionShouldRefreshFunc).toHaveBeenCalledTimes(1);
 
       const fetchCalls = mockFetchApi.fetch.mock.calls.slice(fetchCallCount);
@@ -440,29 +440,29 @@ describe('useAuthenticatedFetch', () => {
       const [, retryOptions] = fetchCalls[1];
       expect(retryOptions.headers).toEqual(
         expect.objectContaining({
-          'GitHub-Access-Token': '<fresh-github-token>',
+          "GitHub-Access-Token": "<fresh-github-token>",
         }),
       );
-      expect(onSuccess).toHaveBeenCalledWith({ ID: '1' });
+      expect(onSuccess).toHaveBeenCalledWith({ ID: "1" });
       expect(onError).not.toHaveBeenCalled();
       mockFetchApi.fetch.mock.calls.splice(fetchCallCount);
     });
   });
 
-  describe('putRiSc', () => {
-    it('calls fetch with correct data', async () => {
+  describe("putRiSc", () => {
+    it("calls fetch with correct data", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ ID: '1' }),
+        json: async () => ({ ID: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -474,12 +474,12 @@ describe('useAuthenticatedFetch', () => {
 
       const riScWithMetaData = {
         content: {
-          ID: '1',
+          ID: "1",
           scenarios: [
             {
-              ID: '1',
-              name: 'test',
-              actions: [{ ID: '1' } as Partial<Action>],
+              ID: "1",
+              name: "test",
+              actions: [{ ID: "1" } as Partial<Action>],
             } as Partial<Scenario>,
           ],
         } as Partial<RiSc> as RiSc,
@@ -491,9 +491,9 @@ describe('useAuthenticatedFetch', () => {
 
       const putCall = mockFetchApi.fetch.mock.calls.find(
         ([url, options]) =>
-          typeof url === 'string' &&
-          url.includes('/risc/org/repo') &&
-          options?.method === 'PUT',
+          typeof url === "string" &&
+          url.includes("/risc/org/repo") &&
+          options?.method === "PUT",
       );
 
       expect(putCall).toBeDefined();
@@ -502,25 +502,25 @@ describe('useAuthenticatedFetch', () => {
       const parsedBody = JSON.parse(putOptions.body);
 
       expect(parsedBody.riSc).toContain('"ID":"1"');
-      expect(parsedBody.userInfo).toEqual({ name: 'name', email: 'email' });
+      expect(parsedBody.userInfo).toEqual({ name: "name", email: "email" });
 
-      expect(onSuccess).toHaveBeenCalledWith({ ID: '1' });
+      expect(onSuccess).toHaveBeenCalledWith({ ID: "1" });
       expect(onError).not.toHaveBeenCalled();
     });
 
-    it('calls fetch with correct headers', async () => {
+    it("calls fetch with correct headers", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ ID: '1' }),
+        json: async () => ({ ID: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -532,12 +532,12 @@ describe('useAuthenticatedFetch', () => {
 
       const riScWithMetaData = {
         content: {
-          ID: '1',
+          ID: "1",
           scenarios: [
             {
-              ID: '1',
-              name: 'test',
-              actions: [{ ID: '1' } as Partial<Action>],
+              ID: "1",
+              name: "test",
+              actions: [{ ID: "1" } as Partial<Action>],
             } as Partial<Scenario>,
           ],
         } as Partial<RiSc> as RiSc,
@@ -549,9 +549,9 @@ describe('useAuthenticatedFetch', () => {
 
       const putCall = mockFetchApi.fetch.mock.calls.find(
         ([url, options]) =>
-          typeof url === 'string' &&
-          url.includes('/risc/org/repo') &&
-          options?.method === 'PUT',
+          typeof url === "string" &&
+          url.includes("/risc/org/repo") &&
+          options?.method === "PUT",
       );
 
       expect(putCall).toBeDefined();
@@ -560,25 +560,25 @@ describe('useAuthenticatedFetch', () => {
       expect(putOptions.headers).toEqual(
         expect.objectContaining({
           Authorization: `Bearer ${MOCK_ID_TOKEN}`,
-          'GCP-Access-Token': MOCK_GCP_TOKEN,
-          'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
+          "GCP-Access-Token": MOCK_GCP_TOKEN,
+          "GitHub-Access-Token": MOCK_GITHUB_TOKEN,
         }),
       );
     });
 
-    it('calls onError on fetch failure', async () => {
+    it("calls onError on fetch failure", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: false,
-        json: async () => ({ error: 'Error' }),
+        json: async () => ({ error: "Error" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -590,12 +590,12 @@ describe('useAuthenticatedFetch', () => {
 
       const riScWithMetaData = {
         content: {
-          ID: '1',
+          ID: "1",
           scenarios: [
             {
-              ID: '1',
-              name: 'test',
-              actions: [{ ID: '1' } as Partial<Action>],
+              ID: "1",
+              name: "test",
+              actions: [{ ID: "1" } as Partial<Action>],
             } as Partial<Scenario>,
           ],
         } as Partial<RiSc> as RiSc,
@@ -607,7 +607,7 @@ describe('useAuthenticatedFetch', () => {
 
       expect(onError).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: 'Error',
+          error: "Error",
         }),
         false,
       );
@@ -615,20 +615,20 @@ describe('useAuthenticatedFetch', () => {
     });
   });
 
-  describe('publishRiScs', () => {
-    it('calls fetch with correct headers', async () => {
+  describe("publishRiScs", () => {
+    it("calls fetch with correct headers", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ ID: '1' }),
+        json: async () => ({ ID: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -639,14 +639,14 @@ describe('useAuthenticatedFetch', () => {
       const onError = jest.fn();
 
       await act(async () => {
-        await result.current.publishRiScs('1', onSuccess, onError);
+        await result.current.publishRiScs("1", onSuccess, onError);
       });
 
       const postCall = mockFetchApi.fetch.mock.calls.find(
         ([url, options]) =>
-          typeof url === 'string' &&
-          url.includes('/risc/org/repo') &&
-          options?.method === 'POST',
+          typeof url === "string" &&
+          url.includes("/risc/org/repo") &&
+          options?.method === "POST",
       );
 
       expect(postCall).toBeDefined();
@@ -655,25 +655,25 @@ describe('useAuthenticatedFetch', () => {
       expect(postOptions.headers).toEqual(
         expect.objectContaining({
           Authorization: `Bearer ${MOCK_ID_TOKEN}`,
-          'GCP-Access-Token': MOCK_GCP_TOKEN,
-          'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
+          "GCP-Access-Token": MOCK_GCP_TOKEN,
+          "GitHub-Access-Token": MOCK_GITHUB_TOKEN,
         }),
       );
     });
 
-    it('calls fetch with correct body', async () => {
+    it("calls fetch with correct body", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ ID: '1' }),
+        json: async () => ({ ID: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -684,14 +684,14 @@ describe('useAuthenticatedFetch', () => {
       const onError = jest.fn();
 
       await act(async () => {
-        await result.current.publishRiScs('1', onSuccess, onError);
+        await result.current.publishRiScs("1", onSuccess, onError);
       });
 
       const postCall = mockFetchApi.fetch.mock.calls.find(
         ([url, options]) =>
-          typeof url === 'string' &&
-          url.includes('/risc/org/repo') &&
-          options?.method === 'POST',
+          typeof url === "string" &&
+          url.includes("/risc/org/repo") &&
+          options?.method === "POST",
       );
 
       expect(postCall).toBeDefined();
@@ -700,25 +700,25 @@ describe('useAuthenticatedFetch', () => {
       const parsedBody = JSON.parse(postOptions.body);
 
       expect(parsedBody.riSc).toContain('"ID":"1"');
-      expect(parsedBody.userInfo).toEqual({ name: 'name', email: 'email' });
+      expect(parsedBody.userInfo).toEqual({ name: "name", email: "email" });
 
       expect(onSuccess).toHaveBeenCalled();
       expect(onError).not.toHaveBeenCalled();
     });
 
-    it('onError is called on fetch failure', async () => {
+    it("onError is called on fetch failure", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: false,
-        json: async () => ({ error: 'Error' }),
+        json: async () => ({ error: "Error" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -729,12 +729,12 @@ describe('useAuthenticatedFetch', () => {
       const onError = jest.fn();
 
       await act(async () => {
-        await result.current.publishRiScs('1', onSuccess, onError);
+        await result.current.publishRiScs("1", onSuccess, onError);
       });
 
       expect(onError).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: 'Error',
+          error: "Error",
         }),
         false,
       );
@@ -742,20 +742,20 @@ describe('useAuthenticatedFetch', () => {
     });
   });
 
-  describe('fetchDifference', () => {
-    it('calls fetch with correct headers', async () => {
+  describe("fetchDifference", () => {
+    it("calls fetch with correct headers", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ ID: '1' }),
+        json: async () => ({ ID: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -767,12 +767,12 @@ describe('useAuthenticatedFetch', () => {
 
       const riScWithMetaData = {
         content: {
-          ID: '1',
+          ID: "1",
           scenarios: [
             {
-              ID: '1',
-              name: 'test',
-              actions: [{ ID: '1' } as Partial<Action>],
+              ID: "1",
+              name: "test",
+              actions: [{ ID: "1" } as Partial<Action>],
             } as Partial<Scenario>,
           ],
         } as Partial<RiSc> as RiSc,
@@ -788,9 +788,9 @@ describe('useAuthenticatedFetch', () => {
 
       const postCall = mockFetchApi.fetch.mock.calls.find(
         ([url, options]) =>
-          typeof url === 'string' &&
-          url.includes('/risc/org/repo') &&
-          options?.method === 'POST',
+          typeof url === "string" &&
+          url.includes("/risc/org/repo") &&
+          options?.method === "POST",
       );
 
       expect(postCall).toBeDefined();
@@ -799,25 +799,25 @@ describe('useAuthenticatedFetch', () => {
       expect(postOptions.headers).toEqual(
         expect.objectContaining({
           Authorization: `Bearer ${MOCK_ID_TOKEN}`,
-          'GCP-Access-Token': MOCK_GCP_TOKEN,
-          'GitHub-Access-Token': MOCK_GITHUB_TOKEN,
+          "GCP-Access-Token": MOCK_GCP_TOKEN,
+          "GitHub-Access-Token": MOCK_GITHUB_TOKEN,
         }),
       );
     });
 
-    it('calls fetch with correct body', async () => {
+    it("calls fetch with correct body", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ ID: '1' }),
+        json: async () => ({ ID: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -829,12 +829,12 @@ describe('useAuthenticatedFetch', () => {
 
       const riScWithMetaData = {
         content: {
-          ID: '1',
+          ID: "1",
           scenarios: [
             {
-              ID: '1',
-              name: 'test',
-              actions: [{ ID: '1' } as Partial<Action>],
+              ID: "1",
+              name: "test",
+              actions: [{ ID: "1" } as Partial<Action>],
             } as Partial<Scenario>,
           ],
         } as Partial<RiSc> as RiSc,
@@ -850,9 +850,9 @@ describe('useAuthenticatedFetch', () => {
 
       const postCall = mockFetchApi.fetch.mock.calls.find(
         ([url, options]) =>
-          typeof url === 'string' &&
-          url.includes('/risc/org/repo') &&
-          options?.method === 'POST',
+          typeof url === "string" &&
+          url.includes("/risc/org/repo") &&
+          options?.method === "POST",
       );
 
       expect(postCall).toBeDefined();
@@ -861,25 +861,25 @@ describe('useAuthenticatedFetch', () => {
       const parsedBody = JSON.parse(postOptions.body);
 
       expect(parsedBody.riSc).toContain('"ID":"1"');
-      expect(parsedBody.userInfo).toEqual({ name: 'name', email: 'email' });
+      expect(parsedBody.userInfo).toEqual({ name: "name", email: "email" });
 
       expect(onSuccess).toHaveBeenCalled();
       expect(onError).not.toHaveBeenCalled();
     });
 
-    it('onError is called on fetch failure', async () => {
+    it("onError is called on fetch failure", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: false,
-        json: async () => ({ error: 'Error' }),
+        json: async () => ({ error: "Error" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -891,12 +891,12 @@ describe('useAuthenticatedFetch', () => {
 
       const riScWithMetaData = {
         content: {
-          ID: '1',
+          ID: "1",
           scenarios: [
             {
-              ID: '1',
-              name: 'test',
-              actions: [{ ID: '1' } as Partial<Action>],
+              ID: "1",
+              name: "test",
+              actions: [{ ID: "1" } as Partial<Action>],
             } as Partial<Scenario>,
           ],
         } as Partial<RiSc> as RiSc,
@@ -915,20 +915,20 @@ describe('useAuthenticatedFetch', () => {
     });
   });
 
-  describe('fetchGcpCryptoKeys', () => {
-    it('calls fetch with correct headers', async () => {
+  describe("fetchGcpCryptoKeys", () => {
+    it("calls fetch with correct headers", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ projectID: '1' }),
+        json: async () => ({ projectID: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -944,9 +944,9 @@ describe('useAuthenticatedFetch', () => {
 
       const postCall = mockFetchApi.fetch.mock.calls.find(
         ([url, options]) =>
-          typeof url === 'string' &&
-          url.includes('/google/gcpCryptoKeys') &&
-          options?.method === 'GET',
+          typeof url === "string" &&
+          url.includes("/google/gcpCryptoKeys") &&
+          options?.method === "GET",
       );
 
       expect(postCall).toBeDefined();
@@ -955,25 +955,25 @@ describe('useAuthenticatedFetch', () => {
       expect(postOptions.headers).toEqual(
         expect.objectContaining({
           Authorization: `Bearer ${MOCK_ID_TOKEN}`,
-          'Content-Type': 'application/json',
-          'GCP-Access-Token': MOCK_GCP_TOKEN,
+          "Content-Type": "application/json",
+          "GCP-Access-Token": MOCK_GCP_TOKEN,
         }),
       );
     });
 
-    it('onSuccess is called with GcpKryptoKeys', async () => {
+    it("onSuccess is called with GcpKryptoKeys", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ projectId: '1' }),
+        json: async () => ({ projectId: "1" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {
@@ -989,25 +989,25 @@ describe('useAuthenticatedFetch', () => {
 
       expect(onSuccess).toHaveBeenCalledWith(
         expect.objectContaining({
-          projectId: '1',
+          projectId: "1",
         }),
       );
       expect(onError).not.toHaveBeenCalled();
     });
 
-    it('onError is called on fetch failure', async () => {
+    it("onError is called on fetch failure", async () => {
       mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
       mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
       mockIdentityApi.getCredentials.mockResolvedValue({
         token: MOCK_ID_TOKEN,
       });
       mockIdentityApi.getProfileInfo.mockResolvedValue({
-        email: 'email',
-        displayName: 'name',
+        email: "email",
+        displayName: "name",
       });
       mockFetchApi.fetch.mockResolvedValue({
         ok: false,
-        json: async () => ({ error: 'Error' }),
+        json: async () => ({ error: "Error" }),
       });
 
       const { result } = renderHook(() => useAuthenticatedFetch(), {

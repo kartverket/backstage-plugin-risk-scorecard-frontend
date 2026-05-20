@@ -1,5 +1,5 @@
-import { ChangeSetChangedValue } from './ChangeSetChangedValue.tsx';
-import { ChangeSetPropertyBase } from './ChangeSetPropertyBase.tsx';
+import { ChangeSetChangedValue } from "./ChangeSetChangedValue.tsx";
+import { ChangeSetPropertyBase } from "./ChangeSetPropertyBase.tsx";
 
 interface ChangeSetChangedPropertyProps {
   propertyName: string;

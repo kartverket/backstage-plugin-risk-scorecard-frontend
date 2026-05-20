@@ -1,16 +1,16 @@
-import { Flex, Text } from '@backstage/ui';
+import { Flex, Text } from "@backstage/ui";
 import {
   DifferenceFetchState,
   DifferenceStatus,
-} from '../../../utils/types.ts';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
+} from "../../../utils/types.ts";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../../utils/translations.ts";
 import {
   calculateUpdatedStatus,
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
-} from '../../../utils/utilityfunctions.ts';
-import styles from './StatusBanner.module.css';
+} from "../../../utils/utilityfunctions.ts";
+import styles from "./StatusBanner.module.css";
 
 type StatusBannerProps = {
   numOfCommitsBehind: number | null;
@@ -47,17 +47,17 @@ function StatusIconWithText(props: StatusIconWithTextProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const updatedStatusToRemixIconString: Record<UpdatedStatusEnumType, string> =
     {
-      [UpdatedStatusEnum.UPDATED]: 'ri-emotion-happy-line',
-      [UpdatedStatusEnum.LITTLE_OUTDATED]: 'ri-emotion-normal-line',
-      [UpdatedStatusEnum.OUTDATED]: 'ri-emotion-unhappy-line',
-      [UpdatedStatusEnum.VERY_OUTDATED]: 'ri-emotion-sad-line',
+      [UpdatedStatusEnum.UPDATED]: "ri-emotion-happy-line",
+      [UpdatedStatusEnum.LITTLE_OUTDATED]: "ri-emotion-normal-line",
+      [UpdatedStatusEnum.OUTDATED]: "ri-emotion-unhappy-line",
+      [UpdatedStatusEnum.VERY_OUTDATED]: "ri-emotion-sad-line",
     };
   const updatedStatusToColor: Record<UpdatedStatusEnumType, string> = {
-    [UpdatedStatusEnum.UPDATED]: 'var(--ros-risc-status-updated)',
+    [UpdatedStatusEnum.UPDATED]: "var(--ros-risc-status-updated)",
     [UpdatedStatusEnum.LITTLE_OUTDATED]:
-      'var(--ros-risc-status-little-outdated)',
-    [UpdatedStatusEnum.OUTDATED]: 'var(--ros-risc-status-outdated)',
-    [UpdatedStatusEnum.VERY_OUTDATED]: 'var(--ros-risc-status-very-outdated)',
+      "var(--ros-risc-status-little-outdated)",
+    [UpdatedStatusEnum.OUTDATED]: "var(--ros-risc-status-outdated)",
+    [UpdatedStatusEnum.VERY_OUTDATED]: "var(--ros-risc-status-very-outdated)",
   };
 
   if (props.daysSinceLastModified !== null) {
@@ -68,8 +68,8 @@ function StatusIconWithText(props: StatusIconWithTextProps) {
         }
         altText={t(`rosStatus.updatedStatus.${props.updatedStatus}`)}
         text={
-          t('rosStatus.lastModified') +
-          t('rosStatus.daysSinceLastModified', {
+          t("rosStatus.lastModified") +
+          t("rosStatus.daysSinceLastModified", {
             days: props.daysSinceLastModified.toString(),
           })
         }
@@ -85,8 +85,8 @@ function StatusIconWithText(props: StatusIconWithTextProps) {
     return (
       <IconWithText
         remixIconClassString="ri-emotion-sad-line"
-        altText={t('rosStatus.updatedStatus.error')}
-        text={t('rosStatus.errorMessage')}
+        altText={t("rosStatus.updatedStatus.error")}
+        text={t("rosStatus.errorMessage")}
         color="var(--ros-risc-status-error)"
       />
     );
@@ -95,8 +95,8 @@ function StatusIconWithText(props: StatusIconWithTextProps) {
   return (
     <IconWithText
       remixIconClassString="ri-emotion-normal-line"
-      altText={t('rosStatus.updatedStatus.disabled')}
-      text={t('rosStatus.notPublishedYet')}
+      altText={t("rosStatus.updatedStatus.disabled")}
+      text={t("rosStatus.notPublishedYet")}
       color="var(--ros-risc-status-not-published)"
     />
   );
@@ -115,7 +115,7 @@ function IconWithText(props: IconWithTextProps) {
       <i
         className={props.remixIconClassString}
         aria-label={props.altText}
-        style={{ fontSize: '20px', color: props.color }}
+        style={{ fontSize: "20px", color: props.color }}
       />
       <Text as="h6" variant="body-large">
         {props.text}

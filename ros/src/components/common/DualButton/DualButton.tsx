@@ -5,9 +5,9 @@ import {
   MenuTrigger,
   Menu,
   MenuItem,
-} from '@backstage/ui';
-import classnames from 'classnames';
-import styles from './DualButton.module.css';
+} from "@backstage/ui";
+import classnames from "classnames";
+import styles from "./DualButton.module.css";
 
 type MenuItemDef = {
   key: string;
@@ -41,7 +41,7 @@ export function DualButton({
       size="small"
       {...propsCommon}
       {...propsLeft}
-      className={`${styles.DualButtonLeft} ${propsCommon?.className || ''} ${propsLeft?.className || ''}`}
+      className={`${styles.DualButtonLeft} ${propsCommon?.className || ""} ${propsLeft?.className || ""}`}
     />
   );
 
@@ -58,7 +58,7 @@ export function DualButton({
       <MenuTrigger>
         {children}
         <Menu>
-          {menuItems.map(item => (
+          {menuItems.map((item) => (
             <MenuItem
               key={item.key}
               className={classnames({ [styles.selected]: item.selected })}
@@ -73,13 +73,13 @@ export function DualButton({
   };
 
   return (
-    <Box {...props} className={`${styles.DualButton} ${className || ''}`}>
+    <Box {...props} className={`${styles.DualButton} ${className || ""}`}>
       <ConditionalMenuWrapper>{leftButton}</ConditionalMenuWrapper>
       <Button
         size="small"
         {...propsCommon}
         {...propsRight}
-        className={`${styles.DualButtonRight} ${propsCommon?.className || ''} ${propsRight?.className || ''}`}
+        className={`${styles.DualButtonRight} ${propsCommon?.className || ""} ${propsRight?.className || ""}`}
       />
     </Box>
   );

@@ -1,7 +1,7 @@
-import { Flex, Text, Card, CardBody, ButtonIcon } from '@backstage/ui';
-import { RiScWithMetadata } from '../../utils/types';
-import { Markdown } from '../common/Markdown.tsx';
-import styles from './RiScSelectionCard.module.css';
+import { Flex, Text, Card, CardBody, ButtonIcon } from "@backstage/ui";
+import { RiScWithMetadata } from "../../utils/types";
+import { Markdown } from "../common/Markdown.tsx";
+import styles from "./RiScSelectionCard.module.css";
 
 interface Props {
   riScWithMetadata: RiScWithMetadata;
@@ -24,7 +24,7 @@ export function RiScDescriptionCard(props: Props) {
             <ButtonIcon
               onClick={props.edit}
               icon={
-                <i className="ri-edit-line" style={{ fontSize: 'large' }} />
+                <i className="ri-edit-line" style={{ fontSize: "large" }} />
               }
               variant="tertiary"
             />

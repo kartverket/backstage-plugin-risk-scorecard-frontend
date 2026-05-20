@@ -1,16 +1,16 @@
-import { Fragment, useState } from 'react';
-import { AggregatedCost } from './AggregatedCost';
-import { RiScWithMetadata } from '../../utils/types';
-import { MatrixTabs } from './Tabs';
-import { riskMatrix } from '../../utils/constants';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { RiskMatrixTabs } from './utils';
-import { Card, CardBody, CardHeader, Text, Box } from '@backstage/ui';
-import { RiskMatrixSquare } from './RiskMatrixSquare.tsx';
-import { CurrentRisk } from './CurrentRisk.tsx';
+import { Fragment, useState } from "react";
+import { AggregatedCost } from "./AggregatedCost";
+import { RiScWithMetadata } from "../../utils/types";
+import { MatrixTabs } from "./Tabs";
+import { riskMatrix } from "../../utils/constants";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../utils/translations";
+import { RiskMatrixTabs } from "./utils";
+import { Card, CardBody, CardHeader, Text, Box } from "@backstage/ui";
+import { RiskMatrixSquare } from "./RiskMatrixSquare.tsx";
+import { CurrentRisk } from "./CurrentRisk.tsx";
 
-import styles from './RiskMatrix.module.css';
+import styles from "./RiskMatrix.module.css";
 export function RiskMatrix({
   riScWithMetadata,
 }: {
@@ -23,7 +23,7 @@ export function RiskMatrix({
     <Card className={styles.card}>
       <CardHeader>
         <Text variant="title-small" weight="bold">
-          {t('riskMatrix.title')}
+          {t("riskMatrix.title")}
         </Text>
       </CardHeader>
       <CardBody>
@@ -31,7 +31,7 @@ export function RiskMatrix({
         {riScWithMetadata.content.scenarios.length > 0 && (
           <Box
             style={{
-              marginTop: '18px',
+              marginTop: "18px",
             }}
           >
             <AggregatedCost riSc={riScWithMetadata.content} riskType={tab} />
@@ -51,7 +51,7 @@ export function RiskMatrix({
                   weight="bold"
                   className={styles.centered}
                 >
-                  {t('dictionary.consequence')}
+                  {t("dictionary.consequence")}
                 </Text>
               </Box>
               {riskMatrix.map((row, rowIndex) => (
@@ -90,7 +90,7 @@ export function RiskMatrix({
                   variant="title-x-small"
                   className={styles.centered}
                 >
-                  {t('dictionary.probability')}
+                  {t("dictionary.probability")}
                 </Text>
               </Box>
             </Box>

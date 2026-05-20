@@ -1,6 +1,6 @@
-import { Flex } from '@backstage/ui';
-import CircularProgress from '@mui/material/CircularProgress';
-import styles from './Spinner.module.css';
+import { Flex } from "@backstage/ui";
+import CircularProgress from "@mui/material/CircularProgress";
+import styles from "./Spinner.module.css";
 
 export function Spinner({ size }: { size?: string | number }) {
   return (

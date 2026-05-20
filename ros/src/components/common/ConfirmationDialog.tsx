@@ -1,11 +1,11 @@
-import { useState, ReactNode } from 'react';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Alert from '@mui/material/Alert';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { Flex, Button } from '@backstage/ui';
-import DialogComponent from '../dialog/DialogComponent';
+import { useState, ReactNode } from "react";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Alert from "@mui/material/Alert";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../utils/translations";
+import { Flex, Button } from "@backstage/ui";
+import DialogComponent from "../dialog/DialogComponent";
 
 type ConfirmationDialogWithCheckboxProps = {
   isOpen: boolean;
@@ -67,7 +67,7 @@ export function ConfirmationDialogWithCheckbox({
       </Alert>
       <Flex justify="between" pt="24px">
         <Button variant="secondary" size="medium" onClick={handleCancel}>
-          {t('dictionary.cancel')}
+          {t("dictionary.cancel")}
         </Button>
         <Button
           variant="primary"
@@ -75,7 +75,7 @@ export function ConfirmationDialogWithCheckbox({
           onClick={handleConfirm}
           isDisabled={!isChecked}
         >
-          {confirmButtonText || t('dictionary.confirm')}
+          {confirmButtonText || t("dictionary.confirm")}
         </Button>
       </Flex>
     </DialogComponent>
@@ -119,7 +119,7 @@ export function ConfirmationDialogWithoutCheckbox({
             onCancel?.();
           }}
         >
-          {t('dictionary.cancel')}
+          {t("dictionary.cancel")}
         </Button>
         <Button
           onClick={() => {
@@ -128,7 +128,7 @@ export function ConfirmationDialogWithoutCheckbox({
           variant="primary"
           size="medium"
         >
-          {confirmButtonText || t('dictionary.confirm')}
+          {confirmButtonText || t("dictionary.confirm")}
         </Button>
       </Flex>
     </DialogComponent>

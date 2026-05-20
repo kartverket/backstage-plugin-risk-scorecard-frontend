@@ -1,15 +1,15 @@
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { RiScWithMetadata } from '../../utils/types';
-import { Box, Button, Text, Flex } from '@backstage/ui';
-import { ActionStatusOptions } from '../../utils/constants';
-import { calcRiskCostOfRiSc, getRiskGradient } from '../../utils/risk';
-import { RiskMatrixTabs } from './utils';
-import styles from './CurrentRisk.module.css';
-import { formatNumber } from '../../utils/utilityfunctions';
-import { useState } from 'react';
-import DialogComponent from '../dialog/DialogComponent.tsx';
-import { ScenarioReductionTable } from './ScenarioReductionTable.tsx';
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../utils/translations";
+import { RiScWithMetadata } from "../../utils/types";
+import { Box, Button, Text, Flex } from "@backstage/ui";
+import { ActionStatusOptions } from "../../utils/constants";
+import { calcRiskCostOfRiSc, getRiskGradient } from "../../utils/risk";
+import { RiskMatrixTabs } from "./utils";
+import styles from "./CurrentRisk.module.css";
+import { formatNumber } from "../../utils/utilityfunctions";
+import { useState } from "react";
+import DialogComponent from "../dialog/DialogComponent.tsx";
+import { ScenarioReductionTable } from "./ScenarioReductionTable.tsx";
 
 type CurrentRiskProps = {
   risc: RiScWithMetadata;
@@ -23,7 +23,7 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
     (total, scenario) =>
       total +
       scenario.actions.filter(
-        action => action.status === ActionStatusOptions.OK,
+        (action) => action.status === ActionStatusOptions.OK,
       ).length,
     0,
   );
@@ -53,16 +53,16 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
     Math.min(100, Number(costReductionPercentage.toFixed(2))),
   );
 
-  let labelTransform = 'translateX(-50%)';
+  let labelTransform = "translateX(-50%)";
   if (clampedPercentage <= 5) {
-    labelTransform = 'translateX(0%)';
+    labelTransform = "translateX(0%)";
   } else if (clampedPercentage >= 95) {
-    labelTransform = 'translateX(-100%)';
+    labelTransform = "translateX(-100%)";
   }
 
   const reduction = formatNumber(initialRiskCost - estimatedCurrentCost, t);
 
-  const description = t('riskMatrix.currentRisk.description', {
+  const description = t("riskMatrix.currentRisk.description", {
     actionsOk: String(actionsOk),
     reduction,
   });
@@ -71,23 +71,23 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
     <Flex direction="column" pt="30px">
       <Flex direction="column" pb="16px">
         <Text variant="title-x-small" weight="bold">
-          {t('riskMatrix.currentRisk.title')}
+          {t("riskMatrix.currentRisk.title")}
         </Text>
         <Flex direction="column" gap="0">
           <Flex justify="between" px="4px" align="end" pb="4px">
             <Flex direction="column" align="start" gap="0">
               <Text variant="body-small" weight="bold">
-                {formatNumber(initialRiskCost, t)}{' '}
-                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+                {formatNumber(initialRiskCost, t)}{" "}
+                {t("riskMatrix.estimatedRisk.unit.nokPerYear")}
               </Text>
-              <Text variant="body-medium">← {t('dictionary.initialRisk')}</Text>
+              <Text variant="body-medium">← {t("dictionary.initialRisk")}</Text>
             </Flex>
             <Flex direction="column" align="end" gap="0">
               <Text variant="body-small" weight="bold">
-                {formatNumber(remainingRiskCost, t)}{' '}
-                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+                {formatNumber(remainingRiskCost, t)}{" "}
+                {t("riskMatrix.estimatedRisk.unit.nokPerYear")}
               </Text>
-              <Text variant="body-medium">{t('dictionary.restRisk')} →</Text>
+              <Text variant="body-medium">{t("dictionary.restRisk")} →</Text>
             </Flex>
           </Flex>
           <Box className={styles.currentRiskBarWrapper}>
@@ -123,7 +123,7 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
               }}
             >
               <Text variant="body-medium" weight="bold">
-                {t('dictionary.currentRisk')}
+                {t("dictionary.currentRisk")}
               </Text>
             </Flex>
           </Box>
@@ -139,11 +139,11 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
 
       <div>
         <Button onClick={() => setIsDialogOpen(true)}>
-          {t('riskMatrix.currentRisk.showMoreInfo')}
+          {t("riskMatrix.currentRisk.showMoreInfo")}
         </Button>
       </div>
       <DialogComponent
-        header={t('riskMatrix.currentRisk.dialogHeader')}
+        header={t("riskMatrix.currentRisk.dialogHeader")}
         isOpen={isDialogOpen}
         onClick={() => setIsDialogOpen(false)}
         className={styles.reductionDialog}

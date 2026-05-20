@@ -1,5 +1,5 @@
-import { Scenario } from './types.ts';
-import { ThreatActorsOptions, VulnerabilitiesOptions } from './constants.ts';
+import { Scenario } from "./types.ts";
+import { ThreatActorsOptions, VulnerabilitiesOptions } from "./constants.ts";
 
 export enum CoverageType {
   ThreatActor,
@@ -17,16 +17,16 @@ export function countScenarioCoverage(scenarios: Scenario[]) {
     vulnerabilities: new Map(),
   };
 
-  Object.values(ThreatActorsOptions).forEach(threatActor => {
+  Object.values(ThreatActorsOptions).forEach((threatActor) => {
     coverageMap.threatActors.set(threatActor, 0);
   });
 
-  Object.values(VulnerabilitiesOptions).forEach(vuln => {
+  Object.values(VulnerabilitiesOptions).forEach((vuln) => {
     coverageMap.vulnerabilities.set(vuln, 0);
   });
 
-  scenarios.forEach(scenario => {
-    scenario.threatActors.forEach(threatActor => {
+  scenarios.forEach((scenario) => {
+    scenario.threatActors.forEach((threatActor) => {
       const key = threatActor as ThreatActorsOptions;
       coverageMap.threatActors.set(
         key,
@@ -35,8 +35,8 @@ export function countScenarioCoverage(scenarios: Scenario[]) {
     });
   });
 
-  scenarios.forEach(scenario => {
-    scenario.vulnerabilities.forEach(vuln => {
+  scenarios.forEach((scenario) => {
+    scenario.vulnerabilities.forEach((vuln) => {
       const key = vuln as VulnerabilitiesOptions;
       coverageMap.vulnerabilities.set(
         key,

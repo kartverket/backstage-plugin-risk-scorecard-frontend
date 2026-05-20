@@ -1,11 +1,11 @@
-import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { UseFormReturn } from 'react-hook-form';
-import { FormScenario } from '../../../utils/types';
-import { probabilityOptions } from '../../../utils/constants';
-import { Box } from '@backstage/ui';
-import styles from '../ScenarioWizardTable.module.css';
-import { createInfoWithHeadersComponent, RiskTableBase } from './RiskTableBase';
+import { pluginRiScTranslationRef } from "../../../utils/translations";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { UseFormReturn } from "react-hook-form";
+import { FormScenario } from "../../../utils/types";
+import { probabilityOptions } from "../../../utils/constants";
+import { Box } from "@backstage/ui";
+import styles from "../ScenarioWizardTable.module.css";
+import { createInfoWithHeadersComponent, RiskTableBase } from "./RiskTableBase";
 
 function ProbabilityTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -30,7 +30,7 @@ export function ProbabilityTable({
   riskType,
 }: {
   formMethods: UseFormReturn<FormScenario>;
-  riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
+  riskType: keyof Pick<FormScenario, "risk" | "remainingRisk">;
 }) {
   return (
     <RiskTableBase
@@ -45,7 +45,7 @@ export function ProbabilityTable({
 }
 
 export const ProbabilityTableInfoWithHeaders = createInfoWithHeadersComponent(
-  'probabilityTable',
+  "probabilityTable",
   ProbabilityTableInfo,
   false,
 );

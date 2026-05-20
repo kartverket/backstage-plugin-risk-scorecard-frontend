@@ -1,8 +1,8 @@
-import { Flex, Text } from '@backstage/ui';
-import { EditEncryptionButton } from '../riScDialog/EditEncryptionButton.tsx';
-import { SupportDialog } from '../riScDialog/SupportDialog.tsx';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { Flex, Text } from "@backstage/ui";
+import { EditEncryptionButton } from "../riScDialog/EditEncryptionButton.tsx";
+import { SupportDialog } from "../riScDialog/SupportDialog.tsx";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../utils/translations.ts";
 
 type RiScHeaderProps = {
   onEditEncryption: () => void;
@@ -11,11 +11,11 @@ type RiScHeaderProps = {
 export function RiScHeader(props: RiScHeaderProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <header style={{ position: 'relative' }}>
-      <Flex justify="between" align="center" style={{ marginBottom: '16px' }}>
+    <header style={{ position: "relative" }}>
+      <Flex justify="between" align="center" style={{ marginBottom: "16px" }}>
         <Flex align="center">
           <Text variant="title-medium" weight="bold">
-            {t('contentHeader.title')}
+            {t("contentHeader.title")}
           </Text>
         </Flex>
         <Flex gap="8px">

@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
   useReducer,
-} from 'react';
+} from "react";
 import {
   ContentStatus,
   LockedRiSc,
@@ -15,33 +15,33 @@ import {
   RiScStatus,
   RiScWithMetadata,
   SubmitResponseObject,
-} from '../utils/types';
-import { useRouteRef } from '@backstage/core-plugin-api';
+} from "../utils/types";
+import { useRouteRef } from "@backstage/core-plugin-api";
 import {
   getTranslationKey,
   requiresNewApproval,
-} from '../utils/utilityfunctions';
-import { riScRouteRef } from '../routes';
-import { useLocation, useNavigate, useParams } from 'react-router';
+} from "../utils/utilityfunctions";
+import { riScRouteRef } from "../routes";
+import { useLocation, useNavigate, useParams } from "react-router";
 import {
   dtoToRiSc,
   GcpCryptoKeyObject,
   ProcessRiScResultDTO,
   RiScContentResultDTO,
   RiScDTO,
-} from '../utils/DTOs';
+} from "../utils/DTOs";
 import {
   buildFetchRiScErrorMessages,
   mapRiScDtoToRiScWithMetadata,
   withLoginRejected,
-} from '../utils/fetchRiScHelpers';
+} from "../utils/fetchRiScHelpers";
 import {
   useAuthenticatedFetch,
   useGithubRepositoryInformation,
-} from '../utils/hooks';
-import { latestSupportedVersion } from '../utils/constants';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../utils/translations';
+} from "../utils/hooks";
+import { latestSupportedVersion } from "../utils/constants";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../utils/translations";
 
 export type UpdateStatus = {
   isLoading: boolean;
@@ -122,10 +122,10 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   };
 
   type Action =
-    | { type: 'SET_STATUS'; updateStatus: UpdateStatus }
-    | { type: 'SET_RESPONSE'; response: SubmitResponseObject | null }
+    | { type: "SET_STATUS"; updateStatus: UpdateStatus }
+    | { type: "SET_RESPONSE"; response: SubmitResponseObject | null }
     | {
-        type: 'SET_BOTH';
+        type: "SET_BOTH";
         updateStatus: UpdateStatus;
         response: SubmitResponseObject | null;
       };
@@ -137,11 +137,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   function reducer(state: LocalState, action: Action): LocalState {
     switch (action.type) {
-      case 'SET_STATUS':
+      case "SET_STATUS":
         return { ...state, updateStatus: action.updateStatus };
-      case 'SET_RESPONSE':
+      case "SET_RESPONSE":
         return { ...state, response: action.response };
-      case 'SET_BOTH':
+      case "SET_BOTH":
         return { updateStatus: action.updateStatus, response: action.response };
       default:
         return state;
@@ -163,7 +163,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         window.clearTimeout(responseTimerRef.current);
       }
       responseTimerRef.current = window.setTimeout(() => {
-        dispatch({ type: 'SET_RESPONSE', response: null });
+        dispatch({ type: "SET_RESPONSE", response: null });
         responseTimerRef.current = null;
       }, 10000);
     }
@@ -179,7 +179,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (location.state) {
       dispatch({
-        type: 'SET_RESPONSE',
+        type: "SET_RESPONSE",
         response: {
           statusMessage: location.state,
           status: ProcessingStatus.ErrorWhenFetchingRiScs,
@@ -192,9 +192,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     gcpCryptoKeysFailed.current = false;
     setFailedToFetchGcpCryptoKeys(false);
-    dispatch({ type: 'SET_RESPONSE', response: null });
+    dispatch({ type: "SET_RESPONSE", response: null });
     fetchGcpCryptoKeys(
-      res => {
+      (res) => {
         // Sorts the crypto keys by the number of permissions (descending)
         setGcpCryptoKeys(
           res.sort(
@@ -214,11 +214,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         gcpCryptoKeysFailed.current = true;
         setFailedToFetchGcpCryptoKeys(true);
         dispatch({
-          type: 'SET_RESPONSE',
+          type: "SET_RESPONSE",
           response: {
             status: ProcessingStatus.ErrorWhenFetchingGcpCryptoKeys,
             statusMessage: withLoginRejected(
-              t('errorMessages.ErrorWhenFetchingGcpCryptoKeys'),
+              t("errorMessages.ErrorWhenFetchingGcpCryptoKeys"),
               loginRejected,
               t,
             ),
@@ -237,27 +237,27 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   // Initial fetch of RiScs
   useEffect(() => {
-    dispatch({ type: 'SET_RESPONSE', response: null });
+    dispatch({ type: "SET_RESPONSE", response: null });
     fetchRiScs(
-      res => {
+      (res) => {
         const successfulRiScs = res.filter(
-          risk => risk.status === ContentStatus.Success,
+          (risk) => risk.status === ContentStatus.Success,
         );
         const decryptionFailedRiScs = res.filter(
-          risk => risk.status === ContentStatus.DecryptionFailed,
+          (risk) => risk.status === ContentStatus.DecryptionFailed,
         );
 
         // Check if all RiScs failed decryption (there are RiScs but all failed)
         const allFailed =
           res.length > 0 &&
-          res.every(r => r.status === ContentStatus.DecryptionFailed);
+          res.every((r) => r.status === ContentStatus.DecryptionFailed);
         setAllRiScsFailedDecryption(allFailed);
 
         const fetchedRiScs: RiScWithMetadata[] = successfulRiScs.map(
           mapRiScDtoToRiScWithMetadata,
         );
         const fetchedLockedRiScs: LockedRiSc[] = decryptionFailedRiScs.map(
-          risk => ({
+          (risk) => ({
             id: risk.riScId,
             encryptionKeyId: risk.encryptionKeyId ?? null,
           }),
@@ -272,12 +272,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         }
 
         const errorRiScs: RiScContentResultDTO[] = res.filter(
-          risk => risk.status !== ContentStatus.Success,
+          (risk) => risk.status !== ContentStatus.Success,
         );
 
         if (errorRiScs.length > 0) {
           dispatch({
-            type: 'SET_RESPONSE',
+            type: "SET_RESPONSE",
             response: {
               statusMessage: buildFetchRiScErrorMessages(errorRiScs, t),
               status: ProcessingStatus.ErrorWhenFetchingRiScs,
@@ -299,27 +299,27 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           return;
         }
 
-        const riSc = fetchedRiScs.find(r => r.id === riScIdFromParams);
+        const riSc = fetchedRiScs.find((r) => r.id === riScIdFromParams);
         const isLockedRiSc = fetchedLockedRiScs.some(
-          r => r.id === riScIdFromParams,
+          (r) => r.id === riScIdFromParams,
         );
 
         // If there is an invalid RiSc ID in the URL (not accessible and not locked), navigate to the first RiSc
         if (!riSc && !isLockedRiSc) {
           navigate(getRiScPath({ riScId: fetchedRiScs[0].id }), {
-            state: t('errorMessages.RiScDoesNotExist'),
+            state: t("errorMessages.RiScDoesNotExist"),
           });
           return;
         }
       },
-      loginRejected => {
+      (loginRejected) => {
         if (!gcpCryptoKeysFailed.current) {
           dispatch({
-            type: 'SET_RESPONSE',
+            type: "SET_RESPONSE",
             response: {
               status: ProcessingStatus.ErrorWhenFetchingRiScs,
               statusMessage: withLoginRejected(
-                t('errorMessages.ErrorWhenFetchingRiScs'),
+                t("errorMessages.ErrorWhenFetchingRiScs"),
                 loginRejected,
                 t,
               ),
@@ -340,8 +340,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   // Set selected RiSc or locked RiSc based on URL
   useEffect(() => {
     if (!riScIdFromParams) return;
-    const riSc = riScs?.find(r => r.id === riScIdFromParams);
-    const lockedRiSc = lockedRiScs.find(r => r.id === riScIdFromParams);
+    const riSc = riScs?.find((r) => r.id === riScIdFromParams);
+    const lockedRiSc = lockedRiScs.find((r) => r.id === riScIdFromParams);
     if (riSc) {
       setSelectedRiSc(riSc);
       setSelectedLockedRiSc(null);
@@ -353,14 +353,14 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   const resetRiScStatus = useCallback(() => {
     dispatch({
-      type: 'SET_STATUS',
+      type: "SET_STATUS",
       updateStatus: { isLoading: false, isSuccess: false, isError: false },
     });
   }, [dispatch]);
 
   // use callback to avoid infinite loop
   const resetResponse = useCallback(() => {
-    dispatch({ type: 'SET_RESPONSE', response: null });
+    dispatch({ type: "SET_RESPONSE", response: null });
   }, [dispatch]);
 
   const getTranslationContext = useCallback(
@@ -384,7 +384,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     setIsFetching(true);
     setSelectedRiSc(null);
     dispatch({
-      type: 'SET_BOTH',
+      type: "SET_BOTH",
       updateStatus: { isLoading: true, isError: false, isSuccess: false },
       response: null,
     });
@@ -397,9 +397,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       generateInitialRisc,
       newRiSc.sopsConfig,
       defaultRiScId,
-      res => {
-        if (!res.riScId) throw new Error('No RiSc ID returned');
-        if (!res.riScContent) throw new Error('No RiSc content returned');
+      (res) => {
+        if (!res.riScId) throw new Error("No RiSc ID returned");
+        if (!res.riScContent) throw new Error("No RiSc content returned");
         const json = JSON.parse(res.riScContent) as RiScDTO;
         const content = dtoToRiSc(json);
         const riScWithMetaData: RiScWithMetadata = {
@@ -414,11 +414,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         setIsFetching(false);
         navigate(getRiScPath({ riScId: res.riScId }));
         dispatch({
-          type: 'SET_BOTH',
+          type: "SET_BOTH",
           updateStatus: { isLoading: false, isError: false, isSuccess: true },
           response: {
             ...res,
-            statusMessage: getTranslationKey('info', res.status, t),
+            statusMessage: getTranslationKey("info", res.status, t),
           },
         });
       },
@@ -429,12 +429,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         const translationContext = getTranslationContext(error.status);
 
         dispatch({
-          type: 'SET_BOTH',
+          type: "SET_BOTH",
           updateStatus: { isLoading: false, isError: true, isSuccess: false },
           response: {
             ...error,
             statusMessage: withLoginRejected(
-              getTranslationKey('error', error.status, t, translationContext),
+              getTranslationKey("error", error.status, t, translationContext),
               loginRejected,
               t,
             ),
@@ -453,32 +453,32 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       const originalRiSc = selectedRiSc;
 
       dispatch({
-        type: 'SET_BOTH',
+        type: "SET_BOTH",
         updateStatus: { isLoading: true, isError: false, isSuccess: false },
         response: null,
       });
       deleteRiScs(
         selectedRiSc.id,
-        res => {
+        (res) => {
           dispatch({
-            type: 'SET_BOTH',
+            type: "SET_BOTH",
             updateStatus: { isLoading: false, isError: false, isSuccess: true },
             response: {
               ...res,
-              statusMessage: getTranslationKey('info', res.status, t),
+              statusMessage: getTranslationKey("info", res.status, t),
             },
           });
           setIsRequesting(false);
           if (res.status === ProcessingStatus.DeletedRiSc) {
             setSelectedRiSc(
-              riScs.find(riSc => riSc.id !== selectedRiSc.id) || null,
+              riScs.find((riSc) => riSc.id !== selectedRiSc.id) || null,
             );
-            setRiScs(riScs.filter(riSc => riSc.id !== updatedRiSc.id));
+            setRiScs(riScs.filter((riSc) => riSc.id !== updatedRiSc.id));
             if (onSuccess) onSuccess();
           } else {
             setSelectedRiSc(updatedRiSc);
             setRiScs(
-              riScs.map(riSc =>
+              riScs.map((riSc) =>
                 riSc.id === selectedRiSc.id ? updatedRiSc : riSc,
               ),
             );
@@ -490,12 +490,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           const translationContext = getTranslationContext(error.status);
 
           dispatch({
-            type: 'SET_BOTH',
+            type: "SET_BOTH",
             updateStatus: { isLoading: false, isError: true, isSuccess: false },
             response: {
               ...error,
               statusMessage: withLoginRejected(
-                getTranslationKey('error', error.status, t, translationContext),
+                getTranslationKey("error", error.status, t, translationContext),
                 loginRejected,
                 t,
               ),
@@ -514,11 +514,11 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   const showBlockedUpdateError = useCallback(() => {
     dispatch({
-      type: 'SET_BOTH',
+      type: "SET_BOTH",
       updateStatus: { isLoading: false, isError: true, isSuccess: false },
       response: {
         status: ProcessingStatus.ErrorWhenUpdatingDeletedRiSc,
-        statusMessage: t('errorMessages.ErrorWhenUpdatingDeletedRiSc'),
+        statusMessage: t("errorMessages.ErrorWhenUpdatingDeletedRiSc"),
       },
     });
   }, [dispatch, t]);
@@ -557,28 +557,28 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       const originalRiSc = selectedRiSc;
       setSelectedRiSc(updatedRiSc);
       dispatch({
-        type: 'SET_BOTH',
+        type: "SET_BOTH",
         updateStatus: { isLoading: true, isError: false, isSuccess: false },
         response: null,
       });
       putRiScs(
         updatedRiSc,
-        res => {
+        (res) => {
           dispatch({
-            type: 'SET_BOTH',
+            type: "SET_BOTH",
             updateStatus: { isLoading: false, isError: false, isSuccess: true },
             response: {
               ...res,
-              statusMessage: getTranslationKey('info', res.status, t),
+              statusMessage: getTranslationKey("info", res.status, t),
             },
           });
-          if ('pendingApproval' in res && res.pendingApproval?.pullRequestUrl) {
+          if ("pendingApproval" in res && res.pendingApproval?.pullRequestUrl) {
             updatedRiSc.pullRequestUrl = res.pendingApproval.pullRequestUrl;
             updatedRiSc.status = RiScStatus.SentForApproval;
           }
           setSelectedRiSc(updatedRiSc);
           setRiScs(
-            riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
+            riScs.map((r) => (r.id === selectedRiSc.id ? updatedRiSc : r)),
           );
           setIsRequesting(false);
           if (onSuccess) onSuccess();
@@ -587,12 +587,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           const translationContext = getTranslationContext(error.status);
 
           dispatch({
-            type: 'SET_BOTH',
+            type: "SET_BOTH",
             updateStatus: { isLoading: false, isError: true, isSuccess: false },
             response: {
               ...error,
               statusMessage: withLoginRejected(
-                getTranslationKey('error', error.status, t, translationContext),
+                getTranslationKey("error", error.status, t, translationContext),
                 loginRejected,
                 t,
               ),
@@ -609,12 +609,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   function approveRiSc() {
     if (selectedRiSc && riScs) {
       dispatch({
-        type: 'SET_STATUS',
+        type: "SET_STATUS",
         updateStatus: { isLoading: true, isError: false, isSuccess: false },
       });
       publishRiScs(
         selectedRiSc.id,
-        res => {
+        (res) => {
           const prUrl = res.pendingApproval?.pullRequestUrl;
           const updatedRiSc = {
             ...selectedRiSc,
@@ -626,14 +626,14 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           };
           setSelectedRiSc(updatedRiSc);
           setRiScs(
-            riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
+            riScs.map((r) => (r.id === selectedRiSc.id ? updatedRiSc : r)),
           );
           dispatch({
-            type: 'SET_BOTH',
+            type: "SET_BOTH",
             updateStatus: { isLoading: false, isError: false, isSuccess: true },
             response: {
               ...res,
-              statusMessage: getTranslationKey('info', res.status, t),
+              statusMessage: getTranslationKey("info", res.status, t),
             },
           });
         },
@@ -641,12 +641,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           const translationContext = getTranslationContext(error.status);
 
           dispatch({
-            type: 'SET_BOTH',
+            type: "SET_BOTH",
             updateStatus: { isLoading: false, isError: true, isSuccess: false },
             response: {
               ...error,
               statusMessage: withLoginRejected(
-                getTranslationKey('error', error.status, t, translationContext),
+                getTranslationKey("error", error.status, t, translationContext),
                 loginRejected,
                 t,
               ),
@@ -694,7 +694,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 export function useRiScs() {
   const context = useContext(RiScContext);
   if (context === undefined) {
-    throw new Error('useRiScs must be used within a RiScProvider');
+    throw new Error("useRiScs must be used within a RiScProvider");
   }
   return context;
 }

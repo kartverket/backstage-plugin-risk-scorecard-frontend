@@ -1,23 +1,23 @@
-import { Flex, Text } from '@backstage/ui';
-import IconButton from '@mui/material/IconButton';
-import { DualButtonWithMenu } from '../common/DualButtonWithMenu.tsx';
+import { Flex, Text } from "@backstage/ui";
+import IconButton from "@mui/material/IconButton";
+import { DualButtonWithMenu } from "../common/DualButtonWithMenu.tsx";
 import {
   actionStatusOptionsToTranslationKeys,
   getTranslatedActionStatus,
   UpdatedStatusEnumType,
-} from '../../utils/utilityfunctions.ts';
-import { ActionStatusOptions } from '../../utils/constants.ts';
-import { ScenarioLastUpdatedLabel } from '../scenario/ScenarioLastUpdatedLabel.tsx';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Collapse from '@mui/material/Collapse';
-import Box from '@mui/material/Box';
-import { Markdown } from '../common/Markdown.tsx';
-import { ActionURL } from './ActionURL.tsx';
-import { useScenario } from '../../contexts/ScenarioContext.tsx';
-import { Action } from '../../utils/types.ts';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { UpdatedStatusBadge } from '../common/UpdatedStatusBadge.tsx';
+} from "../../utils/utilityfunctions.ts";
+import { ActionStatusOptions } from "../../utils/constants.ts";
+import { ScenarioLastUpdatedLabel } from "../scenario/ScenarioLastUpdatedLabel.tsx";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Collapse from "@mui/material/Collapse";
+import Box from "@mui/material/Box";
+import { Markdown } from "../common/Markdown.tsx";
+import { ActionURL } from "./ActionURL.tsx";
+import { useScenario } from "../../contexts/ScenarioContext.tsx";
+import { Action } from "../../utils/types.ts";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../utils/translations.ts";
+import { UpdatedStatusBadge } from "../common/UpdatedStatusBadge.tsx";
 
 type ActionViewProps = {
   action: Action;
@@ -25,7 +25,7 @@ type ActionViewProps = {
   onNewActionStatus: (actionId: string, newStatus: ActionStatusOptions) => void;
   toggleEditMode: () => void;
   openDeleteDialog: () => void;
-  updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
+  updatedStatus: UpdatedStatusEnumType | "UPDATING" | "NONE";
   optimisticStatus?: ActionStatusOptions;
   allowDeletion?: boolean;
   allowEdit?: boolean;
@@ -35,11 +35,11 @@ type ActionViewProps = {
 const getActionStatusButtonClass = (status: string): string => {
   switch (status) {
     case ActionStatusOptions.OK:
-      return 'ros-button-green';
+      return "ros-button-green";
     case ActionStatusOptions.NotOK:
-      return 'ros-button-red';
+      return "ros-button-red";
     default:
-      return 'ros-button-gray';
+      return "ros-button-gray";
   }
 };
 
@@ -53,40 +53,40 @@ export function ActionView(props: ActionViewProps) {
       <div
         role="button"
         tabIndex={0}
-        onClick={e => {
+        onClick={(e) => {
           e.stopPropagation();
 
           const target = e.target as HTMLElement | null;
-          if (target && target.closest('[data-no-row-toggle]')) return;
+          if (target && target.closest("[data-no-row-toggle]")) return;
 
           toggleActionExpanded(props.action.ID);
         }}
-        onKeyDown={e => {
+        onKeyDown={(e) => {
           // Prevent keyboard event from bubbling up to parent(s)
           e.stopPropagation();
 
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             toggleActionExpanded(props.action.ID);
           }
         }}
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: "pointer" }}
       >
         <Flex align="center" gap="1" justify="between">
-          <Flex align="center" justify="start" style={{ width: '40%' }}>
+          <Flex align="center" justify="start" style={{ width: "40%" }}>
             <IconButton
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 toggleActionExpanded(props.action.ID);
               }}
             >
               <i
-                className={`ri-arrow-${isExpanded ? 'down' : 'right'}-s-line`}
+                className={`ri-arrow-${isExpanded ? "down" : "right"}-s-line`}
               />
             </IconButton>
             <Text variant="body-large">
               {props.action.title ??
-                `${t('dictionary.measure')} ${props.index ?? ''}`}
+                `${t("dictionary.measure")} ${props.index ?? ""}`}
             </Text>
           </Flex>
           <Flex align="center" justify="end">
@@ -108,7 +108,7 @@ export function ActionView(props: ActionViewProps) {
                   props.onRefreshActionStatus(props.action);
                 },
               }}
-              menuItems={Object.values(ActionStatusOptions).map(value => ({
+              menuItems={Object.values(ActionStatusOptions).map((value) => ({
                 key: value,
                 // @ts-ignore
                 label: t(
@@ -135,7 +135,7 @@ export function ActionView(props: ActionViewProps) {
             </Flex>
             {props.allowDeletion && (
               <IconButton
-                onClick={e => {
+                onClick={(e) => {
                   e.stopPropagation();
                   props.openDeleteDialog();
                 }}
@@ -155,15 +155,15 @@ export function ActionView(props: ActionViewProps) {
         <Box ml="56px" mt="4" mb="2">
           <Flex justify="between" mt="8px" align="end">
             <Text as="p" variant="body-large" weight="bold">
-              {t('dictionary.description')}
+              {t("dictionary.description")}
             </Text>
             {props.allowEdit && (
               <IconButton
                 sx={{
-                  marginLeft: 'auto',
-                  transition: 'opacity 300ms ease-in',
+                  marginLeft: "auto",
+                  transition: "opacity 300ms ease-in",
                 }}
-                onClick={e => {
+                onClick={(e) => {
                   e.stopPropagation();
                   props.toggleEditMode();
                 }}

@@ -1,8 +1,8 @@
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { RiskMatrixTabs } from './utils';
-import { Text, Button, Flex } from '@backstage/ui';
-import styles from './Tabs.module.css';
+import { pluginRiScTranslationRef } from "../../utils/translations";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { RiskMatrixTabs } from "./utils";
+import { Text, Button, Flex } from "@backstage/ui";
+import styles from "./Tabs.module.css";
 
 interface MatrixTabsProps {
   setTab: (tab: RiskMatrixTabs) => void;
@@ -16,7 +16,7 @@ export function MatrixTabs({ setTab, currentTab }: MatrixTabsProps) {
     <Flex pt="12px">
       <Button
         variant={
-          currentTab === RiskMatrixTabs.initialRisk ? 'primary' : 'secondary'
+          currentTab === RiskMatrixTabs.initialRisk ? "primary" : "secondary"
         }
         onClick={() => setTab(RiskMatrixTabs.initialRisk)}
         aria-label="Initial risk"
@@ -28,13 +28,13 @@ export function MatrixTabs({ setTab, currentTab }: MatrixTabsProps) {
           className={styles.tabButtonTextBase}
           data-selected={currentTab === RiskMatrixTabs.initialRisk}
         >
-          {t('dictionary.initialRisk')}
+          {t("dictionary.initialRisk")}
         </Text>
       </Button>
 
       <Button
         variant={
-          currentTab === RiskMatrixTabs.currentRisk ? 'primary' : 'secondary'
+          currentTab === RiskMatrixTabs.currentRisk ? "primary" : "secondary"
         }
         onClick={() => setTab(RiskMatrixTabs.currentRisk)}
         aria-label="current risk"
@@ -46,13 +46,13 @@ export function MatrixTabs({ setTab, currentTab }: MatrixTabsProps) {
           className={styles.tabButtonTextBase}
           data-selected={currentTab === RiskMatrixTabs.currentRisk}
         >
-          {t('dictionary.currentRisk')}
+          {t("dictionary.currentRisk")}
         </Text>
       </Button>
 
       <Button
         variant={
-          currentTab === RiskMatrixTabs.remainingRisk ? 'primary' : 'secondary'
+          currentTab === RiskMatrixTabs.remainingRisk ? "primary" : "secondary"
         }
         onClick={() => setTab(RiskMatrixTabs.remainingRisk)}
         aria-label="Remaining risk"
@@ -64,7 +64,7 @@ export function MatrixTabs({ setTab, currentTab }: MatrixTabsProps) {
           className={styles.tabButtonTextBase}
           data-selected={currentTab === RiskMatrixTabs.remainingRisk}
         >
-          {t('dictionary.restRisk')}
+          {t("dictionary.restRisk")}
         </Text>
       </Button>
     </Flex>

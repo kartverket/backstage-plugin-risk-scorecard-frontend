@@ -1,13 +1,13 @@
-import { forwardRef, useState, useEffect, useRef } from 'react';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormLabel from '@mui/material/FormLabel';
-import MDEditor from '@uiw/react-md-editor';
-import { TextFieldProps } from '@mui/material/TextField';
-import classNames from 'classnames';
-import { getActiveTheme } from '../../../utils/utilityfunctions';
-import formStyles from '../formStyles.module.css';
-import styles from './MarkdownInput.module.css';
+import { forwardRef, useState, useEffect, useRef } from "react";
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormLabel from "@mui/material/FormLabel";
+import MDEditor from "@uiw/react-md-editor";
+import { TextFieldProps } from "@mui/material/TextField";
+import classNames from "classnames";
+import { getActiveTheme } from "../../../utils/utilityfunctions";
+import formStyles from "../formStyles.module.css";
+import styles from "./MarkdownInput.module.css";
 
 type Props = TextFieldProps & {
   sublabel?: string;
@@ -45,7 +45,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       if (!root) return () => {};
 
       const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key !== 'Tab') return;
+        if (e.key !== "Tab") return;
         const active = document.activeElement as HTMLElement | null;
         if (!active || !root.contains(active)) return;
         e.preventDefault();
@@ -55,7 +55,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
           document.querySelectorAll<HTMLElement>(
             'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
           ),
-        ).filter(el => !el.hasAttribute('disabled'));
+        ).filter((el) => !el.hasAttribute("disabled"));
 
         const index = focusable.indexOf(active);
         const direction = e.shiftKey ? -1 : 1;
@@ -66,16 +66,16 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
         next?.focus();
       };
 
-      root.addEventListener('keydown', handleKeyDown, true);
+      root.addEventListener("keydown", handleKeyDown, true);
 
       return () => {
-        root.removeEventListener('keydown', handleKeyDown, true);
+        root.removeEventListener("keydown", handleKeyDown, true);
       };
     }, [wrapperRef]);
 
     const handleMarkdownChange = (newValue: string | undefined) => {
-      setMarkdownContent(newValue || '');
-      onMarkdownChange?.(newValue || '');
+      setMarkdownContent(newValue || "");
+      onMarkdownChange?.(newValue || "");
     };
 
     const onFocusCapture = (event: React.FocusEvent<HTMLDivElement>) => {
@@ -90,7 +90,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
       }
     };
     const editorClassName = classNames(styles.MarkDownInput, {
-      [styles['MarkDownInput--disabled']]: disabled,
+      [styles["MarkDownInput--disabled"]]: disabled,
     });
 
     return (

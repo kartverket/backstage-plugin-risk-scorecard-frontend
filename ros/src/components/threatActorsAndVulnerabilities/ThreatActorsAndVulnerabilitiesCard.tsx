@@ -1,18 +1,18 @@
-import { Button, Card, CardBody, CardHeader, Flex, Text } from '@backstage/ui';
-import { useState } from 'react';
-import DialogComponent from '../dialog/DialogComponent.tsx';
-import { CoverageTable } from './CoverageTable.tsx';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { CoverageRatio } from './CoverageRatio.tsx';
+import { Button, Card, CardBody, CardHeader, Flex, Text } from "@backstage/ui";
+import { useState } from "react";
+import DialogComponent from "../dialog/DialogComponent.tsx";
+import { CoverageTable } from "./CoverageTable.tsx";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../utils/translations.ts";
+import { CoverageRatio } from "./CoverageRatio.tsx";
 import {
   CoverageType,
   countScenarioCoverage,
   countScenarioCoverageSummary,
   getNotCovered,
-} from '../../utils/threatActorsAndVulnerabilities.ts';
-import { Scenario } from '../../utils/types.ts';
-import { CoverageStatusBox } from './CoverageStatusBox.tsx';
+} from "../../utils/threatActorsAndVulnerabilities.ts";
+import { Scenario } from "../../utils/types.ts";
+import { CoverageStatusBox } from "./CoverageStatusBox.tsx";
 
 type ThreatActorsAndVulnerabilitiesCardProps = {
   scenarios: Scenario[];
@@ -34,7 +34,7 @@ export function ThreatActorsAndVulnerabilitiesCard(
     <Card>
       <CardHeader>
         <Text variant="title-small" weight="bold">
-          {t('threatActorsAndVulnerabilities.title')}
+          {t("threatActorsAndVulnerabilities.title")}
         </Text>
       </CardHeader>
       <CardBody>
@@ -59,24 +59,24 @@ export function ThreatActorsAndVulnerabilitiesCard(
           />
           <div>
             <Button onClick={() => setIsDialogOpen(true)}>
-              {t('threatActorsAndVulnerabilities.showMoreInfo')}
+              {t("threatActorsAndVulnerabilities.showMoreInfo")}
             </Button>
           </div>
           <DialogComponent
-            header={t('threatActorsAndVulnerabilities.dialogHeader')}
+            header={t("threatActorsAndVulnerabilities.dialogHeader")}
             isOpen={isDialogOpen}
             onClick={() => setIsDialogOpen(false)}
           >
             <Flex direction="column">
               <Text variant="title-x-small">
-                {t('threatActorsAndVulnerabilities.vulnerabilityCoverage')}
+                {t("threatActorsAndVulnerabilities.vulnerabilityCoverage")}
               </Text>
               <CoverageTable
                 coverageType={CoverageType.Vulnerability}
                 coverageMap={coverage.vulnerabilities}
               />
               <Text variant="title-x-small">
-                {t('threatActorsAndVulnerabilities.threatActorCoverage')}
+                {t("threatActorsAndVulnerabilities.threatActorCoverage")}
               </Text>
               <CoverageTable
                 coverageType={CoverageType.ThreatActor}

@@ -1,8 +1,8 @@
-import { Card, CardBody, CardHeader, Flex, Text, Button } from '@backstage/ui';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import styles from './ErrorState.module.css';
-import { CreateNewRiScButton } from './CreateNewRiScButton';
+import { Card, CardBody, CardHeader, Flex, Text, Button } from "@backstage/ui";
+import { pluginRiScTranslationRef } from "../../utils/translations";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import styles from "./ErrorState.module.css";
+import { CreateNewRiScButton } from "./CreateNewRiScButton";
 
 type ErrorStateProps = {
   onCreateNew: () => void;
@@ -20,7 +20,7 @@ export function ErrorState({ onCreateNew }: ErrorStateProps) {
       <CardHeader>
         <Flex justify="center">
           <Text variant="title-small" weight="bold">
-            {t('firstRiScCard.noRiScYet')}
+            {t("firstRiScCard.noRiScYet")}
           </Text>
         </Flex>
       </CardHeader>
@@ -31,11 +31,11 @@ export function ErrorState({ onCreateNew }: ErrorStateProps) {
           gap="8px"
           className={styles.content}
         >
-          <Text>{t('firstRiScCard.getStarted')}</Text>
+          <Text>{t("firstRiScCard.getStarted")}</Text>
           <Flex gap="12px" className={styles.actions}>
             <Button onClick={refreshPage} className={styles.reloadButton}>
               <i className="ri-refresh-line" />
-              {t('dictionary.refresh')}
+              {t("dictionary.refresh")}
             </Button>
             <CreateNewRiScButton onCreateNew={onCreateNew} />
           </Flex>

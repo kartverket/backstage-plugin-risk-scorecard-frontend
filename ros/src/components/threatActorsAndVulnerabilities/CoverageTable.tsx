@@ -1,11 +1,11 @@
-import { Table, useTable, CellText, type ColumnConfig } from '@backstage/ui';
-import { CoverageType } from '../../utils/threatActorsAndVulnerabilities.ts';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { Table, useTable, CellText, type ColumnConfig } from "@backstage/ui";
+import { CoverageType } from "../../utils/threatActorsAndVulnerabilities.ts";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../utils/translations.ts";
 import {
   ThreatActorsOptions,
   VulnerabilitiesOptions,
-} from '../../utils/constants.ts';
+} from "../../utils/constants.ts";
 
 type ThreatActorTranslationKey = `threatActors.${ThreatActorsOptions}`;
 type VulnerabilityTranslationKey = `vulnerabilities.${VulnerabilitiesOptions}`;
@@ -25,24 +25,24 @@ export function CoverageTable(props: CoverageTableProps) {
 
   const firstColumnLabel =
     props.coverageType === CoverageType.ThreatActor
-      ? t('threatActorsAndVulnerabilities.tableColumnThreatActor')
-      : t('threatActorsAndVulnerabilities.tableColumnVulnerability');
+      ? t("threatActorsAndVulnerabilities.tableColumnThreatActor")
+      : t("threatActorsAndVulnerabilities.tableColumnVulnerability");
 
   const columns: ColumnConfig<CoverageTableRow>[] = [
     {
-      id: 'coverageType',
+      id: "coverageType",
       label: firstColumnLabel,
       isRowHeader: true,
-      cell: item => <CellText title={item.typeLabel} />,
+      cell: (item) => <CellText title={item.typeLabel} />,
     },
     {
-      id: 'numOfCoveringScenarios',
-      label: t('threatActorsAndVulnerabilities.tableColumnScenarios'),
-      cell: item => (
+      id: "numOfCoveringScenarios",
+      label: t("threatActorsAndVulnerabilities.tableColumnScenarios"),
+      cell: (item) => (
         <CellText
           title={
             item.numOfCoveringScenarios === 0
-              ? '0 ⚠️️'
+              ? "0 ⚠️️"
               : item.numOfCoveringScenarios.toString()
           }
         />
@@ -52,8 +52,8 @@ export function CoverageTable(props: CoverageTableProps) {
 
   const translationPrefix =
     props.coverageType === CoverageType.ThreatActor
-      ? 'threatActors'
-      : 'vulnerabilities';
+      ? "threatActors"
+      : "vulnerabilities";
 
   const data: CoverageTableRow[] = Array.from(props.coverageMap.entries()).map(
     ([key, count]) => ({
@@ -68,7 +68,7 @@ export function CoverageTable(props: CoverageTableProps) {
   );
 
   const { tableProps } = useTable({
-    mode: 'complete',
+    mode: "complete",
     getData: () => data,
     paginationOptions: {
       pageSize: 5,

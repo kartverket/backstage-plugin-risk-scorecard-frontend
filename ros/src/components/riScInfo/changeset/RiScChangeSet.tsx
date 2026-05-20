@@ -1,12 +1,12 @@
-import { DifferenceFetchState } from '../../../utils/types.ts';
-import { RiScMigrationChanges } from '../migrations/RiScMigrationChanges.tsx';
-import { ChangeSetTitle } from './components/ChangeSetTitle.tsx';
-import { RiScScenarioChangeSet } from './RiScScenarioChangeSet.tsx';
-import { RiScScenarioChange } from './RiScScenarioChange.tsx';
-import { dtoToScenario } from '../../../utils/DTOs.ts';
-import { ChangeSetSimpleBox } from './components/ChangeSetSimpleBox.tsx';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
+import { DifferenceFetchState } from "../../../utils/types.ts";
+import { RiScMigrationChanges } from "../migrations/RiScMigrationChanges.tsx";
+import { ChangeSetTitle } from "./components/ChangeSetTitle.tsx";
+import { RiScScenarioChangeSet } from "./RiScScenarioChangeSet.tsx";
+import { RiScScenarioChange } from "./RiScScenarioChange.tsx";
+import { dtoToScenario } from "../../../utils/DTOs.ts";
+import { ChangeSetSimpleBox } from "./components/ChangeSetSimpleBox.tsx";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../../utils/translations.ts";
 
 type RiScChangeSetProps = {
   changeset: DifferenceFetchState;
@@ -26,7 +26,7 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
   const hasAnyChanges = changes.migrationChanges.migrationChanges || hasChanges;
 
   if (!hasAnyChanges) {
-    return <i>{t('comparisonDialog.noChanges')}</i>;
+    return <i>{t("comparisonDialog.noChanges")}</i>;
   }
 
   return (
@@ -37,28 +37,28 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
       )}
       {hasChanges && (
         <>
-          <ChangeSetTitle text={t('comparisonDialog.changes')} />
+          <ChangeSetTitle text={t("comparisonDialog.changes")} />
           <ChangeSetSimpleBox
             prop={changes.title}
-            title={t('dictionary.title')}
+            title={t("dictionary.title")}
           />
           <ChangeSetSimpleBox
             prop={changes.scope}
-            title={t('dictionary.scope')}
+            title={t("dictionary.scope")}
           />
-          {changes.scenarios.map(scenario => (
+          {changes.scenarios.map((scenario) => (
             <>
-              {(scenario.type === 'ADDED' || scenario.type === 'DELETED') && (
+              {(scenario.type === "ADDED" || scenario.type === "DELETED") && (
                 <RiScScenarioChange
                   scenario={dtoToScenario(
-                    scenario.type === 'ADDED'
+                    scenario.type === "ADDED"
                       ? scenario.newValue
                       : scenario.oldValue,
                   )}
                   type={scenario.type}
                 />
               )}
-              {scenario.type === 'CONTENT_CHANGED' && (
+              {scenario.type === "CONTENT_CHANGED" && (
                 <RiScScenarioChangeSet scenario={scenario.value} />
               )}
             </>

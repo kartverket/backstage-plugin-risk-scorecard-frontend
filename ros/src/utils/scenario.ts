@@ -1,41 +1,41 @@
-import { RiScWithMetadata, Scenario } from './types.ts';
+import { RiScWithMetadata, Scenario } from "./types.ts";
 import {
   calculateDaysSince,
   calculateUpdatedStatus,
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
-} from './utilityfunctions.ts';
-import { ActionStatusOptions } from './constants.ts';
+} from "./utilityfunctions.ts";
+import { ActionStatusOptions } from "./constants.ts";
 
 type ScenarioSortingOptions =
-  | 'NoSorting'
-  | 'TitleAlphabetical'
-  | 'HighestInitialRisk'
-  | 'MostImplementedActions'
-  | 'MostRemainingActions';
+  | "NoSorting"
+  | "TitleAlphabetical"
+  | "HighestInitialRisk"
+  | "MostImplementedActions"
+  | "MostRemainingActions";
 
 export function toScenarioSortingOption(
   value: string | null | undefined,
 ): ScenarioSortingOptions {
-  if (!value) return 'NoSorting';
+  if (!value) return "NoSorting";
   const valid: ScenarioSortingOptions[] = [
-    'NoSorting',
-    'TitleAlphabetical',
-    'HighestInitialRisk',
-    'MostImplementedActions',
-    'MostRemainingActions',
+    "NoSorting",
+    "TitleAlphabetical",
+    "HighestInitialRisk",
+    "MostImplementedActions",
+    "MostRemainingActions",
   ];
 
   return valid.includes(value as ScenarioSortingOptions)
     ? (value as ScenarioSortingOptions)
-    : 'NoSorting';
+    : "NoSorting";
 }
 
 export function getScenarioOfIdFromRiSc(
   id: string,
   riSc: RiScWithMetadata | null,
 ): Scenario | null {
-  const oldScenario = riSc?.content.scenarios.find(s => s.ID === id);
+  const oldScenario = riSc?.content.scenarios.find((s) => s.ID === id);
   return oldScenario ?? null;
 }
 
@@ -58,18 +58,18 @@ export function getFilteredActionsForScenarios(
 ): Map<string, string[]> {
   const scenarioFilteredActionsMap = new Map<string, string[]>();
 
-  scenarios.forEach(scenario => {
+  scenarios.forEach((scenario) => {
     const actions = [...scenario.actions];
 
     const filteredActions = actions
       // Remove actions not matching search query
       .filter(
-        action =>
+        (action) =>
           !actionSearchQuery ||
           action.title.toLowerCase().includes(actionSearchQuery.toLowerCase()),
       )
       // Remove actions not matching chosen updated status
-      .filter(action => {
+      .filter((action) => {
         if (!visibleUpdatedStatus) return true;
 
         const daysSinceLastUpdate = action.lastUpdated
@@ -85,7 +85,7 @@ export function getFilteredActionsForScenarios(
       });
     scenarioFilteredActionsMap.set(
       scenario.ID,
-      filteredActions.map(action => action.ID),
+      filteredActions.map((action) => action.ID),
     );
   });
 
@@ -105,34 +105,36 @@ export function getSortedScenarios(
 ) {
   const sortedScenarios = [...scenarios];
 
-  if (sortOrder !== 'NoSorting') {
+  if (sortOrder !== "NoSorting") {
     sortedScenarios.sort((a, b) => {
       switch (sortOrder) {
-        case 'TitleAlphabetical':
-          return a.title.localeCompare(b.title, 'en');
+        case "TitleAlphabetical":
+          return a.title.localeCompare(b.title, "en");
 
-        case 'HighestInitialRisk':
+        case "HighestInitialRisk":
           return (
             b.risk.consequence * b.risk.probability -
             a.risk.consequence * a.risk.probability
           );
 
-        case 'MostImplementedActions':
+        case "MostImplementedActions":
           return (
-            b.actions.filter(status => status.status === ActionStatusOptions.OK)
-              .length -
-            a.actions.filter(status => status.status === ActionStatusOptions.OK)
-              .length
+            b.actions.filter(
+              (status) => status.status === ActionStatusOptions.OK,
+            ).length -
+            a.actions.filter(
+              (status) => status.status === ActionStatusOptions.OK,
+            ).length
           );
 
-        case 'MostRemainingActions': {
+        case "MostRemainingActions": {
           const remainingA = a.actions.filter(
-            action =>
+            (action) =>
               action.status !== ActionStatusOptions.OK &&
               action.status !== ActionStatusOptions.NotRelevant,
           ).length;
           const remainingB = b.actions.filter(
-            action =>
+            (action) =>
               action.status !== ActionStatusOptions.OK &&
               action.status !== ActionStatusOptions.NotRelevant,
           ).length;

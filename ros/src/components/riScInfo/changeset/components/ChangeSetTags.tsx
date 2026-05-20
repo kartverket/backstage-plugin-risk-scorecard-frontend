@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import styles from './changeSet.module.css';
+import { ReactNode } from "react";
+import styles from "./changeSet.module.css";
 
 interface ChangeSetTagsProps {
   children: ReactNode[] | ReactNode;

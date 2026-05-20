@@ -1,15 +1,15 @@
-import { ChangeSetTitle } from '../changeset/components/ChangeSetTitle.tsx';
-import { ChangeSetBox } from '../changeset/components/ChangeSetBox.tsx';
-import { RiScMigrationChanges40 } from './RiScMigrationChanges40.tsx';
-import { RiScMigrationChanges41 } from './RiScMigrationChanges41.tsx';
-import { MigrationStatus } from '../../../utils/types.ts';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
-import { ChangeSetChangedProperty } from '../changeset/components/ChangeSetChangedProperty.tsx';
-import { RiScMigrationChanges42 } from './RiScMigrationChanges42.tsx';
-import { RiScMigrationChanges50 } from './RiScMigrationChanges50.tsx';
-import { RiScMigrationChanges51 } from './RiScMigrationChanges51.tsx';
-import { RiScMigrationChanges52 } from './RiScMigrationChanges52.tsx';
+import { ChangeSetTitle } from "../changeset/components/ChangeSetTitle.tsx";
+import { ChangeSetBox } from "../changeset/components/ChangeSetBox.tsx";
+import { RiScMigrationChanges40 } from "./RiScMigrationChanges40.tsx";
+import { RiScMigrationChanges41 } from "./RiScMigrationChanges41.tsx";
+import { MigrationStatus } from "../../../utils/types.ts";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../../utils/translations.ts";
+import { ChangeSetChangedProperty } from "../changeset/components/ChangeSetChangedProperty.tsx";
+import { RiScMigrationChanges42 } from "./RiScMigrationChanges42.tsx";
+import { RiScMigrationChanges50 } from "./RiScMigrationChanges50.tsx";
+import { RiScMigrationChanges51 } from "./RiScMigrationChanges51.tsx";
+import { RiScMigrationChanges52 } from "./RiScMigrationChanges52.tsx";
 
 interface RiScMigrationChangesProps {
   migrationStatus: MigrationStatus;
@@ -21,12 +21,12 @@ export function RiScMigrationChanges({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
     <div>
-      <ChangeSetTitle text={t('migrationDialog.schemaVersion')} />
+      <ChangeSetTitle text={t("migrationDialog.schemaVersion")} />
       <ChangeSetBox type="primary">
         <ChangeSetChangedProperty
-          propertyName={t('migrationDialog.schemaVersion')}
-          oldValue={migrationStatus.migrationVersions?.fromVersion || ''}
-          newValue={migrationStatus.migrationVersions?.toVersion || ''}
+          propertyName={t("migrationDialog.schemaVersion")}
+          oldValue={migrationStatus.migrationVersions?.fromVersion || ""}
+          newValue={migrationStatus.migrationVersions?.toVersion || ""}
           compact={true}
         />
       </ChangeSetBox>
@@ -45,7 +45,7 @@ export function RiScMigrationChanges({
       {migrationStatus.migrationChanges51 && (
         <RiScMigrationChanges51 changes={migrationStatus.migrationChanges51} />
       )}
-      {migrationStatus.migrationVersions?.toVersion === '5.2' && (
+      {migrationStatus.migrationVersions?.toVersion === "5.2" && (
         <RiScMigrationChanges52 />
       )}
     </div>

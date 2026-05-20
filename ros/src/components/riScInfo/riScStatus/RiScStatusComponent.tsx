@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   DifferenceFetchState,
   DifferenceStatus,
   RiScStatus,
   RiScWithMetadata,
-} from '../../../utils/types';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { useRiScs } from '../../../contexts/RiScContext';
-import { useAuthenticatedFetch } from '../../../utils/hooks';
-import { RiScMigrationDialog } from '../MigrationDialog';
-import { RiScPublishDialog } from '../PublishDialog';
-import { calculateDaysSince } from '../../../utils/utilityfunctions';
-import { RiScStatusEnum, RiScStatusEnumType } from './utils';
+} from "../../../utils/types";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../../utils/translations";
+import { useRiScs } from "../../../contexts/RiScContext";
+import { useAuthenticatedFetch } from "../../../utils/hooks";
+import { RiScMigrationDialog } from "../MigrationDialog";
+import { RiScPublishDialog } from "../PublishDialog";
+import { calculateDaysSince } from "../../../utils/utilityfunctions";
+import { RiScStatusEnum, RiScStatusEnumType } from "./utils";
 import {
   Text,
   Button,
@@ -22,14 +22,14 @@ import {
   CardBody,
   ButtonLink,
   CardHeader,
-} from '@backstage/ui';
-import { StatusBanner } from './StatusBanner.tsx';
-import { StatusBadge } from './StatusBadge.tsx';
-import { FeedbackLink } from './FeedbackLink.tsx';
+} from "@backstage/ui";
+import { StatusBanner } from "./StatusBanner.tsx";
+import { StatusBadge } from "./StatusBadge.tsx";
+import { FeedbackLink } from "./FeedbackLink.tsx";
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
-    type: '4.*',
+    type: "4.*",
     migrationChanges: {
       migrationChanges: false,
       migrationRequiresNewApproval: false,
@@ -42,9 +42,9 @@ const emptyDifferenceFetchState: DifferenceFetchState = {
   },
   status: null,
   isLoading: false,
-  errorMessage: '',
-  currentDifferenceId: '',
-  defaultLastModifiedDateString: '',
+  errorMessage: "",
+  currentDifferenceId: "",
+  defaultLastModifiedDateString: "",
 };
 
 interface RiScStatusProps {
@@ -86,7 +86,7 @@ export function RiScStatusComponent({
     setDifferenceFetchState({ ...differenceFetchState, isLoading: true });
     fetchDifference(
       selectedRiSc,
-      response => {
+      (response) => {
         setDifferenceFetchState({
           differenceState: response.differenceState,
           isLoading: false,
@@ -99,7 +99,7 @@ export function RiScStatusComponent({
       () => {
         setDifferenceFetchState({
           ...emptyDifferenceFetchState,
-          errorMessage: t('rosStatus.difference.error'),
+          errorMessage: t("rosStatus.difference.error"),
           status: DifferenceStatus.FrontendFallback, // Fallback when the backend does not deliver a response with status
         });
       },
@@ -164,7 +164,7 @@ export function RiScStatusComponent({
       daysSinceLastModified <= 5);
 
   return (
-    <Card style={{ height: 'fit-content' }}>
+    <Card style={{ height: "fit-content" }}>
       <CardHeader>
         <Text variant="title-small" weight="bold" as="h5">
           Status
@@ -186,20 +186,20 @@ export function RiScStatusComponent({
               mt="4"
             >
               <StatusBadge riScStatus={status} />
-              <Flex direction="row" mb="4" pl="7" style={{ width: '100%' }}>
+              <Flex direction="row" mb="4" pl="7" style={{ width: "100%" }}>
                 {status === RiScStatusEnum.CREATED && (
                   <Text as="p" variant="body-large">
-                    {t('rosStatus.editing')}
+                    {t("rosStatus.editing")}
                   </Text>
                 )}
                 {status === RiScStatusEnum.DRAFT && (
                   <Text as="p" variant="body-large">
-                    {t('rosStatus.statusBadge.missing')}
+                    {t("rosStatus.statusBadge.missing")}
                   </Text>
                 )}
                 {status === RiScStatusEnum.DELETION_DRAFT && (
                   <Text as="p" variant="body-large">
-                    {t('rosStatus.statusBadge.deletionApproval')}
+                    {t("rosStatus.statusBadge.deletionApproval")}
                   </Text>
                 )}
                 {(status === RiScStatusEnum.WAITING ||
@@ -207,14 +207,14 @@ export function RiScStatusComponent({
                   <Flex
                     justify="between"
                     align="baseline"
-                    style={{ width: '100%' }}
+                    style={{ width: "100%" }}
                   >
                     <Text as="p" variant="body-large">
-                      {t('rosStatus.prStatus')}
+                      {t("rosStatus.prStatus")}
                       {status === RiScStatusEnum.WAITING &&
-                        t('rosStatus.prStatus2Update')}
+                        t("rosStatus.prStatus2Update")}
                       {status === RiScStatusEnum.DELETION_WAITING &&
-                        t('rosStatus.prStatus2Delete')}
+                        t("rosStatus.prStatus2Delete")}
                     </Text>
                     <ButtonLink
                       target="_blank"
@@ -222,13 +222,13 @@ export function RiScStatusComponent({
                       variant="secondary"
                     >
                       <i className="ri-external-link-line" />
-                      {t('rosStatus.githubLink')}
+                      {t("rosStatus.githubLink")}
                     </ButtonLink>
                   </Flex>
                 )}
                 {status === RiScStatusEnum.PUBLISHED && (
                   <Text as="p" variant="body-large">
-                    {t('rosStatus.statusBadge.approved')}
+                    {t("rosStatus.statusBadge.approved")}
                   </Text>
                 )}
                 {(status === RiScStatusEnum.DRAFT ||
@@ -239,15 +239,15 @@ export function RiScStatusComponent({
                       size="medium"
                       onClick={handleOpenPublishRiScDialog}
                       style={{
-                        display: 'block',
-                        marginLeft: 'auto',
-                        fontSize: '14px',
+                        display: "block",
+                        marginLeft: "auto",
+                        fontSize: "14px",
                       }}
                     >
                       {status === RiScStatusEnum.DRAFT &&
-                        t('rosStatus.approveButtonUpdate')}
+                        t("rosStatus.approveButtonUpdate")}
                       {status === RiScStatusEnum.DELETION_DRAFT &&
-                        t('rosStatus.approveButtonDelete')}
+                        t("rosStatus.approveButtonDelete")}
                     </Button>
                     <RiScPublishDialog
                       openDialog={publishRiScDialogIsOpen}
@@ -267,13 +267,13 @@ export function RiScStatusComponent({
           <Box>
             <Box mt="2" mb="2">
               <Text as="p" variant="body-large" weight="bold">
-                <i className="ri-error-warning-line" />{' '}
-                {t('rosStatus.statusBadge.migration.title')}
+                <i className="ri-error-warning-line" />{" "}
+                {t("rosStatus.statusBadge.migration.title")}
               </Text>
             </Box>
 
             <Text as="p" variant="body-large">
-              {t('rosStatus.statusBadge.migration.description')}
+              {t("rosStatus.statusBadge.migration.description")}
             </Text>
 
             <Flex direction="column" mt="4" align="end">
@@ -282,7 +282,7 @@ export function RiScStatusComponent({
                 size="medium"
                 onClick={() => setMigrationDialogIsOpen(!migrationDialogIsOpen)}
               >
-                {t('rosStatus.moreInformationButton')}
+                {t("rosStatus.moreInformationButton")}
               </Button>
             </Flex>
             <RiScMigrationDialog
@@ -295,7 +295,7 @@ export function RiScStatusComponent({
         )}
         {/* Error */}
         {!selectedRiSc && (
-          <Text as="span">{t('rosStatus.statusBadge.error')}</Text>
+          <Text as="span">{t("rosStatus.statusBadge.error")}</Text>
         )}
         {showFeedbackLink && <FeedbackLink />}
       </CardBody>

@@ -1,9 +1,9 @@
-import { MigrationChanges51 } from '../../../utils/types.ts';
-import { ChangeSetBox } from '../changeset/components/ChangeSetBox.tsx';
-import { MigrationTitle } from './components/MigrationTitle.tsx';
-import { ChangeSetBoxTitle } from '../changeset/components/ChangeSetBoxTitle.tsx';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../../utils/translations.ts';
+import { MigrationChanges51 } from "../../../utils/types.ts";
+import { ChangeSetBox } from "../changeset/components/ChangeSetBox.tsx";
+import { MigrationTitle } from "./components/MigrationTitle.tsx";
+import { ChangeSetBoxTitle } from "../changeset/components/ChangeSetBoxTitle.tsx";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../../utils/translations.ts";
 
 interface RiScMigrationChanges51Props {
   changes: MigrationChanges51;
@@ -27,13 +27,13 @@ export function RiScMigrationChanges51({
         from="5.0"
         to="5.1"
         migrationExplanation={t(
-          'migrationDialog.migration51.changeExplanation',
+          "migrationDialog.migration51.changeExplanation",
         )}
         changelogUrl="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md#50"
       />
       <ChangeSetBox type="primary">
         <ChangeSetBoxTitle
-          title={t('migrationDialog.migration51.addedLastUpdatedBy', {
+          title={t("migrationDialog.migration51.addedLastUpdatedBy", {
             numberOfChangedActions: numberOfChangedActions.toString(),
           })}
         />

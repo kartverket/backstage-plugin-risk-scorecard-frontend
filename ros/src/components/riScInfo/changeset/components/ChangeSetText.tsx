@@ -1,4 +1,4 @@
-import styles from './changeSet.module.css';
+import styles from "./changeSet.module.css";
 
 interface ChangeSetTextProps {
   text: string;

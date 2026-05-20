@@ -1,8 +1,8 @@
-import styles from './UpdatedStatusBadge.module.css';
-import CircularProgress from '@mui/material/CircularProgress';
-import { Tooltip, TooltipTrigger } from '@backstage/ui';
-import { ReactNode } from 'react';
-import { Button as AriaButton } from 'react-aria-components';
+import styles from "./UpdatedStatusBadge.module.css";
+import CircularProgress from "@mui/material/CircularProgress";
+import { Tooltip, TooltipTrigger } from "@backstage/ui";
+import { ReactNode } from "react";
+import { Button as AriaButton } from "react-aria-components";
 
 export enum StatusIconTypes {
   Green,
@@ -15,13 +15,13 @@ type StatusIconProps = {
   type: StatusIconTypes;
   tooltipText?: string;
   ariaLabel?: string;
-  size: 'small' | 'medium' | 'large';
+  size: "small" | "medium" | "large";
 };
 export function StatusIcon(props: StatusIconProps) {
   const sizeToPx = {
-    small: '16px',
-    medium: '24px',
-    large: '32px',
+    small: "16px",
+    medium: "24px",
+    large: "32px",
   };
   const fontSize = sizeToPx[props.size];
   let iconElement;
@@ -88,7 +88,7 @@ function TooltipTargetIcon({ ariaLabel, children }: TooltipTargetIconProps) {
   return (
     <AriaButton
       aria-label={ariaLabel}
-      style={{ all: 'unset', display: 'inline-flex', cursor: 'default' }}
+      style={{ all: "unset", display: "inline-flex", cursor: "default" }}
     >
       {children}
     </AriaButton>

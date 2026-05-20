@@ -1,5 +1,5 @@
-import { Flex } from '@backstage/ui';
-import styles from './RiskOptionDisplay.module.css';
+import { Flex } from "@backstage/ui";
+import styles from "./RiskOptionDisplay.module.css";
 
 export default function RiskOptionDisplay({
   isSelected,
@@ -13,7 +13,7 @@ export default function RiskOptionDisplay({
   return (
     <Flex align="center" gap="2">
       <div
-        className={`${styles.levelBadge} ${isSelected ? styles.levelBadgeSelected : ''}`}
+        className={`${styles.levelBadge} ${isSelected ? styles.levelBadgeSelected : ""}`}
       >
         {level}
       </div>

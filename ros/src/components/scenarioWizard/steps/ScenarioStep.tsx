@@ -1,22 +1,22 @@
 import {
   ThreatActorsOptions,
   VulnerabilitiesOptions,
-} from '../../../utils/constants';
+} from "../../../utils/constants";
 
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import { UseFormReturn } from 'react-hook-form';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { FormScenario } from '../../../utils/types';
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import { UseFormReturn } from "react-hook-form";
+import { pluginRiScTranslationRef } from "../../../utils/translations";
+import { FormScenario } from "../../../utils/types";
 import {
   threatActorOptionsToTranslationKeys,
   vulnerabiltiesOptionsToTranslationKeys,
-} from '../../../utils/utilityfunctions';
-import { Input } from '../../common/Input';
-import { MarkdownInput } from '../../common/MarkdownInput';
-import { Select } from '../../common/Select';
-import { Text } from '@backstage/ui';
+} from "../../../utils/utilityfunctions";
+import { Input } from "../../common/Input";
+import { MarkdownInput } from "../../common/MarkdownInput";
+import { Select } from "../../common/Select";
+import { Text } from "@backstage/ui";
 
 export function ScenarioStep({
   formMethods,
@@ -34,7 +34,7 @@ export function ScenarioStep({
   } = formMethods;
 
   const threatActorOptions = Object.values(ThreatActorsOptions).map(
-    threatActor => ({
+    (threatActor) => ({
       value: threatActor,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
       renderedValue: t(threatActorOptionsToTranslationKeys[threatActor]),
@@ -42,31 +42,31 @@ export function ScenarioStep({
   );
 
   const vulnerabilitiesOptions = Object.values(VulnerabilitiesOptions).map(
-    vulnerability => ({
+    (vulnerability) => ({
       value: vulnerability,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
       renderedValue: t(vulnerabiltiesOptionsToTranslationKeys[vulnerability]),
     }),
   );
 
-  const currentDescription = watch('description');
+  const currentDescription = watch("description");
 
   return (
     <Stack spacing={3}>
       <Box>
         <Text variant="title-small" weight="bold">
-          {t('scenarioDrawer.title')}
+          {t("scenarioDrawer.title")}
         </Text>
         <Text variant="body-large" as="p">
-          {t('scenarioDrawer.subtitle')}
+          {t("scenarioDrawer.subtitle")}
         </Text>
       </Box>
 
       <Input
         required
-        {...register('title', { required: true })}
+        {...register("title", { required: true })}
         error={errors.title !== undefined}
-        label={t('dictionary.title')}
+        label={t("dictionary.title")}
       />
 
       <Stack direction="row" spacing={2}>
@@ -74,8 +74,8 @@ export function ScenarioStep({
           multiple
           control={control}
           name="threatActors"
-          label={t('dictionary.threatActors')}
-          sublabel={t('scenarioDrawer.threatActorSubtitle')}
+          label={t("dictionary.threatActors")}
+          sublabel={t("scenarioDrawer.threatActorSubtitle")}
           labelTranslationKey="threatActors"
           options={threatActorOptions}
         />
@@ -84,18 +84,18 @@ export function ScenarioStep({
           multiple
           control={control}
           name="vulnerabilities"
-          label={t('dictionary.vulnerabilities')}
-          sublabel={t('scenarioDrawer.vulnerabilitySubtitle')}
+          label={t("dictionary.vulnerabilities")}
+          sublabel={t("scenarioDrawer.vulnerabilitySubtitle")}
           labelTranslationKey="vulnerabilities"
           options={vulnerabilitiesOptions}
         />
       </Stack>
 
       <MarkdownInput
-        {...register('description')}
-        label={t('dictionary.description')}
+        {...register("description")}
+        label={t("dictionary.description")}
         value={currentDescription}
-        onMarkdownChange={value => setValue('description', value)}
+        onMarkdownChange={(value) => setValue("description", value)}
         minRows={8}
       />
     </Stack>

@@ -1,35 +1,35 @@
-import { ReactNode, useCallback, useState } from 'react';
-import Step from '@mui/material/Step';
-import StepButton from '@mui/material/StepButton';
-import Stepper from '@mui/material/Stepper';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import { ScenarioStep } from './steps/ScenarioStep';
-import { pluginRiScTranslationRef } from '../../utils/translations';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import Divider from '@mui/material/Divider';
-import { ActionsStep } from './steps/ActionsStep';
-import { RiskStep } from './steps/RiskStep';
-import Alert from '@mui/material/Alert';
-import { Spinner } from '../common/Spinner';
-import { CloseConfirmation } from './components/CloseConfirmation';
+import { ReactNode, useCallback, useState } from "react";
+import Step from "@mui/material/Step";
+import StepButton from "@mui/material/StepButton";
+import Stepper from "@mui/material/Stepper";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import { ScenarioStep } from "./steps/ScenarioStep";
+import { pluginRiScTranslationRef } from "../../utils/translations";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import Divider from "@mui/material/Divider";
+import { ActionsStep } from "./steps/ActionsStep";
+import { RiskStep } from "./steps/RiskStep";
+import Alert from "@mui/material/Alert";
+import { Spinner } from "../common/Spinner";
+import { CloseConfirmation } from "./components/CloseConfirmation";
 import {
   scenarioWizardSteps,
   ScenarioWizardSteps,
   useScenario,
-} from '../../contexts/ScenarioContext';
-import { useRiScs } from '../../contexts/RiScContext';
-import Container from '@mui/material/Container';
-import { useForm } from 'react-hook-form';
-import { FormScenario, Scenario } from '../../utils/types';
-import { useSearchParams } from 'react-router-dom';
+} from "../../contexts/ScenarioContext";
+import { useRiScs } from "../../contexts/RiScContext";
+import Container from "@mui/material/Container";
+import { useForm } from "react-hook-form";
+import { FormScenario, Scenario } from "../../utils/types";
+import { useSearchParams } from "react-router-dom";
 import {
   getAlertSeverity,
   validateRemainingRiskNotHigher,
-} from '../../utils/utilityfunctions';
-import { Text, Button, Flex } from '@backstage/ui';
-import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
-import styles from './ScenarioWizard.module.css';
+} from "../../utils/utilityfunctions";
+import { Text, Button, Flex } from "@backstage/ui";
+import { useBackstageContext } from "../../contexts/BackstageContext.tsx";
+import styles from "./ScenarioWizard.module.css";
 
 export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
   const { profileInfo } = useBackstageContext();
@@ -45,7 +45,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
 
   const formMethods = useForm<FormScenario>({
     defaultValues: emptyFormScenario(scenario),
-    mode: 'onBlur',
+    mode: "onBlur",
   });
 
   const { isDirty, isValid } = formMethods.formState;
@@ -132,10 +132,10 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
     <Container maxWidth="md" className={styles.container}>
       <Flex justify="between">
         <Text variant="title-medium" weight="bold">
-          {t('scenarioDrawer.newTitle')}
+          {t("scenarioDrawer.newTitle")}
         </Text>
         <Button size="medium" variant="secondary" onClick={handleCloseStepper}>
-          {t('dictionary.cancel')}
+          {t("dictionary.cancel")}
         </Button>
       </Flex>
       <Stepper
@@ -143,7 +143,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
         alternativeLabel
         nonLinear
       >
-        {scenarioWizardSteps.map(wizardStep => (
+        {scenarioWizardSteps.map((wizardStep) => (
           <Step key={wizardStep} completed={false}>
             <StepButton onClick={() => selectStep(wizardStep)}>
               <Text>{t(`dictionary.${wizardStep}`)}</Text>
@@ -172,7 +172,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
               ))}
             </Alert>
           )}
-          <Flex justify={isFirstStep ? 'end' : 'between'}>
+          <Flex justify={isFirstStep ? "end" : "between"}>
             {!isFirstStep && (
               <Button
                 size="medium"
@@ -180,19 +180,19 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
                 onClick={previousStep}
                 iconStart={<KeyboardArrowLeft />}
               >
-                {t('dictionary.previous')}
+                {t("dictionary.previous")}
               </Button>
             )}
             <Flex gap="16px">
               <Button
-                variant={isLastStep ? 'primary' : 'secondary'}
+                variant={isLastStep ? "primary" : "secondary"}
                 onClick={onSubmit}
                 size="medium"
                 isDisabled={!isDirty || updateStatus.isLoading}
               >
                 {isLastStep
-                  ? t('scenarioDrawer.createNewScenario')
-                  : t('scenarioDrawer.saveAsDraft')}
+                  ? t("scenarioDrawer.createNewScenario")
+                  : t("scenarioDrawer.saveAsDraft")}
               </Button>
 
               {!isLastStep && (
@@ -202,7 +202,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
                   onClick={nextStep}
                   iconEnd={<KeyboardArrowRight />}
                 >
-                  {t('dictionary.next')}
+                  {t("dictionary.next")}
                 </Button>
               )}
             </Flex>

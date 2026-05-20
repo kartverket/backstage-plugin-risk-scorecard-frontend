@@ -1,23 +1,23 @@
-import { Route, Routes } from 'react-router-dom';
-import { CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
-import { useMemo } from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { RiScPlugin } from './components/riScPlugin/RiScPlugin';
-import { ScenarioProvider } from './contexts/ScenarioContext';
-import { riScRouteRef, scenarioRouteRef } from './routes';
-import { RiScProvider } from './contexts/RiScContext';
-import 'remixicon/fonts/remixicon.css';
-import { DefaultRiScTypesProvider } from './contexts/DefaultRiScTypesContext.tsx';
-import { BackstageContextProvider } from './contexts/BackstageContext.tsx';
-import { useBackstageThemeMode } from './hooks/useBackstageThemeMode.ts';
+import { Route, Routes } from "react-router-dom";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
+import { useMemo } from "react";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { RiScPlugin } from "./components/riScPlugin/RiScPlugin";
+import { ScenarioProvider } from "./contexts/ScenarioContext";
+import { riScRouteRef, scenarioRouteRef } from "./routes";
+import { RiScProvider } from "./contexts/RiScContext";
+import "remixicon/fonts/remixicon.css";
+import { DefaultRiScTypesProvider } from "./contexts/DefaultRiScTypesContext.tsx";
+import { BackstageContextProvider } from "./contexts/BackstageContext.tsx";
+import { useBackstageThemeMode } from "./hooks/useBackstageThemeMode.ts";
 
-const emotionInsertionPoint = document.createElement('meta');
-emotionInsertionPoint.setAttribute('name', 'emotion-insertion-point');
-document.querySelector('head')?.appendChild(emotionInsertionPoint);
+const emotionInsertionPoint = document.createElement("meta");
+emotionInsertionPoint.setAttribute("name", "emotion-insertion-point");
+document.querySelector("head")?.appendChild(emotionInsertionPoint);
 
 const cache = createCache({
-  key: 'css',
+  key: "css",
   insertionPoint: emotionInsertionPoint,
 });
 

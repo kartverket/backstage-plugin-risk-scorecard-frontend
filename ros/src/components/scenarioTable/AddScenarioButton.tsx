@@ -1,6 +1,6 @@
-import { Button } from '@backstage/ui';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { Button } from "@backstage/ui";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { pluginRiScTranslationRef } from "../../utils/translations.ts";
 
 type AddScenarioButtonProps = {
   onNewScenario: () => void;
@@ -14,7 +14,7 @@ export function AddScenarioButton(props: AddScenarioButtonProps) {
       variant="secondary"
       onClick={props.onNewScenario}
     >
-      {t('scenarioTable.addScenarioButton')}
+      {t("scenarioTable.addScenarioButton")}
     </Button>
   );
 }

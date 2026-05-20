@@ -1,25 +1,25 @@
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import InfoIcon from '@mui/icons-material/Info';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import Paper from '@mui/material/Paper';
-import { UseFormReturn } from 'react-hook-form';
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import InfoIcon from "@mui/icons-material/Info";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
+import { UseFormReturn } from "react-hook-form";
 import {
   consequenceOptions,
   probabilityOptions,
-} from '../../../utils/constants';
-import { pluginRiScTranslationRef } from '../../../utils/translations';
-import { FormScenario } from '../../../utils/types';
+} from "../../../utils/constants";
+import { pluginRiScTranslationRef } from "../../../utils/translations";
+import { FormScenario } from "../../../utils/types";
 import {
   consequenceIndexToTranslationKeys,
   findConsequenceIndex,
   findProbabilityIndex,
   probabilityIndexToTranslationKeys,
-} from '../../../utils/utilityfunctions';
-import { Select } from '../../common/Select';
-import styles from '../scenarioDrawer.module.css';
-import RiskOptionDisplay from './RiskOptionDisplay';
-import { Text } from '@backstage/ui';
+} from "../../../utils/utilityfunctions";
+import { Select } from "../../common/Select";
+import styles from "../scenarioDrawer.module.css";
+import RiskOptionDisplay from "./RiskOptionDisplay";
+import { Text } from "@backstage/ui";
 
 function ScenarioForm({
   formMethods,
@@ -41,10 +41,10 @@ function ScenarioForm({
     remainingRiskProbability,
     remainingRiskConsequence,
   ] = watch([
-    'risk.probability',
-    'risk.consequence',
-    'remainingRisk.probability',
-    'remainingRisk.consequence',
+    "risk.probability",
+    "risk.consequence",
+    "remainingRisk.probability",
+    "remainingRisk.consequence",
   ]);
 
   const probabilityValues = (selectedValue: number) => {
@@ -91,8 +91,8 @@ function ScenarioForm({
     <Paper className={styles.section}>
       <Box
         sx={{
-          display: 'flex',
-          gap: '24px',
+          display: "flex",
+          gap: "24px",
         }}
       >
         <Paper className={styles.riscSection}>
@@ -100,18 +100,18 @@ function ScenarioForm({
             {/* Row 1 */}
             <Box className={styles.headerSection}>
               <Text variant="title-x-small" weight="bold">
-                {t('dictionary.initialRisk')}
+                {t("dictionary.initialRisk")}
               </Text>
               <Text variant="body-large">
-                {t('scenarioDrawer.riskMatrixModal.startRisk')}
+                {t("scenarioDrawer.riskMatrixModal.startRisk")}
               </Text>
             </Box>
             <Box className={styles.headerSection}>
               <Text variant="title-x-small" weight="bold">
-                {t('dictionary.restRisk')}
+                {t("dictionary.restRisk")}
               </Text>
               <Text variant="body-large">
-                {t('scenarioDrawer.riskMatrixModal.restRisk')}
+                {t("scenarioDrawer.riskMatrixModal.restRisk")}
               </Text>
             </Box>
 
@@ -119,19 +119,19 @@ function ScenarioForm({
             <Select<FormScenario>
               control={control}
               name="risk.probability"
-              label={t('infoDialog.probabilityTitle')}
+              label={t("infoDialog.probabilityTitle")}
               options={probabilityValues(Number(riskProbability))}
             />
             <Select<FormScenario>
               control={control}
               name="remainingRisk.probability"
-              label={t('infoDialog.probabilityTitle')}
+              label={t("infoDialog.probabilityTitle")}
               options={probabilityValues(Number(remainingRiskProbability))}
               rules={{
                 validate: (value, _) =>
                   Number(value) <=
                     Number(control._formValues.risk?.probability) ||
-                  t('scenarioDrawer.errors.remainingProbabilityTooHigh'),
+                  t("scenarioDrawer.errors.remainingProbabilityTooHigh"),
               }}
               error={errors.remainingRisk?.probability !== undefined}
               helperText={errors.remainingRisk?.probability?.message}
@@ -141,19 +141,19 @@ function ScenarioForm({
             <Select<FormScenario>
               control={control}
               name="risk.consequence"
-              label={t('infoDialog.consequenceTitle')}
+              label={t("infoDialog.consequenceTitle")}
               options={consequenceValues(Number(riskConsequence))}
             />
             <Select<FormScenario>
               control={control}
               name="remainingRisk.consequence"
-              label={t('infoDialog.consequenceTitle')}
+              label={t("infoDialog.consequenceTitle")}
               options={consequenceValues(Number(remainingRiskConsequence))}
               rules={{
                 validate: (value, _) =>
                   Number(value) <=
                     Number(control._formValues.risk?.consequence) ||
-                  t('scenarioDrawer.errors.remainingConsequenceTooHigh'),
+                  t("scenarioDrawer.errors.remainingConsequenceTooHigh"),
               }}
               error={errors.remainingRisk?.consequence !== undefined}
               helperText={errors.remainingRisk?.consequence?.message}
@@ -163,7 +163,7 @@ function ScenarioForm({
       </Box>
       <IconButton
         sx={{
-          position: 'absolute',
+          position: "absolute",
           top: 10,
           right: 10,
         }}

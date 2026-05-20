@@ -1,6 +1,6 @@
-import { SimpleTrackedProperty } from '../../../../utils/types.ts';
-import { ChangeSetProperty } from './ChangeSetProperty.tsx';
-import { ChangeSetChangedProperty } from './ChangeSetChangedProperty.tsx';
+import { SimpleTrackedProperty } from "../../../../utils/types.ts";
+import { ChangeSetProperty } from "./ChangeSetProperty.tsx";
+import { ChangeSetChangedProperty } from "./ChangeSetChangedProperty.tsx";
 
 interface IChangeSetTrackedProperty {
   title: string;
@@ -25,7 +25,7 @@ export function ChangeSetTrackedProperty({
 }: IChangeSetTrackedProperty) {
   if (property === undefined) return <></>;
 
-  if (property.type === 'UNCHANGED')
+  if (property.type === "UNCHANGED")
     return (
       <ChangeSetProperty
         title={title}
@@ -39,7 +39,7 @@ export function ChangeSetTrackedProperty({
         emphasised={emphasised}
       />
     );
-  if (property.type === 'CHANGED')
+  if (property.type === "CHANGED")
     return (
       <ChangeSetChangedProperty
         propertyName={title}

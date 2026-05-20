@@ -1,29 +1,29 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { ScenarioWizard } from '../scenarioWizard/ScenarioWizard';
-import { ScenarioDrawer } from '../scenarioDrawer/ScenarioDrawer';
-import { RiskMatrix } from '../riskMatrix/RiskMatrix';
-import AlertBar from '../common/AlertBar/AlertBar';
-import Grid from '@mui/material/Grid';
-import { RiScDialog, RiScDialogStates } from '../riScDialog/RiScDialog';
-import { Spinner } from '../common/Spinner';
-import { useRiScs } from '../../contexts/RiScContext';
-import { ScenarioWizardSteps } from '../../contexts/ScenarioContext';
-import { RiScHeader } from '../riScHeader/RiScHeader.tsx';
-import { ScenarioTableWrapper } from '../scenarioTable/ScenarioTableWrapper.tsx';
-import { FirstRiScDialog } from '../riScInfo/FirstRiScDialog.tsx';
-import { Flex, Text } from '@backstage/ui';
-import { CreateNewRiScButton } from '../riScInfo/CreateNewRiScButton.tsx';
-import { RiScSelectionCard } from '../riScInfo/RiScSelectionCard.tsx';
-import { RiScStatusComponent } from '../riScInfo/riScStatus/RiScStatusComponent.tsx';
-import { pluginRiScTranslationRef } from '../../utils/translations.ts';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import styles from '../common/alertBar.module.css';
-import { RiScDescriptionCard } from '../riScInfo/RiScDescriptionCard.tsx';
-import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
-import { ErrorState } from '../riScInfo/ErrorState.tsx';
-import { LockedRiScView } from '../riScInfo/LockedRiScView.tsx';
-import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { ScenarioWizard } from "../scenarioWizard/ScenarioWizard";
+import { ScenarioDrawer } from "../scenarioDrawer/ScenarioDrawer";
+import { RiskMatrix } from "../riskMatrix/RiskMatrix";
+import AlertBar from "../common/AlertBar/AlertBar";
+import Grid from "@mui/material/Grid";
+import { RiScDialog, RiScDialogStates } from "../riScDialog/RiScDialog";
+import { Spinner } from "../common/Spinner";
+import { useRiScs } from "../../contexts/RiScContext";
+import { ScenarioWizardSteps } from "../../contexts/ScenarioContext";
+import { RiScHeader } from "../riScHeader/RiScHeader.tsx";
+import { ScenarioTableWrapper } from "../scenarioTable/ScenarioTableWrapper.tsx";
+import { FirstRiScDialog } from "../riScInfo/FirstRiScDialog.tsx";
+import { Flex, Text } from "@backstage/ui";
+import { CreateNewRiScButton } from "../riScInfo/CreateNewRiScButton.tsx";
+import { RiScSelectionCard } from "../riScInfo/RiScSelectionCard.tsx";
+import { RiScStatusComponent } from "../riScInfo/riScStatus/RiScStatusComponent.tsx";
+import { pluginRiScTranslationRef } from "../../utils/translations.ts";
+import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import styles from "../common/alertBar.module.css";
+import { RiScDescriptionCard } from "../riScInfo/RiScDescriptionCard.tsx";
+import riscStyles from "../riScInfo/RiScSelectionCard.module.css";
+import { ErrorState } from "../riScInfo/ErrorState.tsx";
+import { LockedRiScView } from "../riScInfo/LockedRiScView.tsx";
+import { ThreatActorsAndVulnerabilitiesCard } from "../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx";
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -68,7 +68,7 @@ export function RiScPlugin() {
 
   const [searchParams] = useSearchParams();
   const scenarioWizardStep = searchParams.get(
-    'step',
+    "step",
   ) as ScenarioWizardSteps | null;
 
   useEffect(() => {
@@ -129,7 +129,7 @@ export function RiScPlugin() {
                     <Grid size={8}>
                       <Flex align="center" justify="between">
                         <Text as="h3" variant="body-large" weight="bold">
-                          {t('contentHeader.multipleRiScs')}
+                          {t("contentHeader.multipleRiScs")}
                         </Text>
                         <CreateNewRiScButton
                           onCreateNew={openCreateRiScDialog}
@@ -160,7 +160,7 @@ export function RiScPlugin() {
                     <Grid size={8}>
                       <Flex align="center" justify="between">
                         <Text as="h3" variant="body-large" weight="bold">
-                          {t('contentHeader.multipleRiScs')}
+                          {t("contentHeader.multipleRiScs")}
                         </Text>
                         <CreateNewRiScButton
                           onCreateNew={openCreateRiScDialog}
