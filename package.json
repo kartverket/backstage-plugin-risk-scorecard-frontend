@@ -14,7 +14,8 @@
   "scripts": {
     "prettier:check": "prettier --check \"ros/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\"",
     "prettier:write": "prettier --write \"ros/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\"",
-    "lint": "eslint \"ros/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\""
+    "lint": "eslint \"ros/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\"",
+    "test:all": "yarn workspace build-tools test"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.0.0",

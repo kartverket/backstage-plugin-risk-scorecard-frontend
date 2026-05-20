@@ -36,8 +36,8 @@ jobs:
       - name: Run lint
         run: yarn run lint
 
-#      - name: Run tests
-#        run: yarn test:all --ci
-#
-#      - name: Run tsc
-#        run: yarn run tsc
+      - name: Run tests
+        run: yarn test:all
+
+      - name: Run tsc
+        run: yarn run tsc
