@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "build": "tsc --build"
   },
   "dependencies": {
     "@backstage/core-plugin-api": "backstage:^",
