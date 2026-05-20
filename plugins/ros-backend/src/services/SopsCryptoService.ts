@@ -3,6 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import * as yaml from 'yaml';
+import { Decrypter } from 'age-encryption';
 import {
   SopsConfig,
   AgeEntry,
@@ -23,76 +24,14 @@ export function isValidGCPToken(token: string): boolean {
   return B64_TOKEN_PATTERN.test(token);
 }
 
-/**
- * Validates an age secret key by checking bech32 encoding with the "age-secret-key-" HRP.
- * In bech32, the separator is the last '1' in the string. The HRP is everything before it.
- */
 export function isValidAgeSecretKey(key: string): boolean {
-  const BECH32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
-  const normalized = key.toLowerCase();
-  const expectedHrp = 'age-secret-key-';
-
-  // Find the last '1' which is the bech32 separator
-  const separatorIndex = normalized.lastIndexOf('1');
-  if (separatorIndex < 1) {
+  try {
+    const decrypter = new Decrypter();
+    decrypter.addIdentity(key);
+    return true;
+  } catch {
     return false;
   }
-
-  const hrp = normalized.slice(0, separatorIndex);
-  const dataAndChecksum = normalized.slice(separatorIndex + 1);
-
-  if (hrp !== expectedHrp) {
-    return false;
-  }
-
-  if (dataAndChecksum.length < 6) {
-    return false;
-  }
-
-  // Validate all characters are in bech32 charset
-  for (const c of dataAndChecksum) {
-    if (!BECH32_CHARSET.includes(c)) {
-      return false;
-    }
-  }
-
-  // Perform bech32 checksum verification
-  return verifyBech32Checksum(hrp, dataAndChecksum);
-}
-
-function verifyBech32Checksum(hrp: string, dataString: string): boolean {
-  const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
-  const GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
-
-  function polymod(values: number[]): number {
-    let chk = 1;
-    for (const value of values) {
-      const b = chk >>> 25;
-      chk = ((chk & 0x1ffffff) << 5) ^ value;
-      for (let i = 0; i < 5; i++) {
-        if (((b >>> i) & 1) === 1) {
-          chk ^= GEN[i];
-        }
-      }
-    }
-    return chk;
-  }
-
-  function expandHrp(h: string): number[] {
-    const result: number[] = [];
-    for (const c of h) {
-      result.push(c.charCodeAt(0) >> 5);
-    }
-    result.push(0);
-    for (const c of h) {
-      result.push(c.charCodeAt(0) & 31);
-    }
-    return result;
-  }
-
-  const dataBytes = Array.from(dataString).map(c => CHARSET.indexOf(c));
-  const values = [...expandHrp(hrp), ...dataBytes];
-  return polymod(values) === 1;
 }
 
 // ─── SOPS Error Parsing ───────────────────────────────────────────────────────
