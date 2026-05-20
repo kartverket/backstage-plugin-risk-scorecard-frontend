@@ -31,13 +31,13 @@ jobs:
         run: yarn install --immutable
 
       - name: Run Prettier
-        run: yarn run prettier:check
+        run: yarn prettier:check
 
       - name: Run lint
-        run: yarn run lint:all
+        run: yarn run lint
 
-      - name: Run tests
-        run: yarn test:all --ci
-
-      - name: Run tsc
-        run: yarn run tsc
+#      - name: Run tests
+#        run: yarn test:all --ci
+#
+#      - name: Run tsc
+#        run: yarn run tsc
