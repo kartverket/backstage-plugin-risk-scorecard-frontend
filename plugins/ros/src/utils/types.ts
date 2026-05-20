@@ -245,6 +245,7 @@ export enum ProcessingStatus {
   ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
   ErrorWhenFetchingGcpCryptoKeys = 'ErrorWhenFetchingGcpCryptoKeys',
   FailedToFetchGcpProjectIds = 'Failed to fetch GCP project IDs',
+  InvalidGitHubAccessToken = 'InvalidGitHubAccessToken',
 }
 
 export enum ContentStatus {

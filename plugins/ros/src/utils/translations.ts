@@ -676,6 +676,8 @@ export const pluginRiScMessages = {
       'Risk scorecard "{{riScId}}" cannot be automatically migrated to the latest version.',
     ContentStatusUnknown:
       'Failed to fetch risk scorecard "{{riScId}}" with unknown status: {{status}}',
+    InvalidGitHubAccessToken:
+      'Github-token was not valid. Try refreshing the page or logging out and in of github in backstage.',
     ContentStatusSchemaValidationFailed:
       'Failed to fetch risk scorecard "{{riScId}}". Its content does not match the expected format. It may have been manually edited or corrupted.',
     ContentStatusDecryptionFailedMessage: {
@@ -1450,6 +1452,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
 
           'errorMessages.ContentStatusUnknown':
             'Kunne ikke hente ROS-analyse "{{riScId}}" med ukjent status: {{status}}',
+          'errorMessages.InvalidGitHubAccessToken':
+            'Github-tokenet var ikke gyldig. Prøv en refresh av siden eller å logge ut og inn av github i backstage.',
           'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
