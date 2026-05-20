@@ -1,4 +1,4 @@
-
+#!/bin/bash
 echo "Starting plugin setup. Make sure you have setup app-config.local.yaml and cloned kartverket.dev..."
 
 # Save current working directory to return to it later
