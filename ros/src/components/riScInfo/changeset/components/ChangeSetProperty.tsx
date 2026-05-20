@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import { ChangeSetPropertyBase } from "./ChangeSetPropertyBase.tsx";
-import { ChangeSetValue } from "./ChangeSetValue.tsx";
+import { ReactNode } from 'react';
+import { ChangeSetPropertyBase } from './ChangeSetPropertyBase.tsx';
+import { ChangeSetValue } from './ChangeSetValue.tsx';
 
 interface ChangeSetPropertyProps {
   title: string;

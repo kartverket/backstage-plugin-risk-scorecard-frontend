@@ -1,13 +1,13 @@
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
-import Chip from "@mui/material/Chip";
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormLabel from "@mui/material/FormLabel";
-import ListItemText from "@mui/material/ListItemText";
-import MenuItem from "@mui/material/MenuItem";
-import MUISelect, { SelectProps } from "@mui/material/Select";
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormLabel from '@mui/material/FormLabel';
+import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
+import MUISelect, { SelectProps } from '@mui/material/Select';
 import {
   Control,
   FieldValues,
@@ -15,10 +15,10 @@ import {
   RegisterOptions,
   useController,
   type UseControllerReturn,
-} from "react-hook-form";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import formStyles from "./formStyles.module.css";
-import styles from "./Select.module.css";
+} from 'react-hook-form';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import formStyles from './formStyles.module.css';
+import styles from './Select.module.css';
 
 type Props<T extends FieldValues> = SelectProps & {
   sublabel?: string;
@@ -32,7 +32,7 @@ type Props<T extends FieldValues> = SelectProps & {
   }[];
   rules?: Omit<
     RegisterOptions<T, string & Path<T>>,
-    "disabled" | "valueAsNumber" | "valueAsDate" | "setValueAs"
+    'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'
   >;
 };
 
@@ -79,8 +79,8 @@ export function Select<T extends FieldValues>({
   }
 
   function handleChecked(
-    fieldValue: UseControllerReturn["field"]["value"],
-    optionValue: Props<T>["options"][number]["value"],
+    fieldValue: UseControllerReturn['field']['value'],
+    optionValue: Props<T>['options'][number]['value'],
   ) {
     if (Array.isArray(fieldValue)) {
       return fieldValue.includes(optionValue);

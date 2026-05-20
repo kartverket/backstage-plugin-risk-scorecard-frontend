@@ -1,1 +1,1 @@
-export { DualButton } from "./DualButton";
+export { DualButton } from './DualButton';

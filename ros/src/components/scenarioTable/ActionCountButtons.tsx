@@ -1,9 +1,9 @@
-import { Flex } from "@backstage/ui";
+import { Flex } from '@backstage/ui';
 import {
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
-} from "../../utils/utilityfunctions.ts";
-import { ActionsCountButton } from "./ActionsCountButton.tsx";
+} from '../../utils/utilityfunctions.ts';
+import { ActionsCountButton } from './ActionsCountButton.tsx';
 
 type ActionCountButtonsProps = {
   totalCount: number;
@@ -15,7 +15,7 @@ type ActionCountButtonsProps = {
 };
 export function ActionCountButtons(props: ActionCountButtonsProps) {
   return (
-    <Flex mb="24px" style={{ flexWrap: "wrap" }}>
+    <Flex mb="24px" style={{ flexWrap: 'wrap' }}>
       {props.veryOutdatedCount > 0 && (
         <ActionsCountButton
           type={UpdatedStatusEnum.VERY_OUTDATED}

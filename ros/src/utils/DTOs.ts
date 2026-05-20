@@ -9,8 +9,8 @@ import {
   RiScStatus,
   Risk,
   Scenario,
-} from "./types";
-import { ProfileInfo } from "@backstage/core-plugin-api";
+} from './types';
+import { ProfileInfo } from '@backstage/core-plugin-api';
 
 export type ProcessRiScResultDTO = {
   riScId: string;
@@ -22,7 +22,7 @@ export type ProcessRiScResultDTO = {
 // Takes a normal ProcessRiScResultDTO and changes status to ContentStatus.
 type ContentRiScResultDTO = Modify<
   ProcessRiScResultDTO,
-  "status",
+  'status',
   ContentStatus
 > & { pullRequestUrl: string };
 
@@ -62,9 +62,9 @@ export type RiScDTO = {
 };
 
 export enum CryptoKeyPermission {
-  UNKNOWN = "UNKNOWN",
-  DECRYPT = "DECRYPT",
-  ENCRYPT = "ENCRYPT",
+  UNKNOWN = 'UNKNOWN',
+  DECRYPT = 'DECRYPT',
+  ENCRYPT = 'ENCRYPT',
 }
 
 export type GcpCryptoKeyObject = {
@@ -129,8 +129,8 @@ export function dtoToAction(actionDTO: ActionsDTO): Action {
 
 export function profileInfoToDTOString(profile: ProfileInfo): string {
   return JSON.stringify({
-    name: profile.displayName ?? "",
-    email: profile.email ?? "",
+    name: profile.displayName ?? '',
+    email: profile.email ?? '',
   });
 }
 
@@ -147,8 +147,8 @@ export function riScToDTOString(
     schemaVersion: riSc.schemaVersion,
     defaultRiScId: defaultRiScId ?? undefined,
     userInfo: {
-      name: profile.displayName ?? "",
-      email: profile.email ?? "",
+      name: profile.displayName ?? '',
+      email: profile.email ?? '',
     },
     sopsConfig: sopsConfig,
   });

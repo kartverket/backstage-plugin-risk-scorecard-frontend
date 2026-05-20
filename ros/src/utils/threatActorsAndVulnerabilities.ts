@@ -1,5 +1,5 @@
-import { Scenario } from "./types.ts";
-import { ThreatActorsOptions, VulnerabilitiesOptions } from "./constants.ts";
+import { Scenario } from './types.ts';
+import { ThreatActorsOptions, VulnerabilitiesOptions } from './constants.ts';
 
 export enum CoverageType {
   ThreatActor,

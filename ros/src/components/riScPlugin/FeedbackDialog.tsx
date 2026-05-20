@@ -1,10 +1,10 @@
-import { TextField } from "@mui/material";
-import { Button, Text, Flex } from "@backstage/ui";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import { useState } from "react";
-import { useAuthenticatedFetch } from "../../utils/hooks.ts";
-import Alert from "@mui/material/Alert";
+import { TextField } from '@mui/material';
+import { Button, Text, Flex } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useState } from 'react';
+import { useAuthenticatedFetch } from '../../utils/hooks.ts';
+import Alert from '@mui/material/Alert';
 
 interface FeedbackDialogProps {
   open: boolean;
@@ -15,13 +15,13 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { postFeedback } = useAuthenticatedFetch();
 
-  const [feedbackText, setFeedbackText] = useState("");
+  const [feedbackText, setFeedbackText] = useState('');
   const [feedbackSent, setFeedbackSent] = useState(false);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
   const onClose = () => {
     props.setOpen(false);
-    setFeedbackText("");
+    setFeedbackText('');
     setFeedbackSent(false);
     setFeedbackError(null);
   };
@@ -29,12 +29,12 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
   return (
     <Flex direction="column" gap="16px">
       <Text as="h3" variant="title-x-small" weight="bold">
-        {t("feedbackDialog.title")}
+        {t('feedbackDialog.title')}
       </Text>
 
       <>
         <TextField
-          label={t("feedbackDialog.description")}
+          label={t('feedbackDialog.description')}
           fullWidth
           multiline
           minRows={4}
@@ -49,14 +49,14 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
         )}
         {feedbackSent && (
           <Alert severity="success" sx={{ mt: 2 }}>
-            {t("feedbackDialog.confirmationMessage")}
+            {t('feedbackDialog.confirmationMessage')}
           </Alert>
         )}
       </>
       {feedbackSent ? (
         <Flex pb="18px">
           <Button onClick={onClose} size="medium" variant="secondary">
-            {t("dictionary.close")}
+            {t('dictionary.close')}
           </Button>
         </Flex>
       ) : (
@@ -66,7 +66,7 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
             size="medium"
             variant="secondary"
           >
-            {t("dictionary.cancel")}
+            {t('dictionary.cancel')}
           </Button>
           <Button
             onClick={async () => {
@@ -74,14 +74,14 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
                 await postFeedback(feedbackText);
                 setFeedbackSent(true);
               } catch (error: any) {
-                setFeedbackError(t("feedbackDialog.errorMessage"));
+                setFeedbackError(t('feedbackDialog.errorMessage'));
               }
             }}
             isDisabled={!feedbackText.trim()}
             size="medium"
             variant="primary"
           >
-            {t("feedbackDialog.sendButton")}
+            {t('feedbackDialog.sendButton')}
           </Button>
         </Flex>
       )}

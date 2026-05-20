@@ -1,8 +1,8 @@
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../../utils/translations";
-import type { SetState } from "../../../utils/types";
-import styles from "../scenarioDrawer.module.css";
-import { ConfirmationDialogWithoutCheckbox } from "../../common/ConfirmationDialog";
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import type { SetState } from '../../../utils/types';
+import styles from '../scenarioDrawer.module.css';
+import { ConfirmationDialogWithoutCheckbox } from '../../common/ConfirmationDialog';
 
 type DeleteScenarioConfirmationProps = {
   isOpen: boolean;
@@ -25,8 +25,8 @@ export function DeleteScenarioConfirmation({
         setIsOpen(false);
         onConfirm?.();
       }}
-      title={t("scenarioDrawer.deleteScenarioConfirmation")}
-      confirmButtonText={t("scenarioDrawer.deleteScenarioButton")}
+      title={t('scenarioDrawer.deleteScenarioConfirmation')}
+      confirmButtonText={t('scenarioDrawer.deleteScenarioButton')}
       className={styles.deleteConfirmationDialog}
     />
   );
@@ -53,8 +53,8 @@ export function DeleteActionConfirmation({
         setIsOpen(false);
         onConfirm?.();
       }}
-      title={t("scenarioDrawer.deleteActionConfirmation")}
-      confirmButtonText={t("scenarioDrawer.deleteActionButton")}
+      title={t('scenarioDrawer.deleteActionConfirmation')}
+      confirmButtonText={t('scenarioDrawer.deleteActionButton')}
       className={styles.deleteConfirmationDialog}
     />
   );

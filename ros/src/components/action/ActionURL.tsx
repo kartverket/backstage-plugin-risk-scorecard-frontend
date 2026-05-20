@@ -1,7 +1,7 @@
-import { Box, Link, Text } from "@backstage/ui";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
-import styles from "./ActionURL.module.css";
+import { Box, Link, Text } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import styles from './ActionURL.module.css';
 
 type ActionURLProps = {
   url: string;
@@ -12,22 +12,22 @@ export function ActionURL(props: ActionURLProps) {
   return (
     <Box mt="16px">
       <Text as="p" variant="body-large" weight="bold">
-        {" "}
-        {t("dictionary.url")}
+        {' '}
+        {t('dictionary.url')}
       </Text>
       {props.url ? (
         <Link
           target="_blank"
           variant="body-large"
           rel="noreferrer"
-          href={props.url.startsWith("http") ? props.url : `//${props.url}`}
+          href={props.url.startsWith('http') ? props.url : `//${props.url}`}
         >
           {props.url}
         </Link>
       ) : (
         <Text as="p" variant="body-large" className={styles.emptyText}>
-          {t("dictionary.emptyField", {
-            field: t("dictionary.url").toLowerCase(),
+          {t('dictionary.emptyField', {
+            field: t('dictionary.url').toLowerCase(),
           })}
         </Text>
       )}

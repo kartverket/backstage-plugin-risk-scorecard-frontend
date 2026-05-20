@@ -1,9 +1,9 @@
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { DifferenceFetchState } from "../../utils/types";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import { RiScDifferenceDialog } from "./riScStatus/RiScDifferenceDialog";
-import styles from "./RiScSelectionCard.module.css";
-import { ConfirmationDialogWithCheckbox } from "../common/ConfirmationDialog";
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { DifferenceFetchState } from '../../utils/types';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { RiScDifferenceDialog } from './riScStatus/RiScDifferenceDialog';
+import styles from './RiScSelectionCard.module.css';
+import { ConfirmationDialogWithCheckbox } from '../common/ConfirmationDialog';
 
 interface RiScPublishDialogProps {
   openDialog: boolean;
@@ -29,13 +29,13 @@ export const RiScPublishDialog = ({
       onConfirm={handlePublish}
       title={
         isDeletion
-          ? t("publishDialog.titleDelete")
-          : t("publishDialog.titleUpdate")
+          ? t('publishDialog.titleDelete')
+          : t('publishDialog.titleUpdate')
       }
       checkboxLabel={
         isDeletion
-          ? t("publishDialog.checkboxLabelDelete")
-          : t("publishDialog.checkboxLabelUpdate")
+          ? t('publishDialog.checkboxLabelDelete')
+          : t('publishDialog.checkboxLabelUpdate')
       }
       className={styles.riScInfoDialog}
     >

@@ -1,12 +1,12 @@
-import classNames from "classnames";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
-import { Button } from "@backstage/ui";
+import classNames from 'classnames';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { Button } from '@backstage/ui';
 import {
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
-} from "../../utils/utilityfunctions.ts";
-import styles from "./ActionsCountButton.module.css";
+} from '../../utils/utilityfunctions.ts';
+import styles from './ActionsCountButton.module.css';
 
 type ActionsCountButtonProps = {
   type: UpdatedStatusEnumType;
@@ -19,18 +19,18 @@ export function ActionsCountButton(props: ActionsCountButtonProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const className = classNames(styles.OutdatedActionsCountButton, {
-    [styles["OutdatedActionsCountButton--selected"]]: props.isSelected,
-    [styles["OutdatedActionsCountButton--very-outdated"]]:
+    [styles['OutdatedActionsCountButton--selected']]: props.isSelected,
+    [styles['OutdatedActionsCountButton--very-outdated']]:
       props.type === UpdatedStatusEnum.VERY_OUTDATED,
-    [styles["OutdatedActionsCountButton--outdated"]]:
+    [styles['OutdatedActionsCountButton--outdated']]:
       props.type === UpdatedStatusEnum.OUTDATED,
-    [styles["OutdatedActionsCountButton--updated"]]:
+    [styles['OutdatedActionsCountButton--updated']]:
       props.type === UpdatedStatusEnum.UPDATED,
   });
 
   const closeIndicatorClassName = classNames(
     styles.OutdatedActionsCountCloseIcon,
-    "ri-close-line ri-lg",
+    'ri-close-line ri-lg',
   );
 
   const closeIndicator = props.isSelected ? (
@@ -39,11 +39,11 @@ export function ActionsCountButton(props: ActionsCountButtonProps) {
 
   const translationKey = (() => {
     if (props.type === UpdatedStatusEnum.VERY_OUTDATED) {
-      return "filterButton.veryOutdated";
+      return 'filterButton.veryOutdated';
     } else if (props.type === UpdatedStatusEnum.OUTDATED) {
-      return "filterButton.outdated";
+      return 'filterButton.outdated';
     }
-    return "filterButton.listUpdatedActions";
+    return 'filterButton.listUpdatedActions';
   })();
 
   return (

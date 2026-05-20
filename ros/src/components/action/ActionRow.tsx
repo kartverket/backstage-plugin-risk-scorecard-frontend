@@ -1,10 +1,10 @@
-import { UpdatedStatusEnumType } from "../../utils/utilityfunctions.ts";
-import { ActionStatusOptions } from "../../utils/constants.ts";
-import { DeleteActionConfirmation } from "../scenarioDrawer/components/DeleteConfirmation.tsx";
-import { Action } from "../../utils/types.ts";
-import { useState } from "react";
-import { ActionEdit } from "./ActionEdit.tsx";
-import { ActionView } from "./ActionView.tsx";
+import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
+import { ActionStatusOptions } from '../../utils/constants.ts';
+import { DeleteActionConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
+import { Action } from '../../utils/types.ts';
+import { useState } from 'react';
+import { ActionEdit } from './ActionEdit.tsx';
+import { ActionView } from './ActionView.tsx';
 
 type ActionRowProps = {
   action: Action;
@@ -15,7 +15,7 @@ type ActionRowProps = {
     newAction: Action,
     setIsEditing?: (isEditing: boolean) => void,
   ) => void;
-  updatedStatus: UpdatedStatusEnumType | "UPDATING" | "NONE";
+  updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
   optimisticStatus?: ActionStatusOptions;
   allowDeletion?: boolean;
   allowEdit?: boolean;

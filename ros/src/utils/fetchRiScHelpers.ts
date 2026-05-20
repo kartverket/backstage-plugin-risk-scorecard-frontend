@@ -1,5 +1,5 @@
-import { dtoToRiSc, RiScContentResultDTO, RiScDTO } from "./DTOs";
-import { ContentStatus, RiScWithMetadata } from "./types";
+import { dtoToRiSc, RiScContentResultDTO, RiScDTO } from './DTOs';
+import { ContentStatus, RiScWithMetadata } from './types';
 
 /**
  * Maps a RiScContentResultDTO to a RiScWithMetadata object.
@@ -32,7 +32,7 @@ export function withLoginRejected(
   t: (key: any, options?: any) => string,
 ): string {
   return loginRejected
-    ? `${baseMessage}. ${t("dictionary.rejectedLogin")}`
+    ? `${baseMessage}. ${t('dictionary.rejectedLogin')}`
     : baseMessage;
 }
 
@@ -82,7 +82,7 @@ export function buildFetchRiScErrorMessages(
         if (withErrorCode.length > 0) {
           const groups = withErrorCode.reduce(
             (acc, risk) => {
-              const groupKey = `${risk.errorCode}__${risk.encryptionKeyId ?? ""}`;
+              const groupKey = `${risk.errorCode}__${risk.encryptionKeyId ?? ''}`;
               if (!acc[groupKey]) acc[groupKey] = [];
               acc[groupKey].push(risk);
               return acc;
@@ -92,13 +92,13 @@ export function buildFetchRiScErrorMessages(
 
           Object.values(groups).forEach((group) => {
             const { errorCode, encryptionKeyId } = group[0];
-            const groupRiScIds = group.map((r) => r.riScId).join(", ");
+            const groupRiScIds = group.map((r) => r.riScId).join(', ');
             if (encryptionKeyId) {
-              const keyId = encryptionKeyId.split("/").pop() ?? encryptionKeyId;
+              const keyId = encryptionKeyId.split('/').pop() ?? encryptionKeyId;
               const errorKey =
                 group.length === 1
-                  ? "errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE"
-                  : "errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL";
+                  ? 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE'
+                  : 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL';
               messages.push(
                 t(errorKey as any, { riScId: groupRiScIds, keyId }),
               );
@@ -115,20 +115,20 @@ export function buildFetchRiScErrorMessages(
           const errorKey = `errorMessages.ContentStatus${statusKey}`;
           messages.push(
             t(errorKey as any, {
-              riScId: withoutErrorCode.map((r) => r.riScId).join(", "),
+              riScId: withoutErrorCode.map((r) => r.riScId).join(', '),
               status,
             }),
           );
         }
 
-        return messages.join("\n");
+        return messages.join('\n');
       }
 
       const errorKey = `errorMessages.ContentStatus${statusKey}`;
       return t(errorKey as any, {
-        riScId: (riScIds as string[]).join(", "),
+        riScId: (riScIds as string[]).join(', '),
         status,
       });
     })
-    .join("\n");
+    .join('\n');
 }

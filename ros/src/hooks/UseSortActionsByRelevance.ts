@@ -1,6 +1,6 @@
-import { useCallback } from "react";
-import { Action } from "../utils/types.ts";
-import { ActionStatusOptions } from "../utils/constants.ts";
+import { useCallback } from 'react';
+import { Action } from '../utils/types.ts';
+import { ActionStatusOptions } from '../utils/constants.ts';
 
 export function useSortActionsByRelevance() {
   return useCallback((actions: Action[]) => {

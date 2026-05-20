@@ -1,11 +1,11 @@
-import { Action } from "./types.ts";
-import { ActionStatusOptions } from "./constants.ts";
+import { Action } from './types.ts';
+import { ActionStatusOptions } from './constants.ts';
 import {
   calculateDaysSince,
   calculateUpdatedStatus,
   UpdatedStatusEnum,
-} from "./utilityfunctions.ts";
-import { ProfileInfo } from "@backstage/core-plugin-api";
+} from './utilityfunctions.ts';
+import { ProfileInfo } from '@backstage/core-plugin-api';
 
 export function filterActionsByRelevance(
   actions: Action[],
@@ -38,7 +38,7 @@ export function getActionsWithLastUpdated(
   profileInfo?: ProfileInfo,
 ) {
   const actionsWithLastUpdated: Action[] = [];
-  const lastUpdatedBy = profileInfo?.displayName || profileInfo?.email || "";
+  const lastUpdatedBy = profileInfo?.displayName || profileInfo?.email || '';
   for (const newAction of newActions) {
     if (idsOfActionsToForceUpdateLastUpdatedValue.includes(newAction.ID)) {
       actionsWithLastUpdated.push({

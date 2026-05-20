@@ -1,8 +1,8 @@
-import { forwardRef } from "react";
-import MUIRadio, { RadioProps } from "@mui/material/Radio";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import formStyles from "../../common/formStyles.module.css";
-import styles from "./RiskRadioButton.module.css";
+import { forwardRef } from 'react';
+import MUIRadio, { RadioProps } from '@mui/material/Radio';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import formStyles from '../../common/formStyles.module.css';
+import styles from './RiskRadioButton.module.css';
 
 type Props = RadioProps & {
   label?: string;

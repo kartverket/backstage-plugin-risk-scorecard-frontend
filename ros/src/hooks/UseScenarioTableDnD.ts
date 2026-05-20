@@ -1,7 +1,7 @@
-import { RiScWithMetadata, Scenario } from "../utils/types.ts";
-import { RefObject } from "react";
-import { useDrag, useDrop } from "react-dnd";
-import { useRiScs } from "../contexts/RiScContext.tsx";
+import { RiScWithMetadata, Scenario } from '../utils/types.ts';
+import { RefObject } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
+import { useRiScs } from '../contexts/RiScContext.tsx';
 
 export function useScenarioTableDrop(
   index: number,
@@ -10,7 +10,7 @@ export function useScenarioTableDrop(
   ref: RefObject<HTMLDivElement>,
 ) {
   return useDrop({
-    accept: "row",
+    accept: 'row',
     hover(item: { id: string; index: number }, monitor) {
       if (!ref.current) return;
 
@@ -48,7 +48,7 @@ export function useScenarioTableDrag(
 ) {
   const { updateRiSc } = useRiScs();
   return useDrag(() => ({
-    type: "row",
+    type: 'row',
     item: { id, index },
 
     end: (item, monitor) => {

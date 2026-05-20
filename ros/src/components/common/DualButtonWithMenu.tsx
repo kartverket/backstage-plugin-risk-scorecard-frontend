@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
-import { ButtonProps } from "@backstage/ui";
-import { DualButton } from "./DualButton";
+import React, { useCallback } from 'react';
+import { ButtonProps } from '@backstage/ui';
+import { DualButton } from './DualButton';
 
 type MenuItemDef = {
   key: string;

@@ -1,12 +1,12 @@
 // Type definitions
-import { useState } from "react";
+import { useState } from 'react';
 
 type ActionFilters = {
   showOnlyRelevant: boolean;
 };
 
 // Constants
-const LOCAL_STORAGE_KEY = "actionFilters";
+const LOCAL_STORAGE_KEY = 'actionFilters';
 
 const DEFAULT_ACTION_FILTERS: ActionFilters = {
   showOnlyRelevant: false,

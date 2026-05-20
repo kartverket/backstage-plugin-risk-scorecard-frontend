@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-import Paper from "@mui/material/Paper";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../../utils/translations";
-import { emptyAction, useScenario } from "../../../contexts/ScenarioContext";
-import sharedStyles from "../scenarioDrawer.module.css";
-import { useFieldArray, UseFormReturn } from "react-hook-form";
-import { Action, FormScenario } from "../../../utils/types";
-import { ActionFormItem } from "./ActionFormItem";
-import { AddCircle } from "@mui/icons-material";
-import Switch from "@mui/material/Switch";
-import { useActionFiltersStorage } from "../../../stores/ActionFiltersStore.ts";
+import { useEffect, useState } from 'react';
+import Paper from '@mui/material/Paper';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { emptyAction, useScenario } from '../../../contexts/ScenarioContext';
+import sharedStyles from '../scenarioDrawer.module.css';
+import { useFieldArray, UseFormReturn } from 'react-hook-form';
+import { Action, FormScenario } from '../../../utils/types';
+import { ActionFormItem } from './ActionFormItem';
+import { AddCircle } from '@mui/icons-material';
+import Switch from '@mui/material/Switch';
+import { useActionFiltersStorage } from '../../../stores/ActionFiltersStore.ts';
 import {
   Text,
   Tooltip,
@@ -18,12 +18,12 @@ import {
   Button,
   Card,
   Box,
-} from "@backstage/ui";
-import { useSortActionsByRelevance } from "../../../hooks/UseSortActionsByRelevance.ts";
-import { filterActionsByRelevance } from "../../../utils/actions.ts";
-import { ActionRowList } from "../../action/ActionRowList.tsx";
-import styles from "./ActionsSection.module.css";
-import { ActionStatusOptions } from "../../../utils/constants.ts";
+} from '@backstage/ui';
+import { useSortActionsByRelevance } from '../../../hooks/UseSortActionsByRelevance.ts';
+import { filterActionsByRelevance } from '../../../utils/actions.ts';
+import { ActionRowList } from '../../action/ActionRowList.tsx';
+import styles from './ActionsSection.module.css';
+import { ActionStatusOptions } from '../../../utils/constants.ts';
 
 const RelevanceToggle = ({
   checked,
@@ -42,7 +42,7 @@ const RelevanceToggle = ({
         name="showOnlyRelevant"
         color="primary"
       />
-      <Text variant="body-medium">{t("dictionary.showOnlyRelevant")}</Text>
+      <Text variant="body-medium">{t('dictionary.showOnlyRelevant')}</Text>
     </Flex>
   );
 };
@@ -59,7 +59,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   const [allowActionDeletion, setAllowActionDeletion] =
     useState<boolean>(false);
   const { watch } = formMethods;
-  const currentActions = watch("actions");
+  const currentActions = watch('actions');
 
   const [sortedActions, setSortedActions] = useState<Action[] | undefined>(
     undefined,
@@ -102,7 +102,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
     <Paper className={sharedStyles.section}>
       <Flex justify="between" mb="2">
         <Text variant="title-x-small" weight="bold">
-          {t("dictionary.measures")}
+          {t('dictionary.measures')}
         </Text>
         <Flex align="center">
           {doesCurrentActionsContainNotRelevantActions && (
@@ -128,8 +128,8 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
               </Button>
               <Tooltip>
                 {allowActionDeletion
-                  ? t("scenarioTable.doneEditing")
-                  : t("scenarioTable.editButton")}
+                  ? t('scenarioTable.doneEditing')
+                  : t('scenarioTable.editButton')}
               </Tooltip>
             </TooltipTrigger>
           )}
@@ -148,10 +148,10 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
       ) : (
         <Text variant="body-large" className={styles.italicText}>
           {!currentActions || currentActions.length === 0
-            ? t("dictionary.emptyField", {
-                field: t("dictionary.measures").toLowerCase(),
+            ? t('dictionary.emptyField', {
+                field: t('dictionary.measures').toLowerCase(),
               })
-            : t("dictionary.noRelevantMeasures")}
+            : t('dictionary.noRelevantMeasures')}
         </Text>
       )}
     </Paper>
@@ -168,14 +168,14 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
   const { control } = props.formMethods;
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "actions",
+    name: 'actions',
   });
 
   return (
     <Paper className={sharedStyles.section}>
       <Box>
         <Text variant="title-x-small" weight="bold">
-          {t("dictionary.measures")}
+          {t('dictionary.measures')}
         </Text>
       </Box>
       {fields.map((field, index) => (
@@ -195,7 +195,7 @@ function ActionsSectionOnEdit(props: ActionsSectionOnEditProps) {
         onClick={() => append(emptyAction())}
         className={styles.addActionButton}
       >
-        {t("scenarioDrawer.measureTab.addMeasureButton")}
+        {t('scenarioDrawer.measureTab.addMeasureButton')}
       </Button>
     </Paper>
   );

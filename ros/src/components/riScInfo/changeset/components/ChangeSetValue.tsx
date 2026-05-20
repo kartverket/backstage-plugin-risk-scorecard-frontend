@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import styles from "./changeSet.module.css";
+import { ReactNode } from 'react';
+import styles from './changeSet.module.css';
 
 interface ChangeSetValueProps {
   value: string | ReactNode;
@@ -13,8 +13,8 @@ export function ChangeSetValue({
   emphasised,
 }: ChangeSetValueProps) {
   return (
-    <span className={emphasised ? styles.text : ""}>
-      {value} {unit ? unit : ""}
+    <span className={emphasised ? styles.text : ''}>
+      {value} {unit ? unit : ''}
     </span>
   );
 }

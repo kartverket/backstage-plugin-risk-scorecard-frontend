@@ -9,27 +9,27 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   TextField,
-} from "@mui/material";
-import { GcpCryptoKeyRadioGroup } from "../sopsConfigDialog/GcpCryptoKeyRadioGroup";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import { AddCircle, ExpandMore } from "@mui/icons-material";
-import DeleteIcon from "@mui/icons-material/Delete";
+} from '@mui/material';
+import { GcpCryptoKeyRadioGroup } from '../sopsConfigDialog/GcpCryptoKeyRadioGroup';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { AddCircle, ExpandMore } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   CryptoKeyPermission,
   GcpCryptoKeyObject,
   SopsConfigDTO,
-} from "../../utils/DTOs";
-import { useEffect, useState } from "react";
-import { RiScWithMetadata } from "../../utils/types";
-import { UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { RiScDialogStates } from "./RiScDialog";
-import { isPublicAgeKeyValid } from "../../utils/utilityfunctions";
-import { FieldErrors } from "react-hook-form";
-import FormHelperText from "@mui/material/FormHelperText";
-import { URLS } from "../../urls";
-import { Text, Link, Button, Flex, Box } from "@backstage/ui";
-import styles from "../riScDialog/RiScDialog.module.css";
+} from '../../utils/DTOs';
+import { useEffect, useState } from 'react';
+import { RiScWithMetadata } from '../../utils/types';
+import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { RiScDialogStates } from './RiScDialog';
+import { isPublicAgeKeyValid } from '../../utils/utilityfunctions';
+import { FieldErrors } from 'react-hook-form';
+import FormHelperText from '@mui/material/FormHelperText';
+import { URLS } from '../../urls';
+import { Text, Link, Button, Flex, Box } from '@backstage/ui';
+import styles from '../riScDialog/RiScDialog.module.css';
 
 interface ConfigEncryptionDialogProps {
   gcpCryptoKeys: GcpCryptoKeyObject[];
@@ -50,9 +50,9 @@ function ConfigEncryptionDialog({
 }: ConfigEncryptionDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const [publicAgeKeyHelperText, setPublicKeyTextFieldHelperText] =
-    useState("");
+    useState('');
   const [publicAgeKeyError, setPublicKeyTextFieldError] = useState(false);
-  const [newPublicAgeKey, setNewPublicAgeKey] = useState("");
+  const [newPublicAgeKey, setNewPublicAgeKey] = useState('');
   const [publicAgeKeys, setPublicAgeKeys] = useState<string[]>(() => {
     if (sopsData?.age) {
       return sopsData.age.map((age) => age.recipient);
@@ -101,7 +101,7 @@ function ConfigEncryptionDialog({
   }
 
   useEffect(() => {
-    setValue("sopsConfig", {
+    setValue('sopsConfig', {
       shamir_threshold: 2,
       gcp_kms: chosenGcpCryptoKey
         ? [
@@ -116,7 +116,7 @@ function ConfigEncryptionDialog({
   }, [chosenGcpCryptoKey, publicAgeKeys, setValue]);
 
   // Require one key group to contain a GCP key
-  register("sopsConfig.gcp_kms", {
+  register('sopsConfig.gcp_kms', {
     validate: (gcpKeys) => gcpKeys.length > 0,
   });
 
@@ -128,16 +128,16 @@ function ConfigEncryptionDialog({
     if (isPublicAgeKeyValid(newPublicAgeKey)) {
       if (publicAgeKeys.includes(newPublicAgeKey)) {
         setPublicKeyTextFieldHelperText(
-          t("sopsConfigDialog.publicKeyHelperTextKeyAlreadyExistInSopsConfig"),
+          t('sopsConfigDialog.publicKeyHelperTextKeyAlreadyExistInSopsConfig'),
         );
         setPublicKeyTextFieldError(true);
       } else {
         setPublicAgeKeys([...publicAgeKeys, newPublicAgeKey]);
-        setNewPublicAgeKey("");
+        setNewPublicAgeKey('');
       }
     } else {
       setPublicKeyTextFieldHelperText(
-        t("sopsConfigDialog.publicKeyHelperTextKeyNotValid"),
+        t('sopsConfigDialog.publicKeyHelperTextKeyNotValid'),
       );
       setPublicKeyTextFieldError(true);
     }
@@ -147,12 +147,12 @@ function ConfigEncryptionDialog({
     <Flex direction="column">
       <Text>
         {state === RiScDialogStates.Create
-          ? t("sopsConfigDialog.description.new")
-          : t("sopsConfigDialog.description.edit")}
+          ? t('sopsConfigDialog.description.new')
+          : t('sopsConfigDialog.description.edit')}
       </Text>
       <Flex direction="column" gap="0px">
         <Text variant="body-medium" weight="bold">
-          {t("sopsConfigDialog.selectKeysTitle")}
+          {t('sopsConfigDialog.selectKeysTitle')}
         </Text>
         <GcpCryptoKeyRadioGroup
           chosenGcpCryptoKey={chosenGcpCryptoKey}
@@ -162,7 +162,7 @@ function ConfigEncryptionDialog({
       </Flex>
       {errors.sopsConfig !== undefined && (
         <FormHelperText error={true}>
-          {t("sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage")}
+          {t('sopsConfigDialog.gcpCryptoKeyNonSelectedErrorMessage')}
         </FormHelperText>
       )}
       <Box className={styles.accordionContainer}>
@@ -172,20 +172,20 @@ function ConfigEncryptionDialog({
             aria-controls="panel1-content"
             id="panel1-header"
           >
-            {t("sopsConfigDialog.publicAgeKeyQuestion")}
+            {t('sopsConfigDialog.publicAgeKeyQuestion')}
           </AccordionSummary>
           <AccordionDetails>
             <Box>
               {publicAgeKeys.length > 0 && (
                 <FormLabel>
-                  {t("sopsConfigDialog.publicAgeKeysAlreadyPresent")}
+                  {t('sopsConfigDialog.publicAgeKeysAlreadyPresent')}
                 </FormLabel>
               )}
               {publicAgeKeys.length > 0 && (
                 <Box
                   style={{
-                    border: "1px solid",
-                    borderRadius: "4px",
+                    border: '1px solid',
+                    borderRadius: '4px',
                     marginBottom: 2,
                   }}
                 >
@@ -210,7 +210,7 @@ function ConfigEncryptionDialog({
                 </Box>
               )}
               <Text as="p" variant="body-large">
-                {t("dictionary.click")}{" "}
+                {t('dictionary.click')}{' '}
                 <Link
                   href={
                     URLS.external.kartverket_atlassian_net__write_ros_locally
@@ -219,14 +219,14 @@ function ConfigEncryptionDialog({
                   rel="noopener noreferrer"
                   color="primary"
                 >
-                  {t("dictionary.here")}
-                </Link>{" "}
-                {t("sopsConfigDialog.writeLocalRiscSuffix")}
+                  {t('dictionary.here')}
+                </Link>{' '}
+                {t('sopsConfigDialog.writeLocalRiscSuffix')}
               </Text>
               <Text as="p" variant="body-large">
-                {`${t("sopsConfigDialog.publicAgeKeyDescription")} (${t(
-                  "dictionary.optional",
-                )})`}{" "}
+                {`${t('sopsConfigDialog.publicAgeKeyDescription')} (${t(
+                  'dictionary.optional',
+                )})`}{' '}
               </Text>
               <Flex direction="column" justify="between" gap="2" mt="2">
                 {!isAddPublicAgeKeyVisible && (
@@ -236,27 +236,27 @@ function ConfigEncryptionDialog({
                     variant="secondary"
                     onClick={showAddPublicAgeKey}
                     style={{
-                      width: "fit-content",
-                      marginTop: "1rem",
+                      width: 'fit-content',
+                      marginTop: '1rem',
                     }}
                   >
-                    {t("sopsConfigDialog.addPublicAgeKey")}
+                    {t('sopsConfigDialog.addPublicAgeKey')}
                   </Button>
                 )}
                 {isAddPublicAgeKeyVisible && (
                   <Flex align="center" gap="1">
                     <TextField
-                      label={t("sopsConfigDialog.publicAgeKey")}
+                      label={t('sopsConfigDialog.publicAgeKey')}
                       helperText={publicAgeKeyHelperText}
                       error={publicAgeKeyError}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") {
+                        if (e.key === 'Enter') {
                           handleAddPublicAgeKey();
                         }
                       }}
                       onFocus={() => {
                         setPublicKeyTextFieldError(false);
-                        setPublicKeyTextFieldHelperText("");
+                        setPublicKeyTextFieldHelperText('');
                       }}
                       value={newPublicAgeKey}
                       onChange={(e) => setNewPublicAgeKey(e.target.value)}
@@ -269,7 +269,7 @@ function ConfigEncryptionDialog({
                         maxWidth: 200,
                       }}
                     >
-                      {t("sopsConfigDialog.addPublicAgeKey")}
+                      {t('sopsConfigDialog.addPublicAgeKey')}
                     </Button>
                   </Flex>
                 )}
@@ -289,7 +289,7 @@ function buildKeyFromSopsData(sopsData: SopsConfigDTO | undefined) {
   if (!gcpKms || !gcpKms.resource_id) {
     return undefined;
   }
-  const resourceParts = gcpKms.resource_id.split("/");
+  const resourceParts = gcpKms.resource_id.split('/');
   if (resourceParts.length === 8) {
     return {
       projectId: resourceParts[1],

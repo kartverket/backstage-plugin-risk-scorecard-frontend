@@ -4,10 +4,10 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { useAuthenticatedFetch } from "../utils/hooks.ts";
-import { DefaultRiScTypeDescriptor } from "../utils/types.ts";
-import { useEntity } from "@backstage/plugin-catalog-react";
+} from 'react';
+import { useAuthenticatedFetch } from '../utils/hooks.ts';
+import { DefaultRiScTypeDescriptor } from '../utils/types.ts';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 type DefaultRiScTypesContextObject = {
   defaultRiScTypeDescriptors: DefaultRiScTypeDescriptor[];
@@ -85,7 +85,7 @@ export function useDefaultRiScTypeDescriptors() {
 
   if (context === undefined) {
     throw new Error(
-      "useDefaultRiScTypeDescriptors must be used within a DefaultRiScTypesContext provider",
+      'useDefaultRiScTypeDescriptors must be used within a DefaultRiScTypesContext provider',
     );
   }
   return context;

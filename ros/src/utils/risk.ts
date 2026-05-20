@@ -1,6 +1,6 @@
-import { RiSc, Scenario } from "./types.ts";
-import { ActionStatusOptions } from "./constants.ts";
-import { RiskMatrixTabs } from "../components/riskMatrix/utils.tsx";
+import { RiSc, Scenario } from './types.ts';
+import { ActionStatusOptions } from './constants.ts';
+import { RiskMatrixTabs } from '../components/riskMatrix/utils.tsx';
 
 export function calcRiskCostOfRiSc(riSc: RiSc, riskType?: RiskMatrixTabs) {
   return riSc.scenarios
@@ -26,7 +26,7 @@ export function calcRiskCostOfScenario(
       startRiskCost + (endRiskCost - startRiskCost) * completedActionsRatio
     );
   }
-  throw new Error("Unable to calculate risk cost: unhandled risk type");
+  throw new Error('Unable to calculate risk cost: unhandled risk type');
 }
 
 function calcCompletedActionsRatio(scenario: Scenario) {

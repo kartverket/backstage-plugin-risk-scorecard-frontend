@@ -1,5 +1,5 @@
-import { ProfileInfo, useRouteRef } from "@backstage/core-plugin-api";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
+import { ProfileInfo, useRouteRef } from '@backstage/core-plugin-api';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import {
   ReactNode,
   createContext,
@@ -8,48 +8,48 @@ import {
   useState,
   Dispatch,
   SetStateAction,
-} from "react";
-import { useNavigate, useParams } from "react-router";
-import { useSearchParams } from "react-router-dom";
-import { riScRouteRef, scenarioRouteRef } from "../routes";
-import { pluginRiScTranslationRef } from "../utils/translations";
-import { Action, FormScenario, Scenario } from "../utils/types";
+} from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import { riScRouteRef, scenarioRouteRef } from '../routes';
+import { pluginRiScTranslationRef } from '../utils/translations';
+import { Action, FormScenario, Scenario } from '../utils/types';
 import {
   generateRandomId,
   roundConsequenceToNearestConsequenceOption,
   roundProbabilityToNearestProbabilityOption,
-} from "../utils/utilityfunctions";
-import { useRiScs } from "./RiScContext";
+} from '../utils/utilityfunctions';
+import { useRiScs } from './RiScContext';
 import {
   ActionStatusOptions,
   consequenceOptions,
   probabilityOptions,
-} from "../utils/constants";
-import { getActionsWithLastUpdated } from "../utils/actions.ts";
-import { getScenarioOfIdFromRiSc } from "../utils/scenario.ts";
+} from '../utils/constants';
+import { getActionsWithLastUpdated } from '../utils/actions.ts';
+import { getScenarioOfIdFromRiSc } from '../utils/scenario.ts';
 
 export const emptyAction = (): Action => ({
   ID: generateRandomId(),
-  title: "",
-  description: "",
+  title: '',
+  description: '',
   status: ActionStatusOptions.NotOK,
-  url: "",
+  url: '',
 });
 
 const emptyScenario = (): Scenario => ({
   ID: generateRandomId(),
-  title: "",
-  description: "",
+  title: '',
+  description: '',
   threatActors: [],
   vulnerabilities: [],
   risk: {
-    summary: "",
+    summary: '',
     probability: 0.01,
     consequence: 1000,
   },
   actions: [],
   remainingRisk: {
-    summary: "",
+    summary: '',
     probability: 0.01,
     consequence: 1000,
   },
@@ -93,10 +93,10 @@ type ScenarioDrawerProps = {
 
 export type ScenarioWizardSteps = (typeof scenarioWizardSteps)[number];
 export const scenarioWizardSteps = [
-  "scenario",
-  "initialRisk",
-  "measure",
-  "restRisk",
+  'scenario',
+  'initialRisk',
+  'measure',
+  'restRisk',
 ] as const;
 
 const ScenarioContext = createContext<ScenarioDrawerProps | undefined>(
@@ -152,12 +152,12 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
     return {
       ...initialScenario,
       risk: {
-        summary: "",
+        summary: '',
         probability: probabilityOptions[0].toString(),
         consequence: consequenceOptions[0].toString(),
       },
       remainingRisk: {
-        summary: "",
+        summary: '',
         probability: probabilityOptions[0].toString(),
         consequence: consequenceOptions[0].toString(),
       },
@@ -167,7 +167,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
   // Open scenario when url changes
   useEffect(() => {
     const scenarioWizardStep = searchParams.get(
-      "step",
+      'step',
     ) as ScenarioWizardSteps | null;
 
     if (riSc) {
@@ -192,7 +192,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       // If there is an invalid scenario ID in the URL, navigate to the RiSc with error state
       if (!selectedScenario) {
         navigate(getRiScPath({ riScId: riSc.id }), {
-          state: t("errorMessages.ScenarioDoesNotExist"),
+          state: t('errorMessages.ScenarioDoesNotExist'),
         });
         return;
       }
@@ -363,7 +363,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
 export function useScenario() {
   const context = useContext(ScenarioContext);
   if (context === undefined) {
-    throw new Error("useScenario must be used within a ScenarioProvider");
+    throw new Error('useScenario must be used within a ScenarioProvider');
   }
   return context;
 }

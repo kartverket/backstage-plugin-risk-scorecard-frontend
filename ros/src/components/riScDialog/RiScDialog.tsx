@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import { RiScWithMetadata } from "../../utils/types";
-import { emptyRiSc, isDeeplyEqual } from "../../utils/utilityfunctions";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import { useRiScs } from "../../contexts/RiScContext";
-import { useForm } from "react-hook-form";
-import { Step, StepLabel, Stepper } from "@mui/material";
-import ConfigEncryptionDialog from "./ConfigEncryptionDialog";
-import ConfigRiscInfo from "./ConfigRiscInfo";
-import ConfigInitialRisc from "./ConfigInitialRisc";
-import { Flex, Button, Text } from "@backstage/ui";
-import styles from "./RiScDialog.module.css";
-import { useDefaultRiScTypeDescriptors } from "../../contexts/DefaultRiScTypesContext.tsx";
-import DialogComponent from "../dialog/DialogComponent.tsx";
+import { useState, useEffect } from 'react';
+import { RiScWithMetadata } from '../../utils/types';
+import { emptyRiSc, isDeeplyEqual } from '../../utils/utilityfunctions';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useRiScs } from '../../contexts/RiScContext';
+import { useForm } from 'react-hook-form';
+import { Step, StepLabel, Stepper } from '@mui/material';
+import ConfigEncryptionDialog from './ConfigEncryptionDialog';
+import ConfigRiscInfo from './ConfigRiscInfo';
+import ConfigInitialRisc from './ConfigInitialRisc';
+import { Flex, Button, Text } from '@backstage/ui';
+import styles from './RiScDialog.module.css';
+import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
+import DialogComponent from '../dialog/DialogComponent.tsx';
 
 export enum RiScDialogStates {
   Closed = 0,
@@ -33,9 +33,9 @@ function RiScStepper({ activeStep }: { activeStep: number }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const steps = [
-    t("rosDialog.initialRiscTitle"),
-    t("rosDialog.stepRiscDetails"),
-    t("rosDialog.stepEncryption"),
+    t('rosDialog.initialRiscTitle'),
+    t('rosDialog.stepRiscDetails'),
+    t('rosDialog.stepEncryption'),
   ];
   return (
     <Stepper activeStep={activeStep} alternativeLabel>
@@ -83,7 +83,7 @@ export function RiScDialog({
               shamir_threshold: 2,
             },
           },
-    mode: "onBlur",
+    mode: 'onBlur',
   });
 
   const [activeStep, setActiveStep] = useState(0);
@@ -126,7 +126,7 @@ export function RiScDialog({
       createNewRiSc(data, switchOn, selectedRiScId);
     } else if (dialogState === RiScDialogStates.Delete) {
       deleteRiSc(() =>
-        selectRiSc(riScs && riScs.length > 0 ? riScs[0].id : ""),
+        selectRiSc(riScs && riScs.length > 0 ? riScs[0].id : ''),
       );
     } else {
       // Do manual comparison of contents, as the sopsConfig field contains many values from the backend that are not
@@ -156,7 +156,7 @@ export function RiScDialog({
 
       // Only update the risc if it has changed
       if (
-        !isDeeplyEqual(data, selectedRiSc, ["sopsConfig"]) ||
+        !isDeeplyEqual(data, selectedRiSc, ['sopsConfig']) ||
         !areGCPKeysEqual ||
         !areAgeKeysEqual
       ) {
@@ -171,7 +171,7 @@ export function RiScDialog({
       <DialogComponent
         isOpen={true}
         onClick={onClose}
-        header={t("rosDialog.titleNew")}
+        header={t('rosDialog.titleNew')}
         className={styles.createRiscDialog}
       >
         <RiScStepper activeStep={activeStep} />
@@ -181,9 +181,9 @@ export function RiScDialog({
           weight="bold"
           className={styles.subtitle}
         >
-          {activeStep === 0 && t("rosDialog.initialRiscTitle")}
-          {activeStep === 1 && t("rosDialog.titleAndScope")}
-          {activeStep === 2 && t("rosDialog.stepEncryption")}
+          {activeStep === 0 && t('rosDialog.initialRiscTitle')}
+          {activeStep === 1 && t('rosDialog.titleAndScope')}
+          {activeStep === 2 && t('rosDialog.stepEncryption')}
         </Text>
         {activeStep === 0 && (
           <ConfigInitialRisc
@@ -213,7 +213,7 @@ export function RiScDialog({
         )}
         <Flex pt="16px" justify="between">
           <Button size="medium" variant="secondary" onClick={onClose}>
-            {t("dictionary.cancel")}
+            {t('dictionary.cancel')}
           </Button>
           <Flex>
             <Button
@@ -222,15 +222,15 @@ export function RiScDialog({
               isDisabled={activeStep === 0}
               onClick={handleBack}
             >
-              {t("dictionary.previous")}
+              {t('dictionary.previous')}
             </Button>
             {activeStep < 2 ? (
               <Button size="medium" variant="primary" onClick={handleNext}>
-                {t("dictionary.next")}
+                {t('dictionary.next')}
               </Button>
             ) : (
               <Button size="medium" variant="primary" onClick={handleFinish}>
-                {t("dictionary.save")}
+                {t('dictionary.save')}
               </Button>
             )}
           </Flex>
@@ -244,17 +244,17 @@ export function RiScDialog({
       <DialogComponent
         isOpen={true}
         onClick={onClose}
-        header={t("deleteDialog.title")}
+        header={t('deleteDialog.title')}
         className={styles.createRiscDialog}
       >
         <Flex direction="column">
-          {t("deleteDialog.confirmationMessage")}
+          {t('deleteDialog.confirmationMessage')}
           <Flex justify="between" pt="16px">
             <Button size="medium" variant="secondary" onClick={onClose}>
-              {t("dictionary.cancel")}
+              {t('dictionary.cancel')}
             </Button>
             <Button size="medium" variant="primary" onClick={handleFinish}>
-              {t("dictionary.delete")}
+              {t('dictionary.delete')}
             </Button>
           </Flex>
         </Flex>
@@ -267,7 +267,7 @@ export function RiScDialog({
       <DialogComponent
         isOpen={true}
         onClick={onClose}
-        header={t("rosDialog.titleEdit")}
+        header={t('rosDialog.titleEdit')}
         className={styles.createRiscDialog}
       >
         <ConfigRiscInfo
@@ -284,14 +284,14 @@ export function RiScDialog({
             className={styles.deleteButton}
           >
             <i className={`ri-delete-bin-line ${styles.deleteButtonIcon}`} />
-            {t("contentHeader.deleteButton")}
+            {t('contentHeader.deleteButton')}
           </Button>
           <Flex>
             <Button size="medium" variant="secondary" onClick={onClose}>
-              {t("dictionary.cancel")}
+              {t('dictionary.cancel')}
             </Button>
             <Button size="medium" variant="primary" onClick={handleFinish}>
-              {t("dictionary.save")}
+              {t('dictionary.save')}
             </Button>
           </Flex>
         </Flex>
@@ -304,7 +304,7 @@ export function RiScDialog({
       <DialogComponent
         isOpen={true}
         onClick={onClose}
-        header={t("rosDialog.editEncryption")}
+        header={t('rosDialog.editEncryption')}
         className={styles.createRiscDialog}
       >
         <ConfigEncryptionDialog
@@ -317,10 +317,10 @@ export function RiScDialog({
         />
         <Flex justify="between" pt="16px">
           <Button size="medium" variant="secondary" onClick={onClose}>
-            {t("dictionary.cancel")}
+            {t('dictionary.cancel')}
           </Button>
           <Button size="medium" variant="primary" onClick={handleFinish}>
-            {t("dictionary.save")}
+            {t('dictionary.save')}
           </Button>
         </Flex>
       </DialogComponent>

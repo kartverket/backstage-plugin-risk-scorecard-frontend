@@ -1,7 +1,7 @@
-import { riScPlugin } from "./plugin";
+import { riScPlugin } from './plugin';
 
-describe("riSc", () => {
-  it("should export plugin", () => {
+describe('riSc', () => {
+  it('should export plugin', () => {
     expect(riScPlugin).toBeDefined();
   });
 });

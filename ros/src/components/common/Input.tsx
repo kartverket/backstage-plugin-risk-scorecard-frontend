@@ -1,10 +1,10 @@
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormLabel from "@mui/material/FormLabel";
-import TextField, { TextFieldProps } from "@mui/material/TextField";
-import { forwardRef } from "react";
-import { commonTextColor } from "../../utils/style";
-import formStyles from "./formStyles.module.css";
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormLabel from '@mui/material/FormLabel';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
+import { forwardRef } from 'react';
+import { commonTextColor } from '../../utils/style';
+import formStyles from './formStyles.module.css';
 
 type Props = TextFieldProps & {
   sublabel?: string;
@@ -37,7 +37,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
           inputRef={ref}
           InputProps={{
             sx: {
-              "&.Mui-disabled": {
+              '&.Mui-disabled': {
                 color: commonTextColor(true),
               },
             },

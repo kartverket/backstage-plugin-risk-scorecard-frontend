@@ -1,17 +1,17 @@
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Paper from "@mui/material/Paper";
-import Tooltip from "@mui/material/Tooltip";
-import { useState, useEffect } from "react";
-import { RiScStatus, RiScWithMetadata } from "../../utils/types";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import { useScenario } from "../../contexts/ScenarioContext";
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Paper from '@mui/material/Paper';
+import Tooltip from '@mui/material/Tooltip';
+import { useState, useEffect } from 'react';
+import { RiScStatus, RiScWithMetadata } from '../../utils/types';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useScenario } from '../../contexts/ScenarioContext';
 import {
   findConsequenceIndex,
   findProbabilityIndex,
-} from "../../utils/utilityfunctions";
-import { Text } from "@backstage/ui";
-import styles from "./RiskMatrixScenarioCount.module.css";
+} from '../../utils/utilityfunctions';
+import { Text } from '@backstage/ui';
+import styles from './RiskMatrixScenarioCount.module.css';
 
 interface ScenarioCountProps {
   riScWithMetadata: RiScWithMetadata;
@@ -70,7 +70,7 @@ export function RiskMatrixScenarioCount({
   const tooltipList = (
     <div>
       <Text variant="title-x-small" weight="bold">
-        {t("riskMatrix.tooltip.title")}
+        {t('riskMatrix.tooltip.title')}
       </Text>
       <ul className={styles.tooltipList}>
         {scenarios.map((scenario) => (
@@ -84,7 +84,7 @@ export function RiskMatrixScenarioCount({
                 handleScenarioClick(scenario.ID);
               }}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+                if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   handleScenarioClick(scenario.ID);
                 }
@@ -112,7 +112,7 @@ export function RiskMatrixScenarioCount({
       >
         <Paper
           className={`${styles.circle} ${styles.centered} ${
-            isHovered || isHighlightedFromExternal ? styles.circleHovered : ""
+            isHovered || isHighlightedFromExternal ? styles.circleHovered : ''
           }`}
           elevation={10}
           onClick={() => setTooltipOpen(!tooltipOpen)}

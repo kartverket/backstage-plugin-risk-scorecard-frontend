@@ -1,8 +1,8 @@
-import { Radio, RadioGroup, Text } from "@backstage/ui";
-import { GcpCryptoKeyObject } from "../../utils/DTOs";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import styles from "./GcpCryptoKeyRadioGroup.module.css";
+import { Radio, RadioGroup, Text } from '@backstage/ui';
+import { GcpCryptoKeyObject } from '../../utils/DTOs';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import styles from './GcpCryptoKeyRadioGroup.module.css';
 
 interface GcpCryptoKeyRadioGroupProps {
   chosenGcpCryptoKey: GcpCryptoKeyObject | undefined;
@@ -31,25 +31,25 @@ export function GcpCryptoKeyRadioGroup({
   return (
     <>
       {gcpCryptoKeys.length === 0 && (
-        <Text>{t("sopsConfigDialog.gcpCryptoKeyNoSelectableKey")}</Text>
+        <Text>{t('sopsConfigDialog.gcpCryptoKeyNoSelectableKey')}</Text>
       )}
 
       {gcpCryptoKeys.length > 0 && (
         <>
           <Text className={styles.description}>
-            {t("sopsConfigDialog.gcpCryptoKeyDescription")}
+            {t('sopsConfigDialog.gcpCryptoKeyDescription')}
           </Text>
           <RadioGroup
             onChange={handleChange}
             value={chosenGcpCryptoKey?.resourceId}
-            aria-label={t("sopsConfigDialog.chooseGcpCryptoKey")}
+            aria-label={t('sopsConfigDialog.chooseGcpCryptoKey')}
           >
             {gcpCryptoKeys.map((key) => {
               const permissions = key.userPermissions
                 .map((permission) =>
                   t(`sopsConfigDialog.cryptoKeyPermission${permission}`),
                 )
-                .join(", ");
+                .join(', ');
               return (
                 <Radio
                   key={key.resourceId}
@@ -59,8 +59,8 @@ export function GcpCryptoKeyRadioGroup({
                   <Text>
                     {key.name}
                     <Text variant="body-small">
-                      {" "}
-                      {t("sopsConfigDialog.cryptoKeyOptionInfo", {
+                      {' '}
+                      {t('sopsConfigDialog.cryptoKeyOptionInfo', {
                         projectId: key.projectId,
                         permissions: permissions,
                       })}

@@ -1,7 +1,7 @@
-import { SimpleTrackedProperty } from "../../../../utils/types.ts";
-import { ChangeSetBox } from "./ChangeSetBox.tsx";
-import { ChangeSetBoxTitle } from "./ChangeSetBoxTitle.tsx";
-import { ChangeSetChangedValue } from "./ChangeSetChangedValue.tsx";
+import { SimpleTrackedProperty } from '../../../../utils/types.ts';
+import { ChangeSetBox } from './ChangeSetBox.tsx';
+import { ChangeSetBoxTitle } from './ChangeSetBoxTitle.tsx';
+import { ChangeSetChangedValue } from './ChangeSetChangedValue.tsx';
 
 interface ChangeSetSimpleBoxProps {
   prop: SimpleTrackedProperty<string> | undefined;
@@ -11,7 +11,7 @@ interface ChangeSetSimpleBoxProps {
 export function ChangeSetSimpleBox({ prop, title }: ChangeSetSimpleBoxProps) {
   return (
     <>
-      {prop && prop.type === "CHANGED" && (
+      {prop && prop.type === 'CHANGED' && (
         <ChangeSetBox type="primary">
           <ChangeSetBoxTitle title={title} />
           <ChangeSetChangedValue

@@ -1,13 +1,13 @@
-import styles from "./CoverageStatusBox.module.css";
-import { Text } from "@backstage/ui";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
-import { CoverageType } from "../../utils/threatActorsAndVulnerabilities.ts";
-import { StatusIcon, StatusIconTypes } from "../common/StatusIcon.tsx";
+import styles from './CoverageStatusBox.module.css';
+import { Text } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { CoverageType } from '../../utils/threatActorsAndVulnerabilities.ts';
+import { StatusIcon, StatusIconTypes } from '../common/StatusIcon.tsx';
 import {
   ThreatActorsOptions,
   VulnerabilitiesOptions,
-} from "../../utils/constants.ts";
+} from '../../utils/constants.ts';
 
 type CoverageStatusBoxProps = {
   notCovered: string[];
@@ -43,23 +43,23 @@ function useCoverageStatusText(
 
   const kindPlural =
     coverageType === CoverageType.Vulnerability
-      ? t("dictionary.vulnerabilities")
-      : t("dictionary.threatActors");
+      ? t('dictionary.vulnerabilities')
+      : t('dictionary.threatActors');
 
   const kindsPlural =
     coverageType === CoverageType.Vulnerability
-      ? t("dictionary.theVulnerabilities")
-      : t("dictionary.theThreatActors");
+      ? t('dictionary.theVulnerabilities')
+      : t('dictionary.theThreatActors');
 
   const kind =
     coverageType === CoverageType.Vulnerability
-      ? t("dictionary.theVulnerability")
-      : t("dictionary.theThreatActor");
+      ? t('dictionary.theVulnerability')
+      : t('dictionary.theThreatActor');
 
   const translationPrefix =
     coverageType === CoverageType.Vulnerability
-      ? "vulnerabilities"
-      : "threatActors";
+      ? 'vulnerabilities'
+      : 'threatActors';
 
   const translated = notCoveredList.map((item) =>
     t(
@@ -70,26 +70,26 @@ function useCoverageStatusText(
   );
 
   if (numOfNotCovered === 0) {
-    return t("threatActorsAndVulnerabilities.allCovered", {
+    return t('threatActorsAndVulnerabilities.allCovered', {
       kind: kindPlural.toLowerCase(),
     });
   }
 
   if (numOfNotCovered === 1) {
-    return t("threatActorsAndVulnerabilities.oneNotCovered", {
+    return t('threatActorsAndVulnerabilities.oneNotCovered', {
       kind: kind,
       notCovered: translated[0],
     });
   }
 
   if (numOfNotCovered === 2) {
-    return t("threatActorsAndVulnerabilities.twoNotCovered", {
+    return t('threatActorsAndVulnerabilities.twoNotCovered', {
       kind: kindsPlural,
       notCovered1: translated[0],
       notCovered2: translated[1],
     });
   }
-  return t("threatActorsAndVulnerabilities.multipleNotCovered", {
+  return t('threatActorsAndVulnerabilities.multipleNotCovered', {
     kind: kindPlural.toLowerCase(),
     notCovered1: translated[0],
     notCovered2: translated[1],

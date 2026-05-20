@@ -1,18 +1,18 @@
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import { useScenario } from "../../../contexts/ScenarioContext";
-import { pluginRiScTranslationRef } from "../../../utils/translations";
-import { Risk } from "../../../utils/types";
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import { useScenario } from '../../../contexts/ScenarioContext';
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { Risk } from '../../../utils/types';
 import {
   formatNOK,
   getConsequenceLevel,
   getProbabilityLevel,
   getRiskMatrixColor,
-} from "../../../utils/utilityfunctions";
-import styles from "../scenarioDrawer.module.css";
-import { Text } from "@backstage/ui";
+} from '../../../utils/utilityfunctions';
+import styles from '../scenarioDrawer.module.css';
+import { Text } from '@backstage/ui';
 
 interface RiskProps {
   risk: Risk;
@@ -33,32 +33,32 @@ function RiskBox({ risk, heading }: RiskProps) {
       <Box>
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 1,
           }}
         >
           <Box
             sx={{
-              width: "20px",
-              height: "48px",
+              width: '20px',
+              height: '48px',
               borderRadius: 1,
               backgroundColor: getRiskMatrixColor(risk),
             }}
           />
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "start",
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'start',
               gap: 0.5,
             }}
           >
-            <Text variant="body-medium" style={{ fontWeight: "700" }}>
-              {t("dictionary.probability")}: {getProbabilityLevel(risk)}
+            <Text variant="body-medium" style={{ fontWeight: '700' }}>
+              {t('dictionary.probability')}: {getProbabilityLevel(risk)}
             </Text>
-            <Text variant="body-medium" style={{ fontWeight: "700" }}>
-              {t("dictionary.consequence")}: {getConsequenceLevel(risk)}
+            <Text variant="body-medium" style={{ fontWeight: '700' }}>
+              {t('dictionary.consequence')}: {getConsequenceLevel(risk)}
             </Text>
           </Box>
         </Box>
@@ -67,12 +67,12 @@ function RiskBox({ risk, heading }: RiskProps) {
         <Text
           as="p"
           variant="body-medium"
-          style={{ paddingBottom: "0.4rem", fontWeight: "700" }}
+          style={{ paddingBottom: '0.4rem', fontWeight: '700' }}
         >
-          {t("dictionary.estimatedRisk")}
+          {t('dictionary.estimatedRisk')}
         </Text>
         <Text variant="body-large" weight="bold">
-          {formatNOK(cost)} {t("riskMatrix.estimatedRisk.unit.nokPerYear")}
+          {formatNOK(cost)} {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
         </Text>
       </Box>
     </Paper>
@@ -84,12 +84,12 @@ export function RiskSection() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <RiskBox risk={scenario.risk} heading={t("dictionary.initialRisk")} />
-      <KeyboardDoubleArrowRightIcon sx={{ fontSize: "48px" }} />
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <RiskBox risk={scenario.risk} heading={t('dictionary.initialRisk')} />
+      <KeyboardDoubleArrowRightIcon sx={{ fontSize: '48px' }} />
       <RiskBox
         risk={scenario.remainingRisk}
-        heading={t("dictionary.restRisk")}
+        heading={t('dictionary.restRisk')}
       />
     </Box>
   );

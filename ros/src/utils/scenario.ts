@@ -1,34 +1,34 @@
-import { RiScWithMetadata, Scenario } from "./types.ts";
+import { RiScWithMetadata, Scenario } from './types.ts';
 import {
   calculateDaysSince,
   calculateUpdatedStatus,
   UpdatedStatusEnum,
   UpdatedStatusEnumType,
-} from "./utilityfunctions.ts";
-import { ActionStatusOptions } from "./constants.ts";
+} from './utilityfunctions.ts';
+import { ActionStatusOptions } from './constants.ts';
 
 type ScenarioSortingOptions =
-  | "NoSorting"
-  | "TitleAlphabetical"
-  | "HighestInitialRisk"
-  | "MostImplementedActions"
-  | "MostRemainingActions";
+  | 'NoSorting'
+  | 'TitleAlphabetical'
+  | 'HighestInitialRisk'
+  | 'MostImplementedActions'
+  | 'MostRemainingActions';
 
 export function toScenarioSortingOption(
   value: string | null | undefined,
 ): ScenarioSortingOptions {
-  if (!value) return "NoSorting";
+  if (!value) return 'NoSorting';
   const valid: ScenarioSortingOptions[] = [
-    "NoSorting",
-    "TitleAlphabetical",
-    "HighestInitialRisk",
-    "MostImplementedActions",
-    "MostRemainingActions",
+    'NoSorting',
+    'TitleAlphabetical',
+    'HighestInitialRisk',
+    'MostImplementedActions',
+    'MostRemainingActions',
   ];
 
   return valid.includes(value as ScenarioSortingOptions)
     ? (value as ScenarioSortingOptions)
-    : "NoSorting";
+    : 'NoSorting';
 }
 
 export function getScenarioOfIdFromRiSc(
@@ -105,19 +105,19 @@ export function getSortedScenarios(
 ) {
   const sortedScenarios = [...scenarios];
 
-  if (sortOrder !== "NoSorting") {
+  if (sortOrder !== 'NoSorting') {
     sortedScenarios.sort((a, b) => {
       switch (sortOrder) {
-        case "TitleAlphabetical":
-          return a.title.localeCompare(b.title, "en");
+        case 'TitleAlphabetical':
+          return a.title.localeCompare(b.title, 'en');
 
-        case "HighestInitialRisk":
+        case 'HighestInitialRisk':
           return (
             b.risk.consequence * b.risk.probability -
             a.risk.consequence * a.risk.probability
           );
 
-        case "MostImplementedActions":
+        case 'MostImplementedActions':
           return (
             b.actions.filter(
               (status) => status.status === ActionStatusOptions.OK,
@@ -127,7 +127,7 @@ export function getSortedScenarios(
             ).length
           );
 
-        case "MostRemainingActions": {
+        case 'MostRemainingActions': {
           const remainingA = a.actions.filter(
             (action) =>
               action.status !== ActionStatusOptions.OK &&

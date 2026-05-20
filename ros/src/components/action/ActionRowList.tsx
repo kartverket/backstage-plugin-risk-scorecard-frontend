@@ -1,20 +1,20 @@
-import { Action, RiScStatus } from "../../utils/types.ts";
-import { ActionRow } from "./ActionRow.tsx";
-import { Fragment, useCallback, useEffect, useState } from "react";
-import { isToday } from "../../utils/date.ts";
-import { ActionStatusOptions } from "../../utils/constants.ts";
-import { useScenario } from "../../contexts/ScenarioContext.tsx";
-import { Flex, Text } from "@backstage/ui";
-import Divider from "@mui/material/Divider";
-import { useDebounce } from "../../utils/hooks.ts";
-import { useBackstageContext } from "../../contexts/BackstageContext.tsx";
-import { UpdatedStatusEnumType } from "../../utils/utilityfunctions.ts";
-import { useRiScs } from "../../contexts/RiScContext.tsx";
-import { getScenarioOfIdFromRiSc } from "../../utils/scenario.ts";
-import styles from "./ActionRowList.module.css";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
-import { getUpdatedStatus } from "../../utils/actions.ts";
+import { Action, RiScStatus } from '../../utils/types.ts';
+import { ActionRow } from './ActionRow.tsx';
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import { isToday } from '../../utils/date.ts';
+import { ActionStatusOptions } from '../../utils/constants.ts';
+import { useScenario } from '../../contexts/ScenarioContext.tsx';
+import { Flex, Text } from '@backstage/ui';
+import Divider from '@mui/material/Divider';
+import { useDebounce } from '../../utils/hooks.ts';
+import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
+import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
+import { useRiScs } from '../../contexts/RiScContext.tsx';
+import { getScenarioOfIdFromRiSc } from '../../utils/scenario.ts';
+import styles from './ActionRowList.module.css';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { getUpdatedStatus } from '../../utils/actions.ts';
 
 type ActionRowListProps = {
   scenarioId: string;
@@ -193,7 +193,7 @@ export function ActionRowList(props: ActionRowListProps) {
       <Flex align="center" direction="column">
         <Divider flexItem />
         <Text className={styles.noActionsText}>
-          {t("scenarioTable.noActionsLong")}
+          {t('scenarioTable.noActionsLong')}
         </Text>
       </Flex>
     );
@@ -245,15 +245,15 @@ function getUpdatedStatusOfAction(
   const isActionUpdating =
     !!pendingActionStatusUpdates[scenarioId]?.[action.ID];
 
-  let updatedStatus: UpdatedStatusEnumType | "UPDATING" | "NONE";
+  let updatedStatus: UpdatedStatusEnumType | 'UPDATING' | 'NONE';
   if (isActionUpdating) {
-    updatedStatus = "UPDATING";
+    updatedStatus = 'UPDATING';
   } else {
     if (pendingActionUpdatesHistory.includes(action.ID)) {
-      updatedStatus = "UPDATED";
+      updatedStatus = 'UPDATED';
     } else {
       const baseStatus = getUpdatedStatus(action);
-      updatedStatus = baseStatus === "UPDATED" ? "NONE" : baseStatus;
+      updatedStatus = baseStatus === 'UPDATED' ? 'NONE' : baseStatus;
     }
   }
   return updatedStatus;

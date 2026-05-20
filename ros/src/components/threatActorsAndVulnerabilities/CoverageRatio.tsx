@@ -1,8 +1,8 @@
-import { Flex, Text } from "@backstage/ui";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
-import { CoverageType } from "../../utils/threatActorsAndVulnerabilities.ts";
-import styles from "./CoverageRatio.module.css";
+import { Flex, Text } from '@backstage/ui';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { CoverageType } from '../../utils/threatActorsAndVulnerabilities.ts';
+import styles from './CoverageRatio.module.css';
 
 type CoverageRatioProps = {
   covered: number;
@@ -15,8 +15,8 @@ export function CoverageRatio(props: CoverageRatioProps) {
 
   const label =
     props.coverageType === CoverageType.Vulnerability
-      ? t("threatActorsAndVulnerabilities.vulnerabilityCoverage")
-      : t("threatActorsAndVulnerabilities.threatActorCoverage");
+      ? t('threatActorsAndVulnerabilities.vulnerabilityCoverage')
+      : t('threatActorsAndVulnerabilities.threatActorCoverage');
 
   return (
     <Flex align="center">
@@ -24,7 +24,7 @@ export function CoverageRatio(props: CoverageRatioProps) {
         {label}:
       </Text>
       <Text variant="title-x-small" weight="bold">
-        {t("threatActorsAndVulnerabilities.coverageRatio", {
+        {t('threatActorsAndVulnerabilities.coverageRatio', {
           covered: props.covered.toString(),
           total: props.total.toString(),
         })}
