@@ -4,13 +4,13 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 import {
   identityApiRef,
   ProfileInfo,
   useApi,
-} from "@backstage/core-plugin-api";
-import { useEntity } from "@backstage/plugin-catalog-react";
+} from '@backstage/core-plugin-api';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 type BackstageContextObject = {
   profileInfo: ProfileInfo | undefined;
@@ -33,7 +33,7 @@ export function BackstageContextProvider({
   useEffect(() => {
     identityApi
       .getProfileInfo()
-      .then((fetchedProfileInfo) => setProfileInfo(fetchedProfileInfo));
+      .then(fetchedProfileInfo => setProfileInfo(fetchedProfileInfo));
   }, [identityApi]);
 
   const componentType = entity.spec?.type as string | undefined;
@@ -50,7 +50,7 @@ export function useBackstageContext() {
 
   if (context === undefined) {
     throw new Error(
-      "useBackstageContext must be used within a BackstageContext provider",
+      'useBackstageContext must be used within a BackstageContext provider',
     );
   }
   return context;

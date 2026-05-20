@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { RiScWithMetadata } from "../../utils/types";
+import { useState } from 'react';
+import { RiScWithMetadata } from '../../utils/types';
 import {
   computeStatusCount,
   UpdatedStatusEnumType,
   UpdatedStatusEnum,
-} from "../../utils/utilityfunctions";
-import { Card, CardBody, CardHeader, Flex } from "@backstage/ui";
-import { ScenarioTableCardHeader } from "./ScenarioTableCardHeader.tsx";
-import { ActionCountButtons } from "./ActionCountButtons.tsx";
-import { AddScenarioButton } from "./AddScenarioButton.tsx";
-import { ScenarioTable } from "./ScenarioTable.tsx";
-import { useScenario } from "../../contexts/ScenarioContext.tsx";
-import { ScenarioTableFilter } from "./ScenarioTableFilter.tsx";
+} from '../../utils/utilityfunctions';
+import { Card, CardBody, CardHeader, Flex } from '@backstage/ui';
+import { ScenarioTableCardHeader } from './ScenarioTableCardHeader.tsx';
+import { ActionCountButtons } from './ActionCountButtons.tsx';
+import { AddScenarioButton } from './AddScenarioButton.tsx';
+import { ScenarioTable } from './ScenarioTable.tsx';
+import { useScenario } from '../../contexts/ScenarioContext.tsx';
+import { ScenarioTableFilter } from './ScenarioTableFilter.tsx';
 
 interface ScenarioTableProps {
   riScWithMetadata: RiScWithMetadata;
@@ -41,20 +41,20 @@ export function ScenarioTableCard({
       : selectedUpdatedStatus;
 
   function handleActionCountClick(type: UpdatedStatusEnumType) {
-    setSelectedUpdatedStatus((prev) => (prev === type ? null : type));
+    setSelectedUpdatedStatus(prev => (prev === type ? null : type));
   }
   const [scenarioSortOrder, setScenarioSortOrder] = useState<string | null>(
     null,
   );
 
-  const [actionSearchQuery, setActionSearchQuery] = useState<string>("");
+  const [actionSearchQuery, setActionSearchQuery] = useState<string>('');
 
   return (
     <Card>
       <CardHeader>
         <ScenarioTableCardHeader />
       </CardHeader>
-      <CardBody style={{ paddingTop: "12px" }}>
+      <CardBody style={{ paddingTop: '12px' }}>
         {(veryOutdatedCount > 0 || outdatedCount > 0) && (
           <ActionCountButtons
             totalCount={totalCount}

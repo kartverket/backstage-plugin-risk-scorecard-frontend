@@ -1,19 +1,19 @@
-import { ActionStatusOptions } from "./constants";
-import { Action, RiSc, Scenario } from "./types";
+import { ActionStatusOptions } from './constants';
+import { Action, RiSc, Scenario } from './types';
 import {
   calcRiskCostOfRiSc,
   calcRiskCostOfScenario,
   calcRemainingActionsCount,
-} from "./risk";
-import { RiskMatrixTabs } from "../components/riskMatrix/utils";
+} from './risk';
+import { RiskMatrixTabs } from '../components/riskMatrix/utils';
 
 function createAction(status: ActionStatusOptions): Action {
   return {
-    ID: "action-1",
-    title: "Test action",
-    description: "",
+    ID: 'action-1',
+    title: 'Test action',
+    description: '',
     status,
-    url: "",
+    url: '',
   };
 }
 
@@ -21,20 +21,20 @@ function createScenario(
   overrides: Partial<Scenario> & { actions?: Action[] } = {},
 ): Scenario {
   return {
-    ID: "scenario-1",
-    title: "Test scenario",
-    description: "",
+    ID: 'scenario-1',
+    title: 'Test scenario',
+    description: '',
     threatActors: [],
     vulnerabilities: [],
-    risk: { summary: "", probability: 10, consequence: 100 },
-    remainingRisk: { summary: "", probability: 2, consequence: 50 },
+    risk: { summary: '', probability: 10, consequence: 100 },
+    remainingRisk: { summary: '', probability: 2, consequence: 50 },
     actions: [],
     ...overrides,
   };
 }
 
-describe("calcRiskCostOfScenario", () => {
-  test("returns initial risk cost for initialRisk tab", () => {
+describe('calcRiskCostOfScenario', () => {
+  test('returns initial risk cost for initialRisk tab', () => {
     const scenario = createScenario();
     // 10 * 100 = 1000
     expect(calcRiskCostOfScenario(scenario, RiskMatrixTabs.initialRisk)).toBe(
@@ -42,7 +42,7 @@ describe("calcRiskCostOfScenario", () => {
     );
   });
 
-  test("returns remaining risk cost for remainingRisk tab", () => {
+  test('returns remaining risk cost for remainingRisk tab', () => {
     const scenario = createScenario();
     // 2 * 50 = 100
     expect(calcRiskCostOfScenario(scenario, RiskMatrixTabs.remainingRisk)).toBe(
@@ -50,7 +50,7 @@ describe("calcRiskCostOfScenario", () => {
     );
   });
 
-  test("returns initial risk when no actions exist (currentRisk tab)", () => {
+  test('returns initial risk when no actions exist (currentRisk tab)', () => {
     const scenario = createScenario({ actions: [] });
     // No relevant actions -> ratio = 0 -> start + (end - start) * 0 = start = 1000
     expect(calcRiskCostOfScenario(scenario, RiskMatrixTabs.currentRisk)).toBe(
@@ -58,7 +58,7 @@ describe("calcRiskCostOfScenario", () => {
     );
   });
 
-  test("returns remaining risk when all relevant actions are OK (currentRisk tab)", () => {
+  test('returns remaining risk when all relevant actions are OK (currentRisk tab)', () => {
     const scenario = createScenario({
       actions: [
         createAction(ActionStatusOptions.OK),
@@ -71,7 +71,7 @@ describe("calcRiskCostOfScenario", () => {
     );
   });
 
-  test("interpolates current risk based on completed action ratio", () => {
+  test('interpolates current risk based on completed action ratio', () => {
     const scenario = createScenario({
       actions: [
         createAction(ActionStatusOptions.OK),
@@ -115,10 +115,10 @@ describe("calcRiskCostOfScenario", () => {
     );
   });
 
-  test("handles zero risk values", () => {
+  test('handles zero risk values', () => {
     const scenario = createScenario({
-      risk: { summary: "", probability: 0, consequence: 0 },
-      remainingRisk: { summary: "", probability: 0, consequence: 0 },
+      risk: { summary: '', probability: 0, consequence: 0 },
+      remainingRisk: { summary: '', probability: 0, consequence: 0 },
       actions: [createAction(ActionStatusOptions.OK)],
     });
     expect(calcRiskCostOfScenario(scenario, RiskMatrixTabs.currentRisk)).toBe(
@@ -132,30 +132,30 @@ describe("calcRiskCostOfScenario", () => {
     );
   });
 
-  test("throws for unhandled risk type", () => {
+  test('throws for unhandled risk type', () => {
     const scenario = createScenario();
     expect(() => calcRiskCostOfScenario(scenario, undefined)).toThrow(
-      "Unable to calculate risk cost: unhandled risk type",
+      'Unable to calculate risk cost: unhandled risk type',
     );
   });
 });
 
-describe("calcRiskCostOfRiSc", () => {
-  test("sums risk cost across all scenarios", () => {
+describe('calcRiskCostOfRiSc', () => {
+  test('sums risk cost across all scenarios', () => {
     const riSc: RiSc = {
-      schemaVersion: "5.0",
-      title: "Test",
-      scope: "",
+      schemaVersion: '5.0',
+      title: 'Test',
+      scope: '',
       scenarios: [
         createScenario({
-          ID: "s1",
-          risk: { summary: "", probability: 10, consequence: 100 },
-          remainingRisk: { summary: "", probability: 2, consequence: 50 },
+          ID: 's1',
+          risk: { summary: '', probability: 10, consequence: 100 },
+          remainingRisk: { summary: '', probability: 2, consequence: 50 },
         }),
         createScenario({
-          ID: "s2",
-          risk: { summary: "", probability: 5, consequence: 200 },
-          remainingRisk: { summary: "", probability: 1, consequence: 100 },
+          ID: 's2',
+          risk: { summary: '', probability: 5, consequence: 200 },
+          remainingRisk: { summary: '', probability: 1, consequence: 100 },
         }),
       ],
     };
@@ -165,35 +165,35 @@ describe("calcRiskCostOfRiSc", () => {
     expect(calcRiskCostOfRiSc(riSc, RiskMatrixTabs.remainingRisk)).toBe(200);
   });
 
-  test("returns 0 for empty scenarios list", () => {
+  test('returns 0 for empty scenarios list', () => {
     const riSc: RiSc = {
-      schemaVersion: "5.0",
-      title: "Empty",
-      scope: "",
+      schemaVersion: '5.0',
+      title: 'Empty',
+      scope: '',
       scenarios: [],
     };
     expect(calcRiskCostOfRiSc(riSc, RiskMatrixTabs.initialRisk)).toBe(0);
   });
 
-  test("sums current risk across scenarios with actions", () => {
+  test('sums current risk across scenarios with actions', () => {
     const riSc: RiSc = {
-      schemaVersion: "5.0",
-      title: "Test",
-      scope: "",
+      schemaVersion: '5.0',
+      title: 'Test',
+      scope: '',
       scenarios: [
         createScenario({
-          ID: "s1",
-          risk: { summary: "", probability: 10, consequence: 100 },
-          remainingRisk: { summary: "", probability: 2, consequence: 50 },
+          ID: 's1',
+          risk: { summary: '', probability: 10, consequence: 100 },
+          remainingRisk: { summary: '', probability: 2, consequence: 50 },
           actions: [
             createAction(ActionStatusOptions.OK),
             createAction(ActionStatusOptions.NotOK),
           ],
         }),
         createScenario({
-          ID: "s2",
-          risk: { summary: "", probability: 4, consequence: 200 },
-          remainingRisk: { summary: "", probability: 2, consequence: 100 },
+          ID: 's2',
+          risk: { summary: '', probability: 4, consequence: 200 },
+          remainingRisk: { summary: '', probability: 2, consequence: 100 },
           actions: [],
         }),
       ],
@@ -204,7 +204,7 @@ describe("calcRiskCostOfRiSc", () => {
   });
 });
 
-describe("calcRemainingActionsCount", () => {
+describe('calcRemainingActionsCount', () => {
   test('counts only "Not OK" actions', () => {
     const scenario = createScenario({
       actions: [
@@ -228,7 +228,7 @@ describe("calcRemainingActionsCount", () => {
     expect(calcRemainingActionsCount(scenario)).toBe(1);
   });
 
-  test("returns 0 when all actions are completed", () => {
+  test('returns 0 when all actions are completed', () => {
     const scenario = createScenario({
       actions: [
         createAction(ActionStatusOptions.OK),
@@ -248,7 +248,7 @@ describe("calcRemainingActionsCount", () => {
     expect(calcRemainingActionsCount(scenario)).toBe(0);
   });
 
-  test("returns 0 for empty actions list", () => {
+  test('returns 0 for empty actions list', () => {
     const scenario = createScenario({ actions: [] });
     expect(calcRemainingActionsCount(scenario)).toBe(0);
   });

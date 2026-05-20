@@ -15,14 +15,14 @@
   padding: 16px;
   max-width: 500px;
 }
-[data-theme-mode="dark"] .tooltip.tooltip {
+[data-theme-mode='dark'] .tooltip.tooltip {
   background-color: var(--bui-bg-app);
 }
 
 .tooltipArrow.tooltipArrow {
   color: var(--bui-white);
 }
-[data-theme-mode="dark"] .tooltipArrow.tooltipArrow {
+[data-theme-mode='dark'] .tooltipArrow.tooltipArrow {
   color: var(--bui-bg-app);
 }
 
@@ -31,7 +31,7 @@
   font-size: 16px;
   color: var(--bui-black);
 }
-[data-theme-mode="dark"] .tooltipList {
+[data-theme-mode='dark'] .tooltipList {
   color: var(--bui-white);
 }
 
@@ -43,7 +43,7 @@
     background-color: var(--ros-gray-50);
   }
 }
-[data-theme-mode="dark"] .tooltipListItem {
+[data-theme-mode='dark'] .tooltipListItem {
   &:hover {
     background-color: var(--ros-gray-600);
   }

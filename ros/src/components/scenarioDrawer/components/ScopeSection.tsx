@@ -1,12 +1,12 @@
-import { pluginRiScTranslationRef } from "../../../utils/translations";
-import Divider from "@mui/material/Divider";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { useScenario } from "../../../contexts/ScenarioContext";
-import styles from "../scenarioDrawer.module.css";
-import { Markdown } from "../../common/Markdown";
-import { Text } from "@backstage/ui";
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { useScenario } from '../../../contexts/ScenarioContext';
+import styles from '../scenarioDrawer.module.css';
+import { Markdown } from '../../common/Markdown';
+import { Text } from '@backstage/ui';
 
 export function ScopeSection() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -15,10 +15,10 @@ export function ScopeSection() {
   return (
     <Paper className={styles.section}>
       <Text variant="title-x-small" weight="bold">
-        {t("scenarioDrawer.title")}
+        {t('scenarioDrawer.title')}
       </Text>
 
-      <Text variant="title-medium" style={{ fontWeight: "700" }}>
+      <Text variant="title-medium" style={{ fontWeight: '700' }}>
         {scenario.title}
       </Text>
 
@@ -27,34 +27,34 @@ export function ScopeSection() {
           as="p"
           variant="body-medium"
           weight="bold"
-          style={{ paddingBottom: "0.4rem" }}
+          style={{ paddingBottom: '0.4rem' }}
         >
-          {t("dictionary.description")}
+          {t('dictionary.description')}
         </Text>
         {scenario.description ? (
           <Markdown description={scenario.description} />
         ) : (
-          <Text variant="body-large" style={{ fontStyle: "italic" }}>
-            {t("dictionary.emptyField", {
-              field: t("dictionary.description").toLowerCase(),
-            })}{" "}
+          <Text variant="body-large" style={{ fontStyle: 'italic' }}>
+            {t('dictionary.emptyField', {
+              field: t('dictionary.description').toLowerCase(),
+            })}{' '}
           </Text>
         )}
       </Box>
 
       <Divider />
 
-      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
         <Box>
           <Text
             as="p"
             variant="body-medium"
-            style={{ paddingBottom: "0.4rem", fontWeight: "700" }}
+            style={{ paddingBottom: '0.4rem', fontWeight: '700' }}
           >
-            {t("dictionary.threatActors")}
+            {t('dictionary.threatActors')}
           </Text>
           {scenario.threatActors.length > 0 ? (
-            scenario.threatActors.map((threatActor) => {
+            scenario.threatActors.map(threatActor => {
               /* @ts-ignore Because ts can't typecheck strings against our keys */
               const translatedThreatActor = t(`threatActors.${threatActor}`);
               return (
@@ -64,9 +64,9 @@ export function ScopeSection() {
               );
             })
           ) : (
-            <Text variant="body-large" style={{ fontStyle: "italic" }}>
-              {t("dictionary.emptyField", {
-                field: t("dictionary.threatActors").toLowerCase(),
+            <Text variant="body-large" style={{ fontStyle: 'italic' }}>
+              {t('dictionary.emptyField', {
+                field: t('dictionary.threatActors').toLowerCase(),
               })}
             </Text>
           )}
@@ -76,12 +76,12 @@ export function ScopeSection() {
           <Text
             as="p"
             variant="body-medium"
-            style={{ paddingBottom: "0.4rem", fontWeight: "700" }}
+            style={{ paddingBottom: '0.4rem', fontWeight: '700' }}
           >
-            {t("dictionary.vulnerabilities")}
+            {t('dictionary.vulnerabilities')}
           </Text>
           {scenario.vulnerabilities.length > 0 ? (
-            scenario.vulnerabilities.map((vulnerability) => {
+            scenario.vulnerabilities.map(vulnerability => {
               /* @ts-ignore Because ts can't typecheck strings against our keys */
               const translatedVulnerability = t(
                 `vulnerabilities.${vulnerability}`,
@@ -93,9 +93,9 @@ export function ScopeSection() {
               );
             })
           ) : (
-            <Text variant="body-large" style={{ fontStyle: "italic" }}>
-              {t("dictionary.emptyField", {
-                field: t("dictionary.vulnerabilities").toLowerCase(),
+            <Text variant="body-large" style={{ fontStyle: 'italic' }}>
+              {t('dictionary.emptyField', {
+                field: t('dictionary.vulnerabilities').toLowerCase(),
               })}
             </Text>
           )}

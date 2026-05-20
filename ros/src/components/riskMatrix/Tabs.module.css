@@ -19,15 +19,15 @@
   color: var(--ros-blue-600);
 }
 
-.tabButtonTextBase[data-selected="true"] {
+.tabButtonTextBase[data-selected='true'] {
   color: var(--bui-white);
 }
 
-[data-theme-mode="dark"] {
+[data-theme-mode='dark'] {
   .riskMatrixButton {
     border: 1px solid var(--ros-light-blue-200, transparent);
   }
-  .tabButtonTextBase[data-selected="true"] {
+  .tabButtonTextBase[data-selected='true'] {
     color: var(--ros-gray-900);
   }
   .tabButtonTextBase {

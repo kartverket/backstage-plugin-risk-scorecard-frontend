@@ -1,8 +1,8 @@
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {
   useState,
   useRef,
@@ -11,31 +11,31 @@ import {
   KeyboardEvent,
   SetStateAction,
   Dispatch,
-} from "react";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import { RiScWithMetadata, Scenario } from "../../utils/types";
-import { useRiScs } from "../../contexts/RiScContext";
+} from 'react';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { RiScWithMetadata, Scenario } from '../../utils/types';
+import { useRiScs } from '../../contexts/RiScContext';
 import {
   deleteScenario,
   findConsequenceIndex,
   findProbabilityIndex,
   getConsequenceLevel,
   getProbabilityLevel,
-} from "../../utils/utilityfunctions";
-import { ScenarioTableProgressBar } from "./ScenarioTableProgressBar";
-import classnames from "classnames";
-import styles from "./ScenarioTable.module.css";
-import { Text, Flex, Card } from "@backstage/ui";
-import { DeleteScenarioConfirmation } from "../scenarioDrawer/components/DeleteConfirmation.tsx";
-import { ActionStatusOptions } from "../../utils/constants";
-import { useScenario } from "../../contexts/ScenarioContext.tsx";
-import { useTheme } from "@mui/material/styles";
-import { ActionRowList } from "../action/ActionRowList.tsx";
-import { RiskMatrixSquare } from "../riskMatrix/RiskMatrixSquare.tsx";
+} from '../../utils/utilityfunctions';
+import { ScenarioTableProgressBar } from './ScenarioTableProgressBar';
+import classnames from 'classnames';
+import styles from './ScenarioTable.module.css';
+import { Text, Flex, Card } from '@backstage/ui';
+import { DeleteScenarioConfirmation } from '../scenarioDrawer/components/DeleteConfirmation.tsx';
+import { ActionStatusOptions } from '../../utils/constants';
+import { useScenario } from '../../contexts/ScenarioContext.tsx';
+import { useTheme } from '@mui/material/styles';
+import { ActionRowList } from '../action/ActionRowList.tsx';
+import { RiskMatrixSquare } from '../riskMatrix/RiskMatrixSquare.tsx';
 import {
   useScenarioTableDrag,
   useScenarioTableDrop,
-} from "../../hooks/UseScenarioTableDnD.ts";
+} from '../../hooks/UseScenarioTableDnD.ts';
 
 interface ScenarioTableRowProps {
   scenario: Scenario;
@@ -96,25 +96,26 @@ export function ScenarioTableRow({
   // Styling
   useEffect(() => {
     if (isExpanded) {
-      setHoveredScenarios((prev) => prev.filter((s) => s.ID !== scenario.ID));
+      setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
     }
     // Only run when visibleType or expansion changes for this scenario
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded]);
 
   const theme = useTheme();
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
-    (s) => s.ID === scenario.ID,
+    s => s.ID === scenario.ID,
   );
 
-  const highlightColor = "var(--ros-scenario-highlight)";
+  const highlightColor = 'var(--ros-scenario-highlight)';
 
-  const cardBgColor = "var(--ros-scenario-card-bg)";
+  const cardBgColor = 'var(--ros-scenario-card-bg)';
 
   const isTextColorBlack =
-    theme.palette.mode === "dark" ? isScenarioHoveredFromRiskMatrix : true;
+    theme.palette.mode === 'dark' ? isScenarioHoveredFromRiskMatrix : true;
   const textColorAsBuiVariable = isTextColorBlack
-    ? "var(--bui-black)"
-    : "var(--bui-white)";
+    ? 'var(--bui-black)'
+    : 'var(--bui-white)';
 
   return (
     <div
@@ -124,16 +125,16 @@ export function ScenarioTableRow({
         const target = e.target as HTMLElement | null;
         if (
           target &&
-          (target.closest("[data-action-root]") ||
-            target.closest("[data-action-collapse]") ||
-            target.closest("[data-no-row-toggle]"))
+          (target.closest('[data-action-root]') ||
+            target.closest('[data-action-collapse]') ||
+            target.closest('[data-no-row-toggle]'))
         ) {
           return;
         }
         viewRow(scenario.ID);
       }}
       onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === "Enter" || e.key === " ") {
+        if (e.key === 'Enter' || e.key === ' ') {
           viewRow(scenario.ID);
         }
       }}
@@ -141,15 +142,13 @@ export function ScenarioTableRow({
       <Card
         onMouseEnter={() => {
           if (isExpanded) return;
-          setHoveredScenarios((prev) =>
-            prev.some((s) => s.ID === scenario.ID) ? prev : [...prev, scenario],
+          setHoveredScenarios(prev =>
+            prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
           );
         }}
         onMouseLeave={() => {
           if (isExpanded) return;
-          setHoveredScenarios((prev) =>
-            prev.filter((s) => s.ID !== scenario.ID),
-          );
+          setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
         }}
         ref={ref}
         className={classnames(styles.tableCard, {
@@ -157,7 +156,7 @@ export function ScenarioTableRow({
         })}
         style={{
           opacity: isDragging ? 0.3 : 1,
-          transition: isDragging ? "none" : undefined,
+          transition: isDragging ? 'none' : undefined,
           backgroundColor: isScenarioHoveredFromRiskMatrix
             ? highlightColor
             : cardBgColor,
@@ -167,16 +166,16 @@ export function ScenarioTableRow({
           {isEditing && isDnDAllowed && (
             <IconButton size="small" ref={drag}>
               <DragIndicatorIcon
-                sx={{ cursor: isDragging ? "grabbing" : "grab" }}
+                sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
               />
             </IconButton>
           )}
           <IconButton
             size="medium"
             data-action-root
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
-              setIsExpanded((prev) => !prev);
+              setIsExpanded(prev => !prev);
             }}
             style={{ padding: 0 }}
           >
@@ -190,11 +189,11 @@ export function ScenarioTableRow({
             as="p"
             variant="body-large"
             weight="bold"
-            style={{ width: "35%", color: textColorAsBuiVariable }}
+            style={{ width: '35%', color: textColorAsBuiVariable }}
           >
             {scenario.title}
           </Text>
-          <Flex align="center" justify="start" style={{ width: "15%" }}>
+          <Flex align="center" justify="start" style={{ width: '15%' }}>
             <RiskMatrixSquare
               size="small"
               probability={findProbabilityIndex(scenario.risk.probability)}
@@ -204,17 +203,17 @@ export function ScenarioTableRow({
               variant="body-medium"
               style={{ color: textColorAsBuiVariable }}
             >
-              {t("scenarioTable.columns.probabilityChar")}:
+              {t('scenarioTable.columns.probabilityChar')}:
               {`${getProbabilityLevel(
                 scenario.risk,
-              )} ${t("scenarioTable.columns.consequenceChar")}:${getConsequenceLevel(scenario.risk)}`}
+              )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.risk)}`}
             </Text>
           </Flex>
 
           <Flex
             align="center"
             justify="start"
-            style={{ width: isEditing ? "30%" : "35%" }}
+            style={{ width: isEditing ? '30%' : '35%' }}
           >
             {(() => {
               if (scenario.actions.length > 0) {
@@ -222,12 +221,12 @@ export function ScenarioTableRow({
                   <ScenarioTableProgressBar
                     completedCount={
                       scenario.actions.filter(
-                        (a) => a.status === ActionStatusOptions.OK,
+                        a => a.status === ActionStatusOptions.OK,
                       ).length
                     }
                     totalCount={
                       scenario.actions.filter(
-                        (a) => a.status !== ActionStatusOptions.NotRelevant,
+                        a => a.status !== ActionStatusOptions.NotRelevant,
                       ).length
                     }
                     textColor={textColorAsBuiVariable}
@@ -236,12 +235,12 @@ export function ScenarioTableRow({
               }
               return (
                 <Text style={{ color: textColorAsBuiVariable }}>
-                  {t("scenarioTable.noActions")}
+                  {t('scenarioTable.noActions')}
                 </Text>
               );
             })()}
           </Flex>
-          <Flex align="center" style={{ width: "15%" }}>
+          <Flex align="center" style={{ width: '15%' }}>
             <RiskMatrixSquare
               size="small"
               probability={findProbabilityIndex(
@@ -254,16 +253,16 @@ export function ScenarioTableRow({
             <Text
               variant="body-medium"
               style={{ color: textColorAsBuiVariable }}
-            >{`${t("scenarioTable.columns.probabilityChar")}:${getProbabilityLevel(
+            >{`${t('scenarioTable.columns.probabilityChar')}:${getProbabilityLevel(
               scenario.remainingRisk,
-            )} ${t("scenarioTable.columns.consequenceChar")}:${getConsequenceLevel(scenario.remainingRisk)}`}</Text>
+            )} ${t('scenarioTable.columns.consequenceChar')}:${getConsequenceLevel(scenario.remainingRisk)}`}</Text>
           </Flex>
 
           {isEditing && (
             <Flex align="center" justify="end">
               <IconButton
                 size="small"
-                onClick={(event) => {
+                onClick={event => {
                   event.stopPropagation();
                   setScenarioDeletionDialogOpen(true);
                 }}
@@ -283,7 +282,7 @@ export function ScenarioTableRow({
             <div data-action-root>
               <ActionRowList
                 scenarioId={scenario.ID}
-                displayedActions={scenario.actions.filter((action) =>
+                displayedActions={scenario.actions.filter(action =>
                   isAnyFilterEnabled && filteredActionIds
                     ? filteredActionIds.includes(action.ID)
                     : true,

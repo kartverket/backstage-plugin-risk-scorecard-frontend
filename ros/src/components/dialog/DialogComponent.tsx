@@ -1,5 +1,5 @@
-import { Dialog, DialogHeader, DialogBody, Text } from "@backstage/ui";
-import styles from "./DialogComponent.module.css";
+import { Dialog, DialogHeader, DialogBody, Text } from '@backstage/ui';
+import styles from './DialogComponent.module.css';
 
 type DialogComponentProps = {
   isOpen: boolean;
@@ -21,7 +21,7 @@ function DialogComponent({
     <Dialog
       isOpen={isOpen}
       onOpenChange={onClick}
-      className={`${styles.dialog} ${className ?? ""}`}
+      className={`${styles.dialog} ${className ?? ''}`}
     >
       <DialogHeader className={styles.DialogHeader}>
         <Text variant="title-small" weight="bold">

@@ -1,19 +1,19 @@
-import styles from "./ScenarioTable.module.css";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
-import { RiSc, RiScWithMetadata } from "../../utils/types.ts";
-import { useEffect, useMemo, useState } from "react";
-import { useRiScs } from "../../contexts/RiScContext.tsx";
-import { useScenario } from "../../contexts/ScenarioContext.tsx";
-import { Text, Flex, Box, Card } from "@backstage/ui";
-import { ScenarioTableRow } from "./ScenarioTableRow.tsx";
-import { UpdatedStatusEnumType } from "../../utils/utilityfunctions.ts";
+import styles from './ScenarioTable.module.css';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { RiSc, RiScWithMetadata } from '../../utils/types.ts';
+import { useEffect, useMemo, useState } from 'react';
+import { useRiScs } from '../../contexts/RiScContext.tsx';
+import { useScenario } from '../../contexts/ScenarioContext.tsx';
+import { Text, Flex, Box, Card } from '@backstage/ui';
+import { ScenarioTableRow } from './ScenarioTableRow.tsx';
+import { UpdatedStatusEnumType } from '../../utils/utilityfunctions.ts';
 import {
   toScenarioSortingOption,
   getFilteredActionsForScenarios,
   getSortedScenarios,
-} from "../../utils/scenario.ts";
-import { useDebouncedValue } from "../../utils/hooks.ts";
+} from '../../utils/scenario.ts';
+import { useDebouncedValue } from '../../utils/hooks.ts';
 
 type ScenarioTableProps = {
   scenarioSortOrder?: string | null;
@@ -36,24 +36,25 @@ export function ScenarioTable(props: ScenarioTableProps) {
   const isAnyFilterEnabled = !!debouncedSearchQuery || !!props.visibleType;
   const isDndAllowed =
     !isAnyFilterEnabled &&
-    toScenarioSortingOption(props.scenarioSortOrder) === "NoSorting";
+    toScenarioSortingOption(props.scenarioSortOrder) === 'NoSorting';
 
   useEffect(() => {
     if (!updateStatus.isSuccess) {
       return;
     }
     const updatedScenarios = tempScenarios
-      .map((scenario) => {
-        const ordered = riSc.scenarios.find((s) => s.ID === scenario.ID);
+      .map(scenario => {
+        const ordered = riSc.scenarios.find(s => s.ID === scenario.ID);
         return ordered ? ordered : null;
       })
-      .filter((scenario) => scenario !== null) as RiSc["scenarios"];
+      .filter(scenario => scenario !== null) as RiSc['scenarios'];
 
     const scenariosNotInTemp = riSc.scenarios.filter(
-      (scenario) => !updatedScenarios.find((s) => s.ID === scenario.ID),
+      scenario => !updatedScenarios.find(s => s.ID === scenario.ID),
     );
 
     setTempScenarios([...updatedScenarios, ...scenariosNotInTemp]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [riSc.scenarios, updateStatus.isSuccess]);
 
   /*
@@ -70,7 +71,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
     [props.visibleType, debouncedSearchQuery, tempScenarios],
   );
 
-  const scenariosWithAnyAction = tempScenarios.filter((scenario) =>
+  const scenariosWithAnyAction = tempScenarios.filter(scenario =>
     filteredActionsForScenarios.has(scenario.ID),
   );
 
@@ -87,27 +88,27 @@ export function ScenarioTable(props: ScenarioTableProps) {
         )}
         <Box
           style={{
-            width: props.isEditing && isDndAllowed ? "33%" : "40%",
-            paddingLeft: "5%",
+            width: props.isEditing && isDndAllowed ? '33%' : '40%',
+            paddingLeft: '5%',
           }}
         >
           <Text weight="bold" variant="body-large">
-            {t("dictionary.title")}
+            {t('dictionary.title')}
           </Text>
         </Box>
-        <Box style={{ width: "15%" }}>
+        <Box style={{ width: '15%' }}>
           <Text weight="bold" variant="body-large">
-            {t("dictionary.initialRisk")}
+            {t('dictionary.initialRisk')}
           </Text>
         </Box>
-        <Box style={{ width: props.isEditing ? "25%" : "35%" }}>
+        <Box style={{ width: props.isEditing ? '25%' : '35%' }}>
           <Text weight="bold" variant="body-large">
-            {t("dictionary.actionsWithStatus")}
+            {t('dictionary.actionsWithStatus')}
           </Text>
         </Box>
-        <Box style={{ width: "15%" }}>
+        <Box style={{ width: '15%' }}>
           <Text weight="bold" variant="body-large">
-            {t("dictionary.restRisk")}
+            {t('dictionary.restRisk')}
           </Text>
         </Box>
       </Flex>
@@ -134,7 +135,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
       {debouncedSearchQuery && filteredActionsForScenarios.size === 0 && (
         <Card className={styles.tableCard}>
           <Flex align="center" justify="center">
-            {t("dictionary.searchQuery")} "{debouncedSearchQuery}"
+            {t('dictionary.searchQuery')} "{debouncedSearchQuery}"
           </Flex>
         </Card>
       )}

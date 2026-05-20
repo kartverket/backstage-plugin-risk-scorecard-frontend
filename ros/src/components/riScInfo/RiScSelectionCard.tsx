@@ -1,12 +1,12 @@
-import { useRiScs } from "../../contexts/RiScContext.tsx";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
-import { Flex } from "@backstage/ui";
-import FormControl from "@mui/material/FormControl";
-import ListSubheader from "@mui/material/ListSubheader";
-import MenuItem from "@mui/material/MenuItem";
-import MUISelect from "@mui/material/Select";
-import styles from "./RiScSelectionCard.module.css";
+import { useRiScs } from '../../contexts/RiScContext.tsx';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { Flex } from '@backstage/ui';
+import FormControl from '@mui/material/FormControl';
+import ListSubheader from '@mui/material/ListSubheader';
+import MenuItem from '@mui/material/MenuItem';
+import MUISelect from '@mui/material/Select';
+import styles from './RiScSelectionCard.module.css';
 
 export function RiScSelectionCard() {
   const { riScs, lockedRiScs, selectedRiSc, selectedLockedRiSc, selectRiSc } =
@@ -21,24 +21,24 @@ export function RiScSelectionCard() {
       {hasOptions && (
         <FormControl fullWidth size="small">
           <MUISelect
-            value={selectedRiSc?.id ?? selectedLockedRiSc?.id ?? ""}
-            onChange={(e) => selectRiSc(e.target.value)}
-            inputProps={{ "aria-label": t("contentHeader.multipleRiScs") }}
+            value={selectedRiSc?.id ?? selectedLockedRiSc?.id ?? ''}
+            onChange={e => selectRiSc(e.target.value)}
+            inputProps={{ 'aria-label': t('contentHeader.multipleRiScs') }}
             MenuProps={{ disablePortal: true }}
           >
-            {(riScs ?? []).map((riSc) => (
+            {(riScs ?? []).map(riSc => (
               <MenuItem key={riSc.id} value={riSc.id}>
                 {riSc.content.title}
               </MenuItem>
             ))}
             {lockedRiScs.length > 0 && (
               <ListSubheader
-                className={`${styles.lockedSectionHeader} ${riScs && riScs.length > 0 ? styles.lockedSectionHeaderWithDivider : ""}`}
+                className={`${styles.lockedSectionHeader} ${riScs && riScs.length > 0 ? styles.lockedSectionHeaderWithDivider : ''}`}
               >
-                {t("contentHeader.lockedRiScsSection")}
+                {t('contentHeader.lockedRiScsSection')}
               </ListSubheader>
             )}
-            {lockedRiScs.map((riSc) => (
+            {lockedRiScs.map(riSc => (
               <MenuItem key={riSc.id} value={riSc.id}>
                 🔒 {riSc.id}
               </MenuItem>

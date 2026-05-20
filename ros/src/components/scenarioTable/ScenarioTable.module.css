@@ -21,15 +21,15 @@
   cursor: pointer;
 }
 
-[data-theme-mode="dark"] .tableCard {
+[data-theme-mode='dark'] .tableCard {
   background-color: var(--ros-gray-dark-card);
 }
 
-[data-theme-mode="dark"] .tableCard:hover {
+[data-theme-mode='dark'] .tableCard:hover {
   background-color: var(--ros-gray-dark-hover);
 }
 
-[data-theme-mode="dark"] .tableCard.tableCardNoHover:hover {
+[data-theme-mode='dark'] .tableCard.tableCardNoHover:hover {
   background-color: var(--ros-gray-dark-card);
 }
 

@@ -1,7 +1,7 @@
-import { RiScWithMetadata, Scenario } from "../utils/types.ts";
-import { RefObject } from "react";
-import { useDrag, useDrop } from "react-dnd";
-import { useRiScs } from "../contexts/RiScContext.tsx";
+import { RiScWithMetadata, Scenario } from '../utils/types.ts';
+import { RefObject } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
+import { useRiScs } from '../contexts/RiScContext.tsx';
 
 export function useScenarioTableDrop(
   index: number,
@@ -10,7 +10,7 @@ export function useScenarioTableDrop(
   ref: RefObject<HTMLDivElement>,
 ) {
   return useDrop({
-    accept: "row",
+    accept: 'row',
     hover(item: { id: string; index: number }, monitor) {
       if (!ref.current) return;
 
@@ -48,7 +48,7 @@ export function useScenarioTableDrag(
 ) {
   const { updateRiSc } = useRiScs();
   return useDrag(() => ({
-    type: "row",
+    type: 'row',
     item: { id, index },
 
     end: (item, monitor) => {
@@ -62,7 +62,7 @@ export function useScenarioTableDrag(
       }
     },
 
-    collect: (monitor) => ({
+    collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
   }));
@@ -73,9 +73,9 @@ function moveRowLocal(
   hoverId: string,
   setTempScenarios: React.Dispatch<React.SetStateAction<Scenario[]>>,
 ) {
-  setTempScenarios((prev) => {
-    const dragIndex = prev.findIndex((s) => s.ID === dragId);
-    const hoverIndex = prev.findIndex((s) => s.ID === hoverId);
+  setTempScenarios(prev => {
+    const dragIndex = prev.findIndex(s => s.ID === dragId);
+    const hoverIndex = prev.findIndex(s => s.ID === hoverId);
 
     if (dragIndex === -1 || hoverIndex === -1) return prev;
 
@@ -98,9 +98,9 @@ function moveRowFinal(
     onError?: () => void,
   ) => void,
 ) {
-  setTempScenarios((prev) => {
-    const dragIndex = prev.findIndex((item) => item.ID === dragId);
-    const dropIndex = prev.findIndex((item) => item.ID === dropId);
+  setTempScenarios(prev => {
+    const dragIndex = prev.findIndex(item => item.ID === dragId);
+    const dropIndex = prev.findIndex(item => item.ID === dropId);
 
     if (dragIndex === -1 || dropIndex === -1) return prev;
 

@@ -1,10 +1,10 @@
-import { RiSc, Scenario } from "./types.ts";
-import { ActionStatusOptions } from "./constants.ts";
-import { RiskMatrixTabs } from "../components/riskMatrix/utils.tsx";
+import { RiSc, Scenario } from './types.ts';
+import { ActionStatusOptions } from './constants.ts';
+import { RiskMatrixTabs } from '../components/riskMatrix/utils.tsx';
 
 export function calcRiskCostOfRiSc(riSc: RiSc, riskType?: RiskMatrixTabs) {
   return riSc.scenarios
-    .map((scenario) => calcRiskCostOfScenario(scenario, riskType))
+    .map(scenario => calcRiskCostOfScenario(scenario, riskType))
     .reduce((a, b) => a + b, 0);
 }
 
@@ -26,17 +26,16 @@ export function calcRiskCostOfScenario(
       startRiskCost + (endRiskCost - startRiskCost) * completedActionsRatio
     );
   }
-  throw new Error("Unable to calculate risk cost: unhandled risk type");
+  throw new Error('Unable to calculate risk cost: unhandled risk type');
 }
 
 function calcCompletedActionsRatio(scenario: Scenario) {
   const numOfCompletedActions = scenario.actions.filter(
-    (action) =>
-      (action.status as ActionStatusOptions) === ActionStatusOptions.OK,
+    action => (action.status as ActionStatusOptions) === ActionStatusOptions.OK,
   ).length;
 
   const numOfRelevantActions = scenario.actions.filter(
-    (action) =>
+    action =>
       (action.status as ActionStatusOptions) !==
       ActionStatusOptions.NotRelevant,
   ).length;
@@ -50,7 +49,7 @@ function calcCompletedActionsRatio(scenario: Scenario) {
 
 export function calcRemainingActionsCount(scenario: Scenario): number {
   return scenario.actions.filter(
-    (action) =>
+    action =>
       (action.status as ActionStatusOptions) === ActionStatusOptions.NotOK,
   ).length;
 }

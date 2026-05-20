@@ -5,10 +5,10 @@ import {
   TooltipTrigger,
   Tooltip,
   SearchField,
-} from "@backstage/ui";
-import { AddScenarioButton } from "./AddScenarioButton.tsx";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
+} from '@backstage/ui';
+import { AddScenarioButton } from './AddScenarioButton.tsx';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 
 type ScenarioTableFilterProps = {
   scenarioSortOrder: string | null;
@@ -30,27 +30,27 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
           placeholder="Søk etter tiltak ..."
           aria-label="search field"
           value={props.actionSearchQuery}
-          onChange={(value) => props.onActionSearchQueryChange(value)}
+          onChange={value => props.onActionSearchQueryChange(value)}
         />
       </Flex>
       <Flex>
         <Select
           aria-label="sortering"
-          defaultValue={props.scenarioSortOrder ?? "NoSorting"}
-          onSelectionChange={(key) =>
-            props.onScenarioSortOrderChange(key?.toString() ?? "NoSorting")
+          defaultValue={props.scenarioSortOrder ?? 'NoSorting'}
+          onSelectionChange={key =>
+            props.onScenarioSortOrderChange(key?.toString() ?? 'NoSorting')
           }
           options={[
-            { value: "NoSorting", label: t("dictionary.customOrder") },
-            { value: "TitleAlphabetical", label: t("filter.title") },
-            { value: "HighestInitialRisk", label: t("filter.initialRisk") },
+            { value: 'NoSorting', label: t('dictionary.customOrder') },
+            { value: 'TitleAlphabetical', label: t('filter.title') },
+            { value: 'HighestInitialRisk', label: t('filter.initialRisk') },
             {
-              value: "MostImplementedActions",
-              label: t("filter.completedActions"),
+              value: 'MostImplementedActions',
+              label: t('filter.completedActions'),
             },
             {
-              value: "MostRemainingActions",
-              label: t("filter.remainingActions"),
+              value: 'MostRemainingActions',
+              label: t('filter.remainingActions'),
             },
           ]}
         />
@@ -73,8 +73,8 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
               </Button>
               <Tooltip>
                 {props.isEditingScenarioTable
-                  ? t("scenarioTable.doneEditing")
-                  : t("scenarioTable.editButton")}
+                  ? t('scenarioTable.doneEditing')
+                  : t('scenarioTable.editButton')}
               </Tooltip>
             </TooltipTrigger>
           </>

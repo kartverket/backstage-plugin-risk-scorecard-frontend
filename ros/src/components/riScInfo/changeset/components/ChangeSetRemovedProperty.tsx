@@ -1,5 +1,5 @@
-import styles from "./changeSet.module.css";
-import { ChangeSetRemovedValue } from "./ChangeSetRemovedValue.tsx";
+import styles from './changeSet.module.css';
+import { ChangeSetRemovedValue } from './ChangeSetRemovedValue.tsx';
 
 interface ChangeSetRemovedPropertyProps {
   propertyName: string;

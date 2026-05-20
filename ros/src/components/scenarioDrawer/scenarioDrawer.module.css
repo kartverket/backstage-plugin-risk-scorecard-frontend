@@ -18,8 +18,8 @@
   box-shadow: none !important;
 }
 
-:global([data-theme-mode="dark"]) .section,
-:global([data-theme-mode="dark"]) .riscSection {
+:global([data-theme-mode='dark']) .section,
+:global([data-theme-mode='dark']) .riscSection {
   background-color: var(--ros-gray-700);
 }
 

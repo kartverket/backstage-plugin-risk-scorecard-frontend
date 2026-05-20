@@ -7,6 +7,6 @@
   border-radius: 4px;
 }
 
-[data-theme-mode="dark"] .boxStyle {
+[data-theme-mode='dark'] .boxStyle {
   background-color: var(--ros-gray-500);
 }

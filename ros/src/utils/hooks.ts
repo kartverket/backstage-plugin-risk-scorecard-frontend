@@ -5,33 +5,34 @@ import {
   googleAuthApiRef,
   identityApiRef,
   useApi,
-} from "@backstage/core-plugin-api";
-import { useEntity } from "@backstage/plugin-catalog-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { URLS } from "../urls";
+} from '@backstage/core-plugin-api';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { URLS } from '../urls';
 import {
   CreateRiScResultDTO,
+  DeleteRiScResultDTO,
   GcpCryptoKeyObject,
   ProcessRiScResultDTO,
+  profileInfoToDTOString,
   PublishRiScResultDTO,
   RiScContentResultDTO,
-  SopsConfigDTO,
-  profileInfoToDTOString,
   riScToDTOString,
-  DeleteRiScResultDTO,
-} from "./DTOs";
-import { latestSupportedVersion } from "./constants";
+  SopsConfigDTO,
+} from './DTOs';
+import { latestSupportedVersion } from './constants';
 import {
   DefaultRiScTypeDescriptor,
   DifferenceDTO,
   GithubRepoInfo,
+  ProcessingStatus,
   RiSc,
   RiScWithMetadata,
-} from "./types";
+} from './types';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
-    useEntity().entity.metadata.annotations?.["backstage.io/view-url"].match(
+    useEntity().entity.metadata.annotations?.['backstage.io/view-url'].match(
       /github\.com\/([^\/]+)\/([^\/]+)/,
     ) || [];
 
@@ -41,13 +42,57 @@ export function useGithubRepositoryInformation(): GithubRepoInfo {
   };
 }
 
+/**
+ * Backstage has a bug where multiple tabs using the GitHub access token can each
+ * fetch a new token and invalidate tokens cached in older tabs. To mitigate this
+ * we patch an internal refresh predicate so a token verified as invalid can be
+ * refreshed before retrying the request.
+ */
+let invalidGitHubAccessToken = '';
+function patchGithubApiToEnableForcedRefresh<T>(
+  gitHubApi: T,
+  isDevelopment: boolean,
+): T {
+  const sessionManager = (gitHubApi as any)?.sessionManager;
+  if (!sessionManager?.originalSessionShouldRefreshFunc) {
+    if (typeof sessionManager?.sessionShouldRefreshFunc === 'function') {
+      sessionManager.originalSessionShouldRefreshFunc =
+        sessionManager.sessionShouldRefreshFunc;
+      sessionManager.sessionShouldRefreshFunc =
+        function sessionShouldRefreshFuncOverride(session: any) {
+          const accessToken = session?.providerInfo?.accessToken;
+          if (isDevelopment && invalidGitHubAccessToken && !accessToken) {
+            throw new Error(
+              'The expected location of the accessToken was empty. This workaround is no longer working',
+            );
+          }
+          if (accessToken === invalidGitHubAccessToken) {
+            invalidGitHubAccessToken = '';
+            return true;
+          }
+          return sessionManager.originalSessionShouldRefreshFunc(session);
+        };
+    } else if (isDevelopment) {
+      throw new Error(
+        'The expected function "sessionShouldRefreshFunc" does not exist. This workaround is no longer working',
+      );
+    }
+  }
+
+  return gitHubApi;
+}
+
 export function useAuthenticatedFetch() {
+  const configApi = useApi(configApiRef);
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
-  const gitHubApi = useApi(githubAuthApiRef);
+  const gitHubApi = patchGithubApiToEnableForcedRefresh(
+    useApi(githubAuthApiRef),
+    isDevelopment(),
+  );
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
-  const backendUrl = useApi(configApiRef).getString("backend.baseUrl");
+  const backendUrl = configApi.getString('backend.baseUrl');
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
 
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
@@ -73,64 +118,78 @@ export function useAuthenticatedFetch() {
     return `${riScUri}/publish/${id}`;
   }
 
-  const configApi = useApi(configApiRef);
-
   function isDevelopment() {
-    return configApi.getString("auth.environment") === "development";
+    return configApi.getString('auth.environment') === 'development';
   }
 
-  function fullyAuthenticatedFetch<T, K>(
+  async function fullyAuthenticatedFetch<T, K>(
     uri: string,
-    method: "GET" | "POST" | "PUT" | "DELETE",
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     onSuccess: (response: T) => void,
     onError: (error: K, rejectedLogin: boolean) => void,
     body?: string,
   ) {
-    Promise.all([
-      identityApi.getCredentials(),
-      googleApi.getAccessToken([
-        URLS.external.www_googleapis_com__cloudkms,
-        URLS.external.www_googleapis_com__cloud_platform,
-        URLS.external.www_googleapis_com__cloudplatformprojects_readonly,
-      ]),
-      gitHubApi.getAccessToken(["repo"]),
-    ])
-      .then(([idToken, googleAccessToken, gitHubAccessToken]) => {
-        fetch(uri, {
-          method: method,
-          headers: {
-            Authorization: `Bearer ${idToken.token}`,
-            "GCP-Access-Token": googleAccessToken,
-            "GitHub-Access-Token": gitHubAccessToken,
-            "Content-Type": "application/json",
-          },
-          body: body,
-        }).then((res) => {
-          if (!res.ok) {
-            return res
-              .json()
-              .then((json) => json as K)
-              .then((typedJson) => onError(typedJson, false))
-              .catch((error) => onError(error, false));
-          }
-          return res
-            .json()
-            .then((json) => json as T)
-            .then((typedJson) => onSuccess(typedJson));
-        });
-      })
-      .catch((error) => {
-        if (error.name === "RejectedError") {
-          onError(error, true);
-        } else {
-          onError(error, false);
-        }
+    try {
+      const [idToken, googleAccessToken, gitHubAccessToken] = await Promise.all(
+        [
+          identityApi.getCredentials(),
+          googleApi.getAccessToken([
+            URLS.external.www_googleapis_com__cloudkms,
+            URLS.external.www_googleapis_com__cloud_platform,
+            URLS.external.www_googleapis_com__cloudplatformprojects_readonly,
+          ]),
+          gitHubApi.getAccessToken(['repo']),
+        ],
+      );
+      const headers = {
+        Authorization: `Bearer ${idToken.token}`,
+        'GCP-Access-Token': googleAccessToken,
+        'GitHub-Access-Token': gitHubAccessToken,
+        'Content-Type': 'application/json',
+      };
+      let res = await fetch(uri, {
+        method: method,
+        headers,
+        body: body,
       });
+
+      let json = await res.json();
+
+      if (
+        res.status === 401 &&
+        (json as ProcessRiScResultDTO)?.status ===
+          ProcessingStatus.InvalidGitHubAccessToken
+      ) {
+        invalidGitHubAccessToken = headers['GitHub-Access-Token'];
+        headers['GitHub-Access-Token'] = await gitHubApi.getAccessToken([
+          'repo',
+        ]);
+        res = await fetch(uri, {
+          method: method,
+          headers: headers,
+          body: body,
+        });
+        json = await res.json();
+      }
+
+      if (!res.ok) {
+        return onError(json as K, false);
+      }
+
+      return onSuccess(json as T);
+    } catch (error: any) {
+      if (error.name === 'RejectedError') {
+        onError(error, true);
+      } else {
+        onError(error, false);
+      }
+      return Promise.resolve(null);
+    }
   }
 
   function googleAuthenticatedFetch<T, K>(
     uri: string,
-    method: "GET",
+    method: 'GET',
     onSuccess: (response: T) => void,
     onError: (error: K, rejectedLogin: boolean) => void,
     body?: string,
@@ -148,26 +207,26 @@ export function useAuthenticatedFetch() {
           method: method,
           headers: {
             Authorization: `Bearer ${idToken.token}`,
-            "GCP-Access-Token": googleAccessToken,
-            "Content-Type": "application/json",
+            'GCP-Access-Token': googleAccessToken,
+            'Content-Type': 'application/json',
           },
           body: body,
-        }).then((res) => {
+        }).then(res => {
           if (!res.ok) {
             return res
               .json()
-              .then((json) => json as K)
-              .then((typedJson) => onError(typedJson, false))
-              .catch((error) => onError(error, false));
+              .then(json => json as K)
+              .then(typedJson => onError(typedJson, false))
+              .catch(error => onError(error, false));
           }
           return res
             .json()
-            .then((json) => json as T)
-            .then((typedJson) => onSuccess(typedJson));
+            .then(json => json as T)
+            .then(typedJson => onSuccess(typedJson));
         });
       })
-      .catch((error) => {
-        if (error.name === "RejectedError") {
+      .catch(error => {
+        if (error.name === 'RejectedError') {
           onError(error, true);
         } else {
           onError(error, false);
@@ -180,10 +239,10 @@ export function useAuthenticatedFetch() {
     onSuccess: (response: DifferenceDTO) => void,
     onError?: (loginRejected: boolean) => void,
   ) {
-    return identityApi.getProfileInfo().then((profile) => {
+    return identityApi.getProfileInfo().then(profile => {
       fullyAuthenticatedFetch<DifferenceDTO, DifferenceDTO>(
         uriToFetchDifference(selectedRiSc.id),
-        "POST",
+        'POST',
         onSuccess,
         (_, rejectedLogin) => {
           if (onError) onError(rejectedLogin);
@@ -205,7 +264,7 @@ export function useAuthenticatedFetch() {
     if (isDevelopment()) {
       fullyAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
         uriToFetchAllRiScs,
-        "GET",
+        'GET',
         onSuccess,
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
@@ -214,7 +273,7 @@ export function useAuthenticatedFetch() {
     } else {
       googleAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
         uriToFetchAllRiScs,
-        "GET",
+        'GET',
         onSuccess,
         (error, rejectedLogin) => {
           if (onError) onError(error, rejectedLogin);
@@ -227,9 +286,9 @@ export function useAuthenticatedFetch() {
     return new Promise((resolve, reject) => {
       fullyAuthenticatedFetch<void, any>(
         `${riScUri}/feedback`,
-        "POST",
+        'POST',
         () => resolve(),
-        (error) => reject(error),
+        error => reject(error),
         feedback,
       );
     });
@@ -241,8 +300,8 @@ export function useAuthenticatedFetch() {
   ) {
     googleAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
       `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
-      "GET",
-      (res) => onSuccess(res),
+      'GET',
+      res => onSuccess(res),
       (error, rejectedLogin) => {
         if (onError) onError(error, rejectedLogin);
       },
@@ -254,11 +313,11 @@ export function useAuthenticatedFetch() {
     onSuccess?: (response: PublishRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
-    return identityApi.getProfileInfo().then((profile) =>
+    return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<PublishRiScResultDTO, ProcessRiScResultDTO>(
         uriToPublishRiSc(riScId),
-        "POST",
-        (res) => {
+        'POST',
+        res => {
           if (onSuccess) onSuccess(res);
         },
         (error, rejectedLogin) => {
@@ -277,11 +336,11 @@ export function useAuthenticatedFetch() {
     onSuccess?: (response: CreateRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
-    return identityApi.getProfileInfo().then((profile) =>
+    return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<CreateRiScResultDTO, ProcessRiScResultDTO>(
         `${riScUri}?generateDefault=${generateDefault}`,
-        "POST",
-        (res) => {
+        'POST',
+        res => {
           if (onSuccess) onSuccess(res);
         },
         (error, rejectedLogin) => {
@@ -297,14 +356,14 @@ export function useAuthenticatedFetch() {
     onSuccess?: (response: ProcessRiScResultDTO | PublishRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
-    identityApi.getProfileInfo().then((profile) =>
+    return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<
         ProcessRiScResultDTO | PublishRiScResultDTO,
         ProcessRiScResultDTO
       >(
         uriToFetchRiSc(riSc.id),
-        "PUT",
-        (res) => {
+        'PUT',
+        res => {
           if (onSuccess) onSuccess(res);
         },
         (error, rejectedLogin) => {
@@ -312,7 +371,7 @@ export function useAuthenticatedFetch() {
         },
         riScToDTOString(
           riSc.content,
-          riSc.isRequiresNewApproval!,
+          riSc.isRequiresNewApproval!!,
           profile,
           riSc.sopsConfig,
         ),
@@ -327,8 +386,8 @@ export function useAuthenticatedFetch() {
   ) {
     fullyAuthenticatedFetch<DeleteRiScResultDTO, ProcessRiScResultDTO>(
       uriToDeleteRiSc(riScId),
-      "DELETE",
-      (res) => {
+      'DELETE',
+      res => {
         if (onSuccess) onSuccess(res);
       },
       (error, rejectedLogin) => {
@@ -342,8 +401,8 @@ export function useAuthenticatedFetch() {
   ) {
     fullyAuthenticatedFetch<DefaultRiScTypeDescriptor[], void>(
       uriToFetchDefaultRiScDescriptors,
-      "GET",
-      (res) => onSuccess(res),
+      'GET',
+      res => onSuccess(res),
       () => {},
     );
   }

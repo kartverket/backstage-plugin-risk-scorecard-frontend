@@ -1,5 +1,5 @@
-import { DateTime } from "luxon";
-import { UpdateStatus } from "../contexts/RiScContext";
+import { DateTime } from 'luxon';
+import { UpdateStatus } from '../contexts/RiScContext';
 import {
   ActionStatusOptions,
   BASE_NUMBER,
@@ -9,14 +9,14 @@ import {
   VulnerabilitiesOptions,
   latestSupportedVersion,
   riskMatrix,
-} from "./constants";
+} from './constants';
 import {
   RiSc,
   RiScWithMetadata,
   Risk,
   Scenario,
   SubmitResponseObject,
-} from "./types";
+} from './types';
 
 export function generateRandomId(): string {
   return [...Array(5)]
@@ -24,7 +24,7 @@ export function generateRandomId(): string {
       const randomChar = Math.random().toString(36)[2];
       return Math.random() < 0.5 ? randomChar.toUpperCase() : randomChar;
     })
-    .join("");
+    .join('');
 }
 
 /**
@@ -47,13 +47,13 @@ export function generateRandomId(): string {
  * @param path Path to value
  */
 export function getValue(obj: any, path: string) {
-  if (path === "") return obj;
-  return path.split(".").reduce((prev, curr) => {
+  if (path === '') return obj;
+  return path.split('.').reduce((prev, curr) => {
     return prev?.[curr];
   }, obj);
 }
 
-const formatter = new Intl.NumberFormat("nb-NO", {
+const formatter = new Intl.NumberFormat('nb-NO', {
   maximumFractionDigits: 0,
 });
 
@@ -64,22 +64,22 @@ export function formatNOK(amount: number): string {
 export function getAlertSeverity(
   updateStatus: UpdateStatus,
   response?: SubmitResponseObject,
-): "error" | "success" | "warning" | "info" {
+): 'error' | 'success' | 'warning' | 'info' {
   if (updateStatus.isLoading) {
-    return "info";
+    return 'info';
   }
   if (updateStatus.isSuccess) {
-    return "success";
+    return 'success';
   } else if (updateStatus.isError) {
-    return "error";
+    return 'error';
   }
 
-  if (response && typeof response.status === "string") {
-    if (response.status.includes("Error")) return "error";
-    return "success";
+  if (response && typeof response.status === 'string') {
+    if (response.status.includes('Error')) return 'error';
+    return 'success';
   }
 
-  return "warning";
+  return 'warning';
 }
 
 export function getRiskMatrixColor(risiko: Risk) {
@@ -99,8 +99,8 @@ export function getConsequenceLevel(risiko: Risk) {
 export function emptyRiSc(): RiSc {
   return {
     schemaVersion: latestSupportedVersion,
-    title: "",
-    scope: "",
+    title: '',
+    scope: '',
     scenarios: [],
   };
 }
@@ -119,7 +119,7 @@ export function shortenName(name: string, maxCharacters: number = 16) {
       first,
     ];
     return (
-      candidates.find((c) => c.length <= maxCharacters) ??
+      candidates.find(c => c.length <= maxCharacters) ??
       first.slice(0, maxCharacters)
     );
   }
@@ -134,7 +134,7 @@ export function shortenName(name: string, maxCharacters: number = 16) {
     ];
 
     return (
-      candidates.find((c) => c.length <= maxCharacters) ??
+      candidates.find(c => c.length <= maxCharacters) ??
       first.slice(0, maxCharacters)
     );
   }
@@ -143,7 +143,7 @@ export function shortenName(name: string, maxCharacters: number = 16) {
 }
 
 export function formatDate(date: Date | string): string {
-  return DateTime.fromJSDate(new Date(date)).toFormat("dd.MM.yy");
+  return DateTime.fromJSDate(new Date(date)).toFormat('dd.MM.yy');
 }
 
 export function calculateDaysSince(dateString: Date) {
@@ -157,10 +157,10 @@ export function calculateDaysSince(dateString: Date) {
 }
 
 export const UpdatedStatusEnum = {
-  UPDATED: "UPDATED",
-  LITTLE_OUTDATED: "LITTLE_OUTDATED",
-  OUTDATED: "OUTDATED",
-  VERY_OUTDATED: "VERY_OUTDATED",
+  UPDATED: 'UPDATED',
+  LITTLE_OUTDATED: 'LITTLE_OUTDATED',
+  OUTDATED: 'OUTDATED',
+  VERY_OUTDATED: 'VERY_OUTDATED',
 } as const;
 
 export type UpdatedStatusEnumType =
@@ -204,15 +204,15 @@ export function formatNumber(
     return formatNOK(cost);
   }
   if (cost < 1e6) {
-    return getTranslationWithCorrectUnit(cost, 1e6, "thousand");
+    return getTranslationWithCorrectUnit(cost, 1e6, 'thousand');
   }
   if (cost < 1e9) {
-    return getTranslationWithCorrectUnit(cost, 1e9, "million");
+    return getTranslationWithCorrectUnit(cost, 1e9, 'million');
   }
   if (cost < 1e12) {
-    return getTranslationWithCorrectUnit(cost, 1e12, "billion");
+    return getTranslationWithCorrectUnit(cost, 1e12, 'billion');
   }
-  return getTranslationWithCorrectUnit(cost, 1e15, "trillion");
+  return getTranslationWithCorrectUnit(cost, 1e15, 'trillion');
 }
 
 export function parseISODateFromEncryptedROS(date?: string): string | null {
@@ -240,9 +240,9 @@ export function getTranslationKey(
   t: (s: any, c?: any) => string,
   context?: any,
 ): string {
-  if (type === "error") {
+  if (type === 'error') {
     return t(
-      [`errorMessages.${key}`, "errorMessages.DefaultErrorMessage"],
+      [`errorMessages.${key}`, 'errorMessages.DefaultErrorMessage'],
       context,
     );
   }
@@ -254,7 +254,7 @@ export function isPublicAgeKeyValid(publicAgeKey: string) {
     return false;
   }
 
-  if (!publicAgeKey.startsWith("age1")) {
+  if (!publicAgeKey.startsWith('age1')) {
     return false;
   }
 
@@ -273,7 +273,7 @@ export function deleteScenario(
 ) {
   if (riSc) {
     const updatedScenarios = riSc.content.scenarios.filter(
-      (s) => s.ID !== scenario.ID,
+      s => s.ID !== scenario.ID,
     );
     updateRiSc({
       ...riSc,
@@ -295,15 +295,15 @@ export function isDeeplyEqual<T>(
   if (a === b) return true;
 
   // Only do comparison on objects, ignoring null (which maps to object).
-  if (a && b && typeof a === "object" && typeof b === "object") {
+  if (a && b && typeof a === 'object' && typeof b === 'object') {
     // Check if a and b are both arrays or not. If only one is, then a and b are not equal. It is necessary to perform
     // this check, as otherwise the method below will say that [] and {} are equal (or [0] and {0: 0}).
     if (Array.isArray(a) !== Array.isArray(b)) return false;
 
     // Check if a and b have the same number of entries
     if (
-      Object.keys(a).filter((key) => !ignoredKeys.includes(key)).length !==
-      Object.keys(b).filter((key) => !ignoredKeys.includes(key)).length
+      Object.keys(a).filter(key => !ignoredKeys.includes(key)).length !==
+      Object.keys(b).filter(key => !ignoredKeys.includes(key)).length
     )
       return false;
 
@@ -374,28 +374,28 @@ export function roundProbabilityToNearestProbabilityOption(
 }
 
 export const consequenceIndexToTranslationKeys: Record<number, string> = {
-  0: "infoDialog.consequenceDescription.oneworkday",
-  1: "infoDialog.consequenceDescription.oneworkmonth",
-  2: "infoDialog.consequenceDescription.oneworkyear",
-  3: "infoDialog.consequenceDescription.20workyears",
-  4: "infoDialog.consequenceDescription.400workyears",
+  0: 'infoDialog.consequenceDescription.oneworkday',
+  1: 'infoDialog.consequenceDescription.oneworkmonth',
+  2: 'infoDialog.consequenceDescription.oneworkyear',
+  3: 'infoDialog.consequenceDescription.20workyears',
+  4: 'infoDialog.consequenceDescription.400workyears',
 };
 
 export const probabilityIndexToTranslationKeys: Record<number, string> = {
-  0: "infoDialog.probabilityDescription.every400years",
-  1: "infoDialog.probabilityDescription.every20years",
-  2: "infoDialog.probabilityDescription.annualy",
-  3: "infoDialog.probabilityDescription.monthly",
-  4: "infoDialog.probabilityDescription.daily",
+  0: 'infoDialog.probabilityDescription.every400years',
+  1: 'infoDialog.probabilityDescription.every20years',
+  2: 'infoDialog.probabilityDescription.annualy',
+  3: 'infoDialog.probabilityDescription.monthly',
+  4: 'infoDialog.probabilityDescription.daily',
 };
 
 export const actionStatusOptionsToTranslationKeys: Record<
   ActionStatusOptions,
   string
 > = {
-  [ActionStatusOptions.OK]: "actionStatus.OK",
-  [ActionStatusOptions.NotOK]: "actionStatus.Not OK",
-  [ActionStatusOptions.NotRelevant]: "actionStatus.Not relevant",
+  [ActionStatusOptions.OK]: 'actionStatus.OK',
+  [ActionStatusOptions.NotOK]: 'actionStatus.Not OK',
+  [ActionStatusOptions.NotRelevant]: 'actionStatus.Not relevant',
 };
 
 export function getTranslatedActionStatus(
@@ -417,73 +417,71 @@ export const threatActorOptionsToTranslationKeys: Record<
   ThreatActorsOptions,
   string
 > = {
-  [ThreatActorsOptions.ScriptKiddie]: "threatActors.Script kiddie",
-  [ThreatActorsOptions.Hacktivist]: "threatActors.Hacktivist",
-  [ThreatActorsOptions.RecklessEmployee]: "threatActors.Reckless employee",
-  [ThreatActorsOptions.Insider]: "threatActors.Insider",
-  [ThreatActorsOptions.OrganisedCrime]: "threatActors.Organised crime",
+  [ThreatActorsOptions.ScriptKiddie]: 'threatActors.Script kiddie',
+  [ThreatActorsOptions.Hacktivist]: 'threatActors.Hacktivist',
+  [ThreatActorsOptions.RecklessEmployee]: 'threatActors.Reckless employee',
+  [ThreatActorsOptions.Insider]: 'threatActors.Insider',
+  [ThreatActorsOptions.OrganisedCrime]: 'threatActors.Organised crime',
   [ThreatActorsOptions.TerroristOrganisation]:
-    "threatActors.Terrorist organisation",
-  [ThreatActorsOptions.NationGovernment]: "threatActors.Nation/government",
+    'threatActors.Terrorist organisation',
+  [ThreatActorsOptions.NationGovernment]: 'threatActors.Nation/government',
 };
 
 export const vulnerabiltiesOptionsToTranslationKeys: Record<
   VulnerabilitiesOptions,
   string
 > = {
-  [VulnerabilitiesOptions.FlawedDesign]: "vulnerabilities.Flawed design",
-  [VulnerabilitiesOptions.Misconfiguration]: "vulnerabilities.Misconfiguration",
+  [VulnerabilitiesOptions.FlawedDesign]: 'vulnerabilities.Flawed design',
+  [VulnerabilitiesOptions.Misconfiguration]: 'vulnerabilities.Misconfiguration',
   [VulnerabilitiesOptions.DependencyVulnerability]:
-    "vulnerabilities.Dependency vulnerability",
+    'vulnerabilities.Dependency vulnerability',
   [VulnerabilitiesOptions.UnauthorizedAccess]:
-    "vulnerabilities.Unauthorized access",
-  [VulnerabilitiesOptions.UnmonitoredUse]: "vulnerabilities.Unmonitored use",
-  [VulnerabilitiesOptions.InputTampering]: "vulnerabilities.Input tampering",
-  [VulnerabilitiesOptions.InformationLeak]: "vulnerabilities.Information leak",
-  [VulnerabilitiesOptions.ExcessiveUse]: "vulnerabilities.Excessive use",
+    'vulnerabilities.Unauthorized access',
+  [VulnerabilitiesOptions.UnmonitoredUse]: 'vulnerabilities.Unmonitored use',
+  [VulnerabilitiesOptions.InputTampering]: 'vulnerabilities.Input tampering',
+  [VulnerabilitiesOptions.InformationLeak]: 'vulnerabilities.Information leak',
+  [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
 };
 
 export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
-  const scenariosWithData = riScWithMetadata.content.scenarios.map(
-    (scenario) => {
-      const actionsWithStatus = (scenario.actions ?? []).map((action) => {
-        if (!action.lastUpdated) {
-          return { ...action, status: UpdatedStatusEnum.VERY_OUTDATED };
-        }
-        const daysSinceLastUpdate = action.lastUpdated
-          ? calculateDaysSince(new Date(action.lastUpdated))
-          : null;
-        const status =
-          daysSinceLastUpdate !== null
-            ? calculateUpdatedStatus(daysSinceLastUpdate)
-            : UpdatedStatusEnum.VERY_OUTDATED;
+  const scenariosWithData = riScWithMetadata.content.scenarios.map(scenario => {
+    const actionsWithStatus = (scenario.actions ?? []).map(action => {
+      if (!action.lastUpdated) {
+        return { ...action, status: UpdatedStatusEnum.VERY_OUTDATED };
+      }
+      const daysSinceLastUpdate = action.lastUpdated
+        ? calculateDaysSince(new Date(action.lastUpdated))
+        : null;
+      const status =
+        daysSinceLastUpdate !== null
+          ? calculateUpdatedStatus(daysSinceLastUpdate)
+          : UpdatedStatusEnum.VERY_OUTDATED;
 
-        return { ...action, status };
-      });
-      return {
-        ...scenario,
-        actions: actionsWithStatus,
-      };
-    },
-  );
+      return { ...action, status };
+    });
+    return {
+      ...scenario,
+      actions: actionsWithStatus,
+    };
+  });
 
-  const allActions = scenariosWithData.flatMap((scenario) => scenario.actions);
+  const allActions = scenariosWithData.flatMap(scenario => scenario.actions);
   const totalCount = allActions.length;
   const veryOutdatedCount = allActions.filter(
-    (action) => action.status === UpdatedStatusEnum.VERY_OUTDATED,
+    action => action.status === UpdatedStatusEnum.VERY_OUTDATED,
   ).length;
   const outdatedCount = allActions.filter(
-    (action) => action.status === UpdatedStatusEnum.OUTDATED,
+    action => action.status === UpdatedStatusEnum.OUTDATED,
   ).length;
   const updatedCount = allActions.filter(
-    (action) => action.status === UpdatedStatusEnum.UPDATED,
+    action => action.status === UpdatedStatusEnum.UPDATED,
   ).length;
 
   return { totalCount, veryOutdatedCount, outdatedCount, updatedCount };
 }
 
 export function getActiveTheme() {
-  return document.body.getAttribute("data-theme-mode");
+  return document.body.getAttribute('data-theme-mode');
 }
 
 export function validateRemainingRiskNotHigher(
@@ -504,10 +502,10 @@ export function validateRemainingRiskNotHigher(
   const errors: string[] = [];
 
   if (remainingProbability > initialProbability) {
-    errors.push(t("scenarioDrawer.errors.remainingProbabilityTooHigh"));
+    errors.push(t('scenarioDrawer.errors.remainingProbabilityTooHigh'));
   }
   if (remainingConsequence > initialConsequence) {
-    errors.push(t("scenarioDrawer.errors.remainingConsequenceTooHigh"));
+    errors.push(t('scenarioDrawer.errors.remainingConsequenceTooHigh'));
   }
 
   return {

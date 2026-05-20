@@ -1,5 +1,5 @@
-import styles from "./changeSet.module.css";
-import { ReactNode } from "react";
+import styles from './changeSet.module.css';
+import { ReactNode } from 'react';
 
 interface ChangeSetChangedValueProps {
   oldValue: string | ReactNode;
@@ -17,10 +17,10 @@ export function ChangeSetChangedValue({
   return (
     <>
       <span className={styles.oldValue}>{oldValue}</span>
-      {multiline ? <br /> : " "}
+      {multiline ? <br /> : ' '}
       <span className={styles.newValue}>{newValue}</span>
-      {multiline ? <br /> : " "}
-      <span className={styles.text}>{unit ? unit : ""}</span>
+      {multiline ? <br /> : ' '}
+      <span className={styles.text}>{unit ? unit : ''}</span>
     </>
   );
 }

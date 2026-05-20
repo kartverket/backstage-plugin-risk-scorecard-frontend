@@ -8,21 +8,21 @@ import {
   Text,
   type ColumnConfig,
   Link,
-} from "@backstage/ui";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
-import { RiScStatus, RiScWithMetadata } from "../../utils/types.ts";
+} from '@backstage/ui';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
 import {
   calcRiskCostOfScenario,
   calcRemainingActionsCount,
-} from "../../utils/risk.ts";
-import { RiskMatrixTabs } from "./utils.tsx";
-import { formatNumber } from "../../utils/utilityfunctions.ts";
-import { useScenario } from "../../contexts/ScenarioContext.tsx";
-import { useState } from "react";
-import styles from "./ScenarioReductionTable.module.css";
+} from '../../utils/risk.ts';
+import { RiskMatrixTabs } from './utils.tsx';
+import { formatNumber } from '../../utils/utilityfunctions.ts';
+import { useScenario } from '../../contexts/ScenarioContext.tsx';
+import { useState } from 'react';
+import styles from './ScenarioReductionTable.module.css';
 
-type MetricKey = "currentRisk" | "reductionPerAction" | "potentialReduction";
+type MetricKey = 'currentRisk' | 'reductionPerAction' | 'potentialReduction';
 
 type ScenarioReductionRow = {
   id: string;
@@ -44,7 +44,7 @@ export function ScenarioReductionTable({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { openScenarioDrawer } = useScenario();
   const [selectedMetric, setSelectedMetric] =
-    useState<MetricKey>("potentialReduction");
+    useState<MetricKey>('potentialReduction');
 
   const canEdit =
     riScWithMetadata.status !== RiScStatus.DeletionDraft &&
@@ -57,29 +57,29 @@ export function ScenarioReductionTable({
 
   const metricOptions: Array<{ value: MetricKey; label: string }> = [
     {
-      value: "potentialReduction",
-      label: t("riskMatrix.currentRisk.metricPotentialReduction"),
+      value: 'potentialReduction',
+      label: t('riskMatrix.currentRisk.metricPotentialReduction'),
     },
     {
-      value: "currentRisk",
-      label: t("riskMatrix.currentRisk.metricCurrentRisk"),
+      value: 'currentRisk',
+      label: t('riskMatrix.currentRisk.metricCurrentRisk'),
     },
     {
-      value: "reductionPerAction",
-      label: t("riskMatrix.currentRisk.metricReductionPerAction"),
+      value: 'reductionPerAction',
+      label: t('riskMatrix.currentRisk.metricReductionPerAction'),
     },
   ];
 
   const metricLabel =
-    metricOptions.find((o) => o.value === selectedMetric)?.label ?? "";
+    metricOptions.find(o => o.value === selectedMetric)?.label ?? '';
 
   const columns: ColumnConfig<ScenarioReductionRow>[] = [
     {
-      id: "scenario",
-      label: t("riskMatrix.currentRisk.scenarioColumn"),
+      id: 'scenario',
+      label: t('riskMatrix.currentRisk.scenarioColumn'),
       isRowHeader: true,
-      defaultWidth: "2fr",
-      cell: (item) => (
+      defaultWidth: '2fr',
+      cell: item => (
         <Cell>
           <Link
             variant="body-medium"
@@ -91,20 +91,18 @@ export function ScenarioReductionTable({
       ),
     },
     {
-      id: "metric",
-      label: `${metricLabel} (${t("riskMatrix.estimatedRisk.unit.nokPerYear")})`,
-      defaultWidth: "1fr",
+      id: 'metric',
+      label: `${metricLabel} (${t('riskMatrix.estimatedRisk.unit.nokPerYear')})`,
+      defaultWidth: '1fr',
       minWidth: 230,
-      cell: (item) => (
-        <CellText title={formatNumber(item[selectedMetric], t)} />
-      ),
+      cell: item => <CellText title={formatNumber(item[selectedMetric], t)} />,
     },
   ];
 
   const scenarios = riScWithMetadata.content.scenarios;
 
   const data: ScenarioReductionRow[] = scenarios
-    .map((scenario) => {
+    .map(scenario => {
       const currentRiskCost = calcRiskCostOfScenario(
         scenario,
         RiskMatrixTabs.currentRisk,
@@ -128,7 +126,7 @@ export function ScenarioReductionTable({
     .sort((a, b) => b[selectedMetric] - a[selectedMetric]);
 
   const { tableProps } = useTable({
-    mode: "complete",
+    mode: 'complete',
     data,
     paginationOptions: {
       pageSize: 5,
@@ -140,42 +138,42 @@ export function ScenarioReductionTable({
     <Flex direction="column" gap="16px">
       <Flex direction="column" gap="4px">
         <Text variant="body-medium">
-          {t("riskMatrix.currentRisk.dialogDescription")}
+          {t('riskMatrix.currentRisk.dialogDescription')}
         </Text>
         <ul className={styles.metricList}>
           <li>
             <Text variant="body-medium">
               <Text weight="bold">
-                {t("riskMatrix.currentRisk.metricCurrentRisk")}
+                {t('riskMatrix.currentRisk.metricCurrentRisk')}
               </Text>
-              {" — "}
-              {t("riskMatrix.currentRisk.metricCurrentRiskDescription")}
+              {' — '}
+              {t('riskMatrix.currentRisk.metricCurrentRiskDescription')}
             </Text>
           </li>
           <li>
             <Text variant="body-medium">
               <Text weight="bold">
-                {t("riskMatrix.currentRisk.metricPotentialReduction")}
+                {t('riskMatrix.currentRisk.metricPotentialReduction')}
               </Text>
-              {" — "}
-              {t("riskMatrix.currentRisk.metricPotentialReductionDescription")}
+              {' — '}
+              {t('riskMatrix.currentRisk.metricPotentialReductionDescription')}
             </Text>
           </li>
           <li>
             <Text variant="body-medium">
               <Text weight="bold">
-                {t("riskMatrix.currentRisk.metricReductionPerAction")}
+                {t('riskMatrix.currentRisk.metricReductionPerAction')}
               </Text>
-              {" — "}
-              {t("riskMatrix.currentRisk.metricReductionPerActionDescription")}
+              {' — '}
+              {t('riskMatrix.currentRisk.metricReductionPerActionDescription')}
             </Text>
           </li>
         </ul>
       </Flex>
       <Select
-        aria-label={t("riskMatrix.currentRisk.metricLabel")}
+        aria-label={t('riskMatrix.currentRisk.metricLabel')}
         value={selectedMetric}
-        onChange={(key) => {
+        onChange={key => {
           if (key) setSelectedMetric(key as MetricKey);
         }}
         options={metricOptions}

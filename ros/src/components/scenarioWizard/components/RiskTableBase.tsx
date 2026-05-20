@@ -1,18 +1,18 @@
-import { pluginRiScTranslationRef } from "../../../utils/translations";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { useController, UseFormReturn } from "react-hook-form";
-import { FormScenario } from "../../../utils/types";
-import { RiskRadioButton } from "./RiskRadioButton";
-import RadioGroup from "@mui/material/RadioGroup";
-import { Text, Box } from "@backstage/ui";
-import styles from "../ScenarioWizardTable.module.css";
-import React from "react";
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { useController, UseFormReturn } from 'react-hook-form';
+import { FormScenario } from '../../../utils/types';
+import { RiskRadioButton } from './RiskRadioButton';
+import RadioGroup from '@mui/material/RadioGroup';
+import { Text, Box } from '@backstage/ui';
+import styles from '../ScenarioWizardTable.module.css';
+import React from 'react';
 
 type RiskTableBaseProps = {
   formMethods: UseFormReturn<FormScenario>;
-  riskType: keyof Pick<FormScenario, "risk" | "remainingRisk">;
-  fieldName: "probability" | "consequence";
-  translationPrefix: "probabilityTable" | "consequenceTable";
+  riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
+  fieldName: 'probability' | 'consequence';
+  translationPrefix: 'probabilityTable' | 'consequenceTable';
   options: readonly number[];
   additionalClassName?: string;
   InfoComponent: React.ComponentType;
@@ -23,7 +23,7 @@ export function RiskTableBase({
   riskType,
   fieldName,
   options,
-  additionalClassName = "",
+  additionalClassName = '',
   translationPrefix,
   InfoComponent,
 }: RiskTableBaseProps) {
@@ -56,7 +56,7 @@ export function RiskTableBase({
   return (
     <Box className={styles.riskTable}>
       <RadioGroup {...field} className={radioGroupClassName}>
-        {fieldName === "consequence" && (
+        {fieldName === 'consequence' && (
           <Box className={styles.riskLabelCell}>{null}</Box>
         )}
         {Array.from({ length: 5 }, (_, i) => getRadioCell(i))}
@@ -67,7 +67,7 @@ export function RiskTableBase({
 }
 
 export function createInfoWithHeadersComponent(
-  translationPrefix: "probabilityTable" | "consequenceTable",
+  translationPrefix: 'probabilityTable' | 'consequenceTable',
   InfoComponent: React.ComponentType,
   includeLabel: boolean = false,
 ) {

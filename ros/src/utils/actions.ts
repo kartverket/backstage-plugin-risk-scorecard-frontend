@@ -1,17 +1,17 @@
-import { Action } from "./types.ts";
-import { ActionStatusOptions } from "./constants.ts";
+import { Action } from './types.ts';
+import { ActionStatusOptions } from './constants.ts';
 import {
   calculateDaysSince,
   calculateUpdatedStatus,
   UpdatedStatusEnum,
-} from "./utilityfunctions.ts";
-import { ProfileInfo } from "@backstage/core-plugin-api";
+} from './utilityfunctions.ts';
+import { ProfileInfo } from '@backstage/core-plugin-api';
 
 export function filterActionsByRelevance(
   actions: Action[],
   showOnlyRelevant: boolean,
 ) {
-  return actions.filter((action) =>
+  return actions.filter(action =>
     showOnlyRelevant ? action.status !== ActionStatusOptions.NotRelevant : true,
   );
 }
@@ -38,7 +38,7 @@ export function getActionsWithLastUpdated(
   profileInfo?: ProfileInfo,
 ) {
   const actionsWithLastUpdated: Action[] = [];
-  const lastUpdatedBy = profileInfo?.displayName || profileInfo?.email || "";
+  const lastUpdatedBy = profileInfo?.displayName || profileInfo?.email || '';
   for (const newAction of newActions) {
     if (idsOfActionsToForceUpdateLastUpdatedValue.includes(newAction.ID)) {
       actionsWithLastUpdated.push({
@@ -49,7 +49,7 @@ export function getActionsWithLastUpdated(
       continue;
     }
 
-    const oldAction = oldActions.find((a) => a.ID === newAction.ID);
+    const oldAction = oldActions.find(a => a.ID === newAction.ID);
     if (oldAction && isActionsEqual(newAction, oldAction)) {
       actionsWithLastUpdated.push({ ...newAction });
     } else {

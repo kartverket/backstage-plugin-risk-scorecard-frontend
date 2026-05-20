@@ -35,6 +35,6 @@
   border-radius: 4px;
 }
 
-[data-theme-mode="dark"] .accordionContainer {
+[data-theme-mode='dark'] .accordionContainer {
   border: 1px solid var(--bui-white);
 }

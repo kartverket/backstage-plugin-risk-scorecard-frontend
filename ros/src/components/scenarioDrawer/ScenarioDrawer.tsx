@@ -1,29 +1,29 @@
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Box from "@mui/material/Box";
-import { Button } from "@backstage/ui";
-import CircularProgress from "@mui/material/CircularProgress";
-import Drawer from "@mui/material/Drawer";
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useRiScs } from "../../contexts/RiScContext";
-import { useScenario } from "../../contexts/ScenarioContext";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import { FormScenario } from "../../utils/types";
-import { deleteScenario } from "../../utils/utilityfunctions";
-import { MatrixDialog } from "../riScDialog/MatrixDialog";
-import { CloseConfirmation } from "../scenarioWizard/components/CloseConfirmation";
-import { ActionsSection } from "./components/ActionsSection";
-import { DeleteScenarioConfirmation } from "./components/DeleteConfirmation";
-import RiskFormSection from "./components/RiskFormSection";
-import ScopeFormSection from "./components/ScopeFormSection";
-import { Flex } from "@backstage/ui";
-import { useBackstageContext } from "../../contexts/BackstageContext.tsx";
-import alertBarStyles from "../common/alertBar.module.css";
-import drawerStyles from "./scenarioDrawer.module.css";
-import { ScopeSection } from "./components/ScopeSection.tsx";
-import { RiskSection } from "./components/RiskSection.tsx";
-import AlertBar from "../common/AlertBar/AlertBar.tsx";
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Box from '@mui/material/Box';
+import { Button } from '@backstage/ui';
+import CircularProgress from '@mui/material/CircularProgress';
+import Drawer from '@mui/material/Drawer';
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useRiScs } from '../../contexts/RiScContext';
+import { useScenario } from '../../contexts/ScenarioContext';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { FormScenario } from '../../utils/types';
+import { deleteScenario } from '../../utils/utilityfunctions';
+import { MatrixDialog } from '../riScDialog/MatrixDialog';
+import { CloseConfirmation } from '../scenarioWizard/components/CloseConfirmation';
+import { ActionsSection } from './components/ActionsSection';
+import { DeleteScenarioConfirmation } from './components/DeleteConfirmation';
+import RiskFormSection from './components/RiskFormSection';
+import ScopeFormSection from './components/ScopeFormSection';
+import { Flex } from '@backstage/ui';
+import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
+import alertBarStyles from '../common/alertBar.module.css';
+import drawerStyles from './scenarioDrawer.module.css';
+import { ScopeSection } from './components/ScopeSection.tsx';
+import { RiskSection } from './components/RiskSection.tsx';
+import AlertBar from '../common/AlertBar/AlertBar.tsx';
 
 export function ScenarioDrawer() {
   const { profileInfo } = useBackstageContext();
@@ -60,7 +60,7 @@ export function ScenarioDrawer() {
 
   const formMethods = useForm<FormScenario>({
     defaultValues: mapScenarioToFormScenario(scenario),
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   function onCancel() {
@@ -101,26 +101,27 @@ export function ScenarioDrawer() {
     setShowCloseConfirmation(false);
 
     if (deleteScenarioRef.current) {
-      deleteScenarioRef.current.scrollIntoView({ behavior: "smooth" });
+      deleteScenarioRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }
 
   useEffect(() => {
     formMethods.reset(mapScenarioToFormScenario(scenario));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenario]);
 
   return (
     <Drawer
       PaperProps={{
-        sx: (theme) => ({
+        sx: theme => ({
           padding: theme.spacing(4),
-          width: "50%",
+          width: '50%',
           gap: theme.spacing(3),
-          [theme.breakpoints.down("sm")]: {
-            width: "90%",
+          [theme.breakpoints.down('sm')]: {
+            width: '90%',
             padding: theme.spacing(2),
           },
-          backgroundColor: "var(--bui-bg-app)",
+          backgroundColor: 'var(--bui-bg-app)',
         }),
       }}
       variant="temporary"
@@ -136,7 +137,7 @@ export function ScenarioDrawer() {
             variant="primary"
             onClick={() => setIsEditing(true)}
           >
-            {t("dictionary.edit")}
+            {t('dictionary.edit')}
           </Button>
         )}
         <Button
@@ -144,7 +145,7 @@ export function ScenarioDrawer() {
           variant="secondary"
           onClick={isEditing ? onCancel : onClose}
         >
-          {t(isEditing ? "dictionary.cancel" : "dictionary.close")}
+          {t(isEditing ? 'dictionary.cancel' : 'dictionary.close')}
         </Button>
       </Box>
 
@@ -180,7 +181,7 @@ export function ScenarioDrawer() {
               !formMethods.formState.isDirty || updateStatus.isLoading
             }
           >
-            {t("dictionary.save")}
+            {t('dictionary.save')}
             {updateStatus.isLoading && (
               <CircularProgress size={16} className={drawerStyles.spinner} />
             )}
@@ -194,7 +195,7 @@ export function ScenarioDrawer() {
               variant="tertiary"
               onClick={() => setDeleteConfirmationIsOpen(true)}
             >
-              {t("scenarioDrawer.deleteScenarioButton")}
+              {t('scenarioDrawer.deleteScenarioButton')}
             </Button>
           </div>
         )}

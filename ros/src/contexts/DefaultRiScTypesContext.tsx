@@ -4,10 +4,10 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { useAuthenticatedFetch } from "../utils/hooks.ts";
-import { DefaultRiScTypeDescriptor } from "../utils/types.ts";
-import { useEntity } from "@backstage/plugin-catalog-react";
+} from 'react';
+import { useAuthenticatedFetch } from '../utils/hooks.ts';
+import { DefaultRiScTypeDescriptor } from '../utils/types.ts';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 type DefaultRiScTypesContextObject = {
   defaultRiScTypeDescriptors: DefaultRiScTypeDescriptor[];
@@ -34,10 +34,11 @@ export function DefaultRiScTypesProvider({
   >(undefined);
 
   useEffect(() => {
-    fetchDefaultRiScTypeDescriptors((response) => {
+    fetchDefaultRiScTypeDescriptors(response => {
       setDefaultRiScTypeDescriptors(response);
       setRiScSelectedByDefault(getRiScSelectedByDefault(response));
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function getRiScSelectedByDefault(
@@ -51,7 +52,7 @@ export function DefaultRiScTypesProvider({
     }
 
     const selectedDescriptor = descriptors.find(
-      (descriptor) =>
+      descriptor =>
         descriptor.preferredBackstageComponentType === componentType,
     );
     if (!selectedDescriptor && descriptors.length > 0) return descriptors[0];
@@ -61,9 +62,7 @@ export function DefaultRiScTypesProvider({
   function getDescriptorOfId(
     id: string,
   ): DefaultRiScTypeDescriptor | undefined {
-    return defaultRiScTypeDescriptors.find(
-      (descriptor) => descriptor.id === id,
-    );
+    return defaultRiScTypeDescriptors.find(descriptor => descriptor.id === id);
   }
 
   return (
@@ -84,7 +83,7 @@ export function useDefaultRiScTypeDescriptors() {
 
   if (context === undefined) {
     throw new Error(
-      "useDefaultRiScTypeDescriptors must be used within a DefaultRiScTypesContext provider",
+      'useDefaultRiScTypeDescriptors must be used within a DefaultRiScTypesContext provider',
     );
   }
   return context;

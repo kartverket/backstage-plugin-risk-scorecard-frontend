@@ -1,17 +1,17 @@
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Paper from "@mui/material/Paper";
-import Tooltip from "@mui/material/Tooltip";
-import { useState, useEffect } from "react";
-import { RiScStatus, RiScWithMetadata } from "../../utils/types";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import { useScenario } from "../../contexts/ScenarioContext";
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Paper from '@mui/material/Paper';
+import Tooltip from '@mui/material/Tooltip';
+import { useState, useEffect } from 'react';
+import { RiScStatus, RiScWithMetadata } from '../../utils/types';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useScenario } from '../../contexts/ScenarioContext';
 import {
   findConsequenceIndex,
   findProbabilityIndex,
-} from "../../utils/utilityfunctions";
-import { Text } from "@backstage/ui";
-import styles from "./RiskMatrixScenarioCount.module.css";
+} from '../../utils/utilityfunctions';
+import { Text } from '@backstage/ui';
+import styles from './RiskMatrixScenarioCount.module.css';
 
 interface ScenarioCountProps {
   riScWithMetadata: RiScWithMetadata;
@@ -47,7 +47,7 @@ export function RiskMatrixScenarioCount({
   }
 
   const scenarios = riScWithMetadata.content.scenarios.filter(
-    (scenario) =>
+    scenario =>
       findProbabilityIndex(
         initialRisk
           ? scenario.risk.probability
@@ -63,28 +63,28 @@ export function RiskMatrixScenarioCount({
   if (scenarios.length === 0) {
     return null;
   }
-  const isHighlightedFromExternal = scenarios.some((s) =>
-    hoveredScenarios.some((h) => h.ID === s.ID),
+  const isHighlightedFromExternal = scenarios.some(s =>
+    hoveredScenarios.some(h => h.ID === s.ID),
   );
 
   const tooltipList = (
     <div>
       <Text variant="title-x-small" weight="bold">
-        {t("riskMatrix.tooltip.title")}
+        {t('riskMatrix.tooltip.title')}
       </Text>
       <ul className={styles.tooltipList}>
-        {scenarios.map((scenario) => (
+        {scenarios.map(scenario => (
           <li key={scenario.ID}>
             <div
               className={styles.tooltipListItem}
               role="button"
               tabIndex={0}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 handleScenarioClick(scenario.ID);
               }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+              onKeyDown={e => {
+                if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   handleScenarioClick(scenario.ID);
                 }
@@ -112,24 +112,24 @@ export function RiskMatrixScenarioCount({
       >
         <Paper
           className={`${styles.circle} ${styles.centered} ${
-            isHovered || isHighlightedFromExternal ? styles.circleHovered : ""
+            isHovered || isHighlightedFromExternal ? styles.circleHovered : ''
           }`}
           elevation={10}
           onClick={() => setTooltipOpen(!tooltipOpen)}
           onMouseEnter={() => {
             setIsHovered(true);
             // Add scenarios to hovered list using functional update and dedupe by ID
-            setHoveredScenarios((prev) => {
+            setHoveredScenarios(prev => {
               const map = new Map<string, (typeof scenarios)[0]>();
-              prev.forEach((p) => map.set(p.ID, p));
-              scenarios.forEach((s) => map.set(s.ID, s));
+              prev.forEach(p => map.set(p.ID, p));
+              scenarios.forEach(s => map.set(s.ID, s));
               return Array.from(map.values());
             });
           }}
           onMouseLeave={() => {
             setIsHovered(false);
-            setHoveredScenarios((prev) =>
-              prev.filter((s) => !scenarios.some((s2) => s2.ID === s.ID)),
+            setHoveredScenarios(prev =>
+              prev.filter(s => !scenarios.some(s2 => s2.ID === s.ID)),
             );
           }}
         >

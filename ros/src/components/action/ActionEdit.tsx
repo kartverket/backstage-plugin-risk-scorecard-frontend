@@ -1,12 +1,12 @@
-import Button from "@mui/material/Button";
-import { Action } from "../../utils/types.ts";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { pluginRiScTranslationRef } from "../../utils/translations.ts";
-import CircularProgress from "@mui/material/CircularProgress";
-import { useRiScs } from "../../contexts/RiScContext.tsx";
-import { ActionFormItem } from "../scenarioDrawer/components/ActionFormItem.tsx";
-import { Flex } from "@backstage/ui";
+import Button from '@mui/material/Button';
+import { Action } from '../../utils/types.ts';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useRiScs } from '../../contexts/RiScContext.tsx';
+import { ActionFormItem } from '../scenarioDrawer/components/ActionFormItem.tsx';
+import { Flex } from '@backstage/ui';
 
 type ActionEditProps = {
   action: Action;
@@ -21,7 +21,6 @@ type ActionEditForm = {
   description: string;
   status: string;
   url: string;
-  comment?: string;
 };
 
 export function ActionEdit(props: ActionEditProps) {
@@ -33,12 +32,11 @@ export function ActionEdit(props: ActionEditProps) {
       description: props.action.description,
       status: props.action.status,
       url: props.action.url,
-      comment: props.action.comment ?? "",
     },
   });
   const { updateStatus } = useRiScs();
 
-  const onSubmit: SubmitHandler<ActionEditForm> = (data) => {
+  const onSubmit: SubmitHandler<ActionEditForm> = data => {
     const newAction = {
       ...props.action,
       ...data,
@@ -59,15 +57,15 @@ export function ActionEdit(props: ActionEditProps) {
           onClick={formMethods.handleSubmit(onSubmit)}
           disabled={!formMethods.formState.isDirty || updateStatus.isLoading}
         >
-          {t("dictionary.save")}
+          {t('dictionary.save')}
           {updateStatus.isLoading && (
             <CircularProgress
               size={16}
-              sx={{ marginLeft: 8, color: "inherit" }}
+              sx={{ marginLeft: 8, color: 'inherit' }}
             />
           )}
         </Button>
-        <Button onClick={props.onCancelEdit}>{t("dictionary.cancel")}</Button>
+        <Button onClick={props.onCancelEdit}>{t('dictionary.cancel')}</Button>
       </Flex>
     </Flex>
   );

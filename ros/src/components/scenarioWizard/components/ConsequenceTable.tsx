@@ -1,11 +1,11 @@
-import { pluginRiScTranslationRef } from "../../../utils/translations";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { UseFormReturn } from "react-hook-form";
-import { FormScenario } from "../../../utils/types";
-import { consequenceOptions } from "../../../utils/constants";
-import { Text, Box } from "@backstage/ui";
-import styles from "../ScenarioWizardTable.module.css";
-import { createInfoWithHeadersComponent, RiskTableBase } from "./RiskTableBase";
+import { pluginRiScTranslationRef } from '../../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { UseFormReturn } from 'react-hook-form';
+import { FormScenario } from '../../../utils/types';
+import { consequenceOptions } from '../../../utils/constants';
+import { Text, Box } from '@backstage/ui';
+import styles from '../ScenarioWizardTable.module.css';
+import { createInfoWithHeadersComponent, RiskTableBase } from './RiskTableBase';
 
 function ConsequenceTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -41,38 +41,38 @@ function ConsequenceTableInfo() {
 
   const consequenceRows = [
     {
-      key: "economical",
-      cells: ["riskCell", "riskCell", "riskCell", "riskCell", "riskCell"],
+      key: 'economical',
+      cells: ['riskCell', 'riskCell', 'riskCell', 'riskCell', 'riskCell'],
     },
     {
-      key: "privacy",
-      cells: ["riskCell", "riskCell", "riskCell", "riskCell", "riskVoidCell"],
+      key: 'privacy',
+      cells: ['riskCell', 'riskCell', 'riskCell', 'riskCell', 'riskVoidCell'],
     },
     {
-      key: "reputation",
+      key: 'reputation',
       cells: [
-        "riskCell",
-        "riskCell",
-        "riskCell",
-        "riskVoidCell",
-        "riskVoidCell",
+        'riskCell',
+        'riskCell',
+        'riskCell',
+        'riskVoidCell',
+        'riskVoidCell',
       ],
     },
     {
-      key: "health",
+      key: 'health',
       cells: [
-        "riskVoidCell",
-        "riskVoidCell",
-        "riskCell",
-        "riskCell",
-        "riskCell",
+        'riskVoidCell',
+        'riskVoidCell',
+        'riskCell',
+        'riskCell',
+        'riskCell',
       ],
     },
   ];
 
   return (
     <Box className={styles.consequenceGrid}>
-      {consequenceRows.map((row) => getRow(row.key, row.cells))}
+      {consequenceRows.map(row => getRow(row.key, row.cells))}
     </Box>
   );
 }
@@ -82,7 +82,7 @@ export function ConsequenceTable({
   riskType,
 }: {
   formMethods: UseFormReturn<FormScenario>;
-  riskType: keyof Pick<FormScenario, "risk" | "remainingRisk">;
+  riskType: keyof Pick<FormScenario, 'risk' | 'remainingRisk'>;
 }) {
   return (
     <RiskTableBase
@@ -98,7 +98,7 @@ export function ConsequenceTable({
 }
 
 export const ConsequenceTableInfoWithHeaders = createInfoWithHeadersComponent(
-  "consequenceTable",
+  'consequenceTable',
   ConsequenceTableInfo,
   true,
 );

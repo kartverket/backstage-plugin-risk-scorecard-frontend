@@ -1,10 +1,10 @@
-import { pluginRiScTranslationRef } from "../../utils/translations";
-import { useTranslationRef } from "@backstage/core-plugin-api/alpha";
-import { Box, Flex, Radio, RadioGroup, Switch, Text } from "@backstage/ui";
-import { RiScWithMetadata } from "../../utils/types.ts";
-import { useDefaultRiScTypeDescriptors } from "../../contexts/DefaultRiScTypesContext.tsx";
-import { UseFormSetValue } from "react-hook-form";
-import styles from "./ConfigInitialRisc.module.css";
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { Box, Flex, Radio, RadioGroup, Switch, Text } from '@backstage/ui';
+import { RiScWithMetadata } from '../../utils/types.ts';
+import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
+import { UseFormSetValue } from 'react-hook-form';
+import styles from './ConfigInitialRisc.module.css';
 
 type RadioOptionProps = {
   value: string;
@@ -27,10 +27,10 @@ const RadioOption = ({
 }: RadioOptionProps) => {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const style = {
-    fontSize: "12px",
-    border: `1px solid ${active ? "var(--bui-border-2)" : "var(--bui-border-1)"}`,
-    borderRadius: "24px",
-    padding: "2px 8px",
+    fontSize: '12px',
+    border: `1px solid ${active ? 'var(--bui-border-2)' : 'var(--bui-border-1)'}`,
+    borderRadius: '24px',
+    padding: '2px 8px',
   };
 
   return (
@@ -41,8 +41,8 @@ const RadioOption = ({
         p="12px 16px"
         gap="2"
         style={{
-          backgroundColor: "var(--ros-initial-risc-bg)",
-          borderRadius: "8px",
+          backgroundColor: 'var(--ros-initial-risc-bg)',
+          borderRadius: '8px',
           opacity: active ? 0.5 : 1,
         }}
       >
@@ -51,16 +51,16 @@ const RadioOption = ({
             weight="bold"
             as="h5"
             variant="body-large"
-            color={active ? "secondary" : "primary"}
+            color={active ? 'secondary' : 'primary'}
           >
             {label}
           </Text>
           <Flex gap="8px">
-            <Text color={active ? "secondary" : "primary"} style={style}>
-              {numActions} {t("dictionary.measuresInitialRiSc")}
+            <Text color={active ? 'secondary' : 'primary'} style={style}>
+              {numActions} {t('dictionary.measuresInitialRiSc')}
             </Text>
-            <Text color={active ? "secondary" : "primary"} style={style}>
-              {numScenarios} {t("dictionary.scenarios")}
+            <Text color={active ? 'secondary' : 'primary'} style={style}>
+              {numScenarios} {t('dictionary.scenarios')}
             </Text>
           </Flex>
         </Radio>
@@ -69,7 +69,7 @@ const RadioOption = ({
             <Text
               as="p"
               variant="body-large"
-              color={active ? "secondary" : "primary"}
+              color={active ? 'secondary' : 'primary'}
             >
               {description}
             </Text>
@@ -78,10 +78,10 @@ const RadioOption = ({
         {recommendedBackstageComponentType && (
           <Text
             variant="body-large"
-            color={active ? "secondary" : "primary"}
+            color={active ? 'secondary' : 'primary'}
             className={styles.recommendedForComponentTypeText}
           >
-            {t("rosDialog.recommendedForComponentOfType")}{" "}
+            {t('rosDialog.recommendedForComponentOfType')}{' '}
             <b>{recommendedBackstageComponentType}</b>.
           </Text>
         )}
@@ -108,13 +108,13 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
 
   function onCreateDefaultRiScSwitchChange() {
     if (props.switchOn) {
-      props.setValue("content.title", "");
-      props.setValue("content.scope", "");
+      props.setValue('content.title', '');
+      props.setValue('content.scope', '');
     } else {
       props.setSelectedRiScId(riScSelectedByDefault?.id);
       if (riScSelectedByDefault) {
-        props.setValue("content.title", riScSelectedByDefault.defaultTitle);
-        props.setValue("content.scope", riScSelectedByDefault.defaultScope);
+        props.setValue('content.title', riScSelectedByDefault.defaultTitle);
+        props.setValue('content.scope', riScSelectedByDefault.defaultScope);
       }
     }
     props.setSwitchOn(!props.switchOn);
@@ -124,8 +124,8 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
     props.setSelectedRiScId(selectedDefaultRiScId);
     const descriptor = getDescriptorOfId(selectedDefaultRiScId);
     if (descriptor) {
-      props.setValue("content.title", descriptor.defaultTitle);
-      props.setValue("content.scope", descriptor.defaultScope);
+      props.setValue('content.title', descriptor.defaultTitle);
+      props.setValue('content.scope', descriptor.defaultScope);
     }
   }
 
@@ -135,14 +135,14 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
         <>
           <Box pb="2">
             <Text variant="body-medium" as="p">
-              {t("rosDialog.initialRiscScopeDescription")}
+              {t('rosDialog.initialRiscScopeDescription')}
             </Text>
             <Box pt="2">
               <Switch
                 isSelected={props.switchOn}
                 onChange={onCreateDefaultRiScSwitchChange}
                 label={
-                  props.switchOn ? t("dictionary.yes") : t("dictionary.no")
+                  props.switchOn ? t('dictionary.yes') : t('dictionary.no')
                 }
               />
             </Box>
@@ -151,15 +151,15 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
             <Text
               weight="bold"
               as="p"
-              color={!props.switchOn ? "secondary" : "primary"}
+              color={!props.switchOn ? 'secondary' : 'primary'}
             >
-              {t("rosDialog.applicationType")}
+              {t('rosDialog.applicationType')}
             </Text>
             <Text
               variant="body-medium"
-              color={!props.switchOn ? "secondary" : "primary"}
+              color={!props.switchOn ? 'secondary' : 'primary'}
             >
-              {t("rosDialog.initialRiscApplicationType")}
+              {t('rosDialog.initialRiscApplicationType')}
             </Text>
 
             <RadioGroup
@@ -169,7 +169,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
               value={props.selectedRiScId}
               className={styles.radioGroup}
             >
-              {defaultRiScTypeDescriptors.map((descriptor) => (
+              {defaultRiScTypeDescriptors.map(descriptor => (
                 <RadioOption
                   key={descriptor.id}
                   value={descriptor.id}
@@ -188,7 +188,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
         </>
       )}
       {defaultRiScTypeDescriptors.length === 0 && (
-        <Text>{t("rosDialog.noInitialRiScFound")}</Text>
+        <Text>{t('rosDialog.noInitialRiScFound')}</Text>
       )}
     </Box>
   );

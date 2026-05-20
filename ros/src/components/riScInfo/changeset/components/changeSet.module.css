@@ -14,7 +14,7 @@
   margin-bottom: 24px;
 }
 
-[data-theme-mode="dark"] .boxPrimary {
+[data-theme-mode='dark'] .boxPrimary {
   background-color: var(--bui-bg-neutral-3);
 }
 
@@ -23,7 +23,7 @@
   margin-bottom: 12px;
 }
 
-[data-theme-mode="dark"] .boxSecondary {
+[data-theme-mode='dark'] .boxSecondary {
   background-color: var(--bui-bg-neutral-4);
 }
 
@@ -52,7 +52,7 @@
   text-decoration: line-through;
 }
 
-[data-theme-mode="dark"] .oldValue {
+[data-theme-mode='dark'] .oldValue {
   color: var(--ros-red-100);
 }
 
@@ -61,7 +61,7 @@
   color: var(--ros-green-500);
 }
 
-[data-theme-mode="dark"] .newValue {
+[data-theme-mode='dark'] .newValue {
   color: var(--ros-green-100);
 }
 
@@ -78,7 +78,7 @@
   line-height: 26px;
 }
 
-[data-theme-mode="dark"] .removedProperty {
+[data-theme-mode='dark'] .removedProperty {
   color: var(--ros-red-100);
 }
 
@@ -90,7 +90,7 @@
   font-size: 14px;
 }
 
-[data-theme-mode="dark"] .removedValue {
+[data-theme-mode='dark'] .removedValue {
   color: var(--ros-red-100);
 }
 
@@ -101,7 +101,7 @@
   font-size: 14px;
 }
 
-[data-theme-mode="dark"] .addedValue {
+[data-theme-mode='dark'] .addedValue {
   color: var(--ros-green-100);
 }
 
@@ -118,7 +118,7 @@
   background-color: var(--ros-orange-100);
   border-color: var(--ros-orange-300);
 }
-[data-theme-mode="dark"] .tagPrimary {
+[data-theme-mode='dark'] .tagPrimary {
   background-color: var(--ros-orange-300);
   border-color: var(--ros-orange-500);
 }
@@ -128,7 +128,7 @@
   border-color: var(--ros-red-400);
 }
 
-[data-theme-mode="dark"] .tagDelete {
+[data-theme-mode='dark'] .tagDelete {
   background-color: var(--ros-red-400);
   border-color: var(--ros-red-600);
 }
@@ -137,7 +137,7 @@
   background-color: var(--ros-green-100);
   border-color: var(--ros-green-300);
 }
-[data-theme-mode="dark"] .tagAdded {
+[data-theme-mode='dark'] .tagAdded {
   background-color: var(--ros-green-300);
   border-color: var(--ros-green-500);
 }
