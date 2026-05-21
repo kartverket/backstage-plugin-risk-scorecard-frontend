@@ -184,7 +184,12 @@ export function requiresNewApproval(oldRiSc: RiSc, updatedRiSc: RiSc): boolean {
       updatedRiSc.scenarios.sort(
         (scenario1, scenario2) => Number(scenario1.ID) - Number(scenario2.ID),
       ),
-    ) || !isDeeplyEqual(oldRiSc.appliesTo, updatedRiSc.appliesTo)
+    ) ||
+    !isDeeplyEqual(
+      // appliesTo can be undefined from source and null from hook-form
+      oldRiSc.unencryptedMetadata?.appliesTo ?? undefined,
+      updatedRiSc.unencryptedMetadata?.appliesTo ?? undefined,
+    )
   );
 }
 

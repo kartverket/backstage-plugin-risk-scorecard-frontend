@@ -3,33 +3,37 @@ import { dtoToRiSc, riScToDTOString, RiScDTO, SopsConfigDTO } from './DTOs';
 import { RiSc } from './types';
 
 describe('RiSc DTO mapping', () => {
-  it('keeps appliesTo from DTOs', () => {
+  it('keeps unencryptedMetadata.appliesTo from DTOs', () => {
     const riScDTO: RiScDTO = {
-      schemaVersion: '5.2',
+      schemaVersion: '5.3',
       title: 'System RoS',
       scope: 'Applies to multiple entities',
-      appliesTo: [
-        'backstage:component:default/component-a',
-        'backstage:system:default/system-a',
-      ],
+      unencryptedMetadata: {
+        appliesTo: [
+          'backstage:component:default/component-a',
+          'backstage:system:default/system-a',
+        ],
+      },
       scenarios: [],
     };
 
-    expect(dtoToRiSc(riScDTO).appliesTo).toEqual([
+    expect(dtoToRiSc(riScDTO).unencryptedMetadata?.appliesTo).toEqual([
       'backstage:component:default/component-a',
       'backstage:system:default/system-a',
     ]);
   });
 
-  it('keeps appliesTo in serialized save payloads when there is a system RiSc scope', () => {
+  it('keeps unencryptedMetadata.appliesTo in serialized save payloads when there is a system RiSc scope', () => {
     const riSc: RiSc = {
-      schemaVersion: '5.2',
+      schemaVersion: '5.3',
       title: 'System RoS',
       scope: 'Applies to multiple entities',
-      appliesTo: [
-        'backstage:component:default/component-a',
-        'backstage:system:default/system-a',
-      ],
+      unencryptedMetadata: {
+        appliesTo: [
+          'backstage:component:default/component-a',
+          'backstage:system:default/system-a',
+        ],
+      },
       scenarios: [],
     };
     const profile: ProfileInfo = {
@@ -46,18 +50,20 @@ describe('RiSc DTO mapping', () => {
     );
     const serializedRiSc = JSON.parse(payload.riSc);
 
-    expect(serializedRiSc.appliesTo).toEqual([
+    expect(serializedRiSc.unencryptedMetadata.appliesTo).toEqual([
       'backstage:component:default/component-a',
       'backstage:system:default/system-a',
     ]);
   });
 
-  it('keeps appliesTo in serialized save payloads when only one entity is selected', () => {
+  it('keeps unencryptedMetadata.appliesTo in serialized save payloads when only one entity is selected', () => {
     const riSc: RiSc = {
-      schemaVersion: '5.2',
+      schemaVersion: '5.3',
       title: 'Component RoS',
       scope: 'Applies to one entity',
-      appliesTo: ['backstage:component:default/component-a'],
+      unencryptedMetadata: {
+        appliesTo: ['backstage:component:default/component-a'],
+      },
       scenarios: [],
     };
     const profile: ProfileInfo = {
@@ -74,7 +80,7 @@ describe('RiSc DTO mapping', () => {
     );
     const serializedRiSc = JSON.parse(payload.riSc);
 
-    expect(serializedRiSc.appliesTo).toEqual([
+    expect(serializedRiSc.unencryptedMetadata.appliesTo).toEqual([
       'backstage:component:default/component-a',
     ]);
   });

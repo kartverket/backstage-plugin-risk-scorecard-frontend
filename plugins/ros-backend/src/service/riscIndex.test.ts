@@ -38,10 +38,10 @@ describe('parseAppliesTo', () => {
     jest.clearAllMocks();
   });
 
-  it('returns decoded Backstage entity refs from appliesTo entries', () => {
+  it('returns decoded Backstage entity refs from unencryptedMetadata appliesTo entries', () => {
     expect(
       parseAppliesTo(
-        'appliesTo:\n  - backstage:component:default/kv-ros-test-2\n  - service:example-ticket-1\n',
+        'unencryptedMetadata:\n  appliesTo:\n    - backstage:component:default/kv-ros-test-2\n    - service:example-ticket-1\n',
         'https://example.org/risc.risc.yaml',
         logger,
       ),
@@ -61,7 +61,7 @@ describe('parseAppliesTo', () => {
   it('returns an empty array and warns when appliesTo has an invalid type', () => {
     expect(
       parseAppliesTo(
-        'appliesTo:\n  invalid: true\n',
+        'unencryptedMetadata:\n  appliesTo:\n    invalid: true\n',
         'https://example.org/risc.risc.yaml',
         logger,
       ),
@@ -261,7 +261,7 @@ describe('buildRiskScorecardRiScIndex', () => {
       if (requestUrl === defaultFileApiUrl) {
         return jsonResponse({
           content: Buffer.from(
-            'appliesTo:\n  - backstage:component:default/default-entity\n',
+            'unencryptedMetadata:\n  appliesTo:\n    - backstage:component:default/default-entity\n',
           ).toString('base64'),
           encoding: 'base64',
         });
@@ -270,7 +270,7 @@ describe('buildRiskScorecardRiScIndex', () => {
       if (requestUrl === branchFileApiUrl) {
         return jsonResponse({
           content: Buffer.from(
-            'appliesTo:\n  - backstage:component:default/branch-entity\n',
+            'unencryptedMetadata:\n  appliesTo:\n    - backstage:component:default/branch-entity\n',
           ).toString('base64'),
           encoding: 'base64',
         });
@@ -395,7 +395,7 @@ describe('buildRiskScorecardRiScIndex', () => {
       if (requestUrl === defaultFileApiUrl) {
         return jsonResponse({
           content: Buffer.from(
-            'appliesTo:\n  - backstage:component:default/default-entity\n',
+            'unencryptedMetadata:\n  appliesTo:\n    - backstage:component:default/default-entity\n',
           ).toString('base64'),
           encoding: 'base64',
         });

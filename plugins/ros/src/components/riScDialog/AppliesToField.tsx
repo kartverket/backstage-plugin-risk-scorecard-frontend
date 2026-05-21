@@ -34,7 +34,7 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
   const { field, fieldState } = useController({
     control,
-    name: 'content.appliesTo',
+    name: 'content.unencryptedMetadata.appliesTo',
   });
   const { entity } = useEntity();
   const currentEntityRef = stringifyEntityRef(entity);
@@ -210,6 +210,7 @@ function ensureNullOrCurrentEntityRefAsHead(
     ...new Set(entityRefs.filter(it => it !== currentEntityRef)),
   ];
   if (currentValue.length === 1) {
+    // React Hook Form does not support undefined field values; DTO serialization normalizes null by omitting appliesTo.
     return null;
   }
 

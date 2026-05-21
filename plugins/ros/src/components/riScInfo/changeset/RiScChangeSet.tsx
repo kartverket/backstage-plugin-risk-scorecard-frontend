@@ -17,13 +17,14 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const migrationChanges = changeset.differenceState.migrationChanges;
   const changes = changeset.differenceState;
+  const appliesToChanges = changes.unencryptedMetadata?.appliesTo ?? [];
 
   const hasChanges =
     changes.scenarios.length > 0 ||
     changes.valuations.length > 0 ||
     changes.title ||
     changes.scope ||
-    (changes.appliesTo ?? []).length > 0;
+    appliesToChanges.length > 0;
 
   const hasAnyChanges = changes.migrationChanges.migrationChanges || hasChanges;
 
@@ -48,8 +49,8 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
             prop={changes.scope}
             title={t('dictionary.scope')}
           />
-          {changes.appliesTo && changes.appliesTo.length > 1 && (
-            <RiScAppliesToChange appliesToChanges={changes.appliesTo} />
+          {appliesToChanges.length > 1 && (
+            <RiScAppliesToChange appliesToChanges={appliesToChanges} />
           )}
           {changes.scenarios.map(scenario => (
             <>

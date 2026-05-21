@@ -540,7 +540,13 @@ export function parseAppliesTo(
       return undefined;
     }
 
-    const appliesTo = root.appliesTo;
+    const unencryptedMetadata = root.unencryptedMetadata;
+    const appliesTo =
+      unencryptedMetadata &&
+      typeof unencryptedMetadata === 'object' &&
+      !Array.isArray(unencryptedMetadata)
+        ? (unencryptedMetadata as Record<string, unknown>).appliesTo
+        : undefined;
 
     if (appliesTo === undefined) {
       return undefined;

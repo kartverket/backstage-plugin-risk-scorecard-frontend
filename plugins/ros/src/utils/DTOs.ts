@@ -9,6 +9,7 @@ import {
   RiScStatus,
   Risk,
   Scenario,
+  UnencryptedMetadata,
 } from './types';
 import { ProfileInfo } from '@backstage/core-plugin-api';
 
@@ -58,7 +59,7 @@ export type RiScDTO = {
   schemaVersion: string;
   title: string;
   scope: string;
-  appliesTo?: string[];
+  unencryptedMetadata?: UnencryptedMetadata;
   scenarios: ScenarioDTO[];
 };
 
@@ -158,11 +159,13 @@ export function riScToDTOString(
 
 function riScToDTO(riSc: RiSc): RiScDTO {
   return {
-    // Explicit mapping instead of ...riSc to ensure order (otherwise appliesTo sometimes ends up at the bottom)
+    // Explicit mapping instead of ...riSc to ensure stable serialized order.
     schemaVersion: riSc.schemaVersion,
     title: riSc.title,
     scope: riSc.scope,
-    appliesTo: riSc.appliesTo ?? undefined, // To make sure that it is not returned as an explicit null, but instead entirely excluded
+    unencryptedMetadata: riSc.unencryptedMetadata?.appliesTo
+      ? riSc.unencryptedMetadata
+      : undefined,
     scenarios: riSc.scenarios.map(scenarioToDTO),
   };
 }
