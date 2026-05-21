@@ -1,4 +1,4 @@
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { RELATION_PART_OF, stringifyEntityRef } from '@backstage/catalog-model';
 import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
@@ -25,6 +25,11 @@ type AppliesToFieldProps = {
 export function AppliesToField({ control }: AppliesToFieldProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const catalogApi = useApi(catalogApiRef);
+  const configApi = useApi(configApiRef);
+  const includeAllEntities =
+    configApi.getOptionalBoolean(
+      'riskScorecard.appliesTo.includeAllEntities',
+    ) ?? false;
   const [catalogEntityRefs, setCatalogEntityRefs] = useState<string[]>([]);
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
   const { field, fieldState } = useController({
@@ -44,7 +49,10 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
   // page, a successful fetch should at least contain the current entity.
   const missingEntityRefs =
     catalogEntityRefs.length > 0
-      ? getMissingEntityRefs(selectedEntityRefs, catalogEntityRefs)
+      ? getMissingEntityRefs(
+          selectedEntityRefs.filter(ref => ref !== currentPrefixedEntityRef),
+          catalogEntityRefs,
+        )
       : [];
 
   useEffect(() => {
@@ -66,9 +74,11 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
 
     Promise.all([
       sameSystemEntitiesPromise,
-      catalogApi.getEntities({
-        fields: entityRefOptionFields,
-      }),
+      includeAllEntities
+        ? catalogApi.getEntities({
+            fields: entityRefOptionFields,
+          })
+        : Promise.resolve({ items: [] }),
     ])
       .then(([sameSystemEntitiesResponse, allEntitiesResponse]) => {
         if (cancelled) {
@@ -103,7 +113,7 @@ export function AppliesToField({ control }: AppliesToFieldProps) {
     return () => {
       cancelled = true;
     };
-  }, [catalogApi, entity]);
+  }, [catalogApi, entity, includeAllEntities]);
 
   function handleChange(_: unknown, value: string[]) {
     field.onChange(

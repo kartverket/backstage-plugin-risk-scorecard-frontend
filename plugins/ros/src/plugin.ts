@@ -11,7 +11,8 @@ export const riScPlugin = createPlugin({
   featureFlags: [
     {
       name: systemRiScsFeatureFlag,
-      description: 'Testing av system-RoS for Team SKVIS. Bruk på eget ansvar.',
+      description:
+        'Testing av system-RoS for Team SKVIS. Bruk på eget ansvar. UNNGÅ lagring av System-RoSer i åpne repoer.',
     },
   ],
   routes: {
