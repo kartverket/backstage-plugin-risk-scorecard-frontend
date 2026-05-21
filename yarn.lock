@@ -3328,25 +3328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@backstage/integration@npm:^1.14.0, @backstage/integration@npm:^1.15.0":
-  version: 1.20.1
-  resolution: "@backstage/integration@npm:1.20.1"
-  dependencies:
-    "@azure/identity": "npm:^4.0.0"
-    "@azure/storage-blob": "npm:^12.5.0"
-    "@backstage/config": "npm:^1.3.6"
-    "@backstage/errors": "npm:^1.2.7"
-    "@octokit/auth-app": "npm:^4.0.0"
-    "@octokit/rest": "npm:^19.0.3"
-    cross-fetch: "npm:^4.0.0"
-    git-url-parse: "npm:^15.0.0"
-    lodash: "npm:^4.17.21"
-    luxon: "npm:^3.0.0"
-  checksum: 10c0/f117b378dd4865e3dd9d74992049d61df38c0534f95221afbaac6e9506d7ef543fa9cc5f7adc11633fc1bec298bf10064e7a62dc066b00b666f758056e51f187
-  languageName: node
-  linkType: hard
-
-"@backstage/integration@npm:^2.0.0, @backstage/integration@npm:^2.0.1":
+"@backstage/integration@backstage:^::backstage=1.50.4&npm=2.0.1, @backstage/integration@npm:^2.0.0, @backstage/integration@npm:^2.0.1":
   version: 2.0.1
   resolution: "@backstage/integration@npm:2.0.1"
   dependencies:
@@ -3362,6 +3344,24 @@ __metadata:
     luxon: "npm:^3.0.0"
     p-throttle: "npm:^4.1.1"
   checksum: 10c0/ccb1809e3db6da89e4ae7faf39a7e142b8e1b841741304193bb22a6e07d1d5c0954b8c95b514b49b6f8188264313343796f6f3607084b0c4b28597d836aee50e
+  languageName: node
+  linkType: hard
+
+"@backstage/integration@npm:^1.14.0, @backstage/integration@npm:^1.15.0":
+  version: 1.20.1
+  resolution: "@backstage/integration@npm:1.20.1"
+  dependencies:
+    "@azure/identity": "npm:^4.0.0"
+    "@azure/storage-blob": "npm:^12.5.0"
+    "@backstage/config": "npm:^1.3.6"
+    "@backstage/errors": "npm:^1.2.7"
+    "@octokit/auth-app": "npm:^4.0.0"
+    "@octokit/rest": "npm:^19.0.3"
+    cross-fetch: "npm:^4.0.0"
+    git-url-parse: "npm:^15.0.0"
+    lodash: "npm:^4.17.21"
+    luxon: "npm:^3.0.0"
+  checksum: 10c0/f117b378dd4865e3dd9d74992049d61df38c0534f95221afbaac6e9506d7ef543fa9cc5f7adc11633fc1bec298bf10064e7a62dc066b00b666f758056e51f187
   languageName: node
   linkType: hard
 
@@ -7140,10 +7140,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kartverket/backstage-plugin-risk-scorecard-backend@workspace:plugins/ros-backend":
+  version: 0.0.0-use.local
+  resolution: "@kartverket/backstage-plugin-risk-scorecard-backend@workspace:plugins/ros-backend"
+  dependencies:
+    "@backstage/backend-plugin-api": "backstage:^"
+    "@backstage/catalog-client": "backstage:^"
+    "@backstage/catalog-model": "backstage:^"
+    "@backstage/cli": "backstage:^"
+    "@backstage/integration": "backstage:^"
+    "@types/express": "npm:^4.17.6"
+    express: "npm:^4.22.0"
+    knex: "npm:^3.0.0"
+    yaml: "npm:^2.8.2"
+  languageName: unknown
+  linkType: soft
+
 "@kartverket/backstage-plugin-risk-scorecard@workspace:plugins/ros":
   version: 0.0.0-use.local
   resolution: "@kartverket/backstage-plugin-risk-scorecard@workspace:plugins/ros"
   dependencies:
+    "@backstage/catalog-model": "backstage:^"
     "@backstage/cli": "backstage:^"
     "@backstage/core-app-api": "backstage:^"
     "@backstage/core-components": "backstage:^"
@@ -16626,6 +16643,7 @@ __metadata:
     "@backstage/plugin-search-backend-module-techdocs": "backstage:^"
     "@backstage/plugin-search-backend-node": "backstage:^"
     "@backstage/plugin-techdocs-backend": "backstage:^"
+    "@kartverket/backstage-plugin-risk-scorecard-backend": "workspace:plugins/ros-backend"
     app: "link:../app"
     better-sqlite3: "npm:12.9.0"
     jwt-decode: "npm:^4.0.0"

@@ -23,6 +23,13 @@ export type LockedRiSc = {
   encryptionKeyId: string | null;
 };
 
+export type SystemRiSc = {
+  sourceFilePath: string;
+  riScId: string;
+  appliesTo: string[];
+  lastSavedAt: string;
+};
+
 export type RiScWithMetadata = {
   id: string;
   status: RiScStatus;
@@ -165,7 +172,12 @@ export type RiSc = {
   schemaVersion: string;
   title: string;
   scope: string;
+  unencryptedMetadata?: UnencryptedMetadata;
   scenarios: Scenario[];
+};
+
+export type UnencryptedMetadata = {
+  appliesTo?: string[];
 };
 
 // The Valuations concept was removed in PR #850 and the remaining code referencing it can be removed when old schema migration code including to v4 is removed.
@@ -290,6 +302,9 @@ export type Difference = {
   migrationChanges: MigrationStatus;
   title?: SimpleTrackedProperty<string>;
   scope?: SimpleTrackedProperty<string>;
+  unencryptedMetadata?: {
+    appliesTo?: SimpleTrackedProperty<string>[];
+  };
   valuations: SimpleTrackedProperty<Valuations>[];
   scenarios: TrackedProperty<ScenarioChange, ScenarioDTO>[];
 };

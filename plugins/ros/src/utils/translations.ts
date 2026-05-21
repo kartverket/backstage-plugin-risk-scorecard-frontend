@@ -11,6 +11,8 @@ export const pluginRiScMessages = {
     editEncryption: 'Edit encryption',
     deleteButton: 'Delete scoreboard',
     multipleRiScs: 'RiSc scorecards',
+    chooseRiSc: 'Choose RiSc scorecard',
+    systemRiScsSection: 'System RiScs',
     lockedRiScsSection:
       'RiScs you do not have access to — click for encryption key information',
   },
@@ -101,6 +103,7 @@ export const pluginRiScMessages = {
     searchQuery: 'No result for ',
     actionsWithStatus: 'Actions that are OK',
     refresh: 'Refresh',
+    appliesTo: 'Applies to',
   },
   encryption: {
     title: 'Encryption',
@@ -171,6 +174,11 @@ export const pluginRiScMessages = {
     feedbackDescription:
       '🎉 Thank you for completing your risk scorecard! Please help us improve the tool —',
     feedbackLink: 'give us feedback ✨',
+  },
+  riscIndex: {
+    title: 'Analyses referencing this component',
+    loading: 'Fetching referencing analyses',
+    error: 'Failed to fetch referencing analyses',
   },
   publishDialog: {
     titleUpdate: 'Accept risks', // Approve ROS
@@ -387,6 +395,20 @@ export const pluginRiScMessages = {
     scopeDescription:
       'Describe what the risk analysis will assess. Specify any key areas which are not part of the scope.',
     scopeError: 'The scorecard has to have a description of the scope',
+    appliesTo: 'Applies to entities',
+    appliesToDescription:
+      'The RiSc always applies to the current component. Add any other entities this RiSc applies to.',
+    appliesToPlaceholder: 'Add entity',
+    appliesToLoading: 'Loading entities...',
+    appliesToNoOptions: 'No entities found',
+    appliesToSystemRosHint:
+      'Covers multiple entities and will also appear as a RiSc for the other added entities.',
+    appliesToNightlyRefreshHint:
+      'Changes to which entities this RiSc applies to are refreshed at night, so visibility on added or removed entities will only change tomorrow.',
+    appliesToMissingCurrentEntity:
+      'The current component ({{entityRef}}) is not included. Change the selection to add it before saving.',
+    appliesToMissingEntities:
+      'These entities do not exist in the catalog: {{entityRefs}}.',
     generateInitialDescription:
       'RiSc Scorecard lets you generate a default RiSc based on information about the codebase in kartverket.dev, security metrics and security controls.',
     generateInitialToggleDescription: 'Do you want to generate a default RiSc?',
@@ -776,8 +798,13 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.editEncryption': 'Rediger kryptering',
           'contentHeader.deleteButton': 'Slett analyse',
           'contentHeader.multipleRiScs': 'RoS-analyser',
+          'contentHeader.chooseRiSc': 'Velg RoS-analyse',
+          'contentHeader.systemRiScsSection': 'System-RoSer',
           'contentHeader.lockedRiScsSection':
             'RoSer du ikke har tilgang til — klikk for informasjon om krypteringsnøkkel',
+          'riscIndex.title': 'Analyser som refererer til denne komponenten',
+          'riscIndex.loading': 'Henter refererende analyser',
+          'riscIndex.error': 'Kunne ikke hente refererende analyser',
           'dictionary.rejectedLogin': 'Innlogging avbrutt av bruker.',
           'dictionary.by': 'Av',
           'dictionary.click': 'Klikk',
@@ -864,6 +891,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.searchQuery': 'Ingen resultater for ',
           'dictionary.actionsWithStatus': 'Tiltak som er OK',
           'dictionary.refresh': 'Prøv igjen',
+          'dictionary.appliesTo': 'Gjelder for',
 
           'scenarioDrawer.action.descriptionError':
             'Beskrivelse kan ikke være tom',
@@ -1135,6 +1163,20 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeDescription':
             'Beskriv hva analysen skal vurdere. Hva som ikke inngår som en del av omfanget må også defineres.', // TODO
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
+          'rosDialog.appliesTo': 'Gjelder for entitetene',
+          'rosDialog.appliesToDescription':
+            'RoS gjelder alltid for valgt komponent. Legg til andre entiteter denne RoS-en gjelder for.',
+          'rosDialog.appliesToPlaceholder': 'Legg til entitet',
+          'rosDialog.appliesToLoading': 'Laster entiteter...',
+          'rosDialog.appliesToNoOptions': 'Fant ingen entiteter',
+          'rosDialog.appliesToSystemRosHint':
+            'Dekker flere entiteter og vises som RoS også for de andre entitetene som er lagt til.',
+          'rosDialog.appliesToNightlyRefreshHint':
+            'Endringer i hvilke entiteter denne RoS-en gjelder for oppdateres om natten, så synligheten på entiteter som legges til eller fjernes endres først i morgen.',
+          'rosDialog.appliesToMissingCurrentEntity':
+            'Gjeldende komponent ({{entityRef}}) er ikke inkludert. Endre valget for å legge den til før du lagrer.',
+          'rosDialog.appliesToMissingEntities':
+            'Disse entitetene finnes ikke i katalogen: {{entityRefs}}.',
           'rosDialog.generateInitialDescription':
             'Operasjonell RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
           'rosDialog.generateInitialToggleDescription':

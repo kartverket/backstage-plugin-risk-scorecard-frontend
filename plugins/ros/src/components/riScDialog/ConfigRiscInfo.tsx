@@ -1,6 +1,7 @@
 import { MarkdownInput } from '../common/MarkdownInput';
 import { Input } from '../common/Input';
 import {
+  Control,
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
@@ -10,17 +11,22 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { FieldErrors } from 'react-hook-form';
 import { Flex } from '@backstage/ui';
+import { AppliesToField } from './AppliesToField';
+import { useSystemRiScsFeatureFlag } from '../../utils/featureFlags';
 
 interface ConfigRiscInfoProps {
   register: UseFormRegister<RiScWithMetadata>;
   errors: FieldErrors<RiScWithMetadata>;
   setValue: UseFormSetValue<RiScWithMetadata>;
   watch: UseFormWatch<RiScWithMetadata>;
+  control: Control<RiScWithMetadata>;
 }
 
 function ConfigRiscInfo(props: ConfigRiscInfoProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const isSystemRiScsEnabled = useSystemRiScsFeatureFlag();
   const currentScope = props.watch('content.scope');
+
   return (
     <Flex gap="16px" direction="column" px="1px">
       <Input
@@ -30,6 +36,7 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
         label={t('dictionary.title')}
         helperText={props.errors?.content?.title && t('rosDialog.titleError')}
       />
+      {isSystemRiScsEnabled && <AppliesToField control={props.control} />}
       <MarkdownInput
         {...props.register('content.scope')}
         value={currentScope}
