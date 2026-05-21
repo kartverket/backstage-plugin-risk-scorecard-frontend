@@ -13,7 +13,7 @@ import type { RiScService } from './services/RiScService';
 import type { GcpKmsService } from './services/GcpKmsService';
 import type { InitRiScService } from './services/InitRiScService';
 import type { SlackService } from './services/SlackService';
-
+import { latestSupportedVersion } from '@internal/backstage-plugin-ros-common';
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface RouterOptions {
@@ -168,7 +168,7 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
       const all = await riScService.fetchAllRiScs(
         owner,
         repo,
-        '5.2',
+        latestSupportedVersion,
         gcpToken,
         githubToken,
       );
