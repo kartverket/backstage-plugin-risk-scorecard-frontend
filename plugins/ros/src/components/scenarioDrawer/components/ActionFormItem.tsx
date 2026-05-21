@@ -121,6 +121,14 @@ export function ActionFormItem({
             options={actionStatusOptions}
           />
         </Box>
+        <Input
+          {...register(
+            `${addPeriodToBaseObjectPath(baseObjectPathToActionOfForm)}comment`,
+          )}
+          label={t('dictionary.comment')}
+          helperText={errorObject?.comment?.message}
+          error={errorObject?.comment?.message !== undefined}
+        />
       </Box>
     </>
   );
