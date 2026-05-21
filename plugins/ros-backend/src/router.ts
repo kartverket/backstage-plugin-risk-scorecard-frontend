@@ -1,8 +1,14 @@
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
-import express, { Request, Response, NextFunction, Router } from 'express';
+import express, {
+  Request,
+  RequestHandler,
+  Response,
+  NextFunction,
+  Router,
+} from 'express';
 import { ProcessingStatus } from '@internal/backstage-plugin-ros-common';
-import { DomainError } from './lib/errors';
+import { AccessTokenValidationError, DomainError } from './lib/errors';
 import type { RiScService } from './services/RiScService';
 import type { GcpKmsService } from './services/GcpKmsService';
 import type { InitRiScService } from './services/InitRiScService';
@@ -37,6 +43,34 @@ export function extractGcpToken(req: Request): string | undefined {
 export function extractGitHubToken(req: Request): string | undefined {
   const token = req.headers['github-access-token'];
   return Array.isArray(token) ? token[0] : token;
+}
+
+/**
+ * Reads the requested tokens from headers and throws
+ * AccessTokenValidationError (→ 401) if any are missing.
+ */
+function requireTokens(
+  req: Request,
+  need: { gcp?: boolean; github?: boolean },
+): { gcpToken: string; githubToken: string } {
+  const gcpToken = need.gcp ? extractGcpToken(req) : '';
+  const githubToken = need.github ? extractGitHubToken(req) : '';
+  if ((need.gcp && !gcpToken) || (need.github && !githubToken)) {
+    throw new AccessTokenValidationError('Missing required access tokens');
+  }
+  return { gcpToken: gcpToken ?? '', githubToken: githubToken ?? '' };
+}
+
+/**
+ * Wraps an async route handler so that thrown errors flow into Express's
+ * error middleware instead of becoming unhandled promise rejections.
+ */
+function asyncHandler(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>,
+): RequestHandler {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);
+  };
 }
 
 /** Maps DomainError to an HTTP error response. */
@@ -103,323 +137,223 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
 
   router.get(
     '/risc/:owner/:repo/:version/all',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { owner, repo, version } = req.params;
-        const gcpToken = extractGcpToken(req);
-        const githubToken = extractGitHubToken(req);
+    asyncHandler(async (req, res) => {
+      const { owner, repo, version } = req.params;
+      const { gcpToken, githubToken } = requireTokens(req, {
+        gcp: true,
+        github: true,
+      });
 
-        if (!gcpToken || !githubToken) {
-          res.status(401).json({
-            status: ProcessingStatus.AccessTokensValidationFailure,
-            message: 'Missing required access tokens',
-          } satisfies ErrorResponse);
-          return;
-        }
-
-        const result = await riScService.fetchAllRiScs(
-          owner,
-          repo,
-          version,
-          gcpToken,
-          githubToken,
-        );
-        res.json(result);
-      } catch (err) {
-        next(err);
-      }
-    },
+      const result = await riScService.fetchAllRiScs(
+        owner,
+        repo,
+        version,
+        gcpToken,
+        githubToken,
+      );
+      res.json(result);
+    }),
   );
 
   router.get(
     '/risc/:owner/:repo/:id',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { owner, repo, id } = req.params;
-        const gcpToken = extractGcpToken(req);
-        const githubToken = extractGitHubToken(req);
+    asyncHandler(async (req, res) => {
+      const { owner, repo, id } = req.params;
+      const { gcpToken, githubToken } = requireTokens(req, {
+        gcp: true,
+        github: true,
+      });
 
-        if (!gcpToken || !githubToken) {
-          res.status(401).json({
-            status: ProcessingStatus.AccessTokensValidationFailure,
-            message: 'Missing required access tokens',
-          } satisfies ErrorResponse);
-          return;
-        }
-
-        // No dedicated fetchRiSc method — use fetchAllRiScs and filter
-        const all = await riScService.fetchAllRiScs(
-          owner,
-          repo,
-          '5.2',
-          gcpToken,
-          githubToken,
-        );
-        const risc = all.find(r => r.riScId === id);
-        if (!risc) {
-          res.status(404).json({
-            status: ProcessingStatus.ErrorWhenUpdatingRiSc,
-            message: `RiSc ${id} not found`,
-          } satisfies ErrorResponse);
-          return;
-        }
-        res.json(risc);
-      } catch (err) {
-        next(err);
+      // No dedicated fetchRiSc method — use fetchAllRiScs and filter
+      const all = await riScService.fetchAllRiScs(
+        owner,
+        repo,
+        '5.2',
+        gcpToken,
+        githubToken,
+      );
+      const risc = all.find(r => r.riScId === id);
+      if (!risc) {
+        res.status(404).json({
+          status: ProcessingStatus.ErrorWhenUpdatingRiSc,
+          message: `RiSc ${id} not found`,
+        } satisfies ErrorResponse);
+        return;
       }
-    },
+      res.json(risc);
+    }),
   );
 
   router.post(
     '/risc/:owner/:repo/:id/difference',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { owner, repo, id } = req.params;
-        const gcpToken = extractGcpToken(req);
-        const githubToken = extractGitHubToken(req);
+    asyncHandler(async (req, res) => {
+      const { owner, repo, id } = req.params;
+      const { gcpToken, githubToken } = requireTokens(req, {
+        gcp: true,
+        github: true,
+      });
 
-        if (!gcpToken || !githubToken) {
-          res.status(401).json({
-            status: ProcessingStatus.AccessTokensValidationFailure,
-            message: 'Missing required access tokens',
-          } satisfies ErrorResponse);
-          return;
-        }
-
-        const { riSc: draftContent } = req.body as { riSc: string };
-        const result = await riScService.fetchDifference(
-          owner,
-          repo,
-          id,
-          draftContent,
-          gcpToken,
-          githubToken,
-        );
-        res.json(result);
-      } catch (err) {
-        next(err);
-      }
-    },
+      const { riSc: draftContent } = req.body as { riSc: string };
+      const result = await riScService.fetchDifference(
+        owner,
+        repo,
+        id,
+        draftContent,
+        gcpToken,
+        githubToken,
+      );
+      res.json(result);
+    }),
   );
 
   router.post(
     '/risc/:owner/:repo',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { owner, repo } = req.params;
-        const gcpToken = extractGcpToken(req);
-        const githubToken = extractGitHubToken(req);
+    asyncHandler(async (req, res) => {
+      const { owner, repo } = req.params;
+      const { gcpToken, githubToken } = requireTokens(req, {
+        gcp: true,
+        github: true,
+      });
 
-        if (!gcpToken || !githubToken) {
-          res.status(401).json({
-            status: ProcessingStatus.AccessTokensValidationFailure,
-            message: 'Missing required access tokens',
-          } satisfies ErrorResponse);
-          return;
-        }
+      const { riSc, schemaVersion, sopsConfig } = req.body as {
+        riSc: string;
+        schemaVersion: string;
+        sopsConfig: unknown;
+      };
 
-        const { riSc, schemaVersion, sopsConfig } = req.body as {
-          riSc: string;
-          schemaVersion: string;
-          sopsConfig: unknown;
-        };
-
-        const result = await riScService.createRiSc(
-          owner,
-          repo,
-          riSc,
-          schemaVersion,
-          sopsConfig as Parameters<typeof riScService.createRiSc>[4],
-          gcpToken,
-          githubToken,
-        );
-        res.status(201).json(result);
-      } catch (err) {
-        next(err);
-      }
-    },
+      const result = await riScService.createRiSc(
+        owner,
+        repo,
+        riSc,
+        schemaVersion,
+        sopsConfig as Parameters<typeof riScService.createRiSc>[4],
+        gcpToken,
+        githubToken,
+      );
+      res.status(201).json(result);
+    }),
   );
 
   router.put(
     '/risc/:owner/:repo/:id',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { owner, repo, id } = req.params;
-        const gcpToken = extractGcpToken(req);
-        const githubToken = extractGitHubToken(req);
+    asyncHandler(async (req, res) => {
+      const { owner, repo, id } = req.params;
+      const { gcpToken, githubToken } = requireTokens(req, {
+        gcp: true,
+        github: true,
+      });
 
-        if (!gcpToken || !githubToken) {
-          res.status(401).json({
-            status: ProcessingStatus.AccessTokensValidationFailure,
-            message: 'Missing required access tokens',
-          } satisfies ErrorResponse);
-          return;
-        }
+      const { riSc, schemaVersion, sopsConfig, isRequiresNewApproval } =
+        req.body as {
+          riSc: string;
+          schemaVersion: string;
+          sopsConfig: unknown;
+          isRequiresNewApproval: boolean;
+        };
 
-        const { riSc, schemaVersion, sopsConfig, isRequiresNewApproval } =
-          req.body as {
-            riSc: string;
-            schemaVersion: string;
-            sopsConfig: unknown;
-            isRequiresNewApproval: boolean;
-          };
-
-        const result = await riScService.updateRiSc(
-          owner,
-          repo,
-          id,
-          riSc,
-          schemaVersion,
-          sopsConfig as Parameters<typeof riScService.updateRiSc>[5],
-          isRequiresNewApproval ?? false,
-          gcpToken,
-          githubToken,
-        );
-        res.json(result);
-      } catch (err) {
-        next(err);
-      }
-    },
+      const result = await riScService.updateRiSc(
+        owner,
+        repo,
+        id,
+        riSc,
+        schemaVersion,
+        sopsConfig as Parameters<typeof riScService.updateRiSc>[5],
+        isRequiresNewApproval ?? false,
+        gcpToken,
+        githubToken,
+      );
+      res.json(result);
+    }),
   );
 
   router.delete(
     '/risc/:owner/:repo/:id',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { owner, repo, id } = req.params;
-        const gcpToken = extractGcpToken(req);
-        const githubToken = extractGitHubToken(req);
+    asyncHandler(async (req, res) => {
+      const { owner, repo, id } = req.params;
+      const { gcpToken, githubToken } = requireTokens(req, {
+        gcp: true,
+        github: true,
+      });
 
-        if (!gcpToken || !githubToken) {
-          res.status(401).json({
-            status: ProcessingStatus.AccessTokensValidationFailure,
-            message: 'Missing required access tokens',
-          } satisfies ErrorResponse);
-          return;
-        }
-
-        const result = await riScService.deleteRiSc(
-          owner,
-          repo,
-          id,
-          gcpToken,
-          githubToken,
-        );
-        res.json(result);
-      } catch (err) {
-        next(err);
-      }
-    },
+      const result = await riScService.deleteRiSc(
+        owner,
+        repo,
+        id,
+        gcpToken,
+        githubToken,
+      );
+      res.json(result);
+    }),
   );
 
   router.post(
     '/risc/:owner/:repo/publish/:id',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { owner, repo, id } = req.params;
-        const githubToken = extractGitHubToken(req);
+    asyncHandler(async (req, res) => {
+      const { owner, repo, id } = req.params;
+      const { githubToken } = requireTokens(req, { github: true });
 
-        if (!githubToken) {
-          res.status(401).json({
-            status: ProcessingStatus.AccessTokensValidationFailure,
-            message: 'Missing required access tokens',
-          } satisfies ErrorResponse);
-          return;
-        }
-
-        const userInfo = req.body as { name: string; email: string };
-        const result = await riScService.publishRiSc(
-          owner,
-          repo,
-          id,
-          githubToken,
-          userInfo,
-        );
-        res.json(result);
-      } catch (err) {
-        next(err);
-      }
-    },
+      const userInfo = req.body as { name: string; email: string };
+      const result = await riScService.publishRiSc(
+        owner,
+        repo,
+        id,
+        githubToken,
+        userInfo,
+      );
+      res.json(result);
+    }),
   );
 
   // ─── GCP KMS ──────────────────────────────────────────────────────────────
 
   router.get(
     '/google/gcpCryptoKeys',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const gcpToken = extractGcpToken(req);
+    asyncHandler(async (req, res) => {
+      const { gcpToken } = requireTokens(req, { gcp: true });
 
-        if (!gcpToken) {
-          res.status(401).json({
-            status: ProcessingStatus.AccessTokensValidationFailure,
-            message: 'Missing GCP access token',
-          } satisfies ErrorResponse);
-          return;
-        }
-
-        const keys = await gcpKmsService.getGcpCryptoKeys(gcpToken);
-        res.json(keys);
-      } catch (err) {
-        next(err);
-      }
-    },
+      const keys = await gcpKmsService.getGcpCryptoKeys(gcpToken);
+      res.json(keys);
+    }),
   );
 
   // ─── Init RiSc ────────────────────────────────────────────────────────────
 
   router.get(
     '/initrisc',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const githubToken = extractGitHubToken(req);
+    asyncHandler(async (req, res) => {
+      const { githubToken } = requireTokens(req, { github: true });
 
-        if (!githubToken) {
-          res.status(401).json({
-            status: ProcessingStatus.AccessTokensValidationFailure,
-            message: 'Missing GitHub access token',
-          } satisfies ErrorResponse);
-          return;
-        }
-
-        const descriptors =
-          await initRiScService.getInitRiScDescriptors(githubToken);
-        res.json(descriptors);
-      } catch (err) {
-        next(err);
-      }
-    },
+      const descriptors =
+        await initRiScService.getInitRiScDescriptors(githubToken);
+      res.json(descriptors);
+    }),
   );
 
   // ─── Slack Feedback ───────────────────────────────────────────────────────
 
   router.post(
     '/slack/feedback',
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        if (!slackService) {
-          res.status(501).json({
-            status: ProcessingStatus.ErrorWhenUpdatingRiSc,
-            message: 'Slack integration not configured',
-          } satisfies ErrorResponse);
-          return;
-        }
-
-        const { message } = req.body as { message: string };
-        if (!message) {
-          res.status(400).json({
-            status: ProcessingStatus.ErrorWhenUpdatingRiSc,
-            message: 'Missing feedback message',
-          } satisfies ErrorResponse);
-          return;
-        }
-
-        await slackService.sendFeedback(message);
-        res.json({ status: 'ok' });
-      } catch (err) {
-        next(err);
+    asyncHandler(async (req, res) => {
+      if (!slackService) {
+        res.status(501).json({
+          status: ProcessingStatus.ErrorWhenUpdatingRiSc,
+          message: 'Slack integration not configured',
+        } satisfies ErrorResponse);
+        return;
       }
-    },
+
+      const { message } = req.body as { message: string };
+      if (!message) {
+        res.status(400).json({
+          status: ProcessingStatus.ErrorWhenUpdatingRiSc,
+          message: 'Missing feedback message',
+        } satisfies ErrorResponse);
+        return;
+      }
+
+      await slackService.sendFeedback(message);
+      res.json({ status: 'ok' });
+    }),
   );
 
   // ─── Error Handler (must be last) ─────────────────────────────────────────
