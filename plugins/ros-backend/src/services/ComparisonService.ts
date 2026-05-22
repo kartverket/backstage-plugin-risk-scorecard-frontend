@@ -51,6 +51,7 @@ import {
 } from '@internal/backstage-plugin-ros-common';
 
 import { type RiScJson, migrate } from './SchemaService';
+import { isDeepStrictEqual } from 'util';
 
 // ─── Error ─────────────────────────────────────────────────────────────────────
 
@@ -71,7 +72,7 @@ export function changeForMandatorySimpleProperty<T>(
   oldValue: T,
   newValue: T,
 ): SimpleTrackedProperty<T> {
-  if (!deepEqual(oldValue, newValue)) {
+  if (!isDeepStrictEqual(oldValue, newValue)) {
     return { type: 'CHANGED', oldValue, newValue } as ChangedProperty<T>;
   }
   return { type: 'UNCHANGED', value: newValue } as UnchangedProperty<T>;
@@ -85,7 +86,7 @@ export function changeForNonMandatorySimpleProperty<T>(
   oldValue: T,
   newValue: T,
 ): SimpleTrackedProperty<T> | null {
-  if (!deepEqual(oldValue, newValue)) {
+  if (!isDeepStrictEqual(oldValue, newValue)) {
     return { type: 'CHANGED', oldValue, newValue } as ChangedProperty<T>;
   }
   return null;
@@ -100,11 +101,11 @@ export function changeForListOfSimpleProperty<T>(
   newValues: T[],
 ): SimpleTrackedProperty<T>[] {
   const deleted: SimpleTrackedProperty<T>[] = oldValues
-    .filter(v => !newValues.some(nv => deepEqual(v, nv)))
+    .filter(v => !newValues.some(nv => isDeepStrictEqual(v, nv)))
     .map(v => ({ type: 'DELETED', oldValue: v }) as DeletedProperty<T>);
 
   const added: SimpleTrackedProperty<T>[] = newValues
-    .filter(v => !oldValues.some(ov => deepEqual(v, ov)))
+    .filter(v => !oldValues.some(ov => isDeepStrictEqual(v, ov)))
     .map(v => ({ type: 'ADDED', newValue: v }) as AddedProperty<T>);
 
   return [...deleted, ...added];
@@ -139,7 +140,7 @@ export function changeForListOfComplexProperty<S, T, U>(
       )!;
       return { oldItem, newItem };
     })
-    .filter(({ oldItem, newItem }) => !deepEqual(oldItem, newItem))
+    .filter(({ oldItem, newItem }) => !isDeepStrictEqual(oldItem, newItem))
     .map(
       ({ oldItem, newItem }) =>
         ({
@@ -517,28 +518,4 @@ export function compare(
 function getMajorVersion(schemaVersion: string): number {
   const major = parseInt(schemaVersion.split('.')[0], 10);
   return isNaN(major) ? 0 : major;
-}
-
-/** Deep equality check for comparing JSON-serializable values. */
-function deepEqual(a: unknown, b: unknown): boolean {
-  if (a === b) return true;
-  if (a === null || b === null) return a === b;
-  if (a === undefined || b === undefined) return a === b;
-  if (typeof a !== typeof b) return false;
-
-  if (Array.isArray(a) && Array.isArray(b)) {
-    if (a.length !== b.length) return false;
-    return a.every((val, i) => deepEqual(val, b[i]));
-  }
-
-  if (typeof a === 'object' && typeof b === 'object') {
-    const aObj = a as Record<string, unknown>;
-    const bObj = b as Record<string, unknown>;
-    const aKeys = Object.keys(aObj);
-    const bKeys = Object.keys(bObj);
-    if (aKeys.length !== bKeys.length) return false;
-    return aKeys.every(key => deepEqual(aObj[key], bObj[key]));
-  }
-
-  return false;
 }
