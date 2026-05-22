@@ -17,7 +17,7 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const migrationChanges = changeset.differenceState.migrationChanges;
   const changes = changeset.differenceState;
-  const appliesToChanges = changes.unencryptedMetadata?.appliesTo ?? [];
+  const appliesToChanges = changes.appliesTo ?? [];
 
   const hasChanges =
     changes.scenarios.length > 0 ||

@@ -302,9 +302,7 @@ export type Difference = {
   migrationChanges: MigrationStatus;
   title?: SimpleTrackedProperty<string>;
   scope?: SimpleTrackedProperty<string>;
-  unencryptedMetadata?: {
-    appliesTo?: SimpleTrackedProperty<string>[];
-  };
+  appliesTo?: SimpleTrackedProperty<string>[];
   valuations: SimpleTrackedProperty<Valuations>[];
   scenarios: TrackedProperty<ScenarioChange, ScenarioDTO>[];
 };
