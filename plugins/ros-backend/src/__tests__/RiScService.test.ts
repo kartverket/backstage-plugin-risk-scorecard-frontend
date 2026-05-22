@@ -1,10 +1,8 @@
 import { RiScService, generateRiScId } from '../services/RiScService';
-import type {
-  SchemaServiceAPI,
-  ComparisonServiceAPI,
-} from '../services/RiScService';
+import type * as ComparisonService from '../services/ComparisonService';
 import { GithubStatus } from '../services/GitHubService';
 import type { GitHubService } from '../services/GitHubService';
+import type * as SchemaService from '../services/SchemaService';
 import type { SopsCryptoService } from '../services/SopsCryptoService';
 import type {
   SopsConfig,
@@ -54,17 +52,17 @@ function mockCryptoService(): jest.Mocked<SopsCryptoService> {
   } as unknown as jest.Mocked<SopsCryptoService>;
 }
 
-function mockSchemaService(): jest.Mocked<SchemaServiceAPI> {
+function mockSchemaService(): jest.Mocked<typeof SchemaService> {
   return {
     parseContent: jest.fn((content: string) => JSON.parse(content)),
     detectVersion: jest.fn(() => '5.2'),
     validate: jest.fn(() => ({ valid: true, version: '5.2' })),
     validateDoc: jest.fn(() => ({ valid: true, version: '5.2' })),
     migrate: jest.fn((doc, _lp, _v) => [doc, emptyMigrationStatus()]),
-  } as unknown as jest.Mocked<SchemaServiceAPI>;
+  } as unknown as jest.Mocked<typeof SchemaService>;
 }
 
-function mockComparisonService(): jest.Mocked<ComparisonServiceAPI> {
+function mockComparisonService(): jest.Mocked<typeof ComparisonService> {
   return {
     compare: jest.fn(() => ({
       type: 'unchanged',
@@ -75,7 +73,7 @@ function mockComparisonService(): jest.Mocked<ComparisonServiceAPI> {
       valuations: { type: 'unchanged', value: [] },
       migrationStatus: emptyMigrationStatus(),
     })),
-  } as unknown as jest.Mocked<ComparisonServiceAPI>;
+  } as unknown as jest.Mocked<typeof ComparisonService>;
 }
 
 function emptyMigrationStatus(): MigrationStatus {
@@ -123,8 +121,8 @@ describe('RiScService', () => {
   let service: RiScService;
   let github: jest.Mocked<GitHubService>;
   let crypto: jest.Mocked<SopsCryptoService>;
-  let schema: jest.Mocked<SchemaServiceAPI>;
-  let comparison: jest.Mocked<ComparisonServiceAPI>;
+  let schema: jest.Mocked<typeof SchemaService>;
+  let comparison: jest.Mocked<typeof ComparisonService>;
 
   beforeEach(() => {
     github = mockGitHubService();
