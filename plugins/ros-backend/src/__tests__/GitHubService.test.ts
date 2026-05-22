@@ -680,4 +680,61 @@ describe('GitHubService', () => {
       ).rejects.toThrow('Could not determine HEAD SHA');
     });
   });
+
+  // ─── fetchLastPublished ─────────────────────────────────────────────
+
+  describe('fetchLastPublished', () => {
+    it('returns dateTime and numberOfCommits when commits exist', async () => {
+      // First call: fetch most recent commit for the file (perPage=1)
+      mockFetch.mockResolvedValueOnce(
+        mockResponse([
+          {
+            sha: 'abc',
+            url: '',
+            commit: { message: 'update', committer: { date: '2026-05-10T10:00:00Z', name: 'user' } },
+          },
+        ]),
+      );
+      // Second call: fetch all commits since that date (page 1)
+      mockFetch.mockResolvedValueOnce(
+        mockResponse([
+          {
+            sha: 'abc',
+            url: '',
+            commit: { message: 'update', committer: { date: '2026-05-10T10:00:00Z', name: 'user' } },
+          },
+          {
+            sha: 'def',
+            url: '',
+            commit: { message: 'later', committer: { date: '2026-05-12T10:00:00Z', name: 'user' } },
+          },
+          {
+            sha: 'ghi',
+            url: '',
+            commit: { message: 'even later', committer: { date: '2026-05-14T10:00:00Z', name: 'user' } },
+          },
+        ]),
+      );
+
+      const result = await service.fetchLastPublished(owner, repo, token, 'risc-abc12');
+      expect(result).toEqual({
+        dateTime: '2026-05-10T10:00:00Z',
+        numberOfCommits: 2,
+      });
+    });
+
+    it('returns null when no commits exist for the file', async () => {
+      mockFetch.mockResolvedValueOnce(mockResponse([]));
+
+      const result = await service.fetchLastPublished(owner, repo, token, 'risc-abc12');
+      expect(result).toBeNull();
+    });
+
+    it('returns null when API call fails', async () => {
+      mockFetch.mockResolvedValueOnce(mockErrorResponse(500));
+
+      const result = await service.fetchLastPublished(owner, repo, token, 'risc-abc12');
+      expect(result).toBeNull();
+    });
+  });
 });

@@ -8,6 +8,7 @@ import type {
   GithubReferenceObjectDTO,
   GithubRepositoryDTO,
   GithubWriteToFilePayload,
+  LastPublished,
 } from '@internal/backstage-plugin-ros-common';
 import {
   DRAFT_BRANCH_PREFIX,
@@ -558,6 +559,48 @@ export class GitHubService {
     }
 
     return allCommits;
+  }
+
+  /**
+   * Fetches when the RiSc file was last committed to the default branch and
+   * how many commits have been made to the repo since that date.
+   * Returns null if the file has never been committed or on any API error.
+   */
+  async fetchLastPublished(
+    owner: string,
+    repo: string,
+    token: string,
+    riScId: string,
+  ): Promise<LastPublished | null> {
+    try {
+      const filePath = this.riScFilePath(riScId);
+
+      // Get the most recent commit touching this file
+      const [latestCommit] = await this.fetchCommits(owner, repo, token, {
+        path: filePath,
+        perPage: 1,
+      });
+      if (!latestCommit) return null;
+
+      const lastPublishedDate = latestCommit.commit.committer.date;
+
+      // Count all repo commits since that date
+      const commitsSince = await this.fetchAllCommitsSince(
+        owner,
+        repo,
+        token,
+        lastPublishedDate,
+      );
+
+      return {
+        dateTime: lastPublishedDate,
+        numberOfCommits: commitsSince.filter(
+          c => c.commit.committer.date > lastPublishedDate,
+        ).length,
+      };
+    } catch {
+      return null;
+    }
   }
 
   // ─── Init Templates ───────────────────────────────────────────────────
