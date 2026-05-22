@@ -775,6 +775,14 @@ export class RiScService {
         gcpToken,
       );
 
+      // Fetch last-published metadata (non-fatal if it fails)
+      const lastPublished = await this.gitHubService.fetchLastPublished(
+        owner,
+        repo,
+        githubToken,
+        metadata.id,
+      );
+
       return {
         riScId: metadata.id,
         status: 'Success' as ContentStatus,
@@ -782,6 +790,7 @@ export class RiScService {
         riScContent: decrypted.content,
         sopsConfig: decrypted.sopsConfig,
         pullRequestUrl: metadata.prUrl,
+        lastPublished,
         statusMessage: null,
         migrationStatus: this.emptyMigrationStatus(),
       };
