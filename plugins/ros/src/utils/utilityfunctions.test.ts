@@ -241,6 +241,28 @@ describe('requiresNewApproval', () => {
     ).toBe(true);
   });
 
+  it('returns true if appliesTo differs', () => {
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        unencryptedMetadata: {
+          appliesTo: ['backstage:component:default/component-a'],
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns true if appliesTo changes to an empty list', () => {
+    expect(
+      requiresNewApproval(riSc, {
+        ...riSc,
+        unencryptedMetadata: {
+          appliesTo: [],
+        },
+      }),
+    ).toBe(true);
+  });
+
   it('returns true if riSc doesnt contain previously existing scenarios', () => {
     expect(
       requiresNewApproval(riSc, {

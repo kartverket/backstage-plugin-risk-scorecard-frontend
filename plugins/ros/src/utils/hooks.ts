@@ -28,7 +28,10 @@ import {
   ProcessingStatus,
   RiSc,
   RiScWithMetadata,
+  SystemRiSc,
 } from './types';
+import { stringifyEntityRef } from '@backstage/catalog-model';
+import { useSystemRiScsFeatureFlag } from './featureFlags';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -432,6 +435,99 @@ export const useDebouncedValue = <T>(value: T, delay = 500) => {
 
   return debouncedValue;
 };
+
+type RiScIndexState = {
+  riScs: SystemRiSc[];
+  isFetching: boolean;
+  error: Error | undefined;
+};
+
+export function useSystemRiScsForCurrentEntity(): RiScIndexState {
+  const isSystemRiScsEnabled = useSystemRiScsFeatureFlag();
+  const { entity } = useEntity();
+  const identityApi = useApi(identityApiRef);
+  const { fetch } = useApi(fetchApiRef);
+  const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
+  const entityRef = stringifyEntityRef(entity);
+
+  const [state, setState] = useState<RiScIndexState>({
+    riScs: [],
+    isFetching: isSystemRiScsEnabled,
+    error: undefined,
+  });
+
+  useEffect(() => {
+    if (!isSystemRiScsEnabled) {
+      setState({
+        riScs: [],
+        isFetching: false,
+        error: undefined,
+      });
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    setState(previous => ({
+      ...previous,
+      isFetching: true,
+      error: undefined,
+    }));
+
+    identityApi
+      .getCredentials()
+      .then(credentials => {
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
+
+        if (credentials.token) {
+          headers.Authorization = `Bearer ${credentials.token}`;
+        }
+
+        return fetch(
+          `${backendUrl}/api/risk-scorecard/riscs?entityRef=${encodeURIComponent(
+            entityRef,
+          )}`,
+          {
+            method: 'GET',
+            headers,
+          },
+        );
+      })
+      .then(async response => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch RiSc index: ${response.status}`);
+        }
+
+        const responseBody = (await response.json()) as SystemRiSc[];
+        const systemRiScs = responseBody.filter(x => x.appliesTo.length > 1);
+
+        if (!cancelled) {
+          setState({
+            riScs: systemRiScs,
+            isFetching: false,
+            error: undefined,
+          });
+        }
+      })
+      .catch(error => {
+        if (!cancelled) {
+          setState({
+            riScs: [],
+            isFetching: false,
+            error: error instanceof Error ? error : new Error(String(error)),
+          });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [backendUrl, entityRef, fetch, identityApi, isSystemRiScsEnabled]);
+
+  return state;
+}
 
 export function useDebounce<T>(
   value: T,

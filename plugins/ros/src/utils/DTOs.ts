@@ -9,6 +9,7 @@ import {
   RiScStatus,
   Risk,
   Scenario,
+  UnencryptedMetadata,
 } from './types';
 import { ProfileInfo } from '@backstage/core-plugin-api';
 
@@ -58,6 +59,7 @@ export type RiScDTO = {
   schemaVersion: string;
   title: string;
   scope: string;
+  unencryptedMetadata?: UnencryptedMetadata;
   scenarios: ScenarioDTO[];
 };
 
@@ -157,7 +159,13 @@ export function riScToDTOString(
 
 function riScToDTO(riSc: RiSc): RiScDTO {
   return {
-    ...riSc,
+    // Explicit mapping instead of ...riSc to ensure stable serialized order.
+    schemaVersion: riSc.schemaVersion,
+    title: riSc.title,
+    scope: riSc.scope,
+    unencryptedMetadata: riSc.unencryptedMetadata?.appliesTo
+      ? riSc.unencryptedMetadata
+      : undefined,
     scenarios: riSc.scenarios.map(scenarioToDTO),
   };
 }
