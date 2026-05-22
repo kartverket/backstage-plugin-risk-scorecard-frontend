@@ -12,10 +12,8 @@
 import type {
   ContentStatus,
   DifferenceStatus,
-  LastPublished,
   MigrationStatus,
   ProcessingStatus,
-  RiScChange,
   RiScStatus,
   SopsConfig,
   UserInfo,
@@ -35,35 +33,12 @@ import {
   RISC_FILE_PREFIX,
 } from '@internal/backstage-plugin-ros-common';
 
+import type * as ComparisonService from './ComparisonService';
 import type { GitHubService, GithubContentResponse } from './GitHubService';
 import { GithubStatus } from './GitHubService';
+import type * as SchemaService from './SchemaService';
 import type { SopsCryptoService } from './SopsCryptoService';
-import type { RiScJson, ValidationResult } from './SchemaService';
 import type { LoggerService } from '@backstage/backend-plugin-api';
-
-// ─── Types ─────────────────────────────────────────────────────────────────────
-
-/** Schema service interface (standalone functions). */
-export interface SchemaServiceAPI {
-  parseContent(content: string): RiScJson;
-  detectVersion(doc: RiScJson): string | null;
-  validate(content: string, version?: string): ValidationResult;
-  validateDoc(doc: RiScJson): ValidationResult;
-  migrate(
-    doc: RiScJson,
-    lastPublished?: LastPublished | null,
-    toVersion?: string,
-  ): [RiScJson, MigrationStatus];
-}
-
-/** Comparison service interface. */
-export interface ComparisonServiceAPI {
-  compare(
-    updatedRiSc: RiScDocument,
-    oldRiSc: RiScDocument,
-    lastPublished?: LastPublished | null,
-  ): RiScChange;
-}
 
 /** Metadata about a RiSc's state across GitHub branches and PRs. */
 interface RiScGithubMetadata {
@@ -80,7 +55,7 @@ interface RiScGithubMetadata {
 const ALPHANUMERIC =
   'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-/** Generates a unique RiSc ID: `ros_<5 random alphanumeric chars>`. */
+/** Generates a unique RiSc ID: `risc_<5 random alphanumeric chars>`. */
 export function generateRiScId(): string {
   let result = '';
   for (let i = 0; i < 5; i++) {
@@ -161,8 +136,8 @@ export class RiScService {
   constructor(
     private readonly gitHubService: GitHubService,
     private readonly cryptoService: SopsCryptoService,
-    private readonly schemaService: SchemaServiceAPI,
-    private readonly comparisonService: ComparisonServiceAPI,
+    private readonly schemaService: typeof SchemaService,
+    private readonly comparisonService: typeof ComparisonService,
     private readonly logger?: LoggerService,
   ) {}
 
@@ -689,7 +664,9 @@ export class RiScService {
           decryptedPublished.sopsConfig.lastmodified ?? '',
       };
     } catch (e) {
-      this.logger?.error(`Comparison failed for ${riScId}: ${e instanceof Error ? e.message : e}`);
+      this.logger?.error(
+        `Comparison failed for ${riScId}: ${e instanceof Error ? e.message : e}`,
+      );
       return {
         status: 'JsonFailure' as DifferenceStatus,
         differenceState: null,
