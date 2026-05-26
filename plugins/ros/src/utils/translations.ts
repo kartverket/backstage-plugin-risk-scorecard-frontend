@@ -231,7 +231,7 @@ export const pluginRiScMessages = {
     },
     migration51: {
       changeExplanation:
-        'This migration adds a last updated by field to actions.',
+        'This migration adds a last updated by field to actions.!!!!!!',
       lastUpdatedBy: 'Last updated by:',
       addedLastUpdatedBy:
         'Added field to track who updated an action for {{numberOfChangedActions}} existing actions',
