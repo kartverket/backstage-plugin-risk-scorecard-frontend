@@ -343,6 +343,23 @@ export class RiScService {
       };
     }
 
+    const { status: riscStatus, branchSha } = await this.resolveRiscStatus(
+      riScId,
+      owner,
+      repo,
+      githubToken,
+    );
+    if (
+      riscStatus === 'DeletionDraft' ||
+      riscStatus === 'DeletionSentForApproval'
+    ) {
+      return {
+        riScId,
+        status: 'ErrorWhenUpdatingRiSc' as ProcessingStatus,
+        statusMessage: `RiSc is staged for deletion (${riscStatus}). Undo deletion (or publish deletion) before editing.`,
+      };
+    }
+
     // Encrypt
     const encrypted = await this.cryptoService.encrypt(
       content,
@@ -353,12 +370,6 @@ export class RiScService {
 
     // Ensure draft branch exists
     const branchName = this.gitHubService.draftBranchName(riScId);
-    const branchSha = await this.gitHubService.fetchBranchHeadSha(
-      owner,
-      repo,
-      branchName,
-      githubToken,
-    );
 
     if (!branchSha) {
       // Create new draft branch
@@ -820,6 +831,61 @@ export class RiScService {
       migrationChanges: false,
       migrationRequiresNewApproval: false,
       migrationVersions: { fromVersion: null, toVersion: null },
+    };
+  }
+
+  private async resolveRiscStatus(
+    riScId: string,
+    owner: string,
+    repo: string,
+    githubToken: string,
+  ): Promise<{ status: RiScStatus; branchSha: string | null }> {
+    const filePath = this.gitHubService.riScFilePath(riScId);
+    const branchName = this.gitHubService.draftBranchName(riScId);
+
+    const [publishedFile, branchSha, openPRs] = await Promise.all([
+      this.gitHubService.fetchFileInfo(owner, repo, filePath, githubToken),
+      this.gitHubService.fetchBranchHeadSha(
+        owner,
+        repo,
+        branchName,
+        githubToken,
+      ),
+      this.gitHubService.fetchOpenPullRequests(owner, repo, githubToken),
+    ]);
+
+    const isStoredInMain = publishedFile !== null;
+    const hasBranch = branchSha !== null;
+    const hasOpenPR = openPRs.some(pr => pr.head.ref === branchName);
+
+    const metadata: RiScGithubMetadata = {
+      id: riScId,
+      isStoredInMain,
+      hasBranch,
+      hasOpenPR,
+      prUrl: openPRs.find(pr => pr.head.ref === branchName)?.html_url ?? null,
+      prNumber: openPRs.find(pr => pr.head.ref === branchName)?.number ?? null,
+    };
+
+    const [mainContent, branchContent] = await Promise.all([
+      this.gitHubService.fetchFileContent(owner, repo, filePath, githubToken),
+      hasBranch
+        ? this.gitHubService.fetchFileContent(
+            owner,
+            repo,
+            filePath,
+            githubToken,
+            branchName,
+          )
+        : Promise.resolve({
+            data: null,
+            status: GithubStatus.NotFound,
+          } as GithubContentResponse),
+    ]);
+
+    return {
+      status: getRiScStatus(metadata, mainContent, branchContent),
+      branchSha,
     };
   }
 }

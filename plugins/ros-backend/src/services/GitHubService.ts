@@ -328,12 +328,12 @@ export class GitHubService {
     branch: string,
     token: string,
   ): Promise<string | null> {
-    const commit = await this.requestOrNull<GithubCommitObject>(
+    const branchInfo = await this.requestOrNull<{ commit: { sha: string } }>(
       'GET',
-      `${GITHUB_API_BASE}/repos/${owner}/${repo}/commits/heads/${branch}`,
+      `${GITHUB_API_BASE}/repos/${owner}/${repo}/branches/${encodeURIComponent(branch)}`,
       token,
     );
-    return commit?.sha ?? null;
+    return branchInfo?.commit.sha ?? null;
   }
 
   /**

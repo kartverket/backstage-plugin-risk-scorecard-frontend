@@ -34,7 +34,10 @@ interface ErrorResponse {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /** Extracts the GitHub or GCP access token from the request header. */
-export function extractToken(req: Request, headerName: string): string | undefined {
+export function extractToken(
+  req: Request,
+  headerName: string,
+): string | undefined {
   const token = req.headers[headerName.toLowerCase()];
   return Array.isArray(token) ? token[0] : token;
 }
@@ -48,7 +51,9 @@ function requireTokens(
   need: { gcp?: boolean; github?: boolean },
 ): { gcpToken: string; githubToken: string } {
   const gcpToken = need.gcp ? extractToken(req, 'gcp-access-token') : '';
-  const githubToken = need.github ? extractToken(req, 'github-access-token') : '';
+  const githubToken = need.github
+    ? extractToken(req, 'github-access-token')
+    : '';
   if ((need.gcp && !gcpToken) || (need.github && !githubToken)) {
     throw new AccessTokenValidationError('Missing required access tokens');
   }
