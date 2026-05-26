@@ -2,8 +2,8 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import {
   validate,
-  detectVersion,
   parseContent,
+  getVersion,
   migrate,
   migrateFrom32To33,
   migrateFrom33To40,
@@ -12,10 +12,12 @@ import {
   migrateFrom42To50,
   migrateFrom50To51,
   migrateFrom51To52,
-  type RiScJson,
 } from '../services/SchemaService';
-import { RiScVersion } from '@internal/backstage-plugin-ros-common';
-import type { MigrationStatus } from '@internal/backstage-plugin-ros-common';
+import type {
+  MigrationStatus,
+  RiScDocument,
+  RiSc5X,
+} from '@internal/backstage-plugin-ros-common';
 
 function loadFixture(name: string): string {
   return readFileSync(resolve(__dirname, 'fixtures', name), 'utf-8');
@@ -29,56 +31,64 @@ function emptyStatus(): MigrationStatus {
   };
 }
 
+function load40FixtureWithKnownRiskValues() {
+  const doc = JSON.parse(loadFixture('4.0.json'));
+  doc.scenarios[2].scenario.remainingRisk.probability = 1;
+  doc.scenarios[2].scenario.remainingRisk.consequence = 1000000;
+  return doc;
+}
+
 // ─── parseContent ──────────────────────────────────────────────────────────────
 
 describe('parseContent', () => {
-  it('parses valid JSON', () => {
-    const doc = parseContent('{"schemaVersion": "5.2", "title": "T"}');
+  it('parses and validates valid JSON', () => {
+    const doc = parseContent(
+      '{"schemaVersion": "5.2", "title": "T", "scope": "S", "scenarios": []}',
+    );
     expect(doc.schemaVersion).toBe('5.2');
   });
 
-  it('parses valid YAML', () => {
-    const doc = parseContent('schemaVersion: "5.2"\ntitle: Test\n');
+  it('parses and validates valid YAML', () => {
+    const doc = parseContent(
+      'schemaVersion: "5.2"\ntitle: Test\nscope: Test scope\nscenarios: []\n',
+    );
     expect(doc.schemaVersion).toBe('5.2');
   });
 
   it('throws on invalid content', () => {
     expect(() => parseContent('{ 1: 1 ')).toThrow();
   });
-});
 
-// ─── detectVersion ─────────────────────────────────────────────────────────────
-
-describe('detectVersion', () => {
-  it('detects version from parsed document', () => {
-    const doc = JSON.parse(loadFixture('3.2.json'));
-    expect(detectVersion(doc)).toBe(RiScVersion.V3_2);
+  it('throws when content parses but does not match a RiSc schema', () => {
+    expect(() =>
+      parseContent('{"schemaVersion": "5.2", "title": "T"}'),
+    ).toThrow('RiSc schema validation failed');
   });
 
-  it('returns null for unknown version', () => {
-    expect(detectVersion({ schemaVersion: '99.0' })).toBeNull();
-  });
-
-  it('returns null if schemaVersion missing', () => {
-    expect(detectVersion({ title: 'test' })).toBeNull();
+  it('throws when schemaVersion is unknown even if the shape is otherwise valid', () => {
+    expect(() =>
+      parseContent(
+        '{"schemaVersion": "99.0", "title": "T", "scope": "S", "scenarios": []}',
+      ),
+    ).toThrow("Version '99.0' is not known");
   });
 });
 
 // ─── validate ──────────────────────────────────────────────────────────────────
 
 describe('validate', () => {
-  it('validates v3.2 against any schema', () => {
+  it('validates v3.2 against its declared schema version', () => {
     const result = validate(loadFixture('3.2.json'));
     expect(result.valid).toBe(true);
     expect(result.version).toBe('3.2');
   });
 
-  it('validates v3.3 against any schema', () => {
+  it('validates v3.3 against its declared schema version', () => {
     const result = validate(loadFixture('3.3.json'));
     expect(result.valid).toBe(true);
   });
 
-  it('validates v4.0 against any schema', () => {
+  it('validates v4.0 against its declared schema version', () => {
     const result = validate(loadFixture('4.0.json'));
     expect(result.valid).toBe(true);
   });
@@ -149,9 +159,7 @@ describe('migrateFrom33To40', () => {
     const doc = JSON.parse(loadFixture('3.3.json'));
     const [migrated, _] = migrateFrom33To40(doc, emptyStatus());
 
-    const scenarios = migrated.scenarios as Array<Record<string, unknown>>;
-    const firstScenario = scenarios[0].scenario as Record<string, unknown>;
-    const vulns = firstScenario.vulnerabilities as string[];
+    const vulns = migrated.scenarios[0].scenario.vulnerabilities;
 
     // User repudiation -> Unmonitored use
     // Compromised admin user + Escalation of rights -> Unauthorized access (deduped)
@@ -171,14 +179,12 @@ describe('migrateFrom33To40', () => {
     const doc = JSON.parse(loadFixture('3.3.json'));
     const [migrated, _] = migrateFrom33To40(doc, emptyStatus());
 
-    const scenarios = migrated.scenarios as Array<Record<string, unknown>>;
-    const firstScenario = scenarios[0].scenario as Record<string, unknown>;
-    const actions = firstScenario.actions as Array<Record<string, unknown>>;
+    const actions = migrated.scenarios[0].scenario.actions;
 
     for (const actionWrapper of actions) {
-      const action = actionWrapper.action as Record<string, unknown>;
-      expect(action.owner).toBeUndefined();
-      expect(action.deadline).toBeUndefined();
+      const action = actionWrapper.action;
+      expect('owner' in action).toBe(false);
+      expect('deadline' in action).toBe(false);
     }
   });
 
@@ -186,9 +192,7 @@ describe('migrateFrom33To40', () => {
     const doc = JSON.parse(loadFixture('3.3.json'));
     const [migrated, _] = migrateFrom33To40(doc, emptyStatus());
 
-    const scenarios = migrated.scenarios as Array<Record<string, unknown>>;
-    const firstScenario = scenarios[0].scenario as Record<string, unknown>;
-    expect(firstScenario.existingActions).toBeUndefined();
+    expect('existingActions' in migrated.scenarios[0].scenario).toBe(false);
   });
 
   it('tracks migration changes', () => {
@@ -207,6 +211,43 @@ describe('migrateFrom33To40', () => {
     expect(changed.changedVulnerabilities.length).toBe(5);
   });
 
+  it('tracks action-only migration changes', () => {
+    const doc = JSON.parse(loadFixture('3.3.json'));
+    const scenario = doc.scenarios[0].scenario;
+    delete scenario.existingActions;
+    scenario.vulnerabilities = ['Misconfiguration'];
+
+    const [_, status] = migrateFrom33To40(doc, emptyStatus());
+
+    expect(status.migrationChanges40!.scenarios).toHaveLength(1);
+    expect(status.migrationChanges40!.scenarios[0].changedActions).toHaveLength(
+      1,
+    );
+    expect(
+      status.migrationChanges40!.scenarios[0].changedVulnerabilities,
+    ).toHaveLength(0);
+  });
+
+  it('tracks vulnerability-only migration changes', () => {
+    const doc = JSON.parse(loadFixture('3.3.json'));
+    const scenario = doc.scenarios[0].scenario;
+    delete scenario.existingActions;
+    for (const actionWrapper of scenario.actions) {
+      delete actionWrapper.action.owner;
+      delete actionWrapper.action.deadline;
+    }
+
+    const [_, status] = migrateFrom33To40(doc, emptyStatus());
+
+    expect(status.migrationChanges40!.scenarios).toHaveLength(1);
+    expect(status.migrationChanges40!.scenarios[0].changedActions).toHaveLength(
+      0,
+    );
+    expect(
+      status.migrationChanges40!.scenarios[0].changedVulnerabilities.length,
+    ).toBeGreaterThan(0);
+  });
+
   it('handles no scenarios gracefully', () => {
     const doc = JSON.parse(loadFixture('3.3-no-scenarios.json'));
     const [migrated, status] = migrateFrom33To40(doc, emptyStatus());
@@ -220,44 +261,42 @@ describe('migrateFrom33To40', () => {
 
 describe('migrateFrom40To41', () => {
   it('bumps schema version and remaps risk values', () => {
-    const doc = JSON.parse(loadFixture('4.0.json'));
+    const doc = load40FixtureWithKnownRiskValues();
     const [migrated, status] = migrateFrom40To41(doc, emptyStatus());
 
     expect(migrated.schemaVersion).toBe('4.1');
     expect(status.migrationChanges).toBe(true);
     expect(status.migrationRequiresNewApproval).toBe(true);
 
-    const scenarios = migrated.scenarios as Array<Record<string, unknown>>;
-
     // First scenario: prob 0.1->0.05, cons 30000->160000
-    const s1 = scenarios[0].scenario as Record<string, unknown>;
-    const risk1 = s1.risk as Record<string, number>;
+    const s1 = migrated.scenarios[0].scenario;
+    const risk1 = s1.risk;
     expect(risk1.probability).toBe(0.05);
     expect(risk1.consequence).toBe(160000);
-    const rem1 = s1.remainingRisk as Record<string, number>;
+    const rem1 = s1.remainingRisk;
     expect(rem1.probability).toBe(0.0025);
     expect(rem1.consequence).toBe(8000);
 
     // Second scenario: prob 50->20, cons 30000000->64000000
-    const s2 = scenarios[1].scenario as Record<string, unknown>;
-    const risk2 = s2.risk as Record<string, number>;
+    const s2 = migrated.scenarios[1].scenario;
+    const risk2 = s2.risk;
     expect(risk2.probability).toBe(20);
     expect(risk2.consequence).toBe(64000000);
 
     // Third scenario: prob 300->400, cons 1000000000->1280000000
-    const s3 = scenarios[2].scenario as Record<string, unknown>;
-    const risk3 = s3.risk as Record<string, number>;
+    const s3 = migrated.scenarios[2].scenario;
+    const risk3 = s3.risk;
     expect(risk3.probability).toBe(400);
     expect(risk3.consequence).toBe(1280000000);
 
-    // Arbitrary values remain unchanged
-    const rem3 = s3.remainingRisk as Record<string, number>;
-    expect(rem3.probability).toBe(0.123);
-    expect(rem3.consequence).toBe(198000);
+    // Third scenario remaining risk: prob 1->1, cons 1000000->3200000
+    const rem3 = s3.remainingRisk;
+    expect(rem3.probability).toBe(1);
+    expect(rem3.consequence).toBe(3200000);
   });
 
   it('tracks changes for all scenarios', () => {
-    const doc = JSON.parse(loadFixture('4.0.json'));
+    const doc = load40FixtureWithKnownRiskValues();
     const [_, status] = migrateFrom40To41(doc, emptyStatus());
 
     expect(status.migrationChanges41).toBeDefined();
@@ -272,6 +311,14 @@ describe('migrateFrom40To41', () => {
       oldValue: 30000,
       newValue: 160000,
     });
+  });
+
+  it('throws when a risk value has no 4.0 to 4.1 mapping', () => {
+    const doc = JSON.parse(loadFixture('4.0.json'));
+
+    expect(() => migrateFrom40To41(doc, emptyStatus())).toThrow(
+      'No mapping exists for 0.123',
+    );
   });
 });
 
@@ -289,12 +336,10 @@ describe('migrateFrom41To42', () => {
 
     expect(migrated.schemaVersion).toBe('4.2');
 
-    const scenarios = migrated.scenarios as Array<Record<string, unknown>>;
-    for (const sw of scenarios) {
-      const scenario = sw.scenario as Record<string, unknown>;
-      const actions = scenario.actions as Array<Record<string, unknown>>;
+    for (const sw of migrated.scenarios) {
+      const actions = sw.scenario.actions;
       for (const aw of actions) {
-        const action = aw.action as Record<string, unknown>;
+        const action = aw.action;
         expect(action.lastUpdated).toBe('2025-07-09T11:28:14.801Z');
       }
     }
@@ -304,10 +349,7 @@ describe('migrateFrom41To42', () => {
     const doc = JSON.parse(loadFixture('4.1.json'));
     const [migrated, _] = migrateFrom41To42(doc, null, emptyStatus());
 
-    const scenarios = migrated.scenarios as Array<Record<string, unknown>>;
-    const s1 = scenarios[0].scenario as Record<string, unknown>;
-    const actions = s1.actions as Array<Record<string, unknown>>;
-    const action = actions[0].action as Record<string, unknown>;
+    const action = migrated.scenarios[0].scenario.actions[0].action;
     expect(action.lastUpdated).toBeNull();
   });
 
@@ -341,24 +383,16 @@ describe('migrateFrom42To50', () => {
     expect(migrated.schemaVersion).toBe('5.0');
     expect(status.migrationChanges).toBe(true);
 
-    const scenarios = migrated.scenarios as Array<Record<string, unknown>>;
-
     // "Not started" -> "Not OK"
-    const s1 = scenarios[0].scenario as Record<string, unknown>;
-    const a1 = (s1.actions as Array<Record<string, unknown>>)[0]
-      .action as Record<string, unknown>;
+    const a1 = migrated.scenarios[0].scenario.actions[0].action;
     expect(a1.status).toBe('Not OK');
 
     // "Not started" -> "Not OK"
-    const s2 = scenarios[1].scenario as Record<string, unknown>;
-    const a2 = (s2.actions as Array<Record<string, unknown>>)[0]
-      .action as Record<string, unknown>;
+    const a2 = migrated.scenarios[1].scenario.actions[0].action;
     expect(a2.status).toBe('Not OK');
 
     // "Completed" -> "OK"
-    const s3 = scenarios[2].scenario as Record<string, unknown>;
-    const a3 = (s3.actions as Array<Record<string, unknown>>)[0]
-      .action as Record<string, unknown>;
+    const a3 = migrated.scenarios[2].scenario.actions[0].action;
     expect(a3.status).toBe('OK');
   });
 
@@ -389,10 +423,7 @@ describe('migrateFrom50To51', () => {
     expect(migrated.schemaVersion).toBe('5.1');
     expect(status.migrationChanges).toBe(true);
 
-    const scenarios = migrated.scenarios as Array<Record<string, unknown>>;
-    const s1 = scenarios[0].scenario as Record<string, unknown>;
-    const actions = s1.actions as Array<Record<string, unknown>>;
-    const a1 = actions[0].action as Record<string, unknown>;
+    const a1 = migrated.scenarios[0].scenario.actions[0].action;
     expect(a1.lastUpdatedBy).toBe('');
   });
 
@@ -409,11 +440,18 @@ describe('migrateFrom50To51', () => {
 
 describe('migrateFrom51To52', () => {
   it('removes valuations', () => {
-    const doc: RiScJson = {
+    const doc: RiSc5X = {
       schemaVersion: '5.1',
       title: 'Test',
       scope: 'Test',
-      valuations: [{ description: 'test' }],
+      valuations: [
+        {
+          description: 'test',
+          confidentiality: 'Internal',
+          integrity: 'Expected',
+          availability: '2 days',
+        },
+      ],
       scenarios: [],
     };
     const [migrated, status] = migrateFrom51To52(doc, emptyStatus());
@@ -425,7 +463,7 @@ describe('migrateFrom51To52', () => {
   });
 
   it('handles empty valuations', () => {
-    const doc: RiScJson = {
+    const doc: RiSc5X = {
       schemaVersion: '5.1',
       title: 'Test',
       scope: 'Test',
@@ -465,7 +503,7 @@ describe('migrate (full chain)', () => {
   });
 
   it('no-op when already at target version', () => {
-    const doc: RiScJson = {
+    const doc: RiScDocument = {
       schemaVersion: '5.2',
       title: 'Test',
       scope: 'Test',
@@ -478,7 +516,7 @@ describe('migrate (full chain)', () => {
   });
 
   it('throws on backwards migration', () => {
-    const doc: RiScJson = {
+    const doc: RiScDocument = {
       schemaVersion: '4.2',
       title: 'T',
       scope: 'S',
@@ -490,12 +528,11 @@ describe('migrate (full chain)', () => {
   });
 
   it('throws on unsupported version', () => {
-    const doc: RiScJson = { schemaVersion: '99.0', title: 'T', scope: 'S' };
-    expect(() => migrate(doc, null, '5.2')).toThrow();
+    expect(() => getVersion('99.0')).toThrow();
   });
 
   it('throws on unsupported target version', () => {
-    const doc: RiScJson = {
+    const doc: RiScDocument = {
       schemaVersion: '3.2',
       title: 'T',
       scope: 'S',

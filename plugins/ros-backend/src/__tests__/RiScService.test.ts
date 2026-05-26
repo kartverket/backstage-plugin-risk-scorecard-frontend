@@ -15,9 +15,7 @@ import type {
 
 function mockGitHubService(): jest.Mocked<GitHubService> {
   return {
-    riScFilePath: jest.fn(
-      (id: string) => `.security/risc/${id}.risc.yaml`,
-    ),
+    riScFilePath: jest.fn((id: string) => `.security/risc/${id}.risc.yaml`),
     riScIdFromFilename: jest.fn((name: string) =>
       name.replace('.risc.yaml', ''),
     ),
@@ -55,9 +53,7 @@ function mockCryptoService(): jest.Mocked<SopsCryptoService> {
 function mockSchemaService(): jest.Mocked<typeof SchemaService> {
   return {
     parseContent: jest.fn((content: string) => JSON.parse(content)),
-    detectVersion: jest.fn(() => '5.2'),
     validate: jest.fn(() => ({ valid: true, version: '5.2' })),
-    validateDoc: jest.fn(() => ({ valid: true, version: '5.2' })),
     migrate: jest.fn((doc, _lp, _v) => [doc, emptyMigrationStatus()]),
   } as unknown as jest.Mocked<typeof SchemaService>;
 }
@@ -227,9 +223,7 @@ describe('RiScService', () => {
       github.fetchDraftBranches.mockResolvedValue([
         { ref: 'refs/heads/risc-abc12', url: '' },
       ]);
-      github.fetchOpenPullRequests.mockResolvedValue([
-        makePR('risc-abc12', 1),
-      ]);
+      github.fetchOpenPullRequests.mockResolvedValue([makePR('risc-abc12', 1)]);
       // Main and branch return different content
       github.fetchFileContent.mockImplementation(
         (_owner, _repo, _path, _token, ref?) => {
@@ -546,9 +540,7 @@ describe('RiScService', () => {
         name: 'f.yaml',
       } as unknown as GithubFileDTO);
       github.writeFile.mockResolvedValue(undefined);
-      github.fetchOpenPullRequests.mockResolvedValue([
-        makePR('risc-abc12', 5),
-      ]);
+      github.fetchOpenPullRequests.mockResolvedValue([makePR('risc-abc12', 5)]);
       github.closePullRequest.mockResolvedValue(undefined);
 
       const result = await service.updateRiSc(
@@ -683,9 +675,7 @@ describe('RiScService', () => {
         defaultBranch: 'main',
         hasWriteAccess: true,
       });
-      github.createPullRequest.mockResolvedValue(
-        makePR('risc-pub01', 10),
-      );
+      github.createPullRequest.mockResolvedValue(makePR('risc-pub01', 10));
 
       const result = await service.publishRiSc(
         'owner',
@@ -699,9 +689,7 @@ describe('RiScService', () => {
       expect(result.pendingApproval?.pullRequestUrl).toBe(
         'https://github.com/owner/repo/pull/10',
       );
-      expect(result.pendingApproval?.pullRequestName).toBe(
-        'risc-pub01',
-      );
+      expect(result.pendingApproval?.pullRequestName).toBe('risc-pub01');
     });
 
     it('returns error when no draft branch exists', async () => {

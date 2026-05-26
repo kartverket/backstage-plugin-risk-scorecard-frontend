@@ -10,11 +10,7 @@
  */
 
 import type {
-  ContentStatus,
-  DifferenceStatus,
   MigrationStatus,
-  ProcessingStatus,
-  RiScStatus,
   SopsConfig,
   UserInfo,
   RiScContentResultDTO,
@@ -26,11 +22,11 @@ import type {
   PendingApprovalDTO,
   GithubPullRequestObject,
   GithubReferenceObjectDTO,
-  RiScDocument,
 } from '@internal/backstage-plugin-ros-common';
 import {
   DRAFT_BRANCH_PREFIX,
   RISC_FILE_PREFIX,
+  RiScStatus,
 } from '@internal/backstage-plugin-ros-common';
 
 import type * as ComparisonService from './ComparisonService';
@@ -93,20 +89,18 @@ function getRiScStatus(
 
   if (isStoredInMain) {
     if (branchHasNoFile) {
-      return (
-        hasOpenPR ? 'DeletionSentForApproval' : 'DeletionDraft'
-      ) as RiScStatus;
+      return hasOpenPR ? 'DeletionSentForApproval' : 'DeletionDraft';
     }
     if (hasDifferentBranchContent) {
-      return (hasOpenPR ? 'SentForApproval' : 'Draft') as RiScStatus;
+      return hasOpenPR ? 'SentForApproval' : 'Draft';
     }
-    return 'Published' as RiScStatus;
+    return 'Published';
   }
 
   if (hasDifferentBranchContent) {
-    return (hasOpenPR ? 'SentForApproval' : 'Draft') as RiScStatus;
+    return hasOpenPR ? 'SentForApproval' : 'Draft';
   }
-  return 'Deleted' as RiScStatus;
+  return 'Deleted';
 }
 
 /**
@@ -118,12 +112,12 @@ function chooseContentFromStatus(
   mainContent: GithubContentResponse,
 ): GithubContentResponse {
   switch (status) {
-    case 'SentForApproval' as RiScStatus:
-    case 'Draft' as RiScStatus:
+    case 'SentForApproval':
+    case 'Draft':
       return branchContent;
-    case 'Published' as RiScStatus:
-    case 'DeletionDraft' as RiScStatus:
-    case 'DeletionSentForApproval' as RiScStatus:
+    case 'Published':
+    case 'DeletionDraft':
+    case 'DeletionSentForApproval':
       return mainContent;
     default:
       return { data: null, status: GithubStatus.ContentIsEmpty };
@@ -179,25 +173,25 @@ export class RiScService {
     );
 
     const riScResults: RiScContentResultDTO[] = results
-      .map((result, index) => {
+      .map((result, index): RiScContentResultDTO => {
         if (result.status === 'fulfilled') {
           return result.value;
         }
         // On rejection, return a failure DTO
         return {
           riScId: metadata[index].id,
-          status: 'Failure' as ContentStatus,
+          status: 'Failure',
           riScStatus: null,
           riScContent: null,
           statusMessage: `Failed to fetch RiSc: ${result.reason instanceof Error ? result.reason.message : 'Unknown error'}`,
           migrationStatus: this.emptyMigrationStatus(),
-        } as RiScContentResultDTO;
+        };
       })
-      .filter(r => (r.riScStatus as string) !== 'Deleted');
+      .filter(r => r.riScStatus !== 'Deleted');
 
     // Validate and migrate
     return riScResults.map(dto => {
-      if (dto.status !== ('Success' as ContentStatus)) return dto;
+      if (dto.status !== 'Success') return dto;
 
       // Validate
       const validationResult = this.schemaService.validate(dto.riScContent!);
@@ -205,7 +199,7 @@ export class RiScService {
         this.logger?.warn(`RiSc ${dto.riScId} failed validation`);
         return {
           ...dto,
-          status: 'SchemaValidationFailed' as ContentStatus,
+          status: 'SchemaValidationFailed',
           riScStatus: null,
           riScContent: null,
           statusMessage: 'Schema validation failed',
@@ -228,7 +222,7 @@ export class RiScService {
       } catch {
         return {
           ...dto,
-          status: 'UnsupportedMigration' as ContentStatus,
+          status: 'UnsupportedMigration',
           riScStatus: null,
           riScContent: null,
           statusMessage: 'Migration failed',
@@ -262,7 +256,7 @@ export class RiScService {
     if (!validationResult.valid) {
       return {
         riScId,
-        status: 'ErrorWhenCreatingRiSc' as ProcessingStatus,
+        status: 'ErrorWhenCreatingRiSc',
         statusMessage: `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
         riScContent: null,
         sopsConfig,
@@ -306,7 +300,7 @@ export class RiScService {
 
     return {
       riScId,
-      status: 'CreatedRiSc' as ProcessingStatus,
+      status: 'CreatedRiSc',
       statusMessage: 'New RiSc was created',
       riScContent: content,
       sopsConfig,
@@ -338,7 +332,7 @@ export class RiScService {
     if (!validationResult.valid) {
       return {
         riScId,
-        status: 'ErrorWhenUpdatingRiSc' as ProcessingStatus,
+        status: 'ErrorWhenUpdatingRiSc',
         statusMessage: `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
       };
     }
@@ -415,7 +409,7 @@ export class RiScService {
         );
         return {
           riScId,
-          status: 'UpdatedRiScRequiresNewApproval' as ProcessingStatus,
+          status: 'UpdatedRiScRequiresNewApproval',
           statusMessage:
             'Risk scorecard was updated and has to be approved by a risk owner again',
         };
@@ -424,7 +418,7 @@ export class RiScService {
 
     return {
       riScId,
-      status: 'UpdatedRiSc' as ProcessingStatus,
+      status: 'UpdatedRiSc',
       statusMessage: 'Risk scorecard was updated',
     };
   }
@@ -464,7 +458,7 @@ export class RiScService {
       );
       return {
         riScId,
-        status: 'DeletedRiSc' as ProcessingStatus,
+        status: 'DeletedRiSc',
         statusMessage:
           'Risk scorecard was deleted - no approval required as it was never published',
       };
@@ -519,7 +513,7 @@ export class RiScService {
 
     return {
       riScId,
-      status: 'DeletedRiScRequiresApproval' as ProcessingStatus,
+      status: 'DeletedRiScRequiresApproval',
       statusMessage:
         'Risk scorecard was staged for deletion - the deletion requires approval',
     };
@@ -549,7 +543,7 @@ export class RiScService {
     if (!branchSha) {
       return {
         riScId,
-        status: 'ErrorWhenCreatingPullRequest' as ProcessingStatus,
+        status: 'ErrorWhenCreatingPullRequest',
         statusMessage: 'No draft branch found for this RiSc',
         pendingApproval: null,
       };
@@ -575,7 +569,7 @@ export class RiScService {
 
     return {
       riScId,
-      status: 'CreatedPullRequest' as ProcessingStatus,
+      status: 'CreatedPullRequest',
       statusMessage: 'Pull request was created',
       pendingApproval: this.toPendingApprovalDTO(pr),
     };
@@ -607,7 +601,7 @@ export class RiScService {
 
     if (publishedResponse.status === GithubStatus.NotFound) {
       return {
-        status: 'GithubFileNotFound' as DifferenceStatus,
+        status: 'GithubFileNotFound',
         differenceState: null,
         errorMessage: 'Encountered Github problem: File not found',
         defaultLastModifiedDateString: '',
@@ -619,7 +613,7 @@ export class RiScService {
       !publishedResponse.data
     ) {
       return {
-        status: 'GithubFailure' as DifferenceStatus,
+        status: 'GithubFailure',
         differenceState: null,
         errorMessage: 'Encountered Github problem: Github failure',
         defaultLastModifiedDateString: '',
@@ -635,7 +629,7 @@ export class RiScService {
       );
     } catch {
       return {
-        status: 'DecryptionFailure' as DifferenceStatus,
+        status: 'DecryptionFailure',
         differenceState: null,
         errorMessage: 'Encountered ROS problem: Could not decrypt content',
         defaultLastModifiedDateString: '',
@@ -644,12 +638,10 @@ export class RiScService {
 
     // Compare
     try {
-      const updatedDoc = this.schemaService.parseContent(
-        draftRiScContent,
-      ) as unknown as RiScDocument;
+      const updatedDoc = this.schemaService.parseContent(draftRiScContent);
       const publishedDoc = this.schemaService.parseContent(
         decryptedPublished.content,
-      ) as unknown as RiScDocument;
+      );
 
       const differenceState = this.comparisonService.compare(
         updatedDoc,
@@ -657,7 +649,7 @@ export class RiScService {
       );
 
       return {
-        status: 'Success' as DifferenceStatus,
+        status: 'Success',
         differenceState,
         errorMessage: '',
         defaultLastModifiedDateString:
@@ -668,7 +660,7 @@ export class RiScService {
         `Comparison failed for ${riScId}: ${e instanceof Error ? e.message : e}`,
       );
       return {
-        status: 'JsonFailure' as DifferenceStatus,
+        status: 'JsonFailure',
         differenceState: null,
         errorMessage: `Comparison failed: ${e instanceof Error ? e.message : 'Unknown error'}`,
         defaultLastModifiedDateString:
@@ -737,7 +729,7 @@ export class RiScService {
         : Promise.resolve({
             data: null,
             status: GithubStatus.NotFound,
-          } as GithubContentResponse),
+          } satisfies GithubContentResponse),
     ]);
 
     const riScStatus = getRiScStatus(metadata, mainContent, branchContent);
@@ -751,7 +743,7 @@ export class RiScService {
       if (contentToUse.status === GithubStatus.NotFound) {
         return {
           riScId: metadata.id,
-          status: 'FileNotFound' as ContentStatus,
+          status: 'FileNotFound',
           riScStatus,
           riScContent: null,
           statusMessage: 'File not found',
@@ -760,7 +752,7 @@ export class RiScService {
       }
       return {
         riScId: metadata.id,
-        status: 'Failure' as ContentStatus,
+        status: 'Failure',
         riScStatus,
         riScContent: null,
         statusMessage: 'Failed to fetch content from GitHub',
@@ -785,7 +777,7 @@ export class RiScService {
 
       return {
         riScId: metadata.id,
-        status: 'Success' as ContentStatus,
+        status: 'Success',
         riScStatus,
         riScContent: decrypted.content,
         sopsConfig: decrypted.sopsConfig,
@@ -797,7 +789,7 @@ export class RiScService {
     } catch (e) {
       return {
         riScId: metadata.id,
-        status: 'DecryptionFailed' as ContentStatus,
+        status: 'DecryptionFailed',
         riScStatus,
         riScContent: null,
         statusMessage: e instanceof Error ? e.message : 'Decryption failed',

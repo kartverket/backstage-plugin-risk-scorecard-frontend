@@ -9,145 +9,180 @@
  *   - utils/comparison/MigrationDTOs.kt (migration changes)
  */
 
+import type { RiScVersion } from './constants';
+
 // ─── Status Enums ──────────────────────────────────────────────────────────────
 
 /** Processing status returned by write operations (create/update/delete/publish). */
-export enum ProcessingStatus {
-  CreatedRiSc = 'CreatedRiSc',
-  UpdatedRiSc = 'UpdatedRiSc',
-  DeletedRiSc = 'DeletedRiSc',
-  DeletedRiScRequiresApproval = 'DeletedRiScRequiresApproval',
-  UpdatedRiScAndCreatedPullRequest = 'UpdatedRiScAndCreatedPullRequest',
-  CreatedPullRequest = 'CreatedPullRequest',
-  UpdatedRiScRequiresNewApproval = 'UpdatedRiScRequiresNewApproval',
-  ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
-  ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
-  ErrorWhenDeletingRiSc = 'ErrorWhenDeletingRiSc',
-  ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
-  InvalidAccessTokens = 'InvalidAccessTokens',
-  NoWriteAccessToRepository = 'NoWriteAccessToRepository',
-  AccessTokensValidationFailure = 'AccessTokensValidationFailure',
-  FailedToFetchGcpProjectIds = 'FailedToFetchGcpProjectIds',
-  FailedToFetchGCPOAuth2TokenInformation = 'FailedToFetchGCPOAuth2TokenInformation',
-  FailedToFetchGCPIAMPermissions = 'FailedToFetchGCPIAMPermissions',
-  FailedToCreateSops = 'FailedToCreateSops',
-  FailedToFetchFromAirtable = 'FailedToFetchFromAirtable',
-  FailedToFetchInitRiScFromGitHub = 'FailedToFetchInitRiScFromGitHub',
-  FailedToFetchInitRiScConfigFromGitHub = 'FailedToFetchInitRiScConfigFromGitHub',
-}
+export const ProcessingStatus = {
+  CreatedRiSc: 'CreatedRiSc',
+  UpdatedRiSc: 'UpdatedRiSc',
+  DeletedRiSc: 'DeletedRiSc',
+  DeletedRiScRequiresApproval: 'DeletedRiScRequiresApproval',
+  UpdatedRiScAndCreatedPullRequest: 'UpdatedRiScAndCreatedPullRequest',
+  CreatedPullRequest: 'CreatedPullRequest',
+  UpdatedRiScRequiresNewApproval: 'UpdatedRiScRequiresNewApproval',
+  ErrorWhenUpdatingRiSc: 'ErrorWhenUpdatingRiSc',
+  ErrorWhenCreatingRiSc: 'ErrorWhenCreatingRiSc',
+  ErrorWhenDeletingRiSc: 'ErrorWhenDeletingRiSc',
+  ErrorWhenCreatingPullRequest: 'ErrorWhenCreatingPullRequest',
+  InvalidAccessTokens: 'InvalidAccessTokens',
+  NoWriteAccessToRepository: 'NoWriteAccessToRepository',
+  AccessTokensValidationFailure: 'AccessTokensValidationFailure',
+  FailedToFetchGcpProjectIds: 'FailedToFetchGcpProjectIds',
+  FailedToFetchGCPOAuth2TokenInformation:
+    'FailedToFetchGCPOAuth2TokenInformation',
+  FailedToFetchGCPIAMPermissions: 'FailedToFetchGCPIAMPermissions',
+  FailedToCreateSops: 'FailedToCreateSops',
+  FailedToFetchFromAirtable: 'FailedToFetchFromAirtable',
+  FailedToFetchInitRiScFromGitHub: 'FailedToFetchInitRiScFromGitHub',
+  FailedToFetchInitRiScConfigFromGitHub:
+    'FailedToFetchInitRiScConfigFromGitHub',
+} as const;
+
+export type ProcessingStatus =
+  (typeof ProcessingStatus)[keyof typeof ProcessingStatus];
 
 /** Lifecycle status of a RiSc document. */
-export enum RiScStatus {
-  Draft = 'Draft',
-  SentForApproval = 'SentForApproval',
-  Published = 'Published',
-  DeletionDraft = 'DeletionDraft',
-  DeletionSentForApproval = 'DeletionSentForApproval',
-  Deleted = 'Deleted',
-}
+export const RiScStatus = {
+  Draft: 'Draft',
+  SentForApproval: 'SentForApproval',
+  Published: 'Published',
+  DeletionDraft: 'DeletionDraft',
+  DeletionSentForApproval: 'DeletionSentForApproval',
+  Deleted: 'Deleted',
+} as const;
+
+export type RiScStatus = (typeof RiScStatus)[keyof typeof RiScStatus];
 
 /** Content fetch status — indicates the result of reading a RiSc from storage. */
-export enum ContentStatus {
-  Success = 'Success',
-  FileNotFound = 'FileNotFound',
-  DecryptionFailed = 'DecryptionFailed',
-  Failure = 'Failure',
-  NoReadAccess = 'NoReadAccess',
-  SchemaNotFound = 'SchemaNotFound',
-  SchemaValidationFailed = 'SchemaValidationFailed',
-  UnsupportedMigration = 'UnsupportedMigration',
-}
+export const ContentStatus = {
+  Success: 'Success',
+  FileNotFound: 'FileNotFound',
+  DecryptionFailed: 'DecryptionFailed',
+  Failure: 'Failure',
+  NoReadAccess: 'NoReadAccess',
+  SchemaNotFound: 'SchemaNotFound',
+  SchemaValidationFailed: 'SchemaValidationFailed',
+  UnsupportedMigration: 'UnsupportedMigration',
+} as const;
+
+export type ContentStatus = (typeof ContentStatus)[keyof typeof ContentStatus];
 
 /** Status of a difference/comparison operation. */
-export enum DifferenceStatus {
-  Success = 'Success',
-  GithubFailure = 'GithubFailure',
-  GithubFileNotFound = 'GithubFileNotFound',
-  JsonFailure = 'JsonFailure',
-  DecryptionFailure = 'DecryptionFailure',
-  NoReadAccess = 'NoReadAccess',
-  SchemaNotFound = 'SchemaNotFound',
-  SchemaValidationFailed = 'SchemaValidationFailed',
-  UnsupportedMigration = 'UnsupportedMigration',
-}
+export const DifferenceStatus = {
+  Success: 'Success',
+  GithubFailure: 'GithubFailure',
+  GithubFileNotFound: 'GithubFileNotFound',
+  JsonFailure: 'JsonFailure',
+  DecryptionFailure: 'DecryptionFailure',
+  NoReadAccess: 'NoReadAccess',
+  SchemaNotFound: 'SchemaNotFound',
+  SchemaValidationFailed: 'SchemaValidationFailed',
+  UnsupportedMigration: 'UnsupportedMigration',
+} as const;
+
+export type DifferenceStatus =
+  (typeof DifferenceStatus)[keyof typeof DifferenceStatus];
 
 // ─── Domain Enums ──────────────────────────────────────────────────────────────
 
 /** Threat actors (v3.x through v5.x). */
-export enum ThreatActor {
-  ScriptKiddie = 'Script kiddie',
-  Hacktivist = 'Hacktivist',
-  RecklessEmployee = 'Reckless employee',
-  Insider = 'Insider',
-  OrganisedCrime = 'Organised crime',
-  TerroristOrganisation = 'Terrorist organisation',
-  NationGovernment = 'Nation/government',
-}
+export const ThreatActor = {
+  'Script kiddie': 'Script kiddie',
+  Hacktivist: 'Hacktivist',
+  'Reckless employee': 'Reckless employee',
+  Insider: 'Insider',
+  'Organised crime': 'Organised crime',
+  'Terrorist organisation': 'Terrorist organisation',
+  'Nation/government': 'Nation/government',
+} as const;
+
+export type ThreatActor = (typeof ThreatActor)[keyof typeof ThreatActor];
 
 /** Vulnerabilities (v4.x and v5.x). */
-export enum Vulnerability {
-  FlawedDesign = 'Flawed design',
-  Misconfiguration = 'Misconfiguration',
-  DependencyVulnerability = 'Dependency vulnerability',
-  UnauthorizedAccess = 'Unauthorized access',
-  UnmonitoredUse = 'Unmonitored use',
-  InputTampering = 'Input tampering',
-  InformationLeak = 'Information leak',
-  ExcessiveUse = 'Excessive use',
-}
+export const Vulnerability = {
+  'Flawed design': 'Flawed design',
+  Misconfiguration: 'Misconfiguration',
+  'Dependency vulnerability': 'Dependency vulnerability',
+  'Unauthorized access': 'Unauthorized access',
+  'Unmonitored use': 'Unmonitored use',
+  'Input tampering': 'Input tampering',
+  'Information leak': 'Information leak',
+  'Excessive use': 'Excessive use',
+} as const;
+
+export type Vulnerability = (typeof Vulnerability)[keyof typeof Vulnerability];
 
 /** Vulnerabilities (v3.x only — replaced in v4.0). */
-export enum Vulnerability3X {
-  CompromisedAdminUser = 'Compromised admin user',
-  DependencyVulnerability = 'Dependency vulnerability',
-  DisclosedSecret = 'Disclosed secret',
-  Misconfiguration = 'Misconfiguration',
-  InputTampering = 'Input tampering',
-  UserRepudiation = 'User repudiation',
-  InformationLeak = 'Information leak',
-  DenialOfService = 'Denial of service',
-  EscalationOfRights = 'Escalation of rights',
-}
+export const Vulnerability3X = {
+  'Compromised admin user': 'Compromised admin user',
+  'Dependency vulnerability': 'Dependency vulnerability',
+  'Disclosed secret': 'Disclosed secret',
+  Misconfiguration: 'Misconfiguration',
+  'Input tampering': 'Input tampering',
+  'User repudiation': 'User repudiation',
+  'Information leak': 'Information leak',
+  'Denial of service': 'Denial of service',
+  'Escalation of rights': 'Escalation of rights',
+} as const;
+
+export type Vulnerability3X =
+  (typeof Vulnerability3X)[keyof typeof Vulnerability3X];
 
 /** Action status (v5.x). */
-export enum ActionStatus {
-  OK = 'OK',
-  NotOK = 'Not OK',
-  NotRelevant = 'Not relevant',
-}
+export const ActionStatus = {
+  OK: 'OK',
+  'Not OK': 'Not OK',
+  'Not relevant': 'Not relevant',
+} as const;
+
+export type ActionStatus = (typeof ActionStatus)[keyof typeof ActionStatus];
 
 /** Action status (v3.x and v4.x — replaced in v5.0). */
-export enum ActionStatus3X4X {
-  NotStarted = 'Not started',
-  InProgress = 'In progress',
-  OnHold = 'On hold',
-  Completed = 'Completed',
-  Aborted = 'Aborted',
-}
+export const ActionStatus3X4X = {
+  'Not started': 'Not started',
+  'In progress': 'In progress',
+  'On hold': 'On hold',
+  Completed: 'Completed',
+  Aborted: 'Aborted',
+} as const;
+
+export type ActionStatus3X4X =
+  (typeof ActionStatus3X4X)[keyof typeof ActionStatus3X4X];
 
 /** Valuation: confidentiality classification (deprecated in v5.2+). */
-export enum ValuationConfidentiality {
-  Public = 'Public',
-  Internal = 'Internal',
-  Confidential = 'Confidential',
-  StrictlyConfidential = 'Strictly confidential',
-}
+export const ValuationConfidentiality = {
+  Public: 'Public',
+  Internal: 'Internal',
+  Confidential: 'Confidential',
+  'Strictly confidential': 'Strictly confidential',
+} as const;
+
+export type ValuationConfidentiality =
+  (typeof ValuationConfidentiality)[keyof typeof ValuationConfidentiality];
 
 /** Valuation: integrity classification (deprecated in v5.2+). */
-export enum ValuationIntegrity {
-  Insignificant = 'Insignificant',
-  Expected = 'Expected',
-  Dependent = 'Dependent',
-  Critical = 'Critical',
-}
+export const ValuationIntegrity = {
+  Insignificant: 'Insignificant',
+  Expected: 'Expected',
+  Dependent: 'Dependent',
+  Critical: 'Critical',
+} as const;
+
+export type ValuationIntegrity =
+  (typeof ValuationIntegrity)[keyof typeof ValuationIntegrity];
 
 /** Valuation: availability classification (deprecated in v5.2+). */
-export enum ValuationAvailability {
-  Insignificant = 'Insignificant',
-  TwoDays = '2 days',
-  FourHours = '4 hours',
-  Immediate = 'Immediate',
-}
+export const ValuationAvailability = {
+  Insignificant: 'Insignificant',
+  '2 days': '2 days',
+  '4 hours': '4 hours',
+  Immediate: 'Immediate',
+} as const;
+
+export type ValuationAvailability =
+  (typeof ValuationAvailability)[keyof typeof ValuationAvailability];
 
 // ─── Domain Models ─────────────────────────────────────────────────────────────
 
@@ -188,97 +223,114 @@ export interface LastPublished {
 // ─── Versioned RiSc Models ─────────────────────────────────────────────────────
 
 /** Base RiSc structure shared across all versions. */
-export interface RiScBase {
-  schemaVersion: string;
+export interface RiScBase<TVersion extends RiScVersion = RiScVersion> {
+  schemaVersion: TVersion;
   title: string;
   scope: string;
   valuations?: RiScValuation[] | null;
+  sops?: Record<string, unknown> | null;
 }
 
 /** v5.x scenario action. */
 export interface RiSc5XAction {
   title: string;
-  id: string;
-  description: string;
-  url?: string | null;
-  status: ActionStatus;
-  lastUpdated?: string | null;
-  lastUpdatedBy?: string | null;
+  action: {
+    ID: string;
+    description: string;
+    url?: string | null;
+    status: ActionStatus;
+    lastUpdated?: string | null;
+    lastUpdatedBy?: string | null;
+  };
 }
 
 /** v5.x scenario. */
 export interface RiSc5XScenario {
   title: string;
-  id: string;
-  description: string;
-  url?: string | null;
-  threatActors: ThreatActor[];
-  vulnerabilities: Vulnerability[];
-  risk: RiScRisk;
-  remainingRisk: RiScRisk;
-  actions: RiSc5XAction[];
+  scenario: {
+    ID: string;
+    description: string;
+    url?: string | null;
+    threatActors: ThreatActor[];
+    vulnerabilities: Vulnerability[];
+    risk: RiScRisk;
+    remainingRisk: RiScRisk;
+    actions: RiSc5XAction[];
+  };
 }
 
 /** v5.x RiSc document. */
-export interface RiSc5X extends RiScBase {
+export interface RiSc5X extends RiScBase<
+  Extract<RiScVersion, '5.0' | '5.1' | '5.2'>
+> {
   scenarios: RiSc5XScenario[];
 }
 
 /** v4.x scenario action. */
 export interface RiSc4XAction {
   title: string;
-  id: string;
-  description: string;
-  url?: string | null;
-  status: ActionStatus3X4X;
-  lastUpdated?: string | null;
+  action: {
+    ID: string;
+    description: string;
+    url?: string | null;
+    status: ActionStatus3X4X;
+    lastUpdated?: string | null;
+  };
 }
 
 /** v4.x scenario. */
 export interface RiSc4XScenario {
   title: string;
-  id: string;
-  description: string;
-  url?: string | null;
-  threatActors: ThreatActor[];
-  vulnerabilities: Vulnerability[];
-  risk: RiScRisk;
-  remainingRisk: RiScRisk;
-  actions: RiSc4XAction[];
+  scenario: {
+    ID: string;
+    description: string;
+    url?: string | null;
+    threatActors: ThreatActor[];
+    vulnerabilities: Vulnerability[];
+    risk: RiScRisk;
+    remainingRisk: RiScRisk;
+    actions: RiSc4XAction[];
+  };
 }
 
 /** v4.x RiSc document. */
-export interface RiSc4X extends RiScBase {
+export interface RiSc4X extends RiScBase<
+  Extract<RiScVersion, '4.0' | '4.1' | '4.2'>
+> {
   scenarios: RiSc4XScenario[];
 }
 
 /** v3.x scenario action. */
 export interface RiSc3XAction {
   title: string;
-  id: string;
-  description: string;
-  url?: string | null;
-  status: ActionStatus3X4X;
-  deadline?: string | null;
-  owner?: string | null;
+  action: {
+    ID: string;
+    description: string;
+    url?: string | null;
+    status: ActionStatus3X4X;
+    deadline?: string | null;
+    owner?: string | null;
+  };
 }
 
 /** v3.x scenario. */
 export interface RiSc3XScenario {
   title: string;
-  id: string;
-  description: string;
-  url?: string | null;
-  threatActors: ThreatActor[];
-  vulnerabilities: Vulnerability3X[];
-  risk: RiScRisk;
-  remainingRisk: RiScRisk;
-  actions: RiSc3XAction[];
-  existingActions?: string | null;
+  scenario: {
+    ID: string;
+    description: string;
+    url?: string | null;
+    threatActors: ThreatActor[];
+    vulnerabilities: Vulnerability3X[];
+    risk: RiScRisk;
+    remainingRisk: RiScRisk;
+    actions: RiSc3XAction[];
+    existingActions?: string | null;
+  };
 }
 
 /** v3.x RiSc document. */
-export interface RiSc3X extends RiScBase {
+export interface RiSc3X extends RiScBase<Extract<RiScVersion, '3.2' | '3.3'>> {
   scenarios: RiSc3XScenario[];
 }
 
@@ -600,11 +652,14 @@ export type RiScChange = RiSc3XChange | RiSc4XChange | RiSc5XChange;
 
 // ─── GCP Crypto Key Types ──────────────────────────────────────────────────────
 
-export enum CryptoKeyPermission {
-  UNKNOWN = 'UNKNOWN',
-  DECRYPT = 'DECRYPT',
-  ENCRYPT = 'ENCRYPT',
-}
+export const CryptoKeyPermission = {
+  UNKNOWN: 'UNKNOWN',
+  DECRYPT: 'DECRYPT',
+  ENCRYPT: 'ENCRYPT',
+} as const;
+
+export type CryptoKeyPermission =
+  (typeof CryptoKeyPermission)[keyof typeof CryptoKeyPermission];
 
 export interface GcpCryptoKeyObject {
   projectId: string;
