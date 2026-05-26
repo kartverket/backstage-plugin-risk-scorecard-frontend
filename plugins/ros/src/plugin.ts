@@ -4,17 +4,11 @@ import {
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef, riScRouteRef, scenarioRouteRef } from './routes';
-import { systemRiScsFeatureFlag } from './utils/featureFlags';
+import { riScFeatureFlags } from './utils/featureFlags';
 
 export const riScPlugin = createPlugin({
   id: 'riSc',
-  featureFlags: [
-    {
-      name: systemRiScsFeatureFlag,
-      description:
-        'Testing av system-RoS for Team SKVIS. Bruk på eget ansvar. UNNGÅ lagring av System-RoSer i åpne repoer.',
-    },
-  ],
+  featureFlags: riScFeatureFlags,
   routes: {
     root: rootRouteRef,
     scenario: scenarioRouteRef,
