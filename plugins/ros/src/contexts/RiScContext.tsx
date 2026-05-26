@@ -4,9 +4,9 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useReducer,
   useRef,
   useState,
-  useReducer,
 } from 'react';
 import {
   ContentStatus,
@@ -16,6 +16,7 @@ import {
   RiScWithMetadata,
   SubmitResponseObject,
   SystemRiSc,
+  UnavailableRiSc,
 } from '../utils/types';
 import { useRouteRef } from '@backstage/core-plugin-api';
 import {
@@ -32,11 +33,9 @@ import {
   dtoToRiSc,
   GcpCryptoKeyObject,
   ProcessRiScResultDTO,
-  RiScContentResultDTO,
   RiScDTO,
 } from '../utils/DTOs';
 import {
-  buildFetchRiScErrorMessages,
   mapRiScDtoToRiScWithMetadata,
   withLoginRejected,
 } from '../utils/fetchRiScHelpers';
@@ -58,6 +57,7 @@ export type UpdateStatus = {
 type RiScDrawerProps = {
   riScs: RiScWithMetadata[] | null;
   lockedRiScs: LockedRiSc[];
+  unavailableRiScs: UnavailableRiSc[];
   systemRiScs: SystemRiSc[];
   selectRiSc: (id: string) => void;
   selectedRiSc: RiScWithMetadata | null;
@@ -111,6 +111,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
   const [lockedRiScs, setLockedRiScs] = useState<LockedRiSc[]>([]);
+  const [unavailableRiScs, setUnavailableRiScs] = useState<UnavailableRiSc[]>(
+    [],
+  );
   const [selectedRiSc, setSelectedRiSc] = useState<RiScWithMetadata | null>(
     null,
   );
@@ -283,19 +286,19 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           setIsFetching(isFetchingRef.current);
         }
 
-        const errorRiScs: RiScContentResultDTO[] = res.filter(
-          risk => risk.status !== ContentStatus.Success,
+        setUnavailableRiScs(
+          res
+            .filter(
+              risk =>
+                risk.status !== ContentStatus.Success &&
+                risk.status !== ContentStatus.DecryptionFailed,
+            )
+            .map(risk => ({
+              id: risk.riScId,
+              status: risk.status,
+              errorCode: risk.errorCode,
+            })),
         );
-
-        if (errorRiScs.length > 0) {
-          dispatch({
-            type: 'SET_RESPONSE',
-            response: {
-              statusMessage: buildFetchRiScErrorMessages(errorRiScs, t),
-              status: ProcessingStatus.ErrorWhenFetchingRiScs,
-            },
-          });
-        }
 
         if (!riScIdFromParams) {
           // If there is no RiSc ID in the URL
@@ -698,6 +701,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
   const value = {
     riScs,
     lockedRiScs,
+    unavailableRiScs,
     systemRiScs,
     selectRiSc,
     selectedRiSc,
