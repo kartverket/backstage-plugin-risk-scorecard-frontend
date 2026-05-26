@@ -235,6 +235,13 @@ export const pluginRiScMessages = {
       title: 'Valuations removed',
       oldValue: 'Existing valuations removed',
     },
+    migration53: {
+      changeExplanation:
+        'This migration adds a new field for comments on actions.',
+      title: 'Comment field added',
+      oldValue: 'No comments',
+      newValue: 'Comment field added',
+    },
     removed: 'Removed',
   },
   comparisonDialog: {
@@ -1003,6 +1010,11 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration52.title': 'Verdivurderinger fjernet',
           'migrationDialog.migration52.oldValue':
             'Fjernet eksisterende verdivurderinger',
+          'migrationDialog.migration53.changeExplanation':
+            'Denne migreringen legger til et nytt felt for kommentarer på tiltak.',
+          'migrationDialog.migration53.title': 'Kommentarfelt lagt til',
+          'migrationDialog.migration53.oldValue': 'Ingen kommentarer',
+          'migrationDialog.migration53.newValue': 'Kommentarfelt lagt til',
           'migrationDialog.removed': 'Fjernet',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
