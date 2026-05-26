@@ -7,11 +7,13 @@ import ListSubheader from '@mui/material/ListSubheader';
 import MenuItem from '@mui/material/MenuItem';
 import MUISelect from '@mui/material/Select';
 import styles from './RiScSelectionCard.module.css';
+import { getUnavailableRiScReasonKey } from '../../utils/fetchRiScHelpers.ts';
 
 export function RiScSelectionCard() {
   const {
     riScs,
     lockedRiScs,
+    unavailableRiScs,
     systemRiScs,
     selectedRiSc,
     selectedLockedRiSc,
@@ -23,7 +25,8 @@ export function RiScSelectionCard() {
   const hasOptions =
     (riScs !== null && riScs.length !== 0) ||
     systemRiScs.length !== 0 ||
-    lockedRiScs.length !== 0;
+    lockedRiScs.length !== 0 ||
+    unavailableRiScs.length !== 0;
 
   return (
     <Flex direction="column" gap="24px">
@@ -71,6 +74,25 @@ export function RiScSelectionCard() {
             {lockedRiScs.map(riSc => (
               <MenuItem key={riSc.id} value={riSc.id}>
                 🔒 {riSc.id}
+              </MenuItem>
+            ))}
+            {unavailableRiScs.length > 0 && (
+              <ListSubheader
+                className={`${styles.sectionHeader} ${
+                  (riScs && riScs.length > 0) ||
+                  systemRiScs.length > 0 ||
+                  lockedRiScs.length > 0
+                    ? styles.sectionHeaderWithDivider
+                    : ''
+                }`}
+              >
+                {t('contentHeader.unavailableRiScsSection')}
+              </ListSubheader>
+            )}
+            {unavailableRiScs.map(riSc => (
+              <MenuItem key={riSc.id} value={riSc.id} disabled>
+                {riSc.id} —{' '}
+                {t(getUnavailableRiScReasonKey(riSc.status) as any, {})}
               </MenuItem>
             ))}
           </MUISelect>

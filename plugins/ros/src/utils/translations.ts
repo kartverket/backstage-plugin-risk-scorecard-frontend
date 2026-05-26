@@ -15,6 +15,14 @@ export const pluginRiScMessages = {
     systemRiScsSection: 'System RiScs',
     lockedRiScsSection:
       'RiScs you do not have access to — click for encryption key information',
+    unavailableRiScsSection: 'Unavailable RiScs',
+    unavailableReasonFileNotFound: 'File not found',
+    unavailableReasonNoReadAccess: 'No read access',
+    unavailableReasonSchemaValidationFailed: 'Invalid format',
+    unavailableReasonFailure: 'Failed to load',
+    unavailableReasonDeleted: 'Deleted',
+    unavailableReasonUnsupportedMigration: 'Cannot migrate',
+    unavailableReasonUnknown: 'Unavailable',
   },
   dictionary: {
     by: 'By',
@@ -802,6 +810,17 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.systemRiScsSection': 'System-RoSer',
           'contentHeader.lockedRiScsSection':
             'RoSer du ikke har tilgang til — klikk for informasjon om krypteringsnøkkel',
+          'contentHeader.unavailableRiScsSection': 'Utilgjengelige RoSer',
+          'contentHeader.unavailableReasonFileNotFound':
+            'Filen ble ikke funnet',
+          'contentHeader.unavailableReasonNoReadAccess': 'Ingen lesetilgang',
+          'contentHeader.unavailableReasonSchemaValidationFailed':
+            'Ugyldig format',
+          'contentHeader.unavailableReasonFailure': 'Kunne ikke lastes',
+          'contentHeader.unavailableReasonDeleted': 'Slettet',
+          'contentHeader.unavailableReasonUnsupportedMigration':
+            'Kan ikke migreres',
+          'contentHeader.unavailableReasonUnknown': 'Utilgjengelig',
           'riscIndex.title': 'Analyser som refererer til denne komponenten',
           'riscIndex.loading': 'Henter refererende analyser',
           'riscIndex.error': 'Kunne ikke hente refererende analyser',

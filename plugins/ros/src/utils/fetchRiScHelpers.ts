@@ -132,3 +132,17 @@ export function buildFetchRiScErrorMessages(
     })
     .join('\n');
 }
+
+export function getUnavailableRiScReasonKey(status: ContentStatus): string {
+  const keyMap: Partial<Record<ContentStatus, string>> = {
+    [ContentStatus.FileNotFound]: 'contentHeader.unavailableReasonFileNotFound',
+    [ContentStatus.NoReadAccess]: 'contentHeader.unavailableReasonNoReadAccess',
+    [ContentStatus.SchemaValidationFailed]:
+      'contentHeader.unavailableReasonSchemaValidationFailed',
+    [ContentStatus.Failure]: 'contentHeader.unavailableReasonFailure',
+    [ContentStatus.Deleted]: 'contentHeader.unavailableReasonDeleted',
+    [ContentStatus.UnsupportedMigration]:
+      'contentHeader.unavailableReasonUnsupportedMigration',
+  };
+  return keyMap[status] ?? 'contentHeader.unavailableReasonUnknown';
+}
