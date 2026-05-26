@@ -1,12 +1,7 @@
 import express from 'express';
 import request from 'supertest';
 import { ProcessingStatus } from '@internal/backstage-plugin-ros-common';
-import {
-  createRouter,
-  extractGcpToken,
-  extractGitHubToken,
-  errorHandler,
-} from '../router';
+import { createRouter, extractToken, errorHandler } from '../router';
 import { DomainError } from '../lib/errors';
 
 // ─── Mock Services ────────────────────────────────────────────────────────────
@@ -108,26 +103,26 @@ describe('router', () => {
   });
 
   describe('header extraction helpers', () => {
-    it('extractGcpToken returns token from header', () => {
+    it('extractToken returns token from header', () => {
       const req = { headers: { 'gcp-access-token': 'my-token' } } as any;
-      expect(extractGcpToken(req)).toBe('my-token');
+      expect(extractToken(req, 'gcp-access-token')).toBe('my-token');
     });
 
-    it('extractGcpToken returns undefined when missing', () => {
+    it('extractToken returns undefined when missing', () => {
       const req = { headers: {} } as any;
-      expect(extractGcpToken(req)).toBeUndefined();
+      expect(extractToken(req, 'gcp-access-token')).toBeUndefined();
     });
 
-    it('extractGitHubToken returns token from header', () => {
+    it('extractToken returns GitHub token from header', () => {
       const req = { headers: { 'github-access-token': 'gh-token' } } as any;
-      expect(extractGitHubToken(req)).toBe('gh-token');
+      expect(extractToken(req, 'github-access-token')).toBe('gh-token');
     });
 
-    it('extractGitHubToken handles array header values', () => {
+    it('extractToken handles array header values', () => {
       const req = {
         headers: { 'github-access-token': ['first', 'second'] },
       } as any;
-      expect(extractGitHubToken(req)).toBe('first');
+      expect(extractToken(req, 'github-access-token')).toBe('first');
     });
   });
 

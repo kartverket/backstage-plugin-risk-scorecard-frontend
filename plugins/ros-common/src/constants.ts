@@ -2,28 +2,18 @@
  * Schema versions supported by the RiSc backend.
  * Migration pipeline handles v3.2 → v5.2.
  */
-export enum RiScVersion {
-  V3_2 = '3.2',
-  V3_3 = '3.3',
-  V4_0 = '4.0',
-  V4_1 = '4.1',
-  V4_2 = '4.2',
-  V5_0 = '5.0',
-  V5_1 = '5.1',
-  V5_2 = '5.2',
-}
+export const RiScVersion = {
+  V3_2: '3.2',
+  V3_3: '3.3',
+  V4_0: '4.0',
+  V4_1: '4.1',
+  V4_2: '4.2',
+  V5_0: '5.0',
+  V5_1: '5.1',
+  V5_2: '5.2',
+} as const;
 
-/** All supported versions in order from oldest to newest. */
-export const ALL_RISC_VERSIONS: RiScVersion[] = [
-  RiScVersion.V3_2,
-  RiScVersion.V3_3,
-  RiScVersion.V4_0,
-  RiScVersion.V4_1,
-  RiScVersion.V4_2,
-  RiScVersion.V5_0,
-  RiScVersion.V5_1,
-  RiScVersion.V5_2,
-];
+export type RiScVersion = (typeof RiScVersion)[keyof typeof RiScVersion];
 
 /** The latest schema version used when creating new RiScs. */
 export const latestSupportedVersion = RiScVersion.V5_2;
