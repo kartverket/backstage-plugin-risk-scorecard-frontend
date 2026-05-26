@@ -9,19 +9,33 @@ import MUISelect from '@mui/material/Select';
 import styles from './RiScSelectionCard.module.css';
 
 export function RiScSelectionCard() {
-  const { riScs, lockedRiScs, selectedRiSc, selectedLockedRiSc, selectRiSc } =
-    useRiScs();
+  const {
+    riScs,
+    lockedRiScs,
+    systemRiScs,
+    selectedRiSc,
+    selectedLockedRiSc,
+    selectedSystemRiSc,
+    selectRiSc,
+  } = useRiScs();
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
   const hasOptions =
-    (riScs !== null && riScs.length !== 0) || lockedRiScs.length !== 0;
+    (riScs !== null && riScs.length !== 0) ||
+    systemRiScs.length !== 0 ||
+    lockedRiScs.length !== 0;
 
   return (
     <Flex direction="column" gap="24px">
       {hasOptions && (
         <FormControl fullWidth size="small">
           <MUISelect
-            value={selectedRiSc?.id ?? selectedLockedRiSc?.id ?? ''}
+            value={
+              selectedRiSc?.id ??
+              selectedSystemRiSc?.riScId ??
+              selectedLockedRiSc?.id ??
+              ''
+            }
             onChange={e => selectRiSc(e.target.value)}
             inputProps={{ 'aria-label': t('contentHeader.multipleRiScs') }}
             MenuProps={{ disablePortal: true }}
@@ -31,9 +45,25 @@ export function RiScSelectionCard() {
                 {riSc.content.title}
               </MenuItem>
             ))}
+            {systemRiScs.length > 0 && (
+              <ListSubheader
+                className={`${styles.sectionHeader} ${riScs && riScs.length > 0 ? styles.sectionHeaderWithDivider : ''}`}
+              >
+                {t('contentHeader.systemRiScsSection')}
+              </ListSubheader>
+            )}
+            {systemRiScs.map(riSc => (
+              <MenuItem key={riSc.riScId} value={riSc.riScId}>
+                {riSc.riScId}
+              </MenuItem>
+            ))}
             {lockedRiScs.length > 0 && (
               <ListSubheader
-                className={`${styles.lockedSectionHeader} ${riScs && riScs.length > 0 ? styles.lockedSectionHeaderWithDivider : ''}`}
+                className={`${styles.sectionHeader} ${
+                  (riScs && riScs.length > 0) || systemRiScs.length > 0
+                    ? styles.sectionHeaderWithDivider
+                    : ''
+                }`}
               >
                 {t('contentHeader.lockedRiScsSection')}
               </ListSubheader>

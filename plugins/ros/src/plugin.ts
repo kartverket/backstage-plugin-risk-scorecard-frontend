@@ -4,9 +4,11 @@ import {
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef, riScRouteRef, scenarioRouteRef } from './routes';
+import { riScFeatureFlags } from './utils/featureFlags';
 
 export const riScPlugin = createPlugin({
   id: 'riSc',
+  featureFlags: riScFeatureFlags,
   routes: {
     root: rootRouteRef,
     scenario: scenarioRouteRef,

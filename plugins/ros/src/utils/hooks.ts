@@ -11,23 +11,27 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { URLS } from '../urls';
 import {
   CreateRiScResultDTO,
+  DeleteRiScResultDTO,
   GcpCryptoKeyObject,
   ProcessRiScResultDTO,
+  profileInfoToDTOString,
   PublishRiScResultDTO,
   RiScContentResultDTO,
-  SopsConfigDTO,
-  profileInfoToDTOString,
   riScToDTOString,
-  DeleteRiScResultDTO,
+  SopsConfigDTO,
 } from './DTOs';
 import { latestSupportedVersion } from './constants';
 import {
   DefaultRiScTypeDescriptor,
   DifferenceDTO,
   GithubRepoInfo,
+  ProcessingStatus,
   RiSc,
   RiScWithMetadata,
+  SystemRiSc,
 } from './types';
+import { stringifyEntityRef } from '@backstage/catalog-model';
+import { useSystemRiScsFeatureFlag } from './featureFlags';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -41,13 +45,57 @@ export function useGithubRepositoryInformation(): GithubRepoInfo {
   };
 }
 
+/**
+ * Backstage has a bug where multiple tabs using the GitHub access token can each
+ * fetch a new token and invalidate tokens cached in older tabs. To mitigate this
+ * we patch an internal refresh predicate so a token verified as invalid can be
+ * refreshed before retrying the request.
+ */
+let invalidGitHubAccessToken = '';
+function patchGithubApiToEnableForcedRefresh<T>(
+  gitHubApi: T,
+  isDevelopment: boolean,
+): T {
+  const sessionManager = (gitHubApi as any)?.sessionManager;
+  if (!sessionManager?.originalSessionShouldRefreshFunc) {
+    if (typeof sessionManager?.sessionShouldRefreshFunc === 'function') {
+      sessionManager.originalSessionShouldRefreshFunc =
+        sessionManager.sessionShouldRefreshFunc;
+      sessionManager.sessionShouldRefreshFunc =
+        function sessionShouldRefreshFuncOverride(session: any) {
+          const accessToken = session?.providerInfo?.accessToken;
+          if (isDevelopment && invalidGitHubAccessToken && !accessToken) {
+            throw new Error(
+              'The expected location of the accessToken was empty. This workaround is no longer working',
+            );
+          }
+          if (accessToken === invalidGitHubAccessToken) {
+            invalidGitHubAccessToken = '';
+            return true;
+          }
+          return sessionManager.originalSessionShouldRefreshFunc(session);
+        };
+    } else if (isDevelopment) {
+      throw new Error(
+        'The expected function "sessionShouldRefreshFunc" does not exist. This workaround is no longer working',
+      );
+    }
+  }
+
+  return gitHubApi;
+}
+
 export function useAuthenticatedFetch() {
+  const configApi = useApi(configApiRef);
   const repoInformation = useGithubRepositoryInformation();
   const googleApi = useApi(googleAuthApiRef);
-  const gitHubApi = useApi(githubAuthApiRef);
+  const gitHubApi = patchGithubApiToEnableForcedRefresh(
+    useApi(githubAuthApiRef),
+    isDevelopment(),
+  );
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
-  const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
+  const backendUrl = configApi.getString('backend.baseUrl');
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
 
   const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
@@ -73,59 +121,73 @@ export function useAuthenticatedFetch() {
     return `${riScUri}/publish/${id}`;
   }
 
-  const configApi = useApi(configApiRef);
-
   function isDevelopment() {
     return configApi.getString('auth.environment') === 'development';
   }
 
-  function fullyAuthenticatedFetch<T, K>(
+  async function fullyAuthenticatedFetch<T, K>(
     uri: string,
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     onSuccess: (response: T) => void,
     onError: (error: K, rejectedLogin: boolean) => void,
     body?: string,
   ) {
-    Promise.all([
-      identityApi.getCredentials(),
-      googleApi.getAccessToken([
-        URLS.external.www_googleapis_com__cloudkms,
-        URLS.external.www_googleapis_com__cloud_platform,
-        URLS.external.www_googleapis_com__cloudplatformprojects_readonly,
-      ]),
-      gitHubApi.getAccessToken(['repo']),
-    ])
-      .then(([idToken, googleAccessToken, gitHubAccessToken]) => {
-        fetch(uri, {
-          method: method,
-          headers: {
-            Authorization: `Bearer ${idToken.token}`,
-            'GCP-Access-Token': googleAccessToken,
-            'GitHub-Access-Token': gitHubAccessToken,
-            'Content-Type': 'application/json',
-          },
-          body: body,
-        }).then(res => {
-          if (!res.ok) {
-            return res
-              .json()
-              .then(json => json as K)
-              .then(typedJson => onError(typedJson, false))
-              .catch(error => onError(error, false));
-          }
-          return res
-            .json()
-            .then(json => json as T)
-            .then(typedJson => onSuccess(typedJson));
-        });
-      })
-      .catch(error => {
-        if (error.name === 'RejectedError') {
-          onError(error, true);
-        } else {
-          onError(error, false);
-        }
+    try {
+      const [idToken, googleAccessToken, gitHubAccessToken] = await Promise.all(
+        [
+          identityApi.getCredentials(),
+          googleApi.getAccessToken([
+            URLS.external.www_googleapis_com__cloudkms,
+            URLS.external.www_googleapis_com__cloud_platform,
+            URLS.external.www_googleapis_com__cloudplatformprojects_readonly,
+          ]),
+          gitHubApi.getAccessToken(['repo']),
+        ],
+      );
+      const headers = {
+        Authorization: `Bearer ${idToken.token}`,
+        'GCP-Access-Token': googleAccessToken,
+        'GitHub-Access-Token': gitHubAccessToken,
+        'Content-Type': 'application/json',
+      };
+      let res = await fetch(uri, {
+        method: method,
+        headers,
+        body: body,
       });
+
+      let json = await res.json();
+
+      if (
+        res.status === 401 &&
+        (json as ProcessRiScResultDTO)?.status ===
+          ProcessingStatus.InvalidGitHubAccessToken
+      ) {
+        invalidGitHubAccessToken = headers['GitHub-Access-Token'];
+        headers['GitHub-Access-Token'] = await gitHubApi.getAccessToken([
+          'repo',
+        ]);
+        res = await fetch(uri, {
+          method: method,
+          headers: headers,
+          body: body,
+        });
+        json = await res.json();
+      }
+
+      if (!res.ok) {
+        return onError(json as K, false);
+      }
+
+      return onSuccess(json as T);
+    } catch (error: any) {
+      if (error.name === 'RejectedError') {
+        onError(error, true);
+      } else {
+        onError(error, false);
+      }
+      return Promise.resolve(null);
+    }
   }
 
   function googleAuthenticatedFetch<T, K>(
@@ -297,7 +359,7 @@ export function useAuthenticatedFetch() {
     onSuccess?: (response: ProcessRiScResultDTO | PublishRiScResultDTO) => void,
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
-    identityApi.getProfileInfo().then(profile =>
+    return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<
         ProcessRiScResultDTO | PublishRiScResultDTO,
         ProcessRiScResultDTO
@@ -373,6 +435,99 @@ export const useDebouncedValue = <T>(value: T, delay = 500) => {
 
   return debouncedValue;
 };
+
+type RiScIndexState = {
+  riScs: SystemRiSc[];
+  isFetching: boolean;
+  error: Error | undefined;
+};
+
+export function useSystemRiScsForCurrentEntity(): RiScIndexState {
+  const isSystemRiScsEnabled = useSystemRiScsFeatureFlag();
+  const { entity } = useEntity();
+  const identityApi = useApi(identityApiRef);
+  const { fetch } = useApi(fetchApiRef);
+  const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
+  const entityRef = stringifyEntityRef(entity);
+
+  const [state, setState] = useState<RiScIndexState>({
+    riScs: [],
+    isFetching: isSystemRiScsEnabled,
+    error: undefined,
+  });
+
+  useEffect(() => {
+    if (!isSystemRiScsEnabled) {
+      setState({
+        riScs: [],
+        isFetching: false,
+        error: undefined,
+      });
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    setState(previous => ({
+      ...previous,
+      isFetching: true,
+      error: undefined,
+    }));
+
+    identityApi
+      .getCredentials()
+      .then(credentials => {
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
+
+        if (credentials.token) {
+          headers.Authorization = `Bearer ${credentials.token}`;
+        }
+
+        return fetch(
+          `${backendUrl}/api/risk-scorecard/riscs?entityRef=${encodeURIComponent(
+            entityRef,
+          )}`,
+          {
+            method: 'GET',
+            headers,
+          },
+        );
+      })
+      .then(async response => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch RiSc index: ${response.status}`);
+        }
+
+        const responseBody = (await response.json()) as SystemRiSc[];
+        const systemRiScs = responseBody.filter(x => x.appliesTo.length > 1);
+
+        if (!cancelled) {
+          setState({
+            riScs: systemRiScs,
+            isFetching: false,
+            error: undefined,
+          });
+        }
+      })
+      .catch(error => {
+        if (!cancelled) {
+          setState({
+            riScs: [],
+            isFetching: false,
+            error: error instanceof Error ? error : new Error(String(error)),
+          });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [backendUrl, entityRef, fetch, identityApi, isSystemRiScsEnabled]);
+
+  return state;
+}
 
 export function useDebounce<T>(
   value: T,

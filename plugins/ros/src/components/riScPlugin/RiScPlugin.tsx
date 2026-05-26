@@ -54,12 +54,14 @@ export function RiScPlugin() {
     approveRiSc,
     selectedRiSc,
     selectedLockedRiSc,
+    selectedSystemRiSc,
     isFetching,
     resetResponse,
     resetRiScStatus,
     response,
     updateStatus,
     riScs,
+    systemRiScs,
     failedToFetchGcpCryptoKeys,
     allRiScsFailedDecryption,
   } = useRiScs();
@@ -96,19 +98,30 @@ export function RiScPlugin() {
             riScs !== null &&
             riScs.length === 0 &&
             !selectedRiSc &&
+            !selectedSystemRiSc &&
             !selectedLockedRiSc &&
             !allRiScsFailedDecryption && (
               <Flex
+                direction="column"
+                gap="24px"
                 justify="center"
                 align="center"
                 className={riscStyles.componentLayout}
               >
+                {/* TODO: Fjern hardkodet tekst og finn bedre oppførsel når det kun finnes system-RoS (Oppgave laget i notion) */}
+                {systemRiScs.length > 0 && (
+                  <>
+                    <RiScSelectionCard />
+                    <span>System-RoS kan velges i dropdown</span>
+                  </>
+                )}
                 <FirstRiScDialog onNewRiSc={openCreateRiScDialog} />
               </Flex>
             )}
           {/* Added isFetching condition to avoid showing error state when user e.g., adds new scorecard. */}
           {!isFetching &&
             !selectedRiSc &&
+            !selectedSystemRiSc &&
             !selectedLockedRiSc &&
             (failedToFetchGcpCryptoKeys || allRiScsFailedDecryption) && (
               <Flex
@@ -120,6 +133,17 @@ export function RiScPlugin() {
               </Flex>
             )}
           {isFetching && <Spinner size={80} />}
+
+          {selectedSystemRiSc && (
+            <Flex
+              justify="center"
+              align="center"
+              className={riscStyles.componentLayout}
+            >
+              {/* System RiScs redirect through their first appliesTo entity and render there as regular or locked RiScs. */}
+              <Spinner size={80} />
+            </Flex>
+          )}
 
           {selectedLockedRiSc && (
             <>

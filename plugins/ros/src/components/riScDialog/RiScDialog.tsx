@@ -72,6 +72,7 @@ export function RiScDialog({
     watch,
     formState: { errors },
     setValue,
+    control,
   } = useForm<RiScWithMetadata>({
     defaultValues:
       dialogState === RiScDialogStates.EditRiscInfo ||
@@ -200,6 +201,7 @@ export function RiScDialog({
             errors={errors}
             setValue={setValue}
             watch={watch}
+            control={control}
           />
         )}
         {activeStep === 2 && (
@@ -275,6 +277,7 @@ export function RiScDialog({
           errors={errors}
           setValue={setValue}
           watch={watch}
+          control={control}
         />
         <Flex justify="between" pt="16px">
           <Button

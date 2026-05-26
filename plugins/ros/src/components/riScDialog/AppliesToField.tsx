@@ -1,0 +1,238 @@
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { RELATION_PART_OF, stringifyEntityRef } from '@backstage/catalog-model';
+import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
+import { Alert } from '@backstage/ui';
+import Autocomplete from '@mui/material/Autocomplete';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormLabel from '@mui/material/FormLabel';
+import TextField from '@mui/material/TextField';
+import { useEffect, useState } from 'react';
+import { Control, useController } from 'react-hook-form';
+import { pluginRiScTranslationRef } from '../../utils/translations';
+import { RiScWithMetadata } from '../../utils/types';
+import formStyles from '../common/formStyles.module.css';
+import { entityRefOptionFields, getCurrentSystemRef } from './entityRefOptions';
+
+const backstageAppliesToPrefix = 'backstage:';
+
+type AppliesToFieldProps = {
+  control: Control<RiScWithMetadata>;
+};
+
+export function AppliesToField({ control }: AppliesToFieldProps) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const catalogApi = useApi(catalogApiRef);
+  const configApi = useApi(configApiRef);
+  const includeAllEntities =
+    configApi.getOptionalBoolean(
+      'riskScorecard.appliesTo.includeAllEntities',
+    ) ?? false;
+  const [catalogEntityRefs, setCatalogEntityRefs] = useState<string[]>([]);
+  const [isLoadingOptions, setIsLoadingOptions] = useState(false);
+  const { field, fieldState } = useController({
+    control,
+    name: 'content.unencryptedMetadata.appliesTo',
+  });
+  const { entity } = useEntity();
+  const currentEntityRef = stringifyEntityRef(entity);
+  const currentPrefixedEntityRef = backstageAppliesToPrefix + currentEntityRef;
+  // Ensure that it always looks as if currentRef is saved, but we only save it if at least two refs are selected
+  const selectedEntityRefs = field.value ?? [currentPrefixedEntityRef];
+  const isMissingCurrentEntityRef = getIsMissingCurrentEntityRef(
+    selectedEntityRefs,
+    currentPrefixedEntityRef,
+  );
+  // Avoid missing-entity warnings until catalog refs have loaded. On an entity
+  // page, a successful fetch should at least contain the current entity.
+  const missingEntityRefs =
+    catalogEntityRefs.length > 0
+      ? getMissingEntityRefs(
+          selectedEntityRefs.filter(ref => ref !== currentPrefixedEntityRef),
+          catalogEntityRefs,
+        )
+      : [];
+
+  useEffect(() => {
+    let cancelled = false;
+    const currentSystemRef = getCurrentSystemRef(entity);
+    setIsLoadingOptions(true);
+    setCatalogEntityRefs([]);
+
+    const sameSystemEntitiesPromise = currentSystemRef
+      ? catalogApi
+          .getEntities({
+            fields: entityRefOptionFields,
+            filter: {
+              [`relations.${RELATION_PART_OF}`]: currentSystemRef,
+            },
+          })
+          .catch(() => ({ items: [] }))
+      : Promise.resolve({ items: [] });
+
+    Promise.all([
+      sameSystemEntitiesPromise,
+      includeAllEntities
+        ? catalogApi.getEntities({
+            fields: entityRefOptionFields,
+          })
+        : Promise.resolve({ items: [] }),
+    ])
+      .then(([sameSystemEntitiesResponse, allEntitiesResponse]) => {
+        if (cancelled) {
+          return;
+        }
+
+        setCatalogEntityRefs(
+          Array.from(
+            new Set(
+              [
+                ...sameSystemEntitiesResponse.items,
+                ...allEntitiesResponse.items,
+              ].map(
+                optionEntity =>
+                  backstageAppliesToPrefix + stringifyEntityRef(optionEntity),
+              ),
+            ),
+          ),
+        );
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setCatalogEntityRefs([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingOptions(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [catalogApi, entity, includeAllEntities]);
+
+  function handleChange(_: unknown, value: string[]) {
+    field.onChange(
+      ensureNullOrCurrentEntityRefAsHead(value, currentPrefixedEntityRef),
+    );
+  }
+
+  return (
+    <FormControl className={formStyles.formControl}>
+      <FormLabel className={formStyles.formLabel}>
+        {t('rosDialog.appliesTo')}
+      </FormLabel>
+      <FormHelperText className={formStyles.formHelperText}>
+        {t('rosDialog.appliesToDescription')}
+      </FormHelperText>
+      <Autocomplete<string, true, false, false>
+        multiple
+        disablePortal
+        filterSelectedOptions
+        loading={isLoadingOptions}
+        options={catalogEntityRefs}
+        value={selectedEntityRefs}
+        getOptionLabel={formatBackstageAppliesTo}
+        isOptionEqualToValue={(option, value) => option === value}
+        onChange={handleChange}
+        renderValue={(value, getItemProps) =>
+          value.map((prefixedEntityRef, index) => {
+            const tagProps = getItemProps({ index });
+            const { key, onDelete, ...restTagProps } = tagProps;
+            const isCurrentEntity =
+              prefixedEntityRef === currentPrefixedEntityRef;
+
+            return (
+              <Chip
+                key={key}
+                label={formatBackstageAppliesTo(prefixedEntityRef)}
+                color={isCurrentEntity ? 'primary' : 'default'}
+                variant={isCurrentEntity ? 'filled' : 'outlined'}
+                onDelete={isCurrentEntity ? undefined : onDelete}
+                {...restTagProps}
+              />
+            );
+          })
+        }
+        renderInput={params => (
+          <TextField
+            {...params}
+            placeholder={t('rosDialog.appliesToPlaceholder')}
+          />
+        )}
+        loadingText={t('rosDialog.appliesToLoading')}
+        noOptionsText={t('rosDialog.appliesToNoOptions')}
+      />
+      {selectedEntityRefs.length > 1 && (
+        <FormHelperText>{t('rosDialog.appliesToSystemRosHint')}</FormHelperText>
+      )}
+      {fieldState.isDirty && (
+        <Alert
+          status="info"
+          icon
+          description={t('rosDialog.appliesToNightlyRefreshHint')}
+        />
+      )}
+      {isMissingCurrentEntityRef && (
+        <Alert
+          status="warning"
+          icon
+          description={t('rosDialog.appliesToMissingCurrentEntity', {
+            entityRef: currentEntityRef,
+          })}
+        />
+      )}
+      {missingEntityRefs.length > 0 && (
+        <Alert
+          status="warning"
+          icon
+          description={t('rosDialog.appliesToMissingEntities', {
+            entityRefs: missingEntityRefs
+              .map(formatBackstageAppliesTo)
+              .join(', '),
+          })}
+        />
+      )}
+    </FormControl>
+  );
+}
+
+function ensureNullOrCurrentEntityRefAsHead(
+  entityRefs: string[],
+  currentEntityRef: string,
+): string[] | null {
+  const currentValue = [
+    currentEntityRef,
+    ...new Set(entityRefs.filter(it => it !== currentEntityRef)),
+  ];
+  if (currentValue.length === 1) {
+    // React Hook Form does not support undefined field values; DTO serialization normalizes null by omitting appliesTo.
+    return null;
+  }
+
+  return currentValue;
+}
+
+function formatBackstageAppliesTo(appliesTo: string): string {
+  return appliesTo.startsWith(backstageAppliesToPrefix)
+    ? appliesTo.slice(backstageAppliesToPrefix.length)
+    : appliesTo;
+}
+
+function getIsMissingCurrentEntityRef(
+  entityRefs: string[],
+  currentEntityRef: string,
+): boolean {
+  return entityRefs.length > 0 && !entityRefs.includes(currentEntityRef);
+}
+
+function getMissingEntityRefs(
+  entityRefs: string[],
+  catalogEntityRefs: string[],
+): string[] {
+  return entityRefs.filter(entityRef => !catalogEntityRefs.includes(entityRef));
+}

@@ -1,5 +1,6 @@
 import {
   configApiRef,
+  featureFlagsApiRef,
   fetchApiRef,
   githubAuthApiRef,
   googleAuthApiRef,
@@ -7,10 +8,14 @@ import {
 } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { act } from 'react';
 import { SopsConfigDTO } from './DTOs';
-import { useAuthenticatedFetch, useGithubRepositoryInformation } from './hooks';
+import {
+  useAuthenticatedFetch,
+  useGithubRepositoryInformation,
+  useSystemRiScsForCurrentEntity,
+} from './hooks';
 import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
@@ -44,13 +49,27 @@ describe('useGithubRepositoryInformation', () => {
 
 describe('useAuthenticatedFetch', () => {
   const mockGoogleApi = { getAccessToken: jest.fn() };
-  const mockGithubApi = { getAccessToken: jest.fn() };
+  const mockGithubSessionShouldRefreshFunc = jest.fn(_ => false);
+  const mockGithubApi = {
+    getAccessToken: jest.fn(),
+    sessionManager: {
+      currentSession: {
+        providerInfo: {
+          accessToken: MOCK_GITHUB_TOKEN,
+        },
+      },
+      sessionShouldRefreshFunc: mockGithubSessionShouldRefreshFunc,
+    },
+  };
   const mockIdentityApi = {
     getCredentials: jest.fn(),
     getProfileInfo: jest.fn(),
   };
   const mockFetchApi = {
     fetch: jest.fn(),
+  };
+  const mockFeatureFlagsApi = {
+    isActive: jest.fn(),
   };
 
   const mockConfigApi = {
@@ -69,6 +88,7 @@ describe('useAuthenticatedFetch', () => {
         [identityApiRef, mockIdentityApi],
         [fetchApiRef, mockFetchApi],
         [configApiRef, mockConfigApi],
+        [featureFlagsApiRef, mockFeatureFlagsApi],
       ]}
     >
       {children}
@@ -347,6 +367,94 @@ describe('useAuthenticatedFetch', () => {
         false,
       );
       expect(onSuccess).not.toHaveBeenCalled();
+    });
+
+    it('retries once with a forced GitHub auth refresh when a write returns an access-token validation failure', async () => {
+      const githubAccessTokenCallCount =
+        mockGithubApi.getAccessToken.mock.calls.length;
+      const fetchCallCount = mockFetchApi.fetch.mock.calls.length;
+      mockGithubSessionShouldRefreshFunc.mockClear();
+      mockGithubApi.sessionManager.currentSession = {
+        providerInfo: {
+          accessToken: MOCK_GITHUB_TOKEN,
+        },
+      };
+
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockImplementation(async () => {
+        const session = mockGithubApi.sessionManager.currentSession;
+        if (mockGithubApi.sessionManager.sessionShouldRefreshFunc(session)) {
+          mockGithubApi.sessionManager.currentSession = {
+            providerInfo: {
+              accessToken: '<fresh-github-token>',
+            },
+          };
+        }
+        return mockGithubApi.sessionManager.currentSession.providerInfo
+          .accessToken;
+      });
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
+      mockIdentityApi.getProfileInfo.mockResolvedValue({
+        email: 'email',
+        displayName: 'name',
+      });
+      mockFetchApi.fetch
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 401,
+          json: async () => ({ status: 'InvalidGitHubAccessToken' }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ ID: '1' }),
+        });
+
+      const { result } = renderHook(() => useAuthenticatedFetch(), {
+        wrapper,
+      });
+
+      const onSuccess = jest.fn();
+      const onError = jest.fn();
+
+      const riScWithMetaData = {
+        id: '1',
+        content: {
+          ID: '1',
+          scenarios: [
+            {
+              ID: '1',
+              name: 'test',
+              actions: [{ ID: '1' } as Partial<Action>],
+            } as Partial<Scenario>,
+          ],
+        } as Partial<RiSc> as RiSc,
+      } as Partial<RiScWithMetadata> as RiScWithMetadata;
+
+      await act(async () => {
+        await result.current.putRiScs(riScWithMetaData, onSuccess, onError);
+      });
+
+      const githubAccessTokenCalls =
+        mockGithubApi.getAccessToken.mock.calls.slice(
+          githubAccessTokenCallCount,
+        );
+      expect(githubAccessTokenCalls).toEqual([[['repo']], [['repo']]]);
+      expect(mockGithubSessionShouldRefreshFunc).toHaveBeenCalledTimes(1);
+
+      const fetchCalls = mockFetchApi.fetch.mock.calls.slice(fetchCallCount);
+      expect(fetchCalls).toHaveLength(2);
+
+      const [, retryOptions] = fetchCalls[1];
+      expect(retryOptions.headers).toEqual(
+        expect.objectContaining({
+          'GitHub-Access-Token': '<fresh-github-token>',
+        }),
+      );
+      expect(onSuccess).toHaveBeenCalledWith({ ID: '1' });
+      expect(onError).not.toHaveBeenCalled();
+      mockFetchApi.fetch.mock.calls.splice(fetchCallCount);
     });
   });
 
@@ -924,6 +1032,128 @@ describe('useAuthenticatedFetch', () => {
 
       expect(onError).toHaveBeenCalled();
       expect(onSuccess).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('useSystemRiScsForCurrentEntity', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockConfigApi.getString.mockImplementation(key => {
+        if (key === 'backend.baseUrl') return 'http://localhost:7000';
+        if (key === 'auth.environment') return 'development';
+        return '';
+      });
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
+      mockFeatureFlagsApi.isActive.mockReturnValue(true);
+      (useEntity as jest.Mock).mockReturnValue({
+        entity: {
+          kind: 'Component',
+          metadata: {
+            name: 'kv-ros-test-6',
+            namespace: 'default',
+          },
+        },
+      });
+    });
+
+    it('fetches system RiScs for the current entity ref', async () => {
+      mockFetchApi.fetch.mockResolvedValue({
+        ok: true,
+        json: async () => [
+          {
+            sourceFilePath:
+              'https://github.com/org/repo-6/.security/risc/risc-1.risc.yaml',
+            riScId: 'risc-1',
+            appliesTo: ['component:default/kv-ros-test-6'],
+            lastSavedAt: '2026-05-02T08:30:00Z',
+          },
+          {
+            sourceFilePath:
+              'https://github.com/org/repo-4/.security/risc/risc-7ssVK.risc.yaml',
+            riScId: 'risc-7ssVK',
+            appliesTo: [
+              'component:default/kv-ros-test-4',
+              'component:default/kv-ros-test-6',
+            ],
+            lastSavedAt: '2026-05-01T08:30:00Z',
+          },
+        ],
+      });
+
+      const { result } = renderHook(() => useSystemRiScsForCurrentEntity(), {
+        wrapper,
+      });
+
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
+
+      expect(mockFetchApi.fetch).toHaveBeenCalledWith(
+        'http://localhost:7000/api/risk-scorecard/riscs?entityRef=component%3Adefault%2Fkv-ros-test-6',
+        expect.objectContaining({
+          method: 'GET',
+          headers: expect.objectContaining({
+            Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+          }),
+        }),
+      );
+      expect(result.current.riScs).toEqual([
+        {
+          sourceFilePath:
+            'https://github.com/org/repo-4/.security/risc/risc-7ssVK.risc.yaml',
+          riScId: 'risc-7ssVK',
+          appliesTo: [
+            'component:default/kv-ros-test-4',
+            'component:default/kv-ros-test-6',
+          ],
+          lastSavedAt: '2026-05-01T08:30:00Z',
+        },
+      ]);
+      expect(result.current.error).toBeUndefined();
+    });
+
+    it('does not fetch system RiScs when the feature flag is disabled', () => {
+      mockFeatureFlagsApi.isActive.mockReturnValue(false);
+
+      const { result } = renderHook(() => useSystemRiScsForCurrentEntity(), {
+        wrapper,
+      });
+
+      expect(mockFeatureFlagsApi.isActive).toHaveBeenCalledWith('system-riscs');
+      expect(result.current).toEqual({
+        riScs: [],
+        isFetching: false,
+        error: undefined,
+      });
+      expect(mockIdentityApi.getCredentials).not.toHaveBeenCalled();
+      expect(mockFetchApi.fetch).not.toHaveBeenCalled();
+    });
+
+    it('fetches system RiScs for non-component entities', async () => {
+      (useEntity as jest.Mock).mockReturnValue({
+        entity: {
+          kind: 'System',
+          metadata: {
+            name: 'kv-ros-tests',
+            namespace: 'default',
+          },
+        },
+      });
+      mockFetchApi.fetch.mockResolvedValue({
+        ok: true,
+        json: async () => [],
+      });
+
+      const { result } = renderHook(() => useSystemRiScsForCurrentEntity(), {
+        wrapper,
+      });
+
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
+
+      expect(mockFetchApi.fetch).toHaveBeenCalledWith(
+        'http://localhost:7000/api/risk-scorecard/riscs?entityRef=system%3Adefault%2Fkv-ros-tests',
+        expect.anything(),
+      );
     });
   });
 });

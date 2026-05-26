@@ -1,0 +1,56 @@
+import {
+  coreServices,
+  createBackendPlugin,
+} from '@backstage/backend-plugin-api';
+import { CatalogClient } from '@backstage/catalog-client';
+import { RiScIndexScheduledRefresh } from './service/riscIndexScheduledRefresh';
+import { DatabaseRiScIndexStore } from './service/riscIndexStore';
+import { createRouter } from './service/router';
+
+export const riskScorecardBackendPlugin = createBackendPlugin({
+  pluginId: 'risk-scorecard',
+  register(env) {
+    env.registerInit({
+      deps: {
+        logger: coreServices.logger,
+        httpRouter: coreServices.httpRouter,
+        discovery: coreServices.discovery,
+        auth: coreServices.auth,
+        httpAuth: coreServices.httpAuth,
+        config: coreServices.rootConfig,
+        scheduler: coreServices.scheduler,
+        database: coreServices.database,
+        rootLifecycle: coreServices.rootLifecycle,
+      },
+      async init({
+        logger,
+        httpRouter,
+        discovery,
+        auth,
+        httpAuth,
+        config,
+        scheduler,
+        database,
+        rootLifecycle,
+      }) {
+        const catalogClient = new CatalogClient({
+          discoveryApi: discovery,
+        });
+        const riScIndexStore = new DatabaseRiScIndexStore(database);
+        const refresher = new RiScIndexScheduledRefresh({
+          logger,
+          discovery,
+          auth,
+          config,
+          scheduler,
+          riScIndexStore,
+        });
+
+        httpRouter.use(
+          await createRouter({ catalogClient, auth, httpAuth, riScIndexStore }),
+        );
+        rootLifecycle.addStartupHook(() => refresher.start(), { logger });
+      },
+    });
+  },
+});
