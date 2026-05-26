@@ -27,14 +27,20 @@ import {
   type MigrationChangedValue,
   type MigrationChangedTypedValue,
   type LastPublished,
-  Vulnerability3X,
+  type Vulnerability3X,
   Vulnerability,
-  ActionStatus3X4X,
+  type ActionStatus3X4X,
   ActionStatus,
+  type RiScDocument,
+  type RiSc3X,
+  type RiSc4X,
+  type RiSc5X,
+  type RiSc3XScenario,
+  type RiSc4XScenario,
+  type RiSc5XScenario,
 } from '@internal/backstage-plugin-ros-common';
 import {
   RiScVersion,
-  ALL_RISC_VERSIONS,
   latestSupportedVersion,
 } from '@internal/backstage-plugin-ros-common';
 
@@ -49,15 +55,17 @@ import schemaV5_0 from '../schemas/risc_schema_en_v5_0.json';
 import schemaV5_1 from '../schemas/risc_schema_en_v5_1.json';
 import schemaV5_2 from '../schemas/risc_schema_en_v5_2.json';
 
-const SCHEMAS: Record<string, object> = {
-  '3.2': schemaV3_2,
-  '3.3': schemaV3_3,
-  '4.0': schemaV4_0,
-  '4.1': schemaV4_1,
-  '4.2': schemaV4_2,
-  '5.0': schemaV5_0,
-  '5.1': schemaV5_1,
-  '5.2': schemaV5_2,
+type JsonSchemaObject = Record<string, unknown>;
+
+const SCHEMAS: Record<RiScVersion, JsonSchemaObject> = {
+  [RiScVersion.V3_2]: schemaV3_2,
+  [RiScVersion.V3_3]: schemaV3_3,
+  [RiScVersion.V4_0]: schemaV4_0,
+  [RiScVersion.V4_1]: schemaV4_1,
+  [RiScVersion.V4_2]: schemaV4_2,
+  [RiScVersion.V5_0]: schemaV5_0,
+  [RiScVersion.V5_1]: schemaV5_1,
+  [RiScVersion.V5_2]: schemaV5_2,
 };
 
 // ─── AJV Setup ─────────────────────────────────────────────────────────────────
@@ -65,21 +73,28 @@ const SCHEMAS: Record<string, object> = {
 const ajv = new Ajv2020({ allErrors: true, strict: false });
 addFormats(ajv);
 
-// Pre-compile all schema validators (strip $id to avoid conflicts between versions)
-const validators: Record<string, ReturnType<typeof ajv.compile>> = {};
-for (const [version, schema] of Object.entries(SCHEMAS)) {
-  const {
-    $id: _id,
-    $schema: _schema,
-    ...rest
-  } = schema as Record<string, unknown>;
-  validators[version] = ajv.compile(rest);
+function compileSchemaForVersion(
+  version: RiScVersion,
+): ReturnType<typeof ajv.compile> {
+  // Pre-compile all schema validators (strip $id to avoid conflicts between versions)
+  const { $id: _id, $schema: _schema, ...rest } = SCHEMAS[version];
+  return ajv.compile(rest);
 }
+
+const validators: Record<RiScVersion, ReturnType<typeof ajv.compile>> = {
+  [RiScVersion.V3_2]: compileSchemaForVersion(RiScVersion.V3_2),
+  [RiScVersion.V3_3]: compileSchemaForVersion(RiScVersion.V3_3),
+  [RiScVersion.V4_0]: compileSchemaForVersion(RiScVersion.V4_0),
+  [RiScVersion.V4_1]: compileSchemaForVersion(RiScVersion.V4_1),
+  [RiScVersion.V4_2]: compileSchemaForVersion(RiScVersion.V4_2),
+  [RiScVersion.V5_0]: compileSchemaForVersion(RiScVersion.V5_0),
+  [RiScVersion.V5_1]: compileSchemaForVersion(RiScVersion.V5_1),
+  [RiScVersion.V5_2]: compileSchemaForVersion(RiScVersion.V5_2),
+};
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
-/** Raw JSON document — we operate on untyped objects for migration flexibility. */
-export type RiScJson = Record<string, unknown>;
+type UnvalidatedRiScJson = Record<string, unknown>;
 
 export interface ValidationResult {
   valid: boolean;
@@ -92,32 +107,46 @@ export interface ValidationResult {
 /**
  * Parse content that may be JSON or YAML into a JavaScript object.
  */
-export function parseContent(content: string): RiScJson {
+function parseRawContent(content: string): UnvalidatedRiScJson {
   // Try JSON first
   const trimmed = content.trim();
   if (trimmed.startsWith('{')) {
     try {
-      return JSON.parse(trimmed) as RiScJson;
+      const parsed = JSON.parse(trimmed);
+      if (isRiScJson(parsed)) {
+        return parsed;
+      }
     } catch {
       // Fall through to YAML
     }
   }
+
   // Try YAML
   const result = yaml.parse(content);
-  if (typeof result !== 'object' || result === null) {
-    throw new Error('Content is neither valid JSON nor valid YAML');
+  if (isRiScJson(result)) {
+    return result;
   }
-  return result as RiScJson;
+  throw new Error('Content is neither valid JSON nor valid YAML');
+}
+
+/**
+ * Parse content that may be JSON or YAML into a verified RiSc document.
+ */
+export function parseContent(content: string): RiScDocument {
+  const doc = parseRawContent(content);
+  assertValidRiScDocument(doc);
+  return doc;
 }
 
 /**
  * Detect the schema version of a parsed RiSc document.
  */
-export function detectVersion(doc: RiScJson): RiScVersion | null {
-  const version = doc.schemaVersion;
-  if (typeof version !== 'string') return null;
-  const found = ALL_RISC_VERSIONS.find(v => v === version);
-  return found ?? null;
+export function getVersion(version: unknown): RiScVersion {
+  const found = findVersion(version);
+  if (!found) {
+    throw new Error(`Version '${String(version)}' is not known`);
+  }
+  return found;
 }
 
 /**
@@ -125,56 +154,103 @@ export function detectVersion(doc: RiScJson): RiScVersion | null {
  * Returns validation result with details.
  */
 export function validate(content: string, version?: string): ValidationResult {
-  let doc: RiScJson;
+  let doc: UnvalidatedRiScJson;
   try {
-    doc = parseContent(content);
-  } catch {
-    return { valid: false, errors: ['Content is neither valid JSON nor YAML'] };
-  }
-
-  if (version) {
-    const validator = validators[version];
-    if (!validator) {
-      return { valid: false, errors: [`No schema for version ${version}`] };
-    }
-    const valid = validator(doc);
+    doc = parseRawContent(content);
+  } catch (error) {
     return {
-      valid: !!valid,
-      version,
-      errors: valid
-        ? undefined
-        : (validator.errors?.map(e => `${e.instancePath} ${e.message}`) ?? []),
+      valid: false,
+      errors: [error instanceof Error ? error.message : 'Invalid content'],
     };
   }
 
-  // Try all versions, return first valid
-  for (const v of ALL_RISC_VERSIONS) {
-    const validator = validators[v];
-    if (validator && validator(doc)) {
-      return { valid: true, version: v };
-    }
+  return validateParsedDoc(doc, version);
+}
+
+function validateParsedDoc(
+  doc: UnvalidatedRiScJson,
+  version?: string,
+): ValidationResult {
+  const documentVersion =
+    typeof doc.schemaVersion === 'string' ? doc.schemaVersion : null;
+  const requestedVersion = version ?? documentVersion;
+
+  if (!requestedVersion) {
+    return { valid: false, errors: ['Missing schema version'] };
+  }
+
+  const schemaVersion = findVersion(requestedVersion);
+  if (!schemaVersion) {
+    return {
+      valid: false,
+      errors: [`No schema for version ${requestedVersion}`],
+    };
+  }
+
+  if (documentVersion !== schemaVersion) {
+    return {
+      valid: false,
+      version: schemaVersion,
+      errors: [
+        `Document schemaVersion ${String(documentVersion)} does not match schema ${schemaVersion}`,
+      ],
+    };
+  }
+
+  const validator = validators[schemaVersion];
+  if (!validator) {
+    return { valid: false, errors: [`No schema for version ${schemaVersion}`] };
+  }
+
+  const valid = validator(doc);
+  if (typeof valid !== 'boolean') {
+    throw new Error('Async schema validation is not supported');
   }
 
   return {
-    valid: false,
-    errors: ['Content does not validate against any known schema'],
+    valid,
+    version: schemaVersion,
+    errors: valid
+      ? undefined
+      : (validator.errors?.map(e => `${e.instancePath} ${e.message}`) ?? []),
   };
 }
 
-/**
- * Validate a parsed document against all schemas, returning true if any match.
- */
-export function validateDoc(doc: RiScJson): ValidationResult {
-  for (const v of ALL_RISC_VERSIONS) {
-    const validator = validators[v];
-    if (validator && validator(doc)) {
-      return { valid: true, version: v };
-    }
+function assertValidRiScDocument(
+  doc: unknown,
+  expectedVersion?: RiScVersion,
+): asserts doc is RiScDocument {
+  if (!isRiScJson(doc)) {
+    throw new Error(
+      'RiSc schema validation failed: Document is not a JSON object',
+    );
   }
-  return {
-    valid: false,
-    errors: ['Content does not validate against any known schema'],
-  };
+
+  const version = findVersion(doc.schemaVersion);
+  if (!version) {
+    throw new Error(`Version '${String(doc.schemaVersion)}' is not known`);
+  }
+
+  if (expectedVersion && version !== expectedVersion) {
+    throw new Error(
+      `RiSc schema validation failed: Document schemaVersion ${String(doc.schemaVersion)} does not match schema ${expectedVersion}`,
+    );
+  }
+
+  const result = validateParsedDoc(doc, expectedVersion ?? version);
+  if (!result.valid) {
+    throw new Error(
+      `RiSc schema validation failed: ${result.errors?.join(', ') ?? 'Unknown error'}`,
+    );
+  }
+}
+
+function findVersion(version: unknown): RiScVersion | null {
+  return Object.values(RiScVersion).find(v => v === version) ?? null;
+}
+
+function isRiScJson(doc: unknown): doc is UnvalidatedRiScJson {
+  return typeof doc === 'object' && doc !== null && !Array.isArray(doc);
 }
 
 /**
@@ -186,21 +262,15 @@ export function validateDoc(doc: RiScJson): ValidationResult {
  * @returns Tuple of [migrated document, migration status]
  */
 export function migrate(
-  doc: RiScJson,
+  doc: RiScDocument,
   lastPublished?: LastPublished | null,
   toVersion: string = latestSupportedVersion,
-): [RiScJson, MigrationStatus] {
-  const fromVersion = detectVersion(doc);
-  const targetVersion = ALL_RISC_VERSIONS.find(v => v === toVersion);
+): [RiScDocument, MigrationStatus] {
+  const fromVersion = doc.schemaVersion;
+  const targetVersion = getVersion(toVersion);
 
-  if (!fromVersion || !targetVersion) {
-    throw new Error(
-      `Unsupported migration: Unable to migrate from ${doc.schemaVersion} to ${toVersion}`,
-    );
-  }
-
-  const fromIndex = ALL_RISC_VERSIONS.indexOf(fromVersion);
-  const toIndex = ALL_RISC_VERSIONS.indexOf(targetVersion);
+  const fromIndex = Object.values(RiScVersion).indexOf(fromVersion);
+  const toIndex = Object.values(RiScVersion).indexOf(targetVersion);
 
   if (toIndex < fromIndex) {
     throw new Error(
@@ -217,52 +287,68 @@ export function migrate(
     },
   };
 
-  return handleMigrate(doc, lastPublished ?? null, status, targetVersion);
+  const [migrated, migratedStatus] = handleMigrate(
+    doc,
+    lastPublished ?? null,
+    status,
+    targetVersion,
+  );
+
+  assertValidRiScDocument(migrated, targetVersion);
+  return [migrated, migratedStatus];
 }
 
 // ─── Migration Engine ──────────────────────────────────────────────────────────
-
-type MigrateFn = (
-  doc: RiScJson,
+function executeMigration(
+  doc: RiScDocument,
   lastPublished: LastPublished | null,
   status: MigrationStatus,
-) => [RiScJson, MigrationStatus];
-
-const MIGRATION_CHAIN: Record<string, MigrateFn> = {
-  [RiScVersion.V3_2]: (doc, _lp, status) => migrateFrom32To33(doc, status),
-  [RiScVersion.V3_3]: (doc, _lp, status) => migrateFrom33To40(doc, status),
-  [RiScVersion.V4_0]: (doc, _lp, status) => migrateFrom40To41(doc, status),
-  [RiScVersion.V4_1]: (doc, lp, status) => migrateFrom41To42(doc, lp, status),
-  [RiScVersion.V4_2]: (doc, _lp, status) => migrateFrom42To50(doc, status),
-  [RiScVersion.V5_0]: (doc, _lp, status) => migrateFrom50To51(doc, status),
-  [RiScVersion.V5_1]: (doc, _lp, status) => migrateFrom51To52(doc, status),
-};
+): [RiScDocument, MigrationStatus] {
+  const version = doc.schemaVersion;
+  switch (version) {
+    case RiScVersion.V5_2:
+      throw new Error(
+        'Migration from V5_2 not added yet. As long as it is newest version the code should not reach here',
+      );
+    case RiScVersion.V5_1:
+      return migrateFrom51To52(doc, status);
+    case RiScVersion.V5_0:
+      return migrateFrom50To51(doc, status);
+    case RiScVersion.V4_2:
+      return migrateFrom42To50(doc, status);
+    case RiScVersion.V4_1:
+      return migrateFrom41To42(doc, lastPublished, status);
+    case RiScVersion.V4_0:
+      return migrateFrom40To41(doc, status);
+    case RiScVersion.V3_3:
+      return migrateFrom33To40(doc, status);
+    case RiScVersion.V3_2:
+      return migrateFrom32To33(doc, status);
+    default: {
+      // noinspection UnnecessaryLocalVariableJS Trigger compiler error on missing case while still satisfying linting rules
+      const unhandledVersion: never = version;
+      throw new Error(`Unhandled RiSc version: ${String(unhandledVersion)}`);
+    }
+  }
+}
 
 function handleMigrate(
-  doc: RiScJson,
+  doc: RiScDocument,
   lastPublished: LastPublished | null,
   status: MigrationStatus,
-  toVersion: string,
-): [RiScJson, MigrationStatus] {
-  const currentVersion = doc.schemaVersion as string;
-  if (currentVersion === toVersion) {
+  toVersion: RiScVersion,
+): [RiScDocument, MigrationStatus] {
+  if (doc.schemaVersion === toVersion) {
     return [doc, status];
   }
 
-  const migrateFn = MIGRATION_CHAIN[currentVersion];
-  if (!migrateFn) {
-    throw new Error(
-      `Unsupported migration: Unable to migrate from version ${currentVersion}`,
-    );
-  }
-
-  const [migrated, newStatus] = migrateFn(doc, lastPublished, status);
+  const [migrated, newStatus] = executeMigration(doc, lastPublished, status);
   return handleMigrate(migrated, lastPublished, newStatus, toVersion);
 }
 
 // ─── Mapping Constants ─────────────────────────────────────────────────────────
 
-const VULNERABILITY_3X_TO_4X_MAP: Record<string, string> = {
+const VULNERABILITY_3X_TO_4X_MAP: Record<Vulnerability3X, Vulnerability> = {
   'User repudiation': 'Unmonitored use',
   'Compromised admin user': 'Unauthorized access',
   'Escalation of rights': 'Unauthorized access',
@@ -290,7 +376,7 @@ const PROBABILITY_40_TO_41_MAP: Record<number, number> = {
   300: 400,
 };
 
-const ACTION_STATUS_4X_TO_5X_MAP: Record<string, string> = {
+const ACTION_STATUS_4X_TO_5X_MAP: Record<ActionStatus3X4X, ActionStatus> = {
   'Not started': 'Not OK',
   'In progress': 'Not OK',
   'On hold': 'Not OK',
@@ -300,27 +386,25 @@ const ACTION_STATUS_4X_TO_5X_MAP: Record<string, string> = {
 
 // ─── Migration Helpers ─────────────────────────────────────────────────────────
 
-function migrateScenarios<T>(
-  doc: RiScJson,
+function migrateScenarios<
+  RISC_FROM_TYPE extends RiScDocument,
+  SCENARIO_TO_TYPE,
+  CHANGE_TYPE,
+>(
+  doc: RISC_FROM_TYPE,
   updateFn: (
-    title: string,
-    scenario: Record<string, unknown>,
-    changes: T[],
-  ) => Record<string, unknown>,
+    scenario: RISC_FROM_TYPE['scenarios'][number],
+    changes: CHANGE_TYPE[],
+  ) => SCENARIO_TO_TYPE,
 ): {
-  migratedScenarios: Array<Record<string, unknown>>;
-  changedScenarios: T[];
+  migratedScenarios: SCENARIO_TO_TYPE[];
+  changedScenarios: CHANGE_TYPE[];
 } {
-  const scenarios = (doc.scenarios as Array<Record<string, unknown>>) || [];
-  const changedScenarios: T[] = [];
+  const scenarios = doc.scenarios ?? [];
+  const changedScenarios: CHANGE_TYPE[] = [];
 
-  const migratedScenarios = scenarios.map(scenarioWrapper => {
-    const scenario = scenarioWrapper.scenario as Record<string, unknown>;
-    const title = scenarioWrapper.title as string;
-    return {
-      title,
-      scenario: updateFn(title, scenario, changedScenarios),
-    };
+  const migratedScenarios = scenarios.map(scenario => {
+    return updateFn(scenario, changedScenarios);
   });
 
   return { migratedScenarios, changedScenarios };
@@ -330,19 +414,22 @@ function migrateScenarios<T>(
 
 /** 3.2 → 3.3: Only bump version (backwards compatible). */
 export function migrateFrom32To33(
-  doc: RiScJson,
+  doc: RiSc3X,
   status: MigrationStatus,
-): [RiScJson, MigrationStatus] {
+): [RiSc3X, MigrationStatus] {
   return [{ ...doc, schemaVersion: RiScVersion.V3_3 }, status];
 }
 
 /** 3.3 → 4.0: Replace vulnerabilities, remove owner/deadline from actions, remove existingActions. */
 export function migrateFrom33To40(
-  doc: RiScJson,
+  doc: RiSc3X,
   status: MigrationStatus,
-): [RiScJson, MigrationStatus] {
-  const { migratedScenarios, changedScenarios } =
-    migrateScenarios<MigrationChange40Scenario>(doc, updateScenarioFrom33To40);
+): [RiSc4X, MigrationStatus] {
+  const { migratedScenarios, changedScenarios } = migrateScenarios<
+    RiSc3X,
+    RiSc4XScenario,
+    MigrationChange40Scenario
+  >(doc, updateScenarioFrom33To40);
 
   return [
     { ...doc, schemaVersion: RiScVersion.V4_0, scenarios: migratedScenarios },
@@ -351,50 +438,47 @@ export function migrateFrom33To40(
       migrationChanges: true,
       migrationRequiresNewApproval: true,
       migrationChanges40:
-        changedScenarios.length > 0
-          ? { scenarios: changedScenarios }
-          : null,
+        changedScenarios.length > 0 ? { scenarios: changedScenarios } : null,
     },
   ];
 }
 
 function updateScenarioFrom33To40(
-  title: string,
-  scenario: Record<string, unknown>,
+  { title, scenario }: RiSc3XScenario,
   changedScenarios: MigrationChange40Scenario[],
-): Record<string, unknown> {
-  const oldVulnerabilities = (scenario.vulnerabilities as string[]) || [];
+): RiSc4XScenario {
+  const oldVulnerabilities = scenario.vulnerabilities;
   const changedVulnerabilities: MigrationChangedTypedValue<
     Vulnerability3X,
     Vulnerability
   >[] = [];
 
-  const newVulnerabilities = oldVulnerabilities.map(v => {
-    const mapped = VULNERABILITY_3X_TO_4X_MAP[v] ?? v;
-    if (mapped !== v) {
+  const newVulnerabilities: Vulnerability[] = oldVulnerabilities.map(v => {
+    const mapped = VULNERABILITY_3X_TO_4X_MAP[v];
+    if (mapped.valueOf() !== v.valueOf()) {
       changedVulnerabilities.push({
-        oldValue: v as unknown as Vulnerability3X,
-        newValue: mapped as unknown as Vulnerability,
+        oldValue: v,
+        newValue: mapped,
       });
     }
     return mapped;
   });
-  // Remove duplicates (as Kotlin does with .distinct())
+
   const distinctVulnerabilities = [...new Set(newVulnerabilities)];
 
-  const actions = (scenario.actions as Array<Record<string, unknown>>) || [];
+  const actions = scenario.actions;
   const changedActions: MigrationChange40Action[] = [];
 
   const migratedActions = actions.map(actionWrapper => {
-    const action = actionWrapper.action as Record<string, unknown>;
-    const actionTitle = actionWrapper.title as string;
-    const owner = action.owner as string | undefined;
-    const deadline = action.deadline as string | undefined;
+    const action = actionWrapper.action;
+    const actionTitle = actionWrapper.title;
+    const owner = action.owner;
+    const deadline = action.deadline;
 
     if (owner || deadline) {
       changedActions.push({
         title: actionTitle,
-        id: action.ID as string,
+        id: action.ID,
         removedOwner: owner || null,
         removedDeadline: deadline || null,
       });
@@ -405,18 +489,19 @@ function updateScenarioFrom33To40(
     return { title: actionTitle, action: restAction };
   });
 
-  const existingActions = scenario.existingActions as string | undefined;
+  const existingActions = scenario.existingActions;
   const removedExistingActions =
     existingActions && existingActions.length > 0 ? existingActions : null;
 
   // Only add to changes if something changed
   if (
     removedExistingActions !== null ||
-    (changedActions.length > 0 && changedVulnerabilities.length > 0)
+    changedActions.length > 0 ||
+    changedVulnerabilities.length > 0
   ) {
     changedScenarios.push({
       title,
-      id: scenario.ID as string,
+      id: scenario.ID,
       removedExistingActions: removedExistingActions,
       changedVulnerabilities,
       changedActions,
@@ -426,19 +511,25 @@ function updateScenarioFrom33To40(
   // Remove existingActions from scenario
   const { existingActions: _ea, ...restScenario } = scenario;
   return {
-    ...restScenario,
-    vulnerabilities: distinctVulnerabilities,
-    actions: migratedActions,
+    title: title,
+    scenario: {
+      ...restScenario,
+      vulnerabilities: distinctVulnerabilities,
+      actions: migratedActions,
+    },
   };
 }
 
 /** 4.0 → 4.1: Remap probability and consequence values to base-20 scale. */
 export function migrateFrom40To41(
-  doc: RiScJson,
+  doc: RiSc4X,
   status: MigrationStatus,
-): [RiScJson, MigrationStatus] {
-  const { migratedScenarios, changedScenarios } =
-    migrateScenarios<MigrationChange41Scenario>(doc, updateScenarioFrom40To41);
+): [RiSc4X, MigrationStatus] {
+  const { migratedScenarios, changedScenarios } = migrateScenarios<
+    RiSc4X,
+    RiSc4XScenario,
+    MigrationChange41Scenario
+  >(doc, updateScenarioFrom40To41);
 
   return [
     { ...doc, schemaVersion: RiScVersion.V4_1, scenarios: migratedScenarios },
@@ -447,41 +538,47 @@ export function migrateFrom40To41(
       migrationChanges: true,
       migrationRequiresNewApproval: true,
       migrationChanges41:
-        changedScenarios.length > 0
-          ? { scenarios: changedScenarios }
-          : null,
+        changedScenarios.length > 0 ? { scenarios: changedScenarios } : null,
     },
   ];
 }
 
 function updateScenarioFrom40To41(
-  title: string,
-  scenario: Record<string, unknown>,
+  { title, scenario }: RiSc4XScenario,
   changedScenarios: MigrationChange41Scenario[],
-): Record<string, unknown> {
-  const mapValue = (value: number, map: Record<number, number>): number =>
-    map[value] ?? value;
+): RiSc4XScenario {
+  const mapValue = (value: number, map: Record<number, number>): number => {
+    if (!map[value]) {
+      throw new Error(
+        `No mapping exists for ${value} in ${JSON.stringify(map)}`,
+      );
+    }
+    return map[value];
+  };
 
-  const risk = scenario.risk as Record<string, unknown>;
-  const remainingRisk = scenario.remainingRisk as Record<string, unknown>;
+  const risk = scenario.risk;
+  const remainingRisk = scenario.remainingRisk;
 
-  const oldRiskProb = risk.probability as number;
-  const oldRiskCons = risk.consequence as number;
-  const oldRemProb = remainingRisk.probability as number;
-  const oldRemCons = remainingRisk.consequence as number;
+  const oldRiskProb = risk.probability;
+  const oldRiskCons = risk.consequence;
+  const oldRemProb = remainingRisk.probability;
+  const oldRemCons = remainingRisk.consequence;
 
   const newRiskProb = mapValue(oldRiskProb, PROBABILITY_40_TO_41_MAP);
   const newRiskCons = mapValue(oldRiskCons, CONSEQUENCE_40_TO_41_MAP);
   const newRemProb = mapValue(oldRemProb, PROBABILITY_40_TO_41_MAP);
   const newRemCons = mapValue(oldRemCons, CONSEQUENCE_40_TO_41_MAP);
 
-  const migratedScenario = {
-    ...scenario,
-    risk: { ...risk, probability: newRiskProb, consequence: newRiskCons },
-    remainingRisk: {
-      ...remainingRisk,
-      probability: newRemProb,
-      consequence: newRemCons,
+  const migratedScenario: RiSc4XScenario = {
+    title,
+    scenario: {
+      ...scenario,
+      risk: { ...risk, probability: newRiskProb, consequence: newRiskCons },
+      remainingRisk: {
+        ...remainingRisk,
+        probability: newRemProb,
+        consequence: newRemCons,
+      },
     },
   };
 
@@ -494,7 +591,7 @@ function updateScenarioFrom40To41(
 
   const changes: MigrationChange41Scenario = {
     title,
-    id: scenario.ID as string,
+    id: scenario.ID,
     changedRiskProbability: changeValue(oldRiskProb, newRiskProb),
     changedRiskConsequence: changeValue(oldRiskCons, newRiskCons),
     changedRemainingRiskProbability: changeValue(oldRemProb, newRemProb),
@@ -516,53 +613,50 @@ function updateScenarioFrom40To41(
 
 /** 4.1 → 4.2: Add lastUpdated field to actions. */
 export function migrateFrom41To42(
-  doc: RiScJson,
+  doc: RiSc4X,
   lastPublished: LastPublished | null,
   status: MigrationStatus,
-): [RiScJson, MigrationStatus] {
-  const { migratedScenarios, changedScenarios } =
-    migrateScenarios<MigrationChange42Scenario>(
-      doc,
-      (title, scenario, changes) =>
-        updateScenarioFrom41To42(title, scenario, lastPublished, changes),
-    );
+): [RiSc4X, MigrationStatus] {
+  const { migratedScenarios, changedScenarios } = migrateScenarios<
+    RiSc4X,
+    RiSc4XScenario,
+    MigrationChange42Scenario
+  >(doc, (scenario, changes) =>
+    updateScenarioFrom41To42(scenario, lastPublished, changes),
+  );
 
   return [
     { ...doc, schemaVersion: RiScVersion.V4_2, scenarios: migratedScenarios },
     {
       ...status,
       migrationChanges42:
-        changedScenarios.length > 0
-          ? { scenarios: changedScenarios }
-          : null,
+        changedScenarios.length > 0 ? { scenarios: changedScenarios } : null,
     },
   ];
 }
 
 function updateScenarioFrom41To42(
-  title: string,
-  scenario: Record<string, unknown>,
+  { scenario, title }: RiSc4XScenario,
   lastPublished: LastPublished | null,
   changedScenarios: MigrationChange42Scenario[],
-): Record<string, unknown> {
-  const actions = (scenario.actions as Array<Record<string, unknown>>) || [];
-  const lastUpdatedValue = lastPublished?.dateTime ?? null;
+): RiSc4XScenario {
+  const lastUpdatedField =
+    lastPublished !== null ? { lastUpdated: lastPublished?.dateTime } : {};
 
-  const migratedActions = actions.map(actionWrapper => {
-    const action = actionWrapper.action as Record<string, unknown>;
+  const migratedActions = scenario.actions.map(actionWrapper => {
+    const action = actionWrapper.action;
     return {
       title: actionWrapper.title,
-      action: { ...action, lastUpdated: lastUpdatedValue },
+      action: { ...action, ...lastUpdatedField },
     };
   });
 
   const changedActions: MigrationChange42Action[] = migratedActions.map(
-    actionWrapper => {
-      const action = actionWrapper.action as Record<string, unknown>;
+    ({ title: actionTitle, action }) => {
       return {
-        title: actionWrapper.title as string,
-        id: action.ID as string,
-        lastUpdated: lastUpdatedValue,
+        title: actionTitle,
+        id: action.ID,
+        ...lastUpdatedField,
       };
     },
   );
@@ -570,21 +664,24 @@ function updateScenarioFrom41To42(
   if (changedActions.length > 0) {
     changedScenarios.push({
       title,
-      id: scenario.ID as string,
+      id: scenario.ID,
       changedActions,
     });
   }
 
-  return { ...scenario, actions: migratedActions };
+  return { title, scenario: { ...scenario, actions: migratedActions } };
 }
 
 /** 4.2 → 5.0: Change action status values. */
 export function migrateFrom42To50(
-  doc: RiScJson,
+  doc: RiSc4X,
   status: MigrationStatus,
-): [RiScJson, MigrationStatus] {
-  const { migratedScenarios, changedScenarios } =
-    migrateScenarios<MigrationChange50Scenario>(doc, updateScenarioFrom42To50);
+): [RiSc5X, MigrationStatus] {
+  const { migratedScenarios, changedScenarios } = migrateScenarios<
+    RiSc4X,
+    RiSc5XScenario,
+    MigrationChange50Scenario
+  >(doc, updateScenarioFrom42To50);
 
   return [
     { ...doc, schemaVersion: RiScVersion.V5_0, scenarios: migratedScenarios },
@@ -593,41 +690,37 @@ export function migrateFrom42To50(
       migrationChanges: true,
       migrationRequiresNewApproval: true,
       migrationChanges50:
-        changedScenarios.length > 0
-          ? { scenarios: changedScenarios }
-          : null,
+        changedScenarios.length > 0 ? { scenarios: changedScenarios } : null,
     },
   ];
 }
 
 function updateScenarioFrom42To50(
-  title: string,
-  scenario: Record<string, unknown>,
+  { title, scenario }: RiSc4XScenario,
   changedScenarios: MigrationChange50Scenario[],
-): Record<string, unknown> {
-  const actions = (scenario.actions as Array<Record<string, unknown>>) || [];
+): RiSc5XScenario {
   const changedActionStatuses: MigrationChangedTypedValue<
     ActionStatus3X4X,
     ActionStatus
   >[] = [];
   const changedActions: MigrationChange50Action[] = [];
 
-  const migratedActions = actions.map(actionWrapper => {
-    const action = actionWrapper.action as Record<string, unknown>;
-    const oldStatus = action.status as string;
-    const newStatus = ACTION_STATUS_4X_TO_5X_MAP[oldStatus] ?? oldStatus;
+  const migratedActions = scenario.actions.map(actionWrapper => {
+    const action = actionWrapper.action;
+    const oldStatus = action.status;
+    const newStatus = ACTION_STATUS_4X_TO_5X_MAP[oldStatus];
 
-    if (newStatus !== oldStatus) {
+    if (newStatus.valueOf() !== oldStatus.valueOf()) {
       changedActionStatuses.push({
-        oldValue: oldStatus as unknown as ActionStatus3X4X,
-        newValue: newStatus as unknown as ActionStatus,
+        oldValue: oldStatus,
+        newValue: newStatus,
       });
       changedActions.push({
-        title: actionWrapper.title as string,
-        id: action.ID as string,
+        title: actionWrapper.title,
+        id: action.ID,
         changedActionStatus: {
-          oldValue: oldStatus as unknown as ActionStatus3X4X,
-          newValue: newStatus as unknown as ActionStatus,
+          oldValue: oldStatus,
+          newValue: newStatus,
         },
       });
     }
@@ -641,22 +734,25 @@ function updateScenarioFrom42To50(
   if (changedActionStatuses.length > 0) {
     changedScenarios.push({
       title,
-      id: scenario.ID as string,
+      id: scenario.ID,
       changedActionStatus: changedActionStatuses,
       changedActions,
     });
   }
 
-  return { ...scenario, actions: migratedActions };
+  return { title, scenario: { ...scenario, actions: migratedActions } };
 }
 
 /** 5.0 → 5.1: Add lastUpdatedBy field to actions. */
 export function migrateFrom50To51(
-  doc: RiScJson,
+  doc: RiSc5X,
   status: MigrationStatus,
-): [RiScJson, MigrationStatus] {
-  const { migratedScenarios, changedScenarios } =
-    migrateScenarios<MigrationChange51Scenario>(doc, updateScenarioFrom50To51);
+): [RiSc5X, MigrationStatus] {
+  const { migratedScenarios, changedScenarios } = migrateScenarios<
+    RiSc5X,
+    RiSc5XScenario,
+    MigrationChange51Scenario
+  >(doc, updateScenarioFrom50To51);
 
   return [
     { ...doc, schemaVersion: RiScVersion.V5_1, scenarios: migratedScenarios },
@@ -665,35 +761,29 @@ export function migrateFrom50To51(
       migrationChanges: true,
       migrationRequiresNewApproval: true,
       migrationChanges51:
-        changedScenarios.length > 0
-          ? { scenarios: changedScenarios }
-          : null,
+        changedScenarios.length > 0 ? { scenarios: changedScenarios } : null,
     },
   ];
 }
 
 function updateScenarioFrom50To51(
-  title: string,
-  scenario: Record<string, unknown>,
+  { title, scenario }: RiSc5XScenario,
   changedScenarios: MigrationChange51Scenario[],
-): Record<string, unknown> {
-  const actions = (scenario.actions as Array<Record<string, unknown>>) || [];
-
-  const migratedActions = actions.map(actionWrapper => {
-    const action = actionWrapper.action as Record<string, unknown>;
+): RiSc5XScenario {
+  const migratedActions = scenario.actions.map(actionWrapper => {
     return {
       title: actionWrapper.title,
-      action: { ...action, lastUpdatedBy: '' },
+      action: { ...actionWrapper.action, lastUpdatedBy: '' },
     };
   });
 
   const changedActions: MigrationChange51Action[] = migratedActions.map(
     actionWrapper => {
-      const action = actionWrapper.action as Record<string, unknown>;
+      const action = actionWrapper.action;
       return {
-        title: actionWrapper.title as string,
-        id: action.ID as string,
-        lastUpdatedBy: action.lastUpdatedBy as string,
+        title: actionWrapper.title,
+        id: action.ID,
+        lastUpdatedBy: action.lastUpdatedBy,
       };
     },
   );
@@ -701,20 +791,20 @@ function updateScenarioFrom50To51(
   if (changedActions.length > 0) {
     changedScenarios.push({
       title,
-      id: scenario.ID as string,
+      id: scenario.ID,
       changedActions,
     });
   }
 
-  return { ...scenario, actions: migratedActions };
+  return { title, scenario: { ...scenario, actions: migratedActions } };
 }
 
 /** 5.1 → 5.2: Remove valuations. */
 export function migrateFrom51To52(
-  doc: RiScJson,
+  doc: RiSc5X,
   status: MigrationStatus,
-): [RiScJson, MigrationStatus] {
-  const valuations = doc.valuations as unknown[] | undefined;
+): [RiSc5X, MigrationStatus] {
+  const valuations = doc.valuations;
   const removedValuationsCount = valuations?.length ?? 0;
 
   const { valuations: _v, ...rest } = doc;
