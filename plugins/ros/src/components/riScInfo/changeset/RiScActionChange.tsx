@@ -50,6 +50,12 @@ export function RiScActionChange({ action, type }: RiScWholeActionChangeProps) {
         title={t('migrationDialog.migration51.lastUpdatedBy')}
         value={action.lastUpdatedBy}
       />
+      {action.comment && (
+        <ChangeSetProperty
+          title={t('dictionary.comment')}
+          value={action.comment}
+        />
+      )}
     </ChangeSetBox>
   );
 }

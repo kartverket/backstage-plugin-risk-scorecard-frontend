@@ -50,6 +50,11 @@ export function RiScActionChangeSet({ action }: RiScActionChangeSetProps) {
         title={t('migrationDialog.migration51.lastUpdatedBy')}
         property={action.lastUpdatedBy}
       />
+      <ChangeSetTrackedProperty
+        title={t('dictionary.comment')}
+        property={action.comment}
+        stringOnUndefinedProperty={t('comparisonDialog.noComment')}
+      />
     </ChangeSetBox>
   );
 }

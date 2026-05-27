@@ -1,4 +1,4 @@
-import { Flex, Text } from '@backstage/ui';
+import { Box, Flex, Text } from '@backstage/ui';
 import IconButton from '@mui/material/IconButton';
 import { DualButtonWithMenu } from '../common/DualButtonWithMenu.tsx';
 import {
@@ -10,7 +10,6 @@ import { ActionStatusOptions } from '../../utils/constants.ts';
 import { ScenarioLastUpdatedLabel } from '../scenario/ScenarioLastUpdatedLabel.tsx';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Collapse from '@mui/material/Collapse';
-import Box from '@mui/material/Box';
 import { Markdown } from '../common/Markdown.tsx';
 import { ActionURL } from './ActionURL.tsx';
 import { useScenario } from '../../contexts/ScenarioContext.tsx';
@@ -174,6 +173,16 @@ export function ActionView(props: ActionViewProps) {
           </Flex>
           <Markdown description={props.action.description} />
           <ActionURL url={props.action.url} />
+          {props.action.comment && (
+            <Box mt="2">
+              <Text as="p" variant="body-large" weight="bold">
+                {t('dictionary.comment')}
+              </Text>
+              <Text as="p" variant="body-large">
+                {props.action.comment}
+              </Text>
+            </Box>
+          )}
         </Box>
       </Collapse>
     </>

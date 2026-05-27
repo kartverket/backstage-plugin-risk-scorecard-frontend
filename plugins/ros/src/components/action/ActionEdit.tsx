@@ -21,6 +21,7 @@ type ActionEditForm = {
   description: string;
   status: string;
   url: string;
+  comment?: string;
 };
 
 export function ActionEdit(props: ActionEditProps) {
@@ -32,6 +33,7 @@ export function ActionEdit(props: ActionEditProps) {
       description: props.action.description,
       status: props.action.status,
       url: props.action.url,
+      comment: props.action.comment ?? '',
     },
   });
   const { updateStatus } = useRiScs();
