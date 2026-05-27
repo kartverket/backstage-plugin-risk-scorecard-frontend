@@ -12,7 +12,7 @@ import {
   migrateFrom42To50,
   migrateFrom50To51,
   migrateFrom51To52,
-} from '../services/SchemaService';
+} from '../services/risc/schema/SchemaService.ts';
 import type {
   MigrationStatus,
   RiScDocument,

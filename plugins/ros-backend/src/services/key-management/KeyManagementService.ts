@@ -63,6 +63,7 @@ const CLOUD_RESOURCE_MANAGER_URL =
   'https://cloudresourcemanager.googleapis.com/v1/projects';
 const KMS_BASE_URL = 'https://cloudkms.googleapis.com/v1';
 
+// TODO: -> KeyManagementServiceOptions + for resterende tilsvarende
 export interface GcpKmsServiceOptions {
   additionalAllowedProjectIds: string[];
   logger: LoggerService;
@@ -73,7 +74,7 @@ export interface GcpKmsServiceOptions {
  * Service for interacting with GCP OAuth2, Cloud Resource Manager, and KMS APIs.
  * Validates access tokens, fetches project IDs, and retrieves crypto keys with permissions.
  */
-export class GcpKmsService {
+export class KeyManagementService {
   private readonly additionalAllowedProjectIds: string[];
   private readonly logger: LoggerService;
   private readonly fetchFn: typeof fetch;

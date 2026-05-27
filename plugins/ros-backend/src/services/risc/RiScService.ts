@@ -5,7 +5,7 @@
  *   - risc/RiScService.kt (661 lines)
  *   - github/GithubRiscMetadata.kt (116 lines)
  *
- * Coordinates GitHubService, SopsCryptoService, SchemaService, and ComparisonService
+ * Coordinates GitHubAdapter, SopsService, SchemaService, and ComparisonService
  * to provide create/read/update/delete/publish/diff operations on Risk Scorecards.
  */
 
@@ -29,11 +29,14 @@ import {
   RiScStatus,
 } from '@internal/backstage-plugin-ros-common';
 
-import type * as ComparisonService from './ComparisonService';
-import type { GitHubService, GithubContentResponse } from './GitHubService';
-import { GithubStatus } from './GitHubService';
-import type * as SchemaService from './SchemaService';
-import type { SopsCryptoService } from './SopsCryptoService';
+import type * as ComparisonService from './comparison/RiScComparisonService.ts';
+import type {
+  GitHubAdapter,
+  GithubContentResponse,
+} from './storage/GitHubAdapter.ts';
+import { GithubStatus } from './storage/GitHubAdapter.ts';
+import type * as SchemaService from './schema/SchemaService.ts';
+import type { SopsService } from '../sops/SopsService.ts';
 import type { LoggerService } from '@backstage/backend-plugin-api';
 
 /** Metadata about a RiSc's state across GitHub branches and PRs. */
@@ -128,8 +131,8 @@ function chooseContentFromStatus(
 
 export class RiScService {
   constructor(
-    private readonly gitHubService: GitHubService,
-    private readonly cryptoService: SopsCryptoService,
+    private readonly gitHubService: GitHubAdapter,
+    private readonly cryptoService: SopsService,
     private readonly schemaService: typeof SchemaService,
     private readonly comparisonService: typeof ComparisonService,
     private readonly logger?: LoggerService,

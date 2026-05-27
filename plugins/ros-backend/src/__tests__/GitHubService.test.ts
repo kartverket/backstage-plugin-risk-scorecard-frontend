@@ -1,8 +1,8 @@
 import {
-  GitHubService,
+  GitHubAdapter,
   GitHubApiError,
   GithubStatus,
-} from '../services/GitHubService';
+} from '../services/risc/storage/GitHubAdapter.ts';
 
 // ─── Mock Fetch Setup ─────────────────────────────────────────────────────────
 
@@ -24,13 +24,13 @@ function mockErrorResponse(status: number, body = ''): Response {
   } as Response;
 }
 
-describe('GitHubService', () => {
-  let service: GitHubService;
+describe('GitHubAdapter', () => {
+  let service: GitHubAdapter;
   let mockFetch: jest.Mock;
 
   beforeEach(() => {
     mockFetch = jest.fn();
-    service = new GitHubService(mockFetch);
+    service = new GitHubAdapter(mockFetch);
   });
 
   const owner = 'test-org';

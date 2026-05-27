@@ -9,10 +9,10 @@ import express, {
 } from 'express';
 import { ProcessingStatus } from '@internal/backstage-plugin-ros-common';
 import { AccessTokenValidationError, DomainError } from './lib/errors';
-import type { RiScService } from './services/RiScService';
-import type { GcpKmsService } from './services/GcpKmsService';
-import type { InitRiScService } from './services/InitRiScService';
-import type { SlackService } from './services/SlackService';
+import type { RiScService } from './services/risc/RiScService.ts';
+import type { KeyManagementService } from './services/key-management/KeyManagementService.ts';
+import type { InitialRiScService } from './services/risc/initial/InitialRiScService.ts';
+import type { SlackAdapter } from './services/slack/SlackAdapter.ts';
 import { latestSupportedVersion } from '@internal/backstage-plugin-ros-common';
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -20,9 +20,9 @@ export interface RouterOptions {
   logger: LoggerService;
   httpAuth: HttpAuthService;
   riScService: RiScService;
-  gcpKmsService: GcpKmsService;
-  initRiScService: InitRiScService;
-  slackService: SlackService | null;
+  gcpKmsService: KeyManagementService;
+  initRiScService: InitialRiScService;
+  slackService: SlackAdapter | null;
 }
 
 /** Standard error response shape consumed by the frontend. */
@@ -314,11 +314,13 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
       res.json(keys);
     }),
   );
+  // TODO: Verifier at vi har nok logging til å se hvem som har brukt omskrivningen til lagring (grafana)
 
+  // TODO: Rename til InitialRisc nedover?
   // ─── Init RiSc ────────────────────────────────────────────────────────────
 
   router.get(
-    '/initrisc',
+    '/initrisc', // '/risc/initial'?
     asyncHandler(async (req, res) => {
       const { githubToken } = requireTokens(req, { github: true });
 

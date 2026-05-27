@@ -63,7 +63,7 @@ const GITHUB_API_BASE = 'https://api.github.com';
  * Low-level GitHub REST API client for repository operations.
  * All operations use token-based authorization (Bearer or `token` header).
  */
-export class GitHubService {
+export class GitHubAdapter {
   private readonly fetchFn: typeof fetch;
 
   constructor(fetchFn?: typeof fetch) {

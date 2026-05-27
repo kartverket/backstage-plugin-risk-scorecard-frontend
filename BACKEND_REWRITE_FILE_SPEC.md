@@ -109,7 +109,7 @@ POST   /slack/feedback                        → sendSlackFeedback
 | **Key challenges** | Coroutine concurrency → `Promise.all`/`Promise.allSettled`. Status state machine (`Published`, `Draft`, `SentForApproval`, `MigratedBySchemaChange`). Error-as-control-flow pattern (Kotlin exceptions → TS Result type or try/catch). Integration of 5 sub-services. |
 | **Complexity**     | 🔴 Very Complex — this is the hardest file in the rewrite                                                                                                                                                                                                             |
 
-### `src/services/GitHubService.ts`
+### `src/services/GitHubAdapter.ts`
 
 | Attribute         | Detail                                                                                                                                                              |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -134,11 +134,11 @@ POST   /slack/feedback                        → sendSlackFeedback
 | **Key challenges** | Dual-token pattern: use Backstage `GithubCredentialsProvider` for App token (reads) vs user's personal token (writes). Branch naming conventions. Content encoding (base64). Conflict detection via SHA. The 1294-line connector has significant concurrency with `async`/`awaitAll`. |
 | **Complexity**     | 🔴 Very Complex — largest single file, many API calls, dual-auth                                                                                                                                                                                                                      |
 
-### `src/services/SopsCryptoService.ts`
+### `src/services/SopsService.ts`
 
 | Attribute         | Detail                                                                                                                                                   |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kotlin source** | `crypto/sops/SopsCryptoService.kt` (235 lines), `crypto/sops/SopsCryptoValidation.kt` (32 lines), `crypto/sops/Bech32.kt`, `crypto/sops/YamlInstance.kt` |
+| **Kotlin source** | `crypto/sops/SopsService.kt` (235 lines), `crypto/sops/SopsCryptoValidation.kt` (32 lines), `crypto/sops/Bech32.kt`, `crypto/sops/YamlInstance.kt` |
 | **What to do**    | Implement SOPS subprocess wrapper:                                                                                                                       |
 
 | Method                             | What it does                                                                  |
@@ -178,7 +178,7 @@ POST   /slack/feedback                        → sendSlackFeedback
 | **Key challenges** | 684 lines of migration logic with nested transforms. Each migration step modifies scenario/action structure differently. Change tracking adds another dimension. Must preserve exact Kotlin behavior to avoid data corruption. |
 | **Complexity**     | 🔴 Very Complex — correctness-critical, many structural transforms, change tracking                                                                                                                                            |
 
-### `src/services/ComparisonService.ts`
+### `src/services/RiScComparisonService.ts`
 
 | Attribute         | Detail                                                                                                                                          |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -196,7 +196,7 @@ POST   /slack/feedback                        → sendSlackFeedback
 | **Key challenges** | 653 lines of recursive comparison logic across 3 schema versions. Each version has different scenario/action shapes. Must handle list reordering (scenarios matched by ID, not position). |
 | **Complexity**     | 🔴 Very Complex — recursive diff with version polymorphism                                                                                                                                |
 
-### `src/services/GcpKmsService.ts`
+### `src/services/KeyManagementService.ts`
 
 | Attribute         | Detail                                                                                                                                                           |
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -214,7 +214,7 @@ POST   /slack/feedback                        → sendSlackFeedback
 | **Details**    | Parallel IAM permission checks across projects (`Promise.all`). Filter projects by naming convention. Construct KMS resource paths. Use `node-fetch` or Backstage's `fetchApi` with bearer token. |
 | **Complexity** | 🟡 Moderate — straightforward HTTP calls, but parallel logic and resource path construction                                                                                                       |
 
-### `src/services/InitRiScService.ts`
+### `src/services/InitialRiScService.ts`
 
 | Attribute         | Detail                                                                                                                                                        |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -228,14 +228,14 @@ POST   /slack/feedback                        → sendSlackFeedback
 
 |                |                                                                                                                                                        |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Details**    | Uses GitHubService for actual file fetching. Template repo configured via `app-config.yaml`. Clean up template content (remove dates, reset statuses). |
-| **Complexity** | 🟡 Moderate — clear logic, but depends on GitHubService                                                                                                |
+| **Details**    | Uses GitHubAdapter for actual file fetching. Template repo configured via `app-config.yaml`. Clean up template content (remove dates, reset statuses). |
+| **Complexity** | 🟡 Moderate — clear logic, but depends on GitHubAdapter                                                                                                |
 
-### `src/services/SlackService.ts`
+### `src/services/SlackAdapter.ts`
 
 | Attribute         | Detail                                                                                                                                        |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kotlin source** | `slack/SlackService.kt` (22 lines), `slack/SlackConnector.kt`                                                                                 |
+| **Kotlin source** | `slack/SlackAdapter.kt` (22 lines), `slack/SlackConnector.kt`                                                                                 |
 | **What to do**    | POST a JSON payload to a configured Slack webhook URL. Single method: `sendFeedback(message: SlackMessageDTO)`. Read webhook URL from config. |
 | **Complexity**    | 🟢 Trivial — single HTTP POST                                                                                                                 |
 
@@ -256,11 +256,11 @@ POST   /slack/feedback                        → sendSlackFeedback
 | **Details**    | In Backstage, identity verification is handled by `httpAuth.credentials()`. The custom part is GitHub permission checking and GCP token validation. Can be Express middleware or per-route guard. |
 | **Complexity** | 🟡 Moderate — Backstage provides building blocks, but dual-token validation needs care                                                                                                            |
 
-### `src/lib/sops.ts`
+### `src/lib/spawnUtils.ts`
 
 | Attribute         | Detail                                                                                                                                                                           |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kotlin source** | Part of `SopsCryptoService.kt` (process spawning logic)                                                                                                                          |
+| **Kotlin source** | Part of `SopsService.kt` (process spawning logic)                                                                                                                          |
 | **What to do**    | Low-level subprocess wrapper: `spawnSops(args, env, stdin?)` → `{ stdout, stderr, exitCode }`. Handle: timeout, signal handling, stream buffering, error extraction from stderr. |
 | **Complexity**    | 🟡 Moderate — Node.js `child_process.spawn` with proper stream handling                                                                                                          |
 
@@ -297,14 +297,14 @@ POST   /slack/feedback                        → sendSlackFeedback
 
 | Test file                      | Kotlin source                                                                      | Tests                                                  | Priority |
 | ------------------------------ | ---------------------------------------------------------------------------------- | ------------------------------------------------------ | -------- |
-| `SopsCryptoService.test.ts`    | `SopsCryptoServiceDecryptionTests.kt` + `EncryptionTests.kt` (365 lines, 11 tests) | Mock subprocess, verify encrypt/decrypt/error handling | High     |
+| `SopsService.test.ts`    | `SopsCryptoServiceDecryptionTests.kt` + `EncryptionTests.kt` (365 lines, 11 tests) | Mock subprocess, verify encrypt/decrypt/error handling | High     |
 | `SopsCryptoValidation.test.ts` | `SopsCryptoValidationTests.kt` (56 lines, 7 tests)                                 | Token format validation                                | Medium   |
-| `GitHubService.test.ts`        | `GithubConnectorTests.kt` (1671 lines, 36 tests)                                   | Mock Octokit, verify all operations                    | High     |
+| `GitHubAdapter.test.ts`        | `GithubConnectorTests.kt` (1671 lines, 36 tests)                                   | Mock Octokit, verify all operations                    | High     |
 | `SchemaService.test.ts`        | `JSONValidatorTests.kt` (188 lines, 14 tests)                                      | Validate against all schema versions                   | High     |
 | `Migrations.test.ts`           | `MigrationFunctionTests.kt` (695 lines, 13 tests)                                  | Test each migration step with fixtures                 | Critical |
 | `ComparisonService.test.ts`    | `ComparisonTests.kt` (734 lines, 7 tests)                                          | Diff correctness per version                           | High     |
-| `GcpKmsService.test.ts`        | `GoogleServiceIntegrationTests.kt` (422 lines, 9 tests)                            | Mock HTTP, verify filtering/permissions                | Medium   |
-| `InitRiScService.test.ts`      | `InitRiScServiceGitHubImplTests.kt` (304 lines, 3 tests)                           | Template fetching and cleanup                          | Low      |
+| `KeyManagementService.test.ts`        | `GoogleServiceIntegrationTests.kt` (422 lines, 9 tests)                            | Mock HTTP, verify filtering/permissions                | Medium   |
+| `InitialRiScService.test.ts`      | `InitRiScServiceGitHubImplTests.kt` (304 lines, 3 tests)                           | Template fetching and cleanup                          | Low      |
 | `RiScService.test.ts`          | (no direct Kotlin test — tested via integration)                                   | Integration test with mocked sub-services              | High     |
 
 |                   |                                                                                                                                                                        |
@@ -375,8 +375,8 @@ POST   /slack/feedback                        → sendSlackFeedback
 | --------------- | ---------------------------------------------------------------------- | ------------------- |
 | 🟢 Trivial      | 7 files                                                                | ~200                |
 | 🟡 Moderate     | 9 files                                                                | ~1,500              |
-| 🟠 Complex      | 2 files (SopsCryptoService, tests)                                     | ~800                |
-| 🔴 Very Complex | 4 files (RiScService, GitHubService, SchemaService, ComparisonService) | ~3,500              |
+| 🟠 Complex      | 2 files (SopsService, tests)                                     | ~800                |
+| 🔴 Very Complex | 4 files (RiScService, GitHubAdapter, SchemaService, ComparisonService) | ~3,500              |
 | **Total**       | **22 files**                                                           | **~6,000 LoC**      |
 
 ## Critical Path (files that block others)
@@ -386,19 +386,19 @@ ros-common/types.ts + constants.ts
         │
         ├── lib/errors.ts
         │       │
-        ├── lib/sops.ts ──→ SopsCryptoService.ts
+        ├── lib/spawnUtils.ts ──→ SopsService.ts
         │                           │
-        ├── GitHubService.ts ───────┤
+        ├── GitHubAdapter.ts ───────┤
         │                           │
         ├── SchemaService.ts ───────┤
         │       (includes Migrations + Validation)
         │                           │
         └───────────────────→ RiScService.ts ──→ router.ts ──→ plugin.ts
                                     │
-                    ComparisonService.ts
-                    GcpKmsService.ts
-                    InitRiScService.ts
-                    SlackService.ts
+                    RiScComparisonService.ts
+                    KeyManagementService.ts
+                    InitialRiScService.ts
+                    SlackAdapter.ts
                     AuthService.ts
 ```
 
@@ -407,20 +407,20 @@ ros-common/types.ts + constants.ts
 | Kotlin file (lines)                   | TypeScript target                               | Notes                                  |
 | ------------------------------------- | ----------------------------------------------- | -------------------------------------- |
 | `RiScService.kt` (661)                | `services/RiScService.ts`                       | Core orchestrator                      |
-| `GithubConnector.kt` (1294)           | `services/GitHubService.ts`                     | Largest file                           |
-| `GithubHelper.kt` (287)               | Merged into `GitHubService.ts`                  | URL builders inline                    |
-| `GitHubAppService.kt` (80)            | Merged into `GitHubService.ts`                  | Use Backstage credentials provider     |
+| `GithubConnector.kt` (1294)           | `services/GitHubAdapter.ts`                     | Largest file                           |
+| `GithubHelper.kt` (287)               | Merged into `GitHubAdapter.ts`                  | URL builders inline                    |
+| `GitHubAppService.kt` (80)            | Merged into `GitHubAdapter.ts`                  | Use Backstage credentials provider     |
 | `GithubRiscMetadata.kt` (116)         | `ros-common/types.ts`                           | Status types                           |
-| `SopsCryptoService.kt` (235)          | `services/SopsCryptoService.ts` + `lib/sops.ts` | Split: logic vs subprocess             |
-| `SopsCryptoValidation.kt` (32)        | Inline in `SopsCryptoService.ts`                | Too small for own file                 |
+| `SopsService.kt` (235)          | `services/SopsService.ts` + `lib/spawnUtils.ts` | Split: logic vs subprocess             |
+| `SopsCryptoValidation.kt` (32)        | Inline in `SopsService.ts`                | Too small for own file                 |
 | `Migrations.kt` (684)                 | `services/SchemaService.ts`                     | Combined with validation               |
 | `JSONValidator.kt` (106)              | `services/SchemaService.ts`                     | Combined with migrations               |
-| `Comparison.kt` (653)                 | `services/ComparisonService.ts`                 | Standalone                             |
+| `Comparison.kt` (653)                 | `services/RiScComparisonService.ts`                 | Standalone                             |
 | `ComparisonDTOs.kt` (230)             | `ros-common/dtos.ts`                            | Wire types                             |
 | `MigrationDTOs.kt` (142)              | `ros-common/dtos.ts`                            | Wire types                             |
-| `GoogleServiceIntegration.kt` (171)   | `services/GcpKmsService.ts`                     | GCP operations                         |
-| `InitRiScServiceGitHubImpl.kt` (148)  | `services/InitRiScService.ts`                   | Template fetching                      |
-| `SlackService.kt` (22)                | `services/SlackService.ts`                      | Webhook POST                           |
+| `GoogleServiceIntegration.kt` (171)   | `services/KeyManagementService.ts`                     | GCP operations                         |
+| `InitRiScServiceGitHubImpl.kt` (148)  | `services/InitialRiScService.ts`                   | Template fetching                      |
+| `SlackAdapter.kt` (22)                | `services/SlackAdapter.ts`                      | Webhook POST                           |
 | `ValidationService.kt` (47)           | `services/AuthService.ts`                       | Token validation                       |
 | `AccessTokenValidationFilter.kt` (49) | Middleware in `router.ts`                       | Express middleware                     |
 | `GlobalExceptionHandler.kt` (219)     | Error handler in `router.ts` + `lib/errors.ts`  | Error → HTTP mapping                   |
@@ -443,5 +443,5 @@ ros-common/types.ts + constants.ts
 | `WebClientConnector.kt`               | Spring WebClient base → use `node-fetch`/Backstage fetch |
 | `InitRiScServiceAirtableImpl.kt`      | Dead code (legacy Airtable integration)                  |
 | `AccessLogger.kt`                     | Replaced by Backstage Winston logger                     |
-| `SlackConnector.kt`                   | Merged into `SlackService.ts` (too thin to separate)     |
+| `SlackConnector.kt`                   | Merged into `SlackAdapter.ts` (too thin to separate)     |
 | All `*ApiConnector.kt` (8 lines each) | Spring WebClient base classes → not needed               |

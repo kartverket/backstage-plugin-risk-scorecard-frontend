@@ -38,7 +38,7 @@ import {
   changeForListOfSimpleProperty,
   changeForListOfComplexProperty,
   ComparisonError,
-} from '../services/ComparisonService';
+} from '../services/risc/comparison/RiScComparisonService.ts';
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 

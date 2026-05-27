@@ -45,15 +45,15 @@ import {
 } from '@internal/backstage-plugin-ros-common';
 
 // ─── Schema Loading ────────────────────────────────────────────────────────────
-
-import schemaV3_2 from '../schemas/risc_schema_en_v3_2.json';
-import schemaV3_3 from '../schemas/risc_schema_en_v3_3.json';
-import schemaV4_0 from '../schemas/risc_schema_en_v4_0.json';
-import schemaV4_1 from '../schemas/risc_schema_en_v4_1.json';
-import schemaV4_2 from '../schemas/risc_schema_en_v4_2.json';
-import schemaV5_0 from '../schemas/risc_schema_en_v5_0.json';
-import schemaV5_1 from '../schemas/risc_schema_en_v5_1.json';
-import schemaV5_2 from '../schemas/risc_schema_en_v5_2.json';
+// TODO: Flytt skjemaene inn i commons, og i resources/schemas
+import schemaV3_2 from '../../../schemas/risc_schema_en_v3_2.json';
+import schemaV3_3 from '../../../schemas/risc_schema_en_v3_3.json';
+import schemaV4_0 from '../../../schemas/risc_schema_en_v4_0.json';
+import schemaV4_1 from '../../../schemas/risc_schema_en_v4_1.json';
+import schemaV4_2 from '../../../schemas/risc_schema_en_v4_2.json';
+import schemaV5_0 from '../../../schemas/risc_schema_en_v5_0.json';
+import schemaV5_1 from '../../../schemas/risc_schema_en_v5_1.json';
+import schemaV5_2 from '../../../schemas/risc_schema_en_v5_2.json';
 
 type JsonSchemaObject = Record<string, unknown>;
 

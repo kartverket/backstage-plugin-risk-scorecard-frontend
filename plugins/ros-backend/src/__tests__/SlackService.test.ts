@@ -1,4 +1,4 @@
-import { SlackService } from '../services/SlackService';
+import { SlackAdapter } from '../services/slack/SlackAdapter.ts';
 
 // ─── Mock Logger ──────────────────────────────────────────────────────────────
 
@@ -12,14 +12,14 @@ const mockLogger = {
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
-describe('SlackService', () => {
-  let service: SlackService;
+describe('SlackAdapter', () => {
+  let service: SlackAdapter;
   let mockFetch: jest.Mock;
   const webhookUrl = 'https://hooks.slack.com/services/T00/B00/xxx';
 
   beforeEach(() => {
     mockFetch = jest.fn();
-    service = new SlackService({
+    service = new SlackAdapter({
       webhookUrl,
       logger: mockLogger as any,
       fetchFn: mockFetch,

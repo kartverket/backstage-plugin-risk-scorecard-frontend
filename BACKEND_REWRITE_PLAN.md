@@ -48,14 +48,14 @@ plugins/
 │   │   ├── router.ts             # Express router with all endpoints
 │   │   ├── services/
 │   │   │   ├── RiScService.ts        # Core CRUD + state machine
-│   │   │   ├── GitHubService.ts      # Branch/PR lifecycle
-│   │   │   ├── SopsCryptoService.ts  # Subprocess wrapper
+│   │   │   ├── GitHubAdapter.ts      # Branch/PR lifecycle
+│   │   │   ├── SopsService.ts  # Subprocess wrapper
 │   │   │   ├── SchemaService.ts      # Validation + migration
-│   │   │   ├── GcpKmsService.ts      # KMS key listing
-│   │   │   ├── InitRiScService.ts    # Template fetching
-│   │   │   └── SlackService.ts       # Feedback webhook
+│   │   │   ├── KeyManagementService.ts      # KMS key listing
+│   │   │   ├── InitialRiScService.ts    # Template fetching
+│   │   │   └── SlackAdapter.ts       # Feedback webhook
 │   │   ├── lib/
-│   │   │   ├── sops.ts              # SOPS CLI interaction
+│   │   │   ├── spawnUtils.ts              # SOPS CLI interaction
 │   │   │   └── errors.ts            # Domain error types
 │   │   └── __tests__/
 │   └── package.json
@@ -87,7 +87,7 @@ plugins/
 
 ### Phase 2: SOPS crypto service
 
-- Implement `SopsCryptoService` — spawn `sops` CLI subprocess
+- Implement `SopsService` — spawn `sops` CLI subprocess
 - Handle env vars: `SOPS_AGE_KEY`, `GOOGLE_OAUTH_ACCESS_TOKEN`
 - Parse SOPS config from encrypted YAML (key groups, shamir threshold)
 - Error mapping: `MISSING_DATA_KEY`, `NO_MATCHING_KEY`, `AUTHENTICATION_FAILED`
@@ -96,7 +96,7 @@ plugins/
 
 ### Phase 3: GitHub service
 
-- Implement `GitHubService` using Backstage `GithubCredentialsProvider` + Octokit
+- Implement `GitHubAdapter` using Backstage `GithubCredentialsProvider` + Octokit
 - Operations:
   - List files on default branch (published RiScs)
   - List files on draft branches
@@ -131,9 +131,9 @@ plugins/
 
 ### Phase 6: Supporting integrations
 
-- `GcpKmsService`: list projects, filter by "-prod-", list crypto keys per project
-- `InitRiScService`: fetch templates from configured GitHub repo, clean timestamps
-- `SlackService`: POST feedback to webhook URL
+- `KeyManagementService`: list projects, filter by "-prod-", list crypto keys per project
+- `InitialRiScService`: fetch templates from configured GitHub repo, clean timestamps
+- `SlackAdapter`: POST feedback to webhook URL
 - Unit tests for each
 
 ### Phase 7: Router & auth

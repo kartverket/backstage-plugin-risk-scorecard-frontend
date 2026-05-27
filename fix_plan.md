@@ -24,10 +24,10 @@ Implementation phase complete (T1–T10). All backend services, router, and fron
   - All checks green (tsc, prettier, lint)
 
 - [x] T3: SOPS Crypto Service (commit 59d4f0c)
-  - `plugins/ros-backend/src/lib/sops.ts` — Low-level subprocess wrapper (spawn sops, handle streams, timeout)
+  - `plugins/ros-backend/src/lib/spawnUtils.ts` — Low-level subprocess wrapper (spawn sops, handle streams, timeout)
   - `plugins/ros-backend/src/lib/errors.ts` — Domain error hierarchy with ProcessingStatus mapping
-  - `plugins/ros-backend/src/services/SopsCryptoService.ts` — encrypt, decrypt, extractSopsConfig, token validation, bech32 checksum verification
-  - `plugins/ros-backend/src/__tests__/SopsCryptoService.test.ts` — 21 tests (mock spawnSops, error codes, validation)
+  - `plugins/ros-backend/src/services/SopsService.ts` — encrypt, decrypt, extractSopsConfig, token validation, bech32 checksum verification
+  - `plugins/ros-backend/src/__tests__/SopsService.test.ts` — 21 tests (mock spawnSops, error codes, validation)
   - Added `yaml` dependency for SOPS config parsing
   - All checks green (tsc, prettier, lint, tests)
 
@@ -40,14 +40,14 @@ Implementation phase complete (T1–T10). All backend services, router, and fron
   - All checks green (tsc, prettier, lint, tests)
 
 - [x] T4: GitHub Service (commit 6a8b83e)
-  - `plugins/ros-backend/src/services/GitHubService.ts` — Full GitHub REST API client: file CRUD (Contents API with base64), branch management (create/delete/list drafts), PR lifecycle (create/close/list), repository info, commits with pagination
-  - `plugins/ros-backend/src/__tests__/GitHubService.test.ts` — 38 tests: happy paths and error handling for all operations
-  - Exports: `GitHubService` class, `GitHubApiError`, `GithubStatus` enum, `GithubContentResponse`, `RepositoryInfo`
+  - `plugins/ros-backend/src/services/GitHubAdapter.ts` — Full GitHub REST API client: file CRUD (Contents API with base64), branch management (create/delete/list drafts), PR lifecycle (create/close/list), repository info, commits with pagination
+  - `plugins/ros-backend/src/__tests__/GitHubAdapter.test.ts` — 38 tests: happy paths and error handling for all operations
+  - Exports: `GitHubAdapter` class, `GitHubApiError`, `GithubStatus` enum, `GithubContentResponse`, `RepositoryInfo`
   - Uses plain `fetch` with dependency injection (constructor accepts custom fetch fn)
   - All checks green (tsc, prettier, lint, tests — 100 total across backend)
 
 - [x] T6: Comparison Service (commit 2c51fb0)
-  - `plugins/ros-backend/src/services/ComparisonService.ts` — Full RiSc diff engine: recursive comparison across v3.x/v4.x/v5.x, property-level change tracking (Added, Deleted, Changed, ContentChanged, Unchanged), scenarios/actions matched by ID not position, integration with SchemaService.migrate() for cross-version comparison
+  - `plugins/ros-backend/src/services/RiScComparisonService.ts` — Full RiSc diff engine: recursive comparison across v3.x/v4.x/v5.x, property-level change tracking (Added, Deleted, Changed, ContentChanged, Unchanged), scenarios/actions matched by ID not position, integration with SchemaService.migrate() for cross-version comparison
   - `plugins/ros-backend/src/__tests__/ComparisonService.test.ts` — 29 tests: helper functions, v5.x comparison (identical, title/scope changes, scenario add/delete/reorder, action changes, risk changes, valuations, threat actors, URLs), entry point with migration
   - Exports: `compare`, `comparison5X`, `comparison4X`, `comparison3X`, helper functions, `ComparisonError`
   - All checks green (tsc, prettier, lint, tests — 129 total across backend)
@@ -60,12 +60,12 @@ Implementation phase complete (T1–T10). All backend services, router, and fron
   - All checks green (tsc, prettier, lint, tests — 153 total across backend)
 
 - [x] T8: Supporting Integrations (commit b10400e)
-  - `plugins/ros-backend/src/services/GcpKmsService.ts` — Token validation (Google tokeninfo), project ID listing (Cloud Resource Manager), crypto key retrieval with parallel IAM permission checks, -prod- filtering + configurable additional allowed list
-  - `plugins/ros-backend/src/services/InitRiScService.ts` — Template descriptor listing from configured GitHub repo (`init-risc-def.json`), cleaned template fetching with timestamp stripping and action status normalization to "Not OK"
-  - `plugins/ros-backend/src/services/SlackService.ts` — Webhook-based feedback messaging (POST with `{ text }` body)
-  - `plugins/ros-backend/src/__tests__/GcpKmsService.test.ts` — 14 tests: helpers, token validation, project filtering, IAM permissions, crypto key retrieval
-  - `plugins/ros-backend/src/__tests__/InitRiScService.test.ts` — 5 tests: descriptor fetching, template normalization, error handling
-  - `plugins/ros-backend/src/__tests__/SlackService.test.ts` — 3 tests: successful POST, error handling
+  - `plugins/ros-backend/src/services/KeyManagementService.ts` — Token validation (Google tokeninfo), project ID listing (Cloud Resource Manager), crypto key retrieval with parallel IAM permission checks, -prod- filtering + configurable additional allowed list
+  - `plugins/ros-backend/src/services/InitialRiScService.ts` — Template descriptor listing from configured GitHub repo (`init-risc-def.json`), cleaned template fetching with timestamp stripping and action status normalization to "Not OK"
+  - `plugins/ros-backend/src/services/SlackAdapter.ts` — Webhook-based feedback messaging (POST with `{ text }` body)
+  - `plugins/ros-backend/src/__tests__/KeyManagementService.test.ts` — 14 tests: helpers, token validation, project filtering, IAM permissions, crypto key retrieval
+  - `plugins/ros-backend/src/__tests__/InitialRiScService.test.ts` — 5 tests: descriptor fetching, template normalization, error handling
+  - `plugins/ros-backend/src/__tests__/SlackAdapter.test.ts` — 3 tests: successful POST, error handling
   - All checks green (tsc, prettier, lint, tests — 177 total across backend)
 
 - [x] T9: Router & Auth (commit 1f479e2)
@@ -113,9 +113,9 @@ Implementation phase complete. T11 (E2E) and T12 (Cleanup) are manual deployment
 - `Promise.allSettled` is the right pattern for `fetchAllRiScs` — one bad RiSc shouldn't block the rest
 - LoggerService from `@backstage/backend-plugin-api` has a strict `JsonValue` type for error metadata — don't pass raw `unknown` errors; just log the message string
 - GCP project IDs containing "-prod-" anywhere in the string match the filter — use careful test data (e.g. "test-project" not "non-prod-project" which contains "-prod-")
-- InitRiScService doesn't need a logger if it just throws errors — keep services minimal
+- InitialRiScService doesn't need a logger if it just throws errors — keep services minimal
 - The Kotlin KMS location is `europe-north1` (not `eur4` as mentioned in some docs) — check the actual source
-- The Kotlin `deleteRiSc` lives in GithubConnector (not RiScService) — in our architecture it's split between GitHubService (low-level ops) and RiScService (orchestration logic)
+- The Kotlin `deleteRiSc` lives in GithubConnector (not RiScService) — in our architecture it's split between GitHubAdapter (low-level ops) and RiScService (orchestration logic)
 - The `decryptWithSopsConfig` method returns `{ content, sopsConfig }` — the content is the plaintext JSON string, sopsConfig is extracted from the YAML ciphertext
 - For unused parameters in TypeScript, prefix with underscore (`_gcpToken`) to satisfy `noUnusedLocals`
 - JSON schemas use draft 2020-12 (`$schema: "https://json-schema.org/draft/2020-12/schema"`) — must use `ajv/dist/2020` (Ajv2020), not the default Ajv constructor which only supports draft-07
@@ -129,7 +129,7 @@ Implementation phase complete. T11 (E2E) and T12 (Cleanup) are manual deployment
 - Migration operates on raw JSON objects (not typed models) because the structure changes across versions — use `Record<string, unknown>` with casts
 - Use `CI=true` and `--forceExit` when running backstage-cli tests to avoid hanging in watch mode
 - Express error handler middleware needs 4 parameters (`err, req, res, next`) — even if `next` is unused, include it or Express won't recognize it as an error handler
-- The `SopsCryptoService` constructor takes a full `SopsCryptoConfig` object (not just an age key) — includes backend public key, security team key, and platform key
+- The `SopsService` constructor takes a full `SopsCryptoConfig` object (not just an age key) — includes backend public key, security team key, and platform key
 - Router should be thin: extract params/headers → call service → send JSON response. Error handling via `next(err)` + error handler middleware
 - For routes where no dedicated single-fetch method exists, use the list method and filter — keeps the API surface simple
 - The Kotlin controller's `getDifferenceBetweenTwoRiScs` is POST (sends draft content in body) not GET — the difference endpoint needs request body

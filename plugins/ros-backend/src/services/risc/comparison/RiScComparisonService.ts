@@ -46,7 +46,7 @@ import {
   type ThreatActor,
 } from '@internal/backstage-plugin-ros-common';
 
-import { migrate } from './SchemaService';
+import { migrate } from '../schema/SchemaService.ts';
 import { isDeepStrictEqual } from 'util';
 
 // ─── Error ─────────────────────────────────────────────────────────────────────

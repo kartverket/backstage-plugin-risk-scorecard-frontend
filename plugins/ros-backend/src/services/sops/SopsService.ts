@@ -9,12 +9,12 @@ import {
   AgeEntry,
   GcpKmsEntry,
 } from '@internal/backstage-plugin-ros-common';
-import { spawnSops } from '../lib/sops';
+import { spawnSops } from './spawnUtils.ts';
 import {
   SopsDecryptionError,
   SopsEncryptionError,
   SopsErrorCode,
-} from '../lib/errors';
+} from '../../lib/errors.ts';
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 
@@ -71,9 +71,9 @@ export interface RiScWithConfig {
   sopsConfig: SopsConfig;
 }
 
-// ─── SopsCryptoService ────────────────────────────────────────────────────────
+// ─── SopsService ────────────────────────────────────────────────────────
 
-export class SopsCryptoService {
+export class SopsService {
   constructor(private readonly config: SopsCryptoConfig) {}
 
   /**

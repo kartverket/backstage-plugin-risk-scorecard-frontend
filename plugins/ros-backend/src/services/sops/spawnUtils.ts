@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import { spawnSync } from 'node:child_process';
 
 const SOPS_TIMEOUT_MS = 30_000;
 
@@ -19,6 +20,8 @@ export interface SpawnSopsOptions {
  * Low-level wrapper around the `sops` CLI binary.
  * Spawns a subprocess, pipes stdin, collects stdout/stderr, and enforces a timeout.
  */
+// TODO: Vurder å generalisere denne til bare `spawn` el.l og ta inn 'sops' som parameter
+// TODO: Hva blir forskjellen opp mot spawnSync
 export async function spawnSops(
   options: SpawnSopsOptions,
 ): Promise<SopsResult> {

@@ -1,9 +1,9 @@
-import { RiScService, generateRiScId } from '../services/RiScService';
-import type * as ComparisonService from '../services/ComparisonService';
-import { GithubStatus } from '../services/GitHubService';
-import type { GitHubService } from '../services/GitHubService';
-import type * as SchemaService from '../services/SchemaService';
-import type { SopsCryptoService } from '../services/SopsCryptoService';
+import { RiScService, generateRiScId } from '../services/risc/RiScService.ts';
+import type * as ComparisonService from '../services/risc/comparison/RiScComparisonService.ts';
+import { GithubStatus } from '../services/risc/storage/GitHubAdapter.ts';
+import type { GitHubAdapter } from '../services/risc/storage/GitHubAdapter.ts';
+import type * as SchemaService from '../services/risc/schema/SchemaService.ts';
+import type { SopsService } from '../services/sops/SopsService.ts';
 import type {
   SopsConfig,
   GithubPullRequestObject,
@@ -13,7 +13,7 @@ import type {
 
 // ─── Mock Factories ────────────────────────────────────────────────────────────
 
-function mockGitHubService(): jest.Mocked<GitHubService> {
+function mockGitHubService(): jest.Mocked<GitHubAdapter> {
   return {
     riScFilePath: jest.fn((id: string) => `.security/risc/${id}.risc.yaml`),
     riScIdFromFilename: jest.fn((name: string) =>
@@ -39,16 +39,16 @@ function mockGitHubService(): jest.Mocked<GitHubService> {
     fetchDefaultBranchSha: jest.fn(),
     fetchCommits: jest.fn(),
     fetchLastPublished: jest.fn().mockResolvedValue(null),
-  } as unknown as jest.Mocked<GitHubService>;
+  } as unknown as jest.Mocked<GitHubAdapter>;
 }
 
-function mockCryptoService(): jest.Mocked<SopsCryptoService> {
+function mockCryptoService(): jest.Mocked<SopsService> {
   return {
     encrypt: jest.fn(),
     decrypt: jest.fn(),
     decryptWithSopsConfig: jest.fn(),
     extractSopsConfig: jest.fn(),
-  } as unknown as jest.Mocked<SopsCryptoService>;
+  } as unknown as jest.Mocked<SopsService>;
 }
 
 function mockSchemaService(): jest.Mocked<typeof SchemaService> {
@@ -116,8 +116,8 @@ function makePR(branchRef: string, number: number): GithubPullRequestObject {
 
 describe('RiScService', () => {
   let service: RiScService;
-  let github: jest.Mocked<GitHubService>;
-  let crypto: jest.Mocked<SopsCryptoService>;
+  let github: jest.Mocked<GitHubAdapter>;
+  let crypto: jest.Mocked<SopsService>;
   let schema: jest.Mocked<typeof SchemaService>;
   let comparison: jest.Mocked<typeof ComparisonService>;
 
