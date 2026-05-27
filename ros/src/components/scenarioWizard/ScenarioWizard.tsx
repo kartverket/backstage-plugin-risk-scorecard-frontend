@@ -1,0 +1,220 @@
+import { ReactNode, useCallback, useState } from 'react';
+import Step from '@mui/material/Step';
+import StepButton from '@mui/material/StepButton';
+import Stepper from '@mui/material/Stepper';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import { ScenarioStep } from './steps/ScenarioStep.tsx';
+import { pluginRiScTranslationRef } from '../../utils/translations.ts';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import Divider from '@mui/material/Divider';
+import { ActionsStep } from './steps/ActionsStep.tsx';
+import { RiskStep } from './steps/RiskStep.tsx';
+import Alert from '@mui/material/Alert';
+import { Spinner } from '../common/Spinner.tsx';
+import { CloseConfirmation } from './components/CloseConfirmation.tsx';
+import {
+  scenarioWizardSteps,
+  ScenarioWizardSteps,
+  useScenario,
+} from '../../contexts/ScenarioContext.tsx';
+import { useRiScs } from '../../contexts/RiScContext.tsx';
+import Container from '@mui/material/Container';
+import { useForm } from 'react-hook-form';
+import { FormScenario, Scenario } from '../../utils/types.ts';
+import { useSearchParams } from 'react-router-dom';
+import {
+  getAlertSeverity,
+  validateRemainingRiskNotHigher,
+} from '../../utils/utilityfunctions.ts';
+import { Text, Button, Flex } from '@backstage/ui';
+import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
+import styles from './ScenarioWizard.module.css';
+
+export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
+  const { profileInfo } = useBackstageContext();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { isFetching, response, updateStatus } = useRiScs();
+  const [, setSearchParams] = useSearchParams();
+
+  const { scenario, emptyFormScenario, closeScenarioForm, submitNewScenario } =
+    useScenario();
+
+  const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+  const [riskValidationError, setRiskValidationError] = useState<string[]>([]);
+
+  const formMethods = useForm<FormScenario>({
+    defaultValues: emptyFormScenario(scenario),
+    mode: 'onBlur',
+  });
+
+  const { isDirty, isValid } = formMethods.formState;
+
+  const onSubmit = formMethods.handleSubmit((data: FormScenario) => {
+    const validation = validateRemainingRiskNotHigher(data, t);
+
+    if (!validation.isValid) {
+      setRiskValidationError(validation.errors);
+      return;
+    }
+
+    setRiskValidationError([]);
+
+    const submitScenario: Scenario = {
+      ...data,
+      risk: {
+        ...data.risk,
+        probability: Number(data.risk.probability),
+        consequence: Number(data.risk.consequence),
+      },
+      remainingRisk: {
+        ...data.remainingRisk,
+        probability: Number(data.remainingRisk.probability),
+        consequence: Number(data.remainingRisk.consequence),
+      },
+    };
+
+    formMethods.trigger();
+
+    if (isValid) {
+      submitNewScenario(submitScenario, profileInfo, () => closeScenarioForm());
+    } else {
+      formMethods.trigger();
+    }
+  });
+
+  const close = useCallback(() => {
+    closeScenarioForm();
+    setShowCloseConfirmation(false);
+  }, [closeScenarioForm]);
+
+  function handleCloseStepper() {
+    if (isDirty) {
+      setShowCloseConfirmation(true);
+    } else {
+      close();
+    }
+  }
+
+  function selectStep(newStep: ScenarioWizardSteps) {
+    if (isValid) {
+      setSearchParams({ step: newStep });
+    } else {
+      formMethods.trigger();
+    }
+  }
+
+  function nextStep() {
+    const currentIndex = scenarioWizardSteps.indexOf(step);
+    if (currentIndex < scenarioWizardSteps.length - 1) {
+      selectStep(scenarioWizardSteps[currentIndex + 1]);
+    }
+  }
+
+  function previousStep() {
+    const currentIndex = scenarioWizardSteps.indexOf(step);
+    if (currentIndex > 0) {
+      selectStep(scenarioWizardSteps[currentIndex - 1]);
+    }
+  }
+
+  const isFirstStep = step === scenarioWizardSteps.at(0);
+  const isLastStep = step === scenarioWizardSteps.at(-1);
+
+  const stepComponents: Record<ScenarioWizardSteps, ReactNode> = {
+    scenario: <ScenarioStep formMethods={formMethods} />,
+    initialRisk: <RiskStep formMethods={formMethods} riskType="risk" />,
+    measure: <ActionsStep formMethods={formMethods} />,
+    restRisk: <RiskStep formMethods={formMethods} riskType="remainingRisk" />,
+  };
+
+  return (
+    <Container maxWidth="md" className={styles.container}>
+      <Flex justify="between">
+        <Text variant="title-medium" weight="bold">
+          {t('scenarioDrawer.newTitle')}
+        </Text>
+        <Button size="medium" variant="secondary" onClick={handleCloseStepper}>
+          {t('dictionary.cancel')}
+        </Button>
+      </Flex>
+      <Stepper
+        activeStep={scenarioWizardSteps.indexOf(step)}
+        alternativeLabel
+        nonLinear
+      >
+        {scenarioWizardSteps.map(wizardStep => (
+          <Step key={wizardStep} completed={false}>
+            <StepButton onClick={() => selectStep(wizardStep)}>
+              <Text>{t(`dictionary.${wizardStep}`)}</Text>
+            </StepButton>
+          </Step>
+        ))}
+      </Stepper>
+      <Divider />
+      {isFetching ? (
+        <Spinner size={80} />
+      ) : (
+        <>
+          {stepComponents[step]}
+
+          {response && (
+            <Alert severity={getAlertSeverity(updateStatus, response)}>
+              <Text variant="body-large">{response.statusMessage}</Text>
+            </Alert>
+          )}
+          {riskValidationError.length > 0 && (
+            <Alert severity="error">
+              {riskValidationError.map((line, index) => (
+                <div key={index}>
+                  <Text variant="body-large">{line}</Text>
+                </div>
+              ))}
+            </Alert>
+          )}
+          <Flex justify={isFirstStep ? 'end' : 'between'}>
+            {!isFirstStep && (
+              <Button
+                size="medium"
+                variant="tertiary"
+                onClick={previousStep}
+                iconStart={<KeyboardArrowLeft />}
+              >
+                {t('dictionary.previous')}
+              </Button>
+            )}
+            <Flex gap="16px">
+              <Button
+                variant={isLastStep ? 'primary' : 'secondary'}
+                onClick={onSubmit}
+                size="medium"
+                isDisabled={!isDirty || updateStatus.isLoading}
+              >
+                {isLastStep
+                  ? t('scenarioDrawer.createNewScenario')
+                  : t('scenarioDrawer.saveAsDraft')}
+              </Button>
+
+              {!isLastStep && (
+                <Button
+                  variant="primary"
+                  size="medium"
+                  onClick={nextStep}
+                  iconEnd={<KeyboardArrowRight />}
+                >
+                  {t('dictionary.next')}
+                </Button>
+              )}
+            </Flex>
+          </Flex>
+        </>
+      )}
+      <CloseConfirmation
+        isOpen={showCloseConfirmation}
+        onCloseDialog={() => setShowCloseConfirmation(false)}
+        close={close}
+        save={onSubmit}
+      />
+    </Container>
+  );
+}
