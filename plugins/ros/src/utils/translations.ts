@@ -46,6 +46,7 @@ export const pluginRiScMessages = {
     copied: 'Copied',
     cancel: 'Cancel',
     close: 'Close',
+    comment: 'Comment',
     completed: 'Completed',
     confidentiality: 'Confidentiality',
     confirm: 'Confirm',
@@ -242,12 +243,20 @@ export const pluginRiScMessages = {
       title: 'Valuations removed',
       oldValue: 'Existing valuations removed',
     },
+    migration54: {
+      changeExplanation:
+        'This migration adds a new field for comments on actions.',
+      title: 'Comment field added',
+      oldValue: 'No comments',
+      newValue: 'Comment field added',
+    },
     removed: 'Removed',
   },
   comparisonDialog: {
     noChanges: 'No changes',
     changes: 'Changes to RiSc',
     noURL: 'No URL provided',
+    noComment: 'No comment provided',
     noDescription: 'No description provided',
     risk: {
       probabilityUnit: 'occurrences/year',
@@ -834,6 +843,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.copied': 'Kopiert',
           'dictionary.cancel': 'Avbryt',
           'dictionary.close': 'Lukk',
+          'dictionary.comment': 'Kommentar',
           'dictionary.completed': 'Fullført',
           'dictionary.confidentiality': 'Konfidensialitet',
           'dictionary.confirm': 'Bekreft',
@@ -1030,10 +1040,16 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration52.title': 'Verdivurderinger fjernet',
           'migrationDialog.migration52.oldValue':
             'Fjernet eksisterende verdivurderinger',
+          'migrationDialog.migration54.changeExplanation':
+            'Denne migreringen legger til et nytt felt for kommentarer på tiltak.',
+          'migrationDialog.migration54.title': 'Kommentarfelt lagt til',
+          'migrationDialog.migration54.oldValue': 'Ingen kommentarer',
+          'migrationDialog.migration54.newValue': 'Kommentarfelt lagt til',
           'migrationDialog.removed': 'Fjernet',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
           'comparisonDialog.noDescription': 'Ingen beskrivelse spesifisert',
+          'comparisonDialog.noComment': 'Ingen kommentar spesifisert',
           'comparisonDialog.noURL': 'Ingen URL spesifisert',
           'comparisonDialog.risk.consequenceUnit': 'NOK/hendelse',
           'comparisonDialog.risk.probabilityUnit': 'hendelser/år',

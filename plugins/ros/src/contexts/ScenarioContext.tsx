@@ -34,6 +34,7 @@ export const emptyAction = (): Action => ({
   description: '',
   status: ActionStatusOptions.NotOK,
   url: '',
+  comment: '',
 });
 
 const emptyScenario = (): Scenario => ({

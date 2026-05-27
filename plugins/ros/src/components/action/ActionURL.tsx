@@ -10,7 +10,7 @@ type ActionURLProps = {
 export function ActionURL(props: ActionURLProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   return (
-    <Box mt="16px">
+    <Box mt="2">
       <Text as="p" variant="body-large" weight="bold">
         {' '}
         {t('dictionary.url')}
