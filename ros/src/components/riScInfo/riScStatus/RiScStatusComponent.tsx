@@ -86,7 +86,7 @@ export function RiScStatusComponent({
     setDifferenceFetchState({ ...differenceFetchState, isLoading: true });
     fetchDifference(
       selectedRiSc,
-      (response) => {
+      response => {
         setDifferenceFetchState({
           differenceState: response.differenceState,
           isLoading: false,

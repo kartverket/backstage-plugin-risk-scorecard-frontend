@@ -9,6 +9,7 @@
     "tsc": "tsc --noEmit",
     "build": "tsc --build"
   },
+  "configSchema": "config.d.ts",
   "dependencies": {
     "@backstage/core-plugin-api": "backstage:^",
     "@backstage/plugin-catalog-react": "backstage:^",

@@ -72,7 +72,7 @@ function ConsequenceTableInfo() {
 
   return (
     <Box className={styles.consequenceGrid}>
-      {consequenceRows.map((row) => getRow(row.key, row.cells))}
+      {consequenceRows.map(row => getRow(row.key, row.cells))}
     </Box>
   );
 }

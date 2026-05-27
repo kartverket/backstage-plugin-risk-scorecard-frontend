@@ -30,7 +30,7 @@ function ScopeFormSection({
   } = formMethods;
 
   const threatActorOptions = Object.values(ThreatActorsOptions).map(
-    (threatActor) => ({
+    threatActor => ({
       value: threatActor,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
       renderedValue: t(threatActorOptionsToTranslationKeys[threatActor]),
@@ -38,7 +38,7 @@ function ScopeFormSection({
   );
 
   const vulnerabilitiesOptions = Object.values(VulnerabilitiesOptions).map(
-    (vulnerability) => ({
+    vulnerability => ({
       value: vulnerability,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
       renderedValue: t(vulnerabiltiesOptionsToTranslationKeys[vulnerability]),

@@ -37,7 +37,7 @@ function ConfigRiscInfo(props: ConfigRiscInfoProps) {
         sublabel={t('rosDialog.scopeDescription')}
         error={props.errors?.content?.scope !== undefined}
         minRows={8}
-        onMarkdownChange={(value) => props.setValue('content.scope', value)}
+        onMarkdownChange={value => props.setValue('content.scope', value)}
       />
     </Flex>
   );

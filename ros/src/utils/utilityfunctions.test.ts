@@ -556,7 +556,7 @@ describe('Translation mappings match translation keys', () => {
     const optionToTranslationValues = Object.values(
       actionStatusOptionsToTranslationKeys,
     );
-    optionToTranslationValues.forEach((value) => {
+    optionToTranslationValues.forEach(value => {
       const key = value.replace('actionStatus.', '');
       expect(pluginRiScMessages.actionStatus).toHaveProperty(key);
     });

@@ -59,7 +59,7 @@ export function ActionsStep({
   }
 
   const actionStatusOptions = Object.values(ActionStatusOptions).map(
-    (actionStatus) => ({
+    actionStatus => ({
       value: actionStatus,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
       renderedValue: t(actionStatusOptionsToTranslationKeys[actionStatus]),
@@ -128,7 +128,7 @@ export function ActionsStep({
                   {...register(`actions.${index}.description`)}
                   error={errors?.actions?.[index]?.description !== undefined}
                   value={currentActionDescription}
-                  onMarkdownChange={(value) =>
+                  onMarkdownChange={value =>
                     setValue(`actions.${index}.description`, value)
                   }
                   label={t('dictionary.description')}

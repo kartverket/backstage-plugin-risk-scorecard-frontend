@@ -169,7 +169,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
               value={props.selectedRiScId}
               className={styles.radioGroup}
             >
-              {defaultRiScTypeDescriptors.map((descriptor) => (
+              {defaultRiScTypeDescriptors.map(descriptor => (
                 <RadioOption
                   key={descriptor.id}
                   value={descriptor.id}

@@ -62,7 +62,7 @@ export function useScenarioTableDrag(
       }
     },
 
-    collect: (monitor) => ({
+    collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
   }));
@@ -73,9 +73,9 @@ function moveRowLocal(
   hoverId: string,
   setTempScenarios: React.Dispatch<React.SetStateAction<Scenario[]>>,
 ) {
-  setTempScenarios((prev) => {
-    const dragIndex = prev.findIndex((s) => s.ID === dragId);
-    const hoverIndex = prev.findIndex((s) => s.ID === hoverId);
+  setTempScenarios(prev => {
+    const dragIndex = prev.findIndex(s => s.ID === dragId);
+    const hoverIndex = prev.findIndex(s => s.ID === hoverId);
 
     if (dragIndex === -1 || hoverIndex === -1) return prev;
 
@@ -98,9 +98,9 @@ function moveRowFinal(
     onError?: () => void,
   ) => void,
 ) {
-  setTempScenarios((prev) => {
-    const dragIndex = prev.findIndex((item) => item.ID === dragId);
-    const dropIndex = prev.findIndex((item) => item.ID === dropId);
+  setTempScenarios(prev => {
+    const dragIndex = prev.findIndex(item => item.ID === dragId);
+    const dropIndex = prev.findIndex(item => item.ID === dropId);
 
     if (dragIndex === -1 || dropIndex === -1) return prev;
 

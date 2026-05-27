@@ -46,7 +46,7 @@ export function RiScChangeSet({ changeset }: RiScChangeSetProps) {
             prop={changes.scope}
             title={t('dictionary.scope')}
           />
-          {changes.scenarios.map((scenario) => (
+          {changes.scenarios.map(scenario => (
             <>
               {(scenario.type === 'ADDED' || scenario.type === 'DELETED') && (
                 <RiScScenarioChange

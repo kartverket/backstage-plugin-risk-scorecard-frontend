@@ -59,7 +59,7 @@ export function RiScScenarioChange({
                 title={t('dictionary.threatActors')}
                 value={
                   <>
-                    {scenario.threatActors.map((actor) => (
+                    {scenario.threatActors.map(actor => (
                       /* @ts-ignore Because ts can't typecheck strings against our keys */
                       <div>{t(`threatActors.${actor}`)}</div>
                     ))}
@@ -75,7 +75,7 @@ export function RiScScenarioChange({
                 title={t('dictionary.vulnerabilities')}
                 value={
                   <>
-                    {scenario.vulnerabilities.map((vulnerability) => (
+                    {scenario.vulnerabilities.map(vulnerability => (
                       /* @ts-ignore Because ts can't typecheck strings against our keys */
                       <div>{t(`vulnerabilities.${vulnerability}`)}</div>
                     ))}
@@ -104,7 +104,7 @@ export function RiScScenarioChange({
       </ChangeSetTwoColumnSplit>
 
       {scenario.actions &&
-        scenario.actions.map((action) => (
+        scenario.actions.map(action => (
           <RiScActionChange action={action} type={type} />
         ))}
     </ChangeSetBox>

@@ -97,6 +97,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     deleteRiScs,
     putRiScs,
     publishRiScs,
+    isReady,
   } = useAuthenticatedFetch();
 
   const [riScs, setRiScs] = useState<RiScWithMetadata[] | null>(null);
@@ -190,11 +191,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   // Initial fetch of GCP crypto keys
   useEffect(() => {
+    if (!isReady) return;
     gcpCryptoKeysFailed.current = false;
     setFailedToFetchGcpCryptoKeys(false);
     dispatch({ type: 'SET_RESPONSE', response: null });
     fetchGcpCryptoKeys(
-      (res) => {
+      res => {
         // Sorts the crypto keys by the number of permissions (descending)
         setGcpCryptoKeys(
           res.sort(
@@ -233,31 +235,32 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isReady]);
 
   // Initial fetch of RiScs
   useEffect(() => {
+    if (!isReady) return;
     dispatch({ type: 'SET_RESPONSE', response: null });
     fetchRiScs(
-      (res) => {
+      res => {
         const successfulRiScs = res.filter(
-          (risk) => risk.status === ContentStatus.Success,
+          risk => risk.status === ContentStatus.Success,
         );
         const decryptionFailedRiScs = res.filter(
-          (risk) => risk.status === ContentStatus.DecryptionFailed,
+          risk => risk.status === ContentStatus.DecryptionFailed,
         );
 
         // Check if all RiScs failed decryption (there are RiScs but all failed)
         const allFailed =
           res.length > 0 &&
-          res.every((r) => r.status === ContentStatus.DecryptionFailed);
+          res.every(r => r.status === ContentStatus.DecryptionFailed);
         setAllRiScsFailedDecryption(allFailed);
 
         const fetchedRiScs: RiScWithMetadata[] = successfulRiScs.map(
           mapRiScDtoToRiScWithMetadata,
         );
         const fetchedLockedRiScs: LockedRiSc[] = decryptionFailedRiScs.map(
-          (risk) => ({
+          risk => ({
             id: risk.riScId,
             encryptionKeyId: risk.encryptionKeyId ?? null,
           }),
@@ -272,7 +275,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         }
 
         const errorRiScs: RiScContentResultDTO[] = res.filter(
-          (risk) => risk.status !== ContentStatus.Success,
+          risk => risk.status !== ContentStatus.Success,
         );
 
         if (errorRiScs.length > 0) {
@@ -299,9 +302,9 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           return;
         }
 
-        const riSc = fetchedRiScs.find((r) => r.id === riScIdFromParams);
+        const riSc = fetchedRiScs.find(r => r.id === riScIdFromParams);
         const isLockedRiSc = fetchedLockedRiScs.some(
-          (r) => r.id === riScIdFromParams,
+          r => r.id === riScIdFromParams,
         );
 
         // If there is an invalid RiSc ID in the URL (not accessible and not locked), navigate to the first RiSc
@@ -312,7 +315,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           return;
         }
       },
-      (loginRejected) => {
+      loginRejected => {
         if (!gcpCryptoKeysFailed.current) {
           dispatch({
             type: 'SET_RESPONSE',
@@ -335,13 +338,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  }, [isReady]);
   // Set selected RiSc or locked RiSc based on URL
   useEffect(() => {
     if (!riScIdFromParams) return;
-    const riSc = riScs?.find((r) => r.id === riScIdFromParams);
-    const lockedRiSc = lockedRiScs.find((r) => r.id === riScIdFromParams);
+    const riSc = riScs?.find(r => r.id === riScIdFromParams);
+    const lockedRiSc = lockedRiScs.find(r => r.id === riScIdFromParams);
     if (riSc) {
       setSelectedRiSc(riSc);
       setSelectedLockedRiSc(null);
@@ -397,7 +399,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       generateInitialRisc,
       newRiSc.sopsConfig,
       defaultRiScId,
-      (res) => {
+      res => {
         if (!res.riScId) throw new Error('No RiSc ID returned');
         if (!res.riScContent) throw new Error('No RiSc content returned');
         const json = JSON.parse(res.riScContent) as RiScDTO;
@@ -459,7 +461,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       });
       deleteRiScs(
         selectedRiSc.id,
-        (res) => {
+        res => {
           dispatch({
             type: 'SET_BOTH',
             updateStatus: { isLoading: false, isError: false, isSuccess: true },
@@ -471,14 +473,14 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           setIsRequesting(false);
           if (res.status === ProcessingStatus.DeletedRiSc) {
             setSelectedRiSc(
-              riScs.find((riSc) => riSc.id !== selectedRiSc.id) || null,
+              riScs.find(riSc => riSc.id !== selectedRiSc.id) || null,
             );
-            setRiScs(riScs.filter((riSc) => riSc.id !== updatedRiSc.id));
+            setRiScs(riScs.filter(riSc => riSc.id !== updatedRiSc.id));
             if (onSuccess) onSuccess();
           } else {
             setSelectedRiSc(updatedRiSc);
             setRiScs(
-              riScs.map((riSc) =>
+              riScs.map(riSc =>
                 riSc.id === selectedRiSc.id ? updatedRiSc : riSc,
               ),
             );
@@ -563,7 +565,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       });
       putRiScs(
         updatedRiSc,
-        (res) => {
+        res => {
           dispatch({
             type: 'SET_BOTH',
             updateStatus: { isLoading: false, isError: false, isSuccess: true },
@@ -578,7 +580,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           }
           setSelectedRiSc(updatedRiSc);
           setRiScs(
-            riScs.map((r) => (r.id === selectedRiSc.id ? updatedRiSc : r)),
+            riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
           );
           setIsRequesting(false);
           if (onSuccess) onSuccess();
@@ -614,7 +616,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       });
       publishRiScs(
         selectedRiSc.id,
-        (res) => {
+        res => {
           const prUrl = res.pendingApproval?.pullRequestUrl;
           const updatedRiSc = {
             ...selectedRiSc,
@@ -626,7 +628,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           };
           setSelectedRiSc(updatedRiSc);
           setRiScs(
-            riScs.map((r) => (r.id === selectedRiSc.id ? updatedRiSc : r)),
+            riScs.map(r => (r.id === selectedRiSc.id ? updatedRiSc : r)),
           );
           dispatch({
             type: 'SET_BOTH',

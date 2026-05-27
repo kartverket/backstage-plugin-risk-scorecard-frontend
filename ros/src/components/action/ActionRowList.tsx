@@ -41,11 +41,9 @@ export function ActionRowList(props: ActionRowListProps) {
   const onRefreshActionStatus = (action: Action) => {
     if (isToday(action.lastUpdated ?? null)) return;
 
-    setPendingActionUpdatesHistory((prev) =>
-      prev.filter((id) => id !== action.ID),
-    );
+    setPendingActionUpdatesHistory(prev => prev.filter(id => id !== action.ID));
 
-    setPendingActionStatusUpdates((prev) => ({
+    setPendingActionStatusUpdates(prev => ({
       ...prev,
       [props.scenarioId]: {
         ...prev[props.scenarioId],
@@ -62,11 +60,9 @@ export function ActionRowList(props: ActionRowListProps) {
       showBlockedUpdateError();
       return;
     }
-    setPendingActionUpdatesHistory((prev) =>
-      prev.filter((id) => id !== actionId),
-    );
+    setPendingActionUpdatesHistory(prev => prev.filter(id => id !== actionId));
 
-    setPendingActionStatusUpdates((prev) => ({
+    setPendingActionStatusUpdates(prev => ({
       ...prev,
       [props.scenarioId]: {
         ...prev[props.scenarioId],
@@ -80,7 +76,7 @@ export function ActionRowList(props: ActionRowListProps) {
     if (!oldScenario) return;
     const newScenario = {
       ...oldScenario,
-      actions: oldScenario.actions.filter((a) => a.ID !== actionId),
+      actions: oldScenario.actions.filter(a => a.ID !== actionId),
     };
     submitEditedScenarioToRiSc(newScenario);
   };
@@ -94,7 +90,7 @@ export function ActionRowList(props: ActionRowListProps) {
     submitEditedScenarioToRiSc(
       {
         ...oldScenario,
-        actions: oldScenario.actions.map((a) =>
+        actions: oldScenario.actions.map(a =>
           a.ID === newAction.ID ? newAction : a,
         ),
       },
@@ -113,10 +109,10 @@ export function ActionRowList(props: ActionRowListProps) {
     (updates: Record<string, Record<string, ActionStatusOptions>>) => {
       if (Object.keys(updates).length === 0) return;
 
-      Object.keys(updates).forEach((scenarioId) => {
+      Object.keys(updates).forEach(scenarioId => {
         const oldScenario = getScenarioOfIdFromRiSc(scenarioId, selectedRiSc);
         if (!oldScenario) return;
-        const newActionArray = oldScenario.actions.map((a) =>
+        const newActionArray = oldScenario.actions.map(a =>
           a.ID in updates[scenarioId]
             ? {
                 ...a,
@@ -138,14 +134,14 @@ export function ActionRowList(props: ActionRowListProps) {
           onSuccess: () => {
             const savedActionIds = Object.keys(updates[scenarioId]);
 
-            setPendingActionStatusUpdates((prevStatusUpdates) => {
+            setPendingActionStatusUpdates(prevStatusUpdates => {
               const remainingUpdates = { ...prevStatusUpdates };
               if (remainingUpdates[scenarioId]) {
                 const remainingActionUpdates = {
                   ...remainingUpdates[scenarioId],
                 };
 
-                savedActionIds.forEach((actionId) => {
+                savedActionIds.forEach(actionId => {
                   delete remainingActionUpdates[actionId];
                 });
                 if (Object.keys(remainingActionUpdates).length === 0) {
@@ -154,7 +150,7 @@ export function ActionRowList(props: ActionRowListProps) {
                   remainingUpdates[scenarioId] = remainingActionUpdates;
                 }
               }
-              setPendingActionUpdatesHistory((prevHistory) => [
+              setPendingActionUpdatesHistory(prevHistory => [
                 ...prevHistory,
                 ...savedActionIds,
               ]);

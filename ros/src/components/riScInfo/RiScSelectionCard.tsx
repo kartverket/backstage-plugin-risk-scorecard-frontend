@@ -22,11 +22,11 @@ export function RiScSelectionCard() {
         <FormControl fullWidth size="small">
           <MUISelect
             value={selectedRiSc?.id ?? selectedLockedRiSc?.id ?? ''}
-            onChange={(e) => selectRiSc(e.target.value)}
+            onChange={e => selectRiSc(e.target.value)}
             inputProps={{ 'aria-label': t('contentHeader.multipleRiScs') }}
             MenuProps={{ disablePortal: true }}
           >
-            {(riScs ?? []).map((riSc) => (
+            {(riScs ?? []).map(riSc => (
               <MenuItem key={riSc.id} value={riSc.id}>
                 {riSc.content.title}
               </MenuItem>
@@ -38,7 +38,7 @@ export function RiScSelectionCard() {
                 {t('contentHeader.lockedRiScsSection')}
               </ListSubheader>
             )}
-            {lockedRiScs.map((riSc) => (
+            {lockedRiScs.map(riSc => (
               <MenuItem key={riSc.id} value={riSc.id}>
                 🔒 {riSc.id}
               </MenuItem>

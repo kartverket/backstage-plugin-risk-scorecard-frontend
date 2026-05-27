@@ -24,7 +24,7 @@ export function DefaultRiScTypesProvider({
 }: {
   children: ReactNode;
 }) {
-  const { fetchDefaultRiScTypeDescriptors } = useAuthenticatedFetch();
+  const { fetchDefaultRiScTypeDescriptors, isReady } = useAuthenticatedFetch();
   const { entity } = useEntity();
   const [defaultRiScTypeDescriptors, setDefaultRiScTypeDescriptors] = useState<
     DefaultRiScTypeDescriptor[]
@@ -34,12 +34,13 @@ export function DefaultRiScTypesProvider({
   >(undefined);
 
   useEffect(() => {
-    fetchDefaultRiScTypeDescriptors((response) => {
+    if (!isReady) return;
+    fetchDefaultRiScTypeDescriptors(response => {
       setDefaultRiScTypeDescriptors(response);
       setRiScSelectedByDefault(getRiScSelectedByDefault(response));
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isReady]);
 
   function getRiScSelectedByDefault(
     descriptors: DefaultRiScTypeDescriptor[],
@@ -52,7 +53,7 @@ export function DefaultRiScTypesProvider({
     }
 
     const selectedDescriptor = descriptors.find(
-      (descriptor) =>
+      descriptor =>
         descriptor.preferredBackstageComponentType === componentType,
     );
     if (!selectedDescriptor && descriptors.length > 0) return descriptors[0];
@@ -62,9 +63,7 @@ export function DefaultRiScTypesProvider({
   function getDescriptorOfId(
     id: string,
   ): DefaultRiScTypeDescriptor | undefined {
-    return defaultRiScTypeDescriptors.find(
-      (descriptor) => descriptor.id === id,
-    );
+    return defaultRiScTypeDescriptors.find(descriptor => descriptor.id === id);
   }
 
   return (

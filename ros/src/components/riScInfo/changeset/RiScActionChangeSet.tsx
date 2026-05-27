@@ -35,12 +35,12 @@ export function RiScActionChangeSet({ action }: RiScActionChangeSetProps) {
         title={t('dictionary.status')}
         property={action.status}
         /* @ts-ignore Because ts can't typecheck strings against our keys */
-        valueFormatter={(actionValue) => t(`actionStatus.${actionValue}`)}
+        valueFormatter={actionValue => t(`actionStatus.${actionValue}`)}
       />
       <ChangeSetTrackedProperty
         title={t('scenarioDrawer.action.lastUpdated')}
         property={action.lastUpdated}
-        valueFormatter={(actionValue) =>
+        valueFormatter={actionValue =>
           actionValue
             ? formatDate(actionValue)
             : t('scenarioDrawer.action.notUpdated')

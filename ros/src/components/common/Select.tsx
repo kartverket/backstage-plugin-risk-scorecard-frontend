@@ -61,7 +61,7 @@ export function Select<T extends FieldValues>({
   // values er strengt tatt unknown, men da må vi bruke mye ts-ignore for å komme i mål
   function renderValue(values: any) {
     if (!multiple) {
-      return options.find((option) => option.value === values)?.renderedValue;
+      return options.find(option => option.value === values)?.renderedValue;
     }
     return (
       <Box className={styles.chips}>
@@ -116,7 +116,7 @@ export function Select<T extends FieldValues>({
         {...field}
         {...props}
       >
-        {options.map((option) => (
+        {options.map(option => (
           <MenuItem key={option.value} value={option.value}>
             {multiple && (
               <Checkbox checked={handleChecked(field.value, option.value)} />

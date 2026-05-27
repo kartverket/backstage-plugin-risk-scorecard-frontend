@@ -67,14 +67,14 @@ export function buildFetchRiScErrorMessages(
 
       if (statusKey === ContentStatus.DecryptionFailed) {
         const decryptionRisks = errorRiScs.filter(
-          (risk) =>
+          risk =>
             risk.status === ContentStatus.DecryptionFailed &&
             riScIds.includes(risk.riScId),
         );
 
-        const withErrorCode = decryptionRisks.filter((risk) => risk.errorCode);
+        const withErrorCode = decryptionRisks.filter(risk => risk.errorCode);
         const withoutErrorCode = decryptionRisks.filter(
-          (risk) => !risk.errorCode,
+          risk => !risk.errorCode,
         );
 
         const messages: string[] = [];
@@ -90,9 +90,9 @@ export function buildFetchRiScErrorMessages(
             {} as Record<string, RiScContentResultDTO[]>,
           );
 
-          Object.values(groups).forEach((group) => {
+          Object.values(groups).forEach(group => {
             const { errorCode, encryptionKeyId } = group[0];
-            const groupRiScIds = group.map((r) => r.riScId).join(', ');
+            const groupRiScIds = group.map(r => r.riScId).join(', ');
             if (encryptionKeyId) {
               const keyId = encryptionKeyId.split('/').pop() ?? encryptionKeyId;
               const errorKey =
@@ -115,7 +115,7 @@ export function buildFetchRiScErrorMessages(
           const errorKey = `errorMessages.ContentStatus${statusKey}`;
           messages.push(
             t(errorKey as any, {
-              riScId: withoutErrorCode.map((r) => r.riScId).join(', '),
+              riScId: withoutErrorCode.map(r => r.riScId).join(', '),
               status,
             }),
           );

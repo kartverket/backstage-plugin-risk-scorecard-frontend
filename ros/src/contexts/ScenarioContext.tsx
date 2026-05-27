@@ -127,7 +127,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
   }>({});
 
   function toggleActionExpanded(actionId: string) {
-    setExpandedActions((prevState) => ({
+    setExpandedActions(prevState => ({
       ...prevState,
       [actionId]: !prevState[actionId],
     }));
@@ -186,7 +186,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
       }
 
       const selectedScenario = riSc.content.scenarios.find(
-        (s) => s.ID === scenarioIdFromParams,
+        s => s.ID === scenarioIdFromParams,
       );
 
       // If there is an invalid scenario ID in the URL, navigate to the RiSc with error state
@@ -271,7 +271,7 @@ export function ScenarioProvider({ children }: { children: ReactNode }) {
           ...riSc,
           content: {
             ...riSc.content,
-            scenarios: riSc.content.scenarios.map((s) =>
+            scenarios: riSc.content.scenarios.map(s =>
               s.ID === editedScenario.ID ? editedScenario : s,
             ),
           },

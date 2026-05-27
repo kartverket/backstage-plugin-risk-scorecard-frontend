@@ -50,7 +50,7 @@ export function RiScScenarioChangeSet({
             <ChangeSetColumn>
               <ChangeSetProperty
                 title={t('dictionary.threatActors')}
-                value={scenario.threatActors.map((actor) => {
+                value={scenario.threatActors.map(actor => {
                   if (actor.type === 'DELETED') {
                     return (
                       <div>
@@ -79,7 +79,7 @@ export function RiScScenarioChangeSet({
             <ChangeSetColumn>
               <ChangeSetProperty
                 title={t('dictionary.vulnerabilities')}
-                value={scenario.vulnerabilities.map((vulnerability) => {
+                value={scenario.vulnerabilities.map(vulnerability => {
                   if (vulnerability.type === 'DELETED') {
                     return (
                       <div>
@@ -126,7 +126,7 @@ export function RiScScenarioChangeSet({
         </ChangeSetColumn>
       </ChangeSetTwoColumnSplit>
 
-      {scenario.actions.map((action) => (
+      {scenario.actions.map(action => (
         <>
           {(action.type === 'ADDED' || action.type === 'DELETED') && (
             <RiScActionChange

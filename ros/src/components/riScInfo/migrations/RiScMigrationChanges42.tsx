@@ -28,13 +28,13 @@ export function RiScMigrationChanges42({
         )}
         changelogUrl="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md#42"
       />
-      {changes.scenarios.map((scenario) => (
+      {changes.scenarios.map(scenario => (
         <ChangeSetBox type="primary">
           <ChangeSetTags>
             <ChangeSetTag type="primary" text={t('dictionary.scenario')} />
           </ChangeSetTags>
           <ChangeSetBoxTitle title={scenario.title} />
-          {scenario.changedActions.map((action) => (
+          {scenario.changedActions.map(action => (
             <ChangeSetBox type="secondary">
               <ChangeSetTags>
                 <ChangeSetTag type="primary" text={t('dictionary.action')} />

@@ -43,14 +43,14 @@ export function ScenarioTable(props: ScenarioTableProps) {
       return;
     }
     const updatedScenarios = tempScenarios
-      .map((scenario) => {
-        const ordered = riSc.scenarios.find((s) => s.ID === scenario.ID);
+      .map(scenario => {
+        const ordered = riSc.scenarios.find(s => s.ID === scenario.ID);
         return ordered ? ordered : null;
       })
-      .filter((scenario) => scenario !== null) as RiSc['scenarios'];
+      .filter(scenario => scenario !== null) as RiSc['scenarios'];
 
     const scenariosNotInTemp = riSc.scenarios.filter(
-      (scenario) => !updatedScenarios.find((s) => s.ID === scenario.ID),
+      scenario => !updatedScenarios.find(s => s.ID === scenario.ID),
     );
 
     setTempScenarios([...updatedScenarios, ...scenariosNotInTemp]);
@@ -71,7 +71,7 @@ export function ScenarioTable(props: ScenarioTableProps) {
     [props.visibleType, debouncedSearchQuery, tempScenarios],
   );
 
-  const scenariosWithAnyAction = tempScenarios.filter((scenario) =>
+  const scenariosWithAnyAction = tempScenarios.filter(scenario =>
     filteredActionsForScenarios.has(scenario.ID),
   );
 

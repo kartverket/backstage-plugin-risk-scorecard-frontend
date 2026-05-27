@@ -33,7 +33,7 @@ export function BackstageContextProvider({
   useEffect(() => {
     identityApi
       .getProfileInfo()
-      .then((fetchedProfileInfo) => setProfileInfo(fetchedProfileInfo));
+      .then(fetchedProfileInfo => setProfileInfo(fetchedProfileInfo));
   }, [identityApi]);
 
   const componentType = entity.spec?.type as string | undefined;

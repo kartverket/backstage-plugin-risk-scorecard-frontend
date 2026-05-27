@@ -11,7 +11,7 @@ export function filterActionsByRelevance(
   actions: Action[],
   showOnlyRelevant: boolean,
 ) {
-  return actions.filter((action) =>
+  return actions.filter(action =>
     showOnlyRelevant ? action.status !== ActionStatusOptions.NotRelevant : true,
   );
 }
@@ -49,7 +49,7 @@ export function getActionsWithLastUpdated(
       continue;
     }
 
-    const oldAction = oldActions.find((a) => a.ID === newAction.ID);
+    const oldAction = oldActions.find(a => a.ID === newAction.ID);
     if (oldAction && isActionsEqual(newAction, oldAction)) {
       actionsWithLastUpdated.push({ ...newAction });
     } else {

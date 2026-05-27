@@ -55,7 +55,7 @@ export const MarkdownInput = forwardRef<HTMLDivElement, Props>(
           document.querySelectorAll<HTMLElement>(
             'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
           ),
-        ).filter((el) => !el.hasAttribute('disabled'));
+        ).filter(el => !el.hasAttribute('disabled'));
 
         const index = focusable.indexOf(active);
         const direction = e.shiftKey ? -1 : 1;

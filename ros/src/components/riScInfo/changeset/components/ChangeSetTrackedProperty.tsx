@@ -23,7 +23,7 @@ export function ChangeSetTrackedProperty({
   emphasised = false,
   valueFormatter = (value: string) => value,
 }: IChangeSetTrackedProperty) {
-  if (property === undefined) return <></>;
+  if (property === undefined || property === null) return <></>;
 
   if (property.type === 'UNCHANGED')
     return (

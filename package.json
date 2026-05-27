@@ -8,7 +8,9 @@
   "workspaces": {
     "packages": [
       "ros",
-      "build-tools"
+      "build-tools",
+      "ros-backend",
+      "ros-common"
     ]
   },
   "scripts": {

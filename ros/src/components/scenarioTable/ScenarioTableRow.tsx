@@ -96,7 +96,7 @@ export function ScenarioTableRow({
   // Styling
   useEffect(() => {
     if (isExpanded) {
-      setHoveredScenarios((prev) => prev.filter((s) => s.ID !== scenario.ID));
+      setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
     }
     // Only run when visibleType or expansion changes for this scenario
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,7 +104,7 @@ export function ScenarioTableRow({
 
   const theme = useTheme();
   const isScenarioHoveredFromRiskMatrix = hoveredScenarios.some(
-    (s) => s.ID === scenario.ID,
+    s => s.ID === scenario.ID,
   );
 
   const highlightColor = 'var(--ros-scenario-highlight)';
@@ -142,15 +142,13 @@ export function ScenarioTableRow({
       <Card
         onMouseEnter={() => {
           if (isExpanded) return;
-          setHoveredScenarios((prev) =>
-            prev.some((s) => s.ID === scenario.ID) ? prev : [...prev, scenario],
+          setHoveredScenarios(prev =>
+            prev.some(s => s.ID === scenario.ID) ? prev : [...prev, scenario],
           );
         }}
         onMouseLeave={() => {
           if (isExpanded) return;
-          setHoveredScenarios((prev) =>
-            prev.filter((s) => s.ID !== scenario.ID),
-          );
+          setHoveredScenarios(prev => prev.filter(s => s.ID !== scenario.ID));
         }}
         ref={ref}
         className={classnames(styles.tableCard, {
@@ -175,9 +173,9 @@ export function ScenarioTableRow({
           <IconButton
             size="medium"
             data-action-root
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
-              setIsExpanded((prev) => !prev);
+              setIsExpanded(prev => !prev);
             }}
             style={{ padding: 0 }}
           >
@@ -223,12 +221,12 @@ export function ScenarioTableRow({
                   <ScenarioTableProgressBar
                     completedCount={
                       scenario.actions.filter(
-                        (a) => a.status === ActionStatusOptions.OK,
+                        a => a.status === ActionStatusOptions.OK,
                       ).length
                     }
                     totalCount={
                       scenario.actions.filter(
-                        (a) => a.status !== ActionStatusOptions.NotRelevant,
+                        a => a.status !== ActionStatusOptions.NotRelevant,
                       ).length
                     }
                     textColor={textColorAsBuiVariable}
@@ -264,7 +262,7 @@ export function ScenarioTableRow({
             <Flex align="center" justify="end">
               <IconButton
                 size="small"
-                onClick={(event) => {
+                onClick={event => {
                   event.stopPropagation();
                   setScenarioDeletionDialogOpen(true);
                 }}
@@ -284,7 +282,7 @@ export function ScenarioTableRow({
             <div data-action-root>
               <ActionRowList
                 scenarioId={scenario.ID}
-                displayedActions={scenario.actions.filter((action) =>
+                displayedActions={scenario.actions.filter(action =>
                   isAnyFilterEnabled && filteredActionIds
                     ? filteredActionIds.includes(action.ID)
                     : true,

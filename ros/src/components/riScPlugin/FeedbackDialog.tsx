@@ -39,7 +39,7 @@ export function FeedbackDialog(props: FeedbackDialogProps) {
           multiline
           minRows={4}
           value={feedbackText}
-          onChange={(e) => setFeedbackText(e.target.value)}
+          onChange={e => setFeedbackText(e.target.value)}
           disabled={feedbackSent}
         />
         {feedbackError && (

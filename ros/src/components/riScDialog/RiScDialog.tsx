@@ -39,7 +39,7 @@ function RiScStepper({ activeStep }: { activeStep: number }) {
   ];
   return (
     <Stepper activeStep={activeStep} alternativeLabel>
-      {steps.map((label) => (
+      {steps.map(label => (
         <Step key={label}>
           <StepLabel>
             <Text>{label}</Text>
@@ -108,7 +108,7 @@ export function RiScDialog({
       }
     },
     // Continue to step 1 even if there are errors, as long as there are no errors in step 0 (the content)
-    (validationErrors) => {
+    validationErrors => {
       if (validationErrors.content === undefined) {
         if (activeStep === 0) setActiveStep(1);
         if (activeStep === 1) setActiveStep(2);
@@ -133,21 +133,21 @@ export function RiScDialog({
       // used or set by the frontend.
       // Check if the additional Age keys are equal, using the single important field, `recipient`
       const areAgeKeysEqual = isDeeplyEqual(
-        data.sopsConfig.age?.map((age) => age.recipient).sort(),
-        selectedRiSc?.sopsConfig.age?.map((age) => age.recipient).sort(),
+        data.sopsConfig.age?.map(age => age.recipient).sort(),
+        selectedRiSc?.sopsConfig.age?.map(age => age.recipient).sort(),
       );
 
       // Check if the GCP keys are equal, using the two important fields, `resource_id` and `created_at`.
       // Comparison uses dictionaries, where resource ids are keys and created at dates are values
       const areGCPKeysEqual = isDeeplyEqual(
         Object.fromEntries(
-          data.sopsConfig.gcp_kms?.map((key) => [
+          data.sopsConfig.gcp_kms?.map(key => [
             key.resource_id,
             key.created_at,
           ]) ?? [],
         ),
         Object.fromEntries(
-          selectedRiSc?.sopsConfig.gcp_kms?.map((key) => [
+          selectedRiSc?.sopsConfig.gcp_kms?.map(key => [
             key.resource_id,
             key.created_at,
           ]) ?? [],

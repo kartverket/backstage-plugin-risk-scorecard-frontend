@@ -143,7 +143,7 @@ export function ScenarioWizard({ step }: { step: ScenarioWizardSteps }) {
         alternativeLabel
         nonLinear
       >
-        {scenarioWizardSteps.map((wizardStep) => (
+        {scenarioWizardSteps.map(wizardStep => (
           <Step key={wizardStep} completed={false}>
             <StepButton onClick={() => selectStep(wizardStep)}>
               <Text>{t(`dictionary.${wizardStep}`)}</Text>

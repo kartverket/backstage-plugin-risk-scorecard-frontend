@@ -46,7 +46,7 @@ export function ActionFormItem({
   const errorObject = getValue(formState.errors, baseObjectPathToActionOfForm);
 
   const actionStatusOptions = Object.values(ActionStatusOptions).map(
-    (actionStatus) => ({
+    actionStatus => ({
       value: actionStatus,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
       renderedValue: t(actionStatusOptionsToTranslationKeys[actionStatus]),

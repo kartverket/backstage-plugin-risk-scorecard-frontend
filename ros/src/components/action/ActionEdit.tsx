@@ -36,7 +36,7 @@ export function ActionEdit(props: ActionEditProps) {
   });
   const { updateStatus } = useRiScs();
 
-  const onSubmit: SubmitHandler<ActionEditForm> = (data) => {
+  const onSubmit: SubmitHandler<ActionEditForm> = data => {
     const newAction = {
       ...props.action,
       ...data,

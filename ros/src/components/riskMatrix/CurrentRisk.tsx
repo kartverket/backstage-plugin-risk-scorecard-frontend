@@ -23,7 +23,7 @@ export function CurrentRisk({ risc }: CurrentRiskProps) {
     (total, scenario) =>
       total +
       scenario.actions.filter(
-        (action) => action.status === ActionStatusOptions.OK,
+        action => action.status === ActionStatusOptions.OK,
       ).length,
     0,
   );

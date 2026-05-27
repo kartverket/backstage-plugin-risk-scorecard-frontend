@@ -119,7 +119,7 @@ export function shortenName(name: string, maxCharacters: number = 16) {
       first,
     ];
     return (
-      candidates.find((c) => c.length <= maxCharacters) ??
+      candidates.find(c => c.length <= maxCharacters) ??
       first.slice(0, maxCharacters)
     );
   }
@@ -134,7 +134,7 @@ export function shortenName(name: string, maxCharacters: number = 16) {
     ];
 
     return (
-      candidates.find((c) => c.length <= maxCharacters) ??
+      candidates.find(c => c.length <= maxCharacters) ??
       first.slice(0, maxCharacters)
     );
   }
@@ -273,7 +273,7 @@ export function deleteScenario(
 ) {
   if (riSc) {
     const updatedScenarios = riSc.content.scenarios.filter(
-      (s) => s.ID !== scenario.ID,
+      s => s.ID !== scenario.ID,
     );
     updateRiSc({
       ...riSc,
@@ -302,8 +302,8 @@ export function isDeeplyEqual<T>(
 
     // Check if a and b have the same number of entries
     if (
-      Object.keys(a).filter((key) => !ignoredKeys.includes(key)).length !==
-      Object.keys(b).filter((key) => !ignoredKeys.includes(key)).length
+      Object.keys(a).filter(key => !ignoredKeys.includes(key)).length !==
+      Object.keys(b).filter(key => !ignoredKeys.includes(key)).length
     )
       return false;
 
@@ -444,39 +444,37 @@ export const vulnerabiltiesOptionsToTranslationKeys: Record<
 };
 
 export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
-  const scenariosWithData = riScWithMetadata.content.scenarios.map(
-    (scenario) => {
-      const actionsWithStatus = (scenario.actions ?? []).map((action) => {
-        if (!action.lastUpdated) {
-          return { ...action, status: UpdatedStatusEnum.VERY_OUTDATED };
-        }
-        const daysSinceLastUpdate = action.lastUpdated
-          ? calculateDaysSince(new Date(action.lastUpdated))
-          : null;
-        const status =
-          daysSinceLastUpdate !== null
-            ? calculateUpdatedStatus(daysSinceLastUpdate)
-            : UpdatedStatusEnum.VERY_OUTDATED;
+  const scenariosWithData = riScWithMetadata.content.scenarios.map(scenario => {
+    const actionsWithStatus = (scenario.actions ?? []).map(action => {
+      if (!action.lastUpdated) {
+        return { ...action, status: UpdatedStatusEnum.VERY_OUTDATED };
+      }
+      const daysSinceLastUpdate = action.lastUpdated
+        ? calculateDaysSince(new Date(action.lastUpdated))
+        : null;
+      const status =
+        daysSinceLastUpdate !== null
+          ? calculateUpdatedStatus(daysSinceLastUpdate)
+          : UpdatedStatusEnum.VERY_OUTDATED;
 
-        return { ...action, status };
-      });
-      return {
-        ...scenario,
-        actions: actionsWithStatus,
-      };
-    },
-  );
+      return { ...action, status };
+    });
+    return {
+      ...scenario,
+      actions: actionsWithStatus,
+    };
+  });
 
-  const allActions = scenariosWithData.flatMap((scenario) => scenario.actions);
+  const allActions = scenariosWithData.flatMap(scenario => scenario.actions);
   const totalCount = allActions.length;
   const veryOutdatedCount = allActions.filter(
-    (action) => action.status === UpdatedStatusEnum.VERY_OUTDATED,
+    action => action.status === UpdatedStatusEnum.VERY_OUTDATED,
   ).length;
   const outdatedCount = allActions.filter(
-    (action) => action.status === UpdatedStatusEnum.OUTDATED,
+    action => action.status === UpdatedStatusEnum.OUTDATED,
   ).length;
   const updatedCount = allActions.filter(
-    (action) => action.status === UpdatedStatusEnum.UPDATED,
+    action => action.status === UpdatedStatusEnum.UPDATED,
   ).length;
 
   return { totalCount, veryOutdatedCount, outdatedCount, updatedCount };

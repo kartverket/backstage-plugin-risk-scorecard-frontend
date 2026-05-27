@@ -53,7 +53,7 @@ export function ActionView(props: ActionViewProps) {
       <div
         role="button"
         tabIndex={0}
-        onClick={(e) => {
+        onClick={e => {
           e.stopPropagation();
 
           const target = e.target as HTMLElement | null;
@@ -61,7 +61,7 @@ export function ActionView(props: ActionViewProps) {
 
           toggleActionExpanded(props.action.ID);
         }}
-        onKeyDown={(e) => {
+        onKeyDown={e => {
           // Prevent keyboard event from bubbling up to parent(s)
           e.stopPropagation();
 
@@ -75,7 +75,7 @@ export function ActionView(props: ActionViewProps) {
         <Flex align="center" gap="1" justify="between">
           <Flex align="center" justify="start" style={{ width: '40%' }}>
             <IconButton
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 toggleActionExpanded(props.action.ID);
               }}
@@ -108,7 +108,7 @@ export function ActionView(props: ActionViewProps) {
                   props.onRefreshActionStatus(props.action);
                 },
               }}
-              menuItems={Object.values(ActionStatusOptions).map((value) => ({
+              menuItems={Object.values(ActionStatusOptions).map(value => ({
                 key: value,
                 // @ts-ignore
                 label: t(
@@ -135,7 +135,7 @@ export function ActionView(props: ActionViewProps) {
             </Flex>
             {props.allowDeletion && (
               <IconButton
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   props.openDeleteDialog();
                 }}
@@ -163,7 +163,7 @@ export function ActionView(props: ActionViewProps) {
                   marginLeft: 'auto',
                   transition: 'opacity 300ms ease-in',
                 }}
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   props.toggleEditMode();
                 }}

@@ -22,7 +22,7 @@ export function GcpCryptoKeyRadioGroup({
     if (!resourceId) return;
 
     const selectedKey = gcpCryptoKeys.find(
-      (key) => key.resourceId === resourceId,
+      key => key.resourceId === resourceId,
     );
     if (selectedKey) {
       onChange(selectedKey);
@@ -44,9 +44,9 @@ export function GcpCryptoKeyRadioGroup({
             value={chosenGcpCryptoKey?.resourceId}
             aria-label={t('sopsConfigDialog.chooseGcpCryptoKey')}
           >
-            {gcpCryptoKeys.map((key) => {
+            {gcpCryptoKeys.map(key => {
               const permissions = key.userPermissions
-                .map((permission) =>
+                .map(permission =>
                   t(`sopsConfigDialog.cryptoKeyPermission${permission}`),
                 )
                 .join(', ');

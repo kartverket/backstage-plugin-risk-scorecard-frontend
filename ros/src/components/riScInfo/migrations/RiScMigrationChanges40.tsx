@@ -28,7 +28,7 @@ export function RiScMigrationChanges40({
         )}
         changelogUrl="https://github.com/kartverket/backstage-plugin-risk-scorecard-backend/blob/main/docs/schemaChangelog.md#40"
       />
-      {changes.scenarios.map((scenario) => (
+      {changes.scenarios.map(scenario => (
         <ChangeSetBox type="primary">
           <ChangeSetTags>
             <ChangeSetTag type="primary" text={t('dictionary.scenario')} />
@@ -39,7 +39,7 @@ export function RiScMigrationChanges40({
               <ChangeSetBoxTitle
                 title={t('migrationDialog.migration40.vulnerabilitiesTitle')}
               />
-              {scenario.changedVulnerabilities.map((change) => (
+              {scenario.changedVulnerabilities.map(change => (
                 <div>
                   <ChangeSetChangedValue
                     /* @ts-ignore Because ts can't typecheck strings against our keys */
@@ -66,7 +66,7 @@ export function RiScMigrationChanges40({
               <ChangeSetText text={scenario.removedExistingActions} />
             </ChangeSetBox>
           )}
-          {scenario.changedActions.map((action) => (
+          {scenario.changedActions.map(action => (
             <ChangeSetBox type="secondary">
               <ChangeSetTags>
                 <ChangeSetTag type="primary" text={t('dictionary.action')} />

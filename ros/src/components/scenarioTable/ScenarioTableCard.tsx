@@ -41,7 +41,7 @@ export function ScenarioTableCard({
       : selectedUpdatedStatus;
 
   function handleActionCountClick(type: UpdatedStatusEnumType) {
-    setSelectedUpdatedStatus((prev) => (prev === type ? null : type));
+    setSelectedUpdatedStatus(prev => (prev === type ? null : type));
   }
   const [scenarioSortOrder, setScenarioSortOrder] = useState<string | null>(
     null,

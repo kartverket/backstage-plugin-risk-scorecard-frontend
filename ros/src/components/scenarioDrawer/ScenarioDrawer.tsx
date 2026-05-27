@@ -113,7 +113,7 @@ export function ScenarioDrawer() {
   return (
     <Drawer
       PaperProps={{
-        sx: (theme) => ({
+        sx: theme => ({
           padding: theme.spacing(4),
           width: '50%',
           gap: theme.spacing(3),

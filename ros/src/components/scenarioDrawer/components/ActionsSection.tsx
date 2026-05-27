@@ -38,7 +38,7 @@ const RelevanceToggle = ({
     <Flex align="center" gap="0" className={styles.noRelevantActionToggle}>
       <Switch
         checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
+        onChange={e => onChange(e.target.checked)}
         name="showOnlyRelevant"
         color="primary"
       />
@@ -68,19 +68,19 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   const sortActionsByRelevance = useSortActionsByRelevance();
 
   useEffect(() => {
-    setSortedActions((sortedActionsState) => {
+    setSortedActions(sortedActionsState => {
       if (sortedActionsState === undefined)
         return sortActionsByRelevance([...currentActions]);
 
       // sync actions
       const updatedSortedActions: Action[] = [];
       for (const action of sortedActionsState) {
-        const updatedAction = currentActions.find((a) => a.ID === action.ID);
+        const updatedAction = currentActions.find(a => a.ID === action.ID);
         if (updatedAction) updatedSortedActions.push(updatedAction);
       }
       // add new actions
       for (const action of currentActions) {
-        if (!updatedSortedActions.some((a) => a.ID === action.ID)) {
+        if (!updatedSortedActions.some(a => a.ID === action.ID)) {
           updatedSortedActions.push(action);
         }
       }
@@ -93,7 +93,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
   }
 
   const doesCurrentActionsContainNotRelevantActions = currentActions.some(
-    (action) => action.status === ActionStatusOptions.NotRelevant,
+    action => action.status === ActionStatusOptions.NotRelevant,
   );
 
   const isActionsEmpty = currentActions.length === 0;
@@ -108,7 +108,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
           {doesCurrentActionsContainNotRelevantActions && (
             <RelevanceToggle
               checked={actionFilters.showOnlyRelevant}
-              onChange={(value) => saveOnlyRelevantFilter(value)}
+              onChange={value => saveOnlyRelevantFilter(value)}
             />
           )}
           {!isActionsEmpty && (
@@ -122,7 +122,7 @@ export function ActionsSection({ formMethods, isEditing }: ActionSectionProps) {
                   )
                 }
                 variant="secondary"
-                onClick={() => setAllowActionDeletion((prev) => !prev)}
+                onClick={() => setAllowActionDeletion(prev => !prev)}
               >
                 {allowActionDeletion}
               </Button>

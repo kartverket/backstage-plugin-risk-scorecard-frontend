@@ -61,7 +61,7 @@ function useCoverageStatusText(
       ? 'vulnerabilities'
       : 'threatActors';
 
-  const translated = notCoveredList.map((item) =>
+  const translated = notCoveredList.map(item =>
     t(
       `${translationPrefix}.${item}` as
         | `threatActors.${ThreatActorsOptions}`

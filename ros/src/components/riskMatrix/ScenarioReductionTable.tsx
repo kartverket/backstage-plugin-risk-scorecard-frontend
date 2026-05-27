@@ -71,7 +71,7 @@ export function ScenarioReductionTable({
   ];
 
   const metricLabel =
-    metricOptions.find((o) => o.value === selectedMetric)?.label ?? '';
+    metricOptions.find(o => o.value === selectedMetric)?.label ?? '';
 
   const columns: ColumnConfig<ScenarioReductionRow>[] = [
     {
@@ -79,7 +79,7 @@ export function ScenarioReductionTable({
       label: t('riskMatrix.currentRisk.scenarioColumn'),
       isRowHeader: true,
       defaultWidth: '2fr',
-      cell: (item) => (
+      cell: item => (
         <Cell>
           <Link
             variant="body-medium"
@@ -95,16 +95,14 @@ export function ScenarioReductionTable({
       label: `${metricLabel} (${t('riskMatrix.estimatedRisk.unit.nokPerYear')})`,
       defaultWidth: '1fr',
       minWidth: 230,
-      cell: (item) => (
-        <CellText title={formatNumber(item[selectedMetric], t)} />
-      ),
+      cell: item => <CellText title={formatNumber(item[selectedMetric], t)} />,
     },
   ];
 
   const scenarios = riScWithMetadata.content.scenarios;
 
   const data: ScenarioReductionRow[] = scenarios
-    .map((scenario) => {
+    .map(scenario => {
       const currentRiskCost = calcRiskCostOfScenario(
         scenario,
         RiskMatrixTabs.currentRisk,
@@ -175,7 +173,7 @@ export function ScenarioReductionTable({
       <Select
         aria-label={t('riskMatrix.currentRisk.metricLabel')}
         value={selectedMetric}
-        onChange={(key) => {
+        onChange={key => {
           if (key) setSelectedMetric(key as MetricKey);
         }}
         options={metricOptions}

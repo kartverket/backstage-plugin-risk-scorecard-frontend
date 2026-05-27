@@ -58,7 +58,7 @@ export function DualButton({
       <MenuTrigger>
         {children}
         <Menu>
-          {menuItems.map((item) => (
+          {menuItems.map(item => (
             <MenuItem
               key={item.key}
               className={classnames({ [styles.selected]: item.selected })}

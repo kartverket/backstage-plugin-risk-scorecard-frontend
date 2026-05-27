@@ -1,0 +1,624 @@
+/**
+ * Core domain types for the RiSc plugin ecosystem.
+ * Shared between the backend plugin and the frontend plugin.
+ *
+ * Ported from the Kotlin backend models:
+ *   - risc/models/RiSc.kt (versioned domain models)
+ *   - risc/models/DTOs.kt (status enums, result types)
+ *   - utils/comparison/ComparisonDTOs.kt (change tracking)
+ *   - utils/comparison/MigrationDTOs.kt (migration changes)
+ */
+
+// ─── Status Enums ──────────────────────────────────────────────────────────────
+
+/** Processing status returned by write operations (create/update/delete/publish). */
+export enum ProcessingStatus {
+  CreatedRiSc = 'CreatedRiSc',
+  UpdatedRiSc = 'UpdatedRiSc',
+  DeletedRiSc = 'DeletedRiSc',
+  DeletedRiScRequiresApproval = 'DeletedRiScRequiresApproval',
+  UpdatedRiScAndCreatedPullRequest = 'UpdatedRiScAndCreatedPullRequest',
+  CreatedPullRequest = 'CreatedPullRequest',
+  UpdatedRiScRequiresNewApproval = 'UpdatedRiScRequiresNewApproval',
+  ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
+  ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
+  ErrorWhenDeletingRiSc = 'ErrorWhenDeletingRiSc',
+  ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
+  InvalidAccessTokens = 'InvalidAccessTokens',
+  NoWriteAccessToRepository = 'NoWriteAccessToRepository',
+  AccessTokensValidationFailure = 'AccessTokensValidationFailure',
+  FailedToFetchGcpProjectIds = 'FailedToFetchGcpProjectIds',
+  FailedToFetchGCPOAuth2TokenInformation = 'FailedToFetchGCPOAuth2TokenInformation',
+  FailedToFetchGCPIAMPermissions = 'FailedToFetchGCPIAMPermissions',
+  FailedToCreateSops = 'FailedToCreateSops',
+  FailedToFetchFromAirtable = 'FailedToFetchFromAirtable',
+  FailedToFetchInitRiScFromGitHub = 'FailedToFetchInitRiScFromGitHub',
+  FailedToFetchInitRiScConfigFromGitHub = 'FailedToFetchInitRiScConfigFromGitHub',
+}
+
+/** Lifecycle status of a RiSc document. */
+export enum RiScStatus {
+  Draft = 'Draft',
+  SentForApproval = 'SentForApproval',
+  Published = 'Published',
+  DeletionDraft = 'DeletionDraft',
+  DeletionSentForApproval = 'DeletionSentForApproval',
+  Deleted = 'Deleted',
+}
+
+/** Content fetch status — indicates the result of reading a RiSc from storage. */
+export enum ContentStatus {
+  Success = 'Success',
+  FileNotFound = 'FileNotFound',
+  DecryptionFailed = 'DecryptionFailed',
+  Failure = 'Failure',
+  NoReadAccess = 'NoReadAccess',
+  SchemaNotFound = 'SchemaNotFound',
+  SchemaValidationFailed = 'SchemaValidationFailed',
+  UnsupportedMigration = 'UnsupportedMigration',
+}
+
+/** Status of a difference/comparison operation. */
+export enum DifferenceStatus {
+  Success = 'Success',
+  GithubFailure = 'GithubFailure',
+  GithubFileNotFound = 'GithubFileNotFound',
+  JsonFailure = 'JsonFailure',
+  DecryptionFailure = 'DecryptionFailure',
+  NoReadAccess = 'NoReadAccess',
+  SchemaNotFound = 'SchemaNotFound',
+  SchemaValidationFailed = 'SchemaValidationFailed',
+  UnsupportedMigration = 'UnsupportedMigration',
+}
+
+// ─── Domain Enums ──────────────────────────────────────────────────────────────
+
+/** Threat actors (v3.x through v5.x). */
+export enum ThreatActor {
+  ScriptKiddie = 'Script kiddie',
+  Hacktivist = 'Hacktivist',
+  RecklessEmployee = 'Reckless employee',
+  Insider = 'Insider',
+  OrganisedCrime = 'Organised crime',
+  TerroristOrganisation = 'Terrorist organisation',
+  NationGovernment = 'Nation/government',
+}
+
+/** Vulnerabilities (v4.x and v5.x). */
+export enum Vulnerability {
+  FlawedDesign = 'Flawed design',
+  Misconfiguration = 'Misconfiguration',
+  DependencyVulnerability = 'Dependency vulnerability',
+  UnauthorizedAccess = 'Unauthorized access',
+  UnmonitoredUse = 'Unmonitored use',
+  InputTampering = 'Input tampering',
+  InformationLeak = 'Information leak',
+  ExcessiveUse = 'Excessive use',
+}
+
+/** Vulnerabilities (v3.x only — replaced in v4.0). */
+export enum Vulnerability3X {
+  CompromisedAdminUser = 'Compromised admin user',
+  DependencyVulnerability = 'Dependency vulnerability',
+  DisclosedSecret = 'Disclosed secret',
+  Misconfiguration = 'Misconfiguration',
+  InputTampering = 'Input tampering',
+  UserRepudiation = 'User repudiation',
+  InformationLeak = 'Information leak',
+  DenialOfService = 'Denial of service',
+  EscalationOfRights = 'Escalation of rights',
+}
+
+/** Action status (v5.x). */
+export enum ActionStatus {
+  OK = 'OK',
+  NotOK = 'Not OK',
+  NotRelevant = 'Not relevant',
+}
+
+/** Action status (v3.x and v4.x — replaced in v5.0). */
+export enum ActionStatus3X4X {
+  NotStarted = 'Not started',
+  InProgress = 'In progress',
+  OnHold = 'On hold',
+  Completed = 'Completed',
+  Aborted = 'Aborted',
+}
+
+/** Valuation: confidentiality classification (deprecated in v5.2+). */
+export enum ValuationConfidentiality {
+  Public = 'Public',
+  Internal = 'Internal',
+  Confidential = 'Confidential',
+  StrictlyConfidential = 'Strictly confidential',
+}
+
+/** Valuation: integrity classification (deprecated in v5.2+). */
+export enum ValuationIntegrity {
+  Insignificant = 'Insignificant',
+  Expected = 'Expected',
+  Dependent = 'Dependent',
+  Critical = 'Critical',
+}
+
+/** Valuation: availability classification (deprecated in v5.2+). */
+export enum ValuationAvailability {
+  Insignificant = 'Insignificant',
+  TwoDays = '2 days',
+  FourHours = '4 hours',
+  Immediate = 'Immediate',
+}
+
+// ─── Domain Models ─────────────────────────────────────────────────────────────
+
+/** Risk assessment with probability and consequence. */
+export interface RiScRisk {
+  summary?: string | null;
+  probability: number;
+  consequence: number;
+}
+
+/** Asset valuation (deprecated in v5.2+). */
+export interface RiScValuation {
+  description: string;
+  confidentiality: ValuationConfidentiality;
+  integrity: ValuationIntegrity;
+  availability: ValuationAvailability;
+}
+
+/** An identifier for a RiSc, used in list views. */
+export interface RiScIdentifier {
+  id: string;
+  status: RiScStatus;
+  pullRequestUrl?: string | null;
+}
+
+/** User info attached to operations. */
+export interface UserInfo {
+  name: string;
+  email: string;
+}
+
+/** Last published metadata. */
+export interface LastPublished {
+  dateTime: string;
+  numberOfCommits: number;
+}
+
+// ─── Versioned RiSc Models ─────────────────────────────────────────────────────
+
+/** Base RiSc structure shared across all versions. */
+export interface RiScBase {
+  schemaVersion: string;
+  title: string;
+  scope: string;
+  valuations?: RiScValuation[] | null;
+}
+
+/** v5.x scenario action. */
+export interface RiSc5XAction {
+  title: string;
+  id: string;
+  description: string;
+  url?: string | null;
+  status: ActionStatus;
+  lastUpdated?: string | null;
+  lastUpdatedBy?: string | null;
+}
+
+/** v5.x scenario. */
+export interface RiSc5XScenario {
+  title: string;
+  id: string;
+  description: string;
+  url?: string | null;
+  threatActors: ThreatActor[];
+  vulnerabilities: Vulnerability[];
+  risk: RiScRisk;
+  remainingRisk: RiScRisk;
+  actions: RiSc5XAction[];
+}
+
+/** v5.x RiSc document. */
+export interface RiSc5X extends RiScBase {
+  scenarios: RiSc5XScenario[];
+}
+
+/** v4.x scenario action. */
+export interface RiSc4XAction {
+  title: string;
+  id: string;
+  description: string;
+  url?: string | null;
+  status: ActionStatus3X4X;
+  lastUpdated?: string | null;
+}
+
+/** v4.x scenario. */
+export interface RiSc4XScenario {
+  title: string;
+  id: string;
+  description: string;
+  url?: string | null;
+  threatActors: ThreatActor[];
+  vulnerabilities: Vulnerability[];
+  risk: RiScRisk;
+  remainingRisk: RiScRisk;
+  actions: RiSc4XAction[];
+}
+
+/** v4.x RiSc document. */
+export interface RiSc4X extends RiScBase {
+  scenarios: RiSc4XScenario[];
+}
+
+/** v3.x scenario action. */
+export interface RiSc3XAction {
+  title: string;
+  id: string;
+  description: string;
+  url?: string | null;
+  status: ActionStatus3X4X;
+  deadline?: string | null;
+  owner?: string | null;
+}
+
+/** v3.x scenario. */
+export interface RiSc3XScenario {
+  title: string;
+  id: string;
+  description: string;
+  url?: string | null;
+  threatActors: ThreatActor[];
+  vulnerabilities: Vulnerability3X[];
+  risk: RiScRisk;
+  remainingRisk: RiScRisk;
+  actions: RiSc3XAction[];
+  existingActions?: string | null;
+}
+
+/** v3.x RiSc document. */
+export interface RiSc3X extends RiScBase {
+  scenarios: RiSc3XScenario[];
+}
+
+/** Union of all versioned RiSc document types. */
+export type RiScDocument = RiSc3X | RiSc4X | RiSc5X;
+
+// ─── SOPS Configuration ────────────────────────────────────────────────────────
+
+export interface GcpKmsEntry {
+  resource_id: string;
+  created_at?: string | null;
+  enc?: string | null;
+}
+
+export interface AgeEntry {
+  recipient: string;
+  enc?: string | null;
+}
+
+export interface KeyGroup {
+  gcp_kms?: GcpKmsEntry[] | null;
+  hc_vault?: unknown[] | null;
+  age?: AgeEntry[] | null;
+}
+
+export interface SopsConfig {
+  shamir_threshold: number;
+  key_groups?: KeyGroup[] | null;
+  kms?: unknown[] | null;
+  gcp_kms?: GcpKmsEntry[] | null;
+  age?: AgeEntry[] | null;
+  lastmodified?: string | null;
+  mac?: string | null;
+  unencrypted_suffix?: string | null;
+  version?: string | null;
+}
+
+// ─── Migration Types ───────────────────────────────────────────────────────────
+
+export interface MigrationVersions {
+  fromVersion: string | null;
+  toVersion: string | null;
+}
+
+export interface MigrationStatus {
+  migrationChanges: boolean;
+  migrationRequiresNewApproval: boolean;
+  migrationVersions: MigrationVersions;
+  migrationChanges40?: MigrationChange40 | null;
+  migrationChanges41?: MigrationChange41 | null;
+  migrationChanges42?: MigrationChange42 | null;
+  migrationChanges50?: MigrationChange50 | null;
+  migrationChanges51?: MigrationChange51 | null;
+  migrationChanges52?: MigrationChange52 | null;
+}
+
+/** Generic changed value (same type before/after). */
+export interface MigrationChangedValue<T> {
+  oldValue: T;
+  newValue: T;
+}
+
+/** Changed value where old and new have different types. */
+export interface MigrationChangedTypedValue<S, T> {
+  oldValue: S;
+  newValue: T;
+}
+
+// v3.3 → 4.0 migration changes
+export interface MigrationChange40 {
+  scenarios: MigrationChange40Scenario[];
+}
+
+export interface MigrationChange40Scenario {
+  title: string;
+  id: string;
+  removedExistingActions?: string | null;
+  changedVulnerabilities: MigrationChangedTypedValue<
+    Vulnerability3X,
+    Vulnerability
+  >[];
+  changedActions: MigrationChange40Action[];
+}
+
+export interface MigrationChange40Action {
+  title: string;
+  id: string;
+  removedOwner?: string | null;
+  removedDeadline?: string | null;
+}
+
+// v4.0 → 4.1 migration changes
+export interface MigrationChange41 {
+  scenarios: MigrationChange41Scenario[];
+}
+
+export interface MigrationChange41Scenario {
+  title: string;
+  id: string;
+  changedRiskProbability?: MigrationChangedValue<number> | null;
+  changedRiskConsequence?: MigrationChangedValue<number> | null;
+  changedRemainingRiskProbability?: MigrationChangedValue<number> | null;
+  changedRemainingRiskConsequence?: MigrationChangedValue<number> | null;
+}
+
+// v4.1 → 4.2 migration changes
+export interface MigrationChange42 {
+  scenarios: MigrationChange42Scenario[];
+}
+
+export interface MigrationChange42Scenario {
+  title: string;
+  id: string;
+  changedActions: MigrationChange42Action[];
+}
+
+export interface MigrationChange42Action {
+  title: string;
+  id: string;
+  lastUpdated?: string | null;
+}
+
+// v4.2 → 5.0 migration changes
+export interface MigrationChange50 {
+  scenarios: MigrationChange50Scenario[];
+}
+
+export interface MigrationChange50Scenario {
+  title: string;
+  id: string;
+  changedActionStatus: MigrationChangedTypedValue<
+    ActionStatus3X4X,
+    ActionStatus
+  >[];
+  changedActions: MigrationChange50Action[];
+}
+
+export interface MigrationChange50Action {
+  title: string;
+  id: string;
+  changedActionStatus: MigrationChangedTypedValue<
+    ActionStatus3X4X,
+    ActionStatus
+  >;
+}
+
+// v5.0 → 5.1 migration changes
+export interface MigrationChange51 {
+  scenarios: MigrationChange51Scenario[];
+}
+
+export interface MigrationChange51Scenario {
+  title: string;
+  id: string;
+  changedActions: MigrationChange51Action[];
+}
+
+export interface MigrationChange51Action {
+  title: string;
+  id: string;
+  lastUpdatedBy?: string | null;
+}
+
+// v5.1 → 5.2 migration changes
+export interface MigrationChange52 {
+  removedValuationsCount: number;
+}
+
+// ─── Change Tracking (Comparison DTOs) ─────────────────────────────────────────
+
+/**
+ * Discriminated union representing how a tracked property changed.
+ * Uses a `type` discriminator for JSON serialization compatibility.
+ */
+export type TrackedProperty<S, T> =
+  | AddedProperty<T>
+  | ChangedProperty<S>
+  | ContentChangedProperty<S>
+  | DeletedProperty<T>
+  | UnchangedProperty<T>;
+
+/** Shorthand when the change-tracking type is the same for all variants. */
+export type SimpleTrackedProperty<T> = TrackedProperty<T, T>;
+
+export interface AddedProperty<T> {
+  type: 'ADDED';
+  newValue: T;
+}
+
+export interface ChangedProperty<S> {
+  type: 'CHANGED';
+  oldValue: S | null;
+  newValue: S | null;
+}
+
+export interface ContentChangedProperty<S> {
+  type: 'CONTENT_CHANGED';
+  value: S;
+}
+
+export interface DeletedProperty<T> {
+  type: 'DELETED';
+  oldValue: T;
+}
+
+export interface UnchangedProperty<T> {
+  type: 'UNCHANGED';
+  value: T;
+}
+
+/** Risk change representation within a diff. */
+export interface RiScRiskChange {
+  summary?: SimpleTrackedProperty<string | null> | null;
+  probability: SimpleTrackedProperty<number>;
+  consequence: SimpleTrackedProperty<number>;
+}
+
+// ─── v5.x Change Types ─────────────────────────────────────────────────────────
+
+export interface RiSc5XChange {
+  type: '5.*';
+  title?: SimpleTrackedProperty<string> | null;
+  scope?: SimpleTrackedProperty<string> | null;
+  valuations: SimpleTrackedProperty<RiScValuation>[];
+  scenarios: TrackedProperty<RiSc5XScenarioChange, RiSc5XScenario>[];
+  migrationChanges: MigrationStatus;
+}
+
+export interface RiSc5XScenarioChange {
+  title: SimpleTrackedProperty<string>;
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null> | null;
+  threatActors: SimpleTrackedProperty<ThreatActor>[];
+  vulnerabilities: SimpleTrackedProperty<Vulnerability>[];
+  risk: SimpleTrackedProperty<RiScRiskChange>;
+  remainingRisk: SimpleTrackedProperty<RiScRiskChange>;
+  actions: TrackedProperty<RiSc5XActionChange, RiSc5XAction>[];
+}
+
+export interface RiSc5XActionChange {
+  title: SimpleTrackedProperty<string>;
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null> | null;
+  status?: SimpleTrackedProperty<ActionStatus> | null;
+  lastUpdated?: SimpleTrackedProperty<string | null> | null;
+  lastUpdatedBy?: SimpleTrackedProperty<string | null> | null;
+}
+
+// ─── v4.x Change Types ─────────────────────────────────────────────────────────
+
+export interface RiSc4XChange {
+  type: '4.*';
+  title?: SimpleTrackedProperty<string> | null;
+  scope?: SimpleTrackedProperty<string> | null;
+  valuations: SimpleTrackedProperty<RiScValuation>[];
+  scenarios: TrackedProperty<RiSc4XScenarioChange, RiSc4XScenario>[];
+  migrationChanges: MigrationStatus;
+}
+
+export interface RiSc4XScenarioChange {
+  title: SimpleTrackedProperty<string>;
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null> | null;
+  threatActors: SimpleTrackedProperty<ThreatActor>[];
+  vulnerabilities: SimpleTrackedProperty<Vulnerability>[];
+  risk: SimpleTrackedProperty<RiScRiskChange>;
+  remainingRisk: SimpleTrackedProperty<RiScRiskChange>;
+  actions: TrackedProperty<RiSc4XActionChange, RiSc4XAction>[];
+}
+
+export interface RiSc4XActionChange {
+  title: SimpleTrackedProperty<string>;
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null> | null;
+  status?: SimpleTrackedProperty<ActionStatus3X4X> | null;
+  lastUpdated?: SimpleTrackedProperty<string | null> | null;
+}
+
+// ─── v3.x Change Types ─────────────────────────────────────────────────────────
+
+export interface RiSc3XChange {
+  type: '3.*';
+  title?: SimpleTrackedProperty<string> | null;
+  scope?: SimpleTrackedProperty<string> | null;
+  valuations?: SimpleTrackedProperty<RiScValuation>[] | null;
+  scenarios?: TrackedProperty<RiSc3XScenarioChange, RiSc3XScenario>[] | null;
+  migrationChanges: MigrationStatus;
+}
+
+export interface RiSc3XScenarioChange {
+  title: SimpleTrackedProperty<string>;
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null> | null;
+  threatActors?: SimpleTrackedProperty<ThreatActor>[] | null;
+  vulnerabilities?: SimpleTrackedProperty<Vulnerability3X>[] | null;
+  risk: SimpleTrackedProperty<RiScRiskChange>;
+  remainingRisk: SimpleTrackedProperty<RiScRiskChange>;
+  actions?: TrackedProperty<RiSc3XActionChange, RiSc3XAction>[] | null;
+  existingActions?: SimpleTrackedProperty<string | null> | null;
+}
+
+export interface RiSc3XActionChange {
+  title: SimpleTrackedProperty<string>;
+  id: string;
+  description: SimpleTrackedProperty<string>;
+  url?: SimpleTrackedProperty<string | null> | null;
+  status?: SimpleTrackedProperty<ActionStatus3X4X> | null;
+  deadline?: SimpleTrackedProperty<string | null> | null;
+  owner?: SimpleTrackedProperty<string | null> | null;
+}
+
+/** Union of all versioned RiSc change types. */
+export type RiScChange = RiSc3XChange | RiSc4XChange | RiSc5XChange;
+
+// ─── GCP Crypto Key Types ──────────────────────────────────────────────────────
+
+export enum CryptoKeyPermission {
+  UNKNOWN = 'UNKNOWN',
+  DECRYPT = 'DECRYPT',
+  ENCRYPT = 'ENCRYPT',
+}
+
+export interface GcpCryptoKeyObject {
+  projectId: string;
+  keyRing: string;
+  name: string;
+  locations: string;
+  resourceId: string;
+  createdAt: string;
+  userPermissions: CryptoKeyPermission[];
+}
+
+// ─── GitHub Repository Info ────────────────────────────────────────────────────
+
+export interface GithubRepoInfo {
+  owner: string;
+  name: string;
+}

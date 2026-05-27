@@ -55,7 +55,7 @@ function ConfigEncryptionDialog({
   const [newPublicAgeKey, setNewPublicAgeKey] = useState('');
   const [publicAgeKeys, setPublicAgeKeys] = useState<string[]>(() => {
     if (sopsData?.age) {
-      return sopsData.age.map((age) => age.recipient);
+      return sopsData.age.map(age => age.recipient);
     }
     return [];
   });
@@ -68,7 +68,7 @@ function ConfigEncryptionDialog({
   const riscCryptoKey =
     state === RiScDialogStates.EditEncryption && sopsData?.gcp_kms
       ? (gcpCryptoKeys.find(
-          (key) => key.resourceId === sopsData.gcp_kms![0].resource_id,
+          key => key.resourceId === sopsData.gcp_kms![0].resource_id,
         ) ?? buildKeyFromSopsData(sopsData))
       : undefined;
 
@@ -76,7 +76,7 @@ function ConfigEncryptionDialog({
     ? [
         riscCryptoKey,
         ...gcpCryptoKeys.filter(
-          (key) => key.resourceId !== riscCryptoKey.resourceId,
+          key => key.resourceId !== riscCryptoKey.resourceId,
         ),
       ]
     : gcpCryptoKeys;
@@ -87,7 +87,7 @@ function ConfigEncryptionDialog({
     if (state === RiScDialogStates.EditEncryption && sopsData?.gcp_kms) {
       const gcpKms = sopsData.gcp_kms[0];
       return choosableCryptoKeys.find(
-        (key) => key.resourceId === gcpKms?.resource_id,
+        key => key.resourceId === gcpKms?.resource_id,
       );
     }
     return gcpCryptoKeys[0];
@@ -111,13 +111,13 @@ function ConfigEncryptionDialog({
             },
           ]
         : [],
-      age: publicAgeKeys.map((key) => ({ recipient: key })),
+      age: publicAgeKeys.map(key => ({ recipient: key })),
     });
   }, [chosenGcpCryptoKey, publicAgeKeys, setValue]);
 
   // Require one key group to contain a GCP key
   register('sopsConfig.gcp_kms', {
-    validate: (gcpKeys) => gcpKeys.length > 0,
+    validate: gcpKeys => gcpKeys.length > 0,
   });
 
   function handleChangeGcpCryptoKey(newKey: GcpCryptoKeyObject) {
@@ -190,14 +190,14 @@ function ConfigEncryptionDialog({
                   }}
                 >
                   <List>
-                    {publicAgeKeys.map((key) => (
+                    {publicAgeKeys.map(key => (
                       <ListItem key={key} dense>
                         <ListItemText>{key}</ListItemText>
                         <ListItemSecondaryAction>
                           <IconButton
                             onClick={() => {
                               setPublicAgeKeys(
-                                publicAgeKeys.filter((k) => k !== key),
+                                publicAgeKeys.filter(k => k !== key),
                               );
                             }}
                           >
@@ -249,7 +249,7 @@ function ConfigEncryptionDialog({
                       label={t('sopsConfigDialog.publicAgeKey')}
                       helperText={publicAgeKeyHelperText}
                       error={publicAgeKeyError}
-                      onKeyDown={(e) => {
+                      onKeyDown={e => {
                         if (e.key === 'Enter') {
                           handleAddPublicAgeKey();
                         }
@@ -259,7 +259,7 @@ function ConfigEncryptionDialog({
                         setPublicKeyTextFieldHelperText('');
                       }}
                       value={newPublicAgeKey}
-                      onChange={(e) => setNewPublicAgeKey(e.target.value)}
+                      onChange={e => setNewPublicAgeKey(e.target.value)}
                       sx={{ flex: 1 }}
                     />
                     <Button

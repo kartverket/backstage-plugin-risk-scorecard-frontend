@@ -33,12 +33,12 @@ export function CoverageTable(props: CoverageTableProps) {
       id: 'coverageType',
       label: firstColumnLabel,
       isRowHeader: true,
-      cell: (item) => <CellText title={item.typeLabel} />,
+      cell: item => <CellText title={item.typeLabel} />,
     },
     {
       id: 'numOfCoveringScenarios',
       label: t('threatActorsAndVulnerabilities.tableColumnScenarios'),
-      cell: (item) => (
+      cell: item => (
         <CellText
           title={
             item.numOfCoveringScenarios === 0

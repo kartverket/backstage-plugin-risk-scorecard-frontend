@@ -30,14 +30,14 @@ export function ScenarioTableFilter(props: ScenarioTableFilterProps) {
           placeholder="Søk etter tiltak ..."
           aria-label="search field"
           value={props.actionSearchQuery}
-          onChange={(value) => props.onActionSearchQueryChange(value)}
+          onChange={value => props.onActionSearchQueryChange(value)}
         />
       </Flex>
       <Flex>
         <Select
           aria-label="sortering"
           defaultValue={props.scenarioSortOrder ?? 'NoSorting'}
-          onSelectionChange={(key) =>
+          onSelectionChange={key =>
             props.onScenarioSortOrderChange(key?.toString() ?? 'NoSorting')
           }
           options={[

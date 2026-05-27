@@ -54,7 +54,7 @@ export function ScopeSection() {
             {t('dictionary.threatActors')}
           </Text>
           {scenario.threatActors.length > 0 ? (
-            scenario.threatActors.map((threatActor) => {
+            scenario.threatActors.map(threatActor => {
               /* @ts-ignore Because ts can't typecheck strings against our keys */
               const translatedThreatActor = t(`threatActors.${threatActor}`);
               return (
@@ -81,7 +81,7 @@ export function ScopeSection() {
             {t('dictionary.vulnerabilities')}
           </Text>
           {scenario.vulnerabilities.length > 0 ? (
-            scenario.vulnerabilities.map((vulnerability) => {
+            scenario.vulnerabilities.map(vulnerability => {
               /* @ts-ignore Because ts can't typecheck strings against our keys */
               const translatedVulnerability = t(
                 `vulnerabilities.${vulnerability}`,

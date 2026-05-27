@@ -34,7 +34,7 @@ export function ScenarioStep({
   } = formMethods;
 
   const threatActorOptions = Object.values(ThreatActorsOptions).map(
-    (threatActor) => ({
+    threatActor => ({
       value: threatActor,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
       renderedValue: t(threatActorOptionsToTranslationKeys[threatActor]),
@@ -42,7 +42,7 @@ export function ScenarioStep({
   );
 
   const vulnerabilitiesOptions = Object.values(VulnerabilitiesOptions).map(
-    (vulnerability) => ({
+    vulnerability => ({
       value: vulnerability,
       /* @ts-ignore Because ts can't typecheck strings against our keys */
       renderedValue: t(vulnerabiltiesOptionsToTranslationKeys[vulnerability]),
@@ -95,7 +95,7 @@ export function ScenarioStep({
         {...register('description')}
         label={t('dictionary.description')}
         value={currentDescription}
-        onMarkdownChange={(value) => setValue('description', value)}
+        onMarkdownChange={value => setValue('description', value)}
         minRows={8}
       />
     </Stack>
