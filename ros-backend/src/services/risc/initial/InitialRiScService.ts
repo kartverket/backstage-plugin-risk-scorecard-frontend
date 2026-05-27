@@ -1,5 +1,8 @@
-import type { GitHubService, GithubContentResponse } from './GitHubService';
-import { GithubStatus } from './GitHubService';
+import type {
+  GitHubAdapter,
+  GithubContentResponse,
+} from '../storage/GitHubAdapter.ts';
+import { GithubStatus } from '../storage/GitHubAdapter.ts';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -63,7 +66,7 @@ interface RiSc5XTemplate {
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 export interface InitRiScServiceOptions {
-  githubService: GitHubService;
+  githubService: GitHubAdapter;
   config: InitRiScConfig;
 }
 
@@ -71,8 +74,8 @@ export interface InitRiScServiceOptions {
  * Service for fetching initial RiSc templates from a configured GitHub repository.
  * Provides template descriptors (list of available templates) and cleaned template content.
  */
-export class InitRiScService {
-  private readonly github: GitHubService;
+export class InitialRiScService {
+  private readonly github: GitHubAdapter;
   private readonly config: InitRiScConfig;
   constructor(options: InitRiScServiceOptions) {
     this.github = options.githubService;

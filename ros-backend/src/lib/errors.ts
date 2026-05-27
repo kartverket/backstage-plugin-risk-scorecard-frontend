@@ -1,5 +1,9 @@
 import { ProcessingStatus } from '@internal/backstage-plugin-ros-common';
 
+// TODO: Tenk på hvor dette burde ligge. Abstractions? Domain?
+//       Flytte til common?
+//       Ta i bruk feilene i omskrevet backend-kode
+
 /**
  * Base error class for all domain errors in the RiSc backend.
  * Each subclass carries a ProcessingStatus for the frontend and an HTTP status code.

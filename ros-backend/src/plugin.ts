@@ -3,14 +3,14 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
-import { RiScService } from './services/RiScService';
-import { GitHubService } from './services/GitHubService';
-import { SopsCryptoService } from './services/SopsCryptoService';
-import { GcpKmsService } from './services/GcpKmsService';
-import { InitRiScService } from './services/InitRiScService';
-import { SlackService } from './services/SlackService';
-import * as SchemaService from './services/SchemaService';
-import * as ComparisonService from './services/ComparisonService';
+import { RiScService } from './services/risc/RiScService.ts';
+import { GitHubAdapter } from './services/risc/storage/GitHubAdapter.ts';
+import { SopsService } from './services/sops/SopsService.ts';
+import { KeyManagementService } from './services/key-management/KeyManagementService.ts';
+import { InitialRiScService } from './services/risc/initial/InitialRiScService.ts';
+import { SlackAdapter } from './services/slack/SlackAdapter.ts';
+import * as SchemaService from './services/risc/schema/SchemaService.ts';
+import * as ComparisonService from './services/risc/comparison/RiScComparisonService.ts';
 
 /**
  * The RiSc backend plugin.
@@ -51,8 +51,8 @@ export const rosPlugin = createBackendPlugin({
           ) ?? [];
 
         // Instantiate services
-        const gitHubService = new GitHubService();
-        const cryptoService = new SopsCryptoService({
+        const gitHubService = new GitHubAdapter();
+        const cryptoService = new SopsService({
           agePrivateKey: sopsAgeKey,
           backendPublicKey: sopsBackendPublicKey,
           securityTeamPublicKey: sopsSecurityTeamPublicKey,
@@ -67,18 +67,18 @@ export const rosPlugin = createBackendPlugin({
           logger,
         );
 
-        const gcpKmsService = new GcpKmsService({
+        const gcpKmsService = new KeyManagementService({
           additionalAllowedProjectIds,
           logger,
         });
 
-        const initRiScService = new InitRiScService({
+        const initRiScService = new InitialRiScService({
           githubService: gitHubService,
           config: { repoOwner: initRiScRepoOwner, repoName: initRiScRepoName },
         });
 
         const slackService = slackWebhookUrl
-          ? new SlackService({ webhookUrl: slackWebhookUrl, logger })
+          ? new SlackAdapter({ webhookUrl: slackWebhookUrl, logger })
           : null;
 
         // Create and mount router

@@ -38,7 +38,7 @@ import {
   changeForListOfSimpleProperty,
   changeForListOfComplexProperty,
   ComparisonError,
-} from '../services/ComparisonService';
+} from '../services/risc/comparison/RiScComparisonService.ts';
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -48,27 +48,46 @@ const noMigration: MigrationStatus = {
   migrationVersions: { fromVersion: '5.2', toVersion: '5.2' },
 };
 
-function makeAction(overrides: Partial<RiSc5XAction> = {}): RiSc5XAction {
+type ActionOverrides = Partial<RiSc5XAction['action']> & {
+  id?: string;
+  title?: string;
+};
+
+function makeAction(overrides: ActionOverrides = {}): RiSc5XAction {
+  const { title = 'Action 1', id, ID, ...actionOverrides } = overrides;
   return {
-    title: 'Action 1',
-    id: 'action-1',
-    description: 'Do something',
-    status: ActionStatus.NotOK,
-    ...overrides,
+    title,
+    action: {
+      ID: id ?? ID ?? 'action1',
+      description: 'Do something',
+      status: ActionStatus['Not OK'],
+      ...actionOverrides,
+    },
   };
 }
 
-function makeScenario(overrides: Partial<RiSc5XScenario> = {}): RiSc5XScenario {
+type ScenarioOverrides = Partial<
+  Omit<RiSc5XScenario['scenario'], 'actions'>
+> & {
+  id?: string;
+  title?: string;
+  actions?: RiSc5XAction[];
+};
+
+function makeScenario(overrides: ScenarioOverrides = {}): RiSc5XScenario {
+  const { title = 'Scenario 1', id, ID, ...scenarioOverrides } = overrides;
   return {
-    title: 'Scenario 1',
-    id: 'scenario-1',
-    description: 'A test scenario',
-    threatActors: [ThreatActor.ScriptKiddie],
-    vulnerabilities: [Vulnerability.Misconfiguration],
-    risk: { probability: 1.0, consequence: 1000.0 },
-    remainingRisk: { probability: 0.05, consequence: 100.0 },
-    actions: [makeAction()],
-    ...overrides,
+    title,
+    scenario: {
+      ID: id ?? ID ?? 'scenario1',
+      description: 'A test scenario',
+      threatActors: [ThreatActor['Script kiddie']],
+      vulnerabilities: [Vulnerability.Misconfiguration],
+      risk: { probability: 1.0, consequence: 1000.0 },
+      remainingRisk: { probability: 0.05, consequence: 100.0 },
+      actions: [makeAction()],
+      ...scenarioOverrides,
+    },
   };
 }
 
@@ -265,7 +284,7 @@ describe('comparison5X', () => {
       type: 'ADDED';
       newValue: RiSc5XScenario;
     };
-    expect(added.newValue.id).toBe('scenario-1');
+    expect(added.newValue.scenario.ID).toBe('scenario1');
   });
 
   it('detects scenario deletion', () => {
@@ -379,7 +398,7 @@ describe('comparison5X', () => {
           description: 'Val 1',
           confidentiality: ValuationConfidentiality.Internal,
           integrity: ValuationIntegrity.Expected,
-          availability: ValuationAvailability.TwoDays,
+          availability: ValuationAvailability['2 days'],
         },
       ],
     });
@@ -403,11 +422,11 @@ describe('comparison5X', () => {
   it('detects threat actor list changes', () => {
     const oldScenario = makeScenario({
       id: 'S1',
-      threatActors: [ThreatActor.ScriptKiddie],
+      threatActors: [ThreatActor['Script kiddie']],
     });
     const newScenario = makeScenario({
       id: 'S1',
-      threatActors: [ThreatActor.ScriptKiddie, ThreatActor.Insider],
+      threatActors: [ThreatActor['Script kiddie'], ThreatActor.Insider],
     });
 
     const result = comparison5X(
@@ -431,7 +450,7 @@ describe('comparison5X', () => {
   });
 
   it('detects action status change as non-mandatory field', () => {
-    const oldAction = makeAction({ id: 'A1', status: ActionStatus.NotOK });
+    const oldAction = makeAction({ id: 'A1', status: ActionStatus['Not OK'] });
     const newAction = makeAction({ id: 'A1', status: ActionStatus.OK });
 
     const result = comparison5X(

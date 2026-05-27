@@ -5,16 +5,12 @@
  *   - risc/RiScService.kt (661 lines)
  *   - github/GithubRiscMetadata.kt (116 lines)
  *
- * Coordinates GitHubService, SopsCryptoService, SchemaService, and ComparisonService
+ * Coordinates GitHubAdapter, SopsService, SchemaService, and ComparisonService
  * to provide create/read/update/delete/publish/diff operations on Risk Scorecards.
  */
 
 import type {
-  ContentStatus,
-  DifferenceStatus,
   MigrationStatus,
-  ProcessingStatus,
-  RiScStatus,
   SopsConfig,
   UserInfo,
   RiScContentResultDTO,
@@ -26,18 +22,21 @@ import type {
   PendingApprovalDTO,
   GithubPullRequestObject,
   GithubReferenceObjectDTO,
-  RiScDocument,
 } from '@internal/backstage-plugin-ros-common';
 import {
   DRAFT_BRANCH_PREFIX,
   RISC_FILE_PREFIX,
+  RiScStatus,
 } from '@internal/backstage-plugin-ros-common';
 
-import type * as ComparisonService from './ComparisonService';
-import type { GitHubService, GithubContentResponse } from './GitHubService';
-import { GithubStatus } from './GitHubService';
-import type * as SchemaService from './SchemaService';
-import type { SopsCryptoService } from './SopsCryptoService';
+import type * as ComparisonService from './comparison/RiScComparisonService.ts';
+import type {
+  GitHubAdapter,
+  GithubContentResponse,
+} from './storage/GitHubAdapter.ts';
+import { GithubStatus } from './storage/GitHubAdapter.ts';
+import type * as SchemaService from './schema/SchemaService.ts';
+import type { SopsService } from '../sops/SopsService.ts';
 import type { LoggerService } from '@backstage/backend-plugin-api';
 
 /** Metadata about a RiSc's state across GitHub branches and PRs. */
@@ -80,7 +79,7 @@ function getRiScStatus(
 
   if (!metadata.hasBranch) {
     // No branch at all
-  } else if (branchContent.status !== GithubStatus.Success) {
+  } else if (branchContent.status === GithubStatus.NotFound) {
     branchHasNoFile = true;
   } else if (
     mainContent.status === GithubStatus.Success &&
@@ -93,20 +92,18 @@ function getRiScStatus(
 
   if (isStoredInMain) {
     if (branchHasNoFile) {
-      return (
-        hasOpenPR ? 'DeletionSentForApproval' : 'DeletionDraft'
-      ) as RiScStatus;
+      return hasOpenPR ? 'DeletionSentForApproval' : 'DeletionDraft';
     }
     if (hasDifferentBranchContent) {
-      return (hasOpenPR ? 'SentForApproval' : 'Draft') as RiScStatus;
+      return hasOpenPR ? 'SentForApproval' : 'Draft';
     }
-    return 'Published' as RiScStatus;
+    return 'Published';
   }
 
   if (hasDifferentBranchContent) {
-    return (hasOpenPR ? 'SentForApproval' : 'Draft') as RiScStatus;
+    return hasOpenPR ? 'SentForApproval' : 'Draft';
   }
-  return 'Deleted' as RiScStatus;
+  return 'Deleted';
 }
 
 /**
@@ -118,12 +115,12 @@ function chooseContentFromStatus(
   mainContent: GithubContentResponse,
 ): GithubContentResponse {
   switch (status) {
-    case 'SentForApproval' as RiScStatus:
-    case 'Draft' as RiScStatus:
+    case 'SentForApproval':
+    case 'Draft':
       return branchContent;
-    case 'Published' as RiScStatus:
-    case 'DeletionDraft' as RiScStatus:
-    case 'DeletionSentForApproval' as RiScStatus:
+    case 'Published':
+    case 'DeletionDraft':
+    case 'DeletionSentForApproval':
       return mainContent;
     default:
       return { data: null, status: GithubStatus.ContentIsEmpty };
@@ -134,8 +131,8 @@ function chooseContentFromStatus(
 
 export class RiScService {
   constructor(
-    private readonly gitHubService: GitHubService,
-    private readonly cryptoService: SopsCryptoService,
+    private readonly gitHubService: GitHubAdapter,
+    private readonly cryptoService: SopsService,
     private readonly schemaService: typeof SchemaService,
     private readonly comparisonService: typeof ComparisonService,
     private readonly logger?: LoggerService,
@@ -179,25 +176,25 @@ export class RiScService {
     );
 
     const riScResults: RiScContentResultDTO[] = results
-      .map((result, index) => {
+      .map((result, index): RiScContentResultDTO => {
         if (result.status === 'fulfilled') {
           return result.value;
         }
         // On rejection, return a failure DTO
         return {
           riScId: metadata[index].id,
-          status: 'Failure' as ContentStatus,
+          status: 'Failure',
           riScStatus: null,
           riScContent: null,
           statusMessage: `Failed to fetch RiSc: ${result.reason instanceof Error ? result.reason.message : 'Unknown error'}`,
           migrationStatus: this.emptyMigrationStatus(),
-        } as RiScContentResultDTO;
+        };
       })
-      .filter(r => (r.riScStatus as string) !== 'Deleted');
+      .filter(r => r.riScStatus !== 'Deleted');
 
     // Validate and migrate
     return riScResults.map(dto => {
-      if (dto.status !== ('Success' as ContentStatus)) return dto;
+      if (dto.status !== 'Success') return dto;
 
       // Validate
       const validationResult = this.schemaService.validate(dto.riScContent!);
@@ -205,7 +202,7 @@ export class RiScService {
         this.logger?.warn(`RiSc ${dto.riScId} failed validation`);
         return {
           ...dto,
-          status: 'SchemaValidationFailed' as ContentStatus,
+          status: 'SchemaValidationFailed',
           riScStatus: null,
           riScContent: null,
           statusMessage: 'Schema validation failed',
@@ -228,7 +225,7 @@ export class RiScService {
       } catch {
         return {
           ...dto,
-          status: 'UnsupportedMigration' as ContentStatus,
+          status: 'UnsupportedMigration',
           riScStatus: null,
           riScContent: null,
           statusMessage: 'Migration failed',
@@ -262,7 +259,7 @@ export class RiScService {
     if (!validationResult.valid) {
       return {
         riScId,
-        status: 'ErrorWhenCreatingRiSc' as ProcessingStatus,
+        status: 'ErrorWhenCreatingRiSc',
         statusMessage: `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
         riScContent: null,
         sopsConfig,
@@ -306,7 +303,7 @@ export class RiScService {
 
     return {
       riScId,
-      status: 'CreatedRiSc' as ProcessingStatus,
+      status: 'CreatedRiSc',
       statusMessage: 'New RiSc was created',
       riScContent: content,
       sopsConfig,
@@ -338,8 +335,25 @@ export class RiScService {
     if (!validationResult.valid) {
       return {
         riScId,
-        status: 'ErrorWhenUpdatingRiSc' as ProcessingStatus,
+        status: 'ErrorWhenUpdatingRiSc',
         statusMessage: `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
+      };
+    }
+
+    const { status: riscStatus, branchSha } = await this.resolveRiscStatus(
+      riScId,
+      owner,
+      repo,
+      githubToken,
+    );
+    if (
+      riscStatus === 'DeletionDraft' ||
+      riscStatus === 'DeletionSentForApproval'
+    ) {
+      return {
+        riScId,
+        status: 'ErrorWhenUpdatingRiSc' as ProcessingStatus,
+        statusMessage: `RiSc is staged for deletion (${riscStatus}). Undo deletion (or publish deletion) before editing.`,
       };
     }
 
@@ -353,12 +367,6 @@ export class RiScService {
 
     // Ensure draft branch exists
     const branchName = this.gitHubService.draftBranchName(riScId);
-    const branchSha = await this.gitHubService.fetchBranchHeadSha(
-      owner,
-      repo,
-      branchName,
-      githubToken,
-    );
 
     if (!branchSha) {
       // Create new draft branch
@@ -415,7 +423,7 @@ export class RiScService {
         );
         return {
           riScId,
-          status: 'UpdatedRiScRequiresNewApproval' as ProcessingStatus,
+          status: 'UpdatedRiScRequiresNewApproval',
           statusMessage:
             'Risk scorecard was updated and has to be approved by a risk owner again',
         };
@@ -424,7 +432,7 @@ export class RiScService {
 
     return {
       riScId,
-      status: 'UpdatedRiSc' as ProcessingStatus,
+      status: 'UpdatedRiSc',
       statusMessage: 'Risk scorecard was updated',
     };
   }
@@ -464,7 +472,7 @@ export class RiScService {
       );
       return {
         riScId,
-        status: 'DeletedRiSc' as ProcessingStatus,
+        status: 'DeletedRiSc',
         statusMessage:
           'Risk scorecard was deleted - no approval required as it was never published',
       };
@@ -519,7 +527,7 @@ export class RiScService {
 
     return {
       riScId,
-      status: 'DeletedRiScRequiresApproval' as ProcessingStatus,
+      status: 'DeletedRiScRequiresApproval',
       statusMessage:
         'Risk scorecard was staged for deletion - the deletion requires approval',
     };
@@ -549,7 +557,7 @@ export class RiScService {
     if (!branchSha) {
       return {
         riScId,
-        status: 'ErrorWhenCreatingPullRequest' as ProcessingStatus,
+        status: 'ErrorWhenCreatingPullRequest',
         statusMessage: 'No draft branch found for this RiSc',
         pendingApproval: null,
       };
@@ -575,7 +583,7 @@ export class RiScService {
 
     return {
       riScId,
-      status: 'CreatedPullRequest' as ProcessingStatus,
+      status: 'CreatedPullRequest',
       statusMessage: 'Pull request was created',
       pendingApproval: this.toPendingApprovalDTO(pr),
     };
@@ -607,7 +615,7 @@ export class RiScService {
 
     if (publishedResponse.status === GithubStatus.NotFound) {
       return {
-        status: 'GithubFileNotFound' as DifferenceStatus,
+        status: 'GithubFileNotFound',
         differenceState: null,
         errorMessage: 'Encountered Github problem: File not found',
         defaultLastModifiedDateString: '',
@@ -619,7 +627,7 @@ export class RiScService {
       !publishedResponse.data
     ) {
       return {
-        status: 'GithubFailure' as DifferenceStatus,
+        status: 'GithubFailure',
         differenceState: null,
         errorMessage: 'Encountered Github problem: Github failure',
         defaultLastModifiedDateString: '',
@@ -635,7 +643,7 @@ export class RiScService {
       );
     } catch {
       return {
-        status: 'DecryptionFailure' as DifferenceStatus,
+        status: 'DecryptionFailure',
         differenceState: null,
         errorMessage: 'Encountered ROS problem: Could not decrypt content',
         defaultLastModifiedDateString: '',
@@ -644,12 +652,10 @@ export class RiScService {
 
     // Compare
     try {
-      const updatedDoc = this.schemaService.parseContent(
-        draftRiScContent,
-      ) as unknown as RiScDocument;
+      const updatedDoc = this.schemaService.parseContent(draftRiScContent);
       const publishedDoc = this.schemaService.parseContent(
         decryptedPublished.content,
-      ) as unknown as RiScDocument;
+      );
 
       const differenceState = this.comparisonService.compare(
         updatedDoc,
@@ -657,7 +663,7 @@ export class RiScService {
       );
 
       return {
-        status: 'Success' as DifferenceStatus,
+        status: 'Success',
         differenceState,
         errorMessage: '',
         defaultLastModifiedDateString:
@@ -668,7 +674,7 @@ export class RiScService {
         `Comparison failed for ${riScId}: ${e instanceof Error ? e.message : e}`,
       );
       return {
-        status: 'JsonFailure' as DifferenceStatus,
+        status: 'JsonFailure',
         differenceState: null,
         errorMessage: `Comparison failed: ${e instanceof Error ? e.message : 'Unknown error'}`,
         defaultLastModifiedDateString:
@@ -737,8 +743,26 @@ export class RiScService {
         : Promise.resolve({
             data: null,
             status: GithubStatus.NotFound,
-          } as GithubContentResponse),
+          } satisfies GithubContentResponse),
     ]);
+
+    if (
+      metadata.hasBranch &&
+      branchContent.status !== GithubStatus.Success &&
+      branchContent.status !== GithubStatus.NotFound
+    ) {
+      return {
+        riScId: metadata.id,
+        status:
+          branchContent.status === GithubStatus.Unauthorized
+            ? 'NoReadAccess'
+            : 'Failure',
+        riScStatus: null,
+        riScContent: null,
+        statusMessage: `Failed to fetch branch content from GitHub: ${branchContent.status}`,
+        migrationStatus: this.emptyMigrationStatus(),
+      };
+    }
 
     const riScStatus = getRiScStatus(metadata, mainContent, branchContent);
     const contentToUse = chooseContentFromStatus(
@@ -751,7 +775,7 @@ export class RiScService {
       if (contentToUse.status === GithubStatus.NotFound) {
         return {
           riScId: metadata.id,
-          status: 'FileNotFound' as ContentStatus,
+          status: 'FileNotFound',
           riScStatus,
           riScContent: null,
           statusMessage: 'File not found',
@@ -760,7 +784,7 @@ export class RiScService {
       }
       return {
         riScId: metadata.id,
-        status: 'Failure' as ContentStatus,
+        status: 'Failure',
         riScStatus,
         riScContent: null,
         statusMessage: 'Failed to fetch content from GitHub',
@@ -785,7 +809,7 @@ export class RiScService {
 
       return {
         riScId: metadata.id,
-        status: 'Success' as ContentStatus,
+        status: 'Success',
         riScStatus,
         riScContent: decrypted.content,
         sopsConfig: decrypted.sopsConfig,
@@ -797,7 +821,7 @@ export class RiScService {
     } catch (e) {
       return {
         riScId: metadata.id,
-        status: 'DecryptionFailed' as ContentStatus,
+        status: 'DecryptionFailed',
         riScStatus,
         riScContent: null,
         statusMessage: e instanceof Error ? e.message : 'Decryption failed',
@@ -820,6 +844,61 @@ export class RiScService {
       migrationChanges: false,
       migrationRequiresNewApproval: false,
       migrationVersions: { fromVersion: null, toVersion: null },
+    };
+  }
+
+  private async resolveRiscStatus(
+    riScId: string,
+    owner: string,
+    repo: string,
+    githubToken: string,
+  ): Promise<{ status: RiScStatus; branchSha: string | null }> {
+    const filePath = this.gitHubService.riScFilePath(riScId);
+    const branchName = this.gitHubService.draftBranchName(riScId);
+
+    const [publishedFile, branchSha, openPRs] = await Promise.all([
+      this.gitHubService.fetchFileInfo(owner, repo, filePath, githubToken),
+      this.gitHubService.fetchBranchHeadSha(
+        owner,
+        repo,
+        branchName,
+        githubToken,
+      ),
+      this.gitHubService.fetchOpenPullRequests(owner, repo, githubToken),
+    ]);
+
+    const isStoredInMain = publishedFile !== null;
+    const hasBranch = branchSha !== null;
+    const hasOpenPR = openPRs.some(pr => pr.head.ref === branchName);
+
+    const metadata: RiScGithubMetadata = {
+      id: riScId,
+      isStoredInMain,
+      hasBranch,
+      hasOpenPR,
+      prUrl: openPRs.find(pr => pr.head.ref === branchName)?.html_url ?? null,
+      prNumber: openPRs.find(pr => pr.head.ref === branchName)?.number ?? null,
+    };
+
+    const [mainContent, branchContent] = await Promise.all([
+      this.gitHubService.fetchFileContent(owner, repo, filePath, githubToken),
+      hasBranch
+        ? this.gitHubService.fetchFileContent(
+            owner,
+            repo,
+            filePath,
+            githubToken,
+            branchName,
+          )
+        : Promise.resolve({
+            data: null,
+            status: GithubStatus.NotFound,
+          } as GithubContentResponse),
+    ]);
+
+    return {
+      status: getRiScStatus(metadata, mainContent, branchContent),
+      branchSha,
     };
   }
 }

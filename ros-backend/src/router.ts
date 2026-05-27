@@ -9,10 +9,10 @@ import express, {
 } from 'express';
 import { ProcessingStatus } from '@internal/backstage-plugin-ros-common';
 import { AccessTokenValidationError, DomainError } from './lib/errors';
-import type { RiScService } from './services/RiScService';
-import type { GcpKmsService } from './services/GcpKmsService';
-import type { InitRiScService } from './services/InitRiScService';
-import type { SlackService } from './services/SlackService';
+import type { RiScService } from './services/risc/RiScService.ts';
+import type { KeyManagementService } from './services/key-management/KeyManagementService.ts';
+import type { InitialRiScService } from './services/risc/initial/InitialRiScService.ts';
+import type { SlackAdapter } from './services/slack/SlackAdapter.ts';
 import { latestSupportedVersion } from '@internal/backstage-plugin-ros-common';
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -20,9 +20,9 @@ export interface RouterOptions {
   logger: LoggerService;
   httpAuth: HttpAuthService;
   riScService: RiScService;
-  gcpKmsService: GcpKmsService;
-  initRiScService: InitRiScService;
-  slackService: SlackService | null;
+  gcpKmsService: KeyManagementService;
+  initRiScService: InitialRiScService;
+  slackService: SlackAdapter | null;
 }
 
 /** Standard error response shape consumed by the frontend. */
@@ -34,7 +34,10 @@ interface ErrorResponse {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /** Extracts the GitHub or GCP access token from the request header. */
-export function extractToken(req: Request, headerName: string): string | undefined {
+export function extractToken(
+  req: Request,
+  headerName: string,
+): string | undefined {
   const token = req.headers[headerName.toLowerCase()];
   return Array.isArray(token) ? token[0] : token;
 }
@@ -48,7 +51,9 @@ function requireTokens(
   need: { gcp?: boolean; github?: boolean },
 ): { gcpToken: string; githubToken: string } {
   const gcpToken = need.gcp ? extractToken(req, 'gcp-access-token') : '';
-  const githubToken = need.github ? extractToken(req, 'github-access-token') : '';
+  const githubToken = need.github
+    ? extractToken(req, 'github-access-token')
+    : '';
   if ((need.gcp && !gcpToken) || (need.github && !githubToken)) {
     throw new AccessTokenValidationError('Missing required access tokens');
   }
@@ -309,11 +314,13 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
       res.json(keys);
     }),
   );
+  // TODO: Verifier at vi har nok logging til å se hvem som har brukt omskrivningen til lagring (grafana)
 
+  // TODO: Rename til InitialRisc nedover?
   // ─── Init RiSc ────────────────────────────────────────────────────────────
 
   router.get(
-    '/initrisc',
+    '/initrisc', // '/risc/initial'?
     asyncHandler(async (req, res) => {
       const { githubToken } = requireTokens(req, { github: true });
 

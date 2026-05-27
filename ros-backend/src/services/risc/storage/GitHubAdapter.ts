@@ -63,7 +63,7 @@ const GITHUB_API_BASE = 'https://api.github.com';
  * Low-level GitHub REST API client for repository operations.
  * All operations use token-based authorization (Bearer or `token` header).
  */
-export class GitHubService {
+export class GitHubAdapter {
   private readonly fetchFn: typeof fetch;
 
   constructor(fetchFn?: typeof fetch) {
@@ -328,12 +328,12 @@ export class GitHubService {
     branch: string,
     token: string,
   ): Promise<string | null> {
-    const commit = await this.requestOrNull<GithubCommitObject>(
+    const branchInfo = await this.requestOrNull<{ commit: { sha: string } }>(
       'GET',
-      `${GITHUB_API_BASE}/repos/${owner}/${repo}/commits/heads/${branch}`,
+      `${GITHUB_API_BASE}/repos/${owner}/${repo}/branches/${encodeURIComponent(branch)}`,
       token,
     );
-    return commit?.sha ?? null;
+    return branchInfo?.commit.sha ?? null;
   }
 
   /**

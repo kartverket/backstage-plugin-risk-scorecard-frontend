@@ -13,7 +13,7 @@ export interface SlackServiceOptions {
 /**
  * Service for sending messages to Slack via a configured webhook URL.
  */
-export class SlackService {
+export class SlackAdapter {
   private readonly webhookUrl: string;
   private readonly logger: LoggerService;
   private readonly fetchFn: typeof fetch;

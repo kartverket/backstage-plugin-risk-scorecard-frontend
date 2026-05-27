@@ -1,8 +1,8 @@
 import {
-  GitHubService,
+  GitHubAdapter,
   GitHubApiError,
   GithubStatus,
-} from '../services/GitHubService';
+} from '../services/risc/storage/GitHubAdapter.ts';
 
 // ─── Mock Fetch Setup ─────────────────────────────────────────────────────────
 
@@ -24,13 +24,13 @@ function mockErrorResponse(status: number, body = ''): Response {
   } as Response;
 }
 
-describe('GitHubService', () => {
-  let service: GitHubService;
+describe('GitHubAdapter', () => {
+  let service: GitHubAdapter;
   let mockFetch: jest.Mock;
 
   beforeEach(() => {
     mockFetch = jest.fn();
-    service = new GitHubService(mockFetch);
+    service = new GitHubAdapter(mockFetch);
   });
 
   const owner = 'test-org';
@@ -57,9 +57,9 @@ describe('GitHubService', () => {
     });
 
     it('extracts RiSc ID from branch ref', () => {
-      expect(
-        service.riScIdFromBranchRef('refs/heads/risc-abc12'),
-      ).toBe('risc-abc12');
+      expect(service.riScIdFromBranchRef('refs/heads/risc-abc12')).toBe(
+        'risc-abc12',
+      );
     });
   });
 
@@ -363,13 +363,7 @@ describe('GitHubService', () => {
         mockResponse({ ref: 'refs/heads/new-branch' }),
       );
 
-      await service.createBranch(
-        owner,
-        repo,
-        'risc-new01',
-        'abc123sha',
-        token,
-      );
+      await service.createBranch(owner, repo, 'risc-new01', 'abc123sha', token);
 
       const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(callBody.ref).toBe('refs/heads/risc-new01');
@@ -691,7 +685,10 @@ describe('GitHubService', () => {
           {
             sha: 'abc',
             url: '',
-            commit: { message: 'update', committer: { date: '2026-05-10T10:00:00Z', name: 'user' } },
+            commit: {
+              message: 'update',
+              committer: { date: '2026-05-10T10:00:00Z', name: 'user' },
+            },
           },
         ]),
       );
@@ -701,22 +698,36 @@ describe('GitHubService', () => {
           {
             sha: 'abc',
             url: '',
-            commit: { message: 'update', committer: { date: '2026-05-10T10:00:00Z', name: 'user' } },
+            commit: {
+              message: 'update',
+              committer: { date: '2026-05-10T10:00:00Z', name: 'user' },
+            },
           },
           {
             sha: 'def',
             url: '',
-            commit: { message: 'later', committer: { date: '2026-05-12T10:00:00Z', name: 'user' } },
+            commit: {
+              message: 'later',
+              committer: { date: '2026-05-12T10:00:00Z', name: 'user' },
+            },
           },
           {
             sha: 'ghi',
             url: '',
-            commit: { message: 'even later', committer: { date: '2026-05-14T10:00:00Z', name: 'user' } },
+            commit: {
+              message: 'even later',
+              committer: { date: '2026-05-14T10:00:00Z', name: 'user' },
+            },
           },
         ]),
       );
 
-      const result = await service.fetchLastPublished(owner, repo, token, 'risc-abc12');
+      const result = await service.fetchLastPublished(
+        owner,
+        repo,
+        token,
+        'risc-abc12',
+      );
       expect(result).toEqual({
         dateTime: '2026-05-10T10:00:00Z',
         numberOfCommits: 2,
@@ -726,14 +737,24 @@ describe('GitHubService', () => {
     it('returns null when no commits exist for the file', async () => {
       mockFetch.mockResolvedValueOnce(mockResponse([]));
 
-      const result = await service.fetchLastPublished(owner, repo, token, 'risc-abc12');
+      const result = await service.fetchLastPublished(
+        owner,
+        repo,
+        token,
+        'risc-abc12',
+      );
       expect(result).toBeNull();
     });
 
     it('returns null when API call fails', async () => {
       mockFetch.mockResolvedValueOnce(mockErrorResponse(500));
 
-      const result = await service.fetchLastPublished(owner, repo, token, 'risc-abc12');
+      const result = await service.fetchLastPublished(
+        owner,
+        repo,
+        token,
+        'risc-abc12',
+      );
       expect(result).toBeNull();
     });
   });

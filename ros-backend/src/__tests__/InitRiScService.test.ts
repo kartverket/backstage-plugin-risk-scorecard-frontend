@@ -1,9 +1,9 @@
-import { InitRiScService } from '../services/InitRiScService';
-import { GithubStatus } from '../services/GitHubService';
+import { InitialRiScService } from '../services/risc/initial/InitialRiScService.ts';
+import { GithubStatus } from '../services/risc/storage/GitHubAdapter.ts';
 import type {
-  GitHubService,
+  GitHubAdapter,
   GithubContentResponse,
-} from '../services/GitHubService';
+} from '../services/risc/storage/GitHubAdapter.ts';
 
 // ─── Test Data ────────────────────────────────────────────────────────────────
 
@@ -112,7 +112,7 @@ const TEMPLATE_DATA_2 = JSON.stringify({
 
 function createMockGitHubService(
   responses: Record<string, GithubContentResponse>,
-): GitHubService {
+): GitHubAdapter {
   return {
     fetchFileContent: jest.fn(
       async (
@@ -123,14 +123,14 @@ function createMockGitHubService(
         return responses[path] ?? { data: null, status: GithubStatus.NotFound };
       },
     ),
-  } as unknown as GitHubService;
+  } as unknown as GitHubAdapter;
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
-describe('InitRiScService', () => {
-  let service: InitRiScService;
-  let mockGithub: GitHubService;
+describe('InitialRiScService', () => {
+  let service: InitialRiScService;
+  let mockGithub: GitHubAdapter;
 
   beforeEach(() => {
     mockGithub = createMockGitHubService({
@@ -148,7 +148,7 @@ describe('InitRiScService', () => {
       },
     });
 
-    service = new InitRiScService({
+    service = new InitialRiScService({
       githubService: mockGithub,
       config: { repoOwner: 'kartverket', repoName: 'ros-templates' },
     });
@@ -181,7 +181,7 @@ describe('InitRiScService', () => {
 
     it('throws when descriptor config fetch fails', async () => {
       mockGithub = createMockGitHubService({});
-      service = new InitRiScService({
+      service = new InitialRiScService({
         githubService: mockGithub,
         config: { repoOwner: 'owner', repoName: 'repo' },
       });

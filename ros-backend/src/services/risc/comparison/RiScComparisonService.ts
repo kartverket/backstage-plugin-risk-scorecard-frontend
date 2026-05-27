@@ -44,13 +44,9 @@ import {
   type RiSc3XActionChange,
   type RiScRiskChange,
   type ThreatActor,
-  type Vulnerability,
-  type Vulnerability3X,
-  type ActionStatus,
-  type ActionStatus3X4X,
 } from '@internal/backstage-plugin-ros-common';
 
-import { type RiScJson, migrate } from './SchemaService';
+import { migrate } from '../schema/SchemaService.ts';
 import { isDeepStrictEqual } from 'util';
 
 // ─── Error ─────────────────────────────────────────────────────────────────────
@@ -73,9 +69,9 @@ export function changeForMandatorySimpleProperty<T>(
   newValue: T,
 ): SimpleTrackedProperty<T> {
   if (!isDeepStrictEqual(oldValue, newValue)) {
-    return { type: 'CHANGED', oldValue, newValue } as ChangedProperty<T>;
+    return changedProperty(oldValue, newValue);
   }
-  return { type: 'UNCHANGED', value: newValue } as UnchangedProperty<T>;
+  return unchangedProperty(newValue);
 }
 
 /**
@@ -87,9 +83,17 @@ export function changeForNonMandatorySimpleProperty<T>(
   newValue: T,
 ): SimpleTrackedProperty<T> | null {
   if (!isDeepStrictEqual(oldValue, newValue)) {
-    return { type: 'CHANGED', oldValue, newValue } as ChangedProperty<T>;
+    return changedProperty(oldValue, newValue);
   }
   return null;
+}
+
+function changedProperty<T>(oldValue: T, newValue: T): ChangedProperty<T> {
+  return { type: 'CHANGED', oldValue, newValue };
+}
+
+function unchangedProperty<T>(value: T): UnchangedProperty<T> {
+  return { type: 'UNCHANGED', value };
 }
 
 /**
@@ -102,11 +106,11 @@ export function changeForListOfSimpleProperty<T>(
 ): SimpleTrackedProperty<T>[] {
   const deleted: SimpleTrackedProperty<T>[] = oldValues
     .filter(v => !newValues.some(nv => isDeepStrictEqual(v, nv)))
-    .map(v => ({ type: 'DELETED', oldValue: v }) as DeletedProperty<T>);
+    .map<DeletedProperty<T>>(v => ({ type: 'DELETED', oldValue: v }));
 
   const added: SimpleTrackedProperty<T>[] = newValues
     .filter(v => !oldValues.some(ov => isDeepStrictEqual(v, ov)))
-    .map(v => ({ type: 'ADDED', newValue: v }) as AddedProperty<T>);
+    .map<AddedProperty<T>>(v => ({ type: 'ADDED', newValue: v }));
 
   return [...deleted, ...added];
 }
@@ -126,11 +130,11 @@ export function changeForListOfComplexProperty<S, T, U>(
 
   const deleted: TrackedProperty<S, T>[] = oldValues
     .filter(item => !newKeys.has(keySelector(item)))
-    .map(item => ({ type: 'DELETED', oldValue: item }) as DeletedProperty<T>);
+    .map<DeletedProperty<T>>(item => ({ type: 'DELETED', oldValue: item }));
 
   const added: TrackedProperty<S, T>[] = newValues
     .filter(item => !oldKeys.has(keySelector(item)))
-    .map(item => ({ type: 'ADDED', newValue: item }) as AddedProperty<T>);
+    .map<AddedProperty<T>>(item => ({ type: 'ADDED', newValue: item }));
 
   const changed: TrackedProperty<S, T>[] = oldValues
     .filter(item => newKeys.has(keySelector(item)))
@@ -141,13 +145,10 @@ export function changeForListOfComplexProperty<S, T, U>(
       return { oldItem, newItem };
     })
     .filter(({ oldItem, newItem }) => !isDeepStrictEqual(oldItem, newItem))
-    .map(
-      ({ oldItem, newItem }) =>
-        ({
-          type: 'CONTENT_CHANGED',
-          value: changeMapper(oldItem, newItem),
-        }) as ContentChangedProperty<S>,
-    );
+    .map<ContentChangedProperty<S>>(({ oldItem, newItem }) => ({
+      type: 'CONTENT_CHANGED',
+      value: changeMapper(oldItem, newItem),
+    }));
 
   return [...deleted, ...changed, ...added];
 }
@@ -158,7 +159,7 @@ function compareRisk(
   oldRisk: RiScRisk,
   newRisk: RiScRisk,
 ): SimpleTrackedProperty<RiScRiskChange> {
-  return {
+  const change: ContentChangedProperty<RiScRiskChange> = {
     type: 'CONTENT_CHANGED',
     value: {
       summary: changeForNonMandatorySimpleProperty(
@@ -174,7 +175,8 @@ function compareRisk(
         newRisk.consequence,
       ),
     },
-  } as ContentChangedProperty<RiScRiskChange>;
+  };
+  return change;
 }
 
 // ─── Valuations ────────────────────────────────────────────────────────────────
@@ -189,19 +191,25 @@ function compareValuations(
 // ─── Common Field Helpers ───────────────────────────────────────────────────────
 
 function compareCommonActionFields(
-  oldAction: { title: string; id: string; description: string; url?: string | null },
-  newAction: { title: string; id: string; description: string; url?: string | null },
+  oldAction: {
+    title: string;
+    action: { ID: string; description: string; url?: string | null };
+  },
+  newAction: {
+    title: string;
+    action: { ID: string; description: string; url?: string | null };
+  },
 ) {
   return {
     title: changeForMandatorySimpleProperty(oldAction.title, newAction.title),
-    id: newAction.id,
+    id: newAction.action.ID,
     description: changeForMandatorySimpleProperty(
-      oldAction.description,
-      newAction.description,
+      oldAction.action.description,
+      newAction.action.description,
     ),
     url: changeForNonMandatorySimpleProperty(
-      oldAction.url ?? null,
-      newAction.url ?? null,
+      oldAction.action.url ?? null,
+      newAction.action.url ?? null,
     ),
   };
 }
@@ -209,21 +217,25 @@ function compareCommonActionFields(
 function compareCommonScenarioFields(
   oldScenario: {
     title: string;
-    id: string;
-    description: string;
-    url?: string | null;
-    threatActors: ThreatActor[];
-    risk: RiScRisk;
-    remainingRisk: RiScRisk;
+    scenario: {
+      ID: string;
+      description: string;
+      url?: string | null;
+      threatActors: ThreatActor[];
+      risk: RiScRisk;
+      remainingRisk: RiScRisk;
+    };
   },
   newScenario: {
     title: string;
-    id: string;
-    description: string;
-    url?: string | null;
-    threatActors: ThreatActor[];
-    risk: RiScRisk;
-    remainingRisk: RiScRisk;
+    scenario: {
+      ID: string;
+      description: string;
+      url?: string | null;
+      threatActors: ThreatActor[];
+      risk: RiScRisk;
+      remainingRisk: RiScRisk;
+    };
   },
 ) {
   return {
@@ -231,30 +243,38 @@ function compareCommonScenarioFields(
       oldScenario.title,
       newScenario.title,
     ),
-    id: newScenario.id,
+    id: newScenario.scenario.ID,
     description: changeForMandatorySimpleProperty(
-      oldScenario.description,
-      newScenario.description,
+      oldScenario.scenario.description,
+      newScenario.scenario.description,
     ),
     url: changeForNonMandatorySimpleProperty(
-      oldScenario.url ?? null,
-      newScenario.url ?? null,
+      oldScenario.scenario.url ?? null,
+      newScenario.scenario.url ?? null,
     ),
     threatActors: changeForListOfSimpleProperty(
-      oldScenario.threatActors,
-      newScenario.threatActors,
-    ) as SimpleTrackedProperty<ThreatActor>[],
-    risk: compareRisk(oldScenario.risk, newScenario.risk),
+      oldScenario.scenario.threatActors,
+      newScenario.scenario.threatActors,
+    ),
+    risk: compareRisk(oldScenario.scenario.risk, newScenario.scenario.risk),
     remainingRisk: compareRisk(
-      oldScenario.remainingRisk,
-      newScenario.remainingRisk,
+      oldScenario.scenario.remainingRisk,
+      newScenario.scenario.remainingRisk,
     ),
   };
 }
 
 function compareCommonRiScFields(
-  oldRiSc: { title: string; scope: string; valuations?: RiScValuation[] | null },
-  newRiSc: { title: string; scope: string; valuations?: RiScValuation[] | null },
+  oldRiSc: {
+    title: string;
+    scope: string;
+    valuations?: RiScValuation[] | null;
+  },
+  newRiSc: {
+    title: string;
+    scope: string;
+    valuations?: RiScValuation[] | null;
+  },
   migrationStatus: MigrationStatus,
 ) {
   return {
@@ -277,20 +297,20 @@ function compareActions5X(
   return changeForListOfComplexProperty(
     oldActions,
     newActions,
-    action => action.id,
+    action => action.action.ID,
     (oldAction, newAction) => ({
       ...compareCommonActionFields(oldAction, newAction),
       status: changeForNonMandatorySimpleProperty(
-        oldAction.status,
-        newAction.status,
-      ) as SimpleTrackedProperty<ActionStatus> | null,
+        oldAction.action.status,
+        newAction.action.status,
+      ),
       lastUpdated: changeForNonMandatorySimpleProperty(
-        oldAction.lastUpdated ?? null,
-        newAction.lastUpdated ?? null,
+        oldAction.action.lastUpdated ?? null,
+        newAction.action.lastUpdated ?? null,
       ),
       lastUpdatedBy: changeForNonMandatorySimpleProperty(
-        oldAction.lastUpdatedBy ?? null,
-        newAction.lastUpdatedBy ?? null,
+        oldAction.action.lastUpdatedBy ?? null,
+        newAction.action.lastUpdatedBy ?? null,
       ),
     }),
   );
@@ -303,14 +323,17 @@ function compareScenarios5X(
   return changeForListOfComplexProperty(
     oldScenarios,
     newScenarios,
-    scenario => scenario.id,
+    scenario => scenario.scenario.ID,
     (oldScenario, newScenario) => ({
       ...compareCommonScenarioFields(oldScenario, newScenario),
       vulnerabilities: changeForListOfSimpleProperty(
-        oldScenario.vulnerabilities,
-        newScenario.vulnerabilities,
-      ) as SimpleTrackedProperty<Vulnerability>[],
-      actions: compareActions5X(oldScenario.actions, newScenario.actions),
+        oldScenario.scenario.vulnerabilities,
+        newScenario.scenario.vulnerabilities,
+      ),
+      actions: compareActions5X(
+        oldScenario.scenario.actions,
+        newScenario.scenario.actions,
+      ),
     }),
   );
 }
@@ -339,16 +362,16 @@ function compareActions4X(
   return changeForListOfComplexProperty(
     oldActions,
     newActions,
-    action => action.id,
+    action => action.action.ID,
     (oldAction, newAction) => ({
       ...compareCommonActionFields(oldAction, newAction),
       status: changeForNonMandatorySimpleProperty(
-        oldAction.status,
-        newAction.status,
-      ) as SimpleTrackedProperty<ActionStatus3X4X> | null,
+        oldAction.action.status,
+        newAction.action.status,
+      ),
       lastUpdated: changeForNonMandatorySimpleProperty(
-        oldAction.lastUpdated ?? null,
-        newAction.lastUpdated ?? null,
+        oldAction.action.lastUpdated ?? null,
+        newAction.action.lastUpdated ?? null,
       ),
     }),
   );
@@ -361,14 +384,17 @@ function compareScenarios4X(
   return changeForListOfComplexProperty(
     oldScenarios,
     newScenarios,
-    scenario => scenario.id,
+    scenario => scenario.scenario.ID,
     (oldScenario, newScenario) => ({
       ...compareCommonScenarioFields(oldScenario, newScenario),
       vulnerabilities: changeForListOfSimpleProperty(
-        oldScenario.vulnerabilities,
-        newScenario.vulnerabilities,
-      ) as SimpleTrackedProperty<Vulnerability>[],
-      actions: compareActions4X(oldScenario.actions, newScenario.actions),
+        oldScenario.scenario.vulnerabilities,
+        newScenario.scenario.vulnerabilities,
+      ),
+      actions: compareActions4X(
+        oldScenario.scenario.actions,
+        newScenario.scenario.actions,
+      ),
     }),
   );
 }
@@ -397,20 +423,20 @@ function compareActions3X(
   return changeForListOfComplexProperty(
     oldActions,
     newActions,
-    action => action.id,
+    action => action.action.ID,
     (oldAction, newAction) => ({
       ...compareCommonActionFields(oldAction, newAction),
       status: changeForNonMandatorySimpleProperty(
-        oldAction.status,
-        newAction.status,
-      ) as SimpleTrackedProperty<ActionStatus3X4X> | null,
+        oldAction.action.status,
+        newAction.action.status,
+      ),
       deadline: changeForNonMandatorySimpleProperty(
-        oldAction.deadline ?? null,
-        newAction.deadline ?? null,
+        oldAction.action.deadline ?? null,
+        newAction.action.deadline ?? null,
       ),
       owner: changeForNonMandatorySimpleProperty(
-        oldAction.owner ?? null,
-        newAction.owner ?? null,
+        oldAction.action.owner ?? null,
+        newAction.action.owner ?? null,
       ),
     }),
   );
@@ -423,17 +449,20 @@ function compareScenarios3X(
   return changeForListOfComplexProperty(
     oldScenarios,
     newScenarios,
-    scenario => scenario.id,
+    scenario => scenario.scenario.ID,
     (oldScenario, newScenario) => ({
       ...compareCommonScenarioFields(oldScenario, newScenario),
       vulnerabilities: changeForListOfSimpleProperty(
-        oldScenario.vulnerabilities,
-        newScenario.vulnerabilities,
-      ) as SimpleTrackedProperty<Vulnerability3X>[],
-      actions: compareActions3X(oldScenario.actions, newScenario.actions),
+        oldScenario.scenario.vulnerabilities,
+        newScenario.scenario.vulnerabilities,
+      ),
+      actions: compareActions3X(
+        oldScenario.scenario.actions,
+        newScenario.scenario.actions,
+      ),
       existingActions: changeForNonMandatorySimpleProperty(
-        oldScenario.existingActions ?? null,
-        newScenario.existingActions ?? null,
+        oldScenario.scenario.existingActions ?? null,
+        newScenario.scenario.existingActions ?? null,
       ),
     }),
   );
@@ -473,12 +502,12 @@ export function compare(
   const updatedVersion = updatedRiSc.schemaVersion;
   const majorVersion = getMajorVersion(updatedVersion);
 
-  let migratedDoc: RiScJson;
+  let migratedDoc: RiScDocument;
   let migrationStatus: MigrationStatus;
   try {
     [migratedDoc, migrationStatus] = migrate(
-      oldRiSc as unknown as RiScJson,
-      lastPublished ?? undefined,
+      oldRiSc,
+      lastPublished,
       updatedVersion,
     );
   } catch (e) {
@@ -491,19 +520,19 @@ export function compare(
     case 5:
       return comparison5X(
         updatedRiSc as RiSc5X,
-        migratedDoc as unknown as RiSc5X,
+        migratedDoc as RiSc5X,
         migrationStatus,
       );
     case 4:
       return comparison4X(
         updatedRiSc as RiSc4X,
-        migratedDoc as unknown as RiSc4X,
+        migratedDoc as RiSc4X,
         migrationStatus,
       );
     case 3:
       return comparison3X(
         updatedRiSc as RiSc3X,
-        migratedDoc as unknown as RiSc3X,
+        migratedDoc as RiSc3X,
         migrationStatus,
       );
     default:

@@ -3031,17 +3031,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@internal/backstage-plugin-ros-common@npm:0.0.0, @internal/backstage-plugin-ros-common@workspace:ros-common":
+"@internal/backstage-plugin-ros-backend@workspace:ros-backend":
   version: 0.0.0-use.local
-  resolution: "@internal/backstage-plugin-ros-common@workspace:ros-common"
-  dependencies:
-    "@backstage/cli": "backstage:^"
-  languageName: unknown
-  linkType: soft
-
-"@internal/ros-backend@workspace:ros-backend":
-  version: 0.0.0-use.local
-  resolution: "@internal/ros-backend@workspace:ros-backend"
+  resolution: "@internal/backstage-plugin-ros-backend@workspace:ros-backend"
   dependencies:
     "@backstage/backend-plugin-api": "backstage:^"
     "@backstage/backend-test-utils": "backstage:^"
@@ -3056,6 +3048,14 @@ __metadata:
     express: "npm:^4.21.2"
     supertest: "npm:^7.2.2"
     yaml: "npm:^2.8.4"
+  languageName: unknown
+  linkType: soft
+
+"@internal/backstage-plugin-ros-common@npm:0.0.0, @internal/backstage-plugin-ros-common@workspace:ros-common":
+  version: 0.0.0-use.local
+  resolution: "@internal/backstage-plugin-ros-common@workspace:ros-common"
+  dependencies:
+    "@backstage/cli": "backstage:^"
   languageName: unknown
   linkType: soft
 

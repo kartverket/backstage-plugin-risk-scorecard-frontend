@@ -1,14 +1,14 @@
 import {
-  SopsCryptoService,
+  SopsService,
   isValidGCPToken,
   isValidAgeSecretKey,
   SopsCryptoConfig,
-} from '../services/SopsCryptoService';
+} from '../services/sops/SopsService.ts';
 import { SopsConfig } from '@internal/backstage-plugin-ros-common';
 
 // Mock the lib/sops module
-jest.mock('../lib/sops');
-import { spawnSops } from '../lib/sops';
+jest.mock('../services/sops/spawnUtils.ts');
+import { spawnSops } from '../services/sops/spawnUtils.ts';
 
 const mockSpawnSops = spawnSops as jest.MockedFunction<typeof spawnSops>;
 
@@ -23,11 +23,11 @@ const testConfig: SopsCryptoConfig = {
     'age1qrkc5q5nur6xpm4ldwg7z232nxkv2up84ugmctye70hlxw4chgjsg7ard3',
 };
 
-describe('SopsCryptoService', () => {
-  let service: SopsCryptoService;
+describe('SopsService', () => {
+  let service: SopsService;
 
   beforeEach(() => {
-    service = new SopsCryptoService(testConfig);
+    service = new SopsService(testConfig);
     mockSpawnSops.mockReset();
   });
 

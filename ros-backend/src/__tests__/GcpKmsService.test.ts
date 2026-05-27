@@ -1,10 +1,10 @@
 import { CryptoKeyPermission } from '@internal/backstage-plugin-ros-common';
 import {
-  GcpKmsService,
+  KeyManagementService,
   getRiScKeyRing,
   getRiScCryptoKey,
   getRiScCryptoKeyResourceId,
-} from '../services/GcpKmsService';
+} from '../services/key-management/KeyManagementService.ts';
 
 // ─── Mock Logger ──────────────────────────────────────────────────────────────
 
@@ -30,7 +30,7 @@ function mockResponse(body: unknown, status = 200): Response {
 
 // ─── Helper function tests ────────────────────────────────────────────────────
 
-describe('GcpKmsService helpers', () => {
+describe('KeyManagementService helpers', () => {
   it('getRiScKeyRing drops last 2 segments and appends -risc-key-ring', () => {
     expect(getRiScKeyRing('spire-ros-5lmr')).toBe('spire-risc-key-ring');
     expect(getRiScKeyRing('project1-prod-test')).toBe('project1-risc-key-ring');
@@ -53,13 +53,13 @@ describe('GcpKmsService helpers', () => {
 
 // ─── Service tests ────────────────────────────────────────────────────────────
 
-describe('GcpKmsService', () => {
-  let service: GcpKmsService;
+describe('KeyManagementService', () => {
+  let service: KeyManagementService;
   let mockFetch: jest.Mock;
 
   beforeEach(() => {
     mockFetch = jest.fn();
-    service = new GcpKmsService({
+    service = new KeyManagementService({
       additionalAllowedProjectIds: [],
       logger: mockLogger as any,
       fetchFn: mockFetch,
@@ -187,7 +187,7 @@ describe('GcpKmsService', () => {
     });
 
     it('includes additional allowed project IDs', async () => {
-      service = new GcpKmsService({
+      service = new KeyManagementService({
         additionalAllowedProjectIds: ['non-prod-project'],
         logger: mockLogger as any,
         fetchFn: mockFetch,
