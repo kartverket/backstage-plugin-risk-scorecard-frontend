@@ -262,6 +262,12 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           risk => risk.status === ContentStatus.DecryptionFailed,
         );
 
+        const failedRiScs = res.filter(
+          risk =>
+            risk.status !== ContentStatus.Success &&
+            risk.status !== ContentStatus.DecryptionFailed,
+        );
+
         // Check if all RiScs failed decryption (there are RiScs but all failed)
         const allFailed =
           res.length > 0 &&
@@ -277,28 +283,24 @@ export function RiScProvider({ children }: { children: ReactNode }) {
             encryptionKeyId: risk.encryptionKeyId ?? null,
           }),
         );
+
+        const fetchedUnavailableRiScs: UnavailableRiSc[] = failedRiScs.map(
+          risk => ({
+            id: risk.riScId,
+            status: risk.status,
+            errorCode: risk.errorCode,
+          }),
+        );
+
         setRiScs(fetchedRiScs);
         setLockedRiScs(fetchedLockedRiScs);
+        setUnavailableRiScs(fetchedUnavailableRiScs);
         isFetchingRiScsRef.current = false;
         setIsFetchingRiScs(isFetchingRiScsRef.current);
         if (!isFetchingGcpCryptoKeysRef.current) {
           isFetchingRef.current = false;
           setIsFetching(isFetchingRef.current);
         }
-
-        setUnavailableRiScs(
-          res
-            .filter(
-              risk =>
-                risk.status !== ContentStatus.Success &&
-                risk.status !== ContentStatus.DecryptionFailed,
-            )
-            .map(risk => ({
-              id: risk.riScId,
-              status: risk.status,
-              errorCode: risk.errorCode,
-            })),
-        );
 
         if (!riScIdFromParams) {
           // If there is no RiSc ID in the URL
