@@ -195,6 +195,35 @@ class GitRepoFixture {
   }
 
   /**
+   * Create a package fixture in the temporary repository.
+   */
+  createPackage(
+    relativePackagePath: string,
+    options: { initialVersion?: string; packageName?: string },
+  ) {
+    const {
+      initialVersion = '0.0.0',
+      packageName = `@test/${relativePackagePath.replaceAll('/', '-')}`,
+    } = options;
+    const packagePath = join(this.path, relativePackagePath);
+    mkdirSync(packagePath, { recursive: true });
+    writeFileSync(
+      join(packagePath, 'package.json'),
+      JSON.stringify(
+        {
+          name: packageName,
+          version: initialVersion,
+          description: 'Test package',
+          main: 'index.js',
+        },
+        null,
+        2,
+      ) + '\n',
+    );
+    writeFileSync(join(packagePath, 'index.js'), 'module.exports = {};\n');
+  }
+
+  /**
    * Create a commit with a conventional commit message
    */
   commit(message: string, files?: Record<string, string>) {
@@ -240,8 +269,17 @@ class GitRepoFixture {
   /**
    * Get the current package.json content
    */
-  getPackageJson(): { name: string; version: string; [key: string]: unknown } {
-    return JSON.parse(readFileSync(join(this.path, 'package.json'), 'utf-8'));
+  getPackageJson(relativePackagePath = ''): {
+    name: string;
+    version: string;
+    [key: string]: unknown;
+  } {
+    return JSON.parse(
+      readFileSync(
+        join(this.path, relativePackagePath, 'package.json'),
+        'utf-8',
+      ),
+    );
   }
 
   /**
@@ -328,7 +366,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.skipped).toBe(true);
@@ -347,7 +388,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.skipped).toBe(true);
@@ -363,7 +407,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.skipped).toBe(true);
@@ -379,7 +426,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.skipped).toBe(true);
@@ -394,7 +444,10 @@ describe('Release E2E Tests', () => {
         repo.commit('fix: resolve null pointer exception');
       });
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.skipped).toBe(false);
@@ -418,7 +471,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.version).toBe('2.5.1'); // Single patch bump, not 2.5.3
@@ -435,7 +491,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.skipped).toBe(false);
@@ -453,7 +512,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.version).toBe('1.1.0'); // Single minor bump
       expect(result.releaseType).toBe('minor');
@@ -470,7 +532,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       // feat takes precedence over fix - single minor bump
       expect(result.version).toBe('1.1.0');
@@ -487,7 +552,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.version).toBe('2.0.0');
@@ -501,7 +569,10 @@ describe('Release E2E Tests', () => {
         repo.commit('fix!: change error handling behavior');
       });
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.version).toBe('2.0.0');
       expect(result.releaseType).toBe('major');
@@ -518,7 +589,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.version).toBe('2.0.0');
       expect(result.releaseType).toBe('major');
@@ -535,7 +609,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       // Breaking change takes precedence
       expect(result.version).toBe('2.0.0');
@@ -552,7 +629,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       const expectedVersion = '3.3.0';
       expect(result.version).toBe(expectedVersion);
@@ -574,6 +654,53 @@ describe('Release E2E Tests', () => {
     });
   });
 
+  describe('Multiple packages', () => {
+    it('should update, build, and publish all configured packages', async () => {
+      setup(() => {
+        repo.init({ initialVersion: '1.0.0' });
+        repo.createPackage('plugins/ros', {
+          initialVersion: '1.0.0',
+          packageName: '@test/frontend',
+        });
+        repo.createPackage('plugins/ros-backend', {
+          initialVersion: '1.0.0',
+          packageName: '@test/backend',
+        });
+        repo.commit('chore: add packages');
+        repo.tag('v1.0.0');
+        repo.commit('feat: add backend package release');
+      });
+
+      const packagePaths = [
+        join(repo.path, 'plugins/ros'),
+        join(repo.path, 'plugins/ros-backend'),
+      ];
+
+      const { runRelease } = await import('../release.ts');
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths,
+      });
+
+      expect(result.success).toBe(true);
+      expect(result.version).toBe('1.1.0');
+      expect(repo.getPackageJson('plugins/ros').version).toBe('1.1.0');
+      expect(repo.getPackageJson('plugins/ros-backend').version).toBe('1.1.0');
+
+      const tscCommands = findCommands('yarn tsc');
+      const buildCommands = findCommands('yarn build');
+      const publishCommands = findCommands('npm publish');
+
+      for (const packagePath of packagePaths) {
+        expect(tscCommands.some(cmd => cmd.cwd === packagePath)).toBe(true);
+        expect(buildCommands.some(cmd => cmd.cwd === packagePath)).toBe(true);
+        expect(publishCommands.some(cmd => cmd.cwd === packagePath)).toBe(true);
+      }
+
+      expect(findCommands('npm pack')).toHaveLength(0);
+    });
+  });
+
   describe('Dry run mode', () => {
     it('should not publish or create release in dry-run mode', async () => {
       setup(() => {
@@ -583,7 +710,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: true, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: true,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.version).toBe('1.1.0');
@@ -607,7 +737,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: true, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: true,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.version).toBe('1.1.0');
@@ -627,7 +760,7 @@ describe('Release E2E Tests', () => {
       const { runRelease } = await import('../release.ts');
       const result = await runRelease({
         dryRun: true,
-        pluginPath: repo.path,
+        packagePaths: [repo.path],
         prNumber: 42,
       });
 
@@ -656,7 +789,7 @@ describe('Release E2E Tests', () => {
       const { runRelease } = await import('../release.ts');
       const result = await runRelease({
         dryRun: true,
-        pluginPath: repo.path,
+        packagePaths: [repo.path],
         prNumber: 42,
       });
 
@@ -683,7 +816,7 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      await runRelease({ dryRun: true, pluginPath: repo.path });
+      await runRelease({ dryRun: true, packagePaths: [repo.path] });
 
       // Build commands should be called even in dry-run mode
       expect(hasCommand('yarn tsc')).toBe(true);
@@ -698,7 +831,7 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      await runRelease({ dryRun: false, pluginPath: repo.path });
+      await runRelease({ dryRun: false, packagePaths: [repo.path] });
 
       // Build commands should be called in non-dry-run mode
       expect(hasCommand('yarn tsc')).toBe(true);
@@ -716,7 +849,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.changelog).toContain('user authentication');
       expect(result.changelog).toContain('login timeout');
@@ -734,7 +870,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.version).toBe('1.1.0');
@@ -772,7 +911,7 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      await runRelease({ dryRun: false, pluginPath: repo.path });
+      await runRelease({ dryRun: false, packagePaths: [repo.path] });
 
       expect(mockState.createCommentCalls).toHaveLength(1);
       expect(mockState.createCommentCalls[0].body).toContain(
@@ -789,7 +928,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.skipped).toBe(false);
@@ -809,7 +951,10 @@ describe('Release E2E Tests', () => {
       });
 
       const { runRelease } = await import('../release.ts');
-      const result = await runRelease({ dryRun: false, pluginPath: repo.path });
+      const result = await runRelease({
+        dryRun: false,
+        packagePaths: [repo.path],
+      });
 
       expect(result.success).toBe(true);
       expect(result.skipped).toBe(true);
@@ -831,7 +976,7 @@ describe('Release E2E Tests', () => {
       const { runRelease } = await import('../release.ts');
       const result = await runRelease({
         dryRun: true,
-        pluginPath: repo.path,
+        packagePaths: [repo.path],
         prerelease: 'beta',
       });
 
@@ -861,7 +1006,7 @@ describe('Release E2E Tests', () => {
       const { runRelease } = await import('../release.ts');
       const result = await runRelease({
         dryRun: false,
-        pluginPath: repo.path,
+        packagePaths: [repo.path],
         prerelease: 'alpha',
       });
 
@@ -894,7 +1039,7 @@ describe('Release E2E Tests', () => {
       const { runRelease } = await import('../release.ts');
       await runRelease({
         dryRun: false,
-        pluginPath: repo.path,
+        packagePaths: [repo.path],
         prerelease: 'beta',
       });
 
@@ -914,7 +1059,7 @@ describe('Release E2E Tests', () => {
       const { runRelease } = await import('../release.ts');
       const result = await runRelease({
         dryRun: true,
-        pluginPath: repo.path,
+        packagePaths: [repo.path],
         prerelease: 'rc',
       });
 

@@ -13,7 +13,7 @@ import {
   getCommitsSince,
 } from './lib/version.ts';
 import { getChangelogFormattedForRelease } from './lib/changelog.ts';
-import { buildPackage, publishToNpm, createTarball } from './lib/npm.ts';
+import { buildPackage, publishToNpm } from './lib/npm.ts';
 import {
   createGitHubRelease,
   createOrUpdateComment,
@@ -24,12 +24,15 @@ import { log } from './lib/logging.ts';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT_DIR = resolve(__dirname, '..');
-const DEFAULT_PLUGIN_PATH = resolve(ROOT_DIR, 'plugins', 'ros');
+const RELEASE_PACKAGE_PATHS = [
+  resolve(ROOT_DIR, 'plugins', 'ros'),
+  resolve(ROOT_DIR, 'plugins', 'ros-backend'),
+];
 
 interface ReleaseOptions {
   dryRun: boolean;
   prerelease?: string;
-  pluginPath?: string;
+  packagePaths?: string[];
   prNumber?: number;
 }
 
@@ -46,9 +49,10 @@ interface ReleaseResult {
 export async function runRelease(
   options: ReleaseOptions,
 ): Promise<ReleaseResult> {
-  const pluginPath = options.pluginPath || DEFAULT_PLUGIN_PATH;
+  const packagePaths = options.packagePaths ?? RELEASE_PACKAGE_PATHS;
 
   log('🚀 Starting release process...');
+  log(`Packages: ${packagePaths.join(', ')}`);
 
   if (options.dryRun) {
     log('DRY RUN MODE - No changes will be made', 'warn');
@@ -143,62 +147,58 @@ No conventional commits found. Commits must follow [conventional commit format](
   log(`New version: ${versionInfo.newVersion}`);
 
   // Step 4: Update package.json version
-  log('📦 Updating package.json version...');
-  if (!options.dryRun) {
-    updatePackageVersion(pluginPath, versionInfo.newVersion);
-    log(`Updated to ${versionInfo.newVersion}`);
-  } else {
-    log(`[DRY RUN] Would update to ${versionInfo.newVersion}`);
+  log('📦 Updating package.json versions...');
+  for (const packagePath of packagePaths) {
+    if (!options.dryRun) {
+      updatePackageVersion(packagePath, versionInfo.newVersion);
+      log(`${packagePath}: updated to ${versionInfo.newVersion}`);
+    } else {
+      log(
+        `[DRY RUN] ${packagePath}: would update to ${versionInfo.newVersion}`,
+      );
+    }
   }
 
-  // Step 5: Build the package
-  log('🔨 Building package...');
-  const buildResult = buildPackage(pluginPath);
-  if (!buildResult.success) {
-    return {
-      success: false,
-      skipped: false,
-      error: `Build failed: ${buildResult.output}`,
-    };
+  // Step 5: Build the packages
+  log('🔨 Building packages...');
+  for (const packagePath of packagePaths) {
+    log(`Building ${packagePath}...`);
+    const buildResult = buildPackage(packagePath);
+    if (!buildResult.success) {
+      return {
+        success: false,
+        skipped: false,
+        error: `Build failed for ${packagePath}: ${buildResult.output}`,
+      };
+    }
+
+    log(`${packagePath}: ${buildResult.output}`);
   }
 
-  log(`Build result: ${buildResult.output}`);
+  // Step 6: Publish packages to npm
+  log('📤 Publishing packages to npm...');
+  for (const packagePath of packagePaths) {
+    const publishResult = publishToNpm({
+      packagePath,
+      dryRun: options.dryRun,
+      prereleaseTag: options.prerelease,
+    });
 
-  // Step 6: Create tarball for GitHub release
-  log('📦 Creating tarball...');
-  const packResult = createTarball(pluginPath, options.dryRun);
-  if (!packResult.success) {
-    return {
-      success: false,
-      skipped: false,
-      error: `Tarball creation failed: ${packResult.error}`,
-    };
+    if (!publishResult.success) {
+      return {
+        success: false,
+        skipped: false,
+        error: `Publish failed for ${packagePath}: ${publishResult.output}`,
+      };
+    }
+    log(`${packagePath}: ${publishResult.output}`);
   }
-  log(`Tarball: ${packResult.tarballName}`);
 
-  // Step 7: Publish to npm
-  log('📤 Publishing to npm...');
-  const publishResult = publishToNpm({
-    pluginPath: pluginPath,
-    dryRun: options.dryRun,
-    prereleaseTag: options.prerelease,
-  });
-
-  if (!publishResult.success) {
-    return {
-      success: false,
-      skipped: false,
-      error: `Publish failed: ${publishResult.output}`,
-    };
-  }
-  log(`${publishResult.output}`);
-
-  // Step 8: Create GitHub release with tarball
+  // Step 7: Create GitHub release
   log('🏷️  Creating GitHub release...');
   const releaseResult = await createGitHubRelease({
     version: versionInfo.newVersion,
     changelog: releaseNotes || `Release v${versionInfo.newVersion}`,
-    tarballPath: packResult.tarballPath,
     dryRun: options.dryRun,
     prerelease: !!options.prerelease,
   });
@@ -219,7 +219,7 @@ No conventional commits found. Commits must follow [conventional commit format](
     `Release process completed successfully! Version: ${versionInfo.newVersion}`,
   );
 
-  // Step 9: Comment on PRs
+  // Step 8: Comment on PRs
   if (options.prNumber) {
     log(`💬 Commenting on PR #${options.prNumber} with release preview...`);
     const commentBody = `## 🚀 Release Preview
