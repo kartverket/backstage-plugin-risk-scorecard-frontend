@@ -3,8 +3,6 @@
 // (1) Requires a method to inject tokens. Not yet implemented.
 // (2) Temporary primitive url until method (1) is implemented.
 
-export type BackendMode = 'native' | 'legacy';
-
 /** Legacy URLs route through the Backstage proxy to the Kotlin backend */
 export const LEGACY_BACKEND_URLS = {
   google_gcpCryptoKeys: '/api/proxy/risc-proxy/api/google/gcpCryptoKeys',

@@ -18,6 +18,7 @@ import {
   useSystemRiScsForCurrentEntity,
 } from './hooks';
 import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
+import { nativeRiScBackendFeatureFlag } from './featureFlags';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: jest.fn(),
@@ -70,7 +71,7 @@ describe('useAuthenticatedFetch', () => {
     fetch: jest.fn(),
   };
   const mockFeatureFlagsApi = {
-    isActive: jest.fn(),
+    isActive: jest.fn().mockReturnValue(false),
   };
 
   const mockConfigApi = {
@@ -101,6 +102,19 @@ describe('useAuthenticatedFetch', () => {
       {children}
     </TestApiProvider>
   );
+
+  beforeEach(() => {
+    mockFeatureFlagsApi.isActive.mockReturnValue(false);
+    (useEntity as jest.Mock).mockReturnValue({
+      entity: {
+        metadata: {
+          annotations: {
+            'backstage.io/view-url': 'https://github.com/org/repo',
+          },
+        },
+      },
+    });
+  });
 
   describe('uriToFetchRiSc', () => {
     it('calls fetch with bearer token and GCP access token', async () => {
@@ -135,6 +149,49 @@ describe('useAuthenticatedFetch', () => {
         }),
       );
 
+      expect(onSuccess).toHaveBeenCalledWith([{ ID: '1' }]);
+    });
+
+    it('uses native backend URLs when the hidden native backend flag is enabled', async () => {
+      mockFeatureFlagsApi.isActive.mockImplementation(
+        flag => flag === nativeRiScBackendFeatureFlag,
+      );
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
+      mockFetchApi.fetch.mockResolvedValue({
+        ok: true,
+        json: async () => [{ ID: '1' }],
+      });
+
+      const { result } = renderHook(() => useAuthenticatedFetch(), {
+        wrapper,
+      });
+
+      await waitFor(() => expect(result.current.isReady).toBe(true));
+
+      const onSuccess = jest.fn();
+
+      await act(async () => {
+        result.current.fetchRiScs(onSuccess);
+      });
+
+      expect(mockFeatureFlagsApi.isActive).toHaveBeenCalledWith(
+        nativeRiScBackendFeatureFlag,
+      );
+      expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('ros');
+      expect(mockFetchApi.fetch).toHaveBeenCalledWith(
+        'http://localhost:7007/api/ros/risc/org/repo/5.4/all',
+        expect.objectContaining({
+          method: 'GET',
+          headers: expect.objectContaining({
+            Authorization: `Bearer ${MOCK_ID_TOKEN}`,
+            'GCP-Access-Token': MOCK_GCP_TOKEN,
+          }),
+        }),
+      );
       expect(onSuccess).toHaveBeenCalledWith([{ ID: '1' }]);
     });
 

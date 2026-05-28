@@ -38,11 +38,11 @@ import {
   type RiSc3XScenario,
   type RiSc4XScenario,
   type RiSc5XScenario,
-} from '@internal/backstage-plugin-ros-common';
+} from '@kartverket/backstage-plugin-ros-common';
 import {
   RiScVersion,
   latestSupportedVersion,
-} from '@internal/backstage-plugin-ros-common';
+} from '@kartverket/backstage-plugin-ros-common';
 
 // ─── Schema Loading ────────────────────────────────────────────────────────────
 

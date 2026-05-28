@@ -8,7 +8,7 @@ import {
   SopsConfig,
   AgeEntry,
   GcpKmsEntry,
-} from '@internal/backstage-plugin-ros-common';
+} from '@kartverket/backstage-plugin-ros-common';
 import { spawnSops } from '../lib/sops';
 import {
   SopsDecryptionError,

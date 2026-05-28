@@ -22,12 +22,12 @@ import type {
   PendingApprovalDTO,
   GithubPullRequestObject,
   GithubReferenceObjectDTO,
-} from '@internal/backstage-plugin-ros-common';
+} from '@kartverket/backstage-plugin-ros-common';
 import {
   DRAFT_BRANCH_PREFIX,
   RISC_FILE_PREFIX,
   RiScStatus,
-} from '@internal/backstage-plugin-ros-common';
+} from '@kartverket/backstage-plugin-ros-common';
 
 import type * as ComparisonService from './ComparisonService';
 import type { GitHubService, GithubContentResponse } from './GitHubService';
@@ -349,7 +349,7 @@ export class RiScService {
     ) {
       return {
         riScId,
-        status: 'ErrorWhenUpdatingRiSc' as ProcessingStatus,
+        status: 'ErrorWhenUpdatingRiSc',
         statusMessage: `RiSc is staged for deletion (${riscStatus}). Undo deletion (or publish deletion) before editing.`,
       };
     }

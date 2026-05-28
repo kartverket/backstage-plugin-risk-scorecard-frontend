@@ -9,7 +9,7 @@ import type {
   GithubPullRequestObject,
   GithubFileDTO,
   MigrationStatus,
-} from '@internal/backstage-plugin-ros-common';
+} from '@kartverket/backstage-plugin-ros-common';
 
 // ─── Mock Factories ────────────────────────────────────────────────────────────
 

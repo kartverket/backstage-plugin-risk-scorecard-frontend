@@ -44,7 +44,7 @@ import {
   type RiSc3XActionChange,
   type RiScRiskChange,
   type ThreatActor,
-} from '@internal/backstage-plugin-ros-common';
+} from '@kartverket/backstage-plugin-ros-common';
 
 import { migrate } from './SchemaService';
 import { isDeepStrictEqual } from 'util';

@@ -10,7 +10,7 @@ import {
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { URLS } from '../urls';
-import { type BackendMode, buildNativeUrls } from '../urls/backend';
+import { buildNativeUrls } from '../urls/backend';
 import {
   CreateRiScResultDTO,
   DeleteRiScResultDTO,
@@ -33,7 +33,10 @@ import {
   SystemRiSc,
 } from './types';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { useSystemRiScsFeatureFlag } from './featureFlags';
+import {
+  useNativeRiScBackendFeatureFlag,
+  useSystemRiScsFeatureFlag,
+} from './featureFlags';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -97,24 +100,21 @@ export function useAuthenticatedFetch() {
   );
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
-  const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
   const backendUrl = configApi.getString('backend.baseUrl');
-
-  const backendMode: BackendMode =
-    (configApi.getOptionalString('ros.backend') as BackendMode) || 'legacy';
+  const isNativeBackendEnabled = useNativeRiScBackendFeatureFlag();
 
   // For native mode, resolve the base URL via discovery API (async)
   const [nativeBaseUrl, setNativeBaseUrl] = useState<string | null>(null);
   useEffect(() => {
-    if (backendMode === 'native') {
+    if (isNativeBackendEnabled) {
       discoveryApi.getBaseUrl('ros').then(setNativeBaseUrl);
     }
-  }, [backendMode, discoveryApi]);
+  }, [discoveryApi, isNativeBackendEnabled]);
 
   // URL construction: native vs legacy
   const nativeUrls =
-    backendMode === 'native' && nativeBaseUrl
+    isNativeBackendEnabled && nativeBaseUrl
       ? buildNativeUrls(
           nativeBaseUrl,
           repoInformation.owner,
@@ -447,7 +447,7 @@ export function useAuthenticatedFetch() {
     );
   }
   // Ready when native URL has resolved (or we're in legacy mode)
-  const isReady = backendMode === 'legacy' || nativeUrls !== null;
+  const isReady = !isNativeBackendEnabled || nativeUrls !== null;
 
   return {
     isReady,

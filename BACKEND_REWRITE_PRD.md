@@ -37,7 +37,7 @@ Extract domain types, DTOs, and constants into `plugins/ros-common/`.
 - [ ] All RiSc domain types are defined: `RiSc`, `RiScVersion`, `Scenario`, `Action`, `RiScValuation`, `ThreatActor`, `Vulnerability`, status enums
 - [ ] All wire-format DTOs are defined: API responses, GitHub DTOs, GCP DTOs, Slack DTO, migration change DTOs
 - [ ] Constants exported: schema version list, branch prefix (`risc-draft/`), file naming pattern (`.ros_<id>.yaml`), supported versions
-- [ ] Frontend `plugins/ros/` can import from `@internal/backstage-plugin-ros-common` and type-check successfully
+- [ ] Frontend `plugins/ros/` can import from `@kartverket/backstage-plugin-ros-common` and type-check successfully
 - [ ] No runtime behavior change in the frontend
 
 ---
