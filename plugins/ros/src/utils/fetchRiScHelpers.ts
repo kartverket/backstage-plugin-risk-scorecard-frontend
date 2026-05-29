@@ -36,6 +36,11 @@ export function withLoginRejected(
     : baseMessage;
 }
 
+/**
+ * Maps a ContentStatus to a translation key for displaying a short reason
+ * in the RiSc selection dropdown. Falls back to a generic unavailable key
+ * for statuses not explicitly mapped.
+ */
 export function getUnavailableRiScReasonKey(status: ContentStatus): string {
   const keyMap: Partial<Record<ContentStatus, string>> = {
     [ContentStatus.FileNotFound]: 'contentHeader.unavailableReasonFileNotFound',
