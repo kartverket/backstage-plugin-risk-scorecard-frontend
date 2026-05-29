@@ -1,23 +1,23 @@
-import { CatalogClient } from '@backstage/catalog-client';
-import { RiScIndexScheduledRefresh } from './service/riscIndexScheduledRefresh';
-import { DatabaseRiScIndexStore } from './service/riscIndexStore';
+import { CatalogClient } from "@backstage/catalog-client";
+import { RiScIndexScheduledRefresh } from "./service/riscIndexScheduledRefresh";
+import { DatabaseRiScIndexStore } from "./service/riscIndexStore";
 import {
   coreServices,
   createBackendPlugin,
-} from '@backstage/backend-plugin-api';
-import { createRouter as createBackendRouter } from './router';
-import { RiScService } from './services/RiScService';
-import { GitHubService } from './services/GitHubService';
-import { SopsCryptoService } from './services/SopsCryptoService';
-import { GcpKmsService } from './services/GcpKmsService';
-import { InitRiScService } from './services/InitRiScService';
-import { SlackService } from './services/SlackService';
-import * as SchemaService from './services/SchemaService';
-import * as ComparisonService from './services/ComparisonService';
-import { createRouter } from './service/router.ts';
+} from "@backstage/backend-plugin-api";
+import { createRouter as createBackendRouter } from "./router";
+import { RiScService } from "./services/RiScService";
+import { GitHubService } from "./services/GitHubService";
+import { SopsCryptoService } from "./services/SopsCryptoService";
+import { GcpKmsService } from "./services/GcpKmsService";
+import { InitRiScService } from "./services/InitRiScService";
+import { SlackService } from "./services/SlackService";
+import * as SchemaService from "./services/SchemaService";
+import * as ComparisonService from "./services/ComparisonService";
+import { createRouter } from "./service/router.ts";
 
 export const riskScorecardBackendPlugin = createBackendPlugin({
-  pluginId: 'risk-scorecard',
+  pluginId: "risk-scorecard",
   register(env) {
     env.registerInit({
       deps: {
@@ -55,6 +55,8 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
           riScIndexStore,
         });
 
+        logger.info("Veøy - setter opp backend plugin");
+
         httpRouter.use(
           await createRouter({ catalogClient, auth, httpAuth, riScIndexStore }),
         );
@@ -62,23 +64,23 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
 
         // TODO: From migrated plugin. Fix a setup that is more cohesive
         // Read config
-        const sopsAgeKey = config.getOptionalString('ros.sops.ageKey') ?? '';
+        const sopsAgeKey = config.getOptionalString("ros.sops.ageKey") ?? "";
         const sopsBackendPublicKey =
-          config.getOptionalString('ros.sops.backendPublicKey') ?? '';
+          config.getOptionalString("ros.sops.backendPublicKey") ?? "";
         const sopsSecurityTeamPublicKey =
-          config.getOptionalString('ros.sops.securityTeamPublicKey') ?? '';
+          config.getOptionalString("ros.sops.securityTeamPublicKey") ?? "";
         const sopsSecurityPlatformPublicKey =
-          config.getOptionalString('ros.sops.securityPlatformPublicKey') ?? '';
+          config.getOptionalString("ros.sops.securityPlatformPublicKey") ?? "";
         const slackWebhookUrl =
-          config.getOptionalString('ros.slack.webhookUrl') ?? undefined;
+          config.getOptionalString("ros.slack.webhookUrl") ?? undefined;
         const initRiScRepoOwner =
-          config.getOptionalString('ros.initRiSc.repoOwner') ?? 'kartverket';
+          config.getOptionalString("ros.initRiSc.repoOwner") ?? "kartverket";
         const initRiScRepoName =
-          config.getOptionalString('ros.initRiSc.repoName') ??
-          'risk-scorecards-init';
+          config.getOptionalString("ros.initRiSc.repoName") ??
+          "risk-scorecards-init";
         const additionalAllowedProjectIds =
           config.getOptionalStringArray(
-            'ros.gcp.additionalAllowedProjectIds',
+            "ros.gcp.additionalAllowedProjectIds",
           ) ?? [];
 
         // Instantiate services
@@ -124,8 +126,8 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
 
         httpRouter.use(router);
         httpRouter.addAuthPolicy({
-          path: '/',
-          allow: 'user-cookie',
+          path: "/",
+          allow: "user-cookie",
         });
       },
     });

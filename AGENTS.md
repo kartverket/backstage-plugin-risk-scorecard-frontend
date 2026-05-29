@@ -5,9 +5,9 @@ RoS is short for Risiko- og Sårbarhetsanalyse in Norwegian.
 
 The main feature code is split across:
 
-- `plugins/ros/` - frontend plugin UI and plugin entry points
-- `plugins/ros-backend/` - backend plugin services and routes
-- `plugins/ros-common/` - shared types and constants
+- `ros/` - frontend plugin UI and plugin entry points
+- `ros-backend/` - backend plugin services and routes
+- `ros-common/` - shared types and constants
 - `build-tools/` - release tooling workspace
 
 The plugin manages risk assessments with scenarios, actions, risk matrices,
@@ -41,30 +41,30 @@ cd build-tools && yarn test
 
 Frontend plugin entry points:
 
-- `plugins/ros/src/index.ts` - public exports
-- `plugins/ros/src/plugin.ts` - Backstage plugin definition
-- `plugins/ros/src/PluginRoot.tsx` - routing and provider setup
-- `plugins/ros/src/routes.ts` - route refs
+- `ros/src/index.ts` - public exports
+- `ros/src/plugin.ts` - Backstage plugin definition
+- `ros/src/PluginRoot.tsx` - routing and provider setup
+- `ros/src/routes.ts` - route refs
 
 Important frontend data flow:
 
-- `plugins/ros/src/utils/hooks.ts` contains `useAuthenticatedFetch`, which wraps
+- `ros/src/utils/hooks.ts` contains `useAuthenticatedFetch`, which wraps
   Backstage fetch/auth APIs for backend calls.
-- `plugins/ros/src/utils/DTOs.ts` converts between backend DTOs and UI types.
-- `plugins/ros/src/utils/types.ts` contains internal UI domain types.
-- `plugins/ros/src/utils/constants.ts` contains frontend constants and option
+- `ros/src/utils/DTOs.ts` converts between backend DTOs and UI types.
+- `ros/src/utils/types.ts` contains internal UI domain types.
+- `ros/src/utils/constants.ts` contains frontend constants and option
   lists.
-- `plugins/ros/src/stores/` contains localStorage-backed hooks.
+- `ros/src/stores/` contains localStorage-backed hooks.
 
 Backend landmarks:
 
-- `plugins/ros-backend/src/router.ts` defines backend routes.
-- `plugins/ros-backend/src/services/` contains backend service logic.
+- `ros-backend/src/router.ts` defines backend routes.
+- `ros-backend/src/services/` contains backend service logic.
 
 Schema versioning:
 
-- Frontend schemas live in `plugins/ros/src/risc_schema_en_v*.json`.
-- Shared schema/version types live under `plugins/ros-common/src/`.
+- Frontend schemas live in `ros/src/risc_schema_en_v*.json`.
+- Shared schema/version types live under `ros-common/src/`.
 - Keep `latestSupportedVersion` changes consistent across frontend/common/backend
   usage.
 
@@ -73,10 +73,10 @@ Schema versioning:
 - Use `@backstage/ui` for new UI where practical.
 - Do not add new `@material-ui/core` (MUI v4) usage.
 - Prefer CSS Modules for new component styles.
-- Use existing `--ros-*` CSS custom properties from `plugins/ros/css/theme.css`
+- Use existing `--ros-*` CSS custom properties from `ros/css/theme.css`
   for plugin styling.
 - Put user-visible strings in `pluginRiScMessages` in
-  `plugins/ros/src/utils/translations.ts` and read them with the Backstage
+  `ros/src/utils/translations.ts` and read them with the Backstage
   translation hook.
 - Icons use Remixicon classes, imported through `remixicon/fonts/remixicon.css`.
 - Test files are co-located with source files and use `.test.ts` or
