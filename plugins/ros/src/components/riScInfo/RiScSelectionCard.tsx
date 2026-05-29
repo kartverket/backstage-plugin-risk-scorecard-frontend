@@ -91,8 +91,7 @@ export function RiScSelectionCard() {
             )}
             {unavailableRiScs.map(riSc => (
               <MenuItem key={riSc.id} value={riSc.id} disabled>
-                {riSc.id} —{' '}
-                {t(getUnavailableRiScReasonKey(riSc.status) as any, {})}
+                {riSc.id} — {t(getUnavailableRiScReasonKey(riSc.status), {})}
               </MenuItem>
             ))}
           </MUISelect>

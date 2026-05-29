@@ -1,5 +1,6 @@
 import { dtoToRiSc, RiScContentResultDTO, RiScDTO } from './DTOs';
 import { ContentStatus, RiScWithMetadata } from './types';
+import { pluginRiScMessages } from './translations.ts';
 
 /**
  * Maps a RiScContentResultDTO to a RiScWithMetadata object.
@@ -36,21 +37,34 @@ export function withLoginRejected(
     : baseMessage;
 }
 
+type Paths<T> = {
+  [K in Extract<keyof T, string>]: T[K] extends Record<string, any>
+    ? `${K}.${Paths<T[K]>}`
+    : K;
+}[Extract<keyof T, string>];
+
 /**
- * Maps a ContentStatus to a translation key for displaying a short reason
- * in the RiSc selection dropdown. Falls back to a generic unavailable key
- * for statuses not explicitly mapped.
+ * Maps a ContentStatus to a type-safe contentHeader translation key
+ * for displaying a short reason in the RiSc selection dropdown.
+ * Falls back to a generic unavailable key for statuses not explicitly mapped.
  */
-export function getUnavailableRiScReasonKey(status: ContentStatus): string {
-  const keyMap: Partial<Record<ContentStatus, string>> = {
-    [ContentStatus.FileNotFound]: 'contentHeader.unavailableReasonFileNotFound',
-    [ContentStatus.NoReadAccess]: 'contentHeader.unavailableReasonNoReadAccess',
-    [ContentStatus.SchemaValidationFailed]:
-      'contentHeader.unavailableReasonSchemaValidationFailed',
-    [ContentStatus.Failure]: 'contentHeader.unavailableReasonFailure',
-    [ContentStatus.Deleted]: 'contentHeader.unavailableReasonDeleted',
-    [ContentStatus.UnsupportedMigration]:
-      'contentHeader.unavailableReasonUnsupportedMigration',
-  };
-  return keyMap[status] ?? 'contentHeader.unavailableReasonUnknown';
+export function getUnavailableRiScReasonKey(
+  status: ContentStatus,
+): Paths<Pick<typeof pluginRiScMessages, 'contentHeader'>> {
+  switch (status) {
+    case ContentStatus.FileNotFound:
+      return 'contentHeader.unavailableReasonFileNotFound';
+    case ContentStatus.NoReadAccess:
+      return 'contentHeader.unavailableReasonNoReadAccess';
+    case ContentStatus.SchemaValidationFailed:
+      return 'contentHeader.unavailableReasonSchemaValidationFailed';
+    case ContentStatus.Failure:
+      return 'contentHeader.unavailableReasonFailure';
+    case ContentStatus.Deleted:
+      return 'contentHeader.unavailableReasonDeleted';
+    case ContentStatus.UnsupportedMigration:
+      return 'contentHeader.unavailableReasonUnsupportedMigration';
+    default:
+      return 'contentHeader.unavailableReasonUnknown';
+  }
 }
