@@ -15,11 +15,11 @@ export const pluginRiScMessages = {
     systemRiScsSection: 'System RiScs',
     lockedRiScsSection:
       'RiScs you do not have access to — click for encryption key information',
-    unavailableRiScsSection: 'Unavailable RiScs',
+    unavailableRiScsSection: 'RiScs that could not be loaded',
     unavailableReasonFileNotFound: 'File not found',
     unavailableReasonNoReadAccess: 'No read access',
     unavailableReasonSchemaValidationFailed: 'Invalid format',
-    unavailableReasonFailure: 'Failed to load',
+    unavailableReasonFailure: 'Unknown error',
     unavailableReasonDeleted: 'Deleted',
     unavailableReasonUnsupportedMigration: 'Cannot migrate',
     unavailableReasonUnknown: 'Unavailable',
@@ -819,13 +819,14 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'contentHeader.systemRiScsSection': 'System-RoSer',
           'contentHeader.lockedRiScsSection':
             'RoSer du ikke har tilgang til — klikk for informasjon om krypteringsnøkkel',
-          'contentHeader.unavailableRiScsSection': 'Utilgjengelige RoSer',
+          'contentHeader.unavailableRiScsSection':
+            'RoSer som ikke kunne lastes',
           'contentHeader.unavailableReasonFileNotFound':
             'Filen ble ikke funnet',
           'contentHeader.unavailableReasonNoReadAccess': 'Ingen lesetilgang',
           'contentHeader.unavailableReasonSchemaValidationFailed':
             'Ugyldig format',
-          'contentHeader.unavailableReasonFailure': 'Kunne ikke lastes',
+          'contentHeader.unavailableReasonFailure': 'Ukjent feil',
           'contentHeader.unavailableReasonDeleted': 'Slettet',
           'contentHeader.unavailableReasonUnsupportedMigration':
             'Kan ikke migreres',
