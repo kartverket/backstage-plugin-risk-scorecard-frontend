@@ -24,6 +24,7 @@ import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
 import { ErrorState } from '../riScInfo/ErrorState.tsx';
 import { LockedRiScView } from '../riScInfo/LockedRiScView.tsx';
 import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
+import { AppliesToCard } from '../riScInfo/AppliesToCard.tsx';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -212,6 +213,7 @@ export function RiScPlugin() {
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
                         />
+                        <AppliesToCard key={selectedRiSc.id} />
                         <RiskMatrix riScWithMetadata={selectedRiSc} />
                         <ThreatActorsAndVulnerabilitiesCard
                           scenarios={selectedRiSc.content.scenarios}

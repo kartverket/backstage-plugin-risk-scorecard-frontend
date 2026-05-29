@@ -414,12 +414,12 @@ export const pluginRiScMessages = {
     scopeError: 'The scorecard has to have a description of the scope',
     appliesTo: 'Applies to entities',
     appliesToDescription:
-      'The RiSc always applies to the current component. Add any other entities this RiSc applies to.',
+      'The entities this RiSc applies to. The RiSc always applies to the current component. Add any other entities this RiSc applies to.',
     appliesToPlaceholder: 'Add entity',
     appliesToLoading: 'Loading entities...',
     appliesToNoOptions: 'No entities found',
     appliesToSystemRosHint:
-      'Covers multiple entities and will also appear as a RiSc for the other added entities.',
+      'This RiSc will be visible for all entities added here.',
     appliesToNightlyRefreshHint:
       'Changes to which entities this RiSc applies to are refreshed at night, so visibility on added or removed entities will only change tomorrow.',
     appliesToMissingCurrentEntity:
@@ -1201,12 +1201,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
           'rosDialog.appliesTo': 'Gjelder for entitetene',
           'rosDialog.appliesToDescription':
-            'RoS gjelder alltid for valgt komponent. Legg til andre entiteter denne RoS-en gjelder for.',
+            'Komponentene denne RoSen gjelder for. RoS gjelder alltid for valgt komponent. Legg til andre entiteter denne RoS-en gjelder for.',
           'rosDialog.appliesToPlaceholder': 'Legg til entitet',
           'rosDialog.appliesToLoading': 'Laster entiteter...',
           'rosDialog.appliesToNoOptions': 'Fant ingen entiteter',
           'rosDialog.appliesToSystemRosHint':
-            'Dekker flere entiteter og vises som RoS også for de andre entitetene som er lagt til.',
+            'Denne RoS-en vil vises for alle entitetene som er lagt til her.',
           'rosDialog.appliesToNightlyRefreshHint':
             'Endringer i hvilke entiteter denne RoS-en gjelder for oppdateres om natten, så synligheten på entiteter som legges til eller fjernes endres først i morgen.',
           'rosDialog.appliesToMissingCurrentEntity':

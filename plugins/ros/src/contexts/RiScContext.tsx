@@ -403,7 +403,15 @@ export function RiScProvider({ children }: { children: ReactNode }) {
       );
     }
 
-    const entityPath = getEntityPath(entityRouteParams(routeEntityRef));
+    // appliesTo values are stored with a "backstage:" prefix (e.g.
+    // "backstage:component:default/my-service"). entityRouteParams calls
+    // parseEntityRef internally, which would misparse the prefix as the entity
+    // kind and produce a completely wrong URL. Strip it before use.
+    const cleanEntityRef = routeEntityRef.startsWith('backstage:')
+      ? routeEntityRef.slice('backstage:'.length)
+      : routeEntityRef;
+
+    const entityPath = getEntityPath(entityRouteParams(cleanEntityRef));
     return `${entityPath}/risc/${encodeURIComponent(systemRiSc.riScId)}`;
   }
 
