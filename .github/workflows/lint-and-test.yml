@@ -34,10 +34,10 @@ jobs:
         run: yarn prettier:check
 
       - name: Run lint
-        run: yarn run lint
+        run: yarn lint
 
       - name: Run tests
-        run: yarn test:all
+        run: yarn test
 
       - name: Run tsc
-        run: yarn run typecheck
+        run: yarn typecheck

@@ -9,23 +9,28 @@
     "packages": [
       "plugins/ros",
       "plugins/ros-backend",
-      "plugins/ros-common",
+      "packages/ros-common",
       "build-tools"
     ]
   },
   "scripts": {
-    "prettier:check": "prettier --check \"ros/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\"",
-    "prettier:write": "prettier --write \"ros/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\"",
-    "lint": "eslint \"ros/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\"",
-    "test:all": "yarn workspace build-tools test",
-    "typecheck": "yarn workspace @kartverket/backstage-plugin-risk-scorecard tsc && yarn workspace build-tools tsc",
-    "kartverket.dev": "sh ./runKartverketDev.sh"
+    "prettier:check": "prettier --check \"plugins/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"packages/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"build-tools/**/*.ts\"",
+    "prettier:format": "prettier --write \"plugins/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"packages/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"build-tools/**/*.ts\"",
+    "lint": "eslint \"plugins/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"packages/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"build-tools/**/*.ts\"",
+    "test": "yarn workspaces foreach -A --exclude build-tools run test -- --watchAll=false && yarn workspace build-tools test",
+    "typecheck": "tsc -p plugins/ros --noEmit && tsc -p plugins/ros-backend --noEmit && tsc -p packages/ros-common --noEmit && tsc -p build-tools",
+    "kartverket.dev": "sh scripts/runKartverketDev.sh"
   },
   "devDependencies": {
+    "@backstage/cli-defaults": "backstage:^",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.12.2",
     "@typescript-eslint/eslint-plugin": "8.59.4",
     "@typescript-eslint/parser": "^8.59.4",
     "eslint": "^10.4.0",
     "eslint-plugin-react-hooks": "^7.1.1",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
     "prettier": "^3.8.3",
     "typescript": "^6.0.3"
   },

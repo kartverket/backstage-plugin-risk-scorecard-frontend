@@ -1,4 +1,4 @@
-import { CryptoKeyPermission } from '@kartverket/backstage-plugin-ros-common';
+import { CryptoKeyPermission } from '@kartverket/ros-common';
 import {
   GcpKmsService,
   getRiScKeyRing,

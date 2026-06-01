@@ -9,7 +9,7 @@ import type {
   GithubPullRequestObject,
   GithubFileDTO,
   MigrationStatus,
-} from '@kartverket/backstage-plugin-ros-common';
+} from '@kartverket/ros-common';
 
 // ─── Mock Factories ────────────────────────────────────────────────────────────
 
@@ -495,6 +495,10 @@ describe('RiScService', () => {
         name: 'test.yaml',
         content: null,
       } as unknown as GithubFileDTO);
+      github.fetchFileContent.mockResolvedValue({
+        data: SAMPLE_RISC_CONTENT,
+        status: GithubStatus.Success,
+      });
       github.writeFile.mockResolvedValue(undefined);
       github.fetchOpenPullRequests.mockResolvedValue([]);
 
@@ -581,6 +585,10 @@ describe('RiScService', () => {
         sha: 'fsha',
         name: 'f.yaml',
       } as unknown as GithubFileDTO);
+      github.fetchFileContent.mockResolvedValue({
+        data: SAMPLE_RISC_CONTENT,
+        status: GithubStatus.Success,
+      });
       github.writeFile.mockResolvedValue(undefined);
       github.fetchOpenPullRequests.mockResolvedValue([makePR('risc-abc12', 5)]);
       github.closePullRequest.mockResolvedValue(undefined);

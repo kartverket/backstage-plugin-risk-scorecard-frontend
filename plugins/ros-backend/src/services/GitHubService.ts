@@ -9,13 +9,13 @@ import type {
   GithubRepositoryDTO,
   GithubWriteToFilePayload,
   LastPublished,
-} from '@kartverket/backstage-plugin-ros-common';
+} from '@kartverket/ros-common';
 import {
   DRAFT_BRANCH_PREFIX,
   RISC_DIRECTORY,
   RISC_FILE_PREFIX,
   RISC_FILE_SUFFIX,
-} from '@kartverket/backstage-plugin-ros-common';
+} from '@kartverket/ros-common';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

@@ -1,4 +1,4 @@
-import { ProcessingStatus } from '@kartverket/backstage-plugin-ros-common';
+import { ProcessingStatus } from '@kartverket/ros-common';
 
 /**
  * Base error class for all domain errors in the RiSc backend.

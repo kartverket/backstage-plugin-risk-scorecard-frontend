@@ -1,5 +1,5 @@
-import type { GcpCryptoKeyObject } from '@kartverket/backstage-plugin-ros-common';
-import { CryptoKeyPermission } from '@kartverket/backstage-plugin-ros-common';
+import type { GcpCryptoKeyObject } from '@kartverket/ros-common';
+import { CryptoKeyPermission } from '@kartverket/ros-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────

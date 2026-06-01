@@ -571,9 +571,9 @@ describe('GitHubService', () => {
     it('returns SHA on success', async () => {
       mockFetch.mockResolvedValue(
         mockResponse({
-          sha: 'deadbeef123',
           url: 'https://...',
           commit: {
+            sha: 'deadbeef123',
             message: 'latest',
             committer: { date: '2024-01-01', name: 'test' },
           },
@@ -616,7 +616,6 @@ describe('GitHubService', () => {
       >;
       expect(headers.Authorization).toBe(`token ${token}`);
       expect(headers.Accept).toBe('application/vnd.github+json');
-      // eslint-disable-next-line dot-notation
       expect(headers['X-GitHub-Api-Version']).toBe('2022-11-28');
     });
   });
@@ -641,9 +640,9 @@ describe('GitHubService', () => {
       // Second call: fetchBranchHeadSha
       mockFetch.mockResolvedValueOnce(
         mockResponse({
-          sha: 'headsha456',
           url: 'https://...',
           commit: {
+            sha: 'headsha456',
             message: 'latest',
             committer: { date: '2024-01-01', name: 'test' },
           },

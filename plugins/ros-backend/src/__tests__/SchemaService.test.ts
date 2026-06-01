@@ -17,7 +17,7 @@ import type {
   MigrationStatus,
   RiScDocument,
   RiSc5X,
-} from '@kartverket/backstage-plugin-ros-common';
+} from '@kartverket/ros-common';
 
 function loadFixture(name: string): string {
   return readFileSync(resolve(__dirname, 'fixtures', name), 'utf-8');

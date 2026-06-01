@@ -83,15 +83,28 @@ catalog:
           # supports ISO duration, "human duration" as used in code
           timeout: { minutes: 3 }
 
+#sikkerhetsmetrikker:
+#  clientId: <>
+#  baseUrl: <>
+#
+#security-champion:
+#  clientId: <>
+#
+#regelrett:
+#  enable: true
+#  baseUrl: http://localhost:8080
+#  url: http://localhost:8080
+#  clientId: <>
+
 ### RiSc plugin backend configuration ###
 ros:
   gcp:
     additionalAllowedProjectIds:
-      - <GCP PROJECT ID>
+      - spire-ros-5lmr
   sops:
     ageKey: <BACKEND SECRET KEY FOR SOPS>
     backendPublicKey: <BACKEND PUBLIC KEY FOR SOPS>
     webhookUrl: <SLACK WEBHOOK URL>
   initRiSc:
-    repoOwner: 'kartverket'
-    repoName: 'initial-riscs-collection'
+    repoOwner: <INIT_RISC_REPO_OWNER>
+    repoName: <INIT_RISC_REPO_NAME>

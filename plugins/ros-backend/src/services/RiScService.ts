@@ -22,12 +22,12 @@ import type {
   PendingApprovalDTO,
   GithubPullRequestObject,
   GithubReferenceObjectDTO,
-} from '@kartverket/backstage-plugin-ros-common';
+} from '@kartverket/ros-common';
 import {
   DRAFT_BRANCH_PREFIX,
   RISC_FILE_PREFIX,
   RiScStatus,
-} from '@kartverket/backstage-plugin-ros-common';
+} from '@kartverket/ros-common';
 
 import type * as ComparisonService from './ComparisonService';
 import type { GitHubService, GithubContentResponse } from './GitHubService';

@@ -4,11 +4,7 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 import * as yaml from 'yaml';
 import { Decrypter } from 'age-encryption';
-import {
-  SopsConfig,
-  AgeEntry,
-  GcpKmsEntry,
-} from '@kartverket/backstage-plugin-ros-common';
+import { SopsConfig, AgeEntry, GcpKmsEntry } from '@kartverket/ros-common';
 import { spawnSops } from '../lib/sops';
 import {
   SopsDecryptionError,

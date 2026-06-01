@@ -1,6 +1,6 @@
 import express from 'express';
 import request from 'supertest';
-import { ProcessingStatus } from '@kartverket/backstage-plugin-ros-common';
+import { ProcessingStatus } from '@kartverket/ros-common';
 import { createRouter, extractToken, errorHandler } from '../router';
 import { DomainError } from '../lib/errors';
 

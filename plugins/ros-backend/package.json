@@ -26,13 +26,12 @@
   },
   "scripts": {
     "start": "backstage-cli package start",
-    "build": "backstage-cli package build",
-    "lint": "backstage-cli package lint",
+    "build:types": "yarn run -T tsc",
+    "build": "yarn build:types && backstage-cli package build",
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack",
-    "tsc": "tsc"
+    "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "backstage:^",
@@ -40,7 +39,7 @@
     "@backstage/catalog-model": "backstage:^",
     "@backstage/config": "backstage:^",
     "@backstage/integration": "backstage:^",
-    "@kartverket/backstage-plugin-ros-common": "workspace:*",
+    "@kartverket/ros-common": "workspace:*",
     "age-encryption": "^0.3.0",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
@@ -56,7 +55,7 @@
     "supertest": "^7.2.2"
   },
   "files": [
-    "dist"
-  ],
-  "packageManager": "yarn@4.9.2"
+    "dist",
+    "config.d.ts"
+  ]
 }

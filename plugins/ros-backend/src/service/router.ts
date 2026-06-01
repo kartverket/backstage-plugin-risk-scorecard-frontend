@@ -3,15 +3,15 @@ import type {
   BackstageCredentials,
   BackstageUserPrincipal,
   HttpAuthService,
-} from "@backstage/backend-plugin-api";
-import type { CatalogApi } from "@backstage/catalog-client";
+} from '@backstage/backend-plugin-api';
+import type { CatalogApi } from '@backstage/catalog-client';
 import {
   parseEntityRef,
   RELATION_PART_OF,
   stringifyEntityRef,
-} from "@backstage/catalog-model";
-import express from "express";
-import type { RiScIndexEntry, RiScIndexStore } from "./riscIndexStore";
+} from '@backstage/catalog-model';
+import express from 'express';
+import type { RiScIndexEntry, RiScIndexStore } from './riscIndexStore';
 
 type RouterOptions = {
   catalogClient: CatalogApi;
@@ -25,14 +25,14 @@ export const createRouter = async (
 ): Promise<express.Router> => {
   const router = express.Router();
 
-  router.get("/riscs", async (req, res, next) => {
+  router.get('/riscs', async (req, res, next) => {
     try {
       const credentials = await options.httpAuth.credentials(req, {
-        allow: ["user"],
+        allow: ['user'],
       });
       const entityRef = req.query.entityRef;
 
-      if (typeof entityRef !== "string" || entityRef.trim() === "") {
+      if (typeof entityRef !== 'string' || entityRef.trim() === '') {
         res.status(400).json({
           error: 'Query parameter "entityRef" is required',
         });
@@ -69,7 +69,7 @@ async function getRiScsForEntityRef(
     credentials,
   );
   const componentMatches = await Promise.all(
-    componentRefs.map((componentRef) =>
+    componentRefs.map(componentRef =>
       options.riScIndexStore.getRiScsForEntityRef(componentRef),
     ),
   );
@@ -88,16 +88,16 @@ async function getComponentRefsForSystemEntityRef(
 ): Promise<string[]> {
   const catalogToken = await auth.getPluginRequestToken({
     onBehalfOf: credentials,
-    targetPluginId: "catalog",
+    targetPluginId: 'catalog',
   });
 
   const response = await catalogClient.getEntities(
     {
       filter: {
-        kind: "Component",
+        kind: 'Component',
         [`relations.${RELATION_PART_OF}`]: systemEntityRef,
       },
-      fields: ["kind", "metadata.name", "metadata.namespace"],
+      fields: ['kind', 'metadata.name', 'metadata.namespace'],
     },
     { token: catalogToken.token },
   );
@@ -108,7 +108,7 @@ async function getComponentRefsForSystemEntityRef(
 function isSystemEntityRef(entityRef: string): boolean {
   const parsedEntityRef = parseEntityRef(entityRef);
 
-  return parsedEntityRef.kind.toLowerCase() === "system";
+  return parsedEntityRef.kind.toLowerCase() === 'system';
 }
 
 function deduplicateRiScIndexReferences(

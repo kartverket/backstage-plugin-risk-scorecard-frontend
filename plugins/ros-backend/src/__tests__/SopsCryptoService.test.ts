@@ -4,7 +4,7 @@ import {
   isValidAgeSecretKey,
   SopsCryptoConfig,
 } from '../services/SopsCryptoService';
-import { SopsConfig } from '@kartverket/backstage-plugin-ros-common';
+import { SopsConfig } from '@kartverket/ros-common';
 
 // Mock the lib/sops module
 jest.mock('../lib/sops');

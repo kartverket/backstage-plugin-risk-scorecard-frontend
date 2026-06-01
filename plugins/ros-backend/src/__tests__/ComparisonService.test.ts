@@ -28,7 +28,7 @@ import {
   ValuationConfidentiality,
   ValuationIntegrity,
   ValuationAvailability,
-} from '@kartverket/backstage-plugin-ros-common';
+} from '@kartverket/ros-common';
 
 import {
   compare,

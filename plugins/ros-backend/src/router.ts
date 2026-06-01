@@ -7,13 +7,13 @@ import express, {
   NextFunction,
   Router,
 } from 'express';
-import { ProcessingStatus } from '@kartverket/backstage-plugin-ros-common';
+import { ProcessingStatus } from '@kartverket/ros-common';
 import { AccessTokenValidationError, DomainError } from './lib/errors';
 import type { RiScService } from './services/RiScService';
 import type { GcpKmsService } from './services/GcpKmsService';
 import type { InitRiScService } from './services/InitRiScService';
 import type { SlackService } from './services/SlackService';
-import { latestSupportedVersion } from '@kartverket/backstage-plugin-ros-common';
+import { latestSupportedVersion } from '@kartverket/ros-common';
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface RouterOptions {
