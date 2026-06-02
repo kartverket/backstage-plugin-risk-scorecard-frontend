@@ -19,9 +19,11 @@
     "lint": "eslint \"plugins/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"packages/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"build-tools/**/*.ts\"",
     "test": "yarn workspaces foreach -A --exclude build-tools run test -- --watchAll=false && yarn workspace build-tools test",
     "typecheck": "tsc -p plugins/ros --noEmit && tsc -p plugins/ros-backend --noEmit && tsc -p packages/ros-common --noEmit && tsc -p build-tools",
+    "backstage:upgrade": "yarn workspace @kartverket/backstage-plugin-risk-scorecard backstage-cli versions:bump",
     "kartverket.dev": "sh scripts/runKartverketDev.sh"
   },
   "devDependencies": {
+    "@backstage/cli": "backstage:^",
     "@backstage/cli-defaults": "backstage:^",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.12.2",

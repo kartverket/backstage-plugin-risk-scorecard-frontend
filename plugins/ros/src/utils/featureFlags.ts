@@ -13,6 +13,10 @@ export const riScFeatureFlags: PluginFeatureFlagConfig[] = [
   //   description:
   //     'Testing av system-RoS for Team SKVIS. Bruk på eget ansvar. UNNGÅ lagring av System-RoSer i åpne repoer.',
   // },
+  // {
+  //   name: nativeRiScBackendFeatureFlag,
+  //   description: 'Testing av ny backend for RoS skrevet i typescript.',
+  // },
 ];
 
 export function useSystemRiScsFeatureFlag(): boolean {

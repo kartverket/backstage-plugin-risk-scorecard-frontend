@@ -1,6 +1,5 @@
 import {
   configApiRef,
-  discoveryApiRef,
   featureFlagsApiRef,
   fetchApiRef,
   githubAuthApiRef,
@@ -83,10 +82,6 @@ describe('useAuthenticatedFetch', () => {
     getOptionalString: jest.fn().mockReturnValue(undefined),
   };
 
-  const mockDiscoveryApi = {
-    getBaseUrl: jest.fn().mockResolvedValue('http://localhost:7007/api/ros'),
-  };
-
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <TestApiProvider
       apis={[
@@ -96,7 +91,6 @@ describe('useAuthenticatedFetch', () => {
         [fetchApiRef, mockFetchApi],
         [configApiRef, mockConfigApi],
         [featureFlagsApiRef, mockFeatureFlagsApi],
-        [discoveryApiRef, mockDiscoveryApi],
       ]}
     >
       {children}
@@ -135,11 +129,11 @@ describe('useAuthenticatedFetch', () => {
       const onSuccess = jest.fn();
 
       await act(async () => {
-        result.current.fetchRiScs(onSuccess);
+        await result.current.fetchRiScs(onSuccess);
       });
 
       expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/all'),
+        'http://localhost:7000/api/proxy/risc-proxy/api/risc/org/repo/5.4/all',
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
@@ -170,20 +164,17 @@ describe('useAuthenticatedFetch', () => {
         wrapper,
       });
 
-      await waitFor(() => expect(result.current.isReady).toBe(true));
-
       const onSuccess = jest.fn();
 
       await act(async () => {
-        result.current.fetchRiScs(onSuccess);
+        await result.current.fetchRiScs(onSuccess);
       });
 
       expect(mockFeatureFlagsApi.isActive).toHaveBeenCalledWith(
         nativeRiScBackendFeatureFlag,
       );
-      expect(mockDiscoveryApi.getBaseUrl).toHaveBeenCalledWith('ros');
       expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        'http://localhost:7007/api/ros/risc/org/repo/5.4/all',
+        'http://localhost:7000/api/ros/risc/org/repo/5.4/all',
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
@@ -1023,6 +1014,9 @@ describe('useAuthenticatedFetch', () => {
       );
 
       expect(postCall).toBeDefined();
+      expect(postCall?.[0]).toBe(
+        'http://localhost:7000/api/proxy/risc-proxy/api/google/gcpCryptoKeys',
+      );
 
       const [, postOptions] = postCall!;
       expect(postOptions.headers).toEqual(

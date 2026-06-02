@@ -1,6 +1,5 @@
 import {
   configApiRef,
-  discoveryApiRef,
   fetchApiRef,
   githubAuthApiRef,
   googleAuthApiRef,
@@ -10,7 +9,7 @@ import {
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { URLS } from '../urls';
-import { buildNativeUrls } from '../urls/backend';
+import { buildNativeBackendUrls } from '../urls/backend';
 import {
   CreateRiScResultDTO,
   DeleteRiScResultDTO,
@@ -100,60 +99,42 @@ export function useAuthenticatedFetch() {
   );
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
   const backendUrl = configApi.getString('backend.baseUrl');
   const isNativeBackendEnabled = useNativeRiScBackendFeatureFlag();
 
-  // For native mode, resolve the base URL via discovery API (async)
-  const [nativeBaseUrl, setNativeBaseUrl] = useState<string | null>(null);
-  useEffect(() => {
-    if (isNativeBackendEnabled) {
-      discoveryApi.getBaseUrl('ros').then(setNativeBaseUrl);
-    }
-  }, [discoveryApi, isNativeBackendEnabled]);
+  const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
 
-  // URL construction: native vs legacy
-  const nativeUrls =
-    isNativeBackendEnabled && nativeBaseUrl
-      ? buildNativeUrls(
-          nativeBaseUrl,
-          repoInformation.owner,
-          repoInformation.name,
-          latestSupportedVersion,
-        )
-      : null;
-
-  const riScUri = nativeUrls
-    ? nativeUrls.riScUri
-    : `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`;
-
-  const uriToFetchAllRiScs = nativeUrls
-    ? nativeUrls.uriToFetchAllRiScs
-    : `${riScUri}/${latestSupportedVersion}/all`;
-
-  const uriToFetchDefaultRiScDescriptors = nativeUrls
-    ? nativeUrls.uriToFetchDefaultRiScDescriptors
-    : `${backendUrl}${URLS.backend.fetchDefaultRiScTypeDescriptors}`;
+  const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
+  const uriToFetchDefaultRiScDescriptors = `${backendUrl}${URLS.backend.fetchDefaultRiScTypeDescriptors}`;
 
   function uriToFetchDifference(id: string) {
-    return nativeUrls
-      ? nativeUrls.uriToFetchDifference(id)
-      : `${riScUri}/${id}/difference`;
+    // URLS.backend.fetchDifference
+    return `${riScUri}/${id}/difference`;
   }
 
   function uriToFetchRiSc(id: string) {
-    return nativeUrls ? nativeUrls.uriToFetchRiSc(id) : `${riScUri}/${id}`;
+    // URLS.backend.fetchRiSc
+    return `${riScUri}/${id}`;
   }
 
   function uriToDeleteRiSc(id: string) {
-    return nativeUrls ? nativeUrls.uriToDeleteRiSc(id) : `${riScUri}/${id}`;
+    // URLS.backend.deleteRiSc
+    return `${riScUri}/${id}`;
   }
 
   function uriToPublishRiSc(id: string) {
-    return nativeUrls
-      ? nativeUrls.uriToPublishRiSc(id)
-      : `${riScUri}/publish/${id}`;
+    // URLS.backend.publishRiSc
+    return `${riScUri}/publish/${id}`;
   }
+
+  // TODO: Revisit discoveryApi.getBaseUrl('ros') when we are ready to validate
+  // native backend routing across deployments.
+  const nativeBackendUrls = buildNativeBackendUrls({
+    baseUrl: `${backendUrl}/api/ros`,
+    owner: repoInformation.owner,
+    repo: repoInformation.name,
+    version: latestSupportedVersion,
+  });
 
   function isDevelopment() {
     return configApi.getString('auth.environment') === 'development';
@@ -278,7 +259,9 @@ export function useAuthenticatedFetch() {
   ) {
     return identityApi.getProfileInfo().then(profile => {
       fullyAuthenticatedFetch<DifferenceDTO, DifferenceDTO>(
-        uriToFetchDifference(selectedRiSc.id),
+        isNativeBackendEnabled
+          ? nativeBackendUrls.uriToFetchDifference(selectedRiSc.id)
+          : uriToFetchDifference(selectedRiSc.id),
         'POST',
         onSuccess,
         (_, rejectedLogin) => {
@@ -300,7 +283,9 @@ export function useAuthenticatedFetch() {
   ) {
     if (isDevelopment()) {
       fullyAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
-        uriToFetchAllRiScs,
+        isNativeBackendEnabled
+          ? nativeBackendUrls.uriToFetchAllRiScs
+          : uriToFetchAllRiScs,
         'GET',
         onSuccess,
         (error, rejectedLogin) => {
@@ -309,7 +294,9 @@ export function useAuthenticatedFetch() {
       );
     } else {
       googleAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
-        uriToFetchAllRiScs,
+        isNativeBackendEnabled
+          ? nativeBackendUrls.uriToFetchAllRiScs
+          : uriToFetchAllRiScs,
         'GET',
         onSuccess,
         (error, rejectedLogin) => {
@@ -322,7 +309,9 @@ export function useAuthenticatedFetch() {
   function postFeedback(feedback: string): Promise<void> {
     return new Promise((resolve, reject) => {
       fullyAuthenticatedFetch<void, any>(
-        `${riScUri}/feedback`,
+        isNativeBackendEnabled
+          ? `${nativeBackendUrls.riScUri}/feedback`
+          : `${riScUri}/feedback`,
         'POST',
         () => resolve(),
         error => reject(error),
@@ -335,11 +324,10 @@ export function useAuthenticatedFetch() {
     onSuccess: (response: GcpCryptoKeyObject[]) => void,
     onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
   ) {
-    const gcpUrl = nativeUrls
-      ? nativeUrls.uriToFetchGcpCryptoKeys
-      : `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`;
     googleAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
-      gcpUrl,
+      isNativeBackendEnabled
+        ? nativeBackendUrls.uriToFetchGcpCryptoKeys
+        : `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
       'GET',
       res => onSuccess(res),
       (error, rejectedLogin) => {
@@ -355,7 +343,9 @@ export function useAuthenticatedFetch() {
   ) {
     return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<PublishRiScResultDTO, ProcessRiScResultDTO>(
-        uriToPublishRiSc(riScId),
+        isNativeBackendEnabled
+          ? nativeBackendUrls.uriToPublishRiSc(riScId)
+          : uriToPublishRiSc(riScId),
         'POST',
         res => {
           if (onSuccess) onSuccess(res);
@@ -378,7 +368,9 @@ export function useAuthenticatedFetch() {
   ) {
     return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<CreateRiScResultDTO, ProcessRiScResultDTO>(
-        `${riScUri}?generateDefault=${generateDefault}`,
+        isNativeBackendEnabled
+          ? `${nativeBackendUrls.riScUri}?generateDefault=${generateDefault}`
+          : `${riScUri}?generateDefault=${generateDefault}`,
         'POST',
         res => {
           if (onSuccess) onSuccess(res);
@@ -401,7 +393,9 @@ export function useAuthenticatedFetch() {
         ProcessRiScResultDTO | PublishRiScResultDTO,
         ProcessRiScResultDTO
       >(
-        uriToFetchRiSc(riSc.id),
+        isNativeBackendEnabled
+          ? nativeBackendUrls.uriToFetchRiSc(riSc.id)
+          : uriToFetchRiSc(riSc.id),
         'PUT',
         res => {
           if (onSuccess) onSuccess(res);
@@ -425,7 +419,9 @@ export function useAuthenticatedFetch() {
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
     fullyAuthenticatedFetch<DeleteRiScResultDTO, ProcessRiScResultDTO>(
-      uriToDeleteRiSc(riScId),
+      isNativeBackendEnabled
+        ? nativeBackendUrls.uriToDeleteRiSc(riScId)
+        : uriToDeleteRiSc(riScId),
       'DELETE',
       res => {
         if (onSuccess) onSuccess(res);
@@ -440,17 +436,15 @@ export function useAuthenticatedFetch() {
     onSuccess: (response: DefaultRiScTypeDescriptor[]) => void,
   ) {
     fullyAuthenticatedFetch<DefaultRiScTypeDescriptor[], void>(
-      uriToFetchDefaultRiScDescriptors,
+      isNativeBackendEnabled
+        ? nativeBackendUrls.uriToFetchDefaultRiScDescriptors
+        : uriToFetchDefaultRiScDescriptors,
       'GET',
       res => onSuccess(res),
       () => {},
     );
   }
-  // Ready when native URL has resolved (or we're in legacy mode)
-  const isReady = !isNativeBackendEnabled || nativeUrls !== null;
-
   return {
-    isReady,
     fetchRiScs,
     fetchGcpCryptoKeys,
     postRiScs,

@@ -55,8 +55,6 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
           riScIndexStore,
         });
 
-        logger.info('Veøy - setter opp backend plugin');
-
         httpRouter.use(
           await createRouter({ catalogClient, auth, httpAuth, riScIndexStore }),
         );

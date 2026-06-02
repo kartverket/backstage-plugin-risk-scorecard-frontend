@@ -1,68 +1,23 @@
-# Risk Scorecard (RiSc)
+# Risk Scorecard (RiSc / Risiko- og Sårbarhetsanalyse - RoS)
 
-This is a plugin for Backstage that helps you and your team when working continuously with risk analysis (:).
+These are plugins (backend and frontend) for Backstage that help you and your team when working continuously with risk analysis.
 
-## Frontend
-To run the frontend, you will need to have:
-- A local clone of a complete Backstage app.
-- A local app-config.local.yaml file.
+To run you will need to have:
+- A local clone of `kartverket.dev` as a sibling, i.e. `../kartverket.dev`
+- A correctly set up `../kartverket.dev/app-config.local.yaml` file based on `./app-config.example.yaml` with secrets inserted from 1Password.
 
-This RiSc plugin can then be linked to said Backstage app using `--link` (with a few small additions to kartverket.dev, as described below).
-
-## Using with kartverket.dev
-
-To configure usage of this plugin with the kartverket.dev Backstage application, please utilize the startPlugin.sh bash script.
-
-TODO: Look over here before committing
-
-This script will:
-1. Copy `app-config.yaml` and `app-config.local.yaml` into the kartverket.dev root
-2. Add `portal:` Yarn resolutions to kartverket.dev's root `package.json` so that `@internal/ros-backend` resolves to the local workspace instead of npm.
-3. Add `@internal/ros-backend` as a dependency in `packages/backend/package.json`
-4. Register the backend plugin by inserting `backend.add(import('@internal/ros-backend'))` in `packages/backend/src/index.ts`
-5. Run `yarn install` in both workspaces
-6. Start the dev server with `yarn dev --link` to hot-reload frontend changes from this repo
-
-### Manual changes required in kartverket.dev
-
-If you are not using `startPlugin.sh`, the following changes must be made manually in kartverket.dev:
-
-**`package.json` (root) — add resolutions:**
-```json
-"resolutions": {
-  "@internal/ros-backend": "portal:<path-to-this-repo>/ros-backend",
-  "@internal/backstage-plugin-ros-common": "portal:<path-to-this-repo>/ros-common"
-}
-```
-
-**`packages/backend/package.json` — add dependency:**
-```json
-"@internal/ros-backend": "*"
-```
-
-**`packages/backend/src/index.ts` — register the plugin:**
-```ts
-backend.add(import('@internal/ros-backend'));
-```
-
-Then run `yarn install` and `yarn dev --link <path-to-this-repo>`.
+To start kartverket.dev with the local version of these plugins please utilize `yarn kartverket.dev`.
 
 ## Backend
-The `ros-backend` package in this repo is the Backstage backend plugin. It handles RiSc CRUD operations, SOPS encryption/decryption, GitHub PR lifecycle, and GCP KMS integration. It runs as part of the Backstage backend process at `http://localhost:7007/api/ros`.
-
-Required configuration in `app-config.local.yaml` (already included in the template):
-- `ros.sops.ageKey` — private AGE key for SOPS decryption
-- `ros.sops.backendPublicKey` — backend's AGE public key
-- `ros.gcp.additionalAllowedProjectIds` — GCP projects to allow
-- `ros.backend: 'native'` — tells the frontend to route to the Backstage backend instead of the legacy Kotlin proxy
+The `ros-backend` package in this repo is the Backstage backend plugin. It handles RiSc CRUD operations, SOPS encryption/decryption, GitHub PR lifecycle, and GCP KMS integration.
 
 Happy RiSc-ing 🌹
 
 ## Publishing a new plugin version
 
-This repo utilizes a home made script located in the [build-tools](./build-tools/) workspace to automatically publish new versions of the plugin (as a NPM package) for each PR that is merged. This uses [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) in combination with our [GitHub tags](https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/tags) to determine the next version. This means that if no commits in a PR dictates that a new version should be published, that particular PR will not result in a new published version. NOTE that conventional commits comes in several flavours. So a simple summary of kinds of commits is given below (we use the [default preset](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits)).
+This repo utilizes a homemade script located in the [build-tools](./build-tools/) workspace to automatically publish new versions of the plugin (as a NPM package) for each PR that is merged. This uses [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) in combination with our [GitHub tags](https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend/tags) to determine the next version. This means that if no commits in a PR dictates that a new version should be published, that particular PR will not result in a new published version. NOTE that conventional commits comes in several flavors. So a simple summary of kinds of commits is given below (we use the [default preset](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits)).
 
-The publish action will comment on the PR with what type of change merging would result in. Note that this is only guaranteed to be valid at the time the comment was created. If another PR is merged before yours, the resulting version will be different. But the actual bump will be the same.
+The publish-action will comment on the PR with what type of change merging would result in. Note that this is only guaranteed to be valid at the time the comment was created. If another PR is merged before yours, the resulting version will be different. But the actual bump will be the same.
 
 For example:
 
@@ -71,11 +26,11 @@ Then, another similar PR is merged before yours, so the LIVE version on GitHub a
 
 When a PR with an actual version change is merged, the new version of the plugin will be pushed to Kartverket's npm registry. The new version should be visible [here](https://www.npmjs.com/package/@kartverket/backstage-plugin-risk-scorecard).
 
-But what if two PR's are merged at the same time :scream:? Don't worry. There's a concurrency group in place in the pubish action that makes sure that no two runs on main happes at the same time. This also applies for PRs, but since you probably only care about your most recent push, any previous run of the publish action (which runs in dry-run mode for PRs) will simply be cancelled.
+But what if two PR's are merged at the same time :scream:? Don't worry. There's a concurrency group in place in the publish-action that makes sure that no two runs on main happens at the same time. This also applies for PRs, but since you probably only care about your most recent push, any previous run of the publish-action (which runs in dry-run mode for PRs) will simply be canceled.
 
 After that, users of the plugin can bump the version to include the latest changes.
 
-NOTE: The version in the plugin's package.json will never change in the source code. There are many [valid reasons](https://semantic-release.gitbook.io/semantic-release/support/faq#why-is-the-package.jsons-version-not-updated-in-my-repository) for this, but the primary is that this would require the publish action (a bot basically) to be able to commit directly on the main branch.
+NOTE: The version in the plugin's package.json will never change in the source code. There are many [valid reasons](https://semantic-release.gitbook.io/semantic-release/support/faq#why-is-the-package.jsons-version-not-updated-in-my-repository) for this, but the primary is that this would require the publish-action (a bot basically) to be able to commit directly on the main branch.
 
 ### ⚠️ A note about merge method ⚠️
 
@@ -90,7 +45,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md#versioning)
 ```text
 fix: This is a fix, which will bump the patch portion of the version (13.37.0 --> 13.37.1)
 feat: This is a new feature, which will bump the minor portion of the version (13.36.0 --> 13.37.0)
-feat!: This is also a new feature but with a BANG
+feat!: This is also a new feature but with a BANG (13.37.0 --> 14.0.0)
 
 BREAKING CHANGE: this line is strictly OPTIONAL. The !: is enough to trigger a new major bump (13.37.0 --> 14.0.0)
 chore: This is actually also a breaking change :/
