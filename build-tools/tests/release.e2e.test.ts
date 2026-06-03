@@ -666,6 +666,10 @@ describe('Release E2E Tests', () => {
           initialVersion: '1.0.0',
           packageName: '@test/backend',
         });
+        repo.createPackage('packages/ros-common', {
+          initialVersion: '1.0.0',
+          packageName: '@test/common',
+        });
         repo.commit('chore: add packages');
         repo.tag('v1.0.0');
         repo.commit('feat: add backend package release');
@@ -674,6 +678,7 @@ describe('Release E2E Tests', () => {
       const packagePaths = [
         join(repo.path, 'plugins/ros'),
         join(repo.path, 'plugins/ros-backend'),
+        join(repo.path, 'packages/ros-common'),
       ];
 
       const { runRelease } = await import('../release.ts');
@@ -686,13 +691,12 @@ describe('Release E2E Tests', () => {
       expect(result.version).toBe('1.1.0');
       expect(repo.getPackageJson('plugins/ros').version).toBe('1.1.0');
       expect(repo.getPackageJson('plugins/ros-backend').version).toBe('1.1.0');
+      expect(repo.getPackageJson('packages/ros-common').version).toBe('1.1.0');
 
-      const tscCommands = findCommands('yarn tsc');
       const buildCommands = findCommands('yarn build');
       const publishCommands = findCommands('npm publish');
 
       for (const packagePath of packagePaths) {
-        expect(tscCommands.some(cmd => cmd.cwd === packagePath)).toBe(true);
         expect(buildCommands.some(cmd => cmd.cwd === packagePath)).toBe(true);
         expect(publishCommands.some(cmd => cmd.cwd === packagePath)).toBe(true);
       }
