@@ -1,5 +1,6 @@
 import { dtoToRiSc, RiScContentResultDTO, RiScDTO } from './DTOs';
 import { ContentStatus, RiScWithMetadata } from './types';
+import { pluginRiScMessages } from './translations.ts';
 
 /**
  * Maps a RiScContentResultDTO to a RiScWithMetadata object.
@@ -36,99 +37,34 @@ export function withLoginRejected(
     : baseMessage;
 }
 
+type Paths<T> = {
+  [K in Extract<keyof T, string>]: T[K] extends Record<string, any>
+    ? `${K}.${Paths<T[K]>}`
+    : K;
+}[Extract<keyof T, string>];
+
 /**
- * Builds readable error message string from a list of RiScs that
- * failed to load. Groups them by ContentStatus and produces one line per
- * group, with special handling for DecryptionFailed entries that carry an
- * errorCode.
+ * Maps a ContentStatus to a type-safe contentHeader translation key
+ * for displaying a short reason in the RiSc selection dropdown.
+ * Falls back to a generic unavailable key for statuses not explicitly mapped.
  */
-export function buildFetchRiScErrorMessages(
-  errorRiScs: RiScContentResultDTO[],
-  t: (key: any, options?: any) => string,
-): string {
-  const errorsByStatus = errorRiScs.reduce(
-    (acc, risk) => {
-      if (!acc[risk.status]) {
-        acc[risk.status] = [];
-      }
-      acc[risk.status].push(risk.riScId);
-      return acc;
-    },
-    {} as Record<ContentStatus, string[]>,
-  );
-
-  return Object.entries(errorsByStatus)
-    .map(([status, riScIds]) => {
-      // Fallback to Failure for unknown status values
-      const validStatuses = Object.values(ContentStatus);
-      const statusKey = validStatuses.includes(status as ContentStatus)
-        ? status
-        : ContentStatus.Failure;
-
-      if (statusKey === ContentStatus.DecryptionFailed) {
-        const decryptionRisks = errorRiScs.filter(
-          risk =>
-            risk.status === ContentStatus.DecryptionFailed &&
-            riScIds.includes(risk.riScId),
-        );
-
-        const withErrorCode = decryptionRisks.filter(risk => risk.errorCode);
-        const withoutErrorCode = decryptionRisks.filter(
-          risk => !risk.errorCode,
-        );
-
-        const messages: string[] = [];
-
-        if (withErrorCode.length > 0) {
-          const groups = withErrorCode.reduce(
-            (acc, risk) => {
-              const groupKey = `${risk.errorCode}__${risk.encryptionKeyId ?? ''}`;
-              if (!acc[groupKey]) acc[groupKey] = [];
-              acc[groupKey].push(risk);
-              return acc;
-            },
-            {} as Record<string, RiScContentResultDTO[]>,
-          );
-
-          Object.values(groups).forEach(group => {
-            const { errorCode, encryptionKeyId } = group[0];
-            const groupRiScIds = group.map(r => r.riScId).join(', ');
-            if (encryptionKeyId) {
-              const keyId = encryptionKeyId.split('/').pop() ?? encryptionKeyId;
-              const errorKey =
-                group.length === 1
-                  ? 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE'
-                  : 'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL';
-              messages.push(
-                t(errorKey as any, { riScId: groupRiScIds, keyId }),
-              );
-            } else {
-              const errorKey = `errorMessages.ContentStatusDecryptionFailedMessage.${errorCode}`;
-              messages.push(
-                t(errorKey as any, { riScId: groupRiScIds, status }),
-              );
-            }
-          });
-        }
-
-        if (withoutErrorCode.length > 0) {
-          const errorKey = `errorMessages.ContentStatus${statusKey}`;
-          messages.push(
-            t(errorKey as any, {
-              riScId: withoutErrorCode.map(r => r.riScId).join(', '),
-              status,
-            }),
-          );
-        }
-
-        return messages.join('\n');
-      }
-
-      const errorKey = `errorMessages.ContentStatus${statusKey}`;
-      return t(errorKey as any, {
-        riScId: (riScIds as string[]).join(', '),
-        status,
-      });
-    })
-    .join('\n');
+export function getUnavailableRiScReasonKey(
+  status: ContentStatus,
+): Paths<Pick<typeof pluginRiScMessages, 'contentHeader'>> {
+  switch (status) {
+    case ContentStatus.FileNotFound:
+      return 'contentHeader.unavailableReasonFileNotFound';
+    case ContentStatus.NoReadAccess:
+      return 'contentHeader.unavailableReasonNoReadAccess';
+    case ContentStatus.SchemaValidationFailed:
+      return 'contentHeader.unavailableReasonSchemaValidationFailed';
+    case ContentStatus.Failure:
+      return 'contentHeader.unavailableReasonFailure';
+    case ContentStatus.Deleted:
+      return 'contentHeader.unavailableReasonDeleted';
+    case ContentStatus.UnsupportedMigration:
+      return 'contentHeader.unavailableReasonUnsupportedMigration';
+    default:
+      return 'contentHeader.unavailableReasonUnknown';
+  }
 }

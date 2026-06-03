@@ -1,6 +1,6 @@
 # Build Tools
 
-Automated release tooling for the ROS (Risk Scorecard) plugin. This tool automates versioning, changelog generation, npm publishing, and GitHub release creation using industry-standard conventions and best practices.
+Automated release tooling for the ROS (Risk Scorecard) plugin packages. This tool automates versioning, changelog generation, npm publishing, and GitHub release creation using industry-standard conventions and best practices.
 
 ## Overview
 
@@ -8,9 +8,9 @@ The release tool provides a complete automation workflow for:
 
 - **Version Bump Detection**: Analyzes commit history to determine appropriate version increments
 - **Changelog Generation**: Creates formatted release notes from conventional commits
-- **Package Building**: Compiles TypeScript and builds the plugin package
+- **Package Building**: Compiles TypeScript and builds the plugin packages
 - **NPM Publishing**: Publishes packages to npm registry using OIDC trusted publishing
-- **GitHub Releases**: Creates GitHub releases with automated tagging and tarball attachments
+- **GitHub Releases**: Creates GitHub releases with automated tagging
 - **PR Comments**: Automatically notifies PRs included in a release
 
 ## Core Technologies
@@ -49,7 +49,6 @@ Commit messages follow the [Conventional Commits](https://www.conventionalcommit
 
 - Creates and manages GitHub releases
 - Posts comments on pull requests
-- Uploads release assets (tarballs)
 
 ### CLI Argument Parsing
 
@@ -71,19 +70,17 @@ Commit messages follow the [Conventional Commits](https://www.conventionalcommit
    ↓
 4. Determine Version Bump (major/minor/patch)
    ↓
-5. Update package.json Version
+5. Update package.json Versions
    ↓
-6. Build Package (TypeScript + Backstage CLI)
+6. Build Packages (TypeScript + Backstage CLI)
    ↓
-7. Create Tarball
+7. Publish Packages to NPM (with OIDC)
    ↓
-8. Publish to NPM (with OIDC)
+8. Create Git Tag
    ↓
-9. Create Git Tag
-   ↓
-10. Create GitHub Release
+9. Create GitHub Release
     ↓
-11. Comment on Related PRs
+10. Comment on Related PRs
 ```
 
 ### Version Bump Logic
@@ -164,7 +161,7 @@ yarn tsx release.ts
 yarn tsx release.ts --dry-run
 ```
 
-Preview changes without publishing or creating releases.
+Preview changes without publishing or creating releases. The default release process handles both `plugins/ros` and `plugins/ros-backend`.
 
 ### Prerelease Versions
 

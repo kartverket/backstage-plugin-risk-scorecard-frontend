@@ -1,6 +1,4 @@
 import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
-import { basename } from 'node:path';
 import { Octokit } from '@octokit/rest';
 import { log } from './logging.ts';
 
@@ -9,7 +7,6 @@ const BOT_LOGIN = 'github-actions[bot]';
 interface GitHubReleaseOptions {
   version: string;
   changelog: string;
-  tarballPath?: string;
   dryRun?: boolean;
   prerelease?: boolean;
 }
@@ -101,13 +98,7 @@ export function extractPRNumbers(commitLog: string): number[] {
 export async function createGitHubRelease(
   options: GitHubReleaseOptions,
 ): Promise<GitHubReleaseResult> {
-  const {
-    version,
-    changelog,
-    tarballPath,
-    dryRun = false,
-    prerelease = false,
-  } = options;
+  const { version, changelog, dryRun = false, prerelease = false } = options;
 
   const tagName = `v${version}`;
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
@@ -125,9 +116,6 @@ export async function createGitHubRelease(
       log(`[DRY RUN] Would create GitHub release:`);
       log(`Tag: ${tagName}`);
       log(`Prerelease: ${prerelease}`);
-      if (tarballPath) {
-        log(`Asset: ${basename(tarballPath)}`);
-      }
       log(
         `Changelog:\n${changelog.slice(0, 500)}${changelog.length > 500 ? '...' : ''}`,
       );
@@ -159,28 +147,6 @@ export async function createGitHubRelease(
       draft: false,
       prerelease,
     });
-
-    // Upload tarball as release asset if provided
-    if (tarballPath) {
-      log(`Uploading tarball as release asset...`);
-      const tarballName = basename(tarballPath);
-      const tarballData = readFileSync(tarballPath);
-
-      await octokit.repos.uploadReleaseAsset({
-        owner,
-        repo,
-        release_id: release.id,
-        name: 'NPM Package',
-        // bad types from Octokit, make it think this Buffer is actually a string
-        // I promise it works!
-        data: tarballData as unknown as string,
-        headers: {
-          'content-type': 'application/gzip',
-          'content-length': tarballData.length,
-        },
-      });
-      log(`Uploaded: ${tarballName}`);
-    }
 
     return {
       success: true,

@@ -23,6 +23,12 @@ export type LockedRiSc = {
   encryptionKeyId: string | null;
 };
 
+export type UnavailableRiSc = {
+  id: string;
+  status: ContentStatus;
+  errorCode?: string;
+};
+
 export type SystemRiSc = {
   sourceFilePath: string;
   riScId: string;

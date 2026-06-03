@@ -120,10 +120,10 @@ function calculateNewVersion(
  * Update the version in the plugin's package.json
  */
 export function updatePackageVersion(
-  pluginPath: string,
+  packagePath: string,
   newVersion: string,
 ): void {
-  const packageJsonPath = resolve(pluginPath, 'package.json');
+  const packageJsonPath = resolve(packagePath, 'package.json');
   const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
   packageJson.version = newVersion;
   writeFileSync(
