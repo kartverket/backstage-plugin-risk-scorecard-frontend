@@ -3,6 +3,7 @@ import { useController, useForm } from 'react-hook-form';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import {
+  Entity,
   parseEntityRef,
   RELATION_PART_OF,
   stringifyEntityRef,
@@ -21,7 +22,16 @@ import {
   CardBody,
   Flex,
   Text,
+  Table,
+  useTable,
+  Cell,
+  CellText,
+  Tooltip,
+  TooltipTrigger,
+  type ColumnConfig,
 } from '@backstage/ui';
+import { Button as AriaButton } from 'react-aria-components';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Autocomplete from '@mui/material/Autocomplete';
 import Chip, { ChipProps } from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
@@ -37,18 +47,25 @@ import {
   entityRefOptionFields,
   getCurrentSystemRef,
 } from '../riScDialog/entityRefOptions';
+import { WarningIcon } from '@backstage/core-components';
 
 const backstageAppliesToPrefix = 'backstage:';
 
-export function AppliesToCard() {
+type Props = {
+  selectedRiSc: NonNullable<ReturnType<typeof useRiScs>['selectedRiSc']>;
+  updateRiSc: ReturnType<typeof useRiScs>['updateRiSc'];
+  updateStatus: ReturnType<typeof useRiScs>['updateStatus'];
+};
+
+export function AppliesToCard(props: Props) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const isSystemRiScsEnabled = useSystemRiScsFeatureFlag();
-  const { selectedRiSc, updateRiSc, updateStatus } = useRiScs();
+  const { selectedRiSc, updateRiSc, updateStatus } = props;
   const [isEditing, setIsEditing] = useState(false);
 
   const { control, handleSubmit, reset, formState } = useForm<RiScWithMetadata>(
     {
-      defaultValues: selectedRiSc ?? undefined,
+      defaultValues: selectedRiSc,
       mode: 'onBlur',
     },
   );
@@ -59,11 +76,12 @@ export function AppliesToCard() {
     configApi.getOptionalBoolean(
       'riskScorecard.appliesTo.includeAllEntities',
     ) ?? false;
+
   const [catalogEntityRefs, setCatalogEntityRefs] = useState<string[]>([]);
-  const [titlesByRef, setTitlesByRef] = useState<Map<string, string>>(
-    new Map(),
-  );
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
+  const [entities, setEntities] = useState<Entity[]>([]);
+  const [appliesToRows, setAppliesToRows] = useState<AppliesToRow[]>([]);
+
   const { field, fieldState } = useController({
     control,
     name: 'content.unencryptedMetadata.appliesTo',
@@ -77,7 +95,7 @@ export function AppliesToCard() {
     if (!isEditing) {
       setIsLoadingOptions(false);
       setCatalogEntityRefs([]);
-      setTitlesByRef(new Map());
+      setEntities([]);
       return undefined;
     }
 
@@ -85,7 +103,6 @@ export function AppliesToCard() {
     const currentSystemRef = getCurrentSystemRef(entity);
     setIsLoadingOptions(true);
     setCatalogEntityRefs([]);
-    setTitlesByRef(new Map());
 
     const sameSystemEntitiesPromise = currentSystemRef
       ? catalogApi
@@ -115,23 +132,11 @@ export function AppliesToCard() {
           ...sameSystemEntitiesResponse.items,
           ...allEntitiesResponse.items,
         ];
-        const titles = new Map<string, string>();
-        fetchedEntities.forEach(optionEntity => {
-          const prefixedRef =
-            backstageAppliesToPrefix + stringifyEntityRef(optionEntity);
-          titles.set(
-            prefixedRef,
-            optionEntity.metadata.title ?? optionEntity.metadata.name,
-          );
-        });
-
-        setCatalogEntityRefs(Array.from(titles.keys()));
-        setTitlesByRef(titles);
+        setEntities(fetchedEntities);
       })
       .catch(() => {
         if (!cancelled) {
-          setCatalogEntityRefs([]);
-          setTitlesByRef(new Map());
+          setEntities([]);
         }
       })
       .finally(() => {
@@ -144,6 +149,38 @@ export function AppliesToCard() {
       cancelled = true;
     };
   }, [isEditing, catalogApi, entity, includeAllEntities]);
+
+  useEffect(() => {
+    const refsToResolve = selectedRiSc.content.unencryptedMetadata
+      ?.appliesTo ?? [currentPrefixedEntityRef];
+
+    let cancelled = false;
+    catalogApi
+      .getEntitiesByRefs({
+        entityRefs: refsToResolve.map(stripAppliesToPrefix),
+        fields: entityRefOptionFields,
+      })
+      .then(({ items }) => {
+        if (cancelled) {
+          return;
+        }
+
+        const rows: AppliesToRow[] = refsToResolve.map((ref, index) => ({
+          id: ref,
+          entity: items[index],
+        }));
+        setAppliesToRows(rows);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setAppliesToRows([]);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedRiSc, currentPrefixedEntityRef, catalogApi]);
 
   if (!isSystemRiScsEnabled || !selectedRiSc) {
     return null;
@@ -165,19 +202,18 @@ export function AppliesToCard() {
         )
       : [];
 
-  // The view is sourced from selectedRiSc (not the form) so it cannot go stale
-  // after a same-id update where the keyed component does not remount.
-  const viewRefs = selectedRiSc.content.unencryptedMetadata?.appliesTo ?? [
-    currentPrefixedEntityRef,
-  ];
-  const orderedViewRefs = [
-    ...viewRefs.filter(ref => ref === currentPrefixedEntityRef),
-    ...viewRefs.filter(ref => ref !== currentPrefixedEntityRef),
+  const orderedRows = [
+    ...appliesToRows.filter(row => row.id === currentPrefixedEntityRef),
+    ...appliesToRows.filter(row => row.id !== currentPrefixedEntityRef),
   ];
 
   function handleChange(_: unknown, value: string[]) {
+    const prefixedValue = value.map(ref => backstageAppliesToPrefix + ref);
     field.onChange(
-      ensureNullOrCurrentEntityRefAsHead(value, currentPrefixedEntityRef),
+      ensureNullOrCurrentEntityRefAsHead(
+        prefixedValue,
+        currentPrefixedEntityRef,
+      ),
     );
   }
 
@@ -229,29 +265,34 @@ export function AppliesToCard() {
                 multiple
                 filterSelectedOptions
                 loading={isLoadingOptions}
-                options={catalogEntityRefs}
-                value={selectedEntityRefs}
-                getOptionLabel={prefixedEntityRef =>
-                  formatEntityLabel(
-                    titlesByRef.get(prefixedEntityRef) ??
-                      getEntityName(prefixedEntityRef),
-                    getEntityKind(prefixedEntityRef),
-                  )
-                }
+                options={entities.map(e => stringifyEntityRef(e))}
+                value={selectedEntityRefs.map(stripAppliesToPrefix)}
+                getOptionLabel={option => {
+                  const entity = entities.find(
+                    e => stringifyEntityRef(e) === option,
+                  );
+                  if (entity) {
+                    return formatEntityLabel(
+                      entity.metadata.title ?? entity.metadata.name,
+                      entity.kind,
+                    );
+                  } else {
+                    return option;
+                  }
+                }}
                 isOptionEqualToValue={(option, value) => option === value}
                 onChange={handleChange}
                 renderValue={(value, getItemProps) =>
-                  value.map((prefixedEntityRef, index) => {
+                  value.map((entityRef, index) => {
                     const { key, onDelete, ...restTagProps } = getItemProps({
                       index,
                     });
-                    const isCurrentEntity =
-                      prefixedEntityRef === currentPrefixedEntityRef;
+                    const isCurrentEntity = entityRef === currentEntityRef;
 
                     return (
                       <AppliesToChip
                         key={key}
-                        prefixedEntityRef={prefixedEntityRef}
+                        prefixedEntityRef={backstageAppliesToPrefix + entityRef}
                         isCurrentEntity={isCurrentEntity}
                         onDelete={isCurrentEntity ? undefined : onDelete}
                         {...restTagProps}
@@ -307,22 +348,7 @@ export function AppliesToCard() {
               )}
             </>
           ) : (
-            <Flex gap="8px" style={{ flexWrap: 'wrap' }}>
-              {orderedViewRefs.map(prefixedEntityRef => (
-                <EntityRefLink
-                  key={prefixedEntityRef}
-                  entityRef={stripAppliesToPrefix(prefixedEntityRef)}
-                >
-                  <AppliesToChip
-                    clickable
-                    prefixedEntityRef={prefixedEntityRef}
-                    isCurrentEntity={
-                      prefixedEntityRef === currentPrefixedEntityRef
-                    }
-                  />
-                </EntityRefLink>
-              ))}
-            </Flex>
+            <AppliesToTable rows={orderedRows} />
           )}
         </FormControl>
         {isEditing && (
@@ -368,7 +394,9 @@ function stripAppliesToPrefix(prefixedEntityRef: string): string {
 }
 
 function getEntityKind(prefixedEntityRef: string): string {
-  return parseEntityRef(stripAppliesToPrefix(prefixedEntityRef)).kind;
+  const { kind } = parseEntityRef(stripAppliesToPrefix(prefixedEntityRef));
+  const uppercaseKind = kind.charAt(0).toUpperCase() + kind.slice(1);
+  return uppercaseKind;
 }
 
 function getEntityName(prefixedEntityRef: string): string {
@@ -378,6 +406,96 @@ function getEntityName(prefixedEntityRef: string): string {
 function formatEntityLabel(title: string, kind: string): string {
   const capitalizedKind = kind.charAt(0).toUpperCase() + kind.slice(1);
   return `${title} (${capitalizedKind})`;
+}
+
+type AppliesToRow = {
+  id: string;
+  entity?: Entity;
+};
+
+// Fallback for refs whose entity is missing from the catalog. Mirrors the
+// inline icon-plus-title format of EntityRefLink (via useEntityPresentation),
+// but renders a non-navigating label with a warning icon, followed by a
+// help icon that reveals an explanatory tooltip.
+function MissingEntityRefLabel({
+  prefixedEntityRef,
+}: {
+  prefixedEntityRef: string;
+}) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const { primaryTitle } = useEntityPresentation(
+    stripAppliesToPrefix(prefixedEntityRef),
+  );
+
+  return (
+    <Flex align="center" gap="1">
+      <span
+        aria-hidden="true"
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          color: 'var(--ros-outdated)',
+        }}
+      >
+        <WarningIcon fontSize="inherit" />
+      </span>
+      <Text as="span">{primaryTitle}</Text>
+      <TooltipTrigger>
+        <AriaButton
+          aria-label={t('rosDialog.appliesToMissingEntityTooltip')}
+          style={{
+            all: 'unset',
+            display: 'inline-flex',
+            alignItems: 'center',
+            cursor: 'help',
+          }}
+        >
+          <HelpOutlineIcon fontSize="inherit" color="action" />
+        </AriaButton>
+        <Tooltip>{t('rosDialog.appliesToMissingEntityTooltip')}</Tooltip>
+      </TooltipTrigger>
+    </Flex>
+  );
+}
+
+function AppliesToTable({ rows }: { rows: AppliesToRow[] }) {
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const columns: ColumnConfig<AppliesToRow>[] = [
+    {
+      id: 'name',
+      label: t('dictionary.name'),
+      isRowHeader: true,
+      cell: item =>
+        item.entity ? (
+          <Cell>
+            <EntityRefLink entityRef={item.entity} />
+          </Cell>
+        ) : (
+          <Cell>
+            <MissingEntityRefLabel prefixedEntityRef={item.id} />
+          </Cell>
+        ),
+    },
+    {
+      id: 'kind',
+      label: t('dictionary.kind'),
+      cell: item => (
+        <CellText title={item.entity?.kind ?? getEntityKind(item.id)} />
+      ),
+    },
+  ];
+
+  const { tableProps } = useTable({
+    mode: 'complete',
+    data: rows,
+
+    paginationOptions: {
+      pageSize: 5,
+      showPageSizeOptions: false,
+    },
+  });
+
+  return <Table columnConfig={columns} {...tableProps} />;
 }
 
 type AppliesToChipProps = {

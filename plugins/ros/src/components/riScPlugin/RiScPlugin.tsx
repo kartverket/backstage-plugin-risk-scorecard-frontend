@@ -65,6 +65,7 @@ export function RiScPlugin() {
     systemRiScs,
     failedToFetchGcpCryptoKeys,
     allRiScsFailedDecryption,
+    updateRiSc,
   } = useRiScs();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -213,7 +214,12 @@ export function RiScPlugin() {
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
                         />
-                        <AppliesToCard key={selectedRiSc.id} />
+                        <AppliesToCard
+                          key={selectedRiSc.id}
+                          selectedRiSc={selectedRiSc}
+                          updateRiSc={updateRiSc}
+                          updateStatus={updateStatus}
+                        />
                         <RiskMatrix riScWithMetadata={selectedRiSc} />
                         <ThreatActorsAndVulnerabilitiesCard
                           scenarios={selectedRiSc.content.scenarios}

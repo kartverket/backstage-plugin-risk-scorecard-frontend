@@ -75,6 +75,8 @@ export const pluginRiScMessages = {
     measures: 'Actions', // Measure, Action or Initiative
     measuresInitialRiSc: 'actions',
     measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
+    name: 'Name',
+    kind: 'Kind',
     next: 'Next',
     planned: 'Planned',
     previous: 'Previous',
@@ -426,6 +428,7 @@ export const pluginRiScMessages = {
       'The current component ({{entityRef}}) is not included. Change the selection to add it before saving.',
     appliesToMissingEntities:
       'These entities do not exist in the catalog: {{entityRefs}}.',
+    appliesToMissingEntityTooltip: 'This entity does not exist in the catalog.',
     generateInitialDescription:
       'RiSc Scorecard lets you generate a default RiSc based on information about the codebase in kartverket.dev, security metrics and security controls.',
     generateInitialToggleDescription: 'Do you want to generate a default RiSc?',
@@ -883,6 +886,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.measure': 'Tiltak',
           'dictionary.measures': 'Tiltak',
           'dictionary.measureOwner': 'Tiltakseier',
+          'dictionary.name': 'Navn',
+          'dictionary.kind': 'Kind',
           'dictionary.next': 'Neste',
           'dictionary.planned': 'Planlagt',
           'dictionary.previous': 'Forrige',
@@ -1213,6 +1218,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Gjeldende komponent ({{entityRef}}) er ikke inkludert. Endre valget for å legge den til før du lagrer.',
           'rosDialog.appliesToMissingEntities':
             'Disse entitetene finnes ikke i katalogen: {{entityRefs}}.',
+          'rosDialog.appliesToMissingEntityTooltip':
+            'Denne entiteten finnes ikke i katalogen.',
           'rosDialog.generateInitialDescription':
             'Operasjonell RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
           'rosDialog.generateInitialToggleDescription':
