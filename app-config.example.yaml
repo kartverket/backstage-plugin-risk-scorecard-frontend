@@ -104,6 +104,9 @@ ros:
   sops:
     ageKey: <BACKEND SECRET KEY FOR SOPS>
     backendPublicKey: <BACKEND PUBLIC KEY FOR SOPS>
+    securityTeamPublicKey: <SECURITY TEAM PUBLIC KEY FOR SOPS>
+    securityPlatformPublicKey: <SECURITY PLATFORM PUBLIC KEY FOR SOPS>
+  slack:
     webhookUrl: <SLACK WEBHOOK URL>
   initRiSc:
     repoOwner: <INIT_RISC_REPO_OWNER>
