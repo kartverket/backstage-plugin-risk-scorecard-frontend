@@ -1206,7 +1206,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
           'rosDialog.appliesTo': 'Gjelder for entitetene',
           'rosDialog.appliesToDescription':
-            'Komponentene denne RoSen gjelder for. RoS gjelder alltid for valgt komponent. Legg til andre entiteter denne RoS-en gjelder for.',
+            'Entitetene denne RoSen gjelder for. RoS gjelder alltid for valgt komponent. Legg til andre entiteter denne RoS-en gjelder for.',
           'rosDialog.appliesToPlaceholder': 'Legg til entitet',
           'rosDialog.appliesToLoading': 'Laster entiteter...',
           'rosDialog.appliesToNoOptions': 'Fant ingen entiteter',

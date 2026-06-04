@@ -268,17 +268,17 @@ export function AppliesToCard(props: Props) {
                 options={entities.map(e => stringifyEntityRef(e))}
                 value={selectedEntityRefs.map(stripAppliesToPrefix)}
                 getOptionLabel={option => {
-                  const entity = entities.find(
+                  const matchedEntity = entities.find(
                     e => stringifyEntityRef(e) === option,
                   );
-                  if (entity) {
+                  if (matchedEntity) {
                     return formatEntityLabel(
-                      entity.metadata.title ?? entity.metadata.name,
-                      entity.kind,
+                      matchedEntity.metadata.title ??
+                        matchedEntity.metadata.name,
+                      matchedEntity.kind,
                     );
-                  } else {
-                    return option;
                   }
+                  return option;
                 }}
                 isOptionEqualToValue={(option, value) => option === value}
                 onChange={handleChange}
