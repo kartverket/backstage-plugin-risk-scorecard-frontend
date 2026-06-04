@@ -318,6 +318,13 @@ export const pluginRiScMessages = {
     doneEditing: 'Finish editing',
     noActionsLong: 'The scenario has no actions',
   },
+  predefinedScenarios: {
+    title: 'Recommended scenarios available',
+    description:
+      'Add a set of recommended risk scenarios and actions to this risk scorecard. Adding them may reset an approved scorecard to draft and require new approval.',
+    addButton: 'Add recommended scenarios',
+    ignoreButton: 'Ignore',
+  },
   riskMatrix: {
     title: 'Risk matrix', // Risk matrix or Risk overview
     estimatedRisk: {
@@ -1106,6 +1113,12 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioTable.editButton': 'Rediger liste',
           'scenarioTable.doneEditing': 'Avslutt redigering',
           'scenarioTable.noActionsLong': 'Scenarioet har ingen tiltak',
+
+          'predefinedScenarios.title': 'Nye obligatoriske scenarioer tilgjengelig',
+          'predefinedScenarios.description':
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec suscipit auctor dui, at maximus nisl. Sed in odio quis enim commodo efficitur. Donec eget ligula ac quam efficitur varius. Donec eget ligula ac quam efficitur varius.',
+          'predefinedScenarios.addButton': 'Legg til anbefalte scenarioer',
+          'predefinedScenarios.ignoreButton': 'Ignorer',
 
           'riskMatrix.title': 'Risikomatrise',
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',
