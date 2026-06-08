@@ -63,10 +63,7 @@ export function buildPackage(packagePath: string): PublishResult {
   };
 
   try {
-    // Run TypeScript compilation
-    execSync('yarn tsc', execOptions);
-
-    // Run the build script (backstage-cli package build)
+    // Run the package build script
     execSync('yarn build', execOptions);
 
     return {
