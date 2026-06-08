@@ -13,7 +13,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
-import { RiScWithMetadata } from '../../utils/types.ts';
+import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
 import {
   buildPredefinedScenarios,
   predefinedScenarioTemplates,
@@ -44,7 +44,12 @@ export function PredefinedScenariosBanner({
     template => !existingIds.has(template.ID),
   );
 
-  if (isDismissed || missingTemplates.length === 0) {
+  if (
+    isDismissed ||
+    missingTemplates.length === 0 ||
+    selectedRiSc.status === RiScStatus.DeletionDraft ||
+    selectedRiSc.status === RiScStatus.DeletionSentForApproval
+  ) {
     return null;
   }
 
