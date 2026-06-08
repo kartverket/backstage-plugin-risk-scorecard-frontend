@@ -26,6 +26,11 @@ import {
 import { StatusBanner } from './StatusBanner.tsx';
 import { StatusBadge } from './StatusBadge.tsx';
 import { FeedbackLink } from './FeedbackLink.tsx';
+// TEMP: predefined-scenarios approval gate — remove this import to remove the feature.
+import {
+  PredefinedScenariosApprovalTooltip,
+  usePredefinedScenariosApprovalBlocked,
+} from '../../predefinedScenarios/PredefinedScenariosApprovalGate.tsx';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -69,6 +74,10 @@ export function RiScStatusComponent({
     useState<DifferenceFetchState>(emptyDifferenceFetchState);
 
   const { updateRiSc } = useRiScs();
+
+  // TEMP: predefined-scenarios approval gate — remove this line to remove the feature.
+  const predefinedScenariosApprovalBlocked =
+    usePredefinedScenariosApprovalBlocked(selectedRiSc);
 
   function handleApproveAndPublish() {
     publishRiScFn();
@@ -234,21 +243,31 @@ export function RiScStatusComponent({
                 {(status === RiScStatusEnum.DRAFT ||
                   status === RiScStatusEnum.DELETION_DRAFT) && (
                   <>
-                    <Button
-                      variant="primary"
-                      size="medium"
-                      onClick={handleOpenPublishRiScDialog}
-                      style={{
-                        display: 'block',
-                        marginLeft: 'auto',
-                        fontSize: '14px',
-                      }}
+                    {/* TEMP: predefined-scenarios approval gate — wraps the button to show a tooltip while blocked. */}
+                    <PredefinedScenariosApprovalTooltip
+                      selectedRiSc={selectedRiSc}
                     >
-                      {status === RiScStatusEnum.DRAFT &&
-                        t('rosStatus.approveButtonUpdate')}
-                      {status === RiScStatusEnum.DELETION_DRAFT &&
-                        t('rosStatus.approveButtonDelete')}
-                    </Button>
+                      <Button
+                        variant="primary"
+                        size="medium"
+                        onClick={handleOpenPublishRiScDialog}
+                        // TEMP: predefined-scenarios approval gate, remove this isDisabled line to remove the feature.
+                        isDisabled={
+                          status === RiScStatusEnum.DRAFT &&
+                          predefinedScenariosApprovalBlocked
+                        }
+                        style={{
+                          display: 'block',
+                          marginLeft: 'auto',
+                          fontSize: '14px',
+                        }}
+                      >
+                        {status === RiScStatusEnum.DRAFT &&
+                          t('rosStatus.approveButtonUpdate')}
+                        {status === RiScStatusEnum.DELETION_DRAFT &&
+                          t('rosStatus.approveButtonDelete')}
+                      </Button>
+                    </PredefinedScenariosApprovalTooltip>
                     <RiScPublishDialog
                       openDialog={publishRiScDialogIsOpen}
                       isDeletion={status === RiScStatusEnum.DELETION_DRAFT}

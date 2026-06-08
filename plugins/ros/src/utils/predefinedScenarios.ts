@@ -11,7 +11,7 @@
  * component, and the single render site in RiScPlugin.tsx.
  */
 import { ProfileInfo } from '@backstage/core-plugin-api';
-import { Action, Scenario } from './types.ts';
+import { Action, RiScWithMetadata, Scenario } from './types.ts';
 import {
   ActionStatusOptions,
   consequenceOptions,
@@ -118,6 +118,18 @@ export const predefinedScenarioTemplates: PredefinedScenarioTemplate[] = [
 export const predefinedScenarioIds: string[] = predefinedScenarioTemplates.map(
   template => template.ID,
 );
+
+/**
+ * Whether at least one predefined scenario (by ID) is already present in the
+ * given RiSc. Used to gate approval: a Draft RiSc cannot be approved until at
+ * least one predefined scenario has been added (or the banner has been ignored).
+ */
+export function hasAnyPredefinedScenario(riSc: RiScWithMetadata): boolean {
+  const predefinedIds = new Set(predefinedScenarioIds);
+  return riSc.content.scenarios.some(scenario =>
+    predefinedIds.has(scenario.ID),
+  );
+}
 
 /**
  * Materialise the given scenario templates into full {@link Scenario} objects.
