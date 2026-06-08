@@ -9,6 +9,7 @@
  * To remove this feature: delete this component, the predefinedScenarios util,
  * and the single render site in RiScPlugin.tsx.
  */
+import { useState } from 'react';
 import { Button, Flex, Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
@@ -20,6 +21,7 @@ import {
   predefinedScenarioTemplates,
 } from '../../utils/predefinedScenarios.ts';
 import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
+import { ConfirmationDialogWithoutCheckbox } from '../common/ConfirmationDialog.tsx';
 import styles from './PredefinedScenariosBanner.module.css';
 
 type PredefinedScenariosBannerProps = {
@@ -35,6 +37,7 @@ export function PredefinedScenariosBanner({
   const { isDismissed, dismiss } = usePredefinedScenariosBannerDismissal(
     selectedRiSc.id,
   );
+  const [isIgnoreDialogOpen, setIsIgnoreDialogOpen] = useState(false);
 
   const existingIds = new Set(
     selectedRiSc.content.scenarios.map(scenario => scenario.ID),
@@ -61,15 +64,22 @@ export function PredefinedScenariosBanner({
     });
   }
 
+  function onConfirmIgnore() {
+    setIsIgnoreDialogOpen(false);
+    dismiss();
+  }
+
   return (
-    <div className={styles.bannerWrapper}>
-      <Flex
-        className={styles.banner}
-        direction="row"
-        align="center"
-        justify="between"
-        gap="4"
-      >
+    <>
+      <Flex className={styles.banner} direction="column" align="start" gap="2">
+        <button
+          type="button"
+          className={styles.closeButton}
+          onClick={() => setIsIgnoreDialogOpen(true)}
+          aria-label={t('predefinedScenarios.ignoreButton')}
+        >
+          <i className="ri-close-line" />
+        </button>
         <Flex direction="column" gap="1">
           <Text as="h4" variant="body-large" weight="bold">
             {t('predefinedScenarios.title')}
@@ -83,13 +93,22 @@ export function PredefinedScenariosBanner({
           variant="primary"
           onClick={onAdd}
           isDisabled={updateStatus.isLoading}
+          style={{ marginTop: '4px' }}
         >
           {t('predefinedScenarios.addButton')}
         </Button>
-        <button type="button" className={styles.ignoreButton} onClick={dismiss}>
-          {t('predefinedScenarios.ignoreButton')}
-        </button>
       </Flex>
-    </div>
+      <ConfirmationDialogWithoutCheckbox
+        isOpen={isIgnoreDialogOpen}
+        onCancel={() => setIsIgnoreDialogOpen(false)}
+        onConfirm={onConfirmIgnore}
+        title={t('predefinedScenarios.ignoreDialog.title')}
+        confirmButtonText={t('predefinedScenarios.ignoreDialog.confirmButton')}
+      >
+        <Text as="p" variant="body-medium">
+          {t('predefinedScenarios.ignoreDialog.description')}
+        </Text>
+      </ConfirmationDialogWithoutCheckbox>
+    </>
   );
 }

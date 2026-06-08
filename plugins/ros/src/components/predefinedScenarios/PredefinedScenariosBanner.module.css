@@ -1,6 +1,8 @@
 .banner {
+  position: relative;
   background-color: var(--ros-orange-50);
   padding: 16px;
+  padding-right: 10%;
   border-radius: 8px;
 }
 
@@ -8,17 +10,25 @@
   background-color: var(--ros-gray-500);
 }
 
-.ignoreButton {
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   background: none;
   border: none;
-  padding: 2px 4px;
+  border-radius: 4px;
   cursor: pointer;
-  font: inherit;
-  font-size: 12px;
+  font-size: 20px;
+  line-height: 1;
   color: var(--bui-fg-secondary, inherit);
-  text-decoration: underline;
 }
 
-.ignoreButton:hover {
+.closeButton:hover {
   color: var(--bui-fg-primary, inherit);
+  background-color: var(--bui-bg-surface-2, rgba(0, 0, 0, 0.06));
 }
