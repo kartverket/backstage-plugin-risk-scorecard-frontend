@@ -1,15 +1,3 @@
-/**
- * TEMPORARY FEATURE
- *
- * Predefined scenarios and actions that users can add to an existing RiSc via the
- * banner in {@link ../components/predefinedScenarios/PredefinedScenariosBanner}.
- *
- * The content below is DUMMY DATA and should be replaced with the real
- * scenarios before this is shown to users.
- *
- * To remove this feature: delete this file, the PredefinedScenariosBanner
- * component, and the single render site in RiScPlugin.tsx.
- */
 import { ProfileInfo } from '@backstage/core-plugin-api';
 import { Action, RiScWithMetadata, Scenario } from './types.ts';
 import {
