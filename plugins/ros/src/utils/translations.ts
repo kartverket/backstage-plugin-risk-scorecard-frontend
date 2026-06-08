@@ -176,7 +176,7 @@ export const pluginRiScMessages = {
     approveButtonUpdate: 'Accept risks', // Approve RiSc
     approveButtonDelete: 'Accept deletion', // Approve deletion of RiSc
     predefinedScenariosRequired:
-      'Before you can approve, you must add at least one of the recommended scenarios or ignore them.',
+      'Before you can approve, you must add at least one of the mandatory scenarios or ignore them.',
     prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
     prStatus2Update: ' to publish the scorecard.', // Approve RiSc
     prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
@@ -321,15 +321,15 @@ export const pluginRiScMessages = {
     noActionsLong: 'The scenario has no actions',
   },
   predefinedScenarios: {
-    title: 'Recommended scenarios available',
+    title: 'Mandatory scenarios available',
     description:
-      'Add a set of recommended risk scenarios and actions to this risk scorecard. Adding them may reset an approved scorecard to draft and require new approval.',
-    addButton: 'Add recommended scenarios',
+      'Add a set of mandatory risk scenarios and actions to this risk scorecard. Adding them will require new approval.',
+    addButton: 'Add mandatory scenarios',
     ignoreButton: 'Ignore',
     ignoreDialog: {
-      title: 'Ignore recommended scenarios?',
+      title: 'Ignore mandatory scenarios?',
       description:
-        'Are you sure you want to ignore the recommended scenarios? This banner will no longer be shown for this risk scorecard in this browser.',
+        'Are you sure you want to ignore the mandatory scenarios? This banner will no longer be shown for this risk scorecard in this browser.',
       confirmButton: 'Yes, ignore',
     },
   },
