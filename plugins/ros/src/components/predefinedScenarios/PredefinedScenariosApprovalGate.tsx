@@ -1,12 +1,9 @@
 /**
- * TEMPORARY FEATURE (planned lifetime ~2 months).
+ * TEMPORARY FEATURE.
  *
  * Self-contained approval gate for the predefined-scenarios feature. Keeps all
  * gate logic and UI out of RiScStatusComponent so the feature can be removed by
  * deleting this file and the few clearly-fenced lines in RiScStatusComponent.
- *
- * Gate rule: a Draft RiSc may not be approved until at least one predefined
- * scenario has been added (by ID) or the banner has been ignored.
  */
 import { ReactNode } from 'react';
 import Tooltip from '@mui/material/Tooltip';
@@ -31,15 +28,6 @@ type PredefinedScenariosApprovalTooltipProps = {
   children: ReactNode;
 };
 
-/**
- * Wraps the approve button and, while approval is blocked, shows the
- * explanatory text as a tooltip on hover/focus. When the gate is satisfied it
- * renders its children unchanged (layout-neutral passthrough).
- *
- * The button is wrapped in a <span> because a disabled button does not emit
- * hover events; the span lets the tooltip still trigger. The span keeps the
- * right-alignment (marginLeft: auto) the button has on its own.
- */
 export function PredefinedScenariosApprovalTooltip({
   selectedRiSc,
   children,
