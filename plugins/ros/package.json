@@ -5,7 +5,7 @@
   "types": "src/index.ts",
   "license": "MIT",
   "repository": {
-    "url": "https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend.git"
+    "url": "git+https://github.com/kartverket/backstage-plugin-risk-scorecard-frontend.git"
   },
   "publishConfig": {
     "access": "public",
@@ -15,6 +15,7 @@
   "engines": {
     "node": "24"
   },
+  "configSchema": "config.d.ts",
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "risk-scorecard",
@@ -28,17 +29,12 @@
   ],
   "scripts": {
     "start": "backstage-cli package start",
-    "build": "backstage-cli package build",
-    "lint": "backstage-cli package lint",
-    "prettier:check": "prettier --check .",
-    "prettier:format": "prettier --write .",
+    "build:types": "yarn run -T tsc",
+    "build": "yarn build:types && backstage-cli package build",
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack",
-    "tsc": "tsc",
-    "_rm-node-modules": "rm -rf node_modules/ && cp -vnr node_modules_dummy/ node_modules/",
-    "rm-node-modules": "yarn run _rm-node-modules"
+    "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
     "@backstage/catalog-model": "backstage:^",
@@ -63,35 +59,24 @@
     "remark-breaks": "^4.0.0",
     "remixicon": "^4.9.1"
   },
-  "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-router": "^6.3.0",
-    "react-router-dom": "^6.3.0"
-  },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/core-app-api": "backstage:^",
     "@backstage/dev-utils": "backstage:^",
     "@backstage/test-utils": "backstage:^",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@types/luxon": "^3.7.1",
-    "@types/react": "^18.3.20",
-    "prettier": "^3.8.3"
-  },
-  "prettier": "@backstage/cli/config/prettier",
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md}": [
-      "prettier --write"
-    ]
+    "@types/react": "^18.3.12",
+    "jest": "catalog:",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router": "6.30.3",
+    "react-router-dom": "6.30.3"
   },
   "files": [
     "dist",
-    "css"
-  ],
-  "packageManager": "yarn@4.8.1+sha512.bc946f2a022d7a1a38adfc15b36a66a3807a67629789496c3714dd1703d2e6c6b1c69ff9ec3b43141ac7a1dd853b7685638eb0074300386a59c18df351ef8ff6"
+    "css",
+    "config.d.ts"
+  ]
 }

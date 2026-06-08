@@ -15,3 +15,42 @@ export const BACKEND_URLS = {
 	publishRiSc: '/api/proxy/risc-proxy/api/risc/:repoOwner/:repoName/publish/:id', // (1)
   fetchDefaultRiScTypeDescriptors: '/api/proxy/risc-proxy/api/initrisc'
 };
+
+export type RiScBackendUrls = {
+  riScUri: string;
+  uriToFetchAllRiScs: string;
+  uriToFetchDifference: (id: string) => string;
+  uriToFetchRiSc: (id: string) => string;
+  uriToDeleteRiSc: (id: string) => string;
+  uriToPublishRiSc: (id: string) => string;
+  uriToFetchGcpCryptoKeys: string;
+  uriToFetchDefaultRiScDescriptors: string;
+};
+
+type BuildRiScBackendUrlsOptions = {
+  baseUrl: string;
+  owner: string;
+  repo: string;
+  version: string;
+};
+
+/** Native mode routes directly to the ros backend plugin. */
+export function buildNativeBackendUrls({
+  baseUrl,
+  owner,
+  repo,
+  version,
+}: BuildRiScBackendUrlsOptions): RiScBackendUrls {
+  const riScUri = `${baseUrl}/risc/${owner}/${repo}`;
+
+  return {
+    riScUri,
+    uriToFetchAllRiScs: `${riScUri}/${version}/all`,
+    uriToFetchDifference: (id: string) => `${riScUri}/${id}/difference`,
+    uriToFetchRiSc: (id: string) => `${riScUri}/${id}`,
+    uriToDeleteRiSc: (id: string) => `${riScUri}/${id}`,
+    uriToPublishRiSc: (id: string) => `${riScUri}/publish/${id}`,
+    uriToFetchGcpCryptoKeys: `${baseUrl}/google/gcpCryptoKeys`,
+    uriToFetchDefaultRiScDescriptors: `${baseUrl}/initrisc`,
+  };
+}

@@ -5,6 +5,7 @@ import {
 } from '@backstage/core-plugin-api';
 
 export const systemRiScsFeatureFlag = 'system-riscs';
+export const nativeRiScBackendFeatureFlag = 'native-risc-backend';
 
 export const riScFeatureFlags: PluginFeatureFlagConfig[] = [
   // {
@@ -12,9 +13,18 @@ export const riScFeatureFlags: PluginFeatureFlagConfig[] = [
   //   description:
   //     'Testing av system-RoS for Team SKVIS. Bruk på eget ansvar. UNNGÅ lagring av System-RoSer i åpne repoer.',
   // },
+  // {
+  //   name: nativeRiScBackendFeatureFlag,
+  //   description: 'Testing av ny backend for RoS skrevet i typescript.',
+  // },
 ];
 
 export function useSystemRiScsFeatureFlag(): boolean {
   const featureFlagsApi = useApi(featureFlagsApiRef);
   return featureFlagsApi.isActive(systemRiScsFeatureFlag);
+}
+
+export function useNativeRiScBackendFeatureFlag(): boolean {
+  const featureFlagsApi = useApi(featureFlagsApiRef);
+  return featureFlagsApi.isActive(nativeRiScBackendFeatureFlag);
 }
