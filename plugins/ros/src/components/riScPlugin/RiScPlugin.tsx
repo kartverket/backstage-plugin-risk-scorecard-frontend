@@ -24,6 +24,7 @@ import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
 import { ErrorState } from '../riScInfo/ErrorState.tsx';
 import { LockedRiScView } from '../riScInfo/LockedRiScView.tsx';
 import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
+import { AppliesToCard } from '../riScInfo/AppliesToCard.tsx';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -64,6 +65,7 @@ export function RiScPlugin() {
     systemRiScs,
     failedToFetchGcpCryptoKeys,
     allRiScsFailedDecryption,
+    updateRiSc,
   } = useRiScs();
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
@@ -211,6 +213,12 @@ export function RiScPlugin() {
                         <RiScStatusComponent
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
+                        />
+                        <AppliesToCard
+                          key={selectedRiSc.id}
+                          selectedRiSc={selectedRiSc}
+                          updateRiSc={updateRiSc}
+                          updateStatus={updateStatus}
                         />
                         <RiskMatrix riScWithMetadata={selectedRiSc} />
                         <ThreatActorsAndVulnerabilitiesCard

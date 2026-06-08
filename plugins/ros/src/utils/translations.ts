@@ -75,6 +75,8 @@ export const pluginRiScMessages = {
     measures: 'Actions', // Measure, Action or Initiative
     measuresInitialRiSc: 'actions',
     measureOwner: 'Responsible', // Responsible? Measure owner? Initiative owner?
+    name: 'Name',
+    kind: 'Kind',
     next: 'Next',
     planned: 'Planned',
     previous: 'Previous',
@@ -414,18 +416,19 @@ export const pluginRiScMessages = {
     scopeError: 'The scorecard has to have a description of the scope',
     appliesTo: 'Applies to entities',
     appliesToDescription:
-      'The RiSc always applies to the current component. Add any other entities this RiSc applies to.',
+      'The entities this RiSc applies to. The RiSc always applies to the current component. Add any other entities this RiSc applies to.',
     appliesToPlaceholder: 'Add entity',
     appliesToLoading: 'Loading entities...',
     appliesToNoOptions: 'No entities found',
     appliesToSystemRosHint:
-      'Covers multiple entities and will also appear as a RiSc for the other added entities.',
+      'This RiSc will be visible for all entities added here.',
     appliesToNightlyRefreshHint:
       'Changes to which entities this RiSc applies to are refreshed at night, so visibility on added or removed entities will only change tomorrow.',
     appliesToMissingCurrentEntity:
       'The current component ({{entityRef}}) is not included. Change the selection to add it before saving.',
     appliesToMissingEntities:
       'These entities do not exist in the catalog: {{entityRefs}}.',
+    appliesToMissingEntityTooltip: 'This entity does not exist in the catalog.',
     generateInitialDescription:
       'RiSc Scorecard lets you generate a default RiSc based on information about the codebase in kartverket.dev, security metrics and security controls.',
     generateInitialToggleDescription: 'Do you want to generate a default RiSc?',
@@ -883,6 +886,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'dictionary.measure': 'Tiltak',
           'dictionary.measures': 'Tiltak',
           'dictionary.measureOwner': 'Tiltakseier',
+          'dictionary.name': 'Navn',
+          'dictionary.kind': 'Kind',
           'dictionary.next': 'Neste',
           'dictionary.planned': 'Planlagt',
           'dictionary.previous': 'Forrige',
@@ -1201,18 +1206,20 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosDialog.scopeError': 'ROS-analysen må ha et omfang',
           'rosDialog.appliesTo': 'Gjelder for entitetene',
           'rosDialog.appliesToDescription':
-            'RoS gjelder alltid for valgt komponent. Legg til andre entiteter denne RoS-en gjelder for.',
+            'Entitetene denne RoSen gjelder for. RoS gjelder alltid for valgt komponent. Legg til andre entiteter denne RoS-en gjelder for.',
           'rosDialog.appliesToPlaceholder': 'Legg til entitet',
           'rosDialog.appliesToLoading': 'Laster entiteter...',
           'rosDialog.appliesToNoOptions': 'Fant ingen entiteter',
           'rosDialog.appliesToSystemRosHint':
-            'Dekker flere entiteter og vises som RoS også for de andre entitetene som er lagt til.',
+            'Denne RoS-en vil vises for alle entitetene som er lagt til her.',
           'rosDialog.appliesToNightlyRefreshHint':
             'Endringer i hvilke entiteter denne RoS-en gjelder for oppdateres om natten, så synligheten på entiteter som legges til eller fjernes endres først i morgen.',
           'rosDialog.appliesToMissingCurrentEntity':
             'Gjeldende komponent ({{entityRef}}) er ikke inkludert. Endre valget for å legge den til før du lagrer.',
           'rosDialog.appliesToMissingEntities':
             'Disse entitetene finnes ikke i katalogen: {{entityRefs}}.',
+          'rosDialog.appliesToMissingEntityTooltip':
+            'Denne entiteten finnes ikke i katalogen.',
           'rosDialog.generateInitialDescription':
             'Operasjonell RoS lar deg opprette en initiell RoS basert på opplysninger om kodebasen i kartverket.dev, sikkerhetsmetrikker og sikkerhetskontrollere.',
           'rosDialog.generateInitialToggleDescription':

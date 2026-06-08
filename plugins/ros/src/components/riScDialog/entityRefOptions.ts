@@ -5,6 +5,7 @@ export const entityRefOptionFields = [
   'kind',
   'metadata.name',
   'metadata.namespace',
+  'metadata.title',
 ];
 
 export function getCurrentSystemRef(entity: Entity): string | undefined {
