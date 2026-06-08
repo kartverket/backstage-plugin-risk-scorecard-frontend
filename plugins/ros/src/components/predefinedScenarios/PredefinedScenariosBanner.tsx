@@ -1,14 +1,12 @@
 /**
- * TEMPORARY FEATURE (planned lifetime ~2 months).
+ * TEMPORARY FEATURE.
  *
  * Banner that lets a user add a set of predefined (dummy) scenarios/actions to
  * an existing RiSc. It only renders when at least one of the predefined
  * scenarios is missing from the selected RiSc, and hides itself once they are
  * all present.
- *
- * To remove this feature: delete this component, the predefinedScenarios util,
- * and the single render site in RiScPlugin.tsx.
  */
+
 import { useState } from 'react';
 import { Button, Flex, Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
