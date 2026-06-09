@@ -8,6 +8,13 @@ import { fileURLToPath } from 'node:url';
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const pluginRepoPath = path.resolve(scriptDir, '..');
 const kartverketDevPath = path.join(pluginRepoPath, '..', 'kartverket.dev');
+const resolutionCheckCommand = [
+  'yarn',
+  'install',
+  '--immutable',
+  '--check-resolutions',
+  '--mode=skip-build',
+];
 
 if (process.env.RISC_SKIP_DEP_CHECK === '1') {
   console.log(
@@ -39,12 +46,14 @@ const dependencyCheck = checkDependencies();
 
 if (dependencyCheck.mismatches.length > 0) {
   printMismatches(dependencyCheck.mismatches);
+  checkYarnResolutions();
 
   if (process.stdin.isTTY) {
     await promptForFixes(dependencyCheck.mismatches);
     const postFixCheck = checkDependencies();
 
     if (postFixCheck.mismatches.length === 0) {
+      checkYarnResolutions();
       console.log(
         `Dependency alignment check passed for ${postFixCheck.sharedDependencyCount} shared direct dependencies.`,
       );
@@ -61,6 +70,7 @@ if (dependencyCheck.mismatches.length > 0) {
   process.exit(1);
 }
 
+checkYarnResolutions();
 console.log(
   `Dependency alignment check passed for ${dependencyCheck.sharedDependencyCount} shared direct dependencies.`,
 );
@@ -160,7 +170,10 @@ async function promptForFixes(mismatches) {
 
         if (result.status !== 0) {
           console.error(`Command failed: ${formatCommand(fix)}`);
+          process.exit(result.status ?? 1);
         }
+
+        checkYarnResolutions();
       }
     }
   } finally {
@@ -206,6 +219,36 @@ function lockfileDescriptorsForPackageVersions(packageName, versions) {
   }
 
   return [...descriptors].sort();
+}
+
+function checkYarnResolutions() {
+  console.info('');
+  console.info(
+    `Checking Yarn resolutions: ${formatCommand(resolutionCheckCommand)}`,
+  );
+
+  const result = spawnSync(
+    resolutionCheckCommand[0],
+    resolutionCheckCommand.slice(1),
+    {
+      cwd: pluginRepoPath,
+      stdio: 'inherit',
+    },
+  );
+
+  if (result.status === 0) {
+    return;
+  }
+
+  console.error('');
+  console.error(
+    'Yarn resolution validation failed. Manual dependency handling is needed before starting kartverket.dev.',
+  );
+  console.error(`Failed command: ${formatCommand(resolutionCheckCommand)}`);
+  console.error(
+    'Use "yarn why <package> --recursive" to inspect the full requirement paths.',
+  );
+  process.exit(result.status ?? 1);
 }
 
 // Extracts the package name from Yarn locators and descriptors.
