@@ -11,6 +11,7 @@ import { riScRouteRef, scenarioRouteRef } from './routes';
 import { RiScProvider } from './contexts/RiScContext';
 import 'remixicon/fonts/remixicon.css';
 import { DefaultRiScTypesProvider } from './contexts/DefaultRiScTypesContext.tsx';
+import { PredefinedScenariosProvider } from './contexts/PredefinedScenariosContext.tsx';
 import { BackstageContextProvider } from './contexts/BackstageContext.tsx';
 import { useBackstageThemeMode } from './hooks/useBackstageThemeMode.ts';
 
@@ -39,9 +40,11 @@ function ProvidedPlugin() {
         <BackstageContextProvider>
           <RiScProvider key={entityKey}>
             <DefaultRiScTypesProvider>
-              <ScenarioProvider>
-                <RiScPlugin />
-              </ScenarioProvider>
+              <PredefinedScenariosProvider>
+                <ScenarioProvider>
+                  <RiScPlugin />
+                </ScenarioProvider>
+              </PredefinedScenariosProvider>
             </DefaultRiScTypesProvider>
           </RiScProvider>
         </BackstageContextProvider>

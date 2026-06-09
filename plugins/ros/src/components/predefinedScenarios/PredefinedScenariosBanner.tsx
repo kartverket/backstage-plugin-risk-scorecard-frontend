@@ -14,10 +14,8 @@ import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
-import {
-  buildPredefinedScenarios,
-  predefinedScenarioTemplates,
-} from '../../utils/predefinedScenarios.ts';
+import { buildPredefinedScenarios } from '../../utils/predefinedScenarios.ts';
+import { usePredefinedScenarios } from '../../contexts/PredefinedScenariosContext.tsx';
 import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
 import { ConfirmationDialogWithoutCheckbox } from '../common/ConfirmationDialog.tsx';
 import styles from './PredefinedScenariosBanner.module.css';
@@ -35,6 +33,7 @@ export function PredefinedScenariosBanner({
   const { isDismissed, dismiss } = usePredefinedScenariosBannerDismissal(
     selectedRiSc.id,
   );
+  const { predefinedScenarioTemplates } = usePredefinedScenarios();
   const [isIgnoreDialogOpen, setIsIgnoreDialogOpen] = useState(false);
 
   const existingIds = new Set(
