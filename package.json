@@ -26,7 +26,7 @@
     "@backstage/cli": "backstage:^",
     "@backstage/cli-defaults": "backstage:^",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.12.2",
+    "@types/node": "catalog:",
     "@typescript-eslint/eslint-plugin": "8.59.4",
     "@typescript-eslint/parser": "^8.59.4",
     "eslint": "^10.4.0",
@@ -35,6 +35,9 @@
     "jest-environment-jsdom": "^30.3.0",
     "prettier": "^3.8.3",
     "typescript": "^6.0.3"
+  },
+  "resolutions": {
+    "@types/react": "18.3.12"
   },
   "packageManager": "yarn@4.14.1"
 }
