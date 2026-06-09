@@ -1,13 +1,3 @@
-/**
- * TEMPORARY FEATURE.
- *
- * Banner that lets a user add a set of predefined (dummy) scenarios/actions to
- * an existing RiSc. It only renders when at least one of the predefined
- * scenarios is missing from the selected RiSc, and hides itself once they are
- * all present.
- */
-
-import { useState } from 'react';
 import { Button, Flex, Text } from '@backstage/ui';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
@@ -17,7 +7,6 @@ import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
 import { buildPredefinedScenarios } from '../../utils/predefinedScenarios.ts';
 import { usePredefinedScenarios } from '../../contexts/PredefinedScenariosContext.tsx';
 import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
-import { ConfirmationDialogWithoutCheckbox } from '../common/ConfirmationDialog.tsx';
 import styles from './PredefinedScenariosBanner.module.css';
 
 type PredefinedScenariosBannerProps = {
@@ -34,7 +23,6 @@ export function PredefinedScenariosBanner({
     selectedRiSc.id,
   );
   const { predefinedScenarioTemplates } = usePredefinedScenarios();
-  const [isIgnoreDialogOpen, setIsIgnoreDialogOpen] = useState(false);
 
   const existingIds = new Set(
     selectedRiSc.content.scenarios.map(scenario => scenario.ID),
@@ -57,31 +45,21 @@ export function PredefinedScenariosBanner({
       missingTemplates,
       profileInfo,
     );
-    updateRiSc({
-      ...selectedRiSc,
-      content: {
-        ...selectedRiSc.content,
-        scenarios: [...newScenarios, ...selectedRiSc.content.scenarios],
+    updateRiSc(
+      {
+        ...selectedRiSc,
+        content: {
+          ...selectedRiSc.content,
+          scenarios: [...newScenarios, ...selectedRiSc.content.scenarios],
+        },
       },
-    });
-  }
-
-  function onConfirmIgnore() {
-    setIsIgnoreDialogOpen(false);
-    dismiss();
+      dismiss,
+    );
   }
 
   return (
     <>
       <Flex className={styles.banner} direction="column" align="start" gap="2">
-        <button
-          type="button"
-          className={styles.closeButton}
-          onClick={() => setIsIgnoreDialogOpen(true)}
-          aria-label={t('predefinedScenarios.ignoreButton')}
-        >
-          <i className="ri-close-line" />
-        </button>
         <Flex direction="column" gap="1">
           <Text as="h4" variant="body-large" weight="bold">
             {t('predefinedScenarios.title')}
@@ -100,17 +78,6 @@ export function PredefinedScenariosBanner({
           {t('predefinedScenarios.addButton')}
         </Button>
       </Flex>
-      <ConfirmationDialogWithoutCheckbox
-        isOpen={isIgnoreDialogOpen}
-        onCancel={() => setIsIgnoreDialogOpen(false)}
-        onConfirm={onConfirmIgnore}
-        title={t('predefinedScenarios.ignoreDialog.title')}
-        confirmButtonText={t('predefinedScenarios.ignoreDialog.confirmButton')}
-      >
-        <Text as="p" variant="body-medium">
-          {t('predefinedScenarios.ignoreDialog.description')}
-        </Text>
-      </ConfirmationDialogWithoutCheckbox>
     </>
   );
 }
