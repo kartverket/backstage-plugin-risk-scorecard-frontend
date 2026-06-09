@@ -11,6 +11,7 @@ import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
 import { hasAnyPredefinedScenario } from '../../utils/predefinedScenarios.ts';
+import { usePredefinedScenarios } from '../../contexts/PredefinedScenariosContext.tsx';
 import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
 
 type PredefinedScenariosApprovalTooltipProps = {
@@ -26,7 +27,11 @@ export function PredefinedScenariosApprovalTooltip({
   const { isDismissed } = usePredefinedScenariosBannerDismissal(
     selectedRiSc.id,
   );
-  const blocked = !isDismissed && !hasAnyPredefinedScenario(selectedRiSc);
+  const { predefinedScenarioIds } = usePredefinedScenarios();
+  const blocked =
+    predefinedScenarioIds.length > 0 &&
+    !isDismissed &&
+    !hasAnyPredefinedScenario(selectedRiSc, predefinedScenarioIds);
 
   if (
     !blocked ||
