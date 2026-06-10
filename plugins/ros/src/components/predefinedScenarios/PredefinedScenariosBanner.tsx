@@ -5,9 +5,11 @@ import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
 import { buildPredefinedScenarios } from '../../utils/predefinedScenarios.ts';
-import { usePredefinedScenarios } from '../../contexts/PredefinedScenariosContext.tsx';
+import { usePredefinedScenarios } from '../../hooks/usePredefinedScenarios.ts';
 import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
 import styles from './PredefinedScenariosBanner.module.css';
+import CircularProgress from '@mui/material/CircularProgress';
+import { usePredefinedScenariosFeatureFlag } from '../../utils/featureFlags.ts';
 
 type PredefinedScenariosBannerProps = {
   selectedRiSc: RiScWithMetadata;
@@ -22,21 +24,46 @@ export function PredefinedScenariosBanner({
   const { isDismissed, dismiss } = usePredefinedScenariosBannerDismissal(
     selectedRiSc.id,
   );
-  const { predefinedScenarioTemplates } = usePredefinedScenarios();
+  const isTestPredefinedScenariosEnabled = usePredefinedScenariosFeatureFlag();
+  const {
+    data: predefinedScenarioTemplates,
+    isError,
+    isPending,
+  } = usePredefinedScenarios(isTestPredefinedScenariosEnabled);
+  if (
+    isDismissed ||
+    selectedRiSc.status === RiScStatus.DeletionDraft ||
+    selectedRiSc.status === RiScStatus.DeletionSentForApproval
+  ) {
+    return null;
+  }
+
+  if (isPending) {
+    return (
+      <Flex justify="center">
+        <CircularProgress />
+      </Flex>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Flex className={styles.error} direction="column" align="start" gap="1">
+        <Text as="p" variant="body-medium">
+          {t('predefinedScenarios.error')}
+        </Text>
+      </Flex>
+    );
+  }
 
   const existingIds = new Set(
     selectedRiSc.content.scenarios.map(scenario => scenario.ID),
   );
   const missingTemplates = predefinedScenarioTemplates.filter(
-    template => !existingIds.has(template.ID),
+    template => !existingIds.has(template.scenario.ID),
   );
 
-  if (
-    isDismissed ||
-    missingTemplates.length === 0 ||
-    selectedRiSc.status === RiScStatus.DeletionDraft ||
-    selectedRiSc.status === RiScStatus.DeletionSentForApproval
-  ) {
+  if (missingTemplates.length === 0) {
     return null;
   }
 

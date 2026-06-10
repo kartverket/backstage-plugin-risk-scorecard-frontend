@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import { useMemo } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -11,7 +12,6 @@ import { riScRouteRef, scenarioRouteRef } from './routes';
 import { RiScProvider } from './contexts/RiScContext';
 import 'remixicon/fonts/remixicon.css';
 import { DefaultRiScTypesProvider } from './contexts/DefaultRiScTypesContext.tsx';
-import { PredefinedScenariosProvider } from './contexts/PredefinedScenariosContext.tsx';
 import { BackstageContextProvider } from './contexts/BackstageContext.tsx';
 import { useBackstageThemeMode } from './hooks/useBackstageThemeMode.ts';
 
@@ -22,6 +22,14 @@ document.querySelector('head')?.appendChild(emotionInsertionPoint);
 const cache = createCache({
   key: 'css',
   insertionPoint: emotionInsertionPoint,
+});
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
 });
 
 function MuiThemeBridge({ children }: { children: React.ReactNode }) {
@@ -37,17 +45,17 @@ function ProvidedPlugin() {
   return (
     <CacheProvider value={cache}>
       <MuiThemeBridge>
-        <BackstageContextProvider>
-          <RiScProvider key={entityKey}>
-            <DefaultRiScTypesProvider>
-              <PredefinedScenariosProvider>
+        <QueryClientProvider client={queryClient}>
+          <BackstageContextProvider>
+            <RiScProvider key={entityKey}>
+              <DefaultRiScTypesProvider>
                 <ScenarioProvider>
                   <RiScPlugin />
                 </ScenarioProvider>
-              </PredefinedScenariosProvider>
-            </DefaultRiScTypesProvider>
-          </RiScProvider>
-        </BackstageContextProvider>
+              </DefaultRiScTypesProvider>
+            </RiScProvider>
+          </BackstageContextProvider>
+        </QueryClientProvider>
       </MuiThemeBridge>
     </CacheProvider>
   );

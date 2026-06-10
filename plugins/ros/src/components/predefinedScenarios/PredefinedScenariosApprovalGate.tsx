@@ -1,18 +1,12 @@
-/**
- * TEMPORARY FEATURE.
- *
- * Self-contained approval gate for the predefined-scenarios feature. Keeps all
- * gate logic and UI out of RiScStatusComponent so the feature can be removed by
- * deleting this file and the few clearly-fenced lines in RiScStatusComponent.
- */
 import { ReactNode } from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
 import { hasAnyPredefinedScenario } from '../../utils/predefinedScenarios.ts';
-import { usePredefinedScenarios } from '../../contexts/PredefinedScenariosContext.tsx';
+import { usePredefinedScenariosFeatureFlag } from '../../utils/featureFlags';
 import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
+import { usePredefinedScenarios } from '../../hooks/usePredefinedScenarios.ts';
 
 type PredefinedScenariosApprovalTooltipProps = {
   selectedRiSc: RiScWithMetadata;
@@ -27,11 +21,26 @@ export function PredefinedScenariosApprovalTooltip({
   const { isDismissed } = usePredefinedScenariosBannerDismissal(
     selectedRiSc.id,
   );
-  const { predefinedScenarioIds } = usePredefinedScenarios();
+  const isTestPredefinedScenariosEnabled = usePredefinedScenariosFeatureFlag();
+  const { data: predefinedScenarios } = usePredefinedScenarios(
+    isTestPredefinedScenariosEnabled,
+  );
+
+  if (!predefinedScenarios) {
+    return (
+      <Tooltip title={t('rosStatus.predefinedScenariosRequired')} arrow>
+        <span style={{ marginLeft: 'auto' }}>{children(true)}</span>
+      </Tooltip>
+    );
+  }
+
   const blocked =
-    predefinedScenarioIds.length > 0 &&
+    predefinedScenarios.length > 0 &&
     !isDismissed &&
-    !hasAnyPredefinedScenario(selectedRiSc, predefinedScenarioIds);
+    !hasAnyPredefinedScenario(
+      selectedRiSc,
+      predefinedScenarios.map(s => s.scenario.ID),
+    );
 
   if (
     !blocked ||
