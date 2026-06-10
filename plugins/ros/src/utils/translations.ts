@@ -326,6 +326,8 @@ export const pluginRiScMessages = {
       'Add a set of mandatory risk scenarios and actions to this risk scorecard. Adding them will require new approval.',
     addButton: 'Add mandatory scenarios',
     ignoreButton: 'Ignore',
+    error:
+      'There exists mandatory scenarioes that could not be loaded. Try to refresh the page, or contact team SKVIS if the issue persists.',
     ignoreDialog: {
       title: 'Ignore mandatory scenarios?',
       description:
@@ -1135,7 +1137,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'predefinedScenarios.ignoreDialog.description':
             'Er du sikker på at du vil ignorere de obligatoriske scenarioene? Dette banneret vil ikke lenger vises for denne risikoscorecarden i denne nettleseren.',
           'predefinedScenarios.ignoreDialog.confirmButton': 'Ja, ignorer',
-
+          'predefinedScenarios.error':
+            'Det finnes obligatoriske scenarioer, men de kan av en eller annen grunn ikke hentes. Prøv å laste siden på nytt, og hvis det ikke funker ta kontakt med team SKVIS.',
           'riskMatrix.title': 'Risikomatrise',
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',
           'riskMatrix.estimatedRisk.suffix.thousand': '{{count}} tusen',

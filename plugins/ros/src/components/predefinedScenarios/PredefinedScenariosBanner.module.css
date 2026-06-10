@@ -10,6 +10,18 @@
   background-color: var(--ros-gray-500);
 }
 
+.error {
+  background-color: var(--ros-red-50);
+  color: var(--ros-red-800);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+[data-theme-mode='dark'] .error {
+  background-color: var(--ros-red-900);
+  color: var(--ros-red-100);
+}
+
 .closeButton {
   position: absolute;
   top: 8px;
