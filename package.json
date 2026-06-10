@@ -5,98 +5,36 @@
   "engines": {
     "node": "24"
   },
-  "scripts": {
-    "dev": "yarn workspaces foreach -A --include backend --include app --parallel --jobs unlimited -v -i run start",
-    "ci//": "echo Installs dependencies without modifying the lockfile.\n`yarn rebuild` was added because folders are randomly missing, this command fixes it.",
-    "ci": "yarn install --immutable && yarn rebuild",
-    "iup//": "echo 'Interactive upgrade of dependencies (do not touch packages with `backstage:^?)'",
-    "iup": "yarn upgrade-interactive",
-    "start": "yarn workspace app start",
-    "start-backend": "yarn workspace backend start",
-    "build:backend": "yarn workspace backend build",
-    "build:all": "backstage-cli repo build --all",
-    "build-image": "yarn workspace backend build-image",
-    "cup//": "echo Custom UPdate - Install without lockfile forces yarn to look for latest version within ranges",
-    "cup": "rm -f yarn.lock && yarn install",
-    "tsc": "tsc",
-    "tsc:full": "tsc --skipLibCheck false --incremental false",
-    "clean": "backstage-cli repo clean",
-    "test": "backstage-cli repo test",
-    "test:all": "backstage-cli repo test --coverage",
-    "backstage:upgrade": "backstage-cli versions:bump",
-    "fix": "backstage-cli repo fix",
-    "prettier:check": "prettier --check .",
-    "prettier:format": "prettier --write .",
-    "lint": "backstage-cli repo lint --since origin/main",
-    "lint:all": "backstage-cli repo lint",
-    "pipeline//": "echo Shorthand to run all checks in the lint.yml pipeline/workflow",
-    "pipeline": "yarn run ci && yarn run prettier:check && yarn run lint:all && yarn run tsc",
-    "new": "backstage-cli new --scope internal",
-    "self-update//": "Upgrade package manager to the latest version",
-    "self-update": "corepack up",
-    "delete_yarn_lock": "rm -f yarn.lock",
-    "rm-node-modules//": "echo Removes `node_modules/` from all workspaces",
-    "_rm-node-modules": "rm -rf node_modules/ && cp -vnr node_modules_dummy/ node_modules/",
-    "rm-node-modules": "yarn run _rm-node-modules && yarn workspaces foreach --all --parallel run rm-node-modules",
-    "rmnm": "yarn run rm-node-modules",
-    "clean-cache": "yarn cache clean --all",
-    "ci:clean//": "echo Removes installed modules before installing packages from lockfile.",
-    "ci:clean": "yarn run clean-cache && yarn run rmnm && yarn run ci",
-    "update:clean//": "echo Removes everything before updating packages",
-    "update:clean": "yarn run fresh_clean && yarn run ci",
-    "fresh_clean//": "echo Removes everything related to dependencies",
-    "fresh_clean": "yarn run delete_yarn_lock && yarn run rmnm"
-  },
   "workspaces": {
     "packages": [
-      "packages/*",
-      "plugins/*",
+      "plugins/ros",
+      "plugins/ros-backend",
+      "packages/ros-common",
       "build-tools"
     ]
+  },
+  "scripts": {
+    "prettier:check": "prettier --check \"plugins/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"packages/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"build-tools/**/*.ts\"",
+    "prettier:format": "prettier --write \"plugins/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"packages/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"build-tools/**/*.ts\"",
+    "lint": "eslint \"plugins/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"packages/*/src/**/*.{js,jsx,ts,tsx,mjs,cjs}\" \"build-tools/**/*.ts\"",
+    "test": "yarn workspaces foreach -A --exclude build-tools run test -- --watchAll=false && yarn workspace build-tools test",
+    "typecheck": "tsc -p plugins/ros --noEmit && tsc -p plugins/ros-backend --noEmit && tsc -p packages/ros-common --noEmit && tsc -p build-tools",
+    "backstage:upgrade": "yarn workspace @kartverket/backstage-plugin-risk-scorecard backstage-cli versions:bump",
+    "kartverket.dev": "sh scripts/runKartverketDev.sh"
   },
   "devDependencies": {
     "@backstage/cli": "backstage:^",
     "@backstage/cli-defaults": "backstage:^",
-    "@backstage/e2e-test-utils": "backstage:^",
-    "@microsoft/microsoft-graph-types": "^2.43.1",
-    "@testing-library/dom": "^10.4.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.12.2",
-    "jest": "^30.3.0",
+    "@typescript-eslint/eslint-plugin": "8.59.4",
+    "@typescript-eslint/parser": "^8.59.4",
+    "eslint": "^10.4.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "jest": "catalog:",
     "jest-environment-jsdom": "^30.3.0",
-    "knip": "^6.4.1",
     "prettier": "^3.8.3",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
-  "resolutions": {
-    "jsonpath-plus": "^10.2.0",
-    "form-data": "4.0.4",
-    "@octokit/request": "^8.4.1",
-    "@octokit/plugin-paginate-rest": "^9.2.2",
-    "@octokit/request-error": "^5.1.1",
-    "prismjs": "^1.30.0",
-    "tough-cookie": "5.1.2",
-    "linkifyjs": "^4.3.2",
-    "qs": "^6.14.2",
-    "tar": "7.5.13",
-    "@isaacs/brace-expansion": "5.0.1",
-    "@backstage/plugin-techdocs-node": "1.14.5",
-    "fast-xml-parser": "5.7.2",
-    "axios": "^1.13.5",
-    "undici": "^6.23.0",
-    "jsonpath": "^1.2.0",
-    "koa": "^2.16.2",
-    "@protobufjs/inquire": "1.1.0"
-  },
-  "prettier": "@backstage/cli/config/prettier",
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md}": [
-      "prettier --write"
-    ]
-  },
-  "packageManager": "yarn@4.9.2"
+  "packageManager": "yarn@4.14.1"
 }

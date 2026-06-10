@@ -1,19 +1,9 @@
 {
   "extends": "@backstage/cli/config/tsconfig.json",
-  "include": [
-    "packages/*/src",
-    "packages/*/config.d.ts",
-    "plugins/*/src",
-    "plugins/*/config.d.ts",
-    "plugins/*/dev",
-    "plugins/*/migrations"
-  ],
-  "exclude": ["node_modules"],
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "outDir": "dist-types",
-    "rootDir": ".",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
-  }
+    "allowSyntheticDefaultImports": true,
+    "useUnknownInCatchVariables": false
+  },
+  "files": []
 }

@@ -70,3 +70,44 @@ catalog:
         tenantId: <ENTRA TENANT ID>
         clientId: <ENTRA CLIENT ID>
         clientSecret: <ENTRA CLIENT SECRET>
+    github:
+      providerId:
+        organization: 'spire-test'
+        catalogPath: '.security/catalog-info.yaml' # string
+        validateLocationsExist: true
+        filters:
+          repository: '.*' # Regex
+        schedule: # same options as in TaskScheduleDefinition
+          # supports cron, ISO duration, "human duration" as used in code
+          frequency: { minutes: 30 }
+          # supports ISO duration, "human duration" as used in code
+          timeout: { minutes: 3 }
+
+#sikkerhetsmetrikker:
+#  clientId: <>
+#  baseUrl: <>
+#
+#security-champion:
+#  clientId: <>
+#
+#regelrett:
+#  enable: true
+#  baseUrl: http://localhost:8080
+#  url: http://localhost:8080
+#  clientId: <>
+
+### RiSc plugin backend configuration ###
+ros:
+  gcp:
+    additionalAllowedProjectIds:
+      - spire-ros-5lmr
+  sops:
+    ageKey: <BACKEND SECRET KEY FOR SOPS>
+    backendPublicKey: <BACKEND PUBLIC KEY FOR SOPS>
+    securityTeamPublicKey: <SECURITY TEAM PUBLIC KEY FOR SOPS>
+    securityPlatformPublicKey: <SECURITY PLATFORM PUBLIC KEY FOR SOPS>
+  slack:
+    webhookUrl: <SLACK WEBHOOK URL>
+  initRiSc:
+    repoOwner: <INIT_RISC_REPO_OWNER>
+    repoName: <INIT_RISC_REPO_NAME>

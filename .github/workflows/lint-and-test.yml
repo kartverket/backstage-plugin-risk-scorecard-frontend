@@ -30,14 +30,20 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Build native test dependency
+        # Yarn 4 defaults to enableScripts=false. Backend database tests use
+        # better-sqlite3 via @backstage/backend-test-utils, so build that
+        # known native dependency explicitly instead of enabling all scripts.
+        run: npm --prefix node_modules/better-sqlite3 run install --silent
+
       - name: Run Prettier
-        run: yarn run prettier:check
+        run: yarn prettier:check
 
       - name: Run lint
-        run: yarn run lint:all
+        run: yarn lint
 
       - name: Run tests
-        run: yarn test:all --ci
+        run: yarn test
 
       - name: Run tsc
-        run: yarn run tsc
+        run: yarn typecheck

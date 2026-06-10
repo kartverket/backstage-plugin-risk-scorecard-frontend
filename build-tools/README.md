@@ -161,7 +161,7 @@ yarn tsx release.ts
 yarn tsx release.ts --dry-run
 ```
 
-Preview changes without publishing or creating releases. The default release process handles both `plugins/ros` and `plugins/ros-backend`.
+Preview changes without publishing or creating releases. The default release process handles `plugins/ros`, `plugins/ros-backend`, and `packages/ros-common`.
 
 ### Prerelease Versions
 
