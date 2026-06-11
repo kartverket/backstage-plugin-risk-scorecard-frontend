@@ -175,6 +175,8 @@ export const pluginRiScMessages = {
     editing: 'You can now start editing',
     approveButtonUpdate: 'Accept risks', // Approve RiSc
     approveButtonDelete: 'Accept deletion', // Approve deletion of RiSc
+    predefinedScenariosRequired:
+      'Before you can approve, you must add at least one of the mandatory scenarios or ignore them.',
     prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
     prStatus2Update: ' to publish the scorecard.', // Approve RiSc
     prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
@@ -317,6 +319,21 @@ export const pluginRiScMessages = {
     editButton: 'Edit list',
     doneEditing: 'Finish editing',
     noActionsLong: 'The scenario has no actions',
+  },
+  predefinedScenarios: {
+    title: 'Mandatory scenarios available',
+    description:
+      'Add a set of mandatory risk scenarios and actions to this risk scorecard. Adding them will require new approval.',
+    addButton: 'Add mandatory scenarios',
+    ignoreButton: 'Ignore',
+    error:
+      'There exists mandatory scenarioes that could not be loaded. Try to refresh the page, or contact team SKVIS if the issue persists.',
+    ignoreDialog: {
+      title: 'Ignore mandatory scenarios?',
+      description:
+        'Are you sure you want to ignore the mandatory scenarios? This banner will no longer be shown for this risk scorecard in this browser.',
+      confirmButton: 'Yes, ignore',
+    },
   },
   riskMatrix: {
     title: 'Risk matrix', // Risk matrix or Risk overview
@@ -965,6 +982,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.editing': 'Du kan nå gjøre endringer',
           'rosStatus.approveButtonUpdate': 'Godkjenn ROS',
           'rosStatus.approveButtonDelete': 'Godkjenn sletting',
+          'rosStatus.predefinedScenariosRequired':
+            'Før du kan godkjenne må du legge til minst ett av de obligatoriske scenarioene eller ignorere dem.',
           'rosStatus.prStatus': ' Merge pull requesten i ',
           'rosStatus.prStatus2Update': " for å publisere ROS'en.",
           'rosStatus.prStatus2Delete': " for å slette ROS'en.",
@@ -1107,6 +1126,19 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioTable.doneEditing': 'Avslutt redigering',
           'scenarioTable.noActionsLong': 'Scenarioet har ingen tiltak',
 
+          'predefinedScenarios.title':
+            'Nye obligatoriske scenarioer tilgjengelig',
+          'predefinedScenarios.description':
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec suscipit auctor dui, at maximus nisl. Sed in odio quis enim commodo efficitur. Donec eget ligula ac quam efficitur varius. Donec eget ligula ac quam efficitur varius.',
+          'predefinedScenarios.addButton': 'Legg til obligatoriske scenarioer',
+          'predefinedScenarios.ignoreButton': 'Ignorer',
+          'predefinedScenarios.ignoreDialog.title':
+            'Ignorere obligatoriske scenarioer?',
+          'predefinedScenarios.ignoreDialog.description':
+            'Er du sikker på at du vil ignorere de obligatoriske scenarioene? Dette banneret vil ikke lenger vises for denne risikoscorecarden i denne nettleseren.',
+          'predefinedScenarios.ignoreDialog.confirmButton': 'Ja, ignorer',
+          'predefinedScenarios.error':
+            'Det finnes obligatoriske scenarioer, men de kan av en eller annen grunn ikke hentes. Prøv å laste siden på nytt, og hvis det ikke funker ta kontakt med team SKVIS.',
           'riskMatrix.title': 'Risikomatrise',
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',
           'riskMatrix.estimatedRisk.suffix.thousand': '{{count}} tusen',
