@@ -7,6 +7,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { currentRiScSchemaVersion } from '@kartverket/ros-common';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { URLS } from '../urls';
 import { buildNativeBackendUrls } from '../urls/backend';
@@ -21,7 +22,6 @@ import {
   riScToDTOString,
   SopsConfigDTO,
 } from './DTOs';
-import { latestSupportedVersion } from './constants';
 import {
   DefaultRiScTypeDescriptor,
   DifferenceDTO,
@@ -104,7 +104,7 @@ export function useAuthenticatedFetch() {
 
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
 
-  const uriToFetchAllRiScs = `${riScUri}/${latestSupportedVersion}/all`; // URLS.backend.fetchAllRiScs
+  const uriToFetchAllRiScs = `${riScUri}/${currentRiScSchemaVersion}/all`; // URLS.backend.fetchAllRiScs
   const uriToFetchDefaultRiScDescriptors = `${backendUrl}${URLS.backend.fetchDefaultRiScTypeDescriptors}`;
 
   function uriToFetchDifference(id: string) {
@@ -133,7 +133,7 @@ export function useAuthenticatedFetch() {
     baseUrl: `${backendUrl}/api/risk-scorecard`,
     owner: repoInformation.owner,
     repo: repoInformation.name,
-    version: latestSupportedVersion,
+    version: currentRiScSchemaVersion,
   });
 
   function isDevelopment() {

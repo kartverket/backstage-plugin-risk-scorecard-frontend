@@ -38,31 +38,29 @@ import {
   type RiSc3XScenario,
   type RiSc4XScenario,
   type RiSc5XScenario,
+  RiScVersion,
+  latestSupportedVersion,
+  riscSchemaV3_2,
+  riscSchemaV3_3,
+  riscSchemaV4_0,
+  riscSchemaV4_1,
+  riscSchemaV4_2,
+  riscSchemaV5_0,
+  riscSchemaV5_1,
+  riscSchemaV5_2,
 } from '@kartverket/ros-common';
-import { RiScVersion, latestSupportedVersion } from '@kartverket/ros-common';
-
-// ─── Schema Loading ────────────────────────────────────────────────────────────
-
-import schemaV3_2 from '../schemas/risc_schema_en_v3_2.json';
-import schemaV3_3 from '../schemas/risc_schema_en_v3_3.json';
-import schemaV4_0 from '../schemas/risc_schema_en_v4_0.json';
-import schemaV4_1 from '../schemas/risc_schema_en_v4_1.json';
-import schemaV4_2 from '../schemas/risc_schema_en_v4_2.json';
-import schemaV5_0 from '../schemas/risc_schema_en_v5_0.json';
-import schemaV5_1 from '../schemas/risc_schema_en_v5_1.json';
-import schemaV5_2 from '../schemas/risc_schema_en_v5_2.json';
 
 type JsonSchemaObject = Record<string, unknown>;
 
 const SCHEMAS: Record<RiScVersion, JsonSchemaObject> = {
-  [RiScVersion.V3_2]: schemaV3_2,
-  [RiScVersion.V3_3]: schemaV3_3,
-  [RiScVersion.V4_0]: schemaV4_0,
-  [RiScVersion.V4_1]: schemaV4_1,
-  [RiScVersion.V4_2]: schemaV4_2,
-  [RiScVersion.V5_0]: schemaV5_0,
-  [RiScVersion.V5_1]: schemaV5_1,
-  [RiScVersion.V5_2]: schemaV5_2,
+  [RiScVersion.V3_2]: riscSchemaV3_2,
+  [RiScVersion.V3_3]: riscSchemaV3_3,
+  [RiScVersion.V4_0]: riscSchemaV4_0,
+  [RiScVersion.V4_1]: riscSchemaV4_1,
+  [RiScVersion.V4_2]: riscSchemaV4_2,
+  [RiScVersion.V5_0]: riscSchemaV5_0,
+  [RiScVersion.V5_1]: riscSchemaV5_1,
+  [RiScVersion.V5_2]: riscSchemaV5_2,
 };
 
 // ─── AJV Setup ─────────────────────────────────────────────────────────────────

@@ -1,3 +1,4 @@
+import { currentRiScSchemaVersion } from '@kartverket/ros-common';
 import { DateTime } from 'luxon';
 import { UpdateStatus } from '../contexts/RiScContext';
 import {
@@ -7,7 +8,6 @@ import {
   PROBABILITY_SCALE_OFFSET,
   ThreatActorsOptions,
   VulnerabilitiesOptions,
-  latestSupportedVersion,
   riskMatrix,
 } from './constants';
 import {
@@ -98,7 +98,7 @@ export function getConsequenceLevel(risiko: Risk) {
 
 export function emptyRiSc(): RiSc {
   return {
-    schemaVersion: latestSupportedVersion,
+    schemaVersion: currentRiScSchemaVersion,
     title: '',
     scope: '',
     scenarios: [],
