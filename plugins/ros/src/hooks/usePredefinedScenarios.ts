@@ -1,24 +1,42 @@
 import { useQuery } from '@tanstack/react-query';
+import { githubAuthApiRef, useApi } from '@backstage/core-plugin-api';
 import { ScenarioDTO } from '../utils/DTOs.ts';
 
-const PREDEFINED_SCENARIOS_SOURCE_URL =
-  'https://raw.githubusercontent.com/kartverket/initial-riscs-collection/refs/heads/main/initial-riscs/ops.json'; // Må endres til aktuell fil når vi vet det
-const PREDEFINED_SCENARIOS_SOURCE_BRANCH_URL =
-  'https://raw.githubusercontent.com/aleksanderobrestad/testaleksander/refs/heads/main/testinitros.json'; // Må endres til branchen når den kommer
+const PREDEFINED_SCENARIOS_SOURCE_OWNER = 'kartverket';
+const PREDEFINED_SCENARIOS_SOURCE_REPO = 'initial-riscs-collection';
+const PREDEFINED_SCENARIOS_SOURCE_PATH = 'initial-riscs/web-app-api.json'; // Må endres til aktuell fil når vi vet det
+const PREDEFINED_SCENARIOS_SOURCE_REF = 'main'; // Må endres til aktuell ref når vi vet det
+const PREDEFINED_SCENARIOS_SOURCE_TEST_REF = 'add-scenarios'; // Må endres til branchen når den kommer
 
-const PREDEFINED_SCENARIO_IDS = ['PDEF1']; // Må endres til ekte id'er.
+const GITHUB_API_VERSION = '2022-11-28';
+
+const PREDEFINED_SCENARIO_IDS = ['xK9mP', 'mF6xQ', 'PDEF1']; // Må endres til ekte id'er.
 
 const PREDEFINED_SCENARIOS_QUERY_KEY = ['predefined-scenarios'] as const;
 
-async function fetchPredefinedScenarioTemplates(
+function buildPredefinedScenariosUrl(ref: string): string {
+  return `https://api.github.com/repos/${PREDEFINED_SCENARIOS_SOURCE_OWNER}/${PREDEFINED_SCENARIOS_SOURCE_REPO}/contents/${PREDEFINED_SCENARIOS_SOURCE_PATH}?ref=${ref}`;
+}
+
+async function fetchPredefinedScenarios(
   isTestPredefinedScenariosEnabled: boolean,
+  githubToken: string,
   signal: AbortSignal,
 ): Promise<ScenarioDTO[]> {
   const response = await fetch(
-    isTestPredefinedScenariosEnabled
-      ? PREDEFINED_SCENARIOS_SOURCE_BRANCH_URL
-      : PREDEFINED_SCENARIOS_SOURCE_URL,
-    { signal },
+    buildPredefinedScenariosUrl(
+      isTestPredefinedScenariosEnabled
+        ? PREDEFINED_SCENARIOS_SOURCE_TEST_REF
+        : PREDEFINED_SCENARIOS_SOURCE_REF,
+    ),
+    {
+      signal,
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
+        Accept: 'application/vnd.github.raw+json',
+        'X-GitHub-Api-Version': GITHUB_API_VERSION,
+      },
+    },
   );
   if (!response.ok) {
     throw new Error(`Unexpected status ${response.status}`);
@@ -37,12 +55,32 @@ async function fetchPredefinedScenarioTemplates(
 export function usePredefinedScenarios(
   isTestPredefinedScenariosEnabled: boolean,
 ) {
+  const githubApi = useApi(githubAuthApiRef);
+
   return useQuery({
-    queryKey: PREDEFINED_SCENARIOS_QUERY_KEY,
-    queryFn: ({ signal }) =>
-      fetchPredefinedScenarioTemplates(
+    queryKey: [
+      PREDEFINED_SCENARIOS_QUERY_KEY,
+      isTestPredefinedScenariosEnabled ? 'test' : 'main',
+    ],
+    staleTime: 1000,
+    retry: (count, error) => {
+      if (
+        error.name === 'Unexpected status 401' ||
+        error.name === 'Unexpected status 403' ||
+        error.name === 'Unexpected status 404' ||
+        error.name === 'Unexpected status 429'
+      ) {
+        return false;
+      }
+      return count < 2;
+    },
+    queryFn: async ({ signal }) => {
+      const githubToken = await githubApi.getAccessToken(['repo']);
+      return fetchPredefinedScenarios(
         isTestPredefinedScenariosEnabled,
+        githubToken,
         signal,
-      ),
+      );
+    },
   });
 }
