@@ -23,11 +23,7 @@ import type {
   GithubPullRequestObject,
   GithubReferenceObjectDTO,
 } from '@kartverket/ros-common';
-import {
-  DRAFT_BRANCH_PREFIX,
-  RISC_FILE_PREFIX,
-  RiScStatus,
-} from '@kartverket/ros-common';
+import { RISC_FILE_PREFIX, RiScStatus } from '@kartverket/ros-common';
 
 import type * as ComparisonService from './ComparisonService';
 import type { GitHubService, GithubContentResponse } from './GitHubService';
@@ -697,11 +693,8 @@ export class RiScService {
     // Build PR lookup from draft branches
     const prLookup = new Map<string, { url: string; number: number }>();
     for (const pr of openPRs) {
-      const ref = pr.head.ref;
-      if (ref.startsWith(DRAFT_BRANCH_PREFIX)) {
-        const id = ref.substring(DRAFT_BRANCH_PREFIX.length);
-        prLookup.set(id, { url: pr.html_url, number: pr.number });
-      }
+      const id = pr.head.ref;
+      prLookup.set(id, { url: pr.html_url, number: pr.number });
     }
 
     const allIds = new Set([...mainIds, ...branchIds]);

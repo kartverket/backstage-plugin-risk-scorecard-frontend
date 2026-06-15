@@ -11,7 +11,6 @@ import type {
   LastPublished,
 } from '@kartverket/ros-common';
 import {
-  DRAFT_BRANCH_PREFIX,
   RISC_DIRECTORY,
   RISC_FILE_PREFIX,
   RISC_FILE_SUFFIX,
@@ -84,7 +83,7 @@ export class GitHubService {
 
   /** Returns the draft branch name for a RiSc ID. */
   draftBranchName(riScId: string): string {
-    return `${DRAFT_BRANCH_PREFIX}${riScId}`;
+    return riScId;
   }
 
   /** Extracts the RiSc ID from a draft branch ref like `refs/heads/risc-7ssVK`. */
@@ -297,8 +296,8 @@ export class GitHubService {
   // ─── Branches API ─────────────────────────────────────────────────────
 
   /**
-   * Lists branches matching the draft branch prefix.
-   * Returns reference objects for all `risc-draft/*` branches.
+   * Lists branches matching the RiSc ID naming pattern.
+   * Returns reference objects for all `risc-*` branches.
    */
   async fetchDraftBranches(
     owner: string,

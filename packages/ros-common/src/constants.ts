@@ -46,9 +46,6 @@ function last<const T extends readonly [unknown, ...unknown[]]>(
 /** The latest schema version used when creating new RiScs. */
 export const latestSupportedVersion = last(supportedRiScVersions);
 
-/** Branch prefix for draft RiScs in GitHub. */
-export const DRAFT_BRANCH_PREFIX = '';
-
 /** File naming pattern for RiSc YAML files. */
 export const RISC_FILE_PREFIX = 'risc-';
 export const RISC_FILE_SUFFIX = '.risc.yaml';
