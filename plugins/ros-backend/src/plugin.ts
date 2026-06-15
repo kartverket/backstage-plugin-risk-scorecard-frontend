@@ -136,10 +136,6 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
         });
 
         httpRouter.use(router);
-        httpRouter.addAuthPolicy({
-          path: '/',
-          allow: 'user-cookie',
-        });
       },
     });
   },

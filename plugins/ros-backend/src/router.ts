@@ -93,6 +93,15 @@ export function errorHandler(logger: LoggerService) {
       return;
     }
 
+    if (err.name === 'AuthenticationError' || err.name === 'NotAllowedError') {
+      logger.warn(`Auth error [${err.name}]: ${err.message}`);
+      res.status(err.name === 'AuthenticationError' ? 401 : 403).json({
+        status: ProcessingStatus.AccessTokensValidationFailure,
+        message: err.message,
+      } satisfies ErrorResponse);
+      return;
+    }
+
     // Unknown errors → 500
     logger.error(`Unhandled error: ${err.message}`);
     res.status(500).json({
@@ -111,6 +120,7 @@ export function errorHandler(logger: LoggerService) {
 export async function createRouter(options: RouterOptions): Promise<Router> {
   const {
     logger,
+    httpAuth,
     riScService,
     gitHubService,
     gcpKmsService,
@@ -120,6 +130,13 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
   } = options;
 
   type GitHubTokenAccess = 'read' | 'write';
+
+  const requireBackstageUser: RequestHandler = asyncHandler(
+    async (req, _res, next) => {
+      await httpAuth.credentials(req, { allow: ['user'] });
+      next();
+    },
+  );
 
   async function requireValidGcpAccessToken(req: Request): Promise<string> {
     const gcpToken = extractToken(req, 'gcp-access-token');
@@ -203,11 +220,7 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     next();
   });
 
-  // ─── Health ───────────────────────────────────────────────────────────────
-
-  router.get('/health', (_req, res) => {
-    res.json({ status: 'ok' });
-  });
+  router.use(requireBackstageUser);
 
   // ─── RiSc CRUD ────────────────────────────────────────────────────────────
 

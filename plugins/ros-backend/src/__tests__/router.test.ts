@@ -96,7 +96,15 @@ function mockLogger() {
 }
 
 function mockHttpAuth() {
-  return {} as any;
+  return {
+    credentials: jest.fn().mockResolvedValue({
+      $$type: '@backstage/BackstageCredentials',
+      principal: {
+        type: 'user',
+        userEntityRef: 'user:default/test-user',
+      },
+    }),
+  } as any;
 }
 
 async function createTestApp(
@@ -121,15 +129,6 @@ async function createTestApp(
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe('router', () => {
-  describe('health endpoint', () => {
-    it('returns ok status', async () => {
-      const app = await createTestApp();
-      const res = await request(app).get('/health');
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual({ status: 'ok' });
-    });
-  });
-
   describe('header extraction helpers', () => {
     it('extractToken returns token from header', () => {
       const req = { headers: { 'gcp-access-token': 'my-token' } } as any;
@@ -155,6 +154,33 @@ describe('router', () => {
   });
 
   describe('auth token validation', () => {
+    it('returns 401 when Backstage user credentials are missing', async () => {
+      const httpAuth = mockHttpAuth();
+      const authenticationError = new Error('Missing credentials');
+      authenticationError.name = 'AuthenticationError';
+      httpAuth.credentials.mockRejectedValue(authenticationError);
+      const riScService = mockRiScService();
+      const app = await createTestApp({
+        httpAuth,
+        riScService,
+      });
+
+      const res = await request(app)
+        .get('/risc/owner/repo/5.2/all')
+        .set('GCP-Access-Token', 'gcp-tok')
+        .set('GitHub-Access-Token', 'gh-tok');
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        status: ProcessingStatus.AccessTokensValidationFailure,
+        message: 'Missing credentials',
+      });
+      expect(httpAuth.credentials).toHaveBeenCalledWith(expect.anything(), {
+        allow: ['user'],
+      });
+      expect(riScService.fetchAllRiScs).not.toHaveBeenCalled();
+    });
+
     it('returns 401 when GCP token is missing on risc routes', async () => {
       const app = await createTestApp();
       const res = await request(app)
