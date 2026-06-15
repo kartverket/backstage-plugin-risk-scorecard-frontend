@@ -46,28 +46,20 @@ import {
 
 // ─── AJV Setup ─────────────────────────────────────────────────────────────────
 
-const ajv = new Ajv2020({ allErrors: true, strict: false });
+const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 
-function compileSchemaForVersion(
-  version: RiScVersion,
-): ReturnType<typeof ajv.compile> {
-  // Pre-compile all schema validators (strip $id to avoid conflicts between versions)
-  const { $id: _id, $schema: _schema, ...rest } = riscSchemasByVersion[version];
-  return ajv.compile(rest);
-}
-
 const validators: Record<RiScVersion, ReturnType<typeof ajv.compile>> = {
-  [RiScVersion.V3_2]: compileSchemaForVersion(RiScVersion.V3_2),
-  [RiScVersion.V3_3]: compileSchemaForVersion(RiScVersion.V3_3),
-  [RiScVersion.V4_0]: compileSchemaForVersion(RiScVersion.V4_0),
-  [RiScVersion.V4_1]: compileSchemaForVersion(RiScVersion.V4_1),
-  [RiScVersion.V4_2]: compileSchemaForVersion(RiScVersion.V4_2),
-  [RiScVersion.V5_0]: compileSchemaForVersion(RiScVersion.V5_0),
-  [RiScVersion.V5_1]: compileSchemaForVersion(RiScVersion.V5_1),
-  [RiScVersion.V5_2]: compileSchemaForVersion(RiScVersion.V5_2),
-  [RiScVersion.V5_3]: compileSchemaForVersion(RiScVersion.V5_3),
-  [RiScVersion.V5_4]: compileSchemaForVersion(RiScVersion.V5_4),
+  [RiScVersion.V3_2]: ajv.compile(riscSchemasByVersion[RiScVersion.V3_2]),
+  [RiScVersion.V3_3]: ajv.compile(riscSchemasByVersion[RiScVersion.V3_3]),
+  [RiScVersion.V4_0]: ajv.compile(riscSchemasByVersion[RiScVersion.V4_0]),
+  [RiScVersion.V4_1]: ajv.compile(riscSchemasByVersion[RiScVersion.V4_1]),
+  [RiScVersion.V4_2]: ajv.compile(riscSchemasByVersion[RiScVersion.V4_2]),
+  [RiScVersion.V5_0]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_0]),
+  [RiScVersion.V5_1]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_1]),
+  [RiScVersion.V5_2]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_2]),
+  [RiScVersion.V5_3]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_3]),
+  [RiScVersion.V5_4]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_4]),
 };
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
