@@ -7,7 +7,7 @@ The main feature code is split across:
 
 - `plugins/ros/` - frontend plugin UI and plugin entry points
 - `plugins/ros-backend/` - backend plugin services and routes
-- `packages/ros-common/` - shared types and constants
+- `packages/ros-common/` - internal lib with shared types and constants. Not used outside this repo.
 - `build-tools/` - release tooling workspace
 
 The plugin manages risk assessments with scenarios, actions, risk matrices,

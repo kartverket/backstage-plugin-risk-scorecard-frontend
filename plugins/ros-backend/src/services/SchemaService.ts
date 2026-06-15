@@ -40,32 +40,9 @@ import {
   type RiSc5XScenario,
   RiScVersion,
   latestSupportedVersion,
-  riscSchemaV3_2,
-  riscSchemaV3_3,
-  riscSchemaV4_0,
-  riscSchemaV4_1,
-  riscSchemaV4_2,
-  riscSchemaV5_0,
-  riscSchemaV5_1,
-  riscSchemaV5_2,
-  riscSchemaV5_3,
-  riscSchemaV5_4,
+  riscSchemasByVersion,
+  supportedRiScVersions,
 } from '@kartverket/ros-common';
-
-type JsonSchemaObject = Record<string, unknown>;
-
-const SCHEMAS: Record<RiScVersion, JsonSchemaObject> = {
-  [RiScVersion.V3_2]: riscSchemaV3_2,
-  [RiScVersion.V3_3]: riscSchemaV3_3,
-  [RiScVersion.V4_0]: riscSchemaV4_0,
-  [RiScVersion.V4_1]: riscSchemaV4_1,
-  [RiScVersion.V4_2]: riscSchemaV4_2,
-  [RiScVersion.V5_0]: riscSchemaV5_0,
-  [RiScVersion.V5_1]: riscSchemaV5_1,
-  [RiScVersion.V5_2]: riscSchemaV5_2,
-  [RiScVersion.V5_3]: riscSchemaV5_3,
-  [RiScVersion.V5_4]: riscSchemaV5_4,
-};
 
 // ─── AJV Setup ─────────────────────────────────────────────────────────────────
 
@@ -76,7 +53,7 @@ function compileSchemaForVersion(
   version: RiScVersion,
 ): ReturnType<typeof ajv.compile> {
   // Pre-compile all schema validators (strip $id to avoid conflicts between versions)
-  const { $id: _id, $schema: _schema, ...rest } = SCHEMAS[version];
+  const { $id: _id, $schema: _schema, ...rest } = riscSchemasByVersion[version];
   return ajv.compile(rest);
 }
 
@@ -247,7 +224,7 @@ function assertValidRiScDocument(
 }
 
 function findVersion(version: unknown): RiScVersion | null {
-  return Object.values(RiScVersion).find(v => v === version) ?? null;
+  return supportedRiScVersions.find(v => v === version) ?? null;
 }
 
 function isRiScJson(doc: unknown): doc is UnvalidatedRiScJson {
@@ -270,8 +247,8 @@ export function migrate(
   const fromVersion = doc.schemaVersion;
   const targetVersion = getVersion(toVersion);
 
-  const fromIndex = Object.values(RiScVersion).indexOf(fromVersion);
-  const toIndex = Object.values(RiScVersion).indexOf(targetVersion);
+  const fromIndex = supportedRiScVersions.indexOf(fromVersion);
+  const toIndex = supportedRiScVersions.indexOf(targetVersion);
 
   if (toIndex < fromIndex) {
     throw new Error(

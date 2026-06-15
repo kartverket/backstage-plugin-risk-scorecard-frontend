@@ -1,7 +1,8 @@
 import {
-  currentRiScSchema,
-  currentRiScSchemaVersion,
+  latestRiScSchema,
+  latestSupportedVersion,
   riscSchemas,
+  supportedRiScVersions,
 } from '@kartverket/ros-common';
 
 import {
@@ -25,6 +26,12 @@ function expectArrayMatches(
 }
 
 describe('Constants match schema', () => {
+  it('schema registry follows the supported version order', () => {
+    expect(riscSchemas.map(({ version }) => version)).toEqual([
+      ...supportedRiScVersions,
+    ]);
+  });
+
   it.each(riscSchemas)(
     '$version schema metadata matches registry version',
     ({ version, schema }) => {
@@ -32,9 +39,9 @@ describe('Constants match schema', () => {
     },
   );
 
-  it('current schema metadata matches the current schema version', () => {
-    expect(currentRiScSchema.properties.schemaVersion.default).toBe(
-      `'${currentRiScSchemaVersion}'`,
+  it('latest schema metadata matches the latest supported version', () => {
+    expect(latestRiScSchema.properties.schemaVersion.default).toBe(
+      `'${latestSupportedVersion}'`,
     );
   });
 
@@ -42,29 +49,29 @@ describe('Constants match schema', () => {
     [
       'consequenceOptions',
       consequenceOptions,
-      currentRiScSchema.$defs.risk.properties.consequence.anyOf[0].enum,
+      latestRiScSchema.$defs.risk.properties.consequence.anyOf[0].enum,
     ],
     [
       'probabilityOptions',
       probabilityOptions,
-      currentRiScSchema.$defs.risk.properties.probability.anyOf[0].enum,
+      latestRiScSchema.$defs.risk.properties.probability.anyOf[0].enum,
     ],
     [
       'ActionStatusOptions',
       Object.values(ActionStatusOptions),
-      currentRiScSchema.$defs.action.properties.status.enum,
+      latestRiScSchema.$defs.action.properties.status.enum,
     ],
     [
       'ThreatActorsOptions',
       Object.values(ThreatActorsOptions),
-      currentRiScSchema.$defs.scenario.properties.threatActors.items.enum,
+      latestRiScSchema.$defs.scenario.properties.threatActors.items.enum,
     ],
     [
       'VulnerabilitiesOptions',
       Object.values(VulnerabilitiesOptions),
-      currentRiScSchema.$defs.scenario.properties.vulnerabilities.items.enum,
+      latestRiScSchema.$defs.scenario.properties.vulnerabilities.items.enum,
     ],
-  ])('%s matches the current schema', (_name, actual, expected) => {
+  ])('%s matches the latest schema', (_name, actual, expected) => {
     expectArrayMatches(actual, expected);
   });
 

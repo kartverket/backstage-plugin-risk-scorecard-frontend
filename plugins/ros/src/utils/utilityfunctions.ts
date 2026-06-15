@@ -1,4 +1,4 @@
-import { currentRiScSchemaVersion } from '@kartverket/ros-common';
+import { latestSupportedVersion } from '@kartverket/ros-common';
 import { DateTime } from 'luxon';
 import { UpdateStatus } from '../contexts/RiScContext';
 import {
@@ -98,7 +98,7 @@ export function getConsequenceLevel(risiko: Risk) {
 
 export function emptyRiSc(): RiSc {
   return {
-    schemaVersion: currentRiScSchemaVersion,
+    schemaVersion: latestSupportedVersion,
     title: '',
     scope: '',
     scenarios: [],

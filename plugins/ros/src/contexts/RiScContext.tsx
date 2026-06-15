@@ -1,4 +1,4 @@
-import { currentRiScSchemaVersion } from '@kartverket/ros-common';
+import { latestSupportedVersion } from '@kartverket/ros-common';
 import {
   createContext,
   ReactNode,
@@ -433,7 +433,7 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     });
     const newRiSc: RiScWithMetadata = {
       ...riSc,
-      schemaVersion: currentRiScSchemaVersion,
+      schemaVersion: latestSupportedVersion,
     };
     postRiScs(
       newRiSc.content,
