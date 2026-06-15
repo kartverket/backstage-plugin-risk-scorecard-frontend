@@ -5,6 +5,10 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
+import {
+  DefaultGithubCredentialsProvider,
+  ScmIntegrations,
+} from '@backstage/integration';
 import { createRouter as createBackendRouter } from './router';
 import { RiScService } from './services/RiScService';
 import { GitHubService } from './services/GitHubService';
@@ -115,6 +119,10 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
           ? new SlackService({ webhookUrl: slackWebhookUrl, logger })
           : null;
 
+        const integrations = ScmIntegrations.fromConfig(config);
+        const githubCredentialsProvider =
+          DefaultGithubCredentialsProvider.fromIntegrations(integrations);
+
         // Create and mount router
         const router = await createBackendRouter({
           logger,
@@ -123,6 +131,7 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
           gcpKmsService,
           initRiScService,
           slackService,
+          githubCredentialsProvider,
         });
 
         httpRouter.use(router);

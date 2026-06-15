@@ -79,6 +79,11 @@ export class InitRiScService {
     this.config = options.config;
   }
 
+  /** The template repository this service reads from. */
+  get templateRepo(): InitRiScConfig {
+    return this.config;
+  }
+
   /**
    * Fetches the list of available InitRiSc descriptors from the template repo.
    * For each descriptor config, resolves its template to extract metadata.
