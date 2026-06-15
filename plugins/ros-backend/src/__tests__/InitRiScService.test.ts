@@ -237,6 +237,35 @@ describe('InitRiScService', () => {
       }
     });
 
+    it('preserves unencryptedMetadata from initial content', async () => {
+      const initialContent = JSON.stringify({
+        schemaVersion: '5.4',
+        title: 'Title',
+        scope: 'Scope',
+        unencryptedMetadata: {
+          appliesTo: [
+            'backstage:component:default/service-a',
+            'backstage:component:default/service-b',
+          ],
+        },
+        scenarios: [],
+      });
+
+      const result = await service.getInitRiSc(
+        'risc-example',
+        initialContent,
+        'gh-token',
+      );
+      const parsed = JSON.parse(result);
+
+      expect(parsed.unencryptedMetadata).toEqual({
+        appliesTo: [
+          'backstage:component:default/service-a',
+          'backstage:component:default/service-b',
+        ],
+      });
+    });
+
     it('throws when template fetch fails', async () => {
       const initialContent = JSON.stringify({
         title: 'T',

@@ -1,6 +1,6 @@
 /**
  * Schema versions supported by the RiSc backend.
- * Migration pipeline handles v3.2 → v5.2.
+ * Migration pipeline handles v3.2 → v5.4.
  */
 export const RiScVersion = {
   V3_2: '3.2',
@@ -11,12 +11,14 @@ export const RiScVersion = {
   V5_0: '5.0',
   V5_1: '5.1',
   V5_2: '5.2',
+  V5_3: '5.3',
+  V5_4: '5.4',
 } as const;
 
 export type RiScVersion = (typeof RiScVersion)[keyof typeof RiScVersion];
 
 /** The latest schema version used when creating new RiScs. */
-export const latestSupportedVersion = RiScVersion.V5_2;
+export const latestSupportedVersion = RiScVersion.V5_4;
 
 /** Branch prefix for draft RiScs in GitHub. */
 export const DRAFT_BRANCH_PREFIX = '';

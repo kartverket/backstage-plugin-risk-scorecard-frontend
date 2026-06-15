@@ -12,6 +12,8 @@ import {
   migrateFrom42To50,
   migrateFrom50To51,
   migrateFrom51To52,
+  migrateFrom52To53,
+  migrateFrom53To54,
 } from '../services/SchemaService';
 import type {
   MigrationStatus,
@@ -119,6 +121,83 @@ title: Test
 scope: Test scope
 scenarios: []`;
     const result = validate(yamlContent, '5.2');
+    expect(result.valid).toBe(true);
+  });
+
+  it('validates v5.3 with unencryptedMetadata appliesTo', () => {
+    const result = validate(
+      JSON.stringify({
+        schemaVersion: '5.3',
+        title: 'T',
+        scope: 'S',
+        unencryptedMetadata: {
+          appliesTo: [
+            'backstage:component:default/service-a',
+            'backstage:component:default/service-b',
+          ],
+        },
+        scenarios: [],
+      }),
+      '5.3',
+    );
+
+    expect(result.valid).toBe(true);
+  });
+
+  it('rejects duplicate v5.3 appliesTo entries', () => {
+    const result = validate(
+      JSON.stringify({
+        schemaVersion: '5.3',
+        title: 'T',
+        scope: 'S',
+        unencryptedMetadata: {
+          appliesTo: [
+            'backstage:component:default/service-a',
+            'backstage:component:default/service-a',
+          ],
+        },
+        scenarios: [],
+      }),
+      '5.3',
+    );
+
+    expect(result.valid).toBe(false);
+  });
+
+  it('validates v5.4 action comments', () => {
+    const result = validate(
+      JSON.stringify({
+        schemaVersion: '5.4',
+        title: 'T',
+        scope: 'S',
+        scenarios: [
+          {
+            title: 'Scenario',
+            scenario: {
+              ID: 'scen1',
+              description: 'Description',
+              threatActors: [],
+              vulnerabilities: [],
+              risk: { probability: 1, consequence: 8000 },
+              remainingRisk: { probability: 0.05, consequence: 8000 },
+              actions: [
+                {
+                  title: 'Action',
+                  action: {
+                    ID: 'act01',
+                    description: 'Description',
+                    status: 'Not OK',
+                    comment: 'Needs follow-up',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      }),
+      '5.4',
+    );
+
     expect(result.valid).toBe(true);
   });
 
@@ -478,6 +557,49 @@ describe('migrateFrom51To52', () => {
   });
 });
 
+// ─── Migration: 5.2 → 5.3 ─────────────────────────────────────────────────────
+
+describe('migrateFrom52To53', () => {
+  it('only bumps schema version to 5.3', () => {
+    const doc: RiSc5X = {
+      schemaVersion: '5.2',
+      title: 'Test',
+      scope: 'Test',
+      scenarios: [],
+    };
+    const status = emptyStatus();
+
+    const [migrated, migratedStatus] = migrateFrom52To53(doc, status);
+
+    expect(migrated.schemaVersion).toBe('5.3');
+    expect({ ...migrated, schemaVersion: '5.2' }).toEqual(doc);
+    expect(migratedStatus).toBe(status);
+  });
+});
+
+// ─── Migration: 5.3 → 5.4 ─────────────────────────────────────────────────────
+
+describe('migrateFrom53To54', () => {
+  it('only bumps schema version to 5.4', () => {
+    const doc: RiSc5X = {
+      schemaVersion: '5.3',
+      title: 'Test',
+      scope: 'Test',
+      unencryptedMetadata: {
+        appliesTo: ['backstage:component:default/service-a'],
+      },
+      scenarios: [],
+    };
+    const status = emptyStatus();
+
+    const [migrated, migratedStatus] = migrateFrom53To54(doc, status);
+
+    expect(migrated.schemaVersion).toBe('5.4');
+    expect({ ...migrated, schemaVersion: '5.3' }).toEqual(doc);
+    expect(migratedStatus).toBe(status);
+  });
+});
+
 // ─── Full migration chain ──────────────────────────────────────────────────────
 
 describe('migrate (full chain)', () => {
@@ -500,6 +622,25 @@ describe('migrate (full chain)', () => {
     expect(status.migrationChanges40).toBeDefined();
     expect(status.migrationChanges41).toBeDefined();
     expect(status.migrationChanges52).toBeDefined();
+  });
+
+  it('migrates 5.2 to latest supported version by default', () => {
+    const doc: RiScDocument = {
+      schemaVersion: '5.2',
+      title: 'Test',
+      scope: 'Test',
+      scenarios: [],
+    };
+
+    const [migrated, status] = migrate(doc);
+
+    expect(migrated.schemaVersion).toBe('5.4');
+    expect(status.migrationChanges).toBe(false);
+    expect(status.migrationRequiresNewApproval).toBe(false);
+    expect(status.migrationVersions).toEqual({
+      fromVersion: '5.2',
+      toVersion: '5.4',
+    });
   });
 
   it('no-op when already at target version', () => {

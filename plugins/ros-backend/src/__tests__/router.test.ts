@@ -3,6 +3,7 @@ import request from 'supertest';
 import { ProcessingStatus } from '@kartverket/ros-common';
 import { createRouter, extractToken, errorHandler } from '../router';
 import { DomainError } from '../lib/errors';
+import { GitHubApiError } from '../services/GitHubService';
 
 // ─── Mock Services ────────────────────────────────────────────────────────────
 
@@ -44,6 +45,16 @@ function mockRiScService() {
 function mockGcpKmsService() {
   return {
     getGcpCryptoKeys: jest.fn().mockResolvedValue([]),
+    validateAccessToken: jest.fn().mockResolvedValue(true),
+  } as any;
+}
+
+function mockGitHubService() {
+  return {
+    fetchRepositoryInfo: jest.fn().mockResolvedValue({
+      defaultBranch: 'main',
+      hasWriteAccess: true,
+    }),
   } as any;
 }
 
@@ -66,7 +77,9 @@ function mockSlackService() {
   } as any;
 }
 
-function mockGithubCredentialsProvider(appToken: string | undefined = undefined) {
+function mockGithubCredentialsProvider(
+  appToken: string | undefined = undefined,
+) {
   return {
     getCredentials: jest.fn().mockResolvedValue({ token: appToken }),
   } as any;
@@ -94,6 +107,7 @@ async function createTestApp(
     logger: mockLogger(),
     httpAuth: mockHttpAuth(),
     riScService: mockRiScService(),
+    gitHubService: mockGitHubService(),
     gcpKmsService: mockGcpKmsService(),
     initRiScService: mockInitRiScService(),
     slackService: mockSlackService(),
@@ -164,8 +178,12 @@ describe('router', () => {
   describe('GitHub app token fallback for reads', () => {
     it('falls back to app token on fetch-all when GitHub header is missing', async () => {
       const riScService = mockRiScService();
-      const githubCredentialsProvider = mockGithubCredentialsProvider('app-tok');
-      const app = await createTestApp({ riScService, githubCredentialsProvider });
+      const githubCredentialsProvider =
+        mockGithubCredentialsProvider('app-tok');
+      const app = await createTestApp({
+        riScService,
+        githubCredentialsProvider,
+      });
 
       const res = await request(app)
         .get('/risc/myorg/myrepo/5.2/all')
@@ -186,8 +204,14 @@ describe('router', () => {
 
     it('prefers user-supplied GitHub token over app token', async () => {
       const riScService = mockRiScService();
-      const githubCredentialsProvider = mockGithubCredentialsProvider('app-tok');
-      const app = await createTestApp({ riScService, githubCredentialsProvider });
+      const gitHubService = mockGitHubService();
+      const githubCredentialsProvider =
+        mockGithubCredentialsProvider('app-tok');
+      const app = await createTestApp({
+        riScService,
+        gitHubService,
+        githubCredentialsProvider,
+      });
 
       const res = await request(app)
         .get('/risc/myorg/myrepo/5.2/all')
@@ -196,6 +220,11 @@ describe('router', () => {
 
       expect(res.status).toBe(200);
       expect(githubCredentialsProvider.getCredentials).not.toHaveBeenCalled();
+      expect(gitHubService.fetchRepositoryInfo).toHaveBeenCalledWith(
+        'myorg',
+        'myrepo',
+        'gh-tok',
+      );
       expect(riScService.fetchAllRiScs).toHaveBeenCalledWith(
         'myorg',
         'myrepo',
@@ -207,8 +236,12 @@ describe('router', () => {
 
     it('falls back to app token on difference when GitHub header is missing', async () => {
       const riScService = mockRiScService();
-      const githubCredentialsProvider = mockGithubCredentialsProvider('app-tok');
-      const app = await createTestApp({ riScService, githubCredentialsProvider });
+      const githubCredentialsProvider =
+        mockGithubCredentialsProvider('app-tok');
+      const app = await createTestApp({
+        riScService,
+        githubCredentialsProvider,
+      });
 
       const res = await request(app)
         .post('/risc/myorg/myrepo/ros_abc12/difference')
@@ -228,7 +261,8 @@ describe('router', () => {
 
     it('falls back to app token on initrisc using the template repo', async () => {
       const initRiScService = mockInitRiScService();
-      const githubCredentialsProvider = mockGithubCredentialsProvider('app-tok');
+      const githubCredentialsProvider =
+        mockGithubCredentialsProvider('app-tok');
       const app = await createTestApp({
         initRiScService,
         githubCredentialsProvider,
@@ -246,7 +280,8 @@ describe('router', () => {
     });
 
     it('does not fall back to app token for writes', async () => {
-      const githubCredentialsProvider = mockGithubCredentialsProvider('app-tok');
+      const githubCredentialsProvider =
+        mockGithubCredentialsProvider('app-tok');
       const app = await createTestApp({ githubCredentialsProvider });
 
       const createRes = await request(app)
@@ -296,7 +331,13 @@ describe('router', () => {
   describe('POST /risc/:owner/:repo', () => {
     it('returns 201 on successful create', async () => {
       const riScService = mockRiScService();
-      const app = await createTestApp({ riScService });
+      const gitHubService = mockGitHubService();
+      const gcpKmsService = mockGcpKmsService();
+      const app = await createTestApp({
+        riScService,
+        gitHubService,
+        gcpKmsService,
+      });
 
       const res = await request(app)
         .post('/risc/owner/repo')
@@ -305,7 +346,69 @@ describe('router', () => {
         .send({ riSc: '{}', schemaVersion: '5.2', sopsConfig: {} });
 
       expect(res.status).toBe(201);
+      expect(gitHubService.fetchRepositoryInfo).toHaveBeenCalledWith(
+        'owner',
+        'repo',
+        'gh-tok',
+      );
+      expect(gcpKmsService.validateAccessToken).toHaveBeenCalledWith('gcp-tok');
       expect(riScService.createRiSc).toHaveBeenCalled();
+    });
+
+    it('returns 403 when GitHub token lacks write access', async () => {
+      const riScService = mockRiScService();
+      const gitHubService = mockGitHubService();
+      gitHubService.fetchRepositoryInfo.mockResolvedValue({
+        defaultBranch: 'main',
+        hasWriteAccess: false,
+      });
+      const app = await createTestApp({ riScService, gitHubService });
+
+      const res = await request(app)
+        .post('/risc/owner/repo')
+        .set('GCP-Access-Token', 'gcp-tok')
+        .set('GitHub-Access-Token', 'gh-tok')
+        .send({ riSc: '{}', schemaVersion: '5.4', sopsConfig: {} });
+
+      expect(res.status).toBe(403);
+      expect(res.body.status).toBe(ProcessingStatus.NoWriteAccessToRepository);
+      expect(riScService.createRiSc).not.toHaveBeenCalled();
+    });
+
+    it('returns 401 when GitHub token validation fails as unauthorized', async () => {
+      const riScService = mockRiScService();
+      const gitHubService = mockGitHubService();
+      gitHubService.fetchRepositoryInfo.mockRejectedValue(
+        new GitHubApiError('Unauthorized', 401),
+      );
+      const app = await createTestApp({ riScService, gitHubService });
+
+      const res = await request(app)
+        .post('/risc/owner/repo')
+        .set('GCP-Access-Token', 'gcp-tok')
+        .set('GitHub-Access-Token', 'gh-tok')
+        .send({ riSc: '{}', schemaVersion: '5.4', sopsConfig: {} });
+
+      expect(res.status).toBe(401);
+      expect(res.body.status).toBe(ProcessingStatus.InvalidGitHubAccessToken);
+      expect(riScService.createRiSc).not.toHaveBeenCalled();
+    });
+
+    it('returns 401 when GCP token validation fails', async () => {
+      const riScService = mockRiScService();
+      const gcpKmsService = mockGcpKmsService();
+      gcpKmsService.validateAccessToken.mockResolvedValue(false);
+      const app = await createTestApp({ riScService, gcpKmsService });
+
+      const res = await request(app)
+        .post('/risc/owner/repo')
+        .set('GCP-Access-Token', 'bad-gcp')
+        .set('GitHub-Access-Token', 'gh-tok')
+        .send({ riSc: '{}', schemaVersion: '5.4', sopsConfig: {} });
+
+      expect(res.status).toBe(401);
+      expect(res.body.status).toBe(ProcessingStatus.InvalidGcpAccessToken);
+      expect(riScService.createRiSc).not.toHaveBeenCalled();
     });
   });
 
@@ -364,7 +467,13 @@ describe('router', () => {
   describe('POST /risc/:owner/:repo/publish/:id', () => {
     it('calls publishRiSc with user info', async () => {
       const riScService = mockRiScService();
-      const app = await createTestApp({ riScService });
+      const gitHubService = mockGitHubService();
+      const gcpKmsService = mockGcpKmsService();
+      const app = await createTestApp({
+        riScService,
+        gitHubService,
+        gcpKmsService,
+      });
 
       const res = await request(app)
         .post('/risc/owner/repo/publish/ros_abc12')
@@ -372,6 +481,12 @@ describe('router', () => {
         .send({ name: 'Test User', email: 'test@example.com' });
 
       expect(res.status).toBe(200);
+      expect(gitHubService.fetchRepositoryInfo).toHaveBeenCalledWith(
+        'owner',
+        'repo',
+        'gh-tok',
+      );
+      expect(gcpKmsService.validateAccessToken).not.toHaveBeenCalled();
       expect(riScService.publishRiSc).toHaveBeenCalledWith(
         'owner',
         'repo',
@@ -392,6 +507,7 @@ describe('router', () => {
         .set('GCP-Access-Token', 'gcp-tok');
 
       expect(res.status).toBe(200);
+      expect(gcpKmsService.validateAccessToken).toHaveBeenCalledWith('gcp-tok');
       expect(gcpKmsService.getGcpCryptoKeys).toHaveBeenCalledWith('gcp-tok');
     });
   });

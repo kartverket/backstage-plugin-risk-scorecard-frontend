@@ -128,6 +128,7 @@ export const riskScorecardBackendPlugin = createBackendPlugin({
           logger,
           httpAuth,
           riScService,
+          gitHubService,
           gcpKmsService,
           initRiScService,
           slackService,

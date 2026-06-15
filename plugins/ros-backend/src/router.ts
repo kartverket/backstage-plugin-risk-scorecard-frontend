@@ -12,9 +12,17 @@ import {
   ProcessingStatus,
   latestSupportedVersion,
 } from '@kartverket/ros-common';
-import { AccessTokenValidationError, DomainError } from './lib/errors';
+import {
+  AccessTokenValidationError,
+  DomainError,
+  InvalidGcpAccessTokenError,
+  InvalidGitHubAccessTokenError,
+  RepositoryAccessError,
+} from './lib/errors';
 import type { RiScService } from './services/RiScService';
 import type { GcpKmsService } from './services/GcpKmsService';
+import type { GitHubService } from './services/GitHubService';
+import { GitHubApiError } from './services/GitHubService';
 import type { InitRiScService } from './services/InitRiScService';
 import type { SlackService } from './services/SlackService';
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -23,6 +31,7 @@ export interface RouterOptions {
   logger: LoggerService;
   httpAuth: HttpAuthService;
   riScService: RiScService;
+  gitHubService: GitHubService;
   gcpKmsService: GcpKmsService;
   initRiScService: InitRiScService;
   slackService: SlackService | null;
@@ -44,51 +53,6 @@ export function extractToken(
 ): string | undefined {
   const token = req.headers[headerName.toLowerCase()];
   return Array.isArray(token) ? token[0] : token;
-}
-
-function requireGcpToken(req: Request): string {
-  const gcpToken = extractToken(req, 'gcp-access-token');
-  if (!gcpToken) {
-    throw new AccessTokenValidationError('Missing required access tokens');
-  }
-  return gcpToken;
-}
-
-async function resolveGithubToken(
-  req: Request,
-  options: {
-    owner: string;
-    repo: string;
-    requireUserToken: boolean;
-    githubCredentialsProvider: GithubCredentialsProvider;
-    logger: LoggerService;
-  },
-): Promise<string> {
-  const userToken = extractToken(req, 'github-access-token');
-  if (userToken) return userToken;
-
-  if (options.requireUserToken) {
-    throw new AccessTokenValidationError('Missing required access tokens');
-  }
-
-  try {
-    // Backstage's GithubCredentialsProvider is stateful and caches app tokens
-    // internally per URL, so repeated lookups reuse the cached token.
-    const { token } = await options.githubCredentialsProvider.getCredentials({
-      url: `https://github.com/${options.owner}/${options.repo}`,
-    });
-    if (token) {
-      return token;
-    }
-  } catch (e) {
-    options.logger.error(
-      `Could not resolve GitHub App installation token for ${options.owner}/${options.repo}: ${
-        e instanceof Error ? e.message : String(e)
-      }`,
-    );
-  }
-
-  throw new AccessTokenValidationError('Missing required access tokens');
 }
 
 /**
@@ -148,11 +112,87 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
   const {
     logger,
     riScService,
+    gitHubService,
     gcpKmsService,
     initRiScService,
     slackService,
     githubCredentialsProvider,
   } = options;
+
+  type GitHubTokenAccess = 'read' | 'write';
+
+  async function requireValidGcpAccessToken(req: Request): Promise<string> {
+    const gcpToken = extractToken(req, 'gcp-access-token');
+    if (!gcpToken) {
+      throw new AccessTokenValidationError('Missing required access tokens');
+    }
+
+    if (!(await gcpKmsService.validateAccessToken(gcpToken))) {
+      throw new InvalidGcpAccessTokenError();
+    }
+
+    return gcpToken;
+  }
+
+  async function requireValidGitHubToken(
+    req: Request,
+    context: {
+      owner: string;
+      repo: string;
+      access: GitHubTokenAccess;
+    },
+  ): Promise<string> {
+    const userToken = extractToken(req, 'github-access-token');
+
+    if (userToken) {
+      let repositoryInfo;
+      try {
+        repositoryInfo = await gitHubService.fetchRepositoryInfo(
+          context.owner,
+          context.repo,
+          userToken,
+        );
+      } catch (e) {
+        if (e instanceof GitHubApiError && e.status === 401) {
+          throw new InvalidGitHubAccessTokenError(
+            `Invalid GitHub access token for ${context.owner}/${context.repo}`,
+          );
+        }
+        throw e;
+      }
+
+      if (context.access === 'write' && !repositoryInfo.hasWriteAccess) {
+        throw new RepositoryAccessError(
+          `Access denied: No write-access on ${context.owner}/${context.repo}`,
+        );
+      }
+
+      return userToken;
+    }
+
+    if (context.access === 'write') {
+      throw new AccessTokenValidationError('Missing required access tokens');
+    }
+
+    try {
+      // Backstage's GithubCredentialsProvider is stateful and caches app tokens
+      // internally per URL, so repeated lookups reuse the cached token.
+      const { token } = await githubCredentialsProvider.getCredentials({
+        url: `https://github.com/${context.owner}/${context.repo}`,
+      });
+      if (token) {
+        return token;
+      }
+    } catch (e) {
+      logger.error(
+        `Could not resolve GitHub App installation token for ${context.owner}/${context.repo}: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
+      );
+    }
+
+    throw new AccessTokenValidationError('Missing required access tokens');
+  }
 
   const router = Router();
   router.use(express.json());
@@ -175,13 +215,11 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     '/risc/:owner/:repo/:version/all',
     asyncHandler(async (req, res) => {
       const { owner, repo, version } = req.params;
-      const gcpToken = requireGcpToken(req);
-      const githubToken = await resolveGithubToken(req, {
+      const gcpToken = await requireValidGcpAccessToken(req);
+      const githubToken = await requireValidGitHubToken(req, {
         owner,
         repo,
-        requireUserToken: false,
-        githubCredentialsProvider,
-        logger,
+        access: 'read',
       });
 
       const result = await riScService.fetchAllRiScs(
@@ -199,13 +237,11 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     '/risc/:owner/:repo/:id',
     asyncHandler(async (req, res) => {
       const { owner, repo, id } = req.params;
-      const gcpToken = requireGcpToken(req);
-      const githubToken = await resolveGithubToken(req, {
+      const gcpToken = await requireValidGcpAccessToken(req);
+      const githubToken = await requireValidGitHubToken(req, {
         owner,
         repo,
-        requireUserToken: false,
-        githubCredentialsProvider,
-        logger,
+        access: 'read',
       });
 
       // No dedicated fetchRiSc method — use fetchAllRiScs and filter
@@ -232,13 +268,11 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     '/risc/:owner/:repo/:id/difference',
     asyncHandler(async (req, res) => {
       const { owner, repo, id } = req.params;
-      const gcpToken = requireGcpToken(req);
-      const githubToken = await resolveGithubToken(req, {
+      const gcpToken = await requireValidGcpAccessToken(req);
+      const githubToken = await requireValidGitHubToken(req, {
         owner,
         repo,
-        requireUserToken: false,
-        githubCredentialsProvider,
-        logger,
+        access: 'read',
       });
 
       const { riSc: draftContent } = req.body as { riSc: string };
@@ -258,14 +292,12 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     '/risc/:owner/:repo',
     asyncHandler(async (req, res) => {
       const { owner, repo } = req.params;
-      const gcpToken = requireGcpToken(req);
-      const githubToken = await resolveGithubToken(req, {
+      const githubToken = await requireValidGitHubToken(req, {
         owner,
         repo,
-        requireUserToken: true,
-        githubCredentialsProvider,
-        logger,
+        access: 'write',
       });
+      const gcpToken = await requireValidGcpAccessToken(req);
 
       const { riSc, schemaVersion, sopsConfig } = req.body as {
         riSc: string;
@@ -290,14 +322,12 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     '/risc/:owner/:repo/:id',
     asyncHandler(async (req, res) => {
       const { owner, repo, id } = req.params;
-      const gcpToken = requireGcpToken(req);
-      const githubToken = await resolveGithubToken(req, {
+      const githubToken = await requireValidGitHubToken(req, {
         owner,
         repo,
-        requireUserToken: true,
-        githubCredentialsProvider,
-        logger,
+        access: 'write',
       });
+      const gcpToken = await requireValidGcpAccessToken(req);
 
       const { riSc, schemaVersion, sopsConfig, isRequiresNewApproval } =
         req.body as {
@@ -326,14 +356,12 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     '/risc/:owner/:repo/:id',
     asyncHandler(async (req, res) => {
       const { owner, repo, id } = req.params;
-      const gcpToken = requireGcpToken(req);
-      const githubToken = await resolveGithubToken(req, {
+      const githubToken = await requireValidGitHubToken(req, {
         owner,
         repo,
-        requireUserToken: true,
-        githubCredentialsProvider,
-        logger,
+        access: 'write',
       });
+      const gcpToken = await requireValidGcpAccessToken(req);
 
       const result = await riScService.deleteRiSc(
         owner,
@@ -350,12 +378,10 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     '/risc/:owner/:repo/publish/:id',
     asyncHandler(async (req, res) => {
       const { owner, repo, id } = req.params;
-      const githubToken = await resolveGithubToken(req, {
+      const githubToken = await requireValidGitHubToken(req, {
         owner,
         repo,
-        requireUserToken: true,
-        githubCredentialsProvider,
-        logger,
+        access: 'write',
       });
 
       const userInfo = req.body as { name: string; email: string };
@@ -375,7 +401,7 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
   router.get(
     '/google/gcpCryptoKeys',
     asyncHandler(async (req, res) => {
-      const gcpToken = requireGcpToken(req);
+      const gcpToken = await requireValidGcpAccessToken(req);
 
       const keys = await gcpKmsService.getGcpCryptoKeys(gcpToken);
       res.json(keys);
@@ -388,12 +414,10 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     '/initrisc',
     asyncHandler(async (req, res) => {
       const { repoOwner, repoName } = initRiScService.templateRepo;
-      const githubToken = await resolveGithubToken(req, {
+      const githubToken = await requireValidGitHubToken(req, {
         owner: repoOwner,
         repo: repoName,
-        requireUserToken: false,
-        githubCredentialsProvider,
-        logger,
+        access: 'read',
       });
 
       const descriptors =

@@ -27,6 +27,8 @@ export const ProcessingStatus = {
   ErrorWhenDeletingRiSc: 'ErrorWhenDeletingRiSc',
   ErrorWhenCreatingPullRequest: 'ErrorWhenCreatingPullRequest',
   InvalidAccessTokens: 'InvalidAccessTokens',
+  InvalidGcpAccessToken: 'InvalidGcpAccessToken',
+  InvalidGitHubAccessToken: 'InvalidGitHubAccessToken',
   NoWriteAccessToRepository: 'NoWriteAccessToRepository',
   AccessTokensValidationFailure: 'AccessTokensValidationFailure',
   FailedToFetchGcpProjectIds: 'FailedToFetchGcpProjectIds',
@@ -241,6 +243,7 @@ export interface RiSc5XAction {
     status: ActionStatus;
     lastUpdated?: string | null;
     lastUpdatedBy?: string | null;
+    comment?: string | null;
   };
 }
 
@@ -259,10 +262,15 @@ export interface RiSc5XScenario {
   };
 }
 
+export interface RiSc5XUnencryptedMetadata {
+  appliesTo?: string[] | null;
+}
+
 /** v5.x RiSc document. */
 export interface RiSc5X extends RiScBase<
-  Extract<RiScVersion, '5.0' | '5.1' | '5.2'>
+  Extract<RiScVersion, '5.0' | '5.1' | '5.2' | '5.3' | '5.4'>
 > {
+  unencryptedMetadata?: RiSc5XUnencryptedMetadata | null;
   scenarios: RiSc5XScenario[];
 }
 
@@ -554,6 +562,7 @@ export interface RiSc5XChange {
   type: '5.*';
   title?: SimpleTrackedProperty<string> | null;
   scope?: SimpleTrackedProperty<string> | null;
+  appliesTo?: SimpleTrackedProperty<string>[] | null;
   valuations: SimpleTrackedProperty<RiScValuation>[];
   scenarios: TrackedProperty<RiSc5XScenarioChange, RiSc5XScenario>[];
   migrationChanges: MigrationStatus;
@@ -579,6 +588,7 @@ export interface RiSc5XActionChange {
   status?: SimpleTrackedProperty<ActionStatus> | null;
   lastUpdated?: SimpleTrackedProperty<string | null> | null;
   lastUpdatedBy?: SimpleTrackedProperty<string | null> | null;
+  comment?: SimpleTrackedProperty<string | null> | null;
 }
 
 // ─── v4.x Change Types ─────────────────────────────────────────────────────────

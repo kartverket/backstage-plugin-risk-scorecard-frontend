@@ -74,6 +74,24 @@ export class AccessTokenValidationError extends DomainError {
   }
 }
 
+export class InvalidGcpAccessTokenError extends DomainError {
+  readonly httpStatus = 401;
+  readonly processingStatus = ProcessingStatus.InvalidGcpAccessToken;
+
+  constructor(message = 'Invalid GCP access token') {
+    super(message);
+  }
+}
+
+export class InvalidGitHubAccessTokenError extends DomainError {
+  readonly httpStatus = 401;
+  readonly processingStatus = ProcessingStatus.InvalidGitHubAccessToken;
+
+  constructor(message = 'Invalid GitHub access token') {
+    super(message);
+  }
+}
+
 export class PermissionDeniedError extends DomainError {
   readonly httpStatus = 403;
   readonly processingStatus = ProcessingStatus.NoWriteAccessToRepository;

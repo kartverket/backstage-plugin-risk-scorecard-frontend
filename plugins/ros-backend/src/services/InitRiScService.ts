@@ -36,6 +36,9 @@ interface RiSc5XTemplate {
   schemaVersion: string;
   title: string;
   scope: string;
+  unencryptedMetadata?: {
+    appliesTo?: string[] | null;
+  } | null;
   scenarios: Array<{
     title: string;
     scenario: {
@@ -54,6 +57,7 @@ interface RiSc5XTemplate {
           url: string;
           lastUpdated?: string | null;
           lastUpdatedBy?: string | null;
+          comment?: string | null;
         };
       }>;
     };
@@ -135,6 +139,7 @@ export class InitRiScService {
     const parsedInitial = JSON.parse(initialContent) as {
       title?: string;
       scope?: string;
+      unencryptedMetadata?: RiSc5XTemplate['unencryptedMetadata'];
     };
 
     const template = await this.fetchRiScTemplate(initRiScId, githubToken);
@@ -143,6 +148,7 @@ export class InitRiScService {
     // Override title and scope from initial content
     cleaned.title = parsedInitial.title ?? cleaned.title;
     cleaned.scope = parsedInitial.scope ?? cleaned.scope;
+    cleaned.unencryptedMetadata = parsedInitial.unencryptedMetadata;
 
     return JSON.stringify(cleaned);
   }

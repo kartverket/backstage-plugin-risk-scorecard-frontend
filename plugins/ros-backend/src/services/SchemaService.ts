@@ -5,7 +5,7 @@
  *   - risc/validation/JSONValidator.kt
  *   - risc/utils/Migrations.kt
  *
- * Validates RiSc documents against JSON schemas (v3.2–v5.2),
+ * Validates RiSc documents against JSON schemas (v3.2–v5.4),
  * detects versions, and migrates documents through the version chain.
  */
 
@@ -48,6 +48,8 @@ import {
   riscSchemaV5_0,
   riscSchemaV5_1,
   riscSchemaV5_2,
+  riscSchemaV5_3,
+  riscSchemaV5_4,
 } from '@kartverket/ros-common';
 
 type JsonSchemaObject = Record<string, unknown>;
@@ -61,6 +63,8 @@ const SCHEMAS: Record<RiScVersion, JsonSchemaObject> = {
   [RiScVersion.V5_0]: riscSchemaV5_0,
   [RiScVersion.V5_1]: riscSchemaV5_1,
   [RiScVersion.V5_2]: riscSchemaV5_2,
+  [RiScVersion.V5_3]: riscSchemaV5_3,
+  [RiScVersion.V5_4]: riscSchemaV5_4,
 };
 
 // ─── AJV Setup ─────────────────────────────────────────────────────────────────
@@ -85,6 +89,8 @@ const validators: Record<RiScVersion, ReturnType<typeof ajv.compile>> = {
   [RiScVersion.V5_0]: compileSchemaForVersion(RiScVersion.V5_0),
   [RiScVersion.V5_1]: compileSchemaForVersion(RiScVersion.V5_1),
   [RiScVersion.V5_2]: compileSchemaForVersion(RiScVersion.V5_2),
+  [RiScVersion.V5_3]: compileSchemaForVersion(RiScVersion.V5_3),
+  [RiScVersion.V5_4]: compileSchemaForVersion(RiScVersion.V5_4),
 };
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -301,10 +307,14 @@ function executeMigration(
 ): [RiScDocument, MigrationStatus] {
   const version = doc.schemaVersion;
   switch (version) {
-    case RiScVersion.V5_2:
+    case RiScVersion.V5_4:
       throw new Error(
-        'Migration from V5_2 not added yet. As long as it is newest version the code should not reach here',
+        'Migration from V5_4 not added yet. As long as it is newest version the code should not reach here',
       );
+    case RiScVersion.V5_3:
+      return migrateFrom53To54(doc, status);
+    case RiScVersion.V5_2:
+      return migrateFrom52To53(doc, status);
     case RiScVersion.V5_1:
       return migrateFrom51To52(doc, status);
     case RiScVersion.V5_0:
@@ -816,4 +826,20 @@ export function migrateFrom51To52(
       migrationChanges52: changes52,
     },
   ];
+}
+
+/** 5.2 → 5.3: Add optional unencryptedMetadata.appliesTo. */
+export function migrateFrom52To53(
+  doc: RiSc5X,
+  status: MigrationStatus,
+): [RiSc5X, MigrationStatus] {
+  return [{ ...doc, schemaVersion: RiScVersion.V5_3 }, status];
+}
+
+/** 5.3 → 5.4: Add optional action comment field. */
+export function migrateFrom53To54(
+  doc: RiSc5X,
+  status: MigrationStatus,
+): [RiSc5X, MigrationStatus] {
+  return [{ ...doc, schemaVersion: RiScVersion.V5_4 }, status];
 }
