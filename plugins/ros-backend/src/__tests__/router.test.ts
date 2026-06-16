@@ -50,6 +50,12 @@ function mockGcpKmsService() {
 function mockInitRiScService() {
   return {
     getInitRiScDescriptors: jest.fn().mockResolvedValue([]),
+    fetchRiScTemplate: jest.fn().mockResolvedValue({
+      schemaVersion: '5.0',
+      title: 'Template',
+      scope: 'Scope',
+      scenarios: [],
+    }),
   } as any;
 }
 
@@ -283,6 +289,46 @@ describe('router', () => {
       expect(res.status).toBe(200);
       expect(initRiScService.getInitRiScDescriptors).toHaveBeenCalledWith(
         'gh-tok',
+      );
+    });
+  });
+
+  describe('GET /initrisc/:id', () => {
+    it('calls fetchRiScTemplate with id and token', async () => {
+      const initRiScService = mockInitRiScService();
+      const app = await createTestApp({ initRiScService });
+
+      const res = await request(app)
+        .get('/initrisc/web-app-api')
+        .set('GitHub-Access-Token', 'gh-tok');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual({
+        schemaVersion: '5.0',
+        title: 'Template',
+        scope: 'Scope',
+        scenarios: [],
+      });
+      expect(initRiScService.fetchRiScTemplate).toHaveBeenCalledWith(
+        'web-app-api',
+        'gh-tok',
+        undefined,
+      );
+    });
+
+    it('passes ref query param to fetchRiScTemplate', async () => {
+      const initRiScService = mockInitRiScService();
+      const app = await createTestApp({ initRiScService });
+
+      const res = await request(app)
+        .get('/initrisc/web-app-api?ref=add-scenarios')
+        .set('GitHub-Access-Token', 'gh-tok');
+
+      expect(res.status).toBe(200);
+      expect(initRiScService.fetchRiScTemplate).toHaveBeenCalledWith(
+        'web-app-api',
+        'gh-tok',
+        'add-scenarios',
       );
     });
   });

@@ -174,7 +174,7 @@ describe('useAuthenticatedFetch', () => {
         nativeRiScBackendFeatureFlag,
       );
       expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        'http://localhost:7000/api/ros/risc/org/repo/5.4/all',
+        'http://localhost:7000/api/risk-scorecard/risc/org/repo/5.4/all',
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({

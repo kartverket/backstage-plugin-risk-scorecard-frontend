@@ -185,15 +185,17 @@ export class InitRiScService {
   }
 
   /** Fetches a specific RiSc template from the template repo. */
-  private async fetchRiScTemplate(
+  async fetchRiScTemplate(
     id: string,
     githubToken: string,
+    ref?: string,
   ): Promise<RiSc5XTemplate> {
     const response: GithubContentResponse = await this.github.fetchFileContent(
       this.config.repoOwner,
       this.config.repoName,
       `initial-riscs/${id}.json`,
       githubToken,
+      ref,
     );
 
     if (response.status !== GithubStatus.Success || !response.data) {
