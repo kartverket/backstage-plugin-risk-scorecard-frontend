@@ -37,6 +37,10 @@ import {
   useSystemRiScsFeatureFlag,
 } from './featureFlags';
 
+function getRiskScorecardBackendBaseUrl(backendUrl: string): string {
+  return `${backendUrl}/api/risk-scorecard`;
+}
+
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
     useEntity().entity.metadata.annotations?.['backstage.io/view-url'].match(
@@ -101,6 +105,8 @@ export function useAuthenticatedFetch() {
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = configApi.getString('backend.baseUrl');
   const isNativeBackendEnabled = useNativeRiScBackendFeatureFlag();
+  const riskScorecardBackendBaseUrl =
+    getRiskScorecardBackendBaseUrl(backendUrl);
 
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
 
@@ -127,10 +133,10 @@ export function useAuthenticatedFetch() {
     return `${riScUri}/publish/${id}`;
   }
 
-  // TODO: Revisit discoveryApi.getBaseUrl('ros') when we are ready to validate
-  // native backend routing across deployments.
+  // TODO: Revisit discoveryApi.getBaseUrl('risk-scorecard') when we are ready
+  // to validate native backend routing across deployments.
   const nativeBackendUrls = buildNativeBackendUrls({
-    baseUrl: `${backendUrl}/api/risk-scorecard`,
+    baseUrl: riskScorecardBackendBaseUrl,
     owner: repoInformation.owner,
     repo: repoInformation.name,
     version: latestSupportedVersion,
@@ -483,6 +489,8 @@ export function useSystemRiScsForCurrentEntity(): RiScIndexState {
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
+  const riskScorecardBackendBaseUrl =
+    getRiskScorecardBackendBaseUrl(backendUrl);
   const entityRef = stringifyEntityRef(entity);
 
   const [state, setState] = useState<RiScIndexState>({
@@ -521,7 +529,7 @@ export function useSystemRiScsForCurrentEntity(): RiScIndexState {
         }
 
         return fetch(
-          `${backendUrl}/api/risk-scorecard/riscs?entityRef=${encodeURIComponent(
+          `${riskScorecardBackendBaseUrl}/riscs?entityRef=${encodeURIComponent(
             entityRef,
           )}`,
           {
