@@ -26,7 +26,7 @@ import {
 import { StatusBanner } from './StatusBanner.tsx';
 import { StatusBadge } from './StatusBadge.tsx';
 import { FeedbackLink } from './FeedbackLink.tsx';
-import { PredefinedScenariosApprovalTooltip } from '../../predefinedScenarios/PredefinedScenariosApprovalGate.tsx';
+import { PredefinedScenariosApprovalTooltip } from '../../predefinedScenarios/PredefinedScenariosApprovalTooltip.tsx';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {

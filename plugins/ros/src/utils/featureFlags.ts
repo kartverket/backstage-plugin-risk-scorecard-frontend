@@ -9,19 +9,19 @@ export const nativeRiScBackendFeatureFlag = 'native-risc-backend';
 export const predefinedScenariosFeatureFlag = 'test-predefined-scenarios';
 
 export const riScFeatureFlags: PluginFeatureFlagConfig[] = [
-  {
-    name: systemRiScsFeatureFlag,
-    description:
-      'Testing av system-RoS for Team SKVIS. Bruk på eget ansvar. UNNGÅ lagring av System-RoSer i åpne repoer.',
-  },
-  {
-    name: nativeRiScBackendFeatureFlag,
-    description: 'Testing av ny backend for RoS skrevet i typescript.',
-  },
+  // {
+  //   name: systemRiScsFeatureFlag,
+  //   description:
+  //     'Testing av system-RoS for Team SKVIS. Bruk på eget ansvar. UNNGÅ lagring av System-RoSer i åpne repoer.',
+  // },
+  // {
+  //   name: nativeRiScBackendFeatureFlag,
+  //   description: 'Testing av ny backend for RoS skrevet i typescript.',
+  // },
   {
     name: predefinedScenariosFeatureFlag,
     description:
-      'Testing av forhåndsdefinerte scenarioer fra initial-riscs-collection repoet. Skru på for å hente fra test-branch, skru av for å hente fra main.',
+      'Testing av forhåndsdefinerte scenarioer fra initial-riscs-collection repoet. Skru på for å hente fra PR-branch, skru av for å hente fra main.',
   },
 ];
 

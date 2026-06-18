@@ -20,9 +20,9 @@ export function buildPredefinedScenarios(
 
 export function hasAnyPredefinedScenario(
   riSc: RiScWithMetadata,
-  predefinedScenarioIds: string[],
+  predefinedScenarios: ScenarioDTO[],
 ): boolean {
-  const predefinedIds = new Set(predefinedScenarioIds);
+  const predefinedIds = new Set(predefinedScenarios.map(s => s.scenario.ID));
   return riSc.content.scenarios.some(scenario =>
     predefinedIds.has(scenario.ID),
   );

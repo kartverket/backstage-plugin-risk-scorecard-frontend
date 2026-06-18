@@ -11,10 +11,10 @@ import { buildNativeBackendUrls } from '../urls/backend.ts';
 import { useGithubRepositoryInformation } from '../utils/hooks.ts';
 import { latestSupportedVersion } from '../utils/constants.ts';
 
-const PREDEFINED_SCENARIOS_TEMPLATE_ID = 'web-app-api'; // Må endres til aktuell fil når vi vet det
-const PREDEFINED_SCENARIOS_SOURCE_TEST_REF = 'add-scenarios'; // Må endres til branchen når den kommer
+const PREDEFINED_SCENARIOS_TEMPLATE_ID = 'web-app-api';
+const PREDEFINED_SCENARIOS_SOURCE_TEST_REF = 'add-scenarios';
 
-const PREDEFINED_SCENARIO_IDS = ['xK9mP', 'mF6xQ', 'PDEF1']; // Må endres til ekte id'er.
+const PREDEFINED_SCENARIO_IDS = ['xK9mP', 'mF6xQ'];
 
 const PREDEFINED_SCENARIOS_QUERY_KEY = ['predefined-scenarios'] as const;
 
@@ -40,7 +40,6 @@ export function usePredefinedScenarios(
       PREDEFINED_SCENARIOS_QUERY_KEY,
       isTestPredefinedScenariosEnabled ? 'test' : 'main',
     ],
-    staleTime: 1000,
     retry: (count, error) => {
       if (
         error.message === 'Unexpected status 401' ||

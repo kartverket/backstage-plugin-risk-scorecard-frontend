@@ -27,6 +27,9 @@ export function PredefinedScenariosApprovalTooltip({
   );
 
   if (!predefinedScenarios) {
+    // This works while fetching the scenarios, or if it has failed, in neither case
+    // which you should be able to move on since we use the time of approval as an
+    // indication of these having been addressed. The error will be shown in the banner.
     return (
       <Tooltip title={t('rosStatus.predefinedScenariosRequired')} arrow>
         <span style={{ marginLeft: 'auto' }}>{children(true)}</span>
@@ -37,10 +40,7 @@ export function PredefinedScenariosApprovalTooltip({
   const blocked =
     predefinedScenarios.length > 0 &&
     !isDismissed &&
-    !hasAnyPredefinedScenario(
-      selectedRiSc,
-      predefinedScenarios.map(s => s.scenario.ID),
-    );
+    !hasAnyPredefinedScenario(selectedRiSc, predefinedScenarios);
 
   if (
     !blocked ||

@@ -4,7 +4,10 @@ import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useRiScs } from '../../contexts/RiScContext.tsx';
 import { useBackstageContext } from '../../contexts/BackstageContext.tsx';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
-import { buildPredefinedScenarios } from '../../utils/predefinedScenarios.ts';
+import {
+  buildPredefinedScenarios,
+  hasAnyPredefinedScenario,
+} from '../../utils/predefinedScenarios.ts';
 import { usePredefinedScenarios } from '../../hooks/usePredefinedScenarios.ts';
 import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
 import styles from './PredefinedScenariosBanner.module.css';
@@ -26,7 +29,7 @@ export function PredefinedScenariosBanner({
   );
   const isTestPredefinedScenariosEnabled = usePredefinedScenariosFeatureFlag();
   const {
-    data: predefinedScenarioTemplates,
+    data: predefinedScenarios,
     isError,
     isPending,
   } = usePredefinedScenarios(isTestPredefinedScenariosEnabled);
@@ -56,22 +59,15 @@ export function PredefinedScenariosBanner({
     );
   }
 
-  const existingIds = new Set(
-    selectedRiSc.content.scenarios.map(scenario => scenario.ID),
-  );
-  const missingTemplates = predefinedScenarioTemplates.filter(
-    template => !existingIds.has(template.scenario.ID),
-  );
-
-  if (missingTemplates.length === 0) {
+  if (hasAnyPredefinedScenario(selectedRiSc, predefinedScenarios)) {
     return null;
   }
+  const newScenarios = buildPredefinedScenarios(
+    predefinedScenarios,
+    profileInfo,
+  );
 
   function onAdd() {
-    const newScenarios = buildPredefinedScenarios(
-      missingTemplates,
-      profileInfo,
-    );
     updateRiSc(
       {
         ...selectedRiSc,
