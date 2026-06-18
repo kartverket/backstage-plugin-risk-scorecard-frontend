@@ -21,14 +21,15 @@ const storeDismissedRiScIds = (ids: string[]) => {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(ids));
 };
 
-export function usePredefinedScenariosBannerDismissal(riScId: string) {
+export function usePredefinedScenariosBannerDismissal(riScId?: string) {
   const [dismissedRiScIds, setDismissedRiScIds] = useState(() =>
     getDismissedRiScIds(),
   );
 
-  const isDismissed = dismissedRiScIds.includes(riScId);
+  const isDismissed = riScId !== undefined && dismissedRiScIds.includes(riScId);
 
   const dismiss = () => {
+    if (riScId === undefined) return;
     if (dismissedRiScIds.includes(riScId)) return;
     const updated = [...dismissedRiScIds, riScId];
     storeDismissedRiScIds(updated);

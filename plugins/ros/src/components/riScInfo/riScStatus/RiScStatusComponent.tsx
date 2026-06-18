@@ -51,11 +51,13 @@ const emptyDifferenceFetchState: DifferenceFetchState = {
 interface RiScStatusProps {
   selectedRiSc: RiScWithMetadata;
   publishRiScFn: () => void;
+  predefinedScenariosDismissed: boolean;
 }
 
 export function RiScStatusComponent({
   selectedRiSc,
   publishRiScFn,
+  predefinedScenariosDismissed,
 }: RiScStatusProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { fetchDifference } = useAuthenticatedFetch();
@@ -237,6 +239,7 @@ export function RiScStatusComponent({
                   <>
                     <PredefinedScenariosApprovalTooltip
                       selectedRiSc={selectedRiSc}
+                      isDismissed={predefinedScenariosDismissed}
                     >
                       {(isDisabled: boolean) => (
                         <Button

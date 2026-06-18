@@ -9,24 +9,24 @@ import {
   hasAnyPredefinedScenario,
 } from '../../utils/predefinedScenarios.ts';
 import { usePredefinedScenarios } from '../../hooks/usePredefinedScenarios.ts';
-import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
 import styles from './PredefinedScenariosBanner.module.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import { usePredefinedScenariosFeatureFlag } from '../../utils/featureFlags.ts';
 
 type PredefinedScenariosBannerProps = {
   selectedRiSc: RiScWithMetadata;
+  isDismissed: boolean;
+  dismiss: () => void;
 };
 
 export function PredefinedScenariosBanner({
   selectedRiSc,
+  isDismissed,
+  dismiss,
 }: PredefinedScenariosBannerProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { updateRiSc, updateStatus } = useRiScs();
   const { profileInfo } = useBackstageContext();
-  const { isDismissed, dismiss } = usePredefinedScenariosBannerDismissal(
-    selectedRiSc.id,
-  );
   const isTestPredefinedScenariosEnabled = usePredefinedScenariosFeatureFlag();
   const {
     data: predefinedScenarios,

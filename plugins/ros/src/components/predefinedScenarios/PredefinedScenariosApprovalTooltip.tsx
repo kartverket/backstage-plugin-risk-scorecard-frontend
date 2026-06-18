@@ -5,26 +5,31 @@ import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { RiScStatus, RiScWithMetadata } from '../../utils/types.ts';
 import { hasAnyPredefinedScenario } from '../../utils/predefinedScenarios.ts';
 import { usePredefinedScenariosFeatureFlag } from '../../utils/featureFlags';
-import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
 import { usePredefinedScenarios } from '../../hooks/usePredefinedScenarios.ts';
 
 type PredefinedScenariosApprovalTooltipProps = {
   selectedRiSc: RiScWithMetadata;
+  isDismissed: boolean;
   children: (isDisabled: boolean) => ReactNode;
 };
 
 export function PredefinedScenariosApprovalTooltip({
   selectedRiSc,
+  isDismissed,
   children,
 }: PredefinedScenariosApprovalTooltipProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  const { isDismissed } = usePredefinedScenariosBannerDismissal(
-    selectedRiSc.id,
-  );
   const isTestPredefinedScenariosEnabled = usePredefinedScenariosFeatureFlag();
   const { data: predefinedScenarios } = usePredefinedScenarios(
     isTestPredefinedScenariosEnabled,
   );
+
+  if (
+    selectedRiSc.status === RiScStatus.DeletionSentForApproval ||
+    selectedRiSc.status === RiScStatus.DeletionDraft
+  ) {
+    return children(false);
+  }
 
   if (!predefinedScenarios) {
     // This works while fetching the scenarios, or if it has failed, in neither case
@@ -42,11 +47,7 @@ export function PredefinedScenariosApprovalTooltip({
     !isDismissed &&
     !hasAnyPredefinedScenario(selectedRiSc, predefinedScenarios);
 
-  if (
-    !blocked ||
-    selectedRiSc.status === RiScStatus.DeletionSentForApproval ||
-    selectedRiSc.status === RiScStatus.DeletionDraft
-  ) {
+  if (!blocked) {
     return children(false);
   }
 
