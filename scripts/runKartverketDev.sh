@@ -50,5 +50,6 @@ step 4 "Checking dependency alignment"
 node "$cwd/scripts/checkKartverketDevDependencies.mjs"
 
 step 5 "Starting kartverket.dev with plugin link"
-echo "Running yarn dev --link $cwd"
-yarn dev --link "$cwd"
+linked_import_resolver="$cwd/scripts/linkedWorkspaceImportResolver.cjs"
+echo "Running yarn dev --link $cwd --require=$linked_import_resolver"
+yarn dev --link "$cwd" --require="$linked_import_resolver"
