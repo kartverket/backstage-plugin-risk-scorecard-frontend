@@ -17,7 +17,8 @@ import {
   DomainError,
   InvalidGcpAccessTokenError,
   InvalidGitHubAccessTokenError,
-  RepositoryAccessError,
+  RepositoryReadAccessError,
+  RepositoryWriteAccessError,
 } from './lib/errors';
 import type { RiScService } from './services/RiScService';
 import type { GcpKmsService } from './services/GcpKmsService';
@@ -175,11 +176,25 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
             `Invalid GitHub access token for ${context.owner}/${context.repo}`,
           );
         }
+        if (
+          e instanceof GitHubApiError &&
+          (e.status === 403 || e.status === 404)
+        ) {
+          throw new RepositoryReadAccessError(
+            `Repository unavailable or read access denied: ${context.owner}/${context.repo}`,
+          );
+        }
         throw e;
       }
 
+      if (!repositoryInfo.hasReadAccess) {
+        throw new RepositoryReadAccessError(
+          `Access denied: No read-access on ${context.owner}/${context.repo}`,
+        );
+      }
+
       if (context.access === 'write' && !repositoryInfo.hasWriteAccess) {
-        throw new RepositoryAccessError(
+        throw new RepositoryWriteAccessError(
           `Access denied: No write-access on ${context.owner}/${context.repo}`,
         );
       }
@@ -443,7 +458,12 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     '/initrisc/:id',
     asyncHandler(async (req, res) => {
       const { id } = req.params;
-      const { githubToken } = requireTokens(req, { github: true });
+      const { repoOwner, repoName } = initRiScService.templateRepo;
+      const githubToken = await requireValidGitHubToken(req, {
+        owner: repoOwner,
+        repo: repoName,
+        access: 'read',
+      });
       const ref = typeof req.query.ref === 'string' ? req.query.ref : undefined;
 
       const template = await initRiScService.fetchRiScTemplate(

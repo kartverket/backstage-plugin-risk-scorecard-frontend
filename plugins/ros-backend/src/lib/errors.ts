@@ -92,20 +92,20 @@ export class InvalidGitHubAccessTokenError extends DomainError {
   }
 }
 
-export class PermissionDeniedError extends DomainError {
+export class RepositoryReadAccessError extends DomainError {
   readonly httpStatus = 403;
-  readonly processingStatus = ProcessingStatus.NoWriteAccessToRepository;
+  readonly processingStatus = ProcessingStatus.NoReadAccessToRepository;
 
-  constructor(message = 'Permission denied') {
+  constructor(message = 'Repository read access denied') {
     super(message);
   }
 }
 
-export class RepositoryAccessError extends DomainError {
+export class RepositoryWriteAccessError extends DomainError {
   readonly httpStatus = 403;
   readonly processingStatus = ProcessingStatus.NoWriteAccessToRepository;
 
-  constructor(message = 'Repository access denied') {
+  constructor(message = 'Repository write access denied') {
     super(message);
   }
 }

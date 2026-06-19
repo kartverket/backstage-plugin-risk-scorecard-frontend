@@ -29,6 +29,7 @@ export const ProcessingStatus = {
   InvalidAccessTokens: 'InvalidAccessTokens',
   InvalidGcpAccessToken: 'InvalidGcpAccessToken',
   InvalidGitHubAccessToken: 'InvalidGitHubAccessToken',
+  NoReadAccessToRepository: 'NoReadAccessToRepository',
   NoWriteAccessToRepository: 'NoWriteAccessToRepository',
   AccessTokensValidationFailure: 'AccessTokensValidationFailure',
   FailedToFetchGcpProjectIds: 'FailedToFetchGcpProjectIds',

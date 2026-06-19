@@ -327,14 +327,18 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           });
         }
       },
-      loginRejected => {
+      (error, loginRejected) => {
         if (!gcpCryptoKeysFailed.current) {
+          const status =
+            error?.status ?? ProcessingStatus.ErrorWhenFetchingRiScs;
+          const translationContext = getTranslationContext(status);
+
           dispatch({
             type: 'SET_RESPONSE',
             response: {
-              status: ProcessingStatus.ErrorWhenFetchingRiScs,
+              status,
               statusMessage: withLoginRejected(
-                t('errorMessages.ErrorWhenFetchingRiScs'),
+                getTranslationKey('error', status, t, translationContext),
                 loginRejected,
                 t,
               ),
@@ -387,7 +391,8 @@ export function RiScProvider({ children }: { children: ReactNode }) {
 
   const getTranslationContext = useCallback(
     (status: ProcessingStatus) => {
-      return status === ProcessingStatus.ErrorWhenNoWriteAccessToRepository
+      return status === ProcessingStatus.NoReadAccessToRepository ||
+        status === ProcessingStatus.NoWriteAccessToRepository
         ? { owner: repoInfo.owner, name: repoInfo.name }
         : undefined;
     },

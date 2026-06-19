@@ -16,7 +16,13 @@ import {
   useGithubRepositoryInformation,
   useSystemRiScsForCurrentEntity,
 } from './hooks';
-import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
+import {
+  Action,
+  ProcessingStatus,
+  RiSc,
+  RiScWithMetadata,
+  Scenario,
+} from './types';
 import { nativeRiScBackendFeatureFlag } from './featureFlags';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
@@ -208,6 +214,34 @@ describe('useAuthenticatedFetch', () => {
       });
 
       expect(onSuccess).not.toHaveBeenCalled();
+    });
+
+    it('passes a structured backend error to the error callback', async () => {
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
+      const backendError = {
+        status: ProcessingStatus.NoReadAccessToRepository,
+        message: 'Repository unavailable or read access denied',
+      };
+      mockFetchApi.fetch.mockResolvedValue({
+        ok: false,
+        status: 403,
+        json: async () => backendError,
+      });
+
+      const { result } = renderHook(() => useAuthenticatedFetch(), { wrapper });
+      const onSuccess = jest.fn();
+      const onError = jest.fn();
+
+      await act(async () => {
+        await result.current.fetchRiScs(onSuccess, onError);
+      });
+
+      expect(onSuccess).not.toHaveBeenCalled();
+      expect(onError).toHaveBeenCalledWith(backendError, false);
     });
 
     it('onSuccess is not called and no error is thrown when google API getAccessTokens fails', async () => {

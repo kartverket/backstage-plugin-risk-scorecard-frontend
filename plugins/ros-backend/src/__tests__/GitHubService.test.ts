@@ -519,6 +519,7 @@ describe('GitHubService', () => {
 
       const result = await service.fetchRepositoryInfo(owner, repo, token);
       expect(result.defaultBranch).toBe('main');
+      expect(result.hasReadAccess).toBe(true);
       expect(result.hasWriteAccess).toBe(true);
     });
 
@@ -537,6 +538,26 @@ describe('GitHubService', () => {
       );
 
       const result = await service.fetchRepositoryInfo(owner, repo, token);
+      expect(result.hasReadAccess).toBe(true);
+      expect(result.hasWriteAccess).toBe(false);
+    });
+
+    it('returns no read access when pull is false', async () => {
+      mockFetch.mockResolvedValue(
+        mockResponse({
+          default_branch: 'main',
+          permissions: {
+            admin: false,
+            maintain: false,
+            push: false,
+            triage: false,
+            pull: false,
+          },
+        }),
+      );
+
+      const result = await service.fetchRepositoryInfo(owner, repo, token);
+      expect(result.hasReadAccess).toBe(false);
       expect(result.hasWriteAccess).toBe(false);
     });
 

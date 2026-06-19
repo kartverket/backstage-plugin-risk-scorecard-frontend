@@ -723,6 +723,7 @@ describe('RiScService', () => {
       github.fetchBranchHeadSha.mockResolvedValue('branch-sha');
       github.fetchRepositoryInfo.mockResolvedValue({
         defaultBranch: 'main',
+        hasReadAccess: true,
         hasWriteAccess: true,
       });
       github.createPullRequest.mockResolvedValue(makePR('risc-pub01', 10));

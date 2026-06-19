@@ -285,10 +285,10 @@ export function useAuthenticatedFetch() {
 
   function fetchRiScs(
     onSuccess: (response: RiScContentResultDTO[]) => void,
-    onError?: (error: any, loginRejected: boolean) => void,
+    onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
     if (isDevelopment()) {
-      fullyAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
+      fullyAuthenticatedFetch<RiScContentResultDTO[], ProcessRiScResultDTO>(
         isNativeBackendEnabled
           ? nativeBackendUrls.uriToFetchAllRiScs
           : uriToFetchAllRiScs,
@@ -299,7 +299,7 @@ export function useAuthenticatedFetch() {
         },
       );
     } else {
-      googleAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
+      googleAuthenticatedFetch<RiScContentResultDTO[], ProcessRiScResultDTO>(
         isNativeBackendEnabled
           ? nativeBackendUrls.uriToFetchAllRiScs
           : uriToFetchAllRiScs,

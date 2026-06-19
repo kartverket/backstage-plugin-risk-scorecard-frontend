@@ -53,6 +53,7 @@ function mockGitHubService() {
   return {
     fetchRepositoryInfo: jest.fn().mockResolvedValue({
       defaultBranch: 'main',
+      hasReadAccess: true,
       hasWriteAccess: true,
     }),
   } as any;
@@ -352,6 +353,26 @@ describe('router', () => {
         'gh-tok',
       );
     });
+
+    it('returns the read-access status when the repository is inaccessible', async () => {
+      const riScService = mockRiScService();
+      const gitHubService = mockGitHubService();
+      gitHubService.fetchRepositoryInfo.mockResolvedValue({
+        defaultBranch: 'main',
+        hasReadAccess: false,
+        hasWriteAccess: false,
+      });
+      const app = await createTestApp({ riScService, gitHubService });
+
+      const res = await request(app)
+        .get('/risc/owner/repo/5.4/all')
+        .set('GCP-Access-Token', 'gcp-tok')
+        .set('GitHub-Access-Token', 'gh-tok');
+
+      expect(res.status).toBe(403);
+      expect(res.body.status).toBe(ProcessingStatus.NoReadAccessToRepository);
+      expect(riScService.fetchAllRiScs).not.toHaveBeenCalled();
+    });
   });
 
   describe('POST /risc/:owner/:repo', () => {
@@ -386,6 +407,7 @@ describe('router', () => {
       const gitHubService = mockGitHubService();
       gitHubService.fetchRepositoryInfo.mockResolvedValue({
         defaultBranch: 'main',
+        hasReadAccess: true,
         hasWriteAccess: false,
       });
       const app = await createTestApp({ riScService, gitHubService });
@@ -398,6 +420,27 @@ describe('router', () => {
 
       expect(res.status).toBe(403);
       expect(res.body.status).toBe(ProcessingStatus.NoWriteAccessToRepository);
+      expect(riScService.createRiSc).not.toHaveBeenCalled();
+    });
+
+    it('returns 403 when GitHub token lacks read access', async () => {
+      const riScService = mockRiScService();
+      const gitHubService = mockGitHubService();
+      gitHubService.fetchRepositoryInfo.mockResolvedValue({
+        defaultBranch: 'main',
+        hasReadAccess: false,
+        hasWriteAccess: false,
+      });
+      const app = await createTestApp({ riScService, gitHubService });
+
+      const res = await request(app)
+        .post('/risc/owner/repo')
+        .set('GCP-Access-Token', 'gcp-tok')
+        .set('GitHub-Access-Token', 'gh-tok')
+        .send({ riSc: '{}', schemaVersion: '5.4', sopsConfig: {} });
+
+      expect(res.status).toBe(403);
+      expect(res.body.status).toBe(ProcessingStatus.NoReadAccessToRepository);
       expect(riScService.createRiSc).not.toHaveBeenCalled();
     });
 
@@ -419,6 +462,31 @@ describe('router', () => {
       expect(res.body.status).toBe(ProcessingStatus.InvalidGitHubAccessToken);
       expect(riScService.createRiSc).not.toHaveBeenCalled();
     });
+
+    it.each([403, 404])(
+      'returns 403 when GitHub repository lookup fails with %s',
+      async githubStatus => {
+        const riScService = mockRiScService();
+        const gitHubService = mockGitHubService();
+        gitHubService.fetchRepositoryInfo.mockRejectedValue(
+          new GitHubApiError('Repository lookup failed', githubStatus),
+        );
+        const app = await createTestApp({ riScService, gitHubService });
+
+        const res = await request(app)
+          .post('/risc/owner/repo')
+          .set('GCP-Access-Token', 'gcp-tok')
+          .set('GitHub-Access-Token', 'gh-tok')
+          .send({ riSc: '{}', schemaVersion: '5.4', sopsConfig: {} });
+
+        expect(res.status).toBe(403);
+        expect(res.body.status).toBe(ProcessingStatus.NoReadAccessToRepository);
+        expect(res.body.message).toBe(
+          'Repository unavailable or read access denied: owner/repo',
+        );
+        expect(riScService.createRiSc).not.toHaveBeenCalled();
+      },
+    );
 
     it('returns 401 when GCP token validation fails', async () => {
       const riScService = mockRiScService();

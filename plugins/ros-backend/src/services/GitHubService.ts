@@ -39,6 +39,7 @@ export interface GithubContentResponse {
 /** Repository info returned by fetchRepositoryInfo. */
 export interface RepositoryInfo {
   defaultBranch: string;
+  hasReadAccess: boolean;
   hasWriteAccess: boolean;
 }
 
@@ -504,6 +505,7 @@ export class GitHubService {
 
     return {
       defaultBranch: dto.default_branch,
+      hasReadAccess: dto.permissions.pull,
       hasWriteAccess: dto.permissions.push,
     };
   }
