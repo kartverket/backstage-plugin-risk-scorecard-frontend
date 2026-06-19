@@ -328,6 +328,22 @@ export async function createRouter(options: RouterOptions): Promise<Router> {
     }),
   );
 
+  router.get(
+    '/initrisc/:id',
+    asyncHandler(async (req, res) => {
+      const { id } = req.params;
+      const { githubToken } = requireTokens(req, { github: true });
+      const ref = typeof req.query.ref === 'string' ? req.query.ref : undefined;
+
+      const template = await initRiScService.fetchRiScTemplate(
+        id,
+        githubToken,
+        ref,
+      );
+      res.json(template);
+    }),
+  );
+
   // ─── Slack Feedback ───────────────────────────────────────────────────────
 
   router.post(

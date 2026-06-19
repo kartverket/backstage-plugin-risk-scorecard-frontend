@@ -26,6 +26,7 @@ import {
 import { StatusBanner } from './StatusBanner.tsx';
 import { StatusBadge } from './StatusBadge.tsx';
 import { FeedbackLink } from './FeedbackLink.tsx';
+import { PredefinedScenariosApprovalTooltip } from '../../predefinedScenarios/PredefinedScenariosApprovalTooltip.tsx';
 
 const emptyDifferenceFetchState: DifferenceFetchState = {
   differenceState: {
@@ -50,11 +51,13 @@ const emptyDifferenceFetchState: DifferenceFetchState = {
 interface RiScStatusProps {
   selectedRiSc: RiScWithMetadata;
   publishRiScFn: () => void;
+  predefinedScenariosDismissed: boolean;
 }
 
 export function RiScStatusComponent({
   selectedRiSc,
   publishRiScFn,
+  predefinedScenariosDismissed,
 }: RiScStatusProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { fetchDifference } = useAuthenticatedFetch();
@@ -234,21 +237,29 @@ export function RiScStatusComponent({
                 {(status === RiScStatusEnum.DRAFT ||
                   status === RiScStatusEnum.DELETION_DRAFT) && (
                   <>
-                    <Button
-                      variant="primary"
-                      size="medium"
-                      onClick={handleOpenPublishRiScDialog}
-                      style={{
-                        display: 'block',
-                        marginLeft: 'auto',
-                        fontSize: '14px',
-                      }}
+                    <PredefinedScenariosApprovalTooltip
+                      selectedRiSc={selectedRiSc}
+                      isDismissed={predefinedScenariosDismissed}
                     >
-                      {status === RiScStatusEnum.DRAFT &&
-                        t('rosStatus.approveButtonUpdate')}
-                      {status === RiScStatusEnum.DELETION_DRAFT &&
-                        t('rosStatus.approveButtonDelete')}
-                    </Button>
+                      {(isDisabled: boolean) => (
+                        <Button
+                          variant="primary"
+                          size="medium"
+                          onClick={handleOpenPublishRiScDialog}
+                          isDisabled={isDisabled}
+                          style={{
+                            display: 'block',
+                            marginLeft: 'auto',
+                            fontSize: '14px',
+                          }}
+                        >
+                          {status === RiScStatusEnum.DRAFT &&
+                            t('rosStatus.approveButtonUpdate')}
+                          {status === RiScStatusEnum.DELETION_DRAFT &&
+                            t('rosStatus.approveButtonDelete')}
+                        </Button>
+                      )}
+                    </PredefinedScenariosApprovalTooltip>
                     <RiScPublishDialog
                       openDialog={publishRiScDialogIsOpen}
                       isDeletion={status === RiScStatusEnum.DELETION_DRAFT}

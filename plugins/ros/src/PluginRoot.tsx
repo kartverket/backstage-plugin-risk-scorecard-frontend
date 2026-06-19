@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import { useMemo } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -23,6 +24,14 @@ const cache = createCache({
   insertionPoint: emotionInsertionPoint,
 });
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+});
+
 function MuiThemeBridge({ children }: { children: React.ReactNode }) {
   const mode = useBackstageThemeMode();
   const theme = useMemo(() => createTheme({ palette: { mode } }), [mode]);
@@ -36,15 +45,17 @@ function ProvidedPlugin() {
   return (
     <CacheProvider value={cache}>
       <MuiThemeBridge>
-        <BackstageContextProvider>
-          <RiScProvider key={entityKey}>
-            <DefaultRiScTypesProvider>
-              <ScenarioProvider>
-                <RiScPlugin />
-              </ScenarioProvider>
-            </DefaultRiScTypesProvider>
-          </RiScProvider>
-        </BackstageContextProvider>
+        <QueryClientProvider client={queryClient}>
+          <BackstageContextProvider>
+            <RiScProvider key={entityKey}>
+              <DefaultRiScTypesProvider>
+                <ScenarioProvider>
+                  <RiScPlugin />
+                </ScenarioProvider>
+              </DefaultRiScTypesProvider>
+            </RiScProvider>
+          </BackstageContextProvider>
+        </QueryClientProvider>
       </MuiThemeBridge>
     </CacheProvider>
   );

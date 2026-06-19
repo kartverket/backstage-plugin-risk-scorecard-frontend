@@ -130,7 +130,7 @@ export function useAuthenticatedFetch() {
   // TODO: Revisit discoveryApi.getBaseUrl('ros') when we are ready to validate
   // native backend routing across deployments.
   const nativeBackendUrls = buildNativeBackendUrls({
-    baseUrl: `${backendUrl}/api/ros`,
+    baseUrl: `${backendUrl}/api/risk-scorecard`,
     owner: repoInformation.owner,
     repo: repoInformation.name,
     version: latestSupportedVersion,

@@ -24,6 +24,8 @@ import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
 import { ErrorState } from '../riScInfo/ErrorState.tsx';
 import { LockedRiScView } from '../riScInfo/LockedRiScView.tsx';
 import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
+import { PredefinedScenariosBanner } from '../predefinedScenarios/PredefinedScenariosBanner.tsx';
+import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -65,6 +67,11 @@ export function RiScPlugin() {
     failedToFetchGcpCryptoKeys,
     allRiScsFailedDecryption,
   } = useRiScs();
+
+  const {
+    isDismissed: predefinedScenariosDismissed,
+    dismiss: dismissPredefinedScenarios,
+  } = usePredefinedScenariosBannerDismissal(selectedRiSc?.id);
 
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -198,6 +205,11 @@ export function RiScPlugin() {
 
                     <Grid size={8}>
                       <Flex gap="24px" direction="column">
+                        <PredefinedScenariosBanner
+                          selectedRiSc={selectedRiSc}
+                          isDismissed={predefinedScenariosDismissed}
+                          dismiss={dismissPredefinedScenarios}
+                        />
                         <RiScDescriptionCard
                           riScWithMetadata={selectedRiSc}
                           edit={openEditRiScDialog}
@@ -211,6 +223,9 @@ export function RiScPlugin() {
                         <RiScStatusComponent
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
+                          predefinedScenariosDismissed={
+                            predefinedScenariosDismissed
+                          }
                         />
                         <RiskMatrix riScWithMetadata={selectedRiSc} />
                         <ThreatActorsAndVulnerabilitiesCard

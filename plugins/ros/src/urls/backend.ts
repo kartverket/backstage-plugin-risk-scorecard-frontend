@@ -25,6 +25,7 @@ export type RiScBackendUrls = {
   uriToPublishRiSc: (id: string) => string;
   uriToFetchGcpCryptoKeys: string;
   uriToFetchDefaultRiScDescriptors: string;
+  uriToFetchInitRiScTemplate: (id: string, ref?: string) => string;
 };
 
 type BuildRiScBackendUrlsOptions = {
@@ -52,5 +53,7 @@ export function buildNativeBackendUrls({
     uriToPublishRiSc: (id: string) => `${riScUri}/publish/${id}`,
     uriToFetchGcpCryptoKeys: `${baseUrl}/google/gcpCryptoKeys`,
     uriToFetchDefaultRiScDescriptors: `${baseUrl}/initrisc`,
+    uriToFetchInitRiScTemplate: (id: string, ref?: string) =>
+      `${baseUrl}/initrisc/${id}${ref ? `?ref=${encodeURIComponent(ref)}` : ''}`,
   };
 }
