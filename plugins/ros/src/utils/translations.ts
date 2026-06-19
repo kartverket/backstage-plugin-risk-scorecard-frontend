@@ -1129,7 +1129,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'predefinedScenarios.title':
             'Nye obligatoriske scenarioer tilgjengelig',
           'predefinedScenarios.description':
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec suscipit auctor dui, at maximus nisl. Sed in odio quis enim commodo efficitur. Donec eget ligula ac quam efficitur varius. Donec eget ligula ac quam efficitur varius.',
+            'Legg til nye obligatoriske risikoscenarioer og tiltak. Dette vil kreve ny godkjenning.',
           'predefinedScenarios.addButton': 'Legg til obligatoriske scenarioer',
           'predefinedScenarios.ignoreButton': 'Ignorer',
           'predefinedScenarios.ignoreDialog.title':
