@@ -12,11 +12,14 @@ import {
   migrateFrom42To50,
   migrateFrom50To51,
   migrateFrom51To52,
+  migrateFrom52To53,
+  migrateFrom53To54,
 } from '../services/SchemaService';
-import type {
-  MigrationStatus,
-  RiScDocument,
-  RiSc5X,
+import {
+  latestSupportedVersion,
+  type MigrationStatus,
+  type RiScDocument,
+  type RiSc5X,
 } from '@kartverket/ros-common';
 
 function loadFixture(name: string): string {
@@ -122,6 +125,83 @@ scenarios: []`;
     expect(result.valid).toBe(true);
   });
 
+  it('validates v5.3 with unencryptedMetadata appliesTo', () => {
+    const result = validate(
+      JSON.stringify({
+        schemaVersion: '5.3',
+        title: 'T',
+        scope: 'S',
+        unencryptedMetadata: {
+          appliesTo: [
+            'backstage:component:default/service-a',
+            'backstage:component:default/service-b',
+          ],
+        },
+        scenarios: [],
+      }),
+      '5.3',
+    );
+
+    expect(result.valid).toBe(true);
+  });
+
+  it('rejects duplicate v5.3 appliesTo entries', () => {
+    const result = validate(
+      JSON.stringify({
+        schemaVersion: '5.3',
+        title: 'T',
+        scope: 'S',
+        unencryptedMetadata: {
+          appliesTo: [
+            'backstage:component:default/service-a',
+            'backstage:component:default/service-a',
+          ],
+        },
+        scenarios: [],
+      }),
+      '5.3',
+    );
+
+    expect(result.valid).toBe(false);
+  });
+
+  it('validates v5.4 action comments', () => {
+    const result = validate(
+      JSON.stringify({
+        schemaVersion: '5.4',
+        title: 'T',
+        scope: 'S',
+        scenarios: [
+          {
+            title: 'Scenario',
+            scenario: {
+              ID: 'scen1',
+              description: 'Description',
+              threatActors: [],
+              vulnerabilities: [],
+              risk: { probability: 1, consequence: 8000 },
+              remainingRisk: { probability: 0.05, consequence: 8000 },
+              actions: [
+                {
+                  title: 'Action',
+                  action: {
+                    ID: 'act01',
+                    description: 'Description',
+                    status: 'Not OK',
+                    comment: 'Needs follow-up',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      }),
+      '5.4',
+    );
+
+    expect(result.valid).toBe(true);
+  });
+
   it('returns error for unknown schema version', () => {
     const result = validate('{"schemaVersion": "1.0"}', '99.0');
     expect(result.valid).toBe(false);
@@ -159,20 +239,16 @@ describe('migrateFrom33To40', () => {
     const doc = JSON.parse(loadFixture('3.3.json'));
     const [migrated, _] = migrateFrom33To40(doc, emptyStatus());
 
-    const vulns = migrated.scenarios[0].scenario.vulnerabilities;
-
-    // User repudiation -> Unmonitored use
-    // Compromised admin user + Escalation of rights -> Unauthorized access (deduped)
-    // Disclosed secret -> Information leak (deduped with existing)
-    // Denial of service -> Excessive use
-    // Misconfiguration stays
-    expect(vulns).toContain('Unmonitored use');
-    expect(vulns).toContain('Unauthorized access');
-    expect(vulns).toContain('Information leak');
-    expect(vulns).toContain('Excessive use');
-    expect(vulns).toContain('Misconfiguration');
-    expect(vulns).not.toContain('User repudiation');
-    expect(vulns).not.toContain('Compromised admin user');
+    expect(migrated.scenarios[0].scenario.vulnerabilities).toEqual([
+      'Unmonitored use',
+      'Unauthorized access',
+      'Information leak',
+      'Excessive use',
+      'Misconfiguration',
+    ]);
+    expect(migrated.scenarios[1].scenario.vulnerabilities).toEqual([
+      'Misconfiguration',
+    ]);
   });
 
   it('removes owner and deadline from actions', () => {
@@ -199,16 +275,45 @@ describe('migrateFrom33To40', () => {
     const doc = JSON.parse(loadFixture('3.3.json'));
     const [_, status] = migrateFrom33To40(doc, emptyStatus());
 
-    expect(status.migrationChanges40).toBeDefined();
-    expect(status.migrationChanges40!.scenarios.length).toBe(1);
-
-    const changed = status.migrationChanges40!.scenarios[0];
-    expect(changed.id).toBe('14Kap');
-    expect(changed.removedExistingActions).toBe('Ddos protection. ');
-    expect(changed.changedActions.length).toBe(1);
-    expect(changed.changedActions[0].removedOwner).toBe('Kåre');
-    expect(changed.changedActions[0].removedDeadline).toBe('2024-06-12');
-    expect(changed.changedVulnerabilities.length).toBe(5);
+    expect(status.migrationChanges40).toEqual({
+      scenarios: [
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '14Kap',
+          removedExistingActions: 'Ddos protection. ',
+          changedVulnerabilities: [
+            {
+              oldValue: 'User repudiation',
+              newValue: 'Unmonitored use',
+            },
+            {
+              oldValue: 'Compromised admin user',
+              newValue: 'Unauthorized access',
+            },
+            {
+              oldValue: 'Escalation of rights',
+              newValue: 'Unauthorized access',
+            },
+            {
+              oldValue: 'Disclosed secret',
+              newValue: 'Information leak',
+            },
+            {
+              oldValue: 'Denial of service',
+              newValue: 'Excessive use',
+            },
+          ],
+          changedActions: [
+            {
+              title: 'Innlogging',
+              id: 'w100Q',
+              removedOwner: 'Kåre',
+              removedDeadline: '2024-06-12',
+            },
+          ],
+        },
+      ],
+    });
   });
 
   it('tracks action-only migration changes', () => {
@@ -299,21 +404,49 @@ describe('migrateFrom40To41', () => {
     const doc = load40FixtureWithKnownRiskValues();
     const [_, status] = migrateFrom40To41(doc, emptyStatus());
 
-    expect(status.migrationChanges41).toBeDefined();
-    expect(status.migrationChanges41!.scenarios.length).toBe(3);
-
-    const s1 = status.migrationChanges41!.scenarios[0];
-    expect(s1.changedRiskProbability).toEqual({
-      oldValue: 0.1,
-      newValue: 0.05,
-    });
-    expect(s1.changedRiskConsequence).toEqual({
-      oldValue: 30000,
-      newValue: 160000,
+    expect(status.migrationChanges41).toEqual({
+      scenarios: [
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '14Kap',
+          changedRiskProbability: { oldValue: 0.1, newValue: 0.05 },
+          changedRiskConsequence: { oldValue: 30000, newValue: 160000 },
+          changedRemainingRiskProbability: { oldValue: 0.01, newValue: 0.0025 },
+          changedRemainingRiskConsequence: { oldValue: 1000, newValue: 8000 },
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '25FcD',
+          changedRiskProbability: { oldValue: 50, newValue: 20 },
+          changedRiskConsequence: {
+            oldValue: 30000000,
+            newValue: 64000000,
+          },
+          changedRemainingRiskProbability: null,
+          changedRemainingRiskConsequence: {
+            oldValue: 1000000,
+            newValue: 3200000,
+          },
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '2dsFd',
+          changedRiskProbability: { oldValue: 300, newValue: 400 },
+          changedRiskConsequence: {
+            oldValue: 1000000000,
+            newValue: 1280000000,
+          },
+          changedRemainingRiskProbability: null,
+          changedRemainingRiskConsequence: {
+            oldValue: 1000000,
+            newValue: 3200000,
+          },
+        },
+      ],
     });
   });
 
-  it('throws when a risk value has no 4.0 to 4.1 mapping', () => {
+  it('throws when a 4.0 risk value is outside the supported migration scale', () => {
     const doc = JSON.parse(loadFixture('4.0.json'));
 
     expect(() => migrateFrom40To41(doc, emptyStatus())).toThrow(
@@ -347,10 +480,31 @@ describe('migrateFrom41To42', () => {
 
   it('omits lastUpdated when no lastPublished', () => {
     const doc = JSON.parse(loadFixture('4.1.json'));
-    const [migrated, _] = migrateFrom41To42(doc, null, emptyStatus());
+    const [migrated, status] = migrateFrom41To42(doc, null, emptyStatus());
 
-    const action = migrated.scenarios[0].scenario.actions[0].action;
-    expect('lastUpdated' in action).toBe(false);
+    for (const sw of migrated.scenarios) {
+      const action = sw.scenario.actions[0].action;
+      expect('lastUpdated' in action).toBe(false);
+    }
+    expect(status.migrationChanges42).toEqual({
+      scenarios: [
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '14Kap',
+          changedActions: [{ title: '', id: 'w100Q' }],
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '25FcD',
+          changedActions: [{ title: '', id: 'w100Q' }],
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '2dsFd',
+          changedActions: [{ title: '', id: 'w100Q' }],
+        },
+      ],
+    });
   });
 
   it('handles no actions', () => {
@@ -365,11 +519,43 @@ describe('migrateFrom41To42', () => {
     const doc = JSON.parse(loadFixture('4.1.json'));
     const [_, status] = migrateFrom41To42(doc, lastPublished, emptyStatus());
 
-    expect(status.migrationChanges42).toBeDefined();
-    expect(status.migrationChanges42!.scenarios.length).toBe(3);
-    expect(
-      status.migrationChanges42!.scenarios[0].changedActions[0].lastUpdated,
-    ).toBe('2025-07-09T11:28:14.801Z');
+    expect(status.migrationChanges42).toEqual({
+      scenarios: [
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '14Kap',
+          changedActions: [
+            {
+              title: '',
+              id: 'w100Q',
+              lastUpdated: '2025-07-09T11:28:14.801Z',
+            },
+          ],
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '25FcD',
+          changedActions: [
+            {
+              title: '',
+              id: 'w100Q',
+              lastUpdated: '2025-07-09T11:28:14.801Z',
+            },
+          ],
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '2dsFd',
+          changedActions: [
+            {
+              title: '',
+              id: 'w100Q',
+              lastUpdated: '2025-07-09T11:28:14.801Z',
+            },
+          ],
+        },
+      ],
+    });
   });
 });
 
@@ -408,8 +594,59 @@ describe('migrateFrom42To50', () => {
     const doc = JSON.parse(loadFixture('4.2.json'));
     const [_, status] = migrateFrom42To50(doc, emptyStatus());
 
-    expect(status.migrationChanges50).toBeDefined();
-    expect(status.migrationChanges50!.scenarios.length).toBeGreaterThan(0);
+    expect(status.migrationChanges50).toEqual({
+      scenarios: [
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '14Kap',
+          changedActionStatus: [
+            { oldValue: 'Not started', newValue: 'Not OK' },
+          ],
+          changedActions: [
+            {
+              title: '',
+              id: 'w100Q',
+              changedActionStatus: {
+                oldValue: 'Not started',
+                newValue: 'Not OK',
+              },
+            },
+          ],
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '25FcD',
+          changedActionStatus: [
+            { oldValue: 'Not started', newValue: 'Not OK' },
+          ],
+          changedActions: [
+            {
+              title: '',
+              id: 'w100Q',
+              changedActionStatus: {
+                oldValue: 'Not started',
+                newValue: 'Not OK',
+              },
+            },
+          ],
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '2dsFd',
+          changedActionStatus: [{ oldValue: 'Completed', newValue: 'OK' }],
+          changedActions: [
+            {
+              title: '',
+              id: 'w100Q',
+              changedActionStatus: {
+                oldValue: 'Completed',
+                newValue: 'OK',
+              },
+            },
+          ],
+        },
+      ],
+    });
   });
 });
 
@@ -431,8 +668,25 @@ describe('migrateFrom50To51', () => {
     const doc = JSON.parse(loadFixture('5.0.json'));
     const [_, status] = migrateFrom50To51(doc, emptyStatus());
 
-    expect(status.migrationChanges51).toBeDefined();
-    expect(status.migrationChanges51!.scenarios.length).toBe(3);
+    expect(status.migrationChanges51).toEqual({
+      scenarios: [
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '14Kap',
+          changedActions: [{ title: '', id: 'w100Q', lastUpdatedBy: '' }],
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '25FcD',
+          changedActions: [{ title: '', id: 'w100Q', lastUpdatedBy: '' }],
+        },
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '2dsFd',
+          changedActions: [{ title: '', id: 'w100Q', lastUpdatedBy: '' }],
+        },
+      ],
+    });
   });
 });
 
@@ -478,28 +732,214 @@ describe('migrateFrom51To52', () => {
   });
 });
 
+// ─── Migration: 5.2 → 5.3 ─────────────────────────────────────────────────────
+
+describe('migrateFrom52To53', () => {
+  it('only bumps schema version to 5.3', () => {
+    const doc: RiSc5X = {
+      schemaVersion: '5.2',
+      title: 'Test',
+      scope: 'Test',
+      scenarios: [],
+    };
+    const status = emptyStatus();
+
+    const [migrated, migratedStatus] = migrateFrom52To53(doc, status);
+
+    expect(migrated.schemaVersion).toBe('5.3');
+    expect({ ...migrated, schemaVersion: '5.2' }).toEqual(doc);
+    expect(migratedStatus).toBe(status);
+  });
+});
+
+// ─── Migration: 5.3 → 5.4 ─────────────────────────────────────────────────────
+
+describe('migrateFrom53To54', () => {
+  it('only bumps schema version to 5.4', () => {
+    const doc: RiSc5X = {
+      schemaVersion: '5.3',
+      title: 'Test',
+      scope: 'Test',
+      unencryptedMetadata: {
+        appliesTo: ['backstage:component:default/service-a'],
+      },
+      scenarios: [],
+    };
+    const status = emptyStatus();
+
+    const [migrated, migratedStatus] = migrateFrom53To54(doc, status);
+
+    expect(migrated.schemaVersion).toBe('5.4');
+    expect({ ...migrated, schemaVersion: '5.3' }).toEqual(doc);
+    expect(migratedStatus).toBe(status);
+  });
+});
+
 // ─── Full migration chain ──────────────────────────────────────────────────────
 
 describe('migrate (full chain)', () => {
-  it('migrates 3.2 all the way to 5.2', () => {
+  it('migrates 3.2 all the way to the latest supported version', () => {
     const doc = JSON.parse(loadFixture('3.2.json'));
     const lastPublished = {
       dateTime: '2025-07-09T11:28:14.801Z',
       numberOfCommits: 3,
     };
 
-    const [migrated, status] = migrate(doc, lastPublished, '5.2');
+    const [migrated, status] = migrate(doc, lastPublished);
 
-    expect(migrated.schemaVersion).toBe('5.2');
-    expect(status.migrationChanges).toBe(true);
-    expect(status.migrationRequiresNewApproval).toBe(true);
-    expect(status.migrationVersions.fromVersion).toBe('3.2');
-    expect(status.migrationVersions.toVersion).toBe('5.2');
+    expect(migrated).toEqual({
+      schemaVersion: latestSupportedVersion,
+      title: 'Transformasjon',
+      scope: 'Sikkerhet av backend.',
+      scenarios: [
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          scenario: {
+            ID: '14Kap',
+            description:
+              'Ondsinnet bruer ønsker å ta ned løsningen for å lage kaos hos kartveket.',
+            threatActors: ['Organised crime'],
+            vulnerabilities: ['Input tampering', 'Excessive use'],
+            risk: {
+              summary: '',
+              probability: 1,
+              consequence: 8000,
+            },
+            actions: [
+              {
+                title: 'Innlogging',
+                action: {
+                  ID: 'w100Q',
+                  description: 'Innlogging. ',
+                  status: 'Not OK',
+                  lastUpdated: '2025-07-09T11:28:14.801Z',
+                  lastUpdatedBy: '',
+                },
+              },
+            ],
+            remainingRisk: {
+              summary: '',
+              probability: 0.05,
+              consequence: 8000,
+            },
+          },
+        },
+      ],
+    });
 
-    // Changes should be tracked for various versions
-    expect(status.migrationChanges40).toBeDefined();
-    expect(status.migrationChanges41).toBeDefined();
-    expect(status.migrationChanges52).toBeDefined();
+    expect(status).toEqual({
+      migrationChanges: true,
+      migrationRequiresNewApproval: true,
+      migrationVersions: {
+        fromVersion: '3.2',
+        toVersion: latestSupportedVersion,
+      },
+      migrationChanges40: {
+        scenarios: [
+          {
+            title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+            id: '14Kap',
+            removedExistingActions: 'Ddos protection. ',
+            changedVulnerabilities: [
+              {
+                oldValue: 'Denial of service',
+                newValue: 'Excessive use',
+              },
+            ],
+            changedActions: [
+              {
+                title: 'Innlogging',
+                id: 'w100Q',
+                removedOwner: 'Kåre',
+                removedDeadline: '2024-06-12',
+              },
+            ],
+          },
+        ],
+      },
+      migrationChanges41: {
+        scenarios: [
+          {
+            title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+            id: '14Kap',
+            changedRiskProbability: null,
+            changedRiskConsequence: { oldValue: 1000, newValue: 8000 },
+            changedRemainingRiskProbability: { oldValue: 0.1, newValue: 0.05 },
+            changedRemainingRiskConsequence: {
+              oldValue: 1000,
+              newValue: 8000,
+            },
+          },
+        ],
+      },
+      migrationChanges42: {
+        scenarios: [
+          {
+            title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+            id: '14Kap',
+            changedActions: [
+              {
+                title: 'Innlogging',
+                id: 'w100Q',
+                lastUpdated: '2025-07-09T11:28:14.801Z',
+              },
+            ],
+          },
+        ],
+      },
+      migrationChanges50: {
+        scenarios: [
+          {
+            title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+            id: '14Kap',
+            changedActionStatus: [
+              { oldValue: 'Not started', newValue: 'Not OK' },
+            ],
+            changedActions: [
+              {
+                title: 'Innlogging',
+                id: 'w100Q',
+                changedActionStatus: {
+                  oldValue: 'Not started',
+                  newValue: 'Not OK',
+                },
+              },
+            ],
+          },
+        ],
+      },
+      migrationChanges51: {
+        scenarios: [
+          {
+            title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+            id: '14Kap',
+            changedActions: [
+              { title: 'Innlogging', id: 'w100Q', lastUpdatedBy: '' },
+            ],
+          },
+        ],
+      },
+      migrationChanges52: { removedValuationsCount: 0 },
+    });
+  });
+
+  it('migrates 5.2 to latest supported version by default', () => {
+    const doc: RiScDocument = {
+      schemaVersion: '5.2',
+      title: 'Test',
+      scope: 'Test',
+      scenarios: [],
+    };
+
+    const [migrated, status] = migrate(doc);
+
+    expect(migrated.schemaVersion).toBe(latestSupportedVersion);
+    expect(status.migrationChanges).toBe(false);
+    expect(status.migrationRequiresNewApproval).toBe(false);
+    expect(status.migrationVersions).toEqual({
+      fromVersion: '5.2',
+      toVersion: latestSupportedVersion,
+    });
   });
 
   it('no-op when already at target version', () => {
@@ -512,7 +952,11 @@ describe('migrate (full chain)', () => {
 
     const [migrated, status] = migrate(doc, null, '5.2');
     expect(migrated).toEqual(doc);
-    expect(status.migrationChanges).toBe(false);
+    expect(status).toEqual({
+      migrationChanges: false,
+      migrationRequiresNewApproval: false,
+      migrationVersions: { fromVersion: '5.2', toVersion: '5.2' },
+    });
   });
 
   it('throws on backwards migration', () => {
@@ -548,15 +992,31 @@ describe('migrate (full chain)', () => {
       dateTime: '2025-07-09T11:28:14.801Z',
       numberOfCommits: 3,
     };
-    const [_, status] = migrate(doc, lastPublished, '5.2');
+    const [_, status] = migrate(doc, lastPublished);
 
-    // From the Kotlin test: the 3.2 fixture has "Denial of service" which maps to "Excessive use"
     const changes40 = status.migrationChanges40!;
-    expect(changes40.scenarios.length).toBe(1);
-    expect(changes40.scenarios[0].id).toBe('14Kap');
-    expect(changes40.scenarios[0].removedExistingActions).toBe(
-      'Ddos protection. ',
-    );
-    expect(changes40.scenarios[0].changedActions[0].removedOwner).toBe('Kåre');
+    expect(changes40).toEqual({
+      scenarios: [
+        {
+          title: 'Ondsinnet bruker ønsker å ta ned løsningen. ',
+          id: '14Kap',
+          removedExistingActions: 'Ddos protection. ',
+          changedVulnerabilities: [
+            {
+              oldValue: 'Denial of service',
+              newValue: 'Excessive use',
+            },
+          ],
+          changedActions: [
+            {
+              title: 'Innlogging',
+              id: 'w100Q',
+              removedOwner: 'Kåre',
+              removedDeadline: '2024-06-12',
+            },
+          ],
+        },
+      ],
+    });
   });
 });

@@ -312,6 +312,10 @@ function compareActions5X(
         oldAction.action.lastUpdatedBy ?? null,
         newAction.action.lastUpdatedBy ?? null,
       ),
+      comment: changeForNonMandatorySimpleProperty(
+        oldAction.action.comment ?? null,
+        newAction.action.comment ?? null,
+      ),
     }),
   );
 }
@@ -343,9 +347,15 @@ export function comparison5X(
   migratedOldRiSc: RiSc5X,
   migrationStatus: MigrationStatus,
 ): RiSc5XChange {
+  const appliesToChanges = changeForListOfSimpleProperty(
+    migratedOldRiSc.unencryptedMetadata?.appliesTo ?? [],
+    updatedRiSc.unencryptedMetadata?.appliesTo ?? [],
+  );
+
   return {
     type: '5.*',
     ...compareCommonRiScFields(migratedOldRiSc, updatedRiSc, migrationStatus),
+    appliesTo: appliesToChanges.length > 0 ? appliesToChanges : null,
     scenarios: compareScenarios5X(
       migratedOldRiSc.scenarios,
       updatedRiSc.scenarios,

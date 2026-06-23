@@ -5,7 +5,7 @@
  *   - risc/validation/JSONValidator.kt
  *   - risc/utils/Migrations.kt
  *
- * Validates RiSc documents against JSON schemas (v3.2–v5.2),
+ * Validates RiSc documents against JSON schemas (v3.2–v5.4),
  * detects versions, and migrates documents through the version chain.
  */
 
@@ -38,55 +38,28 @@ import {
   type RiSc3XScenario,
   type RiSc4XScenario,
   type RiSc5XScenario,
+  RiScVersion,
+  latestSupportedVersion,
+  riscSchemasByVersion,
+  supportedRiScVersions,
 } from '@kartverket/ros-common';
-import { RiScVersion, latestSupportedVersion } from '@kartverket/ros-common';
-
-// ─── Schema Loading ────────────────────────────────────────────────────────────
-
-import schemaV3_2 from '../schemas/risc_schema_en_v3_2.json';
-import schemaV3_3 from '../schemas/risc_schema_en_v3_3.json';
-import schemaV4_0 from '../schemas/risc_schema_en_v4_0.json';
-import schemaV4_1 from '../schemas/risc_schema_en_v4_1.json';
-import schemaV4_2 from '../schemas/risc_schema_en_v4_2.json';
-import schemaV5_0 from '../schemas/risc_schema_en_v5_0.json';
-import schemaV5_1 from '../schemas/risc_schema_en_v5_1.json';
-import schemaV5_2 from '../schemas/risc_schema_en_v5_2.json';
-
-type JsonSchemaObject = Record<string, unknown>;
-
-const SCHEMAS: Record<RiScVersion, JsonSchemaObject> = {
-  [RiScVersion.V3_2]: schemaV3_2,
-  [RiScVersion.V3_3]: schemaV3_3,
-  [RiScVersion.V4_0]: schemaV4_0,
-  [RiScVersion.V4_1]: schemaV4_1,
-  [RiScVersion.V4_2]: schemaV4_2,
-  [RiScVersion.V5_0]: schemaV5_0,
-  [RiScVersion.V5_1]: schemaV5_1,
-  [RiScVersion.V5_2]: schemaV5_2,
-};
 
 // ─── AJV Setup ─────────────────────────────────────────────────────────────────
 
-const ajv = new Ajv2020({ allErrors: true, strict: false });
+const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 
-function compileSchemaForVersion(
-  version: RiScVersion,
-): ReturnType<typeof ajv.compile> {
-  // Pre-compile all schema validators (strip $id to avoid conflicts between versions)
-  const { $id: _id, $schema: _schema, ...rest } = SCHEMAS[version];
-  return ajv.compile(rest);
-}
-
 const validators: Record<RiScVersion, ReturnType<typeof ajv.compile>> = {
-  [RiScVersion.V3_2]: compileSchemaForVersion(RiScVersion.V3_2),
-  [RiScVersion.V3_3]: compileSchemaForVersion(RiScVersion.V3_3),
-  [RiScVersion.V4_0]: compileSchemaForVersion(RiScVersion.V4_0),
-  [RiScVersion.V4_1]: compileSchemaForVersion(RiScVersion.V4_1),
-  [RiScVersion.V4_2]: compileSchemaForVersion(RiScVersion.V4_2),
-  [RiScVersion.V5_0]: compileSchemaForVersion(RiScVersion.V5_0),
-  [RiScVersion.V5_1]: compileSchemaForVersion(RiScVersion.V5_1),
-  [RiScVersion.V5_2]: compileSchemaForVersion(RiScVersion.V5_2),
+  [RiScVersion.V3_2]: ajv.compile(riscSchemasByVersion[RiScVersion.V3_2]),
+  [RiScVersion.V3_3]: ajv.compile(riscSchemasByVersion[RiScVersion.V3_3]),
+  [RiScVersion.V4_0]: ajv.compile(riscSchemasByVersion[RiScVersion.V4_0]),
+  [RiScVersion.V4_1]: ajv.compile(riscSchemasByVersion[RiScVersion.V4_1]),
+  [RiScVersion.V4_2]: ajv.compile(riscSchemasByVersion[RiScVersion.V4_2]),
+  [RiScVersion.V5_0]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_0]),
+  [RiScVersion.V5_1]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_1]),
+  [RiScVersion.V5_2]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_2]),
+  [RiScVersion.V5_3]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_3]),
+  [RiScVersion.V5_4]: ajv.compile(riscSchemasByVersion[RiScVersion.V5_4]),
 };
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -243,7 +216,7 @@ function assertValidRiScDocument(
 }
 
 function findVersion(version: unknown): RiScVersion | null {
-  return Object.values(RiScVersion).find(v => v === version) ?? null;
+  return supportedRiScVersions.find(v => v === version) ?? null;
 }
 
 function isRiScJson(doc: unknown): doc is UnvalidatedRiScJson {
@@ -266,8 +239,8 @@ export function migrate(
   const fromVersion = doc.schemaVersion;
   const targetVersion = getVersion(toVersion);
 
-  const fromIndex = Object.values(RiScVersion).indexOf(fromVersion);
-  const toIndex = Object.values(RiScVersion).indexOf(targetVersion);
+  const fromIndex = supportedRiScVersions.indexOf(fromVersion);
+  const toIndex = supportedRiScVersions.indexOf(targetVersion);
 
   if (toIndex < fromIndex) {
     throw new Error(
@@ -303,10 +276,14 @@ function executeMigration(
 ): [RiScDocument, MigrationStatus] {
   const version = doc.schemaVersion;
   switch (version) {
-    case RiScVersion.V5_2:
+    case RiScVersion.V5_4:
       throw new Error(
-        'Migration from V5_2 not added yet. As long as it is newest version the code should not reach here',
+        'Migration from V5_4 not added yet. As long as it is newest version the code should not reach here',
       );
+    case RiScVersion.V5_3:
+      return migrateFrom53To54(doc, status);
+    case RiScVersion.V5_2:
+      return migrateFrom52To53(doc, status);
     case RiScVersion.V5_1:
       return migrateFrom51To52(doc, status);
     case RiScVersion.V5_0:
@@ -818,4 +795,20 @@ export function migrateFrom51To52(
       migrationChanges52: changes52,
     },
   ];
+}
+
+/** 5.2 → 5.3: Add optional unencryptedMetadata.appliesTo. */
+export function migrateFrom52To53(
+  doc: RiSc5X,
+  status: MigrationStatus,
+): [RiSc5X, MigrationStatus] {
+  return [{ ...doc, schemaVersion: RiScVersion.V5_3 }, status];
+}
+
+/** 5.3 → 5.4: Add optional action comment field. */
+export function migrateFrom53To54(
+  doc: RiSc5X,
+  status: MigrationStatus,
+): [RiSc5X, MigrationStatus] {
+  return [{ ...doc, schemaVersion: RiScVersion.V5_4 }, status];
 }

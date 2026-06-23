@@ -1,4 +1,10 @@
 import type { Dispatch } from 'react';
+import { ProcessingStatus } from '@kartverket/ros-common';
+export { ProcessingStatus };
+export type {
+  ErrorProcessingStatus,
+  NonErrorProcessingStatus,
+} from '@kartverket/ros-common';
 import { ActionsDTO, ScenarioDTO, SopsConfigDTO } from './DTOs';
 import { ActionStatusOptions } from './constants';
 
@@ -239,32 +245,6 @@ export enum RiScStatus {
   SentForApproval = 'SentForApproval',
   DeletionDraft = 'DeletionDraft',
   DeletionSentForApproval = 'DeletionSentForApproval',
-}
-
-export enum ProcessingStatus {
-  RiScNotValid = 'RiScNotValid',
-  EncryptionFailed = 'EncryptionFailed',
-  CouldNotCreateBranch = 'CouldNotCreateBranch',
-  UpdatedRiSc = 'UpdatedRiSc',
-  DeletedRiSc = 'DeletedRiSc',
-  DeletedRiScRequiresApproval = 'DeletedRiScRequiresApproval',
-  UpdatedSops = 'UpdatedSops',
-  UpdatedRiScRequiresNewApproval = 'UpdatedRiScRequiresNewApproval',
-  UpdatedRiScAndCreatedPullRequest = 'UpdatedRiScAndCreatedPullRequest',
-  CreatedRiSc = 'CreatedRiSc',
-  OpenedPullRequest = 'OpenedPullRequest',
-  CreatedPullRequest = 'CreatedPullRequest',
-  ErrorWhenCreatingRiSc = 'ErrorWhenCreatingRiSc',
-  ErrorWhenUpdatingRiSc = 'ErrorWhenUpdatingRiSc',
-  ErrorWhenUpdatingDeletedRiSc = 'ErrorWhenUpdatingDeletedRiSc',
-  ErrorWhenDeletingRiSc = 'ErrorWhenDeletingRiSc',
-  ErrorWhenPublishingRiSc = 'ErrorWhenPublishingRiSc',
-  ErrorWhenNoWriteAccessToRepository = 'ErrorWhenNoWriteAccessToRepository',
-  ErrorWhenFetchingRiScs = 'ErrorWhenFetchingRiScs',
-  ErrorWhenCreatingPullRequest = 'ErrorWhenCreatingPullRequest',
-  ErrorWhenFetchingGcpCryptoKeys = 'ErrorWhenFetchingGcpCryptoKeys',
-  FailedToFetchGcpProjectIds = 'Failed to fetch GCP project IDs',
-  InvalidGitHubAccessToken = 'InvalidGitHubAccessToken',
 }
 
 export enum ContentStatus {

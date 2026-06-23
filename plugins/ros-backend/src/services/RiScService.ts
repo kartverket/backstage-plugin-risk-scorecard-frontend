@@ -23,11 +23,7 @@ import type {
   GithubPullRequestObject,
   GithubReferenceObjectDTO,
 } from '@kartverket/ros-common';
-import {
-  DRAFT_BRANCH_PREFIX,
-  RISC_FILE_PREFIX,
-  RiScStatus,
-} from '@kartverket/ros-common';
+import { RISC_FILE_PREFIX, RiScStatus } from '@kartverket/ros-common';
 
 import type * as ComparisonService from './ComparisonService';
 import type { GitHubService, GithubContentResponse } from './GitHubService';
@@ -35,6 +31,7 @@ import { GithubStatus } from './GitHubService';
 import type * as SchemaService from './SchemaService';
 import type { SopsCryptoService } from './SopsCryptoService';
 import type { LoggerService } from '@backstage/backend-plugin-api';
+import { RiScValidationError } from '../lib/errors';
 
 /** Metadata about a RiSc's state across GitHub branches and PRs. */
 interface RiScGithubMetadata {
@@ -254,13 +251,10 @@ export class RiScService {
       schemaVersion,
     );
     if (!validationResult.valid) {
-      return {
-        riScId,
-        status: 'ErrorWhenCreatingRiSc',
-        statusMessage: `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
-        riScContent: null,
-        sopsConfig,
-      };
+      throw new RiScValidationError(
+        'create',
+        `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
+      );
     }
 
     // Encrypt
@@ -330,11 +324,10 @@ export class RiScService {
       schemaVersion,
     );
     if (!validationResult.valid) {
-      return {
-        riScId,
-        status: 'ErrorWhenUpdatingRiSc',
-        statusMessage: `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
-      };
+      throw new RiScValidationError(
+        'update',
+        `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
+      );
     }
 
     const { status: riscStatus, branchSha } = await this.resolveRiscStatus(
@@ -697,11 +690,8 @@ export class RiScService {
     // Build PR lookup from draft branches
     const prLookup = new Map<string, { url: string; number: number }>();
     for (const pr of openPRs) {
-      const ref = pr.head.ref;
-      if (ref.startsWith(DRAFT_BRANCH_PREFIX)) {
-        const id = ref.substring(DRAFT_BRANCH_PREFIX.length);
-        prLookup.set(id, { url: pr.html_url, number: pr.number });
-      }
+      const id = pr.head.ref;
+      prLookup.set(id, { url: pr.html_url, number: pr.number });
     }
 
     const allIds = new Set([...mainIds, ...branchIds]);

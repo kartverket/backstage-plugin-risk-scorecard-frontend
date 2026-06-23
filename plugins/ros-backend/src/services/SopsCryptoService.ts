@@ -209,6 +209,8 @@ export class SopsCryptoService {
           'yaml',
           '--config',
           tempConfigPath,
+          '--unencrypted-regex',
+          '^unencryptedMetadata$',
           '/dev/stdin',
         ],
         env: {

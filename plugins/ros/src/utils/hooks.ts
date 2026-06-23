@@ -7,6 +7,7 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { latestSupportedVersion } from '@kartverket/ros-common';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { URLS } from '../urls';
 import { buildNativeBackendUrls } from '../urls/backend';
@@ -14,6 +15,7 @@ import {
   CreateRiScResultDTO,
   DeleteRiScResultDTO,
   GcpCryptoKeyObject,
+  ProcessRiScErrorDTO,
   ProcessRiScResultDTO,
   profileInfoToDTOString,
   PublishRiScResultDTO,
@@ -21,7 +23,6 @@ import {
   riScToDTOString,
   SopsConfigDTO,
 } from './DTOs';
-import { latestSupportedVersion } from './constants';
 import {
   DefaultRiScTypeDescriptor,
   DifferenceDTO,
@@ -36,6 +37,10 @@ import {
   useNativeRiScBackendFeatureFlag,
   useSystemRiScsFeatureFlag,
 } from './featureFlags';
+
+function getRiskScorecardBackendBaseUrl(backendUrl: string): string {
+  return `${backendUrl}/api/risk-scorecard`;
+}
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -101,6 +106,8 @@ export function useAuthenticatedFetch() {
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = configApi.getString('backend.baseUrl');
   const isNativeBackendEnabled = useNativeRiScBackendFeatureFlag();
+  const riskScorecardBackendBaseUrl =
+    getRiskScorecardBackendBaseUrl(backendUrl);
 
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
 
@@ -127,10 +134,10 @@ export function useAuthenticatedFetch() {
     return `${riScUri}/publish/${id}`;
   }
 
-  // TODO: Revisit discoveryApi.getBaseUrl('ros') when we are ready to validate
-  // native backend routing across deployments.
+  // TODO: Revisit discoveryApi.getBaseUrl('risk-scorecard') when we are ready
+  // to validate native backend routing across deployments.
   const nativeBackendUrls = buildNativeBackendUrls({
-    baseUrl: `${backendUrl}/api/risk-scorecard`,
+    baseUrl: riskScorecardBackendBaseUrl,
     owner: repoInformation.owner,
     repo: repoInformation.name,
     version: latestSupportedVersion,
@@ -279,10 +286,10 @@ export function useAuthenticatedFetch() {
 
   function fetchRiScs(
     onSuccess: (response: RiScContentResultDTO[]) => void,
-    onError?: (error: any, loginRejected: boolean) => void,
+    onError?: (error: ProcessRiScErrorDTO, loginRejected: boolean) => void,
   ) {
     if (isDevelopment()) {
-      fullyAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
+      fullyAuthenticatedFetch<RiScContentResultDTO[], ProcessRiScErrorDTO>(
         isNativeBackendEnabled
           ? nativeBackendUrls.uriToFetchAllRiScs
           : uriToFetchAllRiScs,
@@ -293,7 +300,7 @@ export function useAuthenticatedFetch() {
         },
       );
     } else {
-      googleAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
+      googleAuthenticatedFetch<RiScContentResultDTO[], ProcessRiScErrorDTO>(
         isNativeBackendEnabled
           ? nativeBackendUrls.uriToFetchAllRiScs
           : uriToFetchAllRiScs,
@@ -322,9 +329,9 @@ export function useAuthenticatedFetch() {
 
   function fetchGcpCryptoKeys(
     onSuccess: (response: GcpCryptoKeyObject[]) => void,
-    onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
+    onError?: (error: ProcessRiScErrorDTO, loginRejected: boolean) => void,
   ) {
-    googleAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
+    googleAuthenticatedFetch<GcpCryptoKeyObject[], ProcessRiScErrorDTO>(
       isNativeBackendEnabled
         ? nativeBackendUrls.uriToFetchGcpCryptoKeys
         : `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
@@ -434,14 +441,15 @@ export function useAuthenticatedFetch() {
 
   function fetchDefaultRiScTypeDescriptors(
     onSuccess: (response: DefaultRiScTypeDescriptor[]) => void,
+    onError?: (error: ProcessRiScErrorDTO, loginRejected: boolean) => void,
   ) {
-    fullyAuthenticatedFetch<DefaultRiScTypeDescriptor[], void>(
+    fullyAuthenticatedFetch<DefaultRiScTypeDescriptor[], ProcessRiScErrorDTO>(
       isNativeBackendEnabled
         ? nativeBackendUrls.uriToFetchDefaultRiScDescriptors
         : uriToFetchDefaultRiScDescriptors,
       'GET',
       res => onSuccess(res),
-      () => {},
+      (error, loginRejected) => onError?.(error, loginRejected),
     );
   }
   return {
@@ -483,6 +491,8 @@ export function useSystemRiScsForCurrentEntity(): RiScIndexState {
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = useApi(configApiRef).getString('backend.baseUrl');
+  const riskScorecardBackendBaseUrl =
+    getRiskScorecardBackendBaseUrl(backendUrl);
   const entityRef = stringifyEntityRef(entity);
 
   const [state, setState] = useState<RiScIndexState>({
@@ -521,7 +531,7 @@ export function useSystemRiScsForCurrentEntity(): RiScIndexState {
         }
 
         return fetch(
-          `${backendUrl}/api/risk-scorecard/riscs?entityRef=${encodeURIComponent(
+          `${riskScorecardBackendBaseUrl}/riscs?entityRef=${encodeURIComponent(
             entityRef,
           )}`,
           {

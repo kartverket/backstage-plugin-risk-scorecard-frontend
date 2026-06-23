@@ -13,7 +13,7 @@ import type { RiScVersion } from './constants';
 
 // ─── Status Enums ──────────────────────────────────────────────────────────────
 
-/** Processing status returned by write operations (create/update/delete/publish). */
+/** Status returned by RiSc processing operations. */
 export const ProcessingStatus = {
   CreatedRiSc: 'CreatedRiSc',
   UpdatedRiSc: 'UpdatedRiSc',
@@ -23,10 +23,17 @@ export const ProcessingStatus = {
   CreatedPullRequest: 'CreatedPullRequest',
   UpdatedRiScRequiresNewApproval: 'UpdatedRiScRequiresNewApproval',
   ErrorWhenUpdatingRiSc: 'ErrorWhenUpdatingRiSc',
+  ErrorWhenUpdatingDeletedRiSc: 'ErrorWhenUpdatingDeletedRiSc',
   ErrorWhenCreatingRiSc: 'ErrorWhenCreatingRiSc',
   ErrorWhenDeletingRiSc: 'ErrorWhenDeletingRiSc',
+  ErrorWhenFetchingRiScs: 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest: 'ErrorWhenCreatingPullRequest',
+  ErrorWhenFetchingGcpCryptoKeys: 'ErrorWhenFetchingGcpCryptoKeys',
+  // TODO: Remove after the legacy Kotlin backend/proxy path is retired.
   InvalidAccessTokens: 'InvalidAccessTokens',
+  InvalidGcpAccessToken: 'InvalidGcpAccessToken',
+  InvalidGitHubAccessToken: 'InvalidGitHubAccessToken',
+  NoReadAccessToRepository: 'NoReadAccessToRepository',
   NoWriteAccessToRepository: 'NoWriteAccessToRepository',
   AccessTokensValidationFailure: 'AccessTokensValidationFailure',
   FailedToFetchGcpProjectIds: 'FailedToFetchGcpProjectIds',
@@ -34,7 +41,6 @@ export const ProcessingStatus = {
     'FailedToFetchGCPOAuth2TokenInformation',
   FailedToFetchGCPIAMPermissions: 'FailedToFetchGCPIAMPermissions',
   FailedToCreateSops: 'FailedToCreateSops',
-  FailedToFetchFromAirtable: 'FailedToFetchFromAirtable',
   FailedToFetchInitRiScFromGitHub: 'FailedToFetchInitRiScFromGitHub',
   FailedToFetchInitRiScConfigFromGitHub:
     'FailedToFetchInitRiScConfigFromGitHub',
@@ -42,6 +48,66 @@ export const ProcessingStatus = {
 
 export type ProcessingStatus =
   (typeof ProcessingStatus)[keyof typeof ProcessingStatus];
+
+export const nonErrorProcessingStatuses = [
+  ProcessingStatus.UpdatedRiSc,
+  ProcessingStatus.DeletedRiSc,
+  ProcessingStatus.DeletedRiScRequiresApproval,
+  ProcessingStatus.UpdatedRiScRequiresNewApproval,
+  ProcessingStatus.UpdatedRiScAndCreatedPullRequest,
+  ProcessingStatus.CreatedRiSc,
+  ProcessingStatus.CreatedPullRequest,
+] as const satisfies readonly ProcessingStatus[];
+
+export type NonErrorProcessingStatus =
+  (typeof nonErrorProcessingStatuses)[number];
+
+export type ErrorProcessingStatus = Exclude<
+  ProcessingStatus,
+  NonErrorProcessingStatus
+>;
+
+export const gcpCryptoKeyErrorStatuses = [
+  ProcessingStatus.AccessTokensValidationFailure,
+  ProcessingStatus.InvalidGcpAccessToken,
+  ProcessingStatus.FailedToFetchGCPOAuth2TokenInformation,
+  ProcessingStatus.FailedToFetchGCPIAMPermissions,
+  ProcessingStatus.FailedToFetchGcpProjectIds,
+  ProcessingStatus.ErrorWhenFetchingGcpCryptoKeys,
+] as const satisfies readonly ErrorProcessingStatus[];
+
+export type GcpCryptoKeyErrorStatus =
+  (typeof gcpCryptoKeyErrorStatuses)[number];
+
+const processingStatusValues: readonly string[] =
+  Object.values(ProcessingStatus);
+const nonErrorProcessingStatusValues: readonly string[] =
+  nonErrorProcessingStatuses;
+const gcpCryptoKeyErrorStatusValues: readonly string[] =
+  gcpCryptoKeyErrorStatuses;
+
+export function isProcessingStatus(
+  status: unknown,
+): status is ProcessingStatus {
+  return typeof status === 'string' && processingStatusValues.includes(status);
+}
+
+export function isNonErrorProcessingStatus(
+  status: unknown,
+): status is NonErrorProcessingStatus {
+  return (
+    typeof status === 'string' &&
+    nonErrorProcessingStatusValues.includes(status)
+  );
+}
+
+export function isGcpCryptoKeyErrorStatus(
+  status: unknown,
+): status is GcpCryptoKeyErrorStatus {
+  return (
+    typeof status === 'string' && gcpCryptoKeyErrorStatusValues.includes(status)
+  );
+}
 
 /** Lifecycle status of a RiSc document. */
 export const RiScStatus = {
@@ -241,6 +307,7 @@ export interface RiSc5XAction {
     status: ActionStatus;
     lastUpdated?: string | null;
     lastUpdatedBy?: string | null;
+    comment?: string | null;
   };
 }
 
@@ -259,10 +326,15 @@ export interface RiSc5XScenario {
   };
 }
 
+export interface RiSc5XUnencryptedMetadata {
+  appliesTo?: string[] | null;
+}
+
 /** v5.x RiSc document. */
 export interface RiSc5X extends RiScBase<
-  Extract<RiScVersion, '5.0' | '5.1' | '5.2'>
+  Extract<RiScVersion, '5.0' | '5.1' | '5.2' | '5.3' | '5.4'>
 > {
+  unencryptedMetadata?: RiSc5XUnencryptedMetadata | null;
   scenarios: RiSc5XScenario[];
 }
 
@@ -554,6 +626,7 @@ export interface RiSc5XChange {
   type: '5.*';
   title?: SimpleTrackedProperty<string> | null;
   scope?: SimpleTrackedProperty<string> | null;
+  appliesTo?: SimpleTrackedProperty<string>[] | null;
   valuations: SimpleTrackedProperty<RiScValuation>[];
   scenarios: TrackedProperty<RiSc5XScenarioChange, RiSc5XScenario>[];
   migrationChanges: MigrationStatus;
@@ -579,6 +652,7 @@ export interface RiSc5XActionChange {
   status?: SimpleTrackedProperty<ActionStatus> | null;
   lastUpdated?: SimpleTrackedProperty<string | null> | null;
   lastUpdatedBy?: SimpleTrackedProperty<string | null> | null;
+  comment?: SimpleTrackedProperty<string | null> | null;
 }
 
 // ─── v4.x Change Types ─────────────────────────────────────────────────────────

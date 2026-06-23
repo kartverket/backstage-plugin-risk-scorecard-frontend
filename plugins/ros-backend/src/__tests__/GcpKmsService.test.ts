@@ -1,4 +1,9 @@
-import { CryptoKeyPermission } from '@kartverket/ros-common';
+import { CryptoKeyPermission, ProcessingStatus } from '@kartverket/ros-common';
+import {
+  GcpIamPermissionsFetchError,
+  GcpOAuthTokenInfoFetchError,
+  GcpProjectIdsFetchError,
+} from '../lib/errors';
 import {
   GcpKmsService,
   getRiScKeyRing,
@@ -89,11 +94,31 @@ describe('GcpKmsService', () => {
     });
 
     it('throws when fetch itself fails', async () => {
-      mockFetch.mockRejectedValueOnce(new Error('Network error'));
+      const cause = new Error('Network error');
+      mockFetch.mockRejectedValueOnce(cause);
 
-      await expect(service.validateAccessToken('token')).rejects.toThrow(
-        'Failed to fetch GCP OAuth2 token information',
-      );
+      const result = service.validateAccessToken('token');
+
+      await expect(result).rejects.toBeInstanceOf(GcpOAuthTokenInfoFetchError);
+      await expect(result).rejects.toMatchObject({
+        cause,
+        processingStatus:
+          ProcessingStatus.FailedToFetchGCPOAuth2TokenInformation,
+      });
+    });
+
+    it('reports non-400 responses as token-info fetch failures', async () => {
+      mockFetch.mockResolvedValueOnce(mockResponse({}, 500));
+
+      const result = service.validateAccessToken('token');
+
+      await expect(result).rejects.toMatchObject({
+        cause: expect.objectContaining({
+          message: 'Unexpected response status: 500',
+        }),
+        processingStatus:
+          ProcessingStatus.FailedToFetchGCPOAuth2TokenInformation,
+      });
     });
   });
 
@@ -119,9 +144,12 @@ describe('GcpKmsService', () => {
     it('throws on non-ok response', async () => {
       mockFetch.mockResolvedValueOnce(mockResponse({}, 403));
 
-      await expect(service.fetchProjectIds('token')).rejects.toThrow(
-        'Failed to fetch GCP project IDs',
-      );
+      await expect(service.fetchProjectIds('token')).rejects.toMatchObject({
+        cause: expect.objectContaining({
+          message: 'Unexpected response status: 403',
+        }),
+        message: 'Failed to fetch GCP project IDs',
+      });
     });
   });
 
@@ -245,9 +273,12 @@ describe('GcpKmsService', () => {
     it('throws when fetching project IDs fails', async () => {
       mockFetch.mockResolvedValueOnce(mockResponse({}, 500));
 
-      await expect(service.getGcpCryptoKeys('token')).rejects.toThrow(
-        'Failed to fetch GCP project IDs',
-      );
+      const result = service.getGcpCryptoKeys('token');
+
+      await expect(result).rejects.toBeInstanceOf(GcpProjectIdsFetchError);
+      await expect(result).rejects.toMatchObject({
+        processingStatus: ProcessingStatus.FailedToFetchGcpProjectIds,
+      });
     });
 
     it('throws when fetching IAM permissions fails', async () => {
@@ -259,9 +290,15 @@ describe('GcpKmsService', () => {
 
       mockFetch.mockResolvedValueOnce(mockResponse({}, 403));
 
-      await expect(service.getGcpCryptoKeys('token')).rejects.toThrow(
-        'Failed to fetch IAM permissions',
-      );
+      const result = service.getGcpCryptoKeys('token');
+
+      await expect(result).rejects.toBeInstanceOf(GcpIamPermissionsFetchError);
+      await expect(result).rejects.toMatchObject({
+        cause: expect.objectContaining({
+          message: 'Unexpected response status: 403',
+        }),
+        processingStatus: ProcessingStatus.FailedToFetchGCPIAMPermissions,
+      });
     });
 
     it('maps permissions correctly (encrypt only, decrypt only, both)', async () => {

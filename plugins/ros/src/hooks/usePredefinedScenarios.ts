@@ -9,7 +9,7 @@ import {
 import { ScenarioDTO } from '../utils/DTOs.ts';
 import { buildNativeBackendUrls } from '../urls/backend.ts';
 import { useGithubRepositoryInformation } from '../utils/hooks.ts';
-import { latestSupportedVersion } from '../utils/constants.ts';
+import { latestSupportedVersion } from '@kartverket/ros-common';
 
 const PREDEFINED_SCENARIOS_TEMPLATE_ID = 'web-app-api';
 const PREDEFINED_SCENARIOS_SOURCE_TEST_REF = 'add-scenarios';

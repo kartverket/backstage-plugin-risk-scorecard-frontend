@@ -11,7 +11,6 @@ import type {
   LastPublished,
 } from '@kartverket/ros-common';
 import {
-  DRAFT_BRANCH_PREFIX,
   RISC_DIRECTORY,
   RISC_FILE_PREFIX,
   RISC_FILE_SUFFIX,
@@ -40,6 +39,7 @@ export interface GithubContentResponse {
 /** Repository info returned by fetchRepositoryInfo. */
 export interface RepositoryInfo {
   defaultBranch: string;
+  hasReadAccess: boolean;
   hasWriteAccess: boolean;
 }
 
@@ -58,6 +58,9 @@ export class GitHubApiError extends Error {
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 const GITHUB_API_BASE = 'https://api.github.com';
+const TRANSIENT_GITHUB_API_STATUSES = new Set([429, 502, 503, 504]);
+const DEFAULT_GET_RETRY_MAX_ATTEMPTS = 3;
+const DEFAULT_GET_RETRY_INITIAL_DELAY_MS = 200;
 
 /**
  * Low-level GitHub REST API client for repository operations.
@@ -65,9 +68,17 @@ const GITHUB_API_BASE = 'https://api.github.com';
  */
 export class GitHubService {
   private readonly fetchFn: typeof fetch;
+  private readonly getRetryInitialDelayMs: number;
 
-  constructor(fetchFn?: typeof fetch) {
+  constructor(
+    fetchFn?: typeof fetch,
+    retryOptions?: {
+      getInitialDelayMs?: number;
+    },
+  ) {
     this.fetchFn = fetchFn ?? globalThis.fetch;
+    this.getRetryInitialDelayMs =
+      retryOptions?.getInitialDelayMs ?? DEFAULT_GET_RETRY_INITIAL_DELAY_MS;
   }
 
   // ─── File Path Helpers ────────────────────────────────────────────────
@@ -84,7 +95,7 @@ export class GitHubService {
 
   /** Returns the draft branch name for a RiSc ID. */
   draftBranchName(riScId: string): string {
-    return `${DRAFT_BRANCH_PREFIX}${riScId}`;
+    return riScId;
   }
 
   /** Extracts the RiSc ID from a draft branch ref like `refs/heads/risc-7ssVK`. */
@@ -109,24 +120,57 @@ export class GitHubService {
       headers['Content-Type'] = 'application/json';
     }
 
-    const response = await this.fetchFn(url, {
-      method,
-      headers,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-    });
+    const sendRequest = async (): Promise<T> => {
+      const response = await this.fetchFn(url, {
+        method,
+        headers,
+        body: body !== undefined ? JSON.stringify(body) : undefined,
+      });
 
-    if (!response.ok) {
-      const errorBody = await response.text().catch(() => '');
-      throw new GitHubApiError(
-        `GitHub API ${method} ${url} failed with status ${response.status}`,
-        response.status,
-        errorBody,
-      );
+      if (!response.ok) {
+        const errorBody = await response.text().catch(() => '');
+        throw new GitHubApiError(
+          `GitHub API ${method} ${url} failed with status ${response.status}`,
+          response.status,
+          errorBody,
+        );
+      }
+
+      const text = await response.text();
+      if (!text) return undefined as T;
+      return JSON.parse(text) as T;
+    };
+
+    if (method.toUpperCase() === 'GET') {
+      return this.retryGetOnTransientError(sendRequest);
     }
 
-    const text = await response.text();
-    if (!text) return undefined as T;
-    return JSON.parse(text) as T;
+    return sendRequest();
+  }
+
+  private async retryGetOnTransientError<T>(
+    sendRequest: () => Promise<T>,
+    retriesRemaining = DEFAULT_GET_RETRY_MAX_ATTEMPTS - 1,
+    delayMs = this.getRetryInitialDelayMs,
+  ): Promise<T> {
+    try {
+      return await sendRequest();
+    } catch (e) {
+      if (
+        retriesRemaining &&
+        e instanceof GitHubApiError &&
+        TRANSIENT_GITHUB_API_STATUSES.has(e.status)
+      ) {
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        return this.retryGetOnTransientError(
+          sendRequest,
+          retriesRemaining - 1,
+          delayMs * 2,
+        );
+      }
+
+      throw e;
+    }
   }
 
   private async requestOrNull<T>(
@@ -297,8 +341,8 @@ export class GitHubService {
   // ─── Branches API ─────────────────────────────────────────────────────
 
   /**
-   * Lists branches matching the draft branch prefix.
-   * Returns reference objects for all `risc-draft/*` branches.
+   * Lists branches matching the RiSc ID naming pattern.
+   * Returns reference objects for all `risc-*` branches.
    */
   async fetchDraftBranches(
     owner: string,
@@ -461,6 +505,7 @@ export class GitHubService {
 
     return {
       defaultBranch: dto.default_branch,
+      hasReadAccess: dto.permissions.pull,
       hasWriteAccess: dto.permissions.push,
     };
   }

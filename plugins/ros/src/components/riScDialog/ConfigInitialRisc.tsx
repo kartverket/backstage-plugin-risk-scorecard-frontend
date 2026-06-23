@@ -1,6 +1,14 @@
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import { Box, Flex, Radio, RadioGroup, Switch, Text } from '@backstage/ui';
+import {
+  Alert,
+  Box,
+  Flex,
+  Radio,
+  RadioGroup,
+  Switch,
+  Text,
+} from '@backstage/ui';
 import { RiScWithMetadata } from '../../utils/types.ts';
 import { useDefaultRiScTypeDescriptors } from '../../contexts/DefaultRiScTypesContext.tsx';
 import { UseFormSetValue } from 'react-hook-form';
@@ -103,6 +111,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
   const {
     defaultRiScTypeDescriptors,
     riScSelectedByDefault,
+    errorMessage,
     getDescriptorOfId,
   } = useDefaultRiScTypeDescriptors();
 
@@ -131,6 +140,9 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
 
   return (
     <Box>
+      {errorMessage && (
+        <Alert status="danger" icon description={errorMessage} />
+      )}
       {defaultRiScTypeDescriptors.length > 0 && (
         <>
           <Box pb="2">
@@ -187,7 +199,7 @@ function ConfigInitialRisc(props: ConfigInitialRiscProps) {
           </Flex>
         </>
       )}
-      {defaultRiScTypeDescriptors.length === 0 && (
+      {!errorMessage && defaultRiScTypeDescriptors.length === 0 && (
         <Text>{t('rosDialog.noInitialRiScFound')}</Text>
       )}
     </Box>
