@@ -8,8 +8,8 @@ export abstract class DomainError extends Error {
   abstract readonly httpStatus: number;
   abstract readonly processingStatus: ProcessingStatus;
 
-  constructor(message: string) {
-    super(message);
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
     this.name = this.constructor.name;
   }
 }
@@ -83,6 +83,62 @@ export class InvalidGcpAccessTokenError extends DomainError {
   }
 }
 
+export class GcpOAuthTokenInfoFetchError extends DomainError {
+  readonly httpStatus = 500;
+  readonly processingStatus =
+    ProcessingStatus.FailedToFetchGCPOAuth2TokenInformation;
+
+  constructor(
+    message = 'Failed to fetch GCP OAuth2 token information',
+    options?: ErrorOptions,
+  ) {
+    super(message, options);
+  }
+}
+
+export class GcpIamPermissionsFetchError extends DomainError {
+  readonly httpStatus = 500;
+  readonly processingStatus = ProcessingStatus.FailedToFetchGCPIAMPermissions;
+
+  constructor(
+    message = 'Failed to fetch GCP IAM permissions',
+    options?: ErrorOptions,
+  ) {
+    super(message, options);
+  }
+}
+
+export class GcpProjectIdsFetchError extends DomainError {
+  readonly httpStatus = 500;
+  readonly processingStatus = ProcessingStatus.FailedToFetchGcpProjectIds;
+
+  constructor(
+    message = 'Failed to fetch GCP project IDs',
+    options?: ErrorOptions,
+  ) {
+    super(message, options);
+  }
+}
+
+export class InitRiScFetchError extends DomainError {
+  readonly httpStatus = 500;
+  readonly processingStatus = ProcessingStatus.FailedToFetchInitRiScFromGitHub;
+
+  constructor(message = 'Failed to fetch initial RiSc from GitHub') {
+    super(message);
+  }
+}
+
+export class InitRiScConfigFetchError extends DomainError {
+  readonly httpStatus = 500;
+  readonly processingStatus =
+    ProcessingStatus.FailedToFetchInitRiScConfigFromGitHub;
+
+  constructor(message = 'Failed to fetch initial RiSc config from GitHub') {
+    super(message);
+  }
+}
+
 export class InvalidGitHubAccessTokenError extends DomainError {
   readonly httpStatus = 401;
   readonly processingStatus = ProcessingStatus.InvalidGitHubAccessToken;
@@ -110,12 +166,21 @@ export class RepositoryWriteAccessError extends DomainError {
   }
 }
 
-export class RiScNotValidError extends DomainError {
+export class RiScValidationError extends DomainError {
   readonly httpStatus = 422;
-  readonly processingStatus = ProcessingStatus.ErrorWhenUpdatingRiSc;
+  readonly processingStatus:
+    | typeof ProcessingStatus.ErrorWhenCreatingRiSc
+    | typeof ProcessingStatus.ErrorWhenUpdatingRiSc;
 
-  constructor(message = 'RiSc content is not valid') {
+  constructor(
+    operation: 'create' | 'update',
+    message = 'RiSc content is not valid',
+  ) {
     super(message);
+    this.processingStatus =
+      operation === 'create'
+        ? ProcessingStatus.ErrorWhenCreatingRiSc
+        : ProcessingStatus.ErrorWhenUpdatingRiSc;
   }
 }
 

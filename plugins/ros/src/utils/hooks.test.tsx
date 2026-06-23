@@ -1127,6 +1127,39 @@ describe('useAuthenticatedFetch', () => {
     });
   });
 
+  describe('fetchDefaultRiScTypeDescriptors', () => {
+    it('passes a structured template error to the error callback', async () => {
+      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
+      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
+      mockIdentityApi.getCredentials.mockResolvedValue({
+        token: MOCK_ID_TOKEN,
+      });
+      const backendError = {
+        status: ProcessingStatus.FailedToFetchInitRiScConfigFromGitHub,
+        message: 'Failed to fetch initial RiSc config from GitHub',
+      };
+      mockFetchApi.fetch.mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: async () => backendError,
+      });
+
+      const { result } = renderHook(() => useAuthenticatedFetch(), { wrapper });
+      const onSuccess = jest.fn();
+      const onError = jest.fn();
+
+      await act(async () => {
+        await result.current.fetchDefaultRiScTypeDescriptors(
+          onSuccess,
+          onError,
+        );
+      });
+
+      expect(onSuccess).not.toHaveBeenCalled();
+      expect(onError).toHaveBeenCalledWith(backendError, false);
+    });
+  });
+
   describe('useSystemRiScsForCurrentEntity', () => {
     beforeEach(() => {
       jest.clearAllMocks();

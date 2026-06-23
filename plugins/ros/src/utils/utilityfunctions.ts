@@ -1,4 +1,8 @@
-import { latestSupportedVersion } from '@kartverket/ros-common';
+import {
+  isNonErrorProcessingStatus,
+  isProcessingStatus,
+  latestSupportedVersion,
+} from '@kartverket/ros-common';
 import { DateTime } from 'luxon';
 import { UpdateStatus } from '../contexts/RiScContext';
 import {
@@ -75,8 +79,12 @@ export function getAlertSeverity(
   }
 
   if (response && typeof response.status === 'string') {
-    if (response.status.includes('Error')) return 'error';
-    return 'success';
+    const status = response.status as string;
+    if (isNonErrorProcessingStatus(status)) return 'success';
+    if (isProcessingStatus(status)) return 'error';
+
+    // Preserve the legacy fallback for statuses introduced by a newer backend.
+    return status.includes('Error') ? 'error' : 'success';
   }
 
   return 'warning';

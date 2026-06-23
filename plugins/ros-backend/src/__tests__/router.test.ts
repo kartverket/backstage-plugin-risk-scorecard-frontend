@@ -2,7 +2,14 @@ import express from 'express';
 import request from 'supertest';
 import { ProcessingStatus } from '@kartverket/ros-common';
 import { createRouter, extractToken, errorHandler } from '../router';
-import { DomainError } from '../lib/errors';
+import {
+  DomainError,
+  GcpIamPermissionsFetchError,
+  GcpOAuthTokenInfoFetchError,
+  GcpProjectIdsFetchError,
+  InitRiScConfigFetchError,
+  InitRiScFetchError,
+} from '../lib/errors';
 import { GitHubApiError } from '../services/GitHubService';
 
 // ─── Mock Services ────────────────────────────────────────────────────────────
@@ -604,6 +611,56 @@ describe('router', () => {
       expect(gcpKmsService.validateAccessToken).toHaveBeenCalledWith('gcp-tok');
       expect(gcpKmsService.getGcpCryptoKeys).toHaveBeenCalledWith('gcp-tok');
     });
+
+    it('returns the token-info fetch status when validation is unavailable', async () => {
+      const gcpKmsService = mockGcpKmsService();
+      gcpKmsService.validateAccessToken.mockRejectedValue(
+        new GcpOAuthTokenInfoFetchError(),
+      );
+      const app = await createTestApp({ gcpKmsService });
+
+      const res = await request(app)
+        .get('/google/gcpCryptoKeys')
+        .set('GCP-Access-Token', 'gcp-tok');
+
+      expect(res.status).toBe(500);
+      expect(res.body.status).toBe(
+        ProcessingStatus.FailedToFetchGCPOAuth2TokenInformation,
+      );
+      expect(gcpKmsService.getGcpCryptoKeys).not.toHaveBeenCalled();
+    });
+
+    it('returns the IAM-permissions fetch status', async () => {
+      const gcpKmsService = mockGcpKmsService();
+      gcpKmsService.getGcpCryptoKeys.mockRejectedValue(
+        new GcpIamPermissionsFetchError(),
+      );
+      const app = await createTestApp({ gcpKmsService });
+
+      const res = await request(app)
+        .get('/google/gcpCryptoKeys')
+        .set('GCP-Access-Token', 'gcp-tok');
+
+      expect(res.status).toBe(500);
+      expect(res.body.status).toBe(
+        ProcessingStatus.FailedToFetchGCPIAMPermissions,
+      );
+    });
+
+    it('returns the project-IDs fetch status', async () => {
+      const gcpKmsService = mockGcpKmsService();
+      gcpKmsService.getGcpCryptoKeys.mockRejectedValue(
+        new GcpProjectIdsFetchError(),
+      );
+      const app = await createTestApp({ gcpKmsService });
+
+      const res = await request(app)
+        .get('/google/gcpCryptoKeys')
+        .set('GCP-Access-Token', 'gcp-tok');
+
+      expect(res.status).toBe(500);
+      expect(res.body.status).toBe(ProcessingStatus.FailedToFetchGcpProjectIds);
+    });
   });
 
   describe('GET /initrisc', () => {
@@ -618,6 +675,23 @@ describe('router', () => {
       expect(res.status).toBe(200);
       expect(initRiScService.getInitRiScDescriptors).toHaveBeenCalledWith(
         'gh-tok',
+      );
+    });
+
+    it('returns the descriptor-config fetch status when GitHub content is unavailable', async () => {
+      const initRiScService = mockInitRiScService();
+      initRiScService.getInitRiScDescriptors.mockRejectedValue(
+        new InitRiScConfigFetchError(),
+      );
+      const app = await createTestApp({ initRiScService });
+
+      const res = await request(app)
+        .get('/initrisc')
+        .set('GitHub-Access-Token', 'gh-tok');
+
+      expect(res.status).toBe(500);
+      expect(res.body.status).toBe(
+        ProcessingStatus.FailedToFetchInitRiScConfigFromGitHub,
       );
     });
   });
@@ -658,6 +732,23 @@ describe('router', () => {
         'web-app-api',
         'gh-tok',
         'add-scenarios',
+      );
+    });
+
+    it('returns the template fetch status when GitHub content is unavailable', async () => {
+      const initRiScService = mockInitRiScService();
+      initRiScService.fetchRiScTemplate.mockRejectedValue(
+        new InitRiScFetchError(),
+      );
+      const app = await createTestApp({ initRiScService });
+
+      const res = await request(app)
+        .get('/initrisc/web-app-api')
+        .set('GitHub-Access-Token', 'gh-tok');
+
+      expect(res.status).toBe(500);
+      expect(res.body.status).toBe(
+        ProcessingStatus.FailedToFetchInitRiScFromGitHub,
       );
     });
   });
@@ -745,7 +836,7 @@ describe('router', () => {
         readonly httpStatus = 403;
         readonly processingStatus = ProcessingStatus.NoWriteAccessToRepository;
         constructor() {
-          super('No access');
+          super('No access', { cause: new Error('Underlying failure') });
         }
       }
 
@@ -754,8 +845,12 @@ describe('router', () => {
         json: jest.fn(),
       } as any;
 
-      handler(new TestError(), {} as any, res, jest.fn());
-      expect(logger.warn).toHaveBeenCalled();
+      const error = new TestError();
+      handler(error, {} as any, res, jest.fn());
+      expect(logger.warn).toHaveBeenCalledWith(
+        'Domain error [TestError]: No access',
+        error,
+      );
       expect(res.status).toHaveBeenCalledWith(403);
     });
   });

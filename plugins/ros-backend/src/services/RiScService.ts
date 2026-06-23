@@ -31,6 +31,7 @@ import { GithubStatus } from './GitHubService';
 import type * as SchemaService from './SchemaService';
 import type { SopsCryptoService } from './SopsCryptoService';
 import type { LoggerService } from '@backstage/backend-plugin-api';
+import { RiScValidationError } from '../lib/errors';
 
 /** Metadata about a RiSc's state across GitHub branches and PRs. */
 interface RiScGithubMetadata {
@@ -250,13 +251,10 @@ export class RiScService {
       schemaVersion,
     );
     if (!validationResult.valid) {
-      return {
-        riScId,
-        status: 'ErrorWhenCreatingRiSc',
-        statusMessage: `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
-        riScContent: null,
-        sopsConfig,
-      };
+      throw new RiScValidationError(
+        'create',
+        `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
+      );
     }
 
     // Encrypt
@@ -326,11 +324,10 @@ export class RiScService {
       schemaVersion,
     );
     if (!validationResult.valid) {
-      return {
-        riScId,
-        status: 'ErrorWhenUpdatingRiSc',
-        statusMessage: `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
-      };
+      throw new RiScValidationError(
+        'update',
+        `Validation failed: ${validationResult.errors?.join(', ') ?? 'Unknown error'}`,
+      );
     }
 
     const { status: riscStatus, branchSha } = await this.resolveRiscStatus(

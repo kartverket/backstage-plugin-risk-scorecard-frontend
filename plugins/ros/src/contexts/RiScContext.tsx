@@ -1,4 +1,7 @@
-import { latestSupportedVersion } from '@kartverket/ros-common';
+import {
+  isGcpCryptoKeyErrorStatus,
+  latestSupportedVersion,
+} from '@kartverket/ros-common';
 import {
   createContext,
   ReactNode,
@@ -225,15 +228,18 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           setIsFetching(isFetchingRef.current);
         }
       },
-      (_error, loginRejected) => {
+      (error, loginRejected) => {
         gcpCryptoKeysFailed.current = true;
         setFailedToFetchGcpCryptoKeys(true);
+        const status = isGcpCryptoKeyErrorStatus(error?.status)
+          ? error.status
+          : ProcessingStatus.ErrorWhenFetchingGcpCryptoKeys;
         dispatch({
           type: 'SET_RESPONSE',
           response: {
-            status: ProcessingStatus.ErrorWhenFetchingGcpCryptoKeys,
+            status,
             statusMessage: withLoginRejected(
-              t('errorMessages.ErrorWhenFetchingGcpCryptoKeys'),
+              t(`errorMessages.${status}`),
               loginRejected,
               t,
             ),
@@ -331,14 +337,16 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         if (!gcpCryptoKeysFailed.current) {
           const status =
             error?.status ?? ProcessingStatus.ErrorWhenFetchingRiScs;
-          const translationContext = getTranslationContext(status);
 
           dispatch({
             type: 'SET_RESPONSE',
             response: {
               status,
               statusMessage: withLoginRejected(
-                getTranslationKey('error', status, t, translationContext),
+                t(`errorMessages.${status}`, {
+                  owner: repoInfo.owner,
+                  name: repoInfo.name,
+                }),
                 loginRejected,
                 t,
               ),
@@ -389,15 +397,10 @@ export function RiScProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_RESPONSE', response: null });
   }, [dispatch]);
 
-  const getTranslationContext = useCallback(
-    (status: ProcessingStatus) => {
-      return status === ProcessingStatus.NoReadAccessToRepository ||
-        status === ProcessingStatus.NoWriteAccessToRepository
-        ? { owner: repoInfo.owner, name: repoInfo.name }
-        : undefined;
-    },
-    [repoInfo.owner, repoInfo.name],
-  );
+  const translationContext = {
+    owner: repoInfo.owner,
+    name: repoInfo.name,
+  };
 
   function getSystemRiScPath(systemRiSc: SystemRiSc): string {
     const routeEntityRef = systemRiSc.appliesTo[0];
@@ -474,8 +477,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         setSelectedRiSc(selectedRiSc);
         setIsFetching(false);
 
-        const translationContext = getTranslationContext(error.status);
-
         dispatch({
           type: 'SET_BOTH',
           updateStatus: { isLoading: false, isError: true, isSuccess: false },
@@ -534,8 +535,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
         },
         (error, loginRejected) => {
           setSelectedRiSc(originalRiSc);
-
-          const translationContext = getTranslationContext(error.status);
 
           dispatch({
             type: 'SET_BOTH',
@@ -632,8 +631,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           if (onSuccess) onSuccess();
         },
         (error, loginRejected) => {
-          const translationContext = getTranslationContext(error.status);
-
           dispatch({
             type: 'SET_BOTH',
             updateStatus: { isLoading: false, isError: true, isSuccess: false },
@@ -686,8 +683,6 @@ export function RiScProvider({ children }: { children: ReactNode }) {
           });
         },
         (error, loginRejected) => {
-          const translationContext = getTranslationContext(error.status);
-
           dispatch({
             type: 'SET_BOTH',
             updateStatus: { isLoading: false, isError: true, isSuccess: false },

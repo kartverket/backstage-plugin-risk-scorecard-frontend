@@ -1,4 +1,6 @@
 import { InitRiScService } from '../services/InitRiScService';
+import { ProcessingStatus } from '@kartverket/ros-common';
+import { InitRiScConfigFetchError, InitRiScFetchError } from '../lib/errors';
 import { GithubStatus } from '../services/GitHubService';
 import type {
   GitHubService,
@@ -186,9 +188,13 @@ describe('InitRiScService', () => {
         config: { repoOwner: 'owner', repoName: 'repo' },
       });
 
-      await expect(service.getInitRiScDescriptors('token')).rejects.toThrow(
-        'Failed to fetch InitRiSc descriptor configs',
-      );
+      const result = service.getInitRiScDescriptors('token');
+
+      await expect(result).rejects.toBeInstanceOf(InitRiScConfigFetchError);
+      await expect(result).rejects.toMatchObject({
+        processingStatus:
+          ProcessingStatus.FailedToFetchInitRiScConfigFromGitHub,
+      });
     });
   });
 
@@ -272,9 +278,16 @@ describe('InitRiScService', () => {
         scope: 'S',
       });
 
-      await expect(
-        service.getInitRiSc('nonexistent', initialContent, 'token'),
-      ).rejects.toThrow("Failed to fetch InitRiSc template 'nonexistent'");
+      const result = service.getInitRiSc(
+        'nonexistent',
+        initialContent,
+        'token',
+      );
+
+      await expect(result).rejects.toBeInstanceOf(InitRiScFetchError);
+      await expect(result).rejects.toMatchObject({
+        processingStatus: ProcessingStatus.FailedToFetchInitRiScFromGitHub,
+      });
     });
   });
 });

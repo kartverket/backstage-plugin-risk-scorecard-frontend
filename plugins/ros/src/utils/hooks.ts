@@ -15,6 +15,7 @@ import {
   CreateRiScResultDTO,
   DeleteRiScResultDTO,
   GcpCryptoKeyObject,
+  ProcessRiScErrorDTO,
   ProcessRiScResultDTO,
   profileInfoToDTOString,
   PublishRiScResultDTO,
@@ -285,10 +286,10 @@ export function useAuthenticatedFetch() {
 
   function fetchRiScs(
     onSuccess: (response: RiScContentResultDTO[]) => void,
-    onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
+    onError?: (error: ProcessRiScErrorDTO, loginRejected: boolean) => void,
   ) {
     if (isDevelopment()) {
-      fullyAuthenticatedFetch<RiScContentResultDTO[], ProcessRiScResultDTO>(
+      fullyAuthenticatedFetch<RiScContentResultDTO[], ProcessRiScErrorDTO>(
         isNativeBackendEnabled
           ? nativeBackendUrls.uriToFetchAllRiScs
           : uriToFetchAllRiScs,
@@ -299,7 +300,7 @@ export function useAuthenticatedFetch() {
         },
       );
     } else {
-      googleAuthenticatedFetch<RiScContentResultDTO[], ProcessRiScResultDTO>(
+      googleAuthenticatedFetch<RiScContentResultDTO[], ProcessRiScErrorDTO>(
         isNativeBackendEnabled
           ? nativeBackendUrls.uriToFetchAllRiScs
           : uriToFetchAllRiScs,
@@ -328,9 +329,9 @@ export function useAuthenticatedFetch() {
 
   function fetchGcpCryptoKeys(
     onSuccess: (response: GcpCryptoKeyObject[]) => void,
-    onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
+    onError?: (error: ProcessRiScErrorDTO, loginRejected: boolean) => void,
   ) {
-    googleAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
+    googleAuthenticatedFetch<GcpCryptoKeyObject[], ProcessRiScErrorDTO>(
       isNativeBackendEnabled
         ? nativeBackendUrls.uriToFetchGcpCryptoKeys
         : `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
@@ -440,14 +441,15 @@ export function useAuthenticatedFetch() {
 
   function fetchDefaultRiScTypeDescriptors(
     onSuccess: (response: DefaultRiScTypeDescriptor[]) => void,
+    onError?: (error: ProcessRiScErrorDTO, loginRejected: boolean) => void,
   ) {
-    fullyAuthenticatedFetch<DefaultRiScTypeDescriptor[], void>(
+    fullyAuthenticatedFetch<DefaultRiScTypeDescriptor[], ProcessRiScErrorDTO>(
       isNativeBackendEnabled
         ? nativeBackendUrls.uriToFetchDefaultRiScDescriptors
         : uriToFetchDefaultRiScDescriptors,
       'GET',
       res => onSuccess(res),
-      () => {},
+      (error, loginRejected) => onError?.(error, loginRejected),
     );
   }
   return {

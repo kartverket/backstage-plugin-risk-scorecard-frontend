@@ -89,13 +89,13 @@ export function errorHandler(logger: LoggerService) {
   return (err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof DomainError) {
       const { statusCode, body } = mapErrorToResponse(err);
-      logger.warn(`Domain error [${err.name}]: ${err.message}`);
+      logger.warn(`Domain error [${err.name}]: ${err.message}`, err);
       res.status(statusCode).json(body);
       return;
     }
 
     if (err.name === 'AuthenticationError' || err.name === 'NotAllowedError') {
-      logger.warn(`Auth error [${err.name}]: ${err.message}`);
+      logger.warn(`Auth error [${err.name}]: ${err.message}`, err);
       res.status(err.name === 'AuthenticationError' ? 401 : 403).json({
         status: ProcessingStatus.AccessTokensValidationFailure,
         message: err.message,
@@ -104,7 +104,7 @@ export function errorHandler(logger: LoggerService) {
     }
 
     // Unknown errors → 500
-    logger.error(`Unhandled error: ${err.message}`);
+    logger.error(`Unhandled error: ${err.message}`, err);
     res.status(500).json({
       status: ProcessingStatus.ErrorWhenUpdatingRiSc,
       message: 'Internal server error',

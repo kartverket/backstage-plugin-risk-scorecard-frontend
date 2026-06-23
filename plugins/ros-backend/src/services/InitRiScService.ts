@@ -1,5 +1,6 @@
 import type { GitHubService, GithubContentResponse } from './GitHubService';
 import { GithubStatus } from './GitHubService';
+import { InitRiScConfigFetchError, InitRiScFetchError } from '../lib/errors';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -187,7 +188,7 @@ export class InitRiScService {
     );
 
     if (response.status !== GithubStatus.Success || !response.data) {
-      throw new Error(
+      throw new InitRiScConfigFetchError(
         `Failed to fetch InitRiSc descriptor configs from GitHub. Status: ${response.status}`,
       );
     }
@@ -210,7 +211,7 @@ export class InitRiScService {
     );
 
     if (response.status !== GithubStatus.Success || !response.data) {
-      throw new Error(
+      throw new InitRiScFetchError(
         `Failed to fetch InitRiSc template '${id}' from GitHub. Status: ${response.status}`,
       );
     }

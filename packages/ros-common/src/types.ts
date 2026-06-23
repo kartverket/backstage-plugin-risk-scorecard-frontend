@@ -13,7 +13,7 @@ import type { RiScVersion } from './constants';
 
 // ─── Status Enums ──────────────────────────────────────────────────────────────
 
-/** Processing status returned by write operations (create/update/delete/publish). */
+/** Status returned by RiSc processing operations. */
 export const ProcessingStatus = {
   CreatedRiSc: 'CreatedRiSc',
   UpdatedRiSc: 'UpdatedRiSc',
@@ -23,9 +23,13 @@ export const ProcessingStatus = {
   CreatedPullRequest: 'CreatedPullRequest',
   UpdatedRiScRequiresNewApproval: 'UpdatedRiScRequiresNewApproval',
   ErrorWhenUpdatingRiSc: 'ErrorWhenUpdatingRiSc',
+  ErrorWhenUpdatingDeletedRiSc: 'ErrorWhenUpdatingDeletedRiSc',
   ErrorWhenCreatingRiSc: 'ErrorWhenCreatingRiSc',
   ErrorWhenDeletingRiSc: 'ErrorWhenDeletingRiSc',
+  ErrorWhenFetchingRiScs: 'ErrorWhenFetchingRiScs',
   ErrorWhenCreatingPullRequest: 'ErrorWhenCreatingPullRequest',
+  ErrorWhenFetchingGcpCryptoKeys: 'ErrorWhenFetchingGcpCryptoKeys',
+  // TODO: Remove after the legacy Kotlin backend/proxy path is retired.
   InvalidAccessTokens: 'InvalidAccessTokens',
   InvalidGcpAccessToken: 'InvalidGcpAccessToken',
   InvalidGitHubAccessToken: 'InvalidGitHubAccessToken',
@@ -37,7 +41,6 @@ export const ProcessingStatus = {
     'FailedToFetchGCPOAuth2TokenInformation',
   FailedToFetchGCPIAMPermissions: 'FailedToFetchGCPIAMPermissions',
   FailedToCreateSops: 'FailedToCreateSops',
-  FailedToFetchFromAirtable: 'FailedToFetchFromAirtable',
   FailedToFetchInitRiScFromGitHub: 'FailedToFetchInitRiScFromGitHub',
   FailedToFetchInitRiScConfigFromGitHub:
     'FailedToFetchInitRiScConfigFromGitHub',
@@ -45,6 +48,66 @@ export const ProcessingStatus = {
 
 export type ProcessingStatus =
   (typeof ProcessingStatus)[keyof typeof ProcessingStatus];
+
+export const nonErrorProcessingStatuses = [
+  ProcessingStatus.UpdatedRiSc,
+  ProcessingStatus.DeletedRiSc,
+  ProcessingStatus.DeletedRiScRequiresApproval,
+  ProcessingStatus.UpdatedRiScRequiresNewApproval,
+  ProcessingStatus.UpdatedRiScAndCreatedPullRequest,
+  ProcessingStatus.CreatedRiSc,
+  ProcessingStatus.CreatedPullRequest,
+] as const satisfies readonly ProcessingStatus[];
+
+export type NonErrorProcessingStatus =
+  (typeof nonErrorProcessingStatuses)[number];
+
+export type ErrorProcessingStatus = Exclude<
+  ProcessingStatus,
+  NonErrorProcessingStatus
+>;
+
+export const gcpCryptoKeyErrorStatuses = [
+  ProcessingStatus.AccessTokensValidationFailure,
+  ProcessingStatus.InvalidGcpAccessToken,
+  ProcessingStatus.FailedToFetchGCPOAuth2TokenInformation,
+  ProcessingStatus.FailedToFetchGCPIAMPermissions,
+  ProcessingStatus.FailedToFetchGcpProjectIds,
+  ProcessingStatus.ErrorWhenFetchingGcpCryptoKeys,
+] as const satisfies readonly ErrorProcessingStatus[];
+
+export type GcpCryptoKeyErrorStatus =
+  (typeof gcpCryptoKeyErrorStatuses)[number];
+
+const processingStatusValues: readonly string[] =
+  Object.values(ProcessingStatus);
+const nonErrorProcessingStatusValues: readonly string[] =
+  nonErrorProcessingStatuses;
+const gcpCryptoKeyErrorStatusValues: readonly string[] =
+  gcpCryptoKeyErrorStatuses;
+
+export function isProcessingStatus(
+  status: unknown,
+): status is ProcessingStatus {
+  return typeof status === 'string' && processingStatusValues.includes(status);
+}
+
+export function isNonErrorProcessingStatus(
+  status: unknown,
+): status is NonErrorProcessingStatus {
+  return (
+    typeof status === 'string' &&
+    nonErrorProcessingStatusValues.includes(status)
+  );
+}
+
+export function isGcpCryptoKeyErrorStatus(
+  status: unknown,
+): status is GcpCryptoKeyErrorStatus {
+  return (
+    typeof status === 'string' && gcpCryptoKeyErrorStatusValues.includes(status)
+  );
+}
 
 /** Lifecycle status of a RiSc document. */
 export const RiScStatus = {

@@ -16,6 +16,7 @@ import {
   formatNOK,
   formatNumber,
   generateRandomId,
+  getAlertSeverity,
   isDeeplyEqual,
   parseISODateFromEncryptedROS,
   requiresNewApproval,
@@ -24,6 +25,49 @@ import {
   threatActorOptionsToTranslationKeys,
   vulnerabiltiesOptionsToTranslationKeys,
 } from './utilityfunctions';
+import { ProcessingStatus } from './types';
+
+describe('getAlertSeverity', () => {
+  const idleStatus = {
+    isLoading: false,
+    isError: false,
+    isSuccess: false,
+  };
+
+  it.each([
+    ProcessingStatus.FailedToFetchGcpProjectIds,
+    ProcessingStatus.InvalidGcpAccessToken,
+    ProcessingStatus.NoReadAccessToRepository,
+  ])('classifies %s as an error', status => {
+    expect(
+      getAlertSeverity(idleStatus, { status, statusMessage: 'Failed' }),
+    ).toBe('error');
+  });
+
+  it('classifies non-error processing statuses as success', () => {
+    expect(
+      getAlertSeverity(idleStatus, {
+        status: ProcessingStatus.CreatedRiSc,
+        statusMessage: 'Created',
+      }),
+    ).toBe('success');
+  });
+
+  it.each([
+    ['FutureCompletedStatus', 'success'],
+    ['FutureErrorStatus', 'error'],
+  ] as const)(
+    'uses the legacy fallback for unknown status %s',
+    (status, severity) => {
+      expect(
+        getAlertSeverity(idleStatus, {
+          status: status as ProcessingStatus,
+          statusMessage: 'Future response',
+        }),
+      ).toBe(severity);
+    },
+  );
+});
 
 describe('generateRandomId', () => {
   test('should generate a random id of specified length', () => {
