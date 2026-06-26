@@ -59,7 +59,10 @@ export function PredefinedScenariosBanner({
     );
   }
 
-  if (hasAnyPredefinedScenario(selectedRiSc, predefinedScenarios)) {
+  if (
+    predefinedScenarios.length === 0 ||
+    hasAnyPredefinedScenario(selectedRiSc, predefinedScenarios)
+  ) {
     return null;
   }
   const newScenarios = buildPredefinedScenarios(
