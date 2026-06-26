@@ -1,6 +1,6 @@
-export const schemaPath = '../risc_schema_en_v5_4.json';
+export const schemaPath = '../risc_schema_en_v5_5.json';
 
-export const latestSupportedVersion = '5.4';
+export const latestSupportedVersion = '5.5';
 
 export const BASE_NUMBER = 20.0;
 export const CONSEQUENCE_SCALE_OFFSET = 3;
@@ -22,6 +22,7 @@ export enum ThreatActorsOptions {
   OrganisedCrime = 'Organised crime',
   TerroristOrganisation = 'Terrorist organisation',
   NationGovernment = 'Nation/government',
+  ExternalSupplier = 'External supplier',
 }
 
 export enum VulnerabilitiesOptions {
@@ -33,6 +34,9 @@ export enum VulnerabilitiesOptions {
   InputTampering = 'Input tampering',
   InformationLeak = 'Information leak',
   ExcessiveUse = 'Excessive use',
+  InsufficientTraining = 'Insufficient training',
+  PoorGovernance = 'Poor governance',
+  ExcessivePrivilege = 'Excessive privilege',
 }
 
 export enum ActionStatusOptions {
