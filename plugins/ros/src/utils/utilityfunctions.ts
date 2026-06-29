@@ -432,7 +432,6 @@ export const threatActorOptionsToTranslationKeys: Record<
   [ThreatActorsOptions.TerroristOrganisation]:
     'threatActors.Terrorist organisation',
   [ThreatActorsOptions.NationGovernment]: 'threatActors.Nation/government',
-  [ThreatActorsOptions.ExternalSupplier]: 'threatActors.External supplier',
 };
 
 export const vulnerabiltiesOptionsToTranslationKeys: Record<
@@ -449,11 +448,6 @@ export const vulnerabiltiesOptionsToTranslationKeys: Record<
   [VulnerabilitiesOptions.InputTampering]: 'vulnerabilities.Input tampering',
   [VulnerabilitiesOptions.InformationLeak]: 'vulnerabilities.Information leak',
   [VulnerabilitiesOptions.ExcessiveUse]: 'vulnerabilities.Excessive use',
-  [VulnerabilitiesOptions.InsufficientTraining]:
-    'vulnerabilities.Insufficient training',
-  [VulnerabilitiesOptions.PoorGovernance]: 'vulnerabilities.Poor governance',
-  [VulnerabilitiesOptions.ExcessivePrivilege]:
-    'vulnerabilities.Excessive privilege',
 };
 
 export function computeStatusCount(riScWithMetadata: RiScWithMetadata) {
