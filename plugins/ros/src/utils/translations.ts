@@ -176,7 +176,7 @@ export const pluginRiScMessages = {
     approveButtonUpdate: 'Accept risks', // Approve RiSc
     approveButtonDelete: 'Accept deletion', // Approve deletion of RiSc
     predefinedScenariosRequired:
-      'Before you can approve, you must add at least one of the mandatory scenarios or ignore them.',
+      'Before you can approve, you must add the new mandatory scenarios.', // Før du kan godkjenne må du legge til de nye obligatoriske scenarioene.
     prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
     prStatus2Update: ' to publish the scorecard.', // Approve RiSc
     prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
@@ -983,7 +983,7 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'rosStatus.approveButtonUpdate': 'Godkjenn ROS',
           'rosStatus.approveButtonDelete': 'Godkjenn sletting',
           'rosStatus.predefinedScenariosRequired':
-            'Før du kan godkjenne må du legge til minst ett av de obligatoriske scenarioene eller ignorere dem.',
+            'Før du kan godkjenne må du legge til de nye obligatoriske scenarioene.',
           'rosStatus.prStatus': ' Merge pull requesten i ',
           'rosStatus.prStatus2Update': " for å publisere ROS'en.",
           'rosStatus.prStatus2Delete': " for å slette ROS'en.",
