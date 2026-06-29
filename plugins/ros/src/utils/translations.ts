@@ -176,7 +176,7 @@ export const pluginRiScMessages = {
     approveButtonUpdate: 'Accept risks', // Approve RiSc
     approveButtonDelete: 'Accept deletion', // Approve deletion of RiSc
     predefinedScenariosRequired:
-      'Before you can approve, you must add the new mandatory scenarios.', // Før du kan godkjenne må du legge til de nye obligatoriske.
+      'Before you can approve, you must add the new mandatory scenarios.', // Før du kan godkjenne må du legge til de nye obligatoriske scenarioene.
     prStatus: ' Merge the PR in ', // Avventer godkjenning av PR i Github
     prStatus2Update: ' to publish the scorecard.', // Approve RiSc
     prStatus2Delete: ' to delete the scorecard.', // Approve deletion of RiSc
