@@ -666,7 +666,6 @@ export const pluginRiScMessages = {
     'Organised crime': 'Organised crime',
     'Terrorist organisation': 'Terrorist organisation',
     'Nation/government': 'Nation/government',
-    'External supplier': 'External supplier',
   },
   vulnerabilities: {
     'Flawed design': 'Flawed design',
@@ -677,9 +676,6 @@ export const pluginRiScMessages = {
     'Input tampering': 'Input tampering',
     'Information leak': 'Information leak',
     'Excessive use': 'Excessive use',
-    'Insufficient training': 'Insufficient training',
-    'Poor governance': 'Poor governance',
-    'Excessive privilege': 'Excessive privilege',
   },
   threatActorsAndVulnerabilities: {
     title: 'Threat Actors and Vulnerabilities',
@@ -1454,7 +1450,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'threatActors.Organised crime': 'Organiserte kriminelle',
           'threatActors.Terrorist organisation': 'Terroristorganisasjon',
           'threatActors.Nation/government': 'Nasjon/stat',
-          'threatActors.External supplier': 'Ekstern leverandør',
 
           'vulnerabilities.Flawed design': 'Mangelfullt design',
           'vulnerabilities.Misconfiguration': 'Feilkonfigurering',
@@ -1464,9 +1459,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'vulnerabilities.Input tampering': 'Klussing med input',
           'vulnerabilities.Information leak': 'Informasjonslekkasje',
           'vulnerabilities.Excessive use': 'Overdreven bruk',
-          'vulnerabilities.Insufficient training': 'Utilstrekkelig opplæring',
-          'vulnerabilities.Poor governance': 'Svak styring',
-          'vulnerabilities.Excessive privilege': 'Overdrevne rettigheter',
 
           'threatActorsAndVulnerabilities.title':
             'Trusselaktører og sårbarheter',
