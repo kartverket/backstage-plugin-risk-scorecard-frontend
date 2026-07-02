@@ -14,6 +14,51 @@ export const probabilityOptions = Array.from({ length: 5 }, (_, i) =>
   Math.pow(BASE_NUMBER, i + PROBABILITY_SCALE_OFFSET),
 );
 
+export type ConsequenceCategory =
+  | 'operationalStability'
+  | 'health'
+  | 'privacy'
+  | 'reputation'
+  | 'environment'
+  | 'economical'
+  | 'goalAchievement';
+
+/**
+ * Single source of truth for the consequence table rows, in display order.
+ *
+ * Every dimension is ratable at all five levels (there is no void-cell pattern),
+ * so the table renders a full 7 × 5 grid. The matching `consequenceTable`
+ * translation keys (`columns.<key>` and `cells.<key>.<level>`) must stay in sync
+ * with this list.
+ */
+export const consequenceCategoryOrder: ConsequenceCategory[] = [
+  'operationalStability',
+  'health',
+  'privacy',
+  'reputation',
+  'environment',
+  'economical',
+  'goalAchievement',
+];
+
+export type ProbabilityCategory =
+  | 'frequency'
+  | 'intentional'
+  | 'goalAchievement';
+
+/**
+ * Single source of truth for the probability table rows, in display order.
+ *
+ * The table mirrors the consequence layout: each category is a row, described at
+ * all five probability levels. The matching `probabilityTable` translation keys
+ * (`columns.<key>` and `cells.<key>.<level>`) must stay in sync with this list.
+ */
+export const probabilityCategoryOrder: ProbabilityCategory[] = [
+  'frequency',
+  'intentional',
+  'goalAchievement',
+];
+
 export enum ThreatActorsOptions {
   ScriptKiddie = 'Script kiddie',
   Hacktivist = 'Hacktivist',
