@@ -260,6 +260,12 @@ export const pluginRiScMessages = {
       oldValue: 'No comments',
       newValue: 'Comment field added',
     },
+    migration55: {
+      changeExplanation:
+        'This migration updates preset values for probability and consequence.',
+      nokPerIncident: 'NOK/incident',
+      occurrencesPerYear: 'occurrences/year',
+    },
     removed: 'Removed',
   },
   comparisonDialog: {
@@ -335,6 +341,11 @@ export const pluginRiScMessages = {
       confirmButton: 'Yes, ignore',
     },
   },
+  matrixChangedBanner: {
+    title: 'The risk matrix has changed',
+    description:
+      'Kartverket has introduced a shared risk matrix. The risk matrix and the definitions of probability and consequence have changed. Please re-evaluate the probability and consequence of your existing scenarios.',
+  },
   riskMatrix: {
     title: 'Risk matrix', // Risk matrix or Risk overview
     estimatedRisk: {
@@ -383,30 +394,32 @@ export const pluginRiScMessages = {
     calculatedHowTitle: 'How do we calculate the estimated risk?',
     calculatedHow:
       'Probability (P) is measured in incidents per year and consequence (C) is measured in cost (in NOK) per incident. ' +
-      'The estimated risk is calculated as 20',
-    calculatedHowExponent: 'P+C-1',
+      'Estimated risk = probability × consequence, reported as NOK/year.',
+    riskSymbol: 'R',
+    probabilitySymbol: 'P',
+    consequenceSymbol: 'C',
     consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
     consequenceUnit: 'NOK/incident',
     consequenceDescription: {
-      oneworkday: '1 workday',
-      oneworkmonth: '1 work month',
-      oneworkyear: '1 work year',
-      '20workyears': '20 work years',
-      '400workyears': '400 work years',
+      hundredThousandNok: '100 000 NOK',
+      fiveHundredThousandNok: '500 000 NOK',
+      onePointFiveMillionNok: '1.5 million NOK',
+      fiveMillionNok: '5 million NOK',
+      thirtyMillionNok: '30 million NOK',
     },
     probabilityTitle: 'Probability (incidents/year)',
     probabilityUnit: 'incidents/year',
     probabilityDescription: {
-      every400years: 'Once every 400 years',
-      every20years: 'Once every 20 years',
-      annualy: 'Annually',
-      monthly: 'Monthly',
-      daily: 'Daily',
+      onceEvery100Years: 'Once every 100 years',
+      onceEvery10Years: 'Once every 10 years',
+      yearly: 'Yearly',
+      monthly: 'Monthly (~10 times per year)',
+      daily: 'Daily (~100 times per year)',
     },
     example: {
-      part1: 'A risk scenario with probability ',
-      part2: ' and consequence ',
-      part3: ' has an estimated risk of ',
+      part1: 'Probability level ',
+      part2: ' and consequence level ',
+      part3: ' gives an estimated risk of ',
     },
     currentRisk: {
       title: 'Current risk calculations',
@@ -599,46 +612,70 @@ export const pluginRiScMessages = {
   },
   consequenceTable: {
     rows: {
-      '1': 'Negligible', // Insignificant, negligible (ubetydelig)
-      '2': 'Small', // Liten
+      '1': 'Negligible',
+      '2': 'Low',
       '3': 'Moderate',
-      '4': 'Severe', // Alvorlig
-      '5': 'Critical', // Catastrophic eller Critical
+      '4': 'Serious',
+      '5': 'Very serious',
     },
     columns: {
-      health: 'Life and health', // Health and safety, Life and limb, Health and lives (Liv og helse)
-      economical: 'Financial', // Financial consequences, economic implications
-      privacy: 'Privacy', // Personvern
-      reputation: 'Reputation and trust', // Reputation and trust, confidence, faith (Omdømme og tillit)
+      operationalStability: 'Operational stability',
+      health: 'Life and health',
+      privacy: 'Privacy',
+      reputation: 'Trust/reputation',
+      environment: 'Environment',
+      economical: 'Financial',
+      goalAchievement: 'Goal achievement',
     },
     cells: {
-      health: {
-        '1': 'Impact on life and health cannot be rated less severe than 3', // Liv og helse kan ikke være mindre alvorlig enn 3
-        '2': 'Impact on life and health cannot be rated less severe than 3',
-        '3': 'Temporary or less severe health implications. Temporary or minor damage to local environment.', // implications, effects or consequence? Temporary or minor? Midlertidige eller mindre alvorlige helsemessige konsekvenser. Midlertidig eller mindre skade på miljøet
-        '4': 'Permanent or severe health implications for a few people. Moderate damage to the environment in a limited area.',
-        '5': 'Death or permanent severe health implications for many people. Severe damage to the environment across large areas.',
+      operationalStability: {
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
       },
-      economical: {
-        '1': 'Temporary minor financial loss.\n\nMay be fixed with 1 workday.',
-        '2': 'Temporary financial loss.\n\nMay be fixed with 1 work month.',
-        '3': 'Financial loss of some duration.\n\nMay be fixed with 1 work year.',
-        '4': 'Financial loss of considerable duration for the organization and any third parties.\n\nMay be fixed with 20 work years.',
-        '5': 'Permanent and severe financial loss.\n\nMay be fixed with 400 work years.',
+      health: {
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
       },
       privacy: {
-        '1': 'The right to privacy is violated for a very short period and does not involve sensitive categories or vulnerable groups', // særlige kategorier = sensitive kategorier? special/particular/sensitive categories
-        '2': 'The right to privacy is violated for a longer period and involves sensitive categories or vulnerable groups.',
-        '3': 'Violations of the rights and freedoms for the registered people.',
-        '4': 'Severe violations and breaches of the rights and freedoms for the registered people, as well as violations of the law.',
-        '5': 'Impact on privacy cannot be rated more severe than 4',
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
       },
       reputation: {
-        '1': 'Temporary loss of reputation and little impact on trust',
-        '2': 'Negative attention in national media that leads to loss of reputation.\n\nMay reduce trust.',
-        '3': 'Lasting negative attention in national and international media that leads to severe loss of reputation.\n\nSevere loss of trust from authorities.\n\nUsers who do not dare or want to use the services.', // lasting, severe, severe loss, severe loss of trust, do not dare or want to use the services
-        '4': 'Impact on reputation and trust cannot be rated more severe than 3',
-        '5': 'Impact on reputation and trust cannot be rated more severe than 3',
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
+      },
+      environment: {
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
+      },
+      economical: {
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
+      },
+      goalAchievement: {
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
       },
     },
   },
@@ -650,12 +687,33 @@ export const pluginRiScMessages = {
       '4': 'High', // stor
       '5': 'Very high', // svært stor
     },
+    columns: {
+      frequency: 'Event frequency',
+      intentional: 'Intentional events',
+      goalAchievement: 'Goal achievement',
+    },
     cells: {
-      '1': 'The scenario is unlikely to occur.\n\nIt occurs less often than every 400 years',
-      '2': 'The scenario is unlikely to occur.\n\nIt can occur every 20 years',
-      '3': 'The scenario can occur.\n\nIt can occur yearly',
-      '4': 'The scenario will very likely occur.\n\nIt can occur monthly',
-      '5': 'The scenario is almost guaranteed to occur.\n\nIt can occur daily',
+      frequency: {
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
+      },
+      intentional: {
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
+      },
+      goalAchievement: {
+        '1': 'TODO: add English',
+        '2': 'TODO: add English',
+        '3': 'TODO: add English',
+        '4': 'TODO: add English',
+        '5': 'TODO: add English',
+      },
     },
   },
   threatActors: {
@@ -1084,6 +1142,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration54.title': 'Kommentarfelt lagt til',
           'migrationDialog.migration54.oldValue': 'Ingen kommentarer',
           'migrationDialog.migration54.newValue': 'Kommentarfelt lagt til',
+          'migrationDialog.migration55.changeExplanation':
+            'Denne migreringen oppdaterer standardverdiene for sannsynlighet og konsekvens.',
+          'migrationDialog.migration55.nokPerIncident': 'NOK/hendelse',
+          'migrationDialog.migration55.occurrencesPerYear': 'hendelser/år',
           'migrationDialog.removed': 'Fjernet',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
@@ -1139,6 +1201,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'predefinedScenarios.ignoreDialog.confirmButton': 'Ja, ignorer',
           'predefinedScenarios.error':
             'Det finnes obligatoriske scenarioer, men de kan av en eller annen grunn ikke hentes. Prøv å laste siden på nytt, og hvis det ikke funker ta kontakt med team SKVIS.',
+          'matrixChangedBanner.title': 'Risikomatrisen er endret',
+          'matrixChangedBanner.description':
+            'Kartverket har innført en felles risikomatrise. Risikomatrisen og definisjonene av sannsynlighet og konsekvens er endret. Vennligst vurder sannsynlighet og konsekvens for eksisterende scenarioer på nytt.',
           'riskMatrix.title': 'Risikomatrise',
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',
           'riskMatrix.estimatedRisk.suffix.thousand': '{{count}} tusen',
@@ -1182,27 +1247,34 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.calculatedHowTitle':
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
-            'Sannsynlighet (S) måles i hendelser per år og konsekvens (K) måles i kroner per hendelse. Den estimerte risikoen blir da: 20',
-          'infoDialog.calculatedHowExponent': 'S+K-1',
+            'Sannsynlighet (S) måles i hendelser per år og konsekvens (K) måles i kroner per hendelse. Estimert risiko = sannsynlighet × konsekvens, oppgitt som kr/år.',
+          'infoDialog.riskSymbol': 'R',
+          'infoDialog.probabilitySymbol': 'S',
+          'infoDialog.consequenceSymbol': 'K',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
           'infoDialog.consequenceUnit': 'kr/hendelse',
-          'infoDialog.consequenceDescription.oneworkday': '1 dagsverk',
-          'infoDialog.consequenceDescription.oneworkmonth': '1 månedsverk',
-          'infoDialog.consequenceDescription.oneworkyear': '1 årsverk',
-          'infoDialog.consequenceDescription.20workyears': '20 årsverk',
-          'infoDialog.consequenceDescription.400workyears': '400 årsverk',
+          'infoDialog.consequenceDescription.hundredThousandNok': '100 000 kr',
+          'infoDialog.consequenceDescription.fiveHundredThousandNok':
+            '500 000 kr',
+          'infoDialog.consequenceDescription.onePointFiveMillionNok':
+            '1,5 millioner kr',
+          'infoDialog.consequenceDescription.fiveMillionNok': '5 millioner kr',
+          'infoDialog.consequenceDescription.thirtyMillionNok':
+            '30 millioner kr',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
-          'infoDialog.probabilityUnit': 'hendelse/år',
-          'infoDialog.probabilityDescription.every400years':
-            '1 gang hvert 400. år',
-          'infoDialog.probabilityDescription.every20years':
-            '1 gang hvert 20. år',
-          'infoDialog.probabilityDescription.annualy': 'Årlig',
-          'infoDialog.probabilityDescription.monthly': 'Månedlig',
-          'infoDialog.probabilityDescription.daily': 'Daglig',
-          'infoDialog.example.part1': 'Et risikoscenario med sannsynlighet ',
-          'infoDialog.example.part2': ' og konsekvens ',
-          'infoDialog.example.part3': ' har en estimert risiko på ',
+          'infoDialog.probabilityUnit': 'hendelser/år',
+          'infoDialog.probabilityDescription.onceEvery100Years':
+            '1 gang hvert 100. år',
+          'infoDialog.probabilityDescription.onceEvery10Years':
+            '1 gang hvert 10. år',
+          'infoDialog.probabilityDescription.yearly': 'Årlig',
+          'infoDialog.probabilityDescription.monthly':
+            'Månedlig (~10 ganger i året)',
+          'infoDialog.probabilityDescription.daily':
+            'Daglig (~100 ganger i året)',
+          'infoDialog.example.part1': 'Sannsynlighetsnivå ',
+          'infoDialog.example.part2': ' og konsekvensnivå ',
+          'infoDialog.example.part3': ' gir en estimert risiko på ',
           'infoDialog.units.nokPerIncident': 'kr/hendelse',
           'infoDialog.units.incidentsPerYear': 'hendelser/år',
           'infoDialog.units.nokPerYear': 'kr/år',
@@ -1381,68 +1453,120 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'scenarioDrawer.measureTab.urlDescription':
             'For eksempel lenke til Jira-oppgave',
           'consequenceTable.rows.1': 'Ubetydelig',
-          'consequenceTable.rows.2': 'Liten',
+          'consequenceTable.rows.2': 'Lav',
           'consequenceTable.rows.3': 'Moderat',
           'consequenceTable.rows.4': 'Alvorlig',
-          'consequenceTable.rows.5': 'Kritisk',
+          'consequenceTable.rows.5': 'Svært alvorlig',
+          'consequenceTable.columns.operationalStability': 'Driftsstabilitet',
           'consequenceTable.columns.health': 'Liv og helse',
-          'consequenceTable.columns.economical': 'Økonomi og drift',
           'consequenceTable.columns.privacy': 'Personvern',
-          'consequenceTable.columns.reputation': 'Omdømme og tillit',
-          'consequenceTable.cells.health.1':
-            'Liv og helse kan ikke være mindre alvorlig enn 3',
+          'consequenceTable.columns.reputation': 'Tillit/omdømme',
+          'consequenceTable.columns.environment': 'Ytre miljø',
+          'consequenceTable.columns.economical': 'Økonomi',
+          'consequenceTable.columns.goalAchievement': 'Måloppnåelse',
+          'consequenceTable.cells.operationalStability.1':
+            'Ingen eller svært kort driftsforstyrrelse.',
+          'consequenceTable.cells.operationalStability.2':
+            'Mindre driftsforstyrrelse, rask gjenoppretting/normalisering uten ekstern påvirkning.',
+          'consequenceTable.cells.operationalStability.3':
+            'Midlertidig bortfall av enkelte tjenester og funksjoner eller redusert ytelse over kortere tid.',
+          'consequenceTable.cells.operationalStability.4':
+            'Betydelig svikt i kritiske tjenester og funksjoner.',
+          'consequenceTable.cells.operationalStability.5':
+            'Langvarig bortfall av kritiske tjeneste og/eller funksjoner.',
+          'consequenceTable.cells.health.1': 'Ingen personskade.',
           'consequenceTable.cells.health.2':
-            'Liv og helse kan ikke være mindre alvorlig enn 3',
+            'Mindre skade uten varige konsekvenser.',
           'consequenceTable.cells.health.3':
-            'Lettere skade på personer.\n\nNoe skade på lokalt miljø.',
-          'consequenceTable.cells.health.4':
-            'Et fåtall alvorlige personskader.\n\nModerat skade på miljø på et begrenset område.',
+            'Personskade som krever behandling.',
+          'consequenceTable.cells.health.4': 'Alvorlig personskade.',
           'consequenceTable.cells.health.5':
-            'Dødsfall. Svært alvorlig skade på miljø over store områder.',
-          'consequenceTable.cells.economical.1':
-            'Ubetydelig økonomisk tap.\n\nKan fikses med 1 dagsverk.',
-          'consequenceTable.cells.economical.2':
-            'Mindre økonomisk tap.\n\nKan fikses med 1 månedsverk.',
-          'consequenceTable.cells.economical.3':
-            'Moderat økonomisk tap.\n\nKan fikses med 1 årsverk.',
-          'consequenceTable.cells.economical.4':
-            'Større økonomisk tap.\n\nKan fikses med 20 årsverk.',
-          'consequenceTable.cells.economical.5':
-            'Kritisk økonomisk tap.\n\nKan fikses med 400 årsverk.',
-          'consequenceTable.cells.privacy.1': 'Ingen brudd.',
-          'consequenceTable.cells.privacy.2': 'Mindre brudd.',
+            'Tap av liv eller svært alvorlige skader.',
+          'consequenceTable.cells.privacy.1':
+            'Ingen eller ubetydelig eksponering av persondata.',
+          'consequenceTable.cells.privacy.2':
+            'Begrenset personvernbrudd, få berørte over kort tid.',
           'consequenceTable.cells.privacy.3':
-            'Brudd på registrertes rettigheter og friheter.',
+            'Den registrertes rett til personvern krenkes. Reell, men begrenset konsekvens for de registrerte. Gjelder flere berørte personer.',
           'consequenceTable.cells.privacy.4':
-            'Meget alvorlige brudd på registrertes rettigheter og friheter, samt lovbrudd.',
+            'Den registrertes rett til personvern krenkes alvorlig, herunder (men ikke begrenset til) økonomisk tap, diskriminering eller identitetstyveri for de registrerte. Omfatter mange personer og mulig myndighetsoppfølging.',
           'consequenceTable.cells.privacy.5':
-            'Personvern kan ikke være mer alvorlig enn 4',
-          'consequenceTable.cells.reputation.1':
-            'Liten fare for omdømmetap og liten innvikrning på tillit',
+            'Omfattende og irreversible konsekvenser for mange registrerte. Omfatter mange personer og gir myndighetsoppfølging.',
+          'consequenceTable.cells.reputation.1': 'Ingen merkbar påvirkning.',
           'consequenceTable.cells.reputation.2':
-            'Negativ oppmerksomhet i regionale og nasjonale medier som fører til omdømmetap.\n\nKan redusere tillit.',
+            'Lokal eller kortvarig negativ oppmerksomhet.',
           'consequenceTable.cells.reputation.3':
-            'Negativ oppmerksomhet i nasjonale og internasjonale medier som fører til alvorlig omdømmetap.\n\nAlvorlig redusert tillit fra myndigheter.\n\nBrukere som ikke tør / vil bruke tjenestene.',
+            'Negativ omtale eller redusert tillit hos enkelte interessenter.',
           'consequenceTable.cells.reputation.4':
-            'Omdømme og tillit kan ikke være mer alvorlig enn 3',
+            'Betydelig negativ omtale regionalt/nasjonalt. Mulige langvarige konsekvenser knyttet til samarbeid og kunder/brukere.',
           'consequenceTable.cells.reputation.5':
-            'Omdømme og tillit kan ikke være mer alvorlig enn 3',
+            'Alvorlig og langvarig skade på omdømme. Varig tap av tillit, nasjonal medieoppmerksomhet. Kan bidra til manglende tillit til staten/destabilisering.',
+          'consequenceTable.cells.environment.1': 'Ingen miljøskade.',
+          'consequenceTable.cells.environment.2': 'Mindre miljøpåvirkning.',
+          'consequenceTable.cells.environment.3':
+            'Miljøpåvirkning som krever opprydding.',
+          'consequenceTable.cells.environment.4': 'Betydelig miljøskade.',
+          'consequenceTable.cells.environment.5':
+            'Alvorlig eller varig miljøskade.',
+          'consequenceTable.cells.economical.1':
+            'Mindre enn / opptil 0,25 mill.',
+          'consequenceTable.cells.economical.2':
+            'Vil medføre kostnader fra 0,25 til 1 mill.',
+          'consequenceTable.cells.economical.3':
+            'Vil medføre kostnader fra 1–3 mill.',
+          'consequenceTable.cells.economical.4':
+            'Vil medføre kostnader fra 3–15 mill.',
+          'consequenceTable.cells.economical.5':
+            'Vil medføre kostnader fra 15 mill. og oppover.',
+          'consequenceTable.cells.goalAchievement.1':
+            'Mindre avvik fra måloppnåelse. Har ingen, eller svært liten, påvirkning på virksomhetens samfunnsoppdrag og overordnede resultater. Har ingen innvirkning på bruker-/samfunnseffekter.',
+          'consequenceTable.cells.goalAchievement.2':
+            'Noe redusert måloppnåelse innen enkelte områder. Begrenset påvirkning på virksomhetens samfunnsoppdrag og overordnede resultater. Synlig for eksterne, men ingen reell innvirkning på bruker-/samfunnseffekter.',
+          'consequenceTable.cells.goalAchievement.3':
+            'Tydelig manglende måloppnåelse på ett eller flere områder. Påvirker virksomhetens samfunnsoppdrag og overordnede resultater. Kortvarig innvirkning på bruker-/samfunnseffekter.',
+          'consequenceTable.cells.goalAchievement.4':
+            'Påvirker Kartverkets evne til å løse samfunnsoppdraget betydelig, gir manglende måloppnåelse innen sentrale områder som igjen gir alvorlige konsekvenser for bruker-/samfunnseffekt. Har innvirkning på samfunnskritiske funksjoner.',
+          'consequenceTable.cells.goalAchievement.5':
+            'Svært alvorlig påvirkning. Truer Kartverkets evne til å løse samfunnsoppdraget og å oppnå overordnede mål. Har omfattende og svært alvorlige konsekvenser for bruker-/samfunnseffekt. Har betydelig innvirkning på samfunnskritiske funksjoner.',
 
           'probabilityTable.rows.1': 'Svært liten',
           'probabilityTable.rows.2': 'Liten',
           'probabilityTable.rows.3': 'Moderat',
           'probabilityTable.rows.4': 'Stor',
           'probabilityTable.rows.5': 'Svært stor',
-          'probabilityTable.cells.1':
-            'Scenarioet er usannsynlig å inntreffe.\n\nDet inntreffer sjeldnere enn hvert 400. år',
-          'probabilityTable.cells.2':
-            'Scenarioet er usannsynlig å inntreffe.\n\nDet kan inntreffe hvert 20. år',
-          'probabilityTable.cells.3':
-            'Scenarioet kan inntreffe.\n\nDet kan inntreffe nærmest årlig',
-          'probabilityTable.cells.4':
-            'Scenarioet vil med stor sannsynlighet inntreffe.\n\nDet kan inntreffe nærmest månedlig',
-          'probabilityTable.cells.5':
-            'Scenarioet er nesten garantert å inntreffe.\n\nDet kan inntreffe nærmest daglig',
+          'probabilityTable.columns.frequency': 'Hendelsesfrekvens',
+          'probabilityTable.columns.intentional': 'Tilsiktede hendelser',
+          'probabilityTable.columns.goalAchievement': 'Måloppnåelse',
+          'probabilityTable.cells.frequency.1':
+            'Hendelsen er teoretisk mulig, men lite realistisk. Det er ikke kjente eksempler på at hendelsen har skjedd, verken i egen virksomhet eller i sammenlignbare virksomheter eller systemer. Tidsperspektivet for hendelser mer enn 30 år og oppover.',
+          'probabilityTable.cells.frequency.2':
+            'Hendelsen kan inntreffe, men skjer sjelden. Det er eksempler på at det har skjedd, enten i egen virksomhet eller andre sammenlignbare virksomheter eller systemer tilbake i tid. Tidsperspektivet for mulige hendelser er innenfor 10–30 år.',
+          'probabilityTable.cells.frequency.3':
+            'Hendelsen har kjent historikk – den har skjedd flere ganger, enten i egen virksomhet eller andre sammenlignbare virksomheter eller systemer, med frekvens årlig eller med noen års mellomrom (1–10 år).',
+          'probabilityTable.cells.frequency.4':
+            'Hendelsen forekommer jevnlig, flere ganger i året eller månedlig, enten i egen virksomhet eller andre sammenlignbare virksomheter eller systemer.',
+          'probabilityTable.cells.frequency.5':
+            'Hendelsen er svært sannsynlig eller uunngåelig. Den forekommer ofte, daglig eller ukentlig, enten i egen virksomhet eller andre sammenlignbare virksomheter eller systemer.',
+          'probabilityTable.cells.intentional.1':
+            'Det er usannsynlig at trusselaktøren initierer trusselhendelsen. Krever flere aktive feil eller uvanlige forutsetninger samtidig, og/eller bistand fra innsider.',
+          'probabilityTable.cells.intentional.2':
+            'Det er lite sannsynlig at trusselaktøren initierer trusselhendelsen. Forutsetter spesifikke svakheter eller feilkonfigurasjoner som inntreffer samtidig.',
+          'probabilityTable.cells.intentional.3':
+            'Det er noe sannsynlig at trusselaktøren kan initiere trusselhendelsen. Aktører utforsker og tester for sårbarheter.',
+          'probabilityTable.cells.intentional.4':
+            'Trusselaktør vil med stor sannsynlighet initiere trusselhendelsen. Sårbarheter er kjent for profesjonelle aktører. Det er etablert kontroller, men disse er ikke fullstendig implementert.',
+          'probabilityTable.cells.intentional.5':
+            'Det er nesten garantert at en trusselaktør vil initiere trusselhendelsen. Sårbarheter er kjent bredt, kontroller mangler, er utdaterte eller omgås rutinemessig.',
+          'probabilityTable.cells.goalAchievement.1':
+            'Målet/oppdraget er kjent og gjennomføres i ordinær drift. Det er få innsatsfaktorer, ingen ekstern påvirkning, lave kostnader, oversiktlig kostnadsbilde og tilstrekkelig ramme.',
+          'probabilityTable.cells.goalAchievement.2':
+            'Målbilde og brukerbehov er kjent og avklart. Få regulatoriske krav. Kjent teknologisk løsning med kun behov for kontinuerlig forbedring og små tilpasninger. Ingen behov for spesialisert kompetanse. Det er tilstrekkelig kompetanse internt og kapasitet kan omfordeles. Liten avhengighet av interne og eksterne. Oversiktlig og lite komplekst kostnadsbilde. Tilstrekkelige rammer.',
+          'probabilityTable.cells.goalAchievement.3':
+            'Målbilde og brukerbehov er kjent og avklart. Mindre komplisert fagfelt mtp. regulatoriske krav. Kjent teknologisk løsning med kun behov for kontinuerlig forbedring og mindre enkle nyutviklinger. Mindre behov for spesialisert kompetanse, tilstrekkelig kompetanse internt, men kapasitet kan være en utfordring. Mindre avhengighet av interne og eksterne. Relativt oversiktlig kostnadsbilde og i utgangspunktet tilstrekkelig tildeling.',
+          'probabilityTable.cells.goalAchievement.4':
+            'Komplekst målbilde og flere regulatoriske krav. Uavklart teknologisk løsning/behov for utvikling av nye løsninger. Kjent brukerbehov, men endringer må påregnes. Behov for spesialisert kompetanse som kun delvis er dekket internt. Noe avhengighet av interne og eksterne, kjente interne sårbarheter knyttet til kapasitet/organisasjon/modenhet el. Vesentlige endringer har/kan medføre for lave rammer. Store kostnader og relativt komplekst kostnadsbilde.',
+          'probabilityTable.cells.goalAchievement.5':
+            'Komplekst målbilde og mange regulatoriske krav, ukjent teknologisk løsning/behov for utvikling av nye løsninger, ukjent brukerbehov eller raske endringer i brukerbehov, behov for spesialisert kompetanse, ikke tilstrekkelig kompetanse internt, stor avhengighet av interne og eksterne, kjente interne sårbarheter knyttet til kapasitet/organisasjon/modenhet el. Ikke tilstrekkelig tildeling og rammer. Høye kostnader og komplekst kostnadsbilde.',
           'threatActors.Script kiddie': 'Datasnok',
           'threatActors.Hacktivist': 'Hacktivist',
           'threatActors.Reckless employee': 'Uheldig ansatt',
