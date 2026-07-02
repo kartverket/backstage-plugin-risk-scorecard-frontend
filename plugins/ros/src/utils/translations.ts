@@ -335,6 +335,11 @@ export const pluginRiScMessages = {
       confirmButton: 'Yes, ignore',
     },
   },
+  matrixChangedBanner: {
+    title: 'The risk matrix has changed',
+    description:
+      'Kartverket has introduced a shared risk matrix. The risk matrix and the definitions of probability and consequence have changed. Please re-evaluate the probability and consequence of your existing scenarios.',
+  },
   riskMatrix: {
     title: 'Risk matrix', // Risk matrix or Risk overview
     estimatedRisk: {
@@ -1184,6 +1189,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'predefinedScenarios.ignoreDialog.confirmButton': 'Ja, ignorer',
           'predefinedScenarios.error':
             'Det finnes obligatoriske scenarioer, men de kan av en eller annen grunn ikke hentes. Prøv å laste siden på nytt, og hvis det ikke funker ta kontakt med team SKVIS.',
+          'matrixChangedBanner.title': 'Risikomatrisen er endret',
+          'matrixChangedBanner.description':
+            'Kartverket har innført en felles risikomatrise. Risikomatrisen og definisjonene av sannsynlighet og konsekvens er endret. Vennligst vurder sannsynlighet og konsekvens for eksisterende scenarioer på nytt.',
           'riskMatrix.title': 'Risikomatrise',
           'riskMatrix.estimatedRisk.title': 'Estimert risiko',
           'riskMatrix.estimatedRisk.suffix.thousand': '{{count}} tusen',

@@ -20,6 +20,7 @@ import { pluginRiScTranslationRef } from '../../utils/translations.ts';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import styles from '../common/alertBar.module.css';
 import { RiScDescriptionCard } from '../riScInfo/RiScDescriptionCard.tsx';
+import { MatrixChangedBanner } from './MatrixChangedBanner.tsx';
 import riscStyles from '../riScInfo/RiScSelectionCard.module.css';
 import { ErrorState } from '../riScInfo/ErrorState.tsx';
 import { LockedRiScView } from '../riScInfo/LockedRiScView.tsx';
@@ -210,6 +211,7 @@ export function RiScPlugin() {
                           isDismissed={predefinedScenariosDismissed}
                           dismiss={dismissPredefinedScenarios}
                         />
+                        <MatrixChangedBanner />
                         <RiScDescriptionCard
                           riScWithMetadata={selectedRiSc}
                           edit={openEditRiScDialog}
