@@ -86,30 +86,33 @@ export enum ActionStatusOptions {
   NotRelevant = 'Not relevant',
 }
 
+// Colors follow the shared Kartverket risk matrix (backend docs/new-matrix):
+// risk value = probability level × consequence level, banded as
+// 1–5 green, 6–10 yellow, 11–15 orange, 16–25 red.
 const grn = 'var(--ros-green-100)';
-const ylw = 'var(--ros-orange-100)';
+const ylw = 'var(--ros-yellow-100)';
+const org = 'var(--ros-orange-100)';
 const red = 'var(--ros-red-300)';
-const drd = 'var(--ros-red-400)';
 
 export const riskMatrix = [
-  [ylw, red, red, drd, drd],
-  [ylw, ylw, red, red, drd],
-  [grn, ylw, ylw, red, red],
-  [grn, grn, ylw, ylw, red],
-  [grn, grn, grn, ylw, ylw],
+  [grn, ylw, org, red, red],
+  [grn, ylw, org, red, red],
+  [grn, ylw, ylw, org, org],
+  [grn, grn, ylw, ylw, ylw],
+  [grn, grn, grn, grn, grn],
 ];
 
 const sGrn = 'var(--ros-green-300)';
-const sYlw = 'var(--ros-orange-300)';
+const sYlw = 'var(--ros-yellow-300)';
+const sOrg = 'var(--ros-orange-300)';
 const sRed = 'var(--ros-red-500)';
-const sDrd = 'var(--ros-red-600)';
 
 export const riskMatrixStroke = [
-  [sYlw, sRed, sRed, sDrd, sDrd],
-  [sYlw, sYlw, sRed, sRed, sDrd],
-  [sGrn, sYlw, sYlw, sRed, sRed],
-  [sGrn, sGrn, sYlw, sYlw, sRed],
-  [sGrn, sGrn, sGrn, sYlw, sYlw],
+  [sGrn, sYlw, sOrg, sRed, sRed],
+  [sGrn, sYlw, sOrg, sRed, sRed],
+  [sGrn, sYlw, sYlw, sOrg, sOrg],
+  [sGrn, sGrn, sYlw, sYlw, sYlw],
+  [sGrn, sGrn, sGrn, sGrn, sGrn],
 ];
 
 export const urlRegExpPattern: RegExp =
