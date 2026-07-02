@@ -260,6 +260,12 @@ export const pluginRiScMessages = {
       oldValue: 'No comments',
       newValue: 'Comment field added',
     },
+    migration55: {
+      changeExplanation:
+        'This migration updates preset values for probability and consequence.',
+      nokPerIncident: 'NOK/incident',
+      occurrencesPerYear: 'occurrences/year',
+    },
     removed: 'Removed',
   },
   comparisonDialog: {
@@ -388,30 +394,29 @@ export const pluginRiScMessages = {
     calculatedHowTitle: 'How do we calculate the estimated risk?',
     calculatedHow:
       'Probability (P) is measured in incidents per year and consequence (C) is measured in cost (in NOK) per incident. ' +
-      'The estimated risk is calculated as 20',
-    calculatedHowExponent: 'P+C-1',
+      'Estimated risk = probability × consequence, reported as NOK/year.',
     consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
     consequenceUnit: 'NOK/incident',
     consequenceDescription: {
-      oneworkday: '1 workday',
-      oneworkmonth: '1 work month',
-      oneworkyear: '1 work year',
-      '20workyears': '20 work years',
-      '400workyears': '400 work years',
+      hundredThousandNok: '100 000 NOK',
+      fiveHundredThousandNok: '500 000 NOK',
+      onePointFiveMillionNok: '1.5 million NOK',
+      fiveMillionNok: '5 million NOK',
+      thirtyMillionNok: '30 million NOK',
     },
     probabilityTitle: 'Probability (incidents/year)',
     probabilityUnit: 'incidents/year',
     probabilityDescription: {
-      every400years: 'Once every 400 years',
-      every20years: 'Once every 20 years',
-      annualy: 'Annually',
-      monthly: 'Monthly',
-      daily: 'Daily',
+      onceEvery100Years: 'Once every 100 years',
+      onceEvery10Years: 'Once every 10 years',
+      yearly: 'Yearly',
+      monthly: 'Monthly (~10 times per year)',
+      daily: 'Daily (~100 times per year)',
     },
     example: {
-      part1: 'A risk scenario with probability ',
-      part2: ' and consequence ',
-      part3: ' has an estimated risk of ',
+      part1: 'Probability level ',
+      part2: ' and consequence level ',
+      part3: ' gives an estimated risk of ',
     },
     currentRisk: {
       title: 'Current risk calculations',
@@ -1134,6 +1139,10 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'migrationDialog.migration54.title': 'Kommentarfelt lagt til',
           'migrationDialog.migration54.oldValue': 'Ingen kommentarer',
           'migrationDialog.migration54.newValue': 'Kommentarfelt lagt til',
+          'migrationDialog.migration55.changeExplanation':
+            'Denne migreringen oppdaterer standardverdiene for sannsynlighet og konsekvens.',
+          'migrationDialog.migration55.nokPerIncident': 'NOK/hendelse',
+          'migrationDialog.migration55.occurrencesPerYear': 'hendelser/år',
           'migrationDialog.removed': 'Fjernet',
           'comparisonDialog.noChanges': 'Ingen endringer',
           'comparisonDialog.changes': 'Endringer av RoSen',
@@ -1235,27 +1244,31 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.calculatedHowTitle':
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
-            'Sannsynlighet (S) måles i hendelser per år og konsekvens (K) måles i kroner per hendelse. Den estimerte risikoen blir da: 20',
-          'infoDialog.calculatedHowExponent': 'S+K-1',
+            'Sannsynlighet (S) måles i hendelser per år og konsekvens (K) måles i kroner per hendelse. Estimert risiko = sannsynlighet × konsekvens, oppgitt som kr/år.',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
           'infoDialog.consequenceUnit': 'kr/hendelse',
-          'infoDialog.consequenceDescription.oneworkday': '1 dagsverk',
-          'infoDialog.consequenceDescription.oneworkmonth': '1 månedsverk',
-          'infoDialog.consequenceDescription.oneworkyear': '1 årsverk',
-          'infoDialog.consequenceDescription.20workyears': '20 årsverk',
-          'infoDialog.consequenceDescription.400workyears': '400 årsverk',
+          'infoDialog.consequenceDescription.hundredThousandNok': '100 000 kr',
+          'infoDialog.consequenceDescription.fiveHundredThousandNok':
+            '500 000 kr',
+          'infoDialog.consequenceDescription.onePointFiveMillionNok':
+            '1,5 millioner kr',
+          'infoDialog.consequenceDescription.fiveMillionNok': '5 millioner kr',
+          'infoDialog.consequenceDescription.thirtyMillionNok':
+            '30 millioner kr',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
-          'infoDialog.probabilityUnit': 'hendelse/år',
-          'infoDialog.probabilityDescription.every400years':
-            '1 gang hvert 400. år',
-          'infoDialog.probabilityDescription.every20years':
-            '1 gang hvert 20. år',
-          'infoDialog.probabilityDescription.annualy': 'Årlig',
-          'infoDialog.probabilityDescription.monthly': 'Månedlig',
-          'infoDialog.probabilityDescription.daily': 'Daglig',
-          'infoDialog.example.part1': 'Et risikoscenario med sannsynlighet ',
-          'infoDialog.example.part2': ' og konsekvens ',
-          'infoDialog.example.part3': ' har en estimert risiko på ',
+          'infoDialog.probabilityUnit': 'hendelser/år',
+          'infoDialog.probabilityDescription.onceEvery100Years':
+            '1 gang hvert 100. år',
+          'infoDialog.probabilityDescription.onceEvery10Years':
+            '1 gang hvert 10. år',
+          'infoDialog.probabilityDescription.yearly': 'Årlig',
+          'infoDialog.probabilityDescription.monthly':
+            'Månedlig (~10 ganger i året)',
+          'infoDialog.probabilityDescription.daily':
+            'Daglig (~100 ganger i året)',
+          'infoDialog.example.part1': 'Sannsynlighetsnivå ',
+          'infoDialog.example.part2': ' og konsekvensnivå ',
+          'infoDialog.example.part3': ' gir en estimert risiko på ',
           'infoDialog.units.nokPerIncident': 'kr/hendelse',
           'infoDialog.units.incidentsPerYear': 'hendelser/år',
           'infoDialog.units.nokPerYear': 'kr/år',

@@ -37,6 +37,7 @@ const emptyDifferenceFetchState: DifferenceFetchState = {
       migrationVersions: undefined,
       migrationChanges40: undefined,
       migrationChanges41: undefined,
+      migrationChanges55: undefined,
     },
     valuations: [],
     scenarios: [],

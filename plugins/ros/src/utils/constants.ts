@@ -1,18 +1,10 @@
-export const schemaPath = '../risc_schema_en_v5_4.json';
+export const schemaPath = '../risc_schema_en_v5_5.json';
 
-export const latestSupportedVersion = '5.4';
+export const latestSupportedVersion = '5.5';
 
-export const BASE_NUMBER = 20.0;
-export const CONSEQUENCE_SCALE_OFFSET = 3;
-export const PROBABILITY_SCALE_OFFSET = -2;
+export const probabilityOptions = [0.01, 0.1, 1, 10, 100];
 
-export const consequenceOptions = Array.from({ length: 5 }, (_, i) =>
-  Math.pow(BASE_NUMBER, i + CONSEQUENCE_SCALE_OFFSET),
-);
-
-export const probabilityOptions = Array.from({ length: 5 }, (_, i) =>
-  Math.pow(BASE_NUMBER, i + PROBABILITY_SCALE_OFFSET),
-);
+export const consequenceOptions = [100000, 500000, 1500000, 5000000, 30000000];
 
 export type ConsequenceCategory =
   | 'operationalStability'

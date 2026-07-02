@@ -2,12 +2,11 @@ import { DateTime } from 'luxon';
 import { UpdateStatus } from '../contexts/RiScContext';
 import {
   ActionStatusOptions,
-  BASE_NUMBER,
-  CONSEQUENCE_SCALE_OFFSET,
-  PROBABILITY_SCALE_OFFSET,
   ThreatActorsOptions,
   VulnerabilitiesOptions,
+  consequenceOptions,
   latestSupportedVersion,
+  probabilityOptions,
   riskMatrix,
 } from './constants';
 import {
@@ -328,70 +327,75 @@ export function isDeeplyEqual<T>(
   return false;
 }
 
-function logBase(value: number, base: number): number {
-  return Math.log(value) / Math.log(base);
+function findNearestLogSpaceIndex(
+  value: number,
+  options: readonly number[],
+): number {
+  if (value <= 0 || Number.isNaN(value)) {
+    return 0;
+  }
+  if (value === Infinity) {
+    return options.length - 1;
+  }
+
+  const logValue = Math.log(value);
+  const nearestIndex = options.reduce((bestIndex, option, index) => {
+    const bestDistance = Math.abs(logValue - Math.log(options[bestIndex]));
+    const distance = Math.abs(logValue - Math.log(option));
+    return distance < bestDistance ? index : bestIndex;
+  }, 0);
+
+  return Math.min(options.length - 1, Math.max(0, nearestIndex));
 }
 
 /*
-  Probability is categorized in 5 levels on a logarithmic scale with base 20:
-  0 = 20^-2 = 1 / 400
-  1 = 20^-1 = 1 / 20
-  2 = 20^-0 = 1
-  3 = 20^1  = 20
-  4 = 20^2  = 400
+  Probability is categorized in 5 explicit preset levels. For arbitrary values,
+  choose the nearest preset by log-space distance so multiplicative gaps are
+  handled symmetrically.
 */
 export function findProbabilityIndex(probability: number): number {
-  const probabilityIndex = Math.round(
-    logBase(probability, BASE_NUMBER) - PROBABILITY_SCALE_OFFSET,
-  );
-  return Math.min(4, Math.max(0, probabilityIndex));
+  return findNearestLogSpaceIndex(probability, probabilityOptions);
 }
 
 /*
-  Consequence  is categorized in 5 levels on a logarithmic scale with base 20:
-  0 = 20^3 = 8 000
-  1 = 20^4 = 160 000
-  2 = 20^5 = 3 200 000
-  3 = 20^6 = 64 000 000
-  4 = 20^7 = 1 280 000 000
+  Consequence is categorized in 5 explicit preset levels. For arbitrary values,
+  choose the nearest preset by log-space distance so multiplicative gaps are
+  handled symmetrically.
 */
 export function findConsequenceIndex(consequence: number): number {
-  const consequenceIndex = Math.round(
-    logBase(consequence, BASE_NUMBER) - CONSEQUENCE_SCALE_OFFSET,
-  );
-  return Math.min(4, Math.max(0, consequenceIndex));
+  return findNearestLogSpaceIndex(consequence, consequenceOptions);
 }
 
 /*
-  Logarithmically round the consequence to the nearest consequence option.
+  Round the consequence to the nearest consequence option in log-space.
 */
 export function roundConsequenceToNearestConsequenceOption(
   consequence: number,
 ): number {
-  return Math.pow(BASE_NUMBER, findConsequenceIndex(consequence) + 3);
+  return consequenceOptions[findConsequenceIndex(consequence)];
 }
 
 /*
-  Logarithmically round the probability to the nearest probability option.
+  Round the probability to the nearest probability option in log-space.
 */
 export function roundProbabilityToNearestProbabilityOption(
   probability: number,
 ): number {
-  return Math.pow(BASE_NUMBER, findProbabilityIndex(probability) - 2);
+  return probabilityOptions[findProbabilityIndex(probability)];
 }
 
 export const consequenceIndexToTranslationKeys: Record<number, string> = {
-  0: 'infoDialog.consequenceDescription.oneworkday',
-  1: 'infoDialog.consequenceDescription.oneworkmonth',
-  2: 'infoDialog.consequenceDescription.oneworkyear',
-  3: 'infoDialog.consequenceDescription.20workyears',
-  4: 'infoDialog.consequenceDescription.400workyears',
+  0: 'infoDialog.consequenceDescription.hundredThousandNok',
+  1: 'infoDialog.consequenceDescription.fiveHundredThousandNok',
+  2: 'infoDialog.consequenceDescription.onePointFiveMillionNok',
+  3: 'infoDialog.consequenceDescription.fiveMillionNok',
+  4: 'infoDialog.consequenceDescription.thirtyMillionNok',
 };
 
 export const probabilityIndexToTranslationKeys: Record<number, string> = {
-  0: 'infoDialog.probabilityDescription.every400years',
-  1: 'infoDialog.probabilityDescription.every20years',
-  2: 'infoDialog.probabilityDescription.annualy',
+  0: 'infoDialog.probabilityDescription.onceEvery100Years',
+  1: 'infoDialog.probabilityDescription.onceEvery10Years',
+  2: 'infoDialog.probabilityDescription.yearly',
   3: 'infoDialog.probabilityDescription.monthly',
   4: 'infoDialog.probabilityDescription.daily',
 };
