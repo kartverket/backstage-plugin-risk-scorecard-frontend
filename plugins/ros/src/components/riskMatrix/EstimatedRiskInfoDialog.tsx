@@ -55,7 +55,10 @@ export function EstimatedRiskInfoDialog({
               <Text>{t('infoDialog.calculatedHow')}</Text>
               <Text>
                 <strong>
-                  R = P<sub>{t('infoDialog.probabilityUnit')}</sub> × C
+                  {t('infoDialog.riskSymbol')} ={' '}
+                  {t('infoDialog.probabilitySymbol')}
+                  <sub>{t('infoDialog.probabilityUnit')}</sub> ×{' '}
+                  {t('infoDialog.consequenceSymbol')}
                   <sub>{t('infoDialog.consequenceUnit')}</sub>
                 </strong>
               </Text>

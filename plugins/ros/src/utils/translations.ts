@@ -395,6 +395,9 @@ export const pluginRiScMessages = {
     calculatedHow:
       'Probability (P) is measured in incidents per year and consequence (C) is measured in cost (in NOK) per incident. ' +
       'Estimated risk = probability × consequence, reported as NOK/year.',
+    riskSymbol: 'R',
+    probabilitySymbol: 'P',
+    consequenceSymbol: 'C',
     consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
     consequenceUnit: 'NOK/incident',
     consequenceDescription: {
@@ -1245,6 +1248,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Hvordan regner vi ut estimert risiko?',
           'infoDialog.calculatedHow':
             'Sannsynlighet (S) måles i hendelser per år og konsekvens (K) måles i kroner per hendelse. Estimert risiko = sannsynlighet × konsekvens, oppgitt som kr/år.',
+          'infoDialog.riskSymbol': 'R',
+          'infoDialog.probabilitySymbol': 'S',
+          'infoDialog.consequenceSymbol': 'K',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
           'infoDialog.consequenceUnit': 'kr/hendelse',
           'infoDialog.consequenceDescription.hundredThousandNok': '100 000 kr',
