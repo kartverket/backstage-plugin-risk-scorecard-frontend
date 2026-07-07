@@ -14,10 +14,6 @@ The plugin is published as a NPM-package. The following rules apply for when we 
 
 **Patch**: Bugfixes and small changes (like text or pixel-nudging).
 
-## Process for PRs
-
-All PR's should be reviewed and approved by a member of the RoS-team. After that, the "Request review" feature can be used to assign a person from SKVIS. This signals that the PR is done with internal review and is ready for final approval and merging. In most cases, the person from SKVIS should simply approve and merge (at own discretion of course, but a high level of trust between the teams should be the foundation of this process).
-
 ### Test checklist
 
 A feature should be tested locally by author and potentially reviewer(s) upon request or at their own discretion. A test should include the steps in the list below in addition to actually testing the fix or feature introduced. The result of testing the fix/feature should be documented in the PR using screenshots, code snippets, links or other suitable documentation.
