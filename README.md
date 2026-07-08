@@ -9,6 +9,8 @@ In order to run you will need to have:
 
 To start kartverket.dev with the local version of the plugin use `yarn kartverket.dev`.
 
+For instructions on how to publish new releases, versioning and viewing the test checklist, see [CONTRIBUTING.md](./CONTRIBUTING.md#versioning)
+
 ## Backend
 
 The plugin currently uses a Kotlin backend which can be found here [backstage-plugin-risk-scorecard-backend](https://github.com/kartverket/backstage-plugin-risk-scorecard-backend)
