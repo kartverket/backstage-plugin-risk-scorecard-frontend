@@ -1,3 +1,11 @@
+.card {
+  position: sticky;
+  top: 16px;
+  align-self: flex-start;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+
 .gridWrapper {
   display: flex;
   justify-content: center;

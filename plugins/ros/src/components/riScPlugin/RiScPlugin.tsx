@@ -219,7 +219,11 @@ export function RiScPlugin() {
                     </Grid>
 
                     <Grid size={4}>
-                      <Flex direction="column" gap="24px">
+                      <Flex
+                        direction="column"
+                        gap="24px"
+                        style={{ height: '100%' }}
+                      >
                         <RiScStatusComponent
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
@@ -227,10 +231,10 @@ export function RiScPlugin() {
                             predefinedScenariosDismissed
                           }
                         />
-                        <RiskMatrix riScWithMetadata={selectedRiSc} />
                         <ThreatActorsAndVulnerabilitiesCard
                           scenarios={selectedRiSc.content.scenarios}
                         />
+                        <RiskMatrix riScWithMetadata={selectedRiSc} />
                       </Flex>
                     </Grid>
                   </Grid>
