@@ -26,6 +26,7 @@ import { LockedRiScView } from '../riScInfo/LockedRiScView.tsx';
 import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
 import { PredefinedScenariosBanner } from '../predefinedScenarios/PredefinedScenariosBanner.tsx';
 import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
+import pluginStyles from './RiScPlugin.module.css';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -222,7 +223,7 @@ export function RiScPlugin() {
                       <Flex
                         direction="column"
                         gap="24px"
-                        style={{ height: '100%' }}
+                        className={pluginStyles.rightColumn}
                       >
                         <RiScStatusComponent
                           selectedRiSc={selectedRiSc}
@@ -231,10 +232,16 @@ export function RiScPlugin() {
                             predefinedScenariosDismissed
                           }
                         />
-                        <ThreatActorsAndVulnerabilitiesCard
-                          scenarios={selectedRiSc.content.scenarios}
-                        />
-                        <RiskMatrix riScWithMetadata={selectedRiSc} />
+                        <Flex
+                          direction="column"
+                          gap="24px"
+                          className={pluginStyles.stickyCards}
+                        >
+                          <RiskMatrix riScWithMetadata={selectedRiSc} />
+                          <ThreatActorsAndVulnerabilitiesCard
+                            scenarios={selectedRiSc.content.scenarios}
+                          />
+                        </Flex>
                       </Flex>
                     </Grid>
                   </Grid>
