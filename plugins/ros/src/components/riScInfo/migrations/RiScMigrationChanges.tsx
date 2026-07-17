@@ -12,6 +12,7 @@ import { RiScMigrationChanges51 } from './RiScMigrationChanges51.tsx';
 import { RiScMigrationChanges52 } from './RiScMigrationChanges52.tsx';
 import { RiScMigrationChanges53 } from './RiScMigrationChanges53.tsx';
 import { RiScMigrationChanges54 } from './RiScMigrationChanges54.tsx';
+import { RiScMigrationChanges55 } from './RiScMigrationChanges55.tsx';
 
 interface RiScMigrationChangesProps {
   migrationStatus: MigrationStatus;
@@ -55,6 +56,9 @@ export function RiScMigrationChanges({
       )}
       {migrationStatus.migrationVersions?.toVersion === '5.4' && (
         <RiScMigrationChanges54 />
+      )}
+      {migrationStatus.migrationChanges55 && (
+        <RiScMigrationChanges55 changes={migrationStatus.migrationChanges55} />
       )}
     </div>
   );
