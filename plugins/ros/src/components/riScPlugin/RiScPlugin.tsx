@@ -26,6 +26,7 @@ import { LockedRiScView } from '../riScInfo/LockedRiScView.tsx';
 import { ThreatActorsAndVulnerabilitiesCard } from '../threatActorsAndVulnerabilities/ThreatActorsAndVulnerabilitiesCard.tsx';
 import { PredefinedScenariosBanner } from '../predefinedScenarios/PredefinedScenariosBanner.tsx';
 import { usePredefinedScenariosBannerDismissal } from '../../stores/PredefinedScenariosBannerStore.ts';
+import pluginStyles from './RiScPlugin.module.css';
 
 export function RiScPlugin() {
   const [riScDialogState, setRiScDialogState] = useState<RiScDialogStates>(
@@ -219,7 +220,11 @@ export function RiScPlugin() {
                     </Grid>
 
                     <Grid size={4}>
-                      <Flex direction="column" gap="24px">
+                      <Flex
+                        direction="column"
+                        gap="24px"
+                        className={pluginStyles.rightColumn}
+                      >
                         <RiScStatusComponent
                           selectedRiSc={selectedRiSc}
                           publishRiScFn={approveRiSc}
@@ -227,10 +232,16 @@ export function RiScPlugin() {
                             predefinedScenariosDismissed
                           }
                         />
-                        <RiskMatrix riScWithMetadata={selectedRiSc} />
-                        <ThreatActorsAndVulnerabilitiesCard
-                          scenarios={selectedRiSc.content.scenarios}
-                        />
+                        <Flex
+                          direction="column"
+                          gap="24px"
+                          className={pluginStyles.stickyCards}
+                        >
+                          <RiskMatrix riScWithMetadata={selectedRiSc} />
+                          <ThreatActorsAndVulnerabilitiesCard
+                            scenarios={selectedRiSc.content.scenarios}
+                          />
+                        </Flex>
                       </Flex>
                     </Grid>
                   </Grid>
