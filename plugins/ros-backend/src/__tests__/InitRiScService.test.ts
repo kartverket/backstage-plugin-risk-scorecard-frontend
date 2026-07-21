@@ -1,4 +1,6 @@
 import { InitRiScService } from '../services/InitRiScService';
+import { ProcessingStatus } from '@kartverket/ros-common';
+import { InitRiScConfigFetchError, InitRiScFetchError } from '../lib/errors';
 import { GithubStatus } from '../services/GitHubService';
 import type {
   GitHubService,
@@ -186,9 +188,13 @@ describe('InitRiScService', () => {
         config: { repoOwner: 'owner', repoName: 'repo' },
       });
 
-      await expect(service.getInitRiScDescriptors('token')).rejects.toThrow(
-        'Failed to fetch InitRiSc descriptor configs',
-      );
+      const result = service.getInitRiScDescriptors('token');
+
+      await expect(result).rejects.toBeInstanceOf(InitRiScConfigFetchError);
+      await expect(result).rejects.toMatchObject({
+        processingStatus:
+          ProcessingStatus.FailedToFetchInitRiScConfigFromGitHub,
+      });
     });
   });
 
@@ -237,15 +243,51 @@ describe('InitRiScService', () => {
       }
     });
 
+    it('preserves unencryptedMetadata from initial content', async () => {
+      const initialContent = JSON.stringify({
+        schemaVersion: '5.4',
+        title: 'Title',
+        scope: 'Scope',
+        unencryptedMetadata: {
+          appliesTo: [
+            'backstage:component:default/service-a',
+            'backstage:component:default/service-b',
+          ],
+        },
+        scenarios: [],
+      });
+
+      const result = await service.getInitRiSc(
+        'risc-example',
+        initialContent,
+        'gh-token',
+      );
+      const parsed = JSON.parse(result);
+
+      expect(parsed.unencryptedMetadata).toEqual({
+        appliesTo: [
+          'backstage:component:default/service-a',
+          'backstage:component:default/service-b',
+        ],
+      });
+    });
+
     it('throws when template fetch fails', async () => {
       const initialContent = JSON.stringify({
         title: 'T',
         scope: 'S',
       });
 
-      await expect(
-        service.getInitRiSc('nonexistent', initialContent, 'token'),
-      ).rejects.toThrow("Failed to fetch InitRiSc template 'nonexistent'");
+      const result = service.getInitRiSc(
+        'nonexistent',
+        initialContent,
+        'token',
+      );
+
+      await expect(result).rejects.toBeInstanceOf(InitRiScFetchError);
+      await expect(result).rejects.toMatchObject({
+        processingStatus: ProcessingStatus.FailedToFetchInitRiScFromGitHub,
+      });
     });
   });
 });

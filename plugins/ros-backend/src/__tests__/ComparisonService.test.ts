@@ -273,6 +273,33 @@ describe('comparison5X', () => {
     expect(result.scope!.type).toBe('CHANGED');
   });
 
+  it('detects appliesTo changes', () => {
+    const oldRiSc = makeRiSc5X({
+      schemaVersion: '5.3',
+      unencryptedMetadata: {
+        appliesTo: ['backstage:component:default/service-a'],
+      },
+    });
+    const newRiSc = makeRiSc5X({
+      schemaVersion: '5.3',
+      unencryptedMetadata: {
+        appliesTo: [
+          'backstage:component:default/service-a',
+          'backstage:component:default/service-b',
+        ],
+      },
+    });
+
+    const result = comparison5X(newRiSc, oldRiSc, noMigration);
+
+    expect(result.appliesTo).toEqual([
+      {
+        type: 'ADDED',
+        newValue: 'backstage:component:default/service-b',
+      },
+    ]);
+  });
+
   it('detects scenario addition', () => {
     const oldRiSc = makeRiSc5X({ scenarios: [] });
     const newRiSc = makeRiSc5X({ scenarios: [makeScenario()] });
@@ -475,6 +502,42 @@ describe('comparison5X', () => {
     expect(actionChange.status!.type).toBe('CHANGED');
   });
 
+  it('detects action comment change as non-mandatory field', () => {
+    const oldAction = makeAction({ id: 'A1', comment: null });
+    const newAction = makeAction({ id: 'A1', comment: 'Needs follow-up' });
+
+    const result = comparison5X(
+      makeRiSc5X({
+        schemaVersion: '5.4',
+        scenarios: [makeScenario({ actions: [newAction] })],
+      }),
+      makeRiSc5X({
+        schemaVersion: '5.4',
+        scenarios: [makeScenario({ actions: [oldAction] })],
+      }),
+      noMigration,
+    );
+
+    const scenarioChange = (
+      result.scenarios[0] as {
+        type: 'CONTENT_CHANGED';
+        value: RiSc5XScenarioChange;
+      }
+    ).value;
+    const actionChange = (
+      scenarioChange.actions[0] as {
+        type: 'CONTENT_CHANGED';
+        value: RiSc5XActionChange;
+      }
+    ).value;
+
+    expect(actionChange.comment).toEqual({
+      type: 'CHANGED',
+      oldValue: null,
+      newValue: 'Needs follow-up',
+    });
+  });
+
   it('handles multiple scenario additions and deletions together', () => {
     const kept = makeScenario({ id: 'kept', title: 'Kept' });
     const deleted = makeScenario({ id: 'del', title: 'Deleted' });
@@ -535,5 +598,28 @@ describe('compare', () => {
     expect(change.title).toBeNull();
     expect(change.scope).toBeNull();
     expect(change.scenarios).toEqual([]);
+  });
+
+  it('migrates old v5.2 to v5.3 before comparing appliesTo', () => {
+    const oldRiSc = makeRiSc5X({ schemaVersion: '5.2' });
+    const newRiSc = makeRiSc5X({
+      schemaVersion: '5.3',
+      unencryptedMetadata: {
+        appliesTo: ['backstage:component:default/service-a'],
+      },
+    });
+
+    const result = compare(newRiSc, oldRiSc) as RiSc5XChange;
+
+    expect(result.migrationChanges.migrationVersions).toEqual({
+      fromVersion: '5.2',
+      toVersion: '5.3',
+    });
+    expect(result.appliesTo).toEqual([
+      {
+        type: 'ADDED',
+        newValue: 'backstage:component:default/service-a',
+      },
+    ]);
   });
 });

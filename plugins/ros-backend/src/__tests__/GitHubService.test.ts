@@ -30,12 +30,22 @@ describe('GitHubService', () => {
 
   beforeEach(() => {
     mockFetch = jest.fn();
-    service = new GitHubService(mockFetch);
+    service = new GitHubService(mockFetch, { getInitialDelayMs: 0 });
   });
 
   const owner = 'test-org';
   const repo = 'test-repo';
   const token = 'ghp_test_token_123';
+  const repoInfoResponse = {
+    default_branch: 'main',
+    permissions: {
+      admin: false,
+      maintain: false,
+      push: true,
+      triage: true,
+      pull: true,
+    },
+  };
 
   // ─── Helper Path Tests ──────────────────────────────────────────────
 
@@ -302,6 +312,24 @@ describe('GitHubService', () => {
         ),
       ).rejects.toThrow(GitHubApiError);
     });
+
+    it('does not retry transient errors for mutating requests', async () => {
+      mockFetch.mockResolvedValue(mockErrorResponse(502, 'Bad Gateway'));
+
+      await expect(
+        service.writeFile(
+          owner,
+          repo,
+          '.security/risc/test.risc.yaml',
+          'content',
+          'msg',
+          'branch',
+          token,
+        ),
+      ).rejects.toThrow(GitHubApiError);
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
   });
 
   // ─── deleteFile ─────────────────────────────────────────────────────
@@ -487,21 +515,11 @@ describe('GitHubService', () => {
 
   describe('fetchRepositoryInfo', () => {
     it('returns repository info with write access', async () => {
-      mockFetch.mockResolvedValue(
-        mockResponse({
-          default_branch: 'main',
-          permissions: {
-            admin: false,
-            maintain: false,
-            push: true,
-            triage: true,
-            pull: true,
-          },
-        }),
-      );
+      mockFetch.mockResolvedValue(mockResponse(repoInfoResponse));
 
       const result = await service.fetchRepositoryInfo(owner, repo, token);
       expect(result.defaultBranch).toBe('main');
+      expect(result.hasReadAccess).toBe(true);
       expect(result.hasWriteAccess).toBe(true);
     });
 
@@ -520,6 +538,26 @@ describe('GitHubService', () => {
       );
 
       const result = await service.fetchRepositoryInfo(owner, repo, token);
+      expect(result.hasReadAccess).toBe(true);
+      expect(result.hasWriteAccess).toBe(false);
+    });
+
+    it('returns no read access when pull is false', async () => {
+      mockFetch.mockResolvedValue(
+        mockResponse({
+          default_branch: 'main',
+          permissions: {
+            admin: false,
+            maintain: false,
+            push: false,
+            triage: false,
+            pull: false,
+          },
+        }),
+      );
+
+      const result = await service.fetchRepositoryInfo(owner, repo, token);
+      expect(result.hasReadAccess).toBe(false);
       expect(result.hasWriteAccess).toBe(false);
     });
 
@@ -529,6 +567,41 @@ describe('GitHubService', () => {
       await expect(
         service.fetchRepositoryInfo(owner, repo, token),
       ).rejects.toThrow(GitHubApiError);
+    });
+
+    it('retries and succeeds after one transient 502 Bad Gateway', async () => {
+      mockFetch
+        .mockResolvedValueOnce(mockErrorResponse(502, 'Bad Gateway'))
+        .mockResolvedValueOnce(mockResponse(repoInfoResponse));
+
+      const result = await service.fetchRepositoryInfo(owner, repo, token);
+
+      expect(result.defaultBranch).toBe('main');
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('throws after all 3 attempts fail with transient errors', async () => {
+      mockFetch.mockResolvedValue(mockErrorResponse(502, 'Bad Gateway'));
+
+      await expect(
+        service.fetchRepositoryInfo(owner, repo, token),
+      ).rejects.toMatchObject({
+        status: 502,
+      });
+
+      expect(mockFetch).toHaveBeenCalledTimes(3);
+    });
+
+    it('does not retry non-transient 404 errors', async () => {
+      mockFetch.mockResolvedValue(mockErrorResponse(404, 'Not Found'));
+
+      await expect(
+        service.fetchRepositoryInfo(owner, repo, token),
+      ).rejects.toMatchObject({
+        status: 404,
+      });
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
     });
   });
 

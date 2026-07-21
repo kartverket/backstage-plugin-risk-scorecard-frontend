@@ -1,4 +1,5 @@
 import { RiScService, generateRiScId } from '../services/RiScService';
+import { RiScValidationError } from '../lib/errors';
 import type * as ComparisonService from '../services/ComparisonService';
 import { GithubStatus } from '../services/GitHubService';
 import type { GitHubService } from '../services/GitHubService';
@@ -461,13 +462,13 @@ describe('RiScService', () => {
       expect(github.writeFile).toHaveBeenCalled();
     });
 
-    it('returns error on validation failure', async () => {
+    it('throws an operation-specific error on validation failure', async () => {
       schema.validate.mockReturnValue({
         valid: false,
         errors: ['Title is required'],
       });
 
-      const result = await service.createRiSc(
+      const result = service.createRiSc(
         'owner',
         'repo',
         '{}',
@@ -477,8 +478,11 @@ describe('RiScService', () => {
         'gh-token',
       );
 
-      expect(result.status).toBe('ErrorWhenCreatingRiSc');
-      expect(result.statusMessage).toContain('Validation failed');
+      await expect(result).rejects.toBeInstanceOf(RiScValidationError);
+      await expect(result).rejects.toMatchObject({
+        processingStatus: 'ErrorWhenCreatingRiSc',
+        message: 'Validation failed: Title is required',
+      });
       expect(crypto.encrypt).not.toHaveBeenCalled();
     });
   });
@@ -559,10 +563,10 @@ describe('RiScService', () => {
       );
     });
 
-    it('returns error on validation failure', async () => {
+    it('throws an operation-specific error on validation failure', async () => {
       schema.validate.mockReturnValue({ valid: false, errors: ['Invalid'] });
 
-      const result = await service.updateRiSc(
+      const result = service.updateRiSc(
         'owner',
         'repo',
         'risc-abc12',
@@ -574,7 +578,12 @@ describe('RiScService', () => {
         'gh-token',
       );
 
-      expect(result.status).toBe('ErrorWhenUpdatingRiSc');
+      await expect(result).rejects.toBeInstanceOf(RiScValidationError);
+      await expect(result).rejects.toMatchObject({
+        processingStatus: 'ErrorWhenUpdatingRiSc',
+        message: 'Validation failed: Invalid',
+      });
+      expect(crypto.encrypt).not.toHaveBeenCalled();
     });
 
     it('closes existing PR when requires new approval', async () => {
@@ -723,6 +732,7 @@ describe('RiScService', () => {
       github.fetchBranchHeadSha.mockResolvedValue('branch-sha');
       github.fetchRepositoryInfo.mockResolvedValue({
         defaultBranch: 'main',
+        hasReadAccess: true,
         hasWriteAccess: true,
       });
       github.createPullRequest.mockResolvedValue(makePR('risc-pub01', 10));

@@ -1,6 +1,11 @@
 import type { GcpCryptoKeyObject } from '@kartverket/ros-common';
 import { CryptoKeyPermission } from '@kartverket/ros-common';
 import { LoggerService } from '@backstage/backend-plugin-api';
+import {
+  GcpIamPermissionsFetchError,
+  GcpOAuthTokenInfoFetchError,
+  GcpProjectIdsFetchError,
+} from '../lib/errors';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -93,13 +98,15 @@ export class GcpKmsService {
       const response = await this.fetchFn(
         `${TOKENINFO_URL}?access_token=${token}`,
       );
-      return response.ok;
-    } catch (e) {
-      this.logger.error(
-        'Failed to validate GCP access token against tokeninfo endpoint',
-      );
-      throw new Error(
+      if (response.status === 400) return false;
+      if (!response.ok) {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
+      return true;
+    } catch (cause) {
+      throw new GcpOAuthTokenInfoFetchError(
         'Failed to fetch GCP OAuth2 token information from Google tokeninfo endpoint.',
+        { cause },
       );
     }
   }
@@ -108,18 +115,20 @@ export class GcpKmsService {
    * Fetches the list of GCP project IDs accessible by the given token.
    */
   async fetchProjectIds(token: string): Promise<string[]> {
-    const response = await this.fetchFn(CLOUD_RESOURCE_MANAGER_URL, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const response = await this.fetchFn(CLOUD_RESOURCE_MANAGER_URL, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch GCP project IDs. Status: ${response.status}`,
-      );
+      if (!response.ok) {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
+
+      const body: FetchGcpProjectIdsResponse = await response.json();
+      return (body.projects ?? []).map(p => p.projectId);
+    } catch (cause) {
+      throw new GcpProjectIdsFetchError(undefined, { cause });
     }
-
-    const body: FetchGcpProjectIdsResponse = await response.json();
-    return (body.projects ?? []).map(p => p.projectId);
   }
 
   /**
@@ -131,33 +140,38 @@ export class GcpKmsService {
     token: string,
   ): Promise<Set<CryptoKeyPermission>> {
     const url = `${KMS_BASE_URL}/${cryptoKeyResourceId}:testIamPermissions`;
-    const response = await this.fetchFn(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        permissions: [
-          GcpIAMPermission.USE_TO_ENCRYPT,
-          GcpIAMPermission.USE_TO_DECRYPT,
-        ],
-      }),
-    });
+    try {
+      const response = await this.fetchFn(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          permissions: [
+            GcpIAMPermission.USE_TO_ENCRYPT,
+            GcpIAMPermission.USE_TO_DECRYPT,
+          ],
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch IAM permissions for ${cryptoKeyResourceId}. Status: ${response.status}`,
+      if (!response.ok) {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
+
+      const body: TestIAMPermissionsResponse = await response.json();
+      const permissions = new Set<CryptoKeyPermission>();
+      for (const perm of body.permissions ?? []) {
+        const mapped = mapIamPermission(perm);
+        if (mapped) permissions.add(mapped);
+      }
+      return permissions;
+    } catch (cause) {
+      throw new GcpIamPermissionsFetchError(
+        `Failed to fetch IAM permissions for ${cryptoKeyResourceId}`,
+        { cause },
       );
     }
-
-    const body: TestIAMPermissionsResponse = await response.json();
-    const permissions = new Set<CryptoKeyPermission>();
-    for (const perm of body.permissions ?? []) {
-      const mapped = mapIamPermission(perm);
-      if (mapped) permissions.add(mapped);
-    }
-    return permissions;
   }
 
   /**

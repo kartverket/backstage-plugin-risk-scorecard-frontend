@@ -2,6 +2,7 @@ import {
   createTranslationRef,
   createTranslationResource,
 } from '@backstage/core-plugin-api/alpha';
+import type { ErrorProcessingStatus } from './types';
 
 export const pluginRiScMessages = {
   currentLanguage: 'en',
@@ -702,7 +703,9 @@ export const pluginRiScMessages = {
   },
   errorMessages: {
     DefaultErrorMessage: 'An error occurred',
-    ErrorWhenNoWriteAccessToRepository:
+    NoReadAccessToRepository:
+      'Unable to access RiScs in {{owner}}/{{name}}. The repository does not exist or you do not have read access.',
+    NoWriteAccessToRepository:
       'Unable to update RiSc. You do not have write access to {{owner}}/{{name}}.',
     ErrorWhenUpdatingRiSc: 'Failed to update risk scorecard',
     ErrorWhenUpdatingDeletedRiSc:
@@ -711,63 +714,41 @@ export const pluginRiScMessages = {
     ErrorWhenCreatingPullRequest: 'Failed to save approval of risk scorecard',
     ErrorWhenCreatingRiSc: 'Failed to create risk scorecard',
     ErrorWhenFetchingRiScs: 'Failed to fetch risk scorecards with ids: ',
-    FailedToFetchRiScs: 'Failed to fetch risk scorecards',
     RiScDoesNotExist:
       'The risk scorecard you are trying to open does not exist',
     ScenarioDoesNotExist: 'The scenario you are trying to open does not exist',
-    ErrorWhenFetchingSopsConfig: 'Could not fetch SOPS configuration',
     FailedToCreateSops: 'Failed to create SOPS configuration',
-    FailedToUpdateSops: 'SOPS configuration could not be updated',
     ErrorWhenFetchingGcpCryptoKeys:
       'Could not load risk scorecards — the encryption service is unavailable. Try refreshing the page.',
-    ContentStatusDeleted: 'Risk scorecard "{{riScId}}" has been deleted',
-    ContentStatusFailure: 'Failed to load risk scorecard "{{riScId}}"',
-    ContentStatusFileNotFound:
-      'Risk scorecard "{{riScId}}" was not found in the repository',
-    ContentStatusDecryptionFailed:
-      'Failed to decrypt risk scorecard "{{riScId}}".',
-    ContentStatusNoReadAccess:
-      'You do not have read access to risk scorecard "{{riScId}}"',
-    ContentStatusUnsupportedMigration:
-      'Risk scorecard "{{riScId}}" cannot be automatically migrated to the latest version.',
-    ContentStatusUnknown:
-      'Failed to fetch risk scorecard "{{riScId}}" with unknown status: {{status}}',
+    InvalidAccessTokens:
+      'Unable to access RiScs in {{owner}}/{{name}}. The repository does not exist or you do not have read access.',
+    AccessTokensValidationFailure: 'Could not validate access tokens.',
+    InvalidGcpAccessToken:
+      'Your Google Cloud access token is invalid or expired. Try refreshing the page.',
+    FailedToFetchGcpProjectIds: 'Failed to fetch Google Cloud project IDs.',
+    FailedToFetchGCPOAuth2TokenInformation:
+      'Could not validate your Google Cloud access token because the token information service is unavailable. Try again later.',
+    FailedToFetchGCPIAMPermissions:
+      'Could not retrieve your permissions for the Google Cloud encryption keys. Try again later.',
+    FailedToFetchInitRiScFromGitHub:
+      'Could not load the initial risk scorecard template from GitHub. Try again later.',
+    FailedToFetchInitRiScConfigFromGitHub:
+      'Could not load the initial risk scorecard configuration from GitHub. Try again later.',
     InvalidGitHubAccessToken:
       'Github-token was not valid. Try refreshing the page or logging out and in of github in backstage.',
-    ContentStatusSchemaValidationFailed:
-      'Failed to fetch risk scorecard "{{riScId}}". Its content does not match the expected format. It may have been manually edited or corrupted.',
-    ContentStatusDecryptionFailedMessage: {
-      INTERNAL_SERVER_ERROR:
-        'Failed to decrypt risk scorecard "{{riScId}}", 500 - Internal server error from the crypto service.',
-      MISSING_DATA_KEY:
-        'Failed to decrypt risk scorecard "{{riScId}}", unable to access encryption key required for decryption.',
-      NO_MATCHING_KEY:
-        'Failed to decrypt risk scorecard "{{riScId}}", no available key could decrypt the file.',
-      AUTHENTICATION_FAILED:
-        'Failed to decrypt risk scorecard "{{riScId}}", Authentication failed, please check your credentials and permissions.',
-      INVALID_GCP_TOKEN:
-        'Failed to decrypt risk scorecard "{{riScId}}", your Google Cloud token is invalid or expired.',
-      INVALID_AGE_KEY:
-        'Failed to decrypt risk scorecard "{{riScId}}", the provided Age key is invalid.',
-      CONNECTION_REFUSED:
-        'Failed to decrypt risk scorecard "{{riScId}}", unable to connect to the encryption service.',
-      WITH_KEY_SINGLE:
-        'Failed to decrypt RoS-analysis "{{riScId}}" – no access to key: {{keyId}}',
-      WITH_KEY_PLURAL:
-        'Failed to decrypt RoS-analyses "{{riScId}}" – no access to key: {{keyId}}',
-      UNKNOWN:
-        'Failed to decrypt risk scorecard "{{riScId}}" due to an unknown error.',
-    },
-    EncryptedWithKey: 'This analysis is encrypted with key {{keyId}}',
-  },
+  } as const satisfies Record<
+    | 'DefaultErrorMessage'
+    | 'RiScDoesNotExist'
+    | 'ScenarioDoesNotExist'
+    | ErrorProcessingStatus,
+    string
+  >,
   infoMessages: {
-    OpenedPullRequest: 'Successfully opened pull request',
     CreatedPullRequest: 'Successfully saved approval of risk scorecard ',
     DeletedRiSc: 'Risk scorecard deleted',
     DeletedRiScRequiresApproval:
       'Risk scorecard staged for deletion, requires approval',
     UpdatedRiSc: 'Risk scorecard updated',
-    UpdatedSops: 'SOPS configuration updated',
     UpdatedRiScRequiresNewApproval:
       'Risk scorecard update and requires new approval',
     CreatedRiSc: 'Created new risk scorecard successfully',
@@ -1494,7 +1475,9 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'actionStatus.Not OK': 'Ikke OK',
           'actionStatus.Not relevant': 'Ikke relevant',
           'errorMessages.DefaultErrorMessage': 'Det oppstod en feil',
-          'errorMessages.ErrorWhenNoWriteAccessToRepository':
+          'errorMessages.NoReadAccessToRepository':
+            'Kunne ikke åpne ROS-analyser i {{owner}}/{{name}}. Repositoriet finnes ikke, eller du har ikke lesetilgang.',
+          'errorMessages.NoWriteAccessToRepository':
             'Kunne ikke oppdatere ROS. Du har ikke skrivetilgang til {{owner}}/{{name}}.',
           'errorMessages.ErrorWhenUpdatingRiSc':
             'Kunne ikke lagre risiko- og sårbarhetsanalyse',
@@ -1512,59 +1495,28 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Kunne ikke lagre godkjenning av risiko- og sårbarhetsanalysen',
           'errorMessages.ErrorWhenFetchingRiScs':
             'Kunne ikke hente risiko- og sårbarhetsanalyser med id-er: ',
-          'errorMessages.FailedToFetchRiScs':
-            'Kunne ikke hente risiko- og sårbarhetsanalyser',
-          'errorMessages.ErrorWhenFetchingSopsConfig':
-            'Kunne ikke hente SOPS-konfigurasjon',
           'errorMessages.FailedToCreateSops':
             'Kunne ikke opprette SOPS-konfigurasjon',
-          'errorMessages.FailedToUpdateSops':
-            'SOPS-konfigurasjon kunne ikke oppdateres',
           'errorMessages.ErrorWhenFetchingGcpCryptoKeys':
             'Kunne ikke laste inn risiko- og sårbarhetsanalysene — krypteringstjenesten er ikke tilgjengelig. Prøv å oppdatere siden.',
-          'errorMessages.ContentStatusDeleted':
-            'ROS-analyse "{{riScId}}" har blitt slettet',
-          'errorMessages.ContentStatusFailure':
-            'Kunne ikke laste ROS-analyse "{{riScId}}" grunnet en uventet feil',
-          'errorMessages.ContentStatusFileNotFound':
-            'ROS-analyse "{{riScId}}" ble ikke funnet i repositoryet',
-          'errorMessages.ContentStatusDecryptionFailed':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}". Du har muligens ikke de nødvendige dekrypteringsnøklene',
-          'errorMessages.ContentStatusNoReadAccess':
-            'Du har ikke lesetilgang til ROS-analyse "{{riScId}}".',
-          'errorMessages.ContentStatusUnsupportedMigration':
-            'ROS-analyse "{{riScId}}" kan ikke automatisk migreres til den nyeste versjonen.',
-          'errorMessages.ContentStatusSchemaValidationFailed':
-            'ROS-analyse "{{riScId}}" kunne ikke lastes fordi innholdet ikke samsvarer med forventet format. Den kan ha blitt manuelt redigert eller ødelagt.',
-
-          'errorMessages.ContentStatusDecryptionFailedMessage.INTERNAL_SERVER_ERROR':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", 500 - Intern serverfeil fra kryptotjenesten.',
-          'errorMessages.ContentStatusDecryptionFailedMessage.MISSING_DATA_KEY':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", kunne ikke få tilgang til krypteringsnøkkelen som kreves for dekryptering.',
-          'errorMessages.ContentStatusDecryptionFailedMessage.NO_MATCHING_KEY':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", ingen tilgjengelig nøkkel kunne dekryptere innholdet.',
-          'errorMessages.ContentStatusDecryptionFailedMessage.AUTHENTICATION_FAILED':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", autentisering mislyktes. Vennligst kontroller tilgangene dine.',
-          'errorMessages.ContentStatusDecryptionFailedMessage.INVALID_GCP_TOKEN':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", Google Cloud-tokenet ditt er ugyldig eller utløpt.',
-          'errorMessages.ContentStatusDecryptionFailedMessage.INVALID_AGE_KEY':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", den oppgitte AGE-nøkkelen er ugyldig.',
-          'errorMessages.ContentStatusDecryptionFailedMessage.CONNECTION_REFUSED':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}", kunne ikke koble til krypteringstjenesten.',
-          'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_SINGLE':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
-          'errorMessages.ContentStatusDecryptionFailedMessage.WITH_KEY_PLURAL':
-            'Kunne ikke dekryptere ROS-analyser "{{riScId}}" – manglende tilgang til nøkkel: {{keyId}}',
-          'errorMessages.ContentStatusDecryptionFailedMessage.UNKNOWN':
-            'Kunne ikke dekryptere ROS-analyse "{{riScId}}" grunnet en ukjent feil.',
-          'errorMessages.EncryptedWithKey':
-            'Denne analysen er kryptert med nøkkel {{keyId}}',
-
-          'errorMessages.ContentStatusUnknown':
-            'Kunne ikke hente ROS-analyse "{{riScId}}" med ukjent status: {{status}}',
+          'errorMessages.InvalidAccessTokens':
+            'Kunne ikke åpne ROS-analyser i {{owner}}/{{name}}. Repositoriet finnes ikke, eller du har ikke lesetilgang.',
+          'errorMessages.AccessTokensValidationFailure':
+            'Kunne ikke validere tilgangstokener.',
+          'errorMessages.InvalidGcpAccessToken':
+            'Google Cloud-tilgangstokenet ditt er ugyldig eller utløpt. Prøv å oppdatere siden.',
+          'errorMessages.FailedToFetchGcpProjectIds':
+            'Kunne ikke hente Google Cloud-prosjekt-ID-er.',
+          'errorMessages.FailedToFetchGCPOAuth2TokenInformation':
+            'Kunne ikke validere Google Cloud-tilgangstokenet fordi tokeninformasjonstjenesten er utilgjengelig. Prøv igjen senere.',
+          'errorMessages.FailedToFetchGCPIAMPermissions':
+            'Kunne ikke hente tilgangene dine til krypteringsnøklene i Google Cloud. Prøv igjen senere.',
+          'errorMessages.FailedToFetchInitRiScFromGitHub':
+            'Kunne ikke laste den initielle ROS-malen fra GitHub. Prøv igjen senere.',
+          'errorMessages.FailedToFetchInitRiScConfigFromGitHub':
+            'Kunne ikke laste konfigurasjonen for initielle ROS-maler fra GitHub. Prøv igjen senere.',
           'errorMessages.InvalidGitHubAccessToken':
             'Github-tokenet var ikke gyldig. Prøv en refresh av siden eller å logge ut og inn av github i backstage.',
-          'infoMessages.OpenedPullRequest': 'Åpnet pull request',
           'infoMessages.CreatedPullRequest':
             'Godkjenning av risiko- og sårbarhetsanalysen ble lagret',
           'infoMessages.DeletedRiSc':
@@ -1573,7 +1525,6 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
             'Risiko- og sårbarhetsanalysen ble markert for sletting og trenger godkjenning',
           'infoMessages.UpdatedRiSc':
             'Risiko- og sårbarhetsanalysen ble oppdatert',
-          'infoMessages.UpdatedSops': 'SOPS-konfigurasjon oppdatert',
           'infoMessages.UpdatedRiScRequiresNewApproval':
             'Risiko- og sårbarhetsanalysen ble oppdatert og trenger ny godkjenning',
           'infoMessages.CreatedRiSc':

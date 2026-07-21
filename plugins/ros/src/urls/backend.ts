@@ -36,7 +36,7 @@ type BuildRiScBackendUrlsOptions = {
   version: string;
 };
 
-/** Native mode routes directly to the ros backend plugin. */
+/** Native mode routes directly to the risk-scorecard backend plugin. */
 export function buildNativeBackendUrls({
   baseUrl,
   owner,

@@ -175,6 +175,14 @@ describe('SopsCryptoService', () => {
         'risc-001',
       );
       expect(result).toBe('encrypted-yaml-output');
+      expect(mockSpawnSops).toHaveBeenCalledWith(
+        expect.objectContaining({
+          args: expect.arrayContaining([
+            '--unencrypted-regex',
+            '^unencryptedMetadata$',
+          ]),
+        }),
+      );
     });
 
     it('throws SopsEncryptionError on sops failure', async () => {

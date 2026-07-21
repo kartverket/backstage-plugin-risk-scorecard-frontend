@@ -1,5 +1,6 @@
 import type { GitHubService, GithubContentResponse } from './GitHubService';
 import { GithubStatus } from './GitHubService';
+import { InitRiScConfigFetchError, InitRiScFetchError } from '../lib/errors';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -36,6 +37,9 @@ interface RiSc5XTemplate {
   schemaVersion: string;
   title: string;
   scope: string;
+  unencryptedMetadata?: {
+    appliesTo?: string[] | null;
+  } | null;
   scenarios: Array<{
     title: string;
     scenario: {
@@ -54,6 +58,7 @@ interface RiSc5XTemplate {
           url: string;
           lastUpdated?: string | null;
           lastUpdatedBy?: string | null;
+          comment?: string | null;
         };
       }>;
     };
@@ -77,6 +82,11 @@ export class InitRiScService {
   constructor(options: InitRiScServiceOptions) {
     this.github = options.githubService;
     this.config = options.config;
+  }
+
+  /** The template repository this service reads from. */
+  get templateRepo(): InitRiScConfig {
+    return this.config;
   }
 
   /**
@@ -130,6 +140,7 @@ export class InitRiScService {
     const parsedInitial = JSON.parse(initialContent) as {
       title?: string;
       scope?: string;
+      unencryptedMetadata?: RiSc5XTemplate['unencryptedMetadata'];
     };
 
     const template = await this.fetchRiScTemplate(initRiScId, githubToken);
@@ -138,6 +149,7 @@ export class InitRiScService {
     // Override title and scope from initial content
     cleaned.title = parsedInitial.title ?? cleaned.title;
     cleaned.scope = parsedInitial.scope ?? cleaned.scope;
+    cleaned.unencryptedMetadata = parsedInitial.unencryptedMetadata;
 
     return JSON.stringify(cleaned);
   }
@@ -176,7 +188,7 @@ export class InitRiScService {
     );
 
     if (response.status !== GithubStatus.Success || !response.data) {
-      throw new Error(
+      throw new InitRiScConfigFetchError(
         `Failed to fetch InitRiSc descriptor configs from GitHub. Status: ${response.status}`,
       );
     }
@@ -199,7 +211,7 @@ export class InitRiScService {
     );
 
     if (response.status !== GithubStatus.Success || !response.data) {
-      throw new Error(
+      throw new InitRiScFetchError(
         `Failed to fetch InitRiSc template '${id}' from GitHub. Status: ${response.status}`,
       );
     }

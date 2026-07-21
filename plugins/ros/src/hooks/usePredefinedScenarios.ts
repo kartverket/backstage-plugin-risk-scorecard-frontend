@@ -5,10 +5,10 @@ import {
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
+import { latestSupportedVersion } from '@kartverket/ros-common';
 import { useQuery } from '@tanstack/react-query';
 import { buildNativeBackendUrls } from '../urls/backend.ts';
 import { URLS } from '../urls/index.ts';
-import { latestSupportedVersion } from '../utils/constants.ts';
 import { ScenarioDTO } from '../utils/DTOs.ts';
 import { useNativeRiScBackendFeatureFlag } from '../utils/featureFlags.ts';
 import { useGithubRepositoryInformation } from '../utils/hooks.ts';

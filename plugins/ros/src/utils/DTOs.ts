@@ -1,6 +1,7 @@
 import {
   Action,
   ContentStatus,
+  ErrorProcessingStatus,
   LastPublished,
   MigrationStatus,
   Modify,
@@ -18,6 +19,14 @@ export type ProcessRiScResultDTO = {
   status: ProcessingStatus;
   statusMessage: string;
   riScContent: string | null;
+};
+
+export type ProcessRiScErrorDTO = Omit<
+  Partial<ProcessRiScResultDTO>,
+  'status'
+> & {
+  status?: ErrorProcessingStatus;
+  message?: string;
 };
 
 // Takes a normal ProcessRiScResultDTO and changes status to ContentStatus.

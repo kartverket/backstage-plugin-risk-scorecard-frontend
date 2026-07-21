@@ -6,12 +6,16 @@ import {
   useState,
 } from 'react';
 import { useAuthenticatedFetch } from '../utils/hooks.ts';
-import { DefaultRiScTypeDescriptor } from '../utils/types.ts';
+import { DefaultRiScTypeDescriptor, ProcessingStatus } from '../utils/types.ts';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
+import { pluginRiScTranslationRef } from '../utils/translations.ts';
+import { withLoginRejected } from '../utils/fetchRiScHelpers.ts';
 
 type DefaultRiScTypesContextObject = {
   defaultRiScTypeDescriptors: DefaultRiScTypeDescriptor[];
   riScSelectedByDefault: DefaultRiScTypeDescriptor | undefined;
+  errorMessage: string | null;
   getDescriptorOfId: (id: string) => DefaultRiScTypeDescriptor | undefined;
 };
 
@@ -25,6 +29,7 @@ export function DefaultRiScTypesProvider({
   children: ReactNode;
 }) {
   const { fetchDefaultRiScTypeDescriptors } = useAuthenticatedFetch();
+  const { t } = useTranslationRef(pluginRiScTranslationRef);
   const { entity } = useEntity();
   const [defaultRiScTypeDescriptors, setDefaultRiScTypeDescriptors] = useState<
     DefaultRiScTypeDescriptor[]
@@ -32,12 +37,25 @@ export function DefaultRiScTypesProvider({
   const [riScSelectedByDefault, setRiScSelectedByDefault] = useState<
     DefaultRiScTypeDescriptor | undefined
   >(undefined);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchDefaultRiScTypeDescriptors(response => {
-      setDefaultRiScTypeDescriptors(response);
-      setRiScSelectedByDefault(getRiScSelectedByDefault(response));
-    });
+    fetchDefaultRiScTypeDescriptors(
+      response => {
+        setDefaultRiScTypeDescriptors(response);
+        setRiScSelectedByDefault(getRiScSelectedByDefault(response));
+        setErrorMessage(null);
+      },
+      (error, loginRejected) => {
+        const message =
+          error?.status === ProcessingStatus.FailedToFetchInitRiScFromGitHub ||
+          error?.status ===
+            ProcessingStatus.FailedToFetchInitRiScConfigFromGitHub
+            ? t(`errorMessages.${error.status}`)
+            : t('errorMessages.DefaultErrorMessage');
+        setErrorMessage(withLoginRejected(message, loginRejected, t));
+      },
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -70,6 +88,7 @@ export function DefaultRiScTypesProvider({
       value={{
         defaultRiScTypeDescriptors,
         riScSelectedByDefault,
+        errorMessage,
         getDescriptorOfId,
       }}
     >
