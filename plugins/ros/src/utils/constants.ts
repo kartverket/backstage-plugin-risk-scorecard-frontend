@@ -83,7 +83,7 @@ export enum ActionStatusOptions {
 // 1–5 green, 6–10 yellow, 11–15 orange, 16–25 red.
 const grn = 'var(--ros-green-100)';
 const ylw = 'var(--ros-yellow-100)';
-const org = 'var(--ros-orange-100)';
+const org = 'var(--ros-orange-200)';
 const red = 'var(--ros-red-300)';
 
 export const riskMatrix = [
