@@ -96,7 +96,7 @@ export const riskMatrix = [
 
 const sGrn = 'var(--ros-green-300)';
 const sYlw = 'var(--ros-yellow-300)';
-const sOrg = 'var(--ros-orange-300)';
+const sOrg = 'var(--ros-orange-400)';
 const sRed = 'var(--ros-red-500)';
 
 export const riskMatrixStroke = [
