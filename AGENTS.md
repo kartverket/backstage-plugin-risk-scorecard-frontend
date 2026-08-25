@@ -6,12 +6,12 @@ RoS is short for Risiko- og Sårbarhetsanalyse in Norwegian.
 The main feature code is split across:
 
 - `plugins/ros/` - frontend plugin UI and plugin entry points
-- `plugins/ros-backend/` - backend plugin services and routes
-- `packages/ros-common/` - shared types and constants
 - `build-tools/` - release tooling workspace
 
 The plugin manages risk assessments with scenarios, actions, risk matrices,
-schema migrations, and approval workflows.
+schema migrations, and approval workflows. The production backend is a
+separate Kotlin service (repo:
+`kartverket/backstage-plugin-risk-scorecard-backend`).
 
 ## Commands
 
@@ -59,15 +59,15 @@ Important frontend data flow:
 
 Backend landmarks:
 
-- `plugins/ros-backend/src/router.ts` defines backend routes.
-- `plugins/ros-backend/src/services/` contains backend service logic.
+- The production backend is the Kotlin service in the sibling repo
+  `kartverket/backstage-plugin-risk-scorecard-backend`; consult it for
+  request/response shapes and backend behaviour the frontend depends on.
 
 Schema versioning:
 
 - Frontend schemas live in `plugins/ros/src/risc_schema_en_v*.json`.
-- Shared schema/version types live under `packages/ros-common/src/`.
-- Keep `latestSupportedVersion` changes consistent across frontend/common/backend
-  usage.
+- Keep `latestSupportedVersion` changes consistent between the frontend
+  schema files and the Kotlin backend.
 
 ## Coding Conventions
 

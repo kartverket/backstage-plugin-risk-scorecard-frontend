@@ -24,11 +24,7 @@ import { log } from './lib/logging.ts';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT_DIR = resolve(__dirname, '..');
-const RELEASE_PACKAGE_PATHS = [
-  resolve(ROOT_DIR, 'plugins', 'ros'),
-  resolve(ROOT_DIR, 'plugins', 'ros-backend'),
-  resolve(ROOT_DIR, 'packages', 'ros-common'),
-];
+const RELEASE_PACKAGE_PATHS = [resolve(ROOT_DIR, 'plugins', 'ros')];
 
 interface ReleaseOptions {
   dryRun: boolean;
