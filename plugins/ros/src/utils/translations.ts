@@ -683,7 +683,7 @@ export const pluginRiScMessages = {
     oneNotCovered:
       '{{kind}} <b>{{notCovered}}</b> is not covered in any scenario.',
     twoNotCovered:
-      '{{kind}} <b>{{notCovered1}}</b> and <b>{{notCovered2}}</b> is not covered in any scenario.',
+      '{{kind}} <b>{{notCovered1}}</b> and <b>{{notCovered2}}</b> are not covered in any scenario.',
     multipleNotCovered:
       'Multiple {{kind}} are not covered. This includes <b>{{notCovered1}}</b>, <b>{{notCovered2}}</b> and <b>{{notCovered3}}</b>.',
     showMoreInfo: 'Show more information',
