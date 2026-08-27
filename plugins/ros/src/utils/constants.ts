@@ -2,9 +2,9 @@ export const schemaPath = '../risc_schema_en_v5_5.json';
 
 export const latestSupportedVersion = '5.5';
 
-export const probabilityOptions = [0.01, 0.1, 1, 10, 100];
+export const probabilityOptions = [0.02, 0.1, 1, 10, 50];
 
-export const consequenceOptions = [100000, 500000, 1500000, 5000000, 30000000];
+export const consequenceOptions = [10000, 600000, 5000000, 50000000, 250000000];
 
 export type ConsequenceCategory =
   | 'operationalStability'

@@ -401,20 +401,20 @@ export const pluginRiScMessages = {
     consequenceTitle: 'Consequence (NOK/incident)', // incident, event or occurrence
     consequenceUnit: 'NOK/incident',
     consequenceDescription: {
-      hundredThousandNok: '100 000 NOK',
-      fiveHundredThousandNok: '500 000 NOK',
-      onePointFiveMillionNok: '1.5 million NOK',
+      tenThousandNok: '10 000 NOK',
+      sixHundredThousandNok: '600 000 NOK',
       fiveMillionNok: '5 million NOK',
-      thirtyMillionNok: '30 million NOK',
+      fiftyMillionNok: '50 million NOK',
+      twoHundredAndFiftyMillionNok: '250 million NOK',
     },
     probabilityTitle: 'Probability (incidents/year)',
     probabilityUnit: 'incidents/year',
     probabilityDescription: {
-      onceEvery100Years: 'Once every 100 years',
+      onceEvery50Years: 'Once every 50 years',
       onceEvery10Years: 'Once every 10 years',
       yearly: 'Yearly',
       monthly: 'Monthly (~10 times per year)',
-      daily: 'Daily (~100 times per year)',
+      weekly: 'Weekly/Daily (~50 times per year)',
     },
     example: {
       part1: 'Probability level ',
@@ -1253,25 +1253,25 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'infoDialog.consequenceSymbol': 'K',
           'infoDialog.consequenceTitle': 'Konsekvens (kr/hendelse)',
           'infoDialog.consequenceUnit': 'kr/hendelse',
-          'infoDialog.consequenceDescription.hundredThousandNok': '100 000 kr',
-          'infoDialog.consequenceDescription.fiveHundredThousandNok':
-            '500 000 kr',
-          'infoDialog.consequenceDescription.onePointFiveMillionNok':
-            '1,5 millioner kr',
+          'infoDialog.consequenceDescription.tenThousandNok': '10 000 kr',
+          'infoDialog.consequenceDescription.sixHundredThousandNok':
+            '600 000 kr',
           'infoDialog.consequenceDescription.fiveMillionNok': '5 millioner kr',
-          'infoDialog.consequenceDescription.thirtyMillionNok':
-            '30 millioner kr',
+          'infoDialog.consequenceDescription.fiftyMillionNok':
+            '50 millioner kr',
+          'infoDialog.consequenceDescription.twoHundredAndFiftyMillionNok':
+            '250 millioner kr',
           'infoDialog.probabilityTitle': 'Sannsynlighet (hendelser/år)',
           'infoDialog.probabilityUnit': 'hendelser/år',
-          'infoDialog.probabilityDescription.onceEvery100Years':
-            '1 gang hvert 100. år',
+          'infoDialog.probabilityDescription.onceEvery50Years':
+            '1 gang hvert 50. år',
           'infoDialog.probabilityDescription.onceEvery10Years':
             '1 gang hvert 10. år',
           'infoDialog.probabilityDescription.yearly': 'Årlig',
           'infoDialog.probabilityDescription.monthly':
             'Månedlig (~10 ganger i året)',
-          'infoDialog.probabilityDescription.daily':
-            'Daglig (~100 ganger i året)',
+          'infoDialog.probabilityDescription.weekly':
+            'Ukentlig/Daglig (~50 ganger i året)',
           'infoDialog.example.part1': 'Sannsynlighetsnivå ',
           'infoDialog.example.part2': ' og konsekvensnivå ',
           'infoDialog.example.part3': ' gir en estimert risiko på ',

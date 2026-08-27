@@ -385,19 +385,19 @@ export function roundProbabilityToNearestProbabilityOption(
 }
 
 export const consequenceIndexToTranslationKeys: Record<number, string> = {
-  0: 'infoDialog.consequenceDescription.hundredThousandNok',
-  1: 'infoDialog.consequenceDescription.fiveHundredThousandNok',
-  2: 'infoDialog.consequenceDescription.onePointFiveMillionNok',
-  3: 'infoDialog.consequenceDescription.fiveMillionNok',
-  4: 'infoDialog.consequenceDescription.thirtyMillionNok',
+  0: 'infoDialog.consequenceDescription.tenThousandNok',
+  1: 'infoDialog.consequenceDescription.sixHundredThousandNok',
+  2: 'infoDialog.consequenceDescription.fiveMillionNok',
+  3: 'infoDialog.consequenceDescription.fiftyMillionNok',
+  4: 'infoDialog.consequenceDescription.twoHundredAndFiftyMillionNok',
 };
 
 export const probabilityIndexToTranslationKeys: Record<number, string> = {
-  0: 'infoDialog.probabilityDescription.onceEvery100Years',
+  0: 'infoDialog.probabilityDescription.onceEvery50Years',
   1: 'infoDialog.probabilityDescription.onceEvery10Years',
   2: 'infoDialog.probabilityDescription.yearly',
   3: 'infoDialog.probabilityDescription.monthly',
-  4: 'infoDialog.probabilityDescription.daily',
+  4: 'infoDialog.probabilityDescription.weekly',
 };
 
 export const actionStatusOptionsToTranslationKeys: Record<

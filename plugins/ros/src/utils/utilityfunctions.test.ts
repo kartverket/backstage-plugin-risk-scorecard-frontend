@@ -633,11 +633,11 @@ describe('Enum to translation key maps', () => {
 
 describe('findProbabilityIndex', () => {
   it.each([
-    [0.01, 0],
+    [0.02, 0],
     [0.1, 1],
     [1, 2],
     [10, 3],
-    [100, 4],
+    [50, 4],
   ])('returns %i for probability %f', (input, expected) => {
     expect(findProbabilityIndex(input)).toBe(expected);
   });
@@ -654,19 +654,19 @@ describe('findProbabilityIndex', () => {
 
   it('handles values between defined steps', () => {
     expect(findProbabilityIndex(0.03)).toBe(0);
-    expect(findProbabilityIndex(0.04)).toBe(1);
+    expect(findProbabilityIndex(0.05)).toBe(1);
     expect(findProbabilityIndex(3)).toBe(2);
-    expect(findProbabilityIndex(4)).toBe(3);
+    expect(findProbabilityIndex(5)).toBe(3);
   });
 });
 
 describe('findConsequenceIndex', () => {
   it.each([
-    [100000, 0],
-    [500000, 1],
-    [1500000, 2],
-    [5000000, 3],
-    [30000000, 4],
+    [10000, 0],
+    [600000, 1],
+    [5000000, 2],
+    [50000000, 3],
+    [250000000, 4],
   ])('returns %i for consequence %f', (input, expected) => {
     expect(findConsequenceIndex(input)).toBe(expected);
   });
@@ -682,37 +682,37 @@ describe('findConsequenceIndex', () => {
   });
 
   it('handles values between defined steps', () => {
-    expect(findConsequenceIndex(200000)).toBe(0);
-    expect(findConsequenceIndex(250000)).toBe(1);
-    expect(findConsequenceIndex(2500000)).toBe(2);
-    expect(findConsequenceIndex(3000000)).toBe(3);
+    expect(findConsequenceIndex(20000)).toBe(0);
+    expect(findConsequenceIndex(300000)).toBe(1);
+    expect(findConsequenceIndex(3000000)).toBe(2);
+    expect(findConsequenceIndex(30000000)).toBe(3);
   });
 });
 
 describe('roundConsequenceToNearestConsequenceOption', () => {
   it.each([
-    [100000, 100000],
-    [500000, 500000],
-    [1500000, 1500000],
+    [10000, 10000],
+    [600000, 600000],
     [5000000, 5000000],
-    [30000000, 30000000],
+    [50000000, 50000000],
+    [250000000, 250000000],
   ])('returns exact match %i for consequence %f', (input, expected) => {
     expect(roundConsequenceToNearestConsequenceOption(input)).toBe(expected);
   });
 
   it.each([
-    [200000, 100000],
-    [250000, 500000],
-    [2500000, 1500000],
+    [20000, 10000],
+    [300000, 600000],
     [3000000, 5000000],
+    [30000000, 50000000],
   ])('rounds %i to nearest consequence %f', (input, expected) => {
     expect(roundConsequenceToNearestConsequenceOption(input)).toBe(expected);
   });
 
   it.each([
-    [1e10, 30000000],
-    [1000, 100000],
-    [0, 100000],
+    [1e10, 250000000],
+    [1000, 10000],
+    [0, 10000],
   ])('clamps %i to consequence %f', (input, expected) => {
     expect(roundConsequenceToNearestConsequenceOption(input)).toBe(expected);
   });
@@ -720,11 +720,11 @@ describe('roundConsequenceToNearestConsequenceOption', () => {
 
 describe('roundProbabilityToNearestProbabilityOption', () => {
   it.each([
-    [0.01, 0.01],
+    [0.02, 0.02],
     [0.1, 0.1],
     [1, 1],
     [10, 10],
-    [100, 100],
+    [50, 50],
   ])('returns exact match %i for probability %f', (input, expected) => {
     expect(roundProbabilityToNearestProbabilityOption(input)).toBeCloseTo(
       expected,
@@ -733,10 +733,10 @@ describe('roundProbabilityToNearestProbabilityOption', () => {
   });
 
   it.each([
-    [0.03, 0.01],
-    [0.04, 0.1],
+    [0.03, 0.02],
+    [0.05, 0.1],
     [3, 1],
-    [4, 10],
+    [5, 10],
   ])('rounds %i to nearest probability %f', (input, expected) => {
     expect(roundProbabilityToNearestProbabilityOption(input)).toBeCloseTo(
       expected,
@@ -745,9 +745,9 @@ describe('roundProbabilityToNearestProbabilityOption', () => {
   });
 
   it.each([
-    [0.0001, 0.01],
-    [0, 0.01],
-    [1000, 100],
+    [0.0001, 0.02],
+    [0, 0.02],
+    [1000, 50],
   ])('clamps %i to probability %f', (input, expected) => {
     expect(roundProbabilityToNearestProbabilityOption(input)).toBeCloseTo(
       expected,
