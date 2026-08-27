@@ -13,6 +13,4 @@ For instructions on how to publish new releases, versioning and viewing the test
 
 ## Backend
 
-The plugin currently uses a Kotlin backend which can be found here [backstage-plugin-risk-scorecard-backend](https://github.com/kartverket/backstage-plugin-risk-scorecard-backend)
-
-However work has started on replacing it with a Backstage backend plugin, found in `plugins/ros-backend`. It handles the same responsibilites of the Kotlin kackend: RiSc CRUD operations, SOPS encryption/decryption, GitHub PR lifecycle, and GCP KMS integration. See this [README](plugins/ros-backend/README.md) for further instructions on how to use it.
+The plugin uses a Kotlin backend which can be found here [backstage-plugin-risk-scorecard-backend](https://github.com/kartverket/backstage-plugin-risk-scorecard-backend). It handles RiSc CRUD operations, SOPS encryption/decryption, GitHub PR lifecycle, and GCP KMS integration.
