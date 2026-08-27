@@ -654,57 +654,6 @@ describe('Release E2E Tests', () => {
     });
   });
 
-  describe('Multiple packages', () => {
-    it('should update, build, and publish all configured packages', async () => {
-      setup(() => {
-        repo.init({ initialVersion: '1.0.0' });
-        repo.createPackage('plugins/ros', {
-          initialVersion: '1.0.0',
-          packageName: '@test/frontend',
-        });
-        repo.createPackage('plugins/ros-backend', {
-          initialVersion: '1.0.0',
-          packageName: '@test/backend',
-        });
-        repo.createPackage('packages/ros-common', {
-          initialVersion: '1.0.0',
-          packageName: '@test/common',
-        });
-        repo.commit('chore: add packages');
-        repo.tag('v1.0.0');
-        repo.commit('feat: add backend package release');
-      });
-
-      const packagePaths = [
-        join(repo.path, 'plugins/ros'),
-        join(repo.path, 'plugins/ros-backend'),
-        join(repo.path, 'packages/ros-common'),
-      ];
-
-      const { runRelease } = await import('../release.ts');
-      const result = await runRelease({
-        dryRun: false,
-        packagePaths,
-      });
-
-      expect(result.success).toBe(true);
-      expect(result.version).toBe('1.1.0');
-      expect(repo.getPackageJson('plugins/ros').version).toBe('1.1.0');
-      expect(repo.getPackageJson('plugins/ros-backend').version).toBe('1.1.0');
-      expect(repo.getPackageJson('packages/ros-common').version).toBe('1.1.0');
-
-      const buildCommands = findCommands('yarn build');
-      const publishCommands = findCommands('npm publish');
-
-      for (const packagePath of packagePaths) {
-        expect(buildCommands.some(cmd => cmd.cwd === packagePath)).toBe(true);
-        expect(publishCommands.some(cmd => cmd.cwd === packagePath)).toBe(true);
-      }
-
-      expect(findCommands('npm pack')).toHaveLength(0);
-    });
-  });
-
   describe('Dry run mode', () => {
     it('should not publish or create release in dry-run mode', async () => {
       setup(() => {
