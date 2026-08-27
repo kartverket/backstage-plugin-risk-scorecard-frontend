@@ -87,11 +87,11 @@ const org = 'var(--ros-orange-200)';
 const red = 'var(--ros-red-300)';
 
 export const riskMatrix = [
+  [ylw, org, red, red, red],
   [grn, ylw, org, red, red],
-  [grn, ylw, org, red, red],
-  [grn, ylw, ylw, org, org],
-  [grn, grn, ylw, ylw, ylw],
-  [grn, grn, grn, grn, grn],
+  [grn, ylw, ylw, org, red],
+  [grn, grn, ylw, ylw, org],
+  [grn, grn, grn, ylw, ylw],
 ];
 
 const sGrn = 'var(--ros-green-300)';
@@ -100,11 +100,11 @@ const sOrg = 'var(--ros-orange-400)';
 const sRed = 'var(--ros-red-500)';
 
 export const riskMatrixStroke = [
+  [sYlw, sOrg, sRed, sRed, sRed],
   [sGrn, sYlw, sOrg, sRed, sRed],
-  [sGrn, sYlw, sOrg, sRed, sRed],
-  [sGrn, sYlw, sYlw, sOrg, sOrg],
-  [sGrn, sGrn, sYlw, sYlw, sYlw],
-  [sGrn, sGrn, sGrn, sGrn, sGrn],
+  [sGrn, sYlw, sYlw, sOrg, sRed],
+  [sGrn, sGrn, sYlw, sYlw, sOrg],
+  [sGrn, sGrn, sGrn, sYlw, sYlw],
 ];
 
 export const urlRegExpPattern: RegExp =
