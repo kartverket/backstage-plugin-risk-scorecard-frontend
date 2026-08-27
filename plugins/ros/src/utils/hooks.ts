@@ -9,7 +9,6 @@ import {
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { URLS } from '../urls';
-import { buildNativeBackendUrls } from '../urls/backend';
 import {
   CreateRiScResultDTO,
   DeleteRiScResultDTO,
@@ -32,10 +31,7 @@ import {
   SystemRiSc,
 } from './types';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import {
-  useNativeRiScBackendFeatureFlag,
-  useSystemRiScsFeatureFlag,
-} from './featureFlags';
+import { useSystemRiScsFeatureFlag } from './featureFlags';
 
 export function useGithubRepositoryInformation(): GithubRepoInfo {
   const [, org, repo] =
@@ -100,7 +96,6 @@ export function useAuthenticatedFetch() {
   const identityApi = useApi(identityApiRef);
   const { fetch } = useApi(fetchApiRef);
   const backendUrl = configApi.getString('backend.baseUrl');
-  const isNativeBackendEnabled = useNativeRiScBackendFeatureFlag();
 
   const riScUri = `${backendUrl}${URLS.backend.riScUri_temp}/${repoInformation.owner}/${repoInformation.name}`; // URLS.backend.riScUri
 
@@ -126,15 +121,6 @@ export function useAuthenticatedFetch() {
     // URLS.backend.publishRiSc
     return `${riScUri}/publish/${id}`;
   }
-
-  // TODO: Revisit discoveryApi.getBaseUrl('ros') when we are ready to validate
-  // native backend routing across deployments.
-  const nativeBackendUrls = buildNativeBackendUrls({
-    baseUrl: `${backendUrl}/api/risk-scorecard`,
-    owner: repoInformation.owner,
-    repo: repoInformation.name,
-    version: latestSupportedVersion,
-  });
 
   function isDevelopment() {
     return configApi.getString('auth.environment') === 'development';
@@ -259,9 +245,7 @@ export function useAuthenticatedFetch() {
   ) {
     return identityApi.getProfileInfo().then(profile => {
       fullyAuthenticatedFetch<DifferenceDTO, DifferenceDTO>(
-        isNativeBackendEnabled
-          ? nativeBackendUrls.uriToFetchDifference(selectedRiSc.id)
-          : uriToFetchDifference(selectedRiSc.id),
+        uriToFetchDifference(selectedRiSc.id),
         'POST',
         onSuccess,
         (_, rejectedLogin) => {
@@ -283,9 +267,7 @@ export function useAuthenticatedFetch() {
   ) {
     if (isDevelopment()) {
       fullyAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
-        isNativeBackendEnabled
-          ? nativeBackendUrls.uriToFetchAllRiScs
-          : uriToFetchAllRiScs,
+        uriToFetchAllRiScs,
         'GET',
         onSuccess,
         (error, rejectedLogin) => {
@@ -294,9 +276,7 @@ export function useAuthenticatedFetch() {
       );
     } else {
       googleAuthenticatedFetch<RiScContentResultDTO[], RiScContentResultDTO[]>(
-        isNativeBackendEnabled
-          ? nativeBackendUrls.uriToFetchAllRiScs
-          : uriToFetchAllRiScs,
+        uriToFetchAllRiScs,
         'GET',
         onSuccess,
         (error, rejectedLogin) => {
@@ -309,9 +289,7 @@ export function useAuthenticatedFetch() {
   function postFeedback(feedback: string): Promise<void> {
     return new Promise((resolve, reject) => {
       fullyAuthenticatedFetch<void, any>(
-        isNativeBackendEnabled
-          ? `${nativeBackendUrls.riScUri}/feedback`
-          : `${riScUri}/feedback`,
+        `${riScUri}/feedback`,
         'POST',
         () => resolve(),
         error => reject(error),
@@ -325,9 +303,7 @@ export function useAuthenticatedFetch() {
     onError?: (error: GcpCryptoKeyObject[], loginRejected: boolean) => void,
   ) {
     googleAuthenticatedFetch<GcpCryptoKeyObject[], GcpCryptoKeyObject[]>(
-      isNativeBackendEnabled
-        ? nativeBackendUrls.uriToFetchGcpCryptoKeys
-        : `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
+      `${backendUrl}/api/proxy/risc-proxy/api/google/gcpCryptoKeys`, // URL
       'GET',
       res => onSuccess(res),
       (error, rejectedLogin) => {
@@ -343,9 +319,7 @@ export function useAuthenticatedFetch() {
   ) {
     return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<PublishRiScResultDTO, ProcessRiScResultDTO>(
-        isNativeBackendEnabled
-          ? nativeBackendUrls.uriToPublishRiSc(riScId)
-          : uriToPublishRiSc(riScId),
+        uriToPublishRiSc(riScId),
         'POST',
         res => {
           if (onSuccess) onSuccess(res);
@@ -368,9 +342,7 @@ export function useAuthenticatedFetch() {
   ) {
     return identityApi.getProfileInfo().then(profile =>
       fullyAuthenticatedFetch<CreateRiScResultDTO, ProcessRiScResultDTO>(
-        isNativeBackendEnabled
-          ? `${nativeBackendUrls.riScUri}?generateDefault=${generateDefault}`
-          : `${riScUri}?generateDefault=${generateDefault}`,
+        `${riScUri}?generateDefault=${generateDefault}`,
         'POST',
         res => {
           if (onSuccess) onSuccess(res);
@@ -393,9 +365,7 @@ export function useAuthenticatedFetch() {
         ProcessRiScResultDTO | PublishRiScResultDTO,
         ProcessRiScResultDTO
       >(
-        isNativeBackendEnabled
-          ? nativeBackendUrls.uriToFetchRiSc(riSc.id)
-          : uriToFetchRiSc(riSc.id),
+        uriToFetchRiSc(riSc.id),
         'PUT',
         res => {
           if (onSuccess) onSuccess(res);
@@ -419,9 +389,7 @@ export function useAuthenticatedFetch() {
     onError?: (error: ProcessRiScResultDTO, loginRejected: boolean) => void,
   ) {
     fullyAuthenticatedFetch<DeleteRiScResultDTO, ProcessRiScResultDTO>(
-      isNativeBackendEnabled
-        ? nativeBackendUrls.uriToDeleteRiSc(riScId)
-        : uriToDeleteRiSc(riScId),
+      uriToDeleteRiSc(riScId),
       'DELETE',
       res => {
         if (onSuccess) onSuccess(res);
@@ -436,9 +404,7 @@ export function useAuthenticatedFetch() {
     onSuccess: (response: DefaultRiScTypeDescriptor[]) => void,
   ) {
     fullyAuthenticatedFetch<DefaultRiScTypeDescriptor[], void>(
-      isNativeBackendEnabled
-        ? nativeBackendUrls.uriToFetchDefaultRiScDescriptors
-        : uriToFetchDefaultRiScDescriptors,
+      uriToFetchDefaultRiScDescriptors,
       'GET',
       res => onSuccess(res),
       () => {},
