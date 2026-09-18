@@ -2,7 +2,10 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import { consequenceOptions } from '../../../utils/constants';
+import {
+  consequenceCategoryOrder,
+  consequenceOptions,
+} from '../../../utils/constants';
 import { Text, Box } from '@backstage/ui';
 import styles from '../ScenarioWizardTable.module.css';
 import { createInfoWithHeadersComponent, RiskTableBase } from './RiskTableBase';
@@ -10,20 +13,16 @@ import { createInfoWithHeadersComponent, RiskTableBase } from './RiskTableBase';
 function ConsequenceTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
-  function getTextCell(
-    resourceKey: string,
-    row: number,
-    cellType: keyof typeof styles,
-  ) {
+  function getTextCell(resourceKey: string, row: number) {
     return (
-      <Box className={styles[cellType]}>
+      <Box className={styles.riskCell}>
         {/* @ts-ignore */}
         {t(`consequenceTable.cells.${resourceKey}.${row + 1}`)}
       </Box>
     );
   }
 
-  function getRow(resourceKey: string, cellType: Array<keyof typeof styles>) {
+  function getRow(resourceKey: string) {
     return (
       <>
         <Box className={styles.riskLabelCell}>
@@ -32,47 +31,14 @@ function ConsequenceTableInfo() {
             {t(`consequenceTable.columns.${resourceKey}`)}
           </Text>
         </Box>
-        {Array.from({ length: 5 }, (_, i) =>
-          getTextCell(resourceKey, i, cellType[i]),
-        )}
+        {Array.from({ length: 5 }, (_, i) => getTextCell(resourceKey, i))}
       </>
     );
   }
 
-  const consequenceRows = [
-    {
-      key: 'economical',
-      cells: ['riskCell', 'riskCell', 'riskCell', 'riskCell', 'riskCell'],
-    },
-    {
-      key: 'privacy',
-      cells: ['riskCell', 'riskCell', 'riskCell', 'riskCell', 'riskVoidCell'],
-    },
-    {
-      key: 'reputation',
-      cells: [
-        'riskCell',
-        'riskCell',
-        'riskCell',
-        'riskVoidCell',
-        'riskVoidCell',
-      ],
-    },
-    {
-      key: 'health',
-      cells: [
-        'riskVoidCell',
-        'riskVoidCell',
-        'riskCell',
-        'riskCell',
-        'riskCell',
-      ],
-    },
-  ];
-
   return (
     <Box className={styles.consequenceGrid}>
-      {consequenceRows.map(row => getRow(row.key, row.cells))}
+      {consequenceCategoryOrder.map(key => getRow(key))}
     </Box>
   );
 }
