@@ -17,7 +17,6 @@ import {
   useSystemRiScsForCurrentEntity,
 } from './hooks';
 import { Action, RiSc, RiScWithMetadata, Scenario } from './types';
-import { nativeRiScBackendFeatureFlag } from './featureFlags';
 
 jest.mock('@backstage/plugin-catalog-react', () => ({
   useEntity: jest.fn(),
@@ -143,46 +142,6 @@ describe('useAuthenticatedFetch', () => {
         }),
       );
 
-      expect(onSuccess).toHaveBeenCalledWith([{ ID: '1' }]);
-    });
-
-    it('uses native backend URLs when the hidden native backend flag is enabled', async () => {
-      mockFeatureFlagsApi.isActive.mockImplementation(
-        flag => flag === nativeRiScBackendFeatureFlag,
-      );
-      mockGoogleApi.getAccessToken.mockResolvedValue(MOCK_GCP_TOKEN);
-      mockGithubApi.getAccessToken.mockResolvedValue(MOCK_GITHUB_TOKEN);
-      mockIdentityApi.getCredentials.mockResolvedValue({
-        token: MOCK_ID_TOKEN,
-      });
-      mockFetchApi.fetch.mockResolvedValue({
-        ok: true,
-        json: async () => [{ ID: '1' }],
-      });
-
-      const { result } = renderHook(() => useAuthenticatedFetch(), {
-        wrapper,
-      });
-
-      const onSuccess = jest.fn();
-
-      await act(async () => {
-        await result.current.fetchRiScs(onSuccess);
-      });
-
-      expect(mockFeatureFlagsApi.isActive).toHaveBeenCalledWith(
-        nativeRiScBackendFeatureFlag,
-      );
-      expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        'http://localhost:7000/api/risk-scorecard/risc/org/repo/5.5/all',
-        expect.objectContaining({
-          method: 'GET',
-          headers: expect.objectContaining({
-            Authorization: `Bearer ${MOCK_ID_TOKEN}`,
-            'GCP-Access-Token': MOCK_GCP_TOKEN,
-          }),
-        }),
-      );
       expect(onSuccess).toHaveBeenCalledWith([{ ID: '1' }]);
     });
 

@@ -6,12 +6,8 @@ import {
   useApi,
 } from '@backstage/core-plugin-api';
 import { useQuery } from '@tanstack/react-query';
-import { buildNativeBackendUrls } from '../urls/backend.ts';
 import { URLS } from '../urls/index.ts';
-import { latestSupportedVersion } from '../utils/constants.ts';
 import { ScenarioDTO } from '../utils/DTOs.ts';
-import { useNativeRiScBackendFeatureFlag } from '../utils/featureFlags.ts';
-import { useGithubRepositoryInformation } from '../utils/hooks.ts';
 
 const PREDEFINED_SCENARIOS_TEMPLATE_ID = 'web-app-api';
 const PREDEFINED_SCENARIOS_SOURCE_TEST_REF = 'add-scenarios';
@@ -27,32 +23,17 @@ export function usePredefinedScenarios(
   const identityApi = useApi(identityApiRef);
   const githubApi = useApi(githubAuthApiRef);
   const { fetch } = useApi(fetchApiRef);
-  const repoInformation = useGithubRepositoryInformation();
-  const isNativeBackendEnabled = useNativeRiScBackendFeatureFlag();
 
   const backendUrl = configApi.getString('backend.baseUrl');
 
-  const { uriToFetchInitRiScTemplate: uriToFetchInitRiScTemplateNative } =
-    buildNativeBackendUrls({
-      baseUrl: `${backendUrl}/api/risk-scorecard`,
-      owner: repoInformation.owner,
-      repo: repoInformation.name,
-      version: latestSupportedVersion,
-    });
-
-  function uriToFetchInitRiScTemplateProxy(id: string, ref?: string) {
+  function uriToFetchInitRiScTemplate(id: string, ref?: string) {
     const base = `${backendUrl}${URLS.backend.fetchInitRiScTemplate.replace(':id', id)}`;
     return ref ? `${base}?ref=${encodeURIComponent(ref)}` : base;
   }
 
-  const uriToFetchInitRiScTemplate = isNativeBackendEnabled
-    ? uriToFetchInitRiScTemplateNative
-    : uriToFetchInitRiScTemplateProxy;
-
   return useQuery({
     queryKey: [
       PREDEFINED_SCENARIOS_QUERY_KEY,
-      isNativeBackendEnabled ? 'native' : 'proxy',
       isTestPredefinedScenariosEnabled ? 'test' : 'main',
     ],
     retry: (count, error) => {
