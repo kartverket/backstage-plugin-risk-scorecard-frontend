@@ -1,4 +1,4 @@
-import { RiSc, Scenario } from './types.ts';
+import { RiSc, Risk, Scenario } from './types.ts';
 import { ActionStatusOptions } from './constants.ts';
 import { RiskMatrixTabs } from '../components/riskMatrix/utils.tsx';
 
@@ -52,6 +52,29 @@ export function calcRemainingActionsCount(scenario: Scenario): number {
     action =>
       (action.status as ActionStatusOptions) === ActionStatusOptions.NotOK,
   ).length;
+}
+
+export function getScenarioRiskForMatrix(
+  scenario: Scenario,
+  riskTab: RiskMatrixTabs,
+): Risk {
+  if (riskTab === RiskMatrixTabs.initialRisk) {
+    return scenario.risk;
+  }
+
+  if (riskTab === RiskMatrixTabs.remainingRisk) {
+    return scenario.remainingRisk;
+  }
+
+  const areAllActionsCompletedOrNotRelevant = scenario.actions.every(
+    action =>
+      action.status === ActionStatusOptions.OK ||
+      action.status === ActionStatusOptions.NotRelevant,
+  );
+
+  return areAllActionsCompletedOrNotRelevant
+    ? scenario.remainingRisk
+    : scenario.risk;
 }
 
 export function getRiskGradient(): string {

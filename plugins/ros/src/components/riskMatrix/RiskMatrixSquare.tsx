@@ -1,6 +1,7 @@
 import { RiScWithMetadata } from '../../utils/types.ts';
 import { riskMatrix, riskMatrixStroke } from '../../utils/constants.ts';
 import { RiskMatrixScenarioCount } from './RiskMatrixScenarioCount.tsx';
+import { RiskMatrixTabs } from './utils.tsx';
 import styles from './RiskMatrixSquare.module.css';
 
 type RiskMatrixSquareProps = {
@@ -9,7 +10,7 @@ type RiskMatrixSquareProps = {
   consequence: number; // 0 - 4
   riScCountObject?: {
     riSc: RiScWithMetadata;
-    isInitialRisk: boolean;
+    riskTab: RiskMatrixTabs;
   };
 };
 
@@ -28,7 +29,7 @@ export function RiskMatrixSquare(props: RiskMatrixSquareProps) {
           riScWithMetadata={props.riScCountObject.riSc}
           probability={props.probability}
           consequence={props.consequence}
-          initialRisk={props.riScCountObject.isInitialRisk}
+          riskTab={props.riScCountObject.riskTab}
         />
       )}
     </div>

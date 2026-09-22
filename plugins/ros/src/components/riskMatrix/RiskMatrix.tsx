@@ -38,64 +38,63 @@ export function RiskMatrix({
           </Box>
         )}
 
-        {tab === RiskMatrixTabs.currentRisk ? (
+        {tab === RiskMatrixTabs.currentRisk && (
           <Box>
             <CurrentRisk risc={riScWithMetadata} />
           </Box>
-        ) : (
-          <Box className={styles.gridWrapper}>
-            <Box className={styles.grid}>
-              <Box className={styles.konsekvens}>
-                <Text
-                  variant="title-x-small"
-                  weight="bold"
-                  className={styles.centered}
-                >
-                  {t('dictionary.consequence')}
-                </Text>
-              </Box>
-              {riskMatrix.map((row, rowIndex) => (
-                <Fragment key={rowIndex}>
-                  <Box className={styles.centered}>
-                    <Text variant="title-x-small" weight="bold">
-                      {5 - rowIndex}
-                    </Text>
-                  </Box>
-                  {row.map((_, colIndex) => (
-                    <RiskMatrixSquare
-                      key={`S:${colIndex} K:${4 - rowIndex}`}
-                      size="grid"
-                      consequence={4 - rowIndex}
-                      probability={colIndex}
-                      riScCountObject={{
-                        isInitialRisk: tab === RiskMatrixTabs.initialRisk,
-                        riSc: riScWithMetadata,
-                      }}
-                    />
-                  ))}
-                </Fragment>
-              ))}
-              <Box className={styles.centered}>{null}</Box>
-              <Box className={styles.centered}>{null}</Box>
-              {riskMatrix.map((_, col) => (
-                <Box className={styles.centered} key={col}>
+        )}
+        <Box className={styles.gridWrapper}>
+          <Box className={styles.grid}>
+            <Box className={styles.konsekvens}>
+              <Text
+                variant="title-x-small"
+                weight="bold"
+                className={styles.centered}
+              >
+                {t('dictionary.consequence')}
+              </Text>
+            </Box>
+            {riskMatrix.map((row, rowIndex) => (
+              <Fragment key={rowIndex}>
+                <Box className={styles.centered}>
                   <Text variant="title-x-small" weight="bold">
-                    {col + 1}
+                    {5 - rowIndex}
                   </Text>
                 </Box>
-              ))}
-              <Box className={styles.sannsynlighet}>
-                <Text
-                  weight="bold"
-                  variant="title-x-small"
-                  className={styles.centered}
-                >
-                  {t('dictionary.probability')}
+                {row.map((_, colIndex) => (
+                  <RiskMatrixSquare
+                    key={`S:${colIndex} K:${4 - rowIndex}`}
+                    size="grid"
+                    consequence={4 - rowIndex}
+                    probability={colIndex}
+                    riScCountObject={{
+                      riskTab: tab,
+                      riSc: riScWithMetadata,
+                    }}
+                  />
+                ))}
+              </Fragment>
+            ))}
+            <Box className={styles.centered}>{null}</Box>
+            <Box className={styles.centered}>{null}</Box>
+            {riskMatrix.map((_, col) => (
+              <Box className={styles.centered} key={col}>
+                <Text variant="title-x-small" weight="bold">
+                  {col + 1}
                 </Text>
               </Box>
+            ))}
+            <Box className={styles.sannsynlighet}>
+              <Text
+                weight="bold"
+                variant="title-x-small"
+                className={styles.centered}
+              >
+                {t('dictionary.probability')}
+              </Text>
             </Box>
           </Box>
-        )}
+        </Box>
       </CardBody>
     </Card>
   );
