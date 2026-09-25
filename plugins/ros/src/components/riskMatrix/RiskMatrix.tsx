@@ -9,6 +9,7 @@ import { RiskMatrixTabs } from './utils';
 import { Card, CardBody, CardHeader, Text, Box } from '@backstage/ui';
 import { RiskMatrixSquare } from './RiskMatrixSquare.tsx';
 import { CurrentRisk } from './CurrentRisk.tsx';
+import { useShowCurrentMatrixFeatureFlag } from '../../utils/featureFlags.ts';
 
 import styles from './RiskMatrix.module.css';
 export function RiskMatrix({
@@ -17,6 +18,7 @@ export function RiskMatrix({
   riScWithMetadata: RiScWithMetadata;
 }) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const showCurrentMatrix = useShowCurrentMatrixFeatureFlag();
   const [tab, setTab] = useState<RiskMatrixTabs>(RiskMatrixTabs.initialRisk);
 
   return (
@@ -37,12 +39,7 @@ export function RiskMatrix({
             <AggregatedCost riSc={riScWithMetadata.content} riskType={tab} />
           </Box>
         )}
-
-        {tab === RiskMatrixTabs.currentRisk ? (
-          <Box>
-            <CurrentRisk risc={riScWithMetadata} />
-          </Box>
-        ) : (
+        {(showCurrentMatrix || tab !== RiskMatrixTabs.currentRisk) && (
           <Box className={styles.gridWrapper}>
             <Box className={styles.grid}>
               <Box className={styles.konsekvens}>
@@ -68,7 +65,7 @@ export function RiskMatrix({
                       consequence={4 - rowIndex}
                       probability={colIndex}
                       riScCountObject={{
-                        isInitialRisk: tab === RiskMatrixTabs.initialRisk,
+                        riskTab: tab,
                         riSc: riScWithMetadata,
                       }}
                     />
@@ -94,6 +91,11 @@ export function RiskMatrix({
                 </Text>
               </Box>
             </Box>
+          </Box>
+        )}
+        {tab === RiskMatrixTabs.currentRisk && (
+          <Box className={styles.currentRiskReduction}>
+            <CurrentRisk risc={riScWithMetadata} />
           </Box>
         )}
       </CardBody>
