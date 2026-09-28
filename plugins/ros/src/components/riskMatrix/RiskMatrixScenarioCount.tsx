@@ -10,21 +10,23 @@ import {
   findConsequenceIndex,
   findProbabilityIndex,
 } from '../../utils/utilityfunctions';
+import { getScenarioRiskForMatrix } from '../../utils/risk';
 import { Text } from '@backstage/ui';
+import { RiskMatrixTabs } from './utils.tsx';
 import styles from './RiskMatrixScenarioCount.module.css';
 
 interface ScenarioCountProps {
   riScWithMetadata: RiScWithMetadata;
   probability: number;
   consequence: number;
-  initialRisk: boolean;
+  riskTab: RiskMatrixTabs;
 }
 
 export function RiskMatrixScenarioCount({
   riScWithMetadata,
   probability,
   consequence,
-  initialRisk,
+  riskTab,
 }: ScenarioCountProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
 
@@ -35,7 +37,7 @@ export function RiskMatrixScenarioCount({
 
   useEffect(() => {
     setTooltipOpen(false);
-  }, [initialRisk]);
+  }, [riskTab]);
 
   function handleScenarioClick(ID: string) {
     setTooltipOpen(false);
@@ -46,19 +48,14 @@ export function RiskMatrixScenarioCount({
     );
   }
 
-  const scenarios = riScWithMetadata.content.scenarios.filter(
-    scenario =>
-      findProbabilityIndex(
-        initialRisk
-          ? scenario.risk.probability
-          : scenario.remainingRisk.probability,
-      ) === probability &&
-      findConsequenceIndex(
-        initialRisk
-          ? scenario.risk.consequence
-          : scenario.remainingRisk.consequence,
-      ) === consequence,
-  );
+  const scenarios = riScWithMetadata.content.scenarios.filter(scenario => {
+    const matrixRisk = getScenarioRiskForMatrix(scenario, riskTab);
+
+    return (
+      findProbabilityIndex(matrixRisk.probability) === probability &&
+      findConsequenceIndex(matrixRisk.consequence) === consequence
+    );
+  });
 
   if (scenarios.length === 0) {
     return null;
