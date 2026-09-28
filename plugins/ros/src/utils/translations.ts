@@ -359,6 +359,8 @@ export const pluginRiScMessages = {
       title: 'Risc reduction',
       description:
         "The diagram illustrates the development from today's initial risk to the calculated final risk. <strong>{{actionsOk}}</strong> completed actions represent a reduction of <strong>{{reduction}} NOK/year.</strong>",
+      matrixDescription:
+        'The current matrix places a scenario in its initial-risk square until all actions have been marked either OK or not relevant. The scenario is then moved to its remaining-risk square.',
       showMoreInfo: 'Risk statistics per scenario',
       dialogHeader: 'Risk statistics per scenario',
       dialogDescription:
@@ -1156,6 +1158,8 @@ export const pluginRiScNorwegianTranslation = createTranslationResource({
           'riskMatrix.currentRisk.title': 'Reduksjon i risiko',
           'riskMatrix.currentRisk.description':
             'Diagrammet illustrerer utviklingen fra dagens startrisiko mot beregnet sluttrisiko. <strong>{{actionsOk}}</strong> fullførte tiltak utgjør en reduksjon på <strong>{{reduction}} kr/år.</strong>',
+          'riskMatrix.currentRisk.matrixDescription':
+            'Nåmatrisen setter et scenario i sitt startrisikofelt fram til alle tiltak har blitt markert med enten OK eller ikke relevant. Da blir scenarioet flyttet til sitt restrisikofelt.',
           'riskMatrix.currentRisk.showMoreInfo':
             'Risikostatistikk per scenario',
           'riskMatrix.currentRisk.dialogHeader':

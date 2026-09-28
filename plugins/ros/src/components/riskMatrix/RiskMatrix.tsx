@@ -6,7 +6,7 @@ import { riskMatrix } from '../../utils/constants';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { pluginRiScTranslationRef } from '../../utils/translations';
 import { RiskMatrixTabs } from './utils';
-import { Card, CardBody, CardHeader, Text, Box } from '@backstage/ui';
+import { Card, CardBody, CardHeader, Text, Box, Flex } from '@backstage/ui';
 import { RiskMatrixSquare } from './RiskMatrixSquare.tsx';
 import { CurrentRisk } from './CurrentRisk.tsx';
 import { useShowCurrentMatrixFeatureFlag } from '../../utils/featureFlags.ts';
@@ -20,6 +20,7 @@ export function RiskMatrix({
   const { t } = useTranslationRef(pluginRiScTranslationRef);
   const showCurrentMatrix = useShowCurrentMatrixFeatureFlag();
   const [tab, setTab] = useState<RiskMatrixTabs>(RiskMatrixTabs.initialRisk);
+  const description = t('riskMatrix.currentRisk.matrixDescription');
 
   return (
     <Card className={styles.card}>
@@ -91,6 +92,14 @@ export function RiskMatrix({
                 </Text>
               </Box>
             </Box>
+            {tab === RiskMatrixTabs.currentRisk && (
+              <Flex>
+                <Text
+                  variant="body-large"
+                  dangerouslySetInnerHTML={{ __html: description }}
+                />
+              </Flex>
+            )}
           </Box>
         )}
         {tab === RiskMatrixTabs.currentRisk && (
