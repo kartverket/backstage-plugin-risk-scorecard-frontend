@@ -134,7 +134,10 @@ export function ScenarioTableRow({
         viewRow(scenario.ID);
       }}
       onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+        if (e.target !== e.currentTarget) return;
+
         if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
           viewRow(scenario.ID);
         }
       }}

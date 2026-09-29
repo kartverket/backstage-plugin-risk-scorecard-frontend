@@ -61,6 +61,8 @@ export function ActionView(props: ActionViewProps) {
           toggleActionExpanded(props.action.ID);
         }}
         onKeyDown={e => {
+          if (e.target !== e.currentTarget) return;
+
           // Prevent keyboard event from bubbling up to parent(s)
           e.stopPropagation();
 
