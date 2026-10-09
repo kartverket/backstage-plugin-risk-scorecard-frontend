@@ -132,7 +132,7 @@ describe('useAuthenticatedFetch', () => {
       });
 
       expect(mockFetchApi.fetch).toHaveBeenCalledWith(
-        'http://localhost:7000/api/proxy/risc-proxy/api/risc/org/repo/5.4/all',
+        'http://localhost:7000/api/proxy/risc-proxy/api/risc/org/repo/5.5/all',
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({

@@ -70,6 +70,7 @@ export type MigrationStatus = {
   migrationChanges50?: MigrationChanges50;
   migrationChanges51?: MigrationChanges51;
   migrationChanges52?: MigrationChanges52;
+  migrationChanges55?: MigrationChanges55;
 };
 
 export type MigrationVersions = {
@@ -137,6 +138,19 @@ export type MigrationChanges41 = {
 };
 
 export type MigrationChanges41Scenario = {
+  title: string;
+  id: string;
+  changedRiskConsequence?: MigrationChangedValue<number>;
+  changedRiskProbability?: MigrationChangedValue<number>;
+  changedRemainingRiskConsequence?: MigrationChangedValue<number>;
+  changedRemainingRiskProbability?: MigrationChangedValue<number>;
+};
+
+export type MigrationChanges55 = {
+  scenarios: MigrationChanges55Scenario[];
+};
+
+export type MigrationChanges55Scenario = {
   title: string;
   id: string;
   changedRiskConsequence?: MigrationChangedValue<number>;

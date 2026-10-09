@@ -56,9 +56,7 @@ export function RiskTableBase({
   return (
     <Box className={styles.riskTable}>
       <RadioGroup {...field} className={radioGroupClassName}>
-        {fieldName === 'consequence' && (
-          <Box className={styles.riskLabelCell}>{null}</Box>
-        )}
+        <Box className={styles.riskLabelCell}>{null}</Box>
         {Array.from({ length: 5 }, (_, i) => getRadioCell(i))}
       </RadioGroup>
       <InfoComponent />

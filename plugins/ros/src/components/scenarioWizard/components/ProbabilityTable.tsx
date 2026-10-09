@@ -2,25 +2,43 @@ import { pluginRiScTranslationRef } from '../../../utils/translations';
 import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { UseFormReturn } from 'react-hook-form';
 import { FormScenario } from '../../../utils/types';
-import { probabilityOptions } from '../../../utils/constants';
-import { Box } from '@backstage/ui';
+import {
+  probabilityCategoryOrder,
+  probabilityOptions,
+} from '../../../utils/constants';
+import { Text, Box } from '@backstage/ui';
 import styles from '../ScenarioWizardTable.module.css';
 import { createInfoWithHeadersComponent, RiskTableBase } from './RiskTableBase';
 
 function ProbabilityTableInfo() {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
-  function getContentCell(row: number) {
+
+  function getTextCell(resourceKey: string, row: number) {
     return (
       <Box className={styles.riskCell}>
         {/* @ts-ignore */}
-        {t(`probabilityTable.cells.${row + 1}`)}
+        {t(`probabilityTable.cells.${resourceKey}.${row + 1}`)}
       </Box>
     );
   }
 
+  function getRow(resourceKey: string) {
+    return (
+      <>
+        <Box className={styles.riskLabelCell}>
+          <Text as="p" variant="body-large" weight="bold">
+            {/* @ts-ignore */}
+            {t(`probabilityTable.columns.${resourceKey}`)}
+          </Text>
+        </Box>
+        {Array.from({ length: 5 }, (_, i) => getTextCell(resourceKey, i))}
+      </>
+    );
+  }
+
   return (
-    <Box className={styles.riskRow}>
-      {Array.from({ length: 5 }, (_, i) => getContentCell(i))}
+    <Box className={styles.consequenceGrid}>
+      {probabilityCategoryOrder.map(key => getRow(key))}
     </Box>
   );
 }
@@ -38,6 +56,7 @@ export function ProbabilityTable({
       riskType={riskType}
       fieldName="probability"
       options={probabilityOptions}
+      additionalClassName={styles.consequenceRow}
       translationPrefix="probabilityTable"
       InfoComponent={ProbabilityTableInfo}
     />
@@ -47,5 +66,5 @@ export function ProbabilityTable({
 export const ProbabilityTableInfoWithHeaders = createInfoWithHeadersComponent(
   'probabilityTable',
   ProbabilityTableInfo,
-  false,
+  true,
 );
