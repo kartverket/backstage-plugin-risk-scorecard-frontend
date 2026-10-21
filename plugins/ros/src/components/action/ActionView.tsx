@@ -178,7 +178,11 @@ export function ActionView(props: ActionViewProps) {
               <Text as="p" variant="body-large" weight="bold">
                 {t('dictionary.comment')}
               </Text>
-              <Text as="p" variant="body-large">
+              <Text
+                as="p"
+                variant="body-large"
+                style={{ whiteSpace: 'pre-line' }}
+              >
                 {props.action.comment}
               </Text>
             </Box>
