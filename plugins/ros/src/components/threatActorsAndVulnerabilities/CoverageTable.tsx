@@ -61,8 +61,7 @@ export function CoverageTable(props: CoverageTableProps) {
       numOfCoveringScenarios: count,
       typeLabel: t(
         `${translationPrefix}.${key}` as
-          | ThreatActorTranslationKey
-          | VulnerabilityTranslationKey,
+          ThreatActorTranslationKey | VulnerabilityTranslationKey,
       ),
     }),
   );
