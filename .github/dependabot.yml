@@ -28,3 +28,19 @@ updates:
           - '*'
         exclude-patterns:
           - '@backstage/*'
+    ignore:
+      # Stay on the major versions Backstage currently supports
+      - dependency-name: '@mui/icons-material'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@mui/material'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-router'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-router-dom'
+        update-types: ['version-update:semver-major']
