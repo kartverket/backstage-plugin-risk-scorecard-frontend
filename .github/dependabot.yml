@@ -14,3 +14,17 @@ updates:
       github-actions-dependencies:
         patterns:
           - '*'
+  # Maintain Yarn workspace dependencies
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    groups:
+      backstage-dependencies:
+        patterns:
+          - '@backstage/*'
+      other-dependencies:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - '@backstage/*'

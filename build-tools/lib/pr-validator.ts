@@ -19,11 +19,24 @@ export async function validatePRTitle(
   prTitle: string,
   hasConventionalCommits: boolean,
 ): Promise<PRValidationResult> {
+  if (!hasConventionalCommits) {
+    const bumpFromPrTitle = await getRecommendedBumpFromText(prTitle);
+    const valid = !bumpFromPrTitle.releaseType;
+    const message = valid
+      ? `✅ PR title does not imply a release, which matches the commits.`
+      : `❌ PR title implies a ${bumpFromPrTitle.releaseType} release, but no conventional commits were found in the PR.`;
+    return {
+      valid,
+      prTitle,
+      expectedBumpType: null,
+      message,
+    };
+  }
+
   // First, analyze commits to see if a release is expected
   log('Analyzing commits to determine expected version bump...');
   const bump = await getRecommendedBumpFromCurrentCommits();
 
-  // NOTE: this probably never happens as the code stands now, as the Bumper instance returns a minimum of patch even when there are no conventional commits. Keeping this as a safe guard tho.
   if (!bump?.releaseType) {
     return {
       valid: true,
@@ -36,19 +49,6 @@ No commits in the PR would trigger a release, so any PR title is acceptable.`,
 
   log('Getting implied version bump from PR title...');
   const bumpFromPrTitle = await getRecommendedBumpFromText(prTitle);
-
-  if (!hasConventionalCommits) {
-    const valid = !bumpFromPrTitle.releaseType;
-    const message = valid
-      ? `✅ PR title does not imply a release, which matches the commits.`
-      : `❌ PR title implies a ${bumpFromPrTitle.releaseType} release, but no conventional commits were found in the PR.`;
-    return {
-      valid,
-      prTitle,
-      expectedBumpType: null,
-      message,
-    };
-  }
 
   if (bump.releaseType != bumpFromPrTitle.releaseType) {
     return {
