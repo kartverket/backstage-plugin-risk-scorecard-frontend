@@ -5,7 +5,7 @@
 .consequenceGrid {
   display: grid;
   grid-template-columns: auto repeat(5, 1fr);
-  gap: 4px;
+  gap: 8px;
   overflow: auto;
 }
 
@@ -22,13 +22,13 @@
 .riskRow {
   display: grid !important;
   grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
+  gap: 8px;
 }
 
 .consequenceRow {
   display: grid !important;
   grid-template-columns: auto repeat(5, 1fr);
-  gap: 4px;
+  gap: 8px;
 }
 
 .riskCell {
@@ -38,6 +38,8 @@
   vertical-align: top;
   min-width: 135px;
   white-space: pre-line;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .riskVoidCell {

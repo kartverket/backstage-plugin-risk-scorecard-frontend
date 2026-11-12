@@ -17,12 +17,21 @@ interface EstimatedRiskInfoDialogProps {
   riskTab?: RiskMatrixTabs;
 }
 
+function formatProbability(probability: number): string {
+  return probability.toString();
+}
+
 export function EstimatedRiskInfoDialog({
   isOpen,
   onClose,
   riskTab,
 }: EstimatedRiskInfoDialogProps) {
   const { t } = useTranslationRef(pluginRiScTranslationRef);
+  const exampleProbabilityLevel = 4;
+  const exampleConsequenceLevel = 2;
+  const exampleProbability = probabilityOptions[exampleProbabilityLevel - 1];
+  const exampleConsequence = consequenceOptions[exampleConsequenceLevel - 1];
+  const exampleEstimatedRisk = exampleProbability * exampleConsequence;
 
   return (
     <DialogComponent
@@ -43,11 +52,15 @@ export function EstimatedRiskInfoDialog({
               >
                 {t('infoDialog.calculatedHowTitle')}
               </Text>
+              <Text>{t('infoDialog.calculatedHow')}</Text>
               <Text>
-                {' '}
-                {t('infoDialog.calculatedHow')}
-                <sup>{t('infoDialog.calculatedHowExponent')}</sup>{' '}
-                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}.
+                <strong>
+                  {t('infoDialog.riskSymbol')} ={' '}
+                  {t('infoDialog.probabilitySymbol')}
+                  <sub>{t('infoDialog.probabilityUnit')}</sub> ×{' '}
+                  {t('infoDialog.consequenceSymbol')}
+                  <sub>{t('infoDialog.consequenceUnit')}</sub>
+                </strong>
               </Text>
             </Flex>
             <Flex direction="column" gap="0">
@@ -61,8 +74,8 @@ export function EstimatedRiskInfoDialog({
               <Flex direction="column" gap="1">
                 {probabilityOptions.map((option, index) => (
                   <Text key={index}>
-                    <b>{index + 1}</b>: 20<sup>{index - 2}</sup> = {option}{' '}
-                    {t('infoDialog.probabilityUnit')} ={' '}
+                    <b>{index + 1}</b>: {formatProbability(option)}{' '}
+                    {t('infoDialog.probabilityUnit')} —{' '}
                     <b>
                       {t(probabilityIndexToTranslationKeys[index] as any, {})}
                     </b>
@@ -82,8 +95,8 @@ export function EstimatedRiskInfoDialog({
               <Flex direction="column" gap="1">
                 {consequenceOptions.map((option, index) => (
                   <Text key={index}>
-                    <b>{index + 1}</b>: 20<sup>{index + 3}</sup> ={' '}
-                    {formatNOK(option)} {t('infoDialog.consequenceUnit')} ={' '}
+                    <b>{index + 1}</b>: {formatNOK(option)}{' '}
+                    {t('infoDialog.consequenceUnit')} —{' '}
                     <b>
                       {t(consequenceIndexToTranslationKeys[index] as any, {})}
                     </b>
@@ -101,13 +114,19 @@ export function EstimatedRiskInfoDialog({
               </Text>
               <Text>
                 {t('infoDialog.example.part1')}
-                <b>4</b> (20<sup>1</sup> = 20 {t('infoDialog.probabilityUnit')})
+                <b>{exampleProbabilityLevel}</b> (
+                {formatProbability(exampleProbability)}{' '}
+                {t('infoDialog.probabilityUnit')})
                 {t('infoDialog.example.part2')}
-                <b>2</b> (20<sup>4</sup> = 160 000{' '}
+                <b>{exampleConsequenceLevel}</b> (
+                {formatNOK(exampleConsequence)}{' '}
                 {t('infoDialog.consequenceUnit')})
                 {t('infoDialog.example.part3')}
-                20<sup>4+2-1</sup> = 3 200 000{' '}
-                {t('riskMatrix.estimatedRisk.unit.nokPerYear')}.
+                <b>
+                  {formatNOK(exampleEstimatedRisk)}{' '}
+                  {t('riskMatrix.estimatedRisk.unit.nokPerYear')}
+                </b>
+                .
               </Text>
             </Flex>
           </>
