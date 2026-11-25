@@ -7,7 +7,7 @@ Backstage monorepo for the **RiSc** plugin. "RiSc" is Risk Scorecard;
 The plugin manages risk assessments with scenarios, actions, risk matrices,
 schema migrations, and approval workflows.
 
-Yarn 4 workspaces, Node 24 (see `mise.toml`):
+Yarn 4 workspaces, Node 26 (see `mise.toml`):
 
 - `plugins/ros/` – frontend plugin UI and plugin entry points
   (`@kartverket/backstage-plugin-risk-scorecard`)
